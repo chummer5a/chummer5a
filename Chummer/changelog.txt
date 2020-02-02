@@ -16,6 +16,7 @@ Data Changes:
 - Added support to the SR Missions 1.4 Rules customdata file for the ruling that vehicles without defined sensor functions receive them according to the rating of the sensor array. Closes #2206
 - Fixed incorrect name of the aerodynamic molotov cocktail.
 - Added conditions to taking the Witness My Hate quality.
+- Added metavariant stats for insect spirits.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
