@@ -3713,8 +3713,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Children.Count > 0)
                 {
-                    intAttribute = Children.Where(s => s_StrengthCustomizationStrings.Contains(s.Name)).Max(s => s.Rating);
-                    intBonus = Children.Where(s => s_StrengthEnhancementStrings.Contains(s.Name)).Max(s => s.Rating);
+                    intAttribute = Children.Where(s => s_StrengthCustomizationStrings.Contains(s.Name)).Max(s => s?.Rating) ?? BaseStrength;
+                    intBonus = Children.Where(s => s_StrengthEnhancementStrings.Contains(s.Name)).Max(s => s?.Rating) ?? 0;
                 }
                 if (ParentVehicle == null)
                 {
@@ -3778,8 +3778,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Children.Count > 0)
                 {
-                    intAttribute = Children.Where(s => s_AgilityCustomizationStrings.Contains(s.Name)).Max(s => s.Rating);
-                    intBonus     = Children.Where(s => s_AgilityEnhancementStrings  .Contains(s.Name)).Max(s => s.Rating);
+                    intAttribute = Children.Where(s => s_AgilityCustomizationStrings.Contains(s.Name)).Max(s => s?.Rating) ?? BaseAgility;
+                    intBonus     = Children.Where(s => s_AgilityEnhancementStrings  .Contains(s.Name)).Max(s => s?.Rating) ?? 0;
                 }
                 if (ParentVehicle == null)
                 {
