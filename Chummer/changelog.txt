@@ -4,6 +4,8 @@ Application Changes:
 - If a Gear object does not have a bonus node but is provided with a select value in data (ie a Camera with select='Rear-Facing'), this value will now be assigned to the Extra value. 
 - Implemented bonuses for Spell Descriptors to Damage and Drain. Used by the Witness My Hate quality. The improvement type allows a comma-separated list of values; if a descriptor is wrapped in NOT (ie NOT(Area)), it will be prevented from being taken. Conversely, if a spell does not have the descriptor listed, it will not gain the bonus. 
 - Spells now properly show bonuses to Damage provided by improvements.
+- Added support for the base initiative dice value being higher than 1. 
+- Partial refactor of the karma and priority mode choices into a single creation method to avoid duplicating code.
 
 Application Fixes:
 - Fixed an issue with the Skills tab not showing properly when first creating a character.
@@ -17,6 +19,7 @@ Data Changes:
 - Fixed incorrect name of the aerodynamic molotov cocktail.
 - Added conditions to taking the Witness My Hate quality.
 - Added metavariant stats for insect spirits.
+- Added customdata rule to have shapeshifter initative bonuses apply as the default metatype initiative value instead of a bonus. 
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

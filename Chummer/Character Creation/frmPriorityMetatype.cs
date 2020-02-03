@@ -655,86 +655,13 @@ namespace Chummer
                 XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
                 if (charNode == null)
                     return;
-
-                _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text);
-
-                // Set Metatype information.
-                _objCharacter.AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
-                if (charNode["halveattributepoints"] != null)
-                    boolHalveAttributePriorityPoints = true;
-
-                _objCharacter.Metatype = strSelectedMetatype;
-                _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
-                _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
-                _objCharacter.Source = charNode["source"].InnerText;
-                _objCharacter.Page = charNode["page"]?.InnerText ?? "0";
-
-                // We only reverted to the base metatype to get the attributes.
-                if (strSelectedMetatypeCategory == "Shapeshifter")
-                {
-                    charNode = objXmlMetavariant ?? objXmlMetatype;
-                }
-
-                // Determine if the Metatype has any bonuses.
-                XmlNode xmlBonusNode = charNode["bonus"];
-                if (xmlBonusNode != null)
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, strSelectedMetatype, xmlBonusNode, false, 1, strSelectedMetatype);
-
-                List<Weapon> lstWeapons = new List<Weapon>();
-
-                // Create the Qualities that come with the Metatype.
-                foreach (XmlNode objXmlQualityItem in charNode.SelectNodes("qualities/*/quality"))
-                {
-                    XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                    Quality objQuality = new Quality(_objCharacter);
-                    string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
-                    QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
-                    objQuality.ContributeToLimit = false;
-                    _objCharacter.Qualities.Add(objQuality);
-                }
-
-                //Load any critter powers the character has.
-                foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
-                {
-                    XmlNode objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + objXmlPower.InnerText + "\"]");
-                    CritterPower objPower = new CritterPower(_objCharacter);
-                    string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                    int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText);
-
-                    objPower.Create(objXmlCritterPower, intRating, strForcedValue);
-                    objPower.CountTowardsLimit = false;
-                    _objCharacter.CritterPowers.Add(objPower);
-                }
-
-                //Load any natural weapons the character has.
-                foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
-                {
-                    Weapon objWeapon = new Weapon(_objCharacter)
-                    {
-                        Name = objXmlNaturalWeapon["name"].InnerText,
-                        Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
-                        WeaponType = "Melee",
-                        Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText),
-                        Damage = objXmlNaturalWeapon["damage"].InnerText,
-                        AP = objXmlNaturalWeapon["ap"].InnerText,
-                        Mode = "0",
-                        RC = "0",
-                        Concealability = 0,
-                        Avail = "0",
-                        Cost = "0",
-                        UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
-                        Source = objXmlNaturalWeapon["source"].InnerText,
-                        Page = objXmlNaturalWeapon["page"].InnerText
-                    };
-
-                    _objCharacter.Weapons.Add(objWeapon);
-                }
-
+                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"].InnerText, objXmlMetavariant["id"].InnerText, charNode, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
+                
                 // begin priority based character settings
                 // Load the Priority information.
 
                 // Set the character priority selections
+                _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text);
                 _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
                 _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
                 _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
@@ -771,6 +698,8 @@ namespace Chummer
                 {
                     _objCharacter.Pushtext.Push(strSkill1);
                 }
+
+                List<Weapon> lstWeapons = new List<Weapon>();
 
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + _objCharacter.SpecialPriority + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
