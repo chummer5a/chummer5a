@@ -10375,6 +10375,7 @@ namespace Chummer
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
+            RefreshPasteStatus();
         }
 #endregion
 

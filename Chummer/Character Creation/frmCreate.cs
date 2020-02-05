@@ -6620,6 +6620,7 @@ namespace Chummer
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
+            RefreshPasteStatus(sender, e);
         }
 
         private void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -13848,7 +13849,7 @@ namespace Chummer
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                blnPasteEnabled = treCyberware.SelectedNode?.Tag is ICanPaste selected && selected.AllowPasteXml;
+                blnPasteEnabled = treCyberware.SelectedNode?.Tag is ICanPaste selected && selected.AllowPasteXml || GlobalOptions.ClipboardContentType == ClipboardContentType.Cyberware;
                 blnCopyEnabled = treCyberware.SelectedNode?.Tag is Gear || treCyberware.SelectedNode?.Tag is Cyberware;
             }
             // Vehicles Tab.

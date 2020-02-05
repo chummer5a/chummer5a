@@ -12,6 +12,7 @@ Application Fixes:
 - Fixed specialisations not properly being added to dicepool when firing weapons.
 - Fixed a regression in the behaviour of shapeshifters in karmagen not automatically selecting 'Human' if the 'None' metavariant is selected.
 - Fixed a regression in the behaviour of mastery qualities incorrectly counting towards used spells and karma.
+- Fixed issues with copying and pasting cyberware. Note that it's currently not permissible to paste cyberware into other cyberware.
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
