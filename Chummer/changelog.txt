@@ -8,6 +8,7 @@ Application Changes:
 - Partial refactor of the karma and priority mode choices into a single creation method to avoid duplicating code.
 
 Application Fixes:
+- Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
 - Fixed an issue with the Skills tab not showing properly when first creating a character.
 - Fixed specialisations not properly being added to dicepool when firing weapons.
 - Fixed a regression in the behaviour of shapeshifters in karmagen not automatically selecting 'Human' if the 'None' metavariant is selected.

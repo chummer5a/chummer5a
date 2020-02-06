@@ -4879,11 +4879,11 @@ namespace Chummer.Backend.Equipment
 
             if (SourceID == EssenceAntiHoleGUID)
             {
-                _objCharacter.DecreaseEssenceHole(Rating * 100);
+                _objCharacter.DecreaseEssenceHole(Rating);
             }
             else if (SourceID == EssenceHoleGUID)
             {
-                _objCharacter.IncreaseEssenceHole(Rating * 100);
+                _objCharacter.IncreaseEssenceHole(Rating);
             }
             else
             {
