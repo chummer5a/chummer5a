@@ -8335,7 +8335,6 @@ namespace Chummer
                     {
                         // Remove the character from their Group.
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = false;
                         CharacterObject.GroupMember = false;
                         IsRefreshing = false;
                         break;
@@ -8344,7 +8343,6 @@ namespace Chummer
                     {
                         // Put the character back in their Group.
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = true;
                         CharacterObject.GroupMember = true;
                         IsRefreshing = false;
                         break;
@@ -12251,7 +12249,6 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
             }
-            CharacterObject.GroupMember = chkJoinGroup.Checked;
 
             if (!chkJoinGroup.Enabled)
             {
