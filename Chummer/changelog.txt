@@ -15,6 +15,7 @@ Application Fixes:
 - Fixed a regression in the behaviour of mastery qualities incorrectly counting towards used spells and karma.
 - Fixed issues with copying and pasting cyberware. Note that it's currently not permissible to paste cyberware into other cyberware.
 - Fixed extraneous messages about leaving a group when updating character properties if the character is a member of an initiation group.
+- Fixed a regression in the behaviour of the spellcategory improvement type that caused all improvements of that type to apply to all spells.
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021

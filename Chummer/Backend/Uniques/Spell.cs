@@ -885,7 +885,8 @@ namespace Chummer
                         }
                         else
                         {
-                            yield return objImprovement;
+                            if (objImprovement.ImprovedName == Category)
+                                yield return objImprovement;
                             break;
                         }
                     case Improvement.ImprovementType.SpellCategoryDamage:
