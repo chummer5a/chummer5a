@@ -15935,9 +15935,13 @@ namespace Chummer
 
                         ListViewItem objItem = new ListViewItem
                         {
-                            Text = objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern) +
-                                   LanguageManager.GetString("String_Space") +
-                                   objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern)
+                            Text = GlobalOptions.CustomDateTimeFormats
+                                ? objExpense.Date.ToString(GlobalOptions.CustomDateFormat) +
+                                  LanguageManager.GetString("String_Space") +
+                                  objExpense.Date.ToString(GlobalOptions.CustomTimeFormat)
+                                : objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern) +
+                                  LanguageManager.GetString("String_Space") +
+                                  objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern)
                         };
                         objItem.SubItems.Add(objAmountItem);
                         objItem.SubItems.Add(objReasonItem);

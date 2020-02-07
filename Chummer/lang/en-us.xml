@@ -5539,6 +5539,18 @@
       <text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
     </string>
     <string>
+      <key>Checkbox_Options_CustomTimeFormat</key>
+      <text>Custom Time Format</text>
+    </string>
+    <string>
+      <key>Label_Options_DateFormat</key>
+      <text>Date Format</text>
+    </string>
+    <string>
+      <key>Label_Options_TimeFormat</key>
+      <text>Time Format</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
       <text>Allow incrementing values of numericupdown controls by hovering over the control</text>
     </string>
