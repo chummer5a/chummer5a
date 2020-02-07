@@ -897,6 +897,9 @@ namespace Chummer
                 objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
                 objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked);
                 objRegistry.SetValue("hidecharts", chkHideCharts.Checked);
+                objRegistry.SetValue("usecustomdatetime",chkCustomDateTimeFormats.Checked);
+                objRegistry.SetValue("customdateformat",txtDateFormat.Text);
+                objRegistry.SetValue("customtimeformat", txtTimeFormat.Text);
 
                 //Save the Plugins-Dictionary
                 string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
@@ -1443,6 +1446,9 @@ namespace Chummer
             chkCreateBackupOnCareer.Checked = GlobalOptions.CreateBackupOnCareer;
             chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
             chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
+            chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
+            txtDateFormat.Text = GlobalOptions.CustomDateFormat;
+            txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
             PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
@@ -2016,6 +2022,30 @@ namespace Chummer
                 nudCyberlimbAttributeBonusCap.Value = 4;
                 nudCyberlimbAttributeBonusCap.Enabled = false;
             }
+        }
+
+        private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)
+        {
+            grpDateFormat.Enabled = chkCustomDateTimeFormats.Checked;
+            grpTimeFormat.Enabled = chkCustomDateTimeFormats.Checked;
+            if (!chkCustomDateTimeFormats.Checked)
+            {
+                txtDateFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern;
+                txtTimeFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern;
+            }
+            OptionsChanged(sender, e);
+        }
+
+        private void txtDateFormat_TextChanged(object sender, EventArgs e)
+        {
+            txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text);
+            OptionsChanged(sender, e);
+        }
+
+        private void txtTimeFormat_TextChanged(object sender, EventArgs e)
+        {
+            txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text);
+            OptionsChanged(sender, e);
         }
     }
 }

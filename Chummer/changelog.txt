@@ -27,6 +27,9 @@ Data Changes:
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
+- Checkbox_Options_CustomTimeFormat
+- Label_Options_DateFormat
+- Label_Options_TimeFormat
 
 Build 210
 Application Fixes:
