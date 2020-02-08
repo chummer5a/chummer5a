@@ -9815,5 +9815,17 @@
 			<key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
 			<text>Maximaler Bonus auf Stärke und Geschicklichkeit, den Cybergliedmaßen haben können (unterliegt unverändert dem erweiterten Maximum)</text>
 		</string>
+		<string>
+			<key>Checkbox_Options_CustomTimeFormat</key>
+			<text>Benutzerdefiniertes Zeitformat</text>
+		</string>
+		<string>
+			<key>Label_Options_DateFormat</key>
+			<text>Datumsformat</text>
+		</string>
+		<string>
+			<key>Label_Options_TimeFormat</key>
+			<text>Zeitformat</text>
+		</string>
 	</strings>
 </chummer>
