@@ -27,6 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
+    // ReSharper disable once InconsistentNaming
     public partial class frmPriorityMetatype : Form
     {
         private readonly Character _objCharacter;
@@ -245,7 +246,7 @@ namespace Chummer
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
 
             _blnLoading = false;
@@ -259,7 +260,7 @@ namespace Chummer
                 return;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
             PopulateMetavariants();
             RefreshSelectedMetatype();
@@ -467,7 +468,7 @@ namespace Chummer
             cboSkill3.EndUpdate();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
         }
 
@@ -479,7 +480,7 @@ namespace Chummer
             PopulateTalents();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
         }
 
@@ -496,7 +497,7 @@ namespace Chummer
             PopulateMetatypes();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
         }
 
@@ -510,7 +511,7 @@ namespace Chummer
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
             LoadMetatypes();
             PopulateMetatypes();
@@ -528,7 +529,7 @@ namespace Chummer
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
             PopulateTalents();
         }
@@ -543,7 +544,7 @@ namespace Chummer
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
         }
 
@@ -557,7 +558,7 @@ namespace Chummer
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
         }
 
@@ -571,7 +572,7 @@ namespace Chummer
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumtoTen();
+                SumToTen();
             }
         }
         #endregion
@@ -584,7 +585,7 @@ namespace Chummer
         {
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                int intSumToTen = SumtoTen(false);
+                int intSumToTen = SumToTen(false);
                 if (intSumToTen != _objCharacter.SumtoTen)
                 {
                     Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Language), _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo), intSumToTen.ToString(GlobalOptions.CultureInfo)));
@@ -633,29 +634,16 @@ namespace Chummer
 
                 XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"" + strSelectedMetatype + "\"]");
                 XmlNode objXmlMetavariant = objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
-
+                strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
                 int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
 
-                int intMinModifier = 0;
-                int intMaxModifier = 0;
-                //TODO: What the hell is this for?
-                /*if (_strXmlFile == "critters.xml")
-                {
-                    if (strSelectedMetatypeCategory == "Technocritters")
-                    {
-                        intMinModifier = -1;
-                        intMaxModifier = 1;
-                    }
-                    else
-                    {
-                        intMinModifier = -3;
-                        intMaxModifier = 3;
-                    }
-                }*/
-                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
+                XmlNode charNode =
+                    strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString()
+                        ? objXmlMetatype
+                        : objXmlMetavariant ?? objXmlMetatype;
                 if (charNode == null)
                     return;
-                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"].InnerText, objXmlMetavariant["id"].InnerText, charNode, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
+                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, charNode, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
                 
                 // begin priority based character settings
                 // Load the Priority information.
@@ -701,6 +689,7 @@ namespace Chummer
 
                 List<Weapon> lstWeapons = new List<Weapon>();
 
+                int intMaxModifier = 0;
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + _objCharacter.SpecialPriority + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
@@ -947,7 +936,7 @@ namespace Chummer
             }
         }
 
-        private int SumtoTen(bool blnDoUIUpdate = true)
+        private int SumToTen(bool blnDoUIUpdate = true)
         {
             int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().Split(',')[_intBuildMethod]);
             value += Convert.ToInt32(cboTalent.SelectedValue.ToString().Split(',')[_intBuildMethod]);

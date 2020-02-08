@@ -24,6 +24,8 @@ Data Changes:
 - Added conditions to taking the Witness My Hate quality.
 - Added metavariant stats for insect spirits.
 - Added customdata rule to have shapeshifter initative bonuses apply as the default metatype initiative value instead of a bonus. 
+- Added a selectskill prompt to the Enthralling Performance adept power.
+- Updated shift power to the proper page reference. 
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
