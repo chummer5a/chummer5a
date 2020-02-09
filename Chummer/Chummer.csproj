@@ -576,8 +576,11 @@
     <Content Include="customdata\Orks Have Natural Weapon Tusks\custom_orktusk_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Shapeshifter Initiative Stacking\amend_shapeshifter_metatypes.xml">
+    <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shapeshifter Initiative Stacking\amend_shifter_metatypes.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

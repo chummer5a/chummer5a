@@ -16,7 +16,8 @@ Application Fixes:
 - Fixed issues with copying and pasting cyberware. Note that it's currently not permissible to paste cyberware into other cyberware.
 - Fixed extraneous messages about leaving a group when updating character properties if the character is a member of an initiation group.
 - Fixed a regression in the behaviour of the spellcategory improvement type that caused all improvements of that type to apply to all spells.
-- Fixed an issue with Talent choices not refreshing unless the metavariant index was refreshed. 
+- Fixed an issue with Talent choices not refreshing unless the metavariant index was refreshed.
+
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
 - Added support to the SR Missions 1.4 Rules customdata file for the ruling that vehicles without defined sensor functions receive them according to the rating of the sensor array. Closes #2206
@@ -27,6 +28,7 @@ Data Changes:
 - Added a selectskill prompt to the Enthralling Performance adept power.
 - Updated shift power to the proper page reference. 
 - Adepts and Mystic Adepts now always qualify for powers from the Undecided Way, irrespective of Art choices. 
+- Converted Shapeshifter Initiaitve to work as the base mode by default instead of being a bonus. Added a new customdata rule to preserve current behaviour.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
