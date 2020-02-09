@@ -621,8 +621,6 @@ namespace Chummer
 
             Cursor = Cursors.WaitCursor;
 
-            bool boolHalveAttributePriorityPoints = false;
-
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
@@ -687,6 +685,8 @@ namespace Chummer
                         : objXmlMetavariant ?? objXmlMetatype;
                 if (charNode == null)
                     return;
+
+                bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
 
                 List<Weapon> lstWeapons = new List<Weapon>();
 
