@@ -1284,7 +1284,7 @@ namespace Chummer
             }
             Source = charNode["source"].InnerText;
             Page = charNode["page"]?.InnerText ?? "0";
-            MetatypeBP = Convert.ToInt32(charNode["karma"].InnerText);
+            charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
             charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
             string strMovement = objXmlMetatype["movement"]?.InnerText;

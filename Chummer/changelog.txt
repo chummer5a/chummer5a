@@ -29,6 +29,8 @@ Data Changes:
 - Updated shift power to the proper page reference. 
 - Adepts and Mystic Adepts now always qualify for powers from the Undecided Way, irrespective of Art choices. 
 - Converted Shapeshifter Initiaitve to work as the base mode by default instead of being a bonus. Added a new customdata rule to preserve current behaviour.
+- Fixed a typo in the Amphora Mite critter's powers.
+- Fixed incorrect cyberware names for the War Horse and War Dolphin critters.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

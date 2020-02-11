@@ -29168,7 +29168,7 @@
         <skill rating="8">Sneaking</skill>
       </skills>
       <powers>
-        <power select="Thermal">Enhanced Sense</power>
+        <power select="Thermal">Enhanced Senses</power>
         <power select="Injection">Venom</power>
       </powers>
       <bonus>
@@ -49293,13 +49293,13 @@
         <genetechcostmultiplier>80</genetechcostmultiplier>
         <genetechessmultiplier>90</genetechessmultiplier>
       </bonus>
-      <cyberwares>
-        <cyberware rating="1">Cerebral Booster</cyberware>
-        <cyberware>Chameleon Skin (Dynamic)</cyberware>
-        <cyberware>Neuro Retention Amplification</cyberware>
-        <cyberware rating="3">Tailored Pheromones</cyberware>
-        <cyberware>Vocal Range Expander</cyberware>
-      </cyberwares>
+      <biowares>
+        <bioware rating="1">Cerebral Booster</bioware>
+        <bioware>Chameleon Skin (Dynamic)</bioware>
+        <bioware>Neuro Retention Amplification</bioware>
+        <bioware rating="3">Tailored Pheromones</bioware>
+        <bioware>Vocal Range Expander</bioware>
+      </biowares>
       <powers>
         <power>Domesticated</power>
         <power select="Sonar">Enhanced Senses</power>
@@ -49366,7 +49366,9 @@
       <run>10/0/0</run>
       <sprint>6/1/0</sprint>
       <biowares>
+        <bioware rating="1">Bone Density Augmentation</bioware>
         <bioware>Neo-EPO</bioware>
+        <bioware rating="1">Muscle Augmentation</bioware>
       </biowares>
       <bonus>
         <biowareessmultiplier>90</biowareessmultiplier>
@@ -49376,10 +49378,6 @@
         <genetechcostmultiplier>80</genetechcostmultiplier>
         <genetechessmultiplier>90</genetechessmultiplier>
       </bonus>
-      <cyberwares>
-        <cyberware rating="1">Bone Density</cyberware>
-        <cyberware rating="1">Muscle Augmentation</cyberware>
-      </cyberwares>
       <powers>
         <power select="Kick: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
         <power>Domesticated</power>
