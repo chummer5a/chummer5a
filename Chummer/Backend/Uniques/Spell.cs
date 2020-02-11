@@ -869,26 +869,26 @@ namespace Chummer
                             yield return objImprovement;
                         break;
                     case Improvement.ImprovementType.SpellCategory:
-                        // SR5 318: Regardless of the number of bonded foci you have,
-                        // only one focus may add its Force to a dicepool for any given test.
-                        // We need to do some checking to make sure this is the most powerful focus before we add it in
-                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
+                        if (objImprovement.ImprovedName == Category)
                         {
-                            //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
-                            // we are returning either the original improvement, null or a newly instantiated improvement
-                            Improvement bestFocus = CompareFocusPower(objImprovement);
-                            if (bestFocus != null)
+                            // SR5 318: Regardless of the number of bonded foci you have,
+                            // only one focus may add its Force to a dicepool for any given test.
+                            // We need to do some checking to make sure this is the most powerful focus before we add it in
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
                             {
-                                yield return bestFocus;
+                                //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
+                                // we are returning either the original improvement, null or a newly instantiated improvement
+                                Improvement bestFocus = CompareFocusPower(objImprovement);
+                                if (bestFocus != null)
+                                {
+                                    yield return bestFocus;
+                                }
                             }
-                            break;
+
+                            yield return objImprovement;
                         }
-                        else
-                        {
-                            if (objImprovement.ImprovedName == Category)
-                                yield return objImprovement;
-                            break;
-                        }
+
+                        break;
                     case Improvement.ImprovementType.SpellCategoryDamage:
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
