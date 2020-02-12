@@ -566,7 +566,13 @@ namespace Chummer.Backend.Equipment
                     {
                         ParentVehicle = ParentVehicle
                     };
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons);
+                    int intAddWeaponRating = 0;
+                    if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                    {
+                        intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                            .CheapReplace("{Rating}", () => Rating.ToString()));
+                    }
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,false, intAddWeaponRating);
                     objGearWeapon.ParentID = InternalId;
                     objGearWeapon.Cost = "0";
                     lstWeapons.Add(objGearWeapon);

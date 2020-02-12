@@ -1405,7 +1405,7 @@
       <category>Ammunition</category>
       <rating>6</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>49</page>
       <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
       <cost>FixedValues(20,30,40,50,100,200)</cost>
       <costfor>10</costfor>
@@ -1419,7 +1419,7 @@
       <category>Ammunition</category>
       <rating>2</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>50</page>
       <avail>FixedValues(10R,12R)</avail>
       <cost>FixedValues(30,50)</cost>
       <costfor>10</costfor>
@@ -1433,7 +1433,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
@@ -1448,7 +1448,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>60</cost>
       <bonus>
@@ -1466,7 +1466,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
@@ -1484,7 +1484,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
@@ -1499,7 +1499,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>60</cost>
       <bonus>
@@ -1517,7 +1517,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
@@ -1537,7 +1537,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>6R</avail>
       <cost>25</cost>
     </gear>
@@ -1547,7 +1547,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>8R</avail>
       <cost>75</cost>
     </gear>
@@ -1557,7 +1557,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>10R</avail>
       <cost>200</cost>
     </gear>
@@ -1567,7 +1567,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>12R</avail>
       <cost>400</cost>
     </gear>
@@ -1577,11 +1577,10 @@
       <category>Ammunition</category>
       <rating>20</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <!-- TODO: Grenade weapons
-      <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -1589,11 +1588,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>54</page>
       <avail>10R</avail>
       <cost>500</cost>
-      <!-- TODO: Grenade weapons
-      <addweapon>Grenade: COS</addweapon>-->
+      <addweapon>Grenade: COS</addweapon>
     </gear>
     <gear>
       <id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
@@ -1601,11 +1599,10 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>54</page>
       <avail>Rating*2F</avail>
       <cost>Rating*50</cost>
-      <!-- TODO: Grenade weapons
-    <addweapon>Grenade: Douser</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Douser</addweapon>
     </gear>
     <gear>
       <id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
@@ -1613,11 +1610,10 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>55</page>
       <avail>Rating*2R</avail>
       <cost>Rating*50</cost>
-      <!-- TODO: Grenade weapons
-    <addweapon>Grenade: DumDum</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: DumDum</addweapon>
     </gear>
     <!-- End Region -->
     <!-- End Region -->

@@ -8673,7 +8673,7 @@
     </weapon>
     <!-- End Region -->
     <!-- Region Shadows in Focus -->
-    <!-- Region San Fancisco -->
+    <!-- Region San Francisco -->
     <weapon>
       <id>581fed02-2312-4a75-95ba-25215b12ab5f</id>
       <name>Colt Manhunter</name>
@@ -10421,7 +10421,7 @@
     </weapon>
     <weapon>
       <id>f82903f3-3f8d-48b8-95db-c8cf1238c7a1</id>
-      <name>Styre AUG-CSL (2050)</name>
+      <name>Steyr AUG-CSL (2050)</name>
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -10445,15 +10445,15 @@
         <mount>Under</mount>
       </accessorymounts>
       <underbarrels>
-        <underbarrel>Styre AUG-CSL SMG (2050)</underbarrel>
-        <underbarrel>Styre AUG-CSL Carbine (2050)</underbarrel>
-        <underbarrel>Styre AUG-CSL Assault Rifles (2050)</underbarrel>
-        <underbarrel>Styre AUG-CSL LMG (2050)</underbarrel>
+        <underbarrel>Steyr AUG-CSL SMG (2050)</underbarrel>
+        <underbarrel>Steyr AUG-CSL Carbine (2050)</underbarrel>
+        <underbarrel>Steyr AUG-CSL Assault Rifles (2050)</underbarrel>
+        <underbarrel>Steyr AUG-CSL LMG (2050)</underbarrel>
       </underbarrels>
     </weapon>
     <weapon>
       <id>5e116545-08b4-4eae-8dab-6f1546786296</id>
-      <name>Styre AUG-CSL SMG (2050)</name>
+      <name>Steyr AUG-CSL SMG (2050)</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -10485,7 +10485,7 @@
     </weapon>
     <weapon>
       <id>ef76228b-c339-4262-b8e3-597de652d9b4</id>
-      <name>Styre AUG-CSL Carbine (2050)</name>
+      <name>Steyr AUG-CSL Carbine (2050)</name>
       <category>Sniper Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -10517,7 +10517,7 @@
     </weapon>
     <weapon>
       <id>4c09761e-d2a2-4958-9113-5b61db145a20</id>
-      <name>Styre AUG-CSL Assault Rifles (2050)</name>
+      <name>Steyr AUG-CSL Assault Rifles (2050)</name>
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -10549,7 +10549,7 @@
     </weapon>
     <weapon>
       <id>39a5d782-6537-4b6d-93f9-f5d30d90d8ef</id>
-      <name>Styre AUG-CSL LMG (2050)</name>
+      <name>Steyr AUG-CSL LMG (2050)</name>
       <category>Light Machine Guns</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -14860,7 +14860,7 @@
     </weapon>
 	<!-- End Region -->
     <!-- Region Rigger 5-->
-    <!-- TODO: Really should make a method for data-defined weapons so that we're not hardcoding them like this, but w/e, drones suck. -->
+    <!-- TODO: Really should make a method for data-defined weapons so that we're not hard-coding them like this, but w/e, drones suck. -->
     <weapon>
       <id>e1b2576c-9f61-4257-913b-667ea53a4864</id>
       <name>Melee Bite</name>
@@ -14898,6 +14898,95 @@
       <source>R5</source>
       <page>139</page>
       <hide />
+    </weapon>
+    <!-- End Region -->
+
+    <!-- Region Kill Code -->
+    <weapon>
+      <id>d0434d89-c035-4793-ba10-3ae13b815b52</id>
+      <name>Grenade: COS</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>10R</avail>
+      <cost>500</cost>
+      <source>KC</source>
+      <page>54</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>153e4dcb-ecd6-4b3c-b69e-55a8fb9e6815</id>
+      <name>Grenade: Douser</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>({Rating}*2)F</avail>
+      <cost>{Rating}*50</cost>
+      <source>KC</source>
+      <page>53</page>
+      <maxrating>100000</maxrating>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>12724901-a72d-4b26-b97c-b559ebec0a41</id>
+      <name>Grenade: DumDum</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>({Rating}*2)R</avail>
+      <cost>{Rating}*50</cost>
+      <source>KC</source>
+      <page>53</page>
+      <maxrating>100000</maxrating>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>6fbed96c-6680-4550-b0de-5c3cbdf646f7</id>
+      <name>Grenade: Fuzzy Boom Boom Bunnies</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>10R</avail>
+      <cost>{Rating}*20</cost>
+      <source>KC</source>
+      <page>53</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
     </weapon>
     <!-- End Region -->
   </weapons>
@@ -16100,6 +16189,7 @@
       <rating>0</rating>
     </accessory>
     <!-- End Region-->
+    <!-- ReSharper disable once CommentTypo -->
     <!-- Region Gun H(e)aven 3 -->
     <accessory>
       <id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>

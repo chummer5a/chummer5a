@@ -221,14 +221,25 @@ namespace Chummer
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                        if (objXmlWeapon != null)
+                        {
+                            int intAddWeaponRating = 0;
+                            if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                            {
+                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText);
+                            }
+                            Weapon objGearWeapon = new Weapon(_objCharacter);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons,true, true,true, intAddWeaponRating);
+                            objGearWeapon.ParentID = InternalId;
+                            objGearWeapon.Cost = "0";
+                            lstWeapons.Add(objGearWeapon);
 
-                        Weapon objGearWeapon = new Weapon(_objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                        objGearWeapon.ParentID = InternalId;
-                        objGearWeapon.Cost = "0";
-                        lstWeapons.Add(objGearWeapon);
-
-                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                            Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                        }
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                        }
                     }
                 }
 

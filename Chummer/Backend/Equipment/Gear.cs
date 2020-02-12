@@ -323,8 +323,14 @@ namespace Chummer.Backend.Equipment
 
                         if (objXmlWeapon != null)
                         {
+                            int intAddWeaponRating = 0;
+                            if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                            {
+                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                                    .CheapReplace("{Rating}", () => Rating.ToString()));
+                            }
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements, intAddWeaponRating);
                             objGearWeapon.ParentID = InternalId;
                             objGearWeapon.Cost = "0";
                             lstWeapons.Add(objGearWeapon);

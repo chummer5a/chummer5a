@@ -6,7 +6,7 @@ Application Changes:
 - Spells now properly show bonuses to Damage provided by improvements.
 - Added support for the base initiative dice value being higher than 1. 
 - Partial refactor of the karma and priority mode choices into a single creation method to avoid duplicating code.
-
+- Added basic support for Weapons having Ratings. Currently used exclusively by weapons created via addweapon nodes. To be added to other weapons at a later date. (Need to figure out a good way to make it work in the datagrid view)
 Application Fixes:
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
 - Fixed an issue with the Skills tab not showing properly when first creating a character.
@@ -31,6 +31,7 @@ Data Changes:
 - Converted Shapeshifter Initiaitve to work as the base mode by default instead of being a bonus. Added a new customdata rule to preserve current behaviour.
 - Fixed a typo in the Amphora Mite critter's powers.
 - Fixed incorrect cyberware names for the War Horse and War Dolphin critters.
+- Added missing grenade 'weapons' from Kill Code for the Dousher, DumDum, COS and Fuzzy Boom Boom grenades. Closes #4031
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

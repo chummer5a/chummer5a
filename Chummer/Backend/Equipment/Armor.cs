@@ -379,8 +379,14 @@ namespace Chummer.Backend.Equipment
                     ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                     : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
+                int intAddWeaponRating = 0;
+                if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                {
+                    intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                        .CheapReplace("{Rating}", () => Rating.ToString()));
+                }
                 Weapon objGearWeapon = new Weapon(_objCharacter);
-                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost);
+                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost, intAddWeaponRating);
                 objGearWeapon.ParentID = InternalId;
                 objGearWeapon.Cost = "0";
                 lstWeapons.Add(objGearWeapon);
