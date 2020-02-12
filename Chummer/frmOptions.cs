@@ -209,6 +209,7 @@ namespace Chummer
             _characterOptions.AllowFreeGrids = chkAllowFreeGrids.Checked;
             _characterOptions.AllowTechnomancerSchooling = chkAllowTechnomancerSchooling.Checked;
             _characterOptions.CyberlimbAttributeBonusCap = decimal.ToInt32(nudCyberlimbAttributeBonusCap.Value);
+            _characterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
 
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
             if(string.IsNullOrEmpty(strLimbCount))
@@ -746,6 +747,8 @@ namespace Chummer
             nudDroneArmorMultiplier.Value = _characterOptions.DroneArmorMultiplier;
             nudMetatypeCostsKarmaMultiplier.Value = _characterOptions.MetatypeCostsKarmaMultiplier;
             nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
+            chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
+
             txtSettingName.Enabled = cboSetting.SelectedValue?.ToString() != "default.xml";
             txtSettingName.Text = _characterOptions.Name;
 
