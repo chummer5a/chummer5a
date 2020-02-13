@@ -34,6 +34,7 @@ Data Changes:
 - Fixed a typo in the Amphora Mite critter's powers.
 - Fixed incorrect cyberware names for the War Horse and War Dolphin critters.
 - Added missing grenade 'weapons' from Kill Code for the Dousher, DumDum, COS and Fuzzy Boom Boom grenades. Closes #4031
+- Fixed EVO/Yamatetsu Naval Technologies Rampart not having Capacity to install modifications per RAW for shields.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

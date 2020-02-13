@@ -3223,7 +3223,7 @@
       <name>EVO/Yamatetsu Naval Technologies Rampart</name>
       <category>Armor</category>
       <armor>+10</armor>
-      <armorcapacity>0</armorcapacity>
+      <armorcapacity>10</armorcapacity>
       <avail>12F</avail>
       <cost>3000</cost>
       <source>SL</source>
