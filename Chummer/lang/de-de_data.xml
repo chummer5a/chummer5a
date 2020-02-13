@@ -43840,32 +43840,32 @@
 			</weapon>
 			<weapon>
 				<id>f82903f3-3f8d-48b8-95db-c8cf1238c7a1</id>
-				<name>Styre AUG-CSL (2050)</name>
-				<translate>Styre AUG-CSL</translate>
+				<name>Steyr AUG-CSL (2050)</name>
+				<translate>Steyr AUG-CSL</translate>
 				<altpage>184</altpage>
 			</weapon>
 			<weapon>
 				<id>5e116545-08b4-4eae-8dab-6f1546786296</id>
-				<name>Styre AUG-CSL SMG (2050)</name>
-				<translate>Styre AUG-CSL MP</translate>
+				<name>Steyr AUG-CSL SMG (2050)</name>
+				<translate>Steyr AUG-CSL MP</translate>
 				<altpage>184</altpage>
 			</weapon>
 			<weapon>
 				<id>ef76228b-c339-4262-b8e3-597de652d9b4</id>
-				<name>Styre AUG-CSL Carbine (2050)</name>
-				<translate>Styre AUG-CSL Karabiner</translate>
+				<name>Steyr AUG-CSL Carbine (2050)</name>
+				<translate>Steyr AUG-CSL Karabiner</translate>
 				<altpage>184</altpage>
 			</weapon>
 			<weapon>
 				<id>4c09761e-d2a2-4958-9113-5b61db145a20</id>
-				<name>Styre AUG-CSL Assault Rifles (2050)</name>
-				<translate>Styre AUG-CSL Sturmgewehr</translate>
+				<name>Steyr AUG-CSL Assault Rifles (2050)</name>
+				<translate>Steyr AUG-CSL Sturmgewehr</translate>
 				<altpage>184</altpage>
 			</weapon>
 			<weapon>
 				<id>39a5d782-6537-4b6d-93f9-f5d30d90d8ef</id>
-				<name>Styre AUG-CSL LMG (2050)</name>
-				<translate>Styre AUG-CSL LMG</translate>
+				<name>Steyr AUG-CSL LMG (2050)</name>
+				<translate>Steyr AUG-CSL LMG</translate>
 				<altpage>184</altpage>
 			</weapon>
 			<weapon>
@@ -45385,6 +45385,30 @@
 				<name>Foot Anchor</name>
 				<translate>Fußanker</translate>
 				<altpage>87</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>d0434d89-c035-4793-ba10-3ae13b815b52</id>
+				<name>Grenade: COS</name>
+				<translate>Granate: COS</translate>
+				<altpage>53</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>153e4dcb-ecd6-4b3c-b69e-55a8fb9e6815</id>
+				<name>Grenade: Douser</name>
+				<translate>Granate: Löschgranate</translate>
+				<altpage>54</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>12724901-a72d-4b26-b97c-b559ebec0a41</id>
+				<name>Grenade: DumDum</name>
+				<translate>Granate: Overflow-Granate</translate>
+				<altpage>55</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>6fbed96c-6680-4550-b0de-5c3cbdf646f7</id>
+				<name>Grenade: Fuzzy Boom Boom Bunnies</name>
+				<translate>Granate: Störgrantae Boom Boom Bunnies</translate>
+				<altpage>55</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
