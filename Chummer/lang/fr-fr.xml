@@ -488,10 +488,6 @@
 			<text>Personnage sans nom</text>
 		</string>
 	  <string>
-		<key>String_Break</key>
-		<text>Casser</text>
-	  </string>
-	  <string>
 		<key>Checkbox_Free</key>
 		<text>Gratuit</text>
 	  </string>

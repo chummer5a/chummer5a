@@ -6474,10 +6474,6 @@
 		</string>
 		<!-- Version 445 -->
 		<string>
-			<key>String_Break</key>
-			<text>Gruppe auftrennen</text>
-		</string>
-		<string>
 			<key>Label_Options_DefaultCharacterSheet</key>
 			<text>Standard Charakterbogen:</text>
 		</string>
