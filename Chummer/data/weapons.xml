@@ -9176,6 +9176,10 @@
       <source>CA</source>
       <page>134</page>
       <spec>Injector Pen</spec>
+      <allowgear>
+        <gearcategory>Drugs</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+      </allowgear>
     </weapon>
     <weapon>
       <id>97037590-5324-4ab1-acdb-b2d204cb937a</id>

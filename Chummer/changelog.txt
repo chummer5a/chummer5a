@@ -9,6 +9,8 @@ Application Changes:
 - Added basic support for Weapons having Ratings. Currently used exclusively by weapons created via addweapon nodes. To be added to other weapons at a later date. (Need to figure out a good way to make it work in the datagrid view)
 - Added the house rule to spend skill points on broken skill groups to the options form. Closes #1990
 
+- Restored the ability to add Gear objects to Armor Mods that have gearcapacity specified.
+
 Application Fixes:
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
 - Fixed an issue with the Skills tab not showing properly when first creating a character.
@@ -35,6 +37,8 @@ Data Changes:
 - Fixed incorrect cyberware names for the War Horse and War Dolphin critters.
 - Added missing grenade 'weapons' from Kill Code for the Dousher, DumDum, COS and Fuzzy Boom Boom grenades. Closes #4031
 - Fixed EVO/Yamatetsu Naval Technologies Rampart not having Capacity to install modifications per RAW for shields.
+- The Cyberfinger (Injector), Injector Pen can now add drugs and toxins as children. 
+- Armor Auto-Injectors can properly add Drugs and Toxins as children.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

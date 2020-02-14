@@ -6006,6 +6006,10 @@
       <cost>650</cost>
       <source>HT</source>
       <page>186</page>
+      <allowgear>
+        <gearcategory>Drugs</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+      </allowgear>
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <required>
         <parentdetails>

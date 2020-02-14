@@ -5159,7 +5159,6 @@ namespace Chummer
                 return;
             }
 
-            bool capacityOnly = false;
             string selectedGuid = string.Empty;
             // Make sure the selected item is another piece of Gear.
             if (objSelectedNode.Tag is ArmorMod objMod)
@@ -5169,7 +5168,6 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                capacityOnly = true;
                 selectedGuid = objMod.InternalId;
             }
             else if (objSelectedNode.Tag is Gear objGear)
@@ -5179,7 +5177,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(selectedGuid, capacityOnly);
+                blnAddAgain = PickArmorGear(selectedGuid);
             }
             while (blnAddAgain);
         }

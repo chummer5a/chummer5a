@@ -3972,6 +3972,9 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[2]</armorcapacity>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <gearcapacity>1</gearcapacity>
       <avail>4</avail>
       <cost>1500</cost>
       <source>RG</source>
