@@ -8,7 +8,7 @@ Application Changes:
 - Partial refactor of the karma and priority mode choices into a single creation method to avoid duplicating code.
 - Added basic support for Weapons having Ratings. Currently used exclusively by weapons created via addweapon nodes. To be added to other weapons at a later date. (Need to figure out a good way to make it work in the datagrid view)
 - Added the house rule to spend skill points on broken skill groups to the options form. Closes #1990
-
+- Black Market Pipeline no longer defaults to active if the selected object to be purchased is able to be selected with that option. 
 - Restored the ability to add Gear objects to Armor Mods that have gearcapacity specified.
 
 Application Fixes:
@@ -39,6 +39,7 @@ Data Changes:
 - Fixed EVO/Yamatetsu Naval Technologies Rampart not having Capacity to install modifications per RAW for shields.
 - The Cyberfinger (Injector), Injector Pen can now add drugs and toxins as children. 
 - Armor Auto-Injectors can properly add Drugs and Toxins as children.
+- Added mod categories for armor mods to properly support black market pipelines.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
