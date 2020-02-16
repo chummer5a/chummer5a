@@ -27,6 +27,18 @@
 			<category translate="Hochmodische Panzerkleidung">High-Fashion Armor Clothing</category>
 			<category translate="Spezialpanzerung">Specialty Armor</category>
 		</categories>
+		<modcategories>
+			<category translate="Spezialangefertigte ballistische Maske">Customized Ballistic Mask</category>
+			<category translate="Allgemein">General</category>
+			<category translate="Modifizierte Ganzkörperpanzerung">Full Body Armor Mods</category>
+			<category translate="Globetrotter  Kleidung Ausstattung">Globetrotter Clothing Liners</category>
+			<category translate="Globetrotter Jacke Ausstattung">Globetrotter Jacket Liners</category>
+			<category translate="Globetrotter Weste Ausstattung">Globetrotter Vest Liners</category>
+			<category translate="Nightshade IR">Nightshade IR</category>
+			<category translate="Rapid Transit Detaillierung">Rapid Transit Detailing</category>
+			<category translate="Urban Explorer Overall Zubehör">Urban Explorer Jumpsuit Accessories</category>
+			<category translate="Victory Ausstattung">Victory Liners</category>
+		</modcategories>
 		<armors>
 			<armor>
 				<id>31c68476-6328-476a-ae8a-94f65d505a04</id>
