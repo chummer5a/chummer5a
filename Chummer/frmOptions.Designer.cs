@@ -1602,7 +1602,7 @@ namespace Chummer
             this.tabCharacterOptions.Location = new System.Drawing.Point(4, 22);
             this.tabCharacterOptions.Name = "tabCharacterOptions";
             this.tabCharacterOptions.Padding = new System.Windows.Forms.Padding(9);
-            this.tabCharacterOptions.Size = new System.Drawing.Size(1017, 718);
+            this.tabCharacterOptions.Size = new System.Drawing.Size(1271, 866);
             this.tabCharacterOptions.TabIndex = 0;
             this.tabCharacterOptions.Tag = "Tab_Options_Character";
             this.tabCharacterOptions.Text = "Character Options";
@@ -1662,7 +1662,7 @@ namespace Chummer
             this.tlpCharacterOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCharacterOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCharacterOptions.Size = new System.Drawing.Size(999, 700);
+            this.tlpCharacterOptions.Size = new System.Drawing.Size(1253, 848);
             this.tlpCharacterOptions.TabIndex = 40;
             // 
             // treSourcebook
@@ -1675,7 +1675,7 @@ namespace Chummer
             this.treSourcebook.ShowLines = false;
             this.treSourcebook.ShowPlusMinus = false;
             this.treSourcebook.ShowRootLines = false;
-            this.treSourcebook.Size = new System.Drawing.Size(295, 638);
+            this.treSourcebook.Size = new System.Drawing.Size(295, 786);
             this.treSourcebook.TabIndex = 1;
             // 
             // chkPrintNotes
@@ -1688,7 +1688,7 @@ namespace Chummer
             this.tlpCharacterOptions.SetColumnSpan(this.chkPrintNotes, 5);
             this.chkPrintNotes.Location = new System.Drawing.Point(304, 381);
             this.chkPrintNotes.Name = "chkPrintNotes";
-            this.chkPrintNotes.Size = new System.Drawing.Size(692, 287);
+            this.chkPrintNotes.Size = new System.Drawing.Size(946, 435);
             this.chkPrintNotes.TabIndex = 14;
             this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
             this.chkPrintNotes.Text = "Print Notes";
@@ -1718,7 +1718,7 @@ namespace Chummer
             this.chkPrintExpenses.Location = new System.Drawing.Point(304, 332);
             this.chkPrintExpenses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintExpenses.Name = "chkPrintExpenses";
-            this.chkPrintExpenses.Size = new System.Drawing.Size(692, 17);
+            this.chkPrintExpenses.Size = new System.Drawing.Size(946, 17);
             this.chkPrintExpenses.TabIndex = 12;
             this.chkPrintExpenses.Tag = "Checkbox_Options_PrintExpenses";
             this.chkPrintExpenses.Text = "Print Karma and Nuyen Expenses";
@@ -1735,7 +1735,7 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(304, 307);
             this.chkPrintSkillsWithZeroRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
-            this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(692, 17);
+            this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(946, 17);
             this.chkPrintSkillsWithZeroRating.TabIndex = 11;
             this.chkPrintSkillsWithZeroRating.Tag = "Checkbox_Options_PrintAllSkills";
             this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with Rating 0 or higher";
@@ -1752,7 +1752,7 @@ namespace Chummer
             this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(304, 31);
             this.chkDontUseCyberlimbCalculation.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDontUseCyberlimbCalculation.Name = "chkDontUseCyberlimbCalculation";
-            this.chkDontUseCyberlimbCalculation.Size = new System.Drawing.Size(692, 17);
+            this.chkDontUseCyberlimbCalculation.Size = new System.Drawing.Size(946, 17);
             this.chkDontUseCyberlimbCalculation.TabIndex = 19;
             this.chkDontUseCyberlimbCalculation.Tag = "Checkbox_Options_UseCyberlimbCalculation";
             this.chkDontUseCyberlimbCalculation.Text = "Do not use Cyberlimbs when calculating augmented Attributes";
@@ -1769,7 +1769,7 @@ namespace Chummer
             this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(304, 56);
             this.chkAllowSkillDiceRolling.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
-            this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(692, 17);
+            this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(946, 17);
             this.chkAllowSkillDiceRolling.TabIndex = 10;
             this.chkAllowSkillDiceRolling.Tag = "Checkbox_Option_AllowSkillDiceRolling";
             this.chkAllowSkillDiceRolling.Text = "Allow dice rolling for dice pools";
@@ -1786,7 +1786,7 @@ namespace Chummer
             this.chkEnforceCapacity.Location = new System.Drawing.Point(304, 81);
             this.chkEnforceCapacity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkEnforceCapacity.Name = "chkEnforceCapacity";
-            this.chkEnforceCapacity.Size = new System.Drawing.Size(692, 17);
+            this.chkEnforceCapacity.Size = new System.Drawing.Size(946, 17);
             this.chkEnforceCapacity.TabIndex = 25;
             this.chkEnforceCapacity.Tag = "Checkbox_Option_EnforceCapacity";
             this.chkEnforceCapacity.Text = "Enforce Capacity limits";
@@ -1803,7 +1803,7 @@ namespace Chummer
             this.chkLicenseEachRestrictedItem.Location = new System.Drawing.Point(304, 106);
             this.chkLicenseEachRestrictedItem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLicenseEachRestrictedItem.Name = "chkLicenseEachRestrictedItem";
-            this.chkLicenseEachRestrictedItem.Size = new System.Drawing.Size(692, 17);
+            this.chkLicenseEachRestrictedItem.Size = new System.Drawing.Size(946, 17);
             this.chkLicenseEachRestrictedItem.TabIndex = 27;
             this.chkLicenseEachRestrictedItem.Tag = "Checkbox_Options_LicenseRestricted";
             this.chkLicenseEachRestrictedItem.Text = "License each Restricted item";
@@ -1815,7 +1815,7 @@ namespace Chummer
             this.lblEssenceDecimals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblEssenceDecimals.AutoSize = true;
             this.tlpCharacterOptions.SetColumnSpan(this.lblEssenceDecimals, 3);
-            this.lblEssenceDecimals.Location = new System.Drawing.Point(363, 260);
+            this.lblEssenceDecimals.Location = new System.Drawing.Point(471, 260);
             this.lblEssenceDecimals.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceDecimals.Name = "lblEssenceDecimals";
             this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
@@ -1828,7 +1828,7 @@ namespace Chummer
             this.lblNuyenDecimalsMaximumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
             this.tlpCharacterOptions.SetColumnSpan(this.lblNuyenDecimalsMaximumLabel, 3);
-            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(335, 234);
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(443, 234);
             this.lblNuyenDecimalsMaximumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
             this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
@@ -1841,7 +1841,7 @@ namespace Chummer
             this.lblNuyenDecimalsMinimumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
             this.tlpCharacterOptions.SetColumnSpan(this.lblNuyenDecimalsMinimumLabel, 3);
-            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(338, 208);
+            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(446, 208);
             this.lblNuyenDecimalsMinimumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
             this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(255, 13);
@@ -1858,7 +1858,7 @@ namespace Chummer
             this.tlpCharacterOptions.SetColumnSpan(this.chkDontRoundEssenceInternally, 5);
             this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(304, 283);
             this.chkDontRoundEssenceInternally.Name = "chkDontRoundEssenceInternally";
-            this.chkDontRoundEssenceInternally.Size = new System.Drawing.Size(692, 17);
+            this.chkDontRoundEssenceInternally.Size = new System.Drawing.Size(946, 17);
             this.chkDontRoundEssenceInternally.TabIndex = 18;
             this.chkDontRoundEssenceInternally.Tag = "Checkbox_Option_DontRoundEssenceInternally";
             this.chkDontRoundEssenceInternally.Text = "Only round Essence for display purposes, not for internal calculations";
@@ -1875,7 +1875,7 @@ namespace Chummer
             this.chkDronemods.Location = new System.Drawing.Point(304, 131);
             this.chkDronemods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDronemods.Name = "chkDronemods";
-            this.chkDronemods.Size = new System.Drawing.Size(692, 17);
+            this.chkDronemods.Size = new System.Drawing.Size(946, 17);
             this.chkDronemods.TabIndex = 36;
             this.chkDronemods.Tag = "Checkbox_Options_Dronemods";
             this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
@@ -1892,7 +1892,7 @@ namespace Chummer
             this.chkRestrictRecoil.Location = new System.Drawing.Point(304, 181);
             this.chkRestrictRecoil.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkRestrictRecoil.Name = "chkRestrictRecoil";
-            this.chkRestrictRecoil.Size = new System.Drawing.Size(692, 17);
+            this.chkRestrictRecoil.Size = new System.Drawing.Size(946, 17);
             this.chkRestrictRecoil.TabIndex = 26;
             this.chkRestrictRecoil.Tag = "Checkbox_Options_UseRestrictionsToRecoilCompensation";
             this.chkRestrictRecoil.Text = "Use Restrictions to Recoil Compensation (RG 53)";
@@ -1903,14 +1903,14 @@ namespace Chummer
             // 
             this.nudNuyenDecimalsMinimum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(599, 205);
+            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(707, 205);
             this.nudNuyenDecimalsMinimum.Maximum = new decimal(new int[] {
             28,
             0,
             0,
             0});
             this.nudNuyenDecimalsMinimum.Name = "nudNuyenDecimalsMinimum";
-            this.nudNuyenDecimalsMinimum.Size = new System.Drawing.Size(46, 20);
+            this.nudNuyenDecimalsMinimum.Size = new System.Drawing.Size(65, 20);
             this.nudNuyenDecimalsMinimum.TabIndex = 33;
             this.nudNuyenDecimalsMinimum.ValueChanged += new System.EventHandler(this.nudNuyenDecimalsMinimum_ValueChanged);
             // 
@@ -1918,14 +1918,14 @@ namespace Chummer
             // 
             this.nudNuyenDecimalsMaximum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(599, 231);
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(707, 231);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
             0,
             0});
             this.nudNuyenDecimalsMaximum.Name = "nudNuyenDecimalsMaximum";
-            this.nudNuyenDecimalsMaximum.Size = new System.Drawing.Size(46, 20);
+            this.nudNuyenDecimalsMaximum.Size = new System.Drawing.Size(65, 20);
             this.nudNuyenDecimalsMaximum.TabIndex = 34;
             this.nudNuyenDecimalsMaximum.ValueChanged += new System.EventHandler(this.nudNuyenDecimalsMaximum_ValueChanged);
             // 
@@ -1933,9 +1933,9 @@ namespace Chummer
             // 
             this.nudEssenceDecimals.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudEssenceDecimals.Location = new System.Drawing.Point(599, 257);
+            this.nudEssenceDecimals.Location = new System.Drawing.Point(707, 257);
             this.nudEssenceDecimals.Name = "nudEssenceDecimals";
-            this.nudEssenceDecimals.Size = new System.Drawing.Size(46, 20);
+            this.nudEssenceDecimals.Size = new System.Drawing.Size(65, 20);
             this.nudEssenceDecimals.TabIndex = 17;
             this.nudEssenceDecimals.Value = new decimal(new int[] {
             2,
@@ -1950,10 +1950,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkDronemodsMaximumPilot.AutoSize = true;
             this.tlpCharacterOptions.SetColumnSpan(this.chkDronemodsMaximumPilot, 4);
-            this.chkDronemodsMaximumPilot.Location = new System.Drawing.Point(321, 156);
+            this.chkDronemodsMaximumPilot.Location = new System.Drawing.Point(327, 156);
             this.chkDronemodsMaximumPilot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDronemodsMaximumPilot.Name = "chkDronemodsMaximumPilot";
-            this.chkDronemodsMaximumPilot.Size = new System.Drawing.Size(675, 17);
+            this.chkDronemodsMaximumPilot.Size = new System.Drawing.Size(923, 17);
             this.chkDronemodsMaximumPilot.TabIndex = 37;
             this.chkDronemodsMaximumPilot.Tag = "Checkbox_Options_Dronemods_Pilot";
             this.chkDronemodsMaximumPilot.Text = "Use Maximum Attribute for Pilot Attribute";
@@ -1967,10 +1967,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkPrintFreeExpenses.AutoSize = true;
             this.tlpCharacterOptions.SetColumnSpan(this.chkPrintFreeExpenses, 4);
-            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(321, 357);
+            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(327, 357);
             this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintFreeExpenses.Name = "chkPrintFreeExpenses";
-            this.chkPrintFreeExpenses.Size = new System.Drawing.Size(675, 17);
+            this.chkPrintFreeExpenses.Size = new System.Drawing.Size(923, 17);
             this.chkPrintFreeExpenses.TabIndex = 13;
             this.chkPrintFreeExpenses.Tag = "Checkbox_Options_PrintFreeExpenses";
             this.chkPrintFreeExpenses.Text = "Print Free Karma and Nuyen Expenses";
@@ -1982,7 +1982,7 @@ namespace Chummer
             this.lblLimbCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLimbCount.AutoSize = true;
             this.tlpCharacterOptions.SetColumnSpan(this.lblLimbCount, 2);
-            this.lblLimbCount.Location = new System.Drawing.Point(323, 6);
+            this.lblLimbCount.Location = new System.Drawing.Point(380, 6);
             this.lblLimbCount.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLimbCount.Name = "lblLimbCount";
             this.lblLimbCount.Size = new System.Drawing.Size(131, 13);
@@ -1997,9 +1997,9 @@ namespace Chummer
             this.tlpCharacterOptions.SetColumnSpan(this.cboLimbCount, 2);
             this.cboLimbCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLimbCount.FormattingEnabled = true;
-            this.cboLimbCount.Location = new System.Drawing.Point(460, 3);
+            this.cboLimbCount.Location = new System.Drawing.Point(517, 3);
             this.cboLimbCount.Name = "cboLimbCount";
-            this.cboLimbCount.Size = new System.Drawing.Size(185, 21);
+            this.cboLimbCount.Size = new System.Drawing.Size(255, 21);
             this.cboLimbCount.TabIndex = 1;
             this.cboLimbCount.TooltipText = "";
             this.cboLimbCount.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
@@ -2008,7 +2008,7 @@ namespace Chummer
             // 
             this.cmdEnableSourcebooks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 674);
+            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 822);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(295, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
@@ -2036,13 +2036,13 @@ namespace Chummer
             this.tlpKarmaCosts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpKarmaCosts.Controls.Add(this.tlpKarmaCostsList, 0, 0);
             this.tlpKarmaCosts.Controls.Add(this.cmdRestoreDefaultsKarma, 0, 1);
-            this.tlpKarmaCosts.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpKarmaCosts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarmaCosts.Location = new System.Drawing.Point(9, 9);
             this.tlpKarmaCosts.Name = "tlpKarmaCosts";
             this.tlpKarmaCosts.RowCount = 2;
             this.tlpKarmaCosts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpKarmaCosts.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarmaCosts.Size = new System.Drawing.Size(1253, 618);
+            this.tlpKarmaCosts.Size = new System.Drawing.Size(1253, 848);
             this.tlpKarmaCosts.TabIndex = 125;
             // 
             // tlpKarmaCostsList
@@ -2210,7 +2210,7 @@ namespace Chummer
             this.tlpKarmaCostsList.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaCostsList.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaCostsList.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarmaCostsList.Size = new System.Drawing.Size(1247, 583);
+            this.tlpKarmaCostsList.Size = new System.Drawing.Size(1247, 813);
             this.tlpKarmaCostsList.TabIndex = 124;
             // 
             // nudKarmaMysticAdeptPowerPoint
@@ -3645,7 +3645,7 @@ namespace Chummer
             this.cmdRestoreDefaultsKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdRestoreDefaultsKarma.AutoSize = true;
             this.cmdRestoreDefaultsKarma.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRestoreDefaultsKarma.Location = new System.Drawing.Point(1154, 592);
+            this.cmdRestoreDefaultsKarma.Location = new System.Drawing.Point(1154, 822);
             this.cmdRestoreDefaultsKarma.Name = "cmdRestoreDefaultsKarma";
             this.cmdRestoreDefaultsKarma.Size = new System.Drawing.Size(96, 23);
             this.cmdRestoreDefaultsKarma.TabIndex = 108;
