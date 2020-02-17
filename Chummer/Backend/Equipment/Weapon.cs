@@ -1023,10 +1023,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("clips");
             foreach (Clip objClip in _lstAmmo)
             {
-                if (string.IsNullOrWhiteSpace(objClip.AmmoName))
-                {
-                    objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
-                }
+                objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
                 objClip.Save(objWriter);
             }
             objWriter.WriteEndElement();
@@ -1052,7 +1049,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="guiAmmo">InternalId of the Ammo to find.</param>
         /// <param name="strLanguage">Language in which to display ammo name.</param>
-        private string GetAmmoName(Guid guiAmmo, string strLanguage)
+        public string GetAmmoName(Guid guiAmmo, string strLanguage)
         {
             if (guiAmmo == Guid.Empty)
                 return string.Empty;

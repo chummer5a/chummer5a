@@ -6227,12 +6227,21 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlBaseChummerNode)
+        public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
         {
             HashSet<string> setBlackMarketMaps = new HashSet<string>();
             // Character has no Black Market discount qualities. Fail out early.
-            if(BlackMarketDiscount && xmlBaseChummerNode != null)
+            if(BlackMarketDiscount)
             {
+                if (xmlCategoryList == null)
+                {
+                    return setBlackMarketMaps;
+                }
+                // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter. 
+                if (xmlCategoryList.Name == "chummer")
+                {
+                    xmlCategoryList = xmlCategoryList.SelectSingleNode("categories");
+                }
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
                 HashSet<string> setNames = new HashSet<string>();
                 foreach(Improvement objImprovement in Improvements)
@@ -6243,7 +6252,7 @@ if (!Utils.IsUnitTest){
                 }
 
                 // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                foreach(XPathNavigator xmlCategoryNode in xmlBaseChummerNode.Select("categories/category"))
+                foreach(XPathNavigator xmlCategoryNode in xmlCategoryList.Select("category"))
                 {
                     string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNode("@blackmarket")?.Value;
                     if(!string.IsNullOrEmpty(strBlackMarketAttribute) &&

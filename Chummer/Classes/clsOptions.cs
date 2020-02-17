@@ -1213,6 +1213,10 @@ namespace Chummer
         public static bool CustomDateTimeFormats => _blnCustomDateTimeFormats;
         public static string CustomDateFormat => _strCustomDateFormat;
         public static string CustomTimeFormat => _strCustomTimeFormat;
+        /// <summary>
+        /// Should the application assume that the Black Market Pipeline discount should automatically be used if the character has an appropriate contact?
+        /// </summary>
+        public static bool AssumeBlackMarket { get; set; }
 
         #endregion
 

@@ -341,7 +341,8 @@ namespace Chummer
             lblVehicleAvail.Text = objTotalAvail.ToString();
             lblVehicleAvailLabel.Visible = !string.IsNullOrEmpty(lblVehicleAvail.Text);
 
-            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
+            chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+            chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
             string strCost = objXmlVehicle.SelectSingleNode("cost")?.Value ?? string.Empty;

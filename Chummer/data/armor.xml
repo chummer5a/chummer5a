@@ -47,6 +47,18 @@
     <category blackmarket="Armor">High-Fashion Armor Clothing</category>
     <category blackmarket="Armor">Specialty Armor</category>
   </categories>
+  <modcategories>
+    <category blackmarket="Armor">Customized Ballistic Mask</category>
+    <category blackmarket="Armor">Full Body Armor Mods</category>
+    <category blackmarket="Armor">General</category>
+    <category blackmarket="Armor">Globetrotter Clothing Liners</category>
+    <category blackmarket="Armor">Globetrotter Jacket Liners</category>
+    <category blackmarket="Armor">Globetrotter Vest Liners</category>
+    <category blackmarket="Armor">Nightshade IR</category>
+    <category blackmarket="Armor">Rapid Transit Detailing</category>
+    <category blackmarket="Armor">Urban Explorer Jumpsuit Accessories</category>
+    <category blackmarket="Armor">Victory Liners</category>
+  </modcategories>
   <armors>
     <!-- Region Shadowrun 5 -->
     <armor>
@@ -4228,7 +4240,7 @@
     <mod>
       <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
       <name>Parachute (Urban Explorer Daedalus)</name>
-      <category>Parachute</category>
+      <category>General</category>
       <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
