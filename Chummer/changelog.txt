@@ -23,6 +23,7 @@ Application Fixes:
 - Fixed extraneous messages about leaving a group when updating character properties if the character is a member of an initiation group.
 - Fixed a regression in the behaviour of the spellcategory improvement type that caused all improvements of that type to apply to all spells.
 - Fixed an issue with Talent choices not refreshing unless the metavariant index was refreshed.
+- Fixed bonuses incorrectly being added twice to cyberlimbs.
 - Fixed cyberware improperly being allowed to be flagged as prototype transhuman. Existing cyberware with this flag will be reverted to false. 
 
 Data Changes:
