@@ -20,10 +20,12 @@
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using NLog;
@@ -75,7 +77,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
+    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource,INotifyMultiplePropertyChanged
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -219,14 +221,25 @@ namespace Chummer
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                        if (objXmlWeapon != null)
+                        {
+                            int intAddWeaponRating = 0;
+                            if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                            {
+                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText);
+                            }
+                            Weapon objGearWeapon = new Weapon(_objCharacter);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons,true, true,true, intAddWeaponRating);
+                            objGearWeapon.ParentID = InternalId;
+                            objGearWeapon.Cost = "0";
+                            lstWeapons.Add(objGearWeapon);
 
-                        Weapon objGearWeapon = new Weapon(_objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                        objGearWeapon.ParentID = InternalId;
-                        objGearWeapon.Cost = "0";
-                        lstWeapons.Add(objGearWeapon);
-
-                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                            Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                        }
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                        }
                     }
                 }
 
@@ -740,6 +753,11 @@ namespace Chummer
                 if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
 
+                if (_objCharacter.Improvements.Any(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && imp.ImprovedName == SourceIDString ||
+                    imp.ImprovedName == Name))
+                    return false;
+
                 return _blnContributeToLimit;
             }
             set => _blnContributeToLimit = value;
@@ -784,18 +802,67 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
-
+                if (_objCharacter.Improvements.Any(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && imp.ImprovedName == SourceIDString ||
+                    imp.ImprovedName == Name))
+                    return false;
                 return true;
             }
         }
 
+        private string _strCachedNotes = string.Empty;
         /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
         {
-            get => _strNotes;
-            set => _strNotes = value;
+            get
+            {
+                if (_strCachedNotes != string.Empty) return _strCachedNotes;
+                StringBuilder sb = new StringBuilder();
+                if (Suppressed)
+                {
+                    sb.Append(LanguageManager.GetString("String_SuppressedBy").CheapReplace("{0}", () =>
+                        _objCharacter.GetObjectName(_objCharacter.Improvements.First(imp =>
+                        imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
+                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)), GlobalOptions.Language) ??
+                        LanguageManager.GetString("String_Unknown")));
+                    sb.Append(Environment.NewLine);
+                }
+                sb.Append(_strNotes);
+                _strCachedNotes = sb.ToString();
+                return _strCachedNotes;
+            }
+            set
+            {
+                if (_strNotes == value) return;
+                _strCachedNotes = string.Empty;
+                _strNotes = value;
+            }
+        }
+
+        private int _intCachedSuppressed = -1;
+        public bool Suppressed
+        {
+            get
+            {
+                if (_intCachedSuppressed != -1) return _intCachedSuppressed == 1;
+                var impList = _objCharacter.Improvements.Where(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
+                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)).ToList();
+                _intCachedSuppressed = impList.Count;
+                //TODO: Probably cheaper to check .Any() and copypaste the predicate. Mostly just did it this way because I found it neater.
+                if (impList.Count > 0)
+                {
+                    ImprovementManager.DisableImprovements(_objCharacter, impList);
+                }
+                else
+                {
+                    ImprovementManager.EnableImprovements(_objCharacter, impList);
+                }
+
+                return _intCachedSuppressed == 1;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -822,7 +889,7 @@ namespace Chummer
         #endregion
 
         #region UI Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality, TreeView objTreeView)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
                  OriginSource == QualitySource.Improvement ||
@@ -841,6 +908,10 @@ namespace Chummer
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };
+            if (Suppressed)
+            {
+                objNode.NodeFont = new Font(objTreeView.Font, FontStyle.Strikeout);
+            }
 
             return objNode;
         }
@@ -1172,6 +1243,17 @@ namespace Chummer
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            if (lstPropertyNames.Contains(nameof(Suppressed)))
+                _intCachedSuppressed = -1;
+            foreach (string strPropertyToChange in lstPropertyNames)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
         }
     }
 }

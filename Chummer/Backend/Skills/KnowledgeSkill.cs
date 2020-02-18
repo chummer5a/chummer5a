@@ -331,12 +331,13 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
+                int intMinOverride = int.MaxValue;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
                     if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
                                 intExtra += objLoopImprovement.Value;
@@ -350,12 +351,23 @@ namespace Chummer.Backend.Skills
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
+
+                        if ((objLoopImprovement.ImprovedName == Name ||
+                            string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName) ||
+                            objLoopImprovement.ImprovedName == SkillCategory) && objLoopImprovement.ImproveType ==
+                            Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum)
+                        {
+                            intMinOverride = Math.Min(intMinOverride, objLoopImprovement.Value);
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
                     intValue = decimal.ToInt32(decimal.Ceiling(intValue * decMultiplier));
                 intValue += intExtra;
-
+                if (intMinOverride != int.MaxValue)
+                {
+                    return Math.Max(intValue, intMinOverride);
+                }
                 return Math.Max(intValue, Math.Min(1, intOptionsCost));
             }
         }

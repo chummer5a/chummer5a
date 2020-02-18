@@ -68,9 +68,7 @@ namespace Chummer
             }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
             {
-                if ((item is MetricTelemetry)
-                    || (item is PageViewTelemetry)
-                    || (item is PageViewPerformanceTelemetry))
+                if ((item is MetricTelemetry))
                 {
                     this.Next.Process(item);
                     return;
@@ -78,6 +76,12 @@ namespace Chummer
             }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Info)
             {
+                if ((item is PageViewTelemetry)
+                    || (item is PageViewPerformanceTelemetry))
+                {
+                    this.Next.Process(item);
+                    return;
+                } 
                 if (item is TraceTelemetry traceTelemetry)
                 {
                     if (traceTelemetry.SeverityLevel >= SeverityLevel.Information)

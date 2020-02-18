@@ -111,10 +111,6 @@
       <text>Life Module</text>
     </string>
     <string>
-      <key>String_Life_Module</key>
-      <text>Life Module</text>
-    </string>
-    <string>
       <key>Label_Stage</key>
       <text>Stage:</text>
     </string>
@@ -491,10 +487,6 @@
       <text>Unnamed Character</text>
     </string>
     <string>
-      <key>String_Break</key>
-      <text>Break</text>
-    </string>
-    <string>
       <key>Checkbox_Free</key>
       <text>Free!</text>
     </string>
@@ -617,6 +609,10 @@
     <string>
       <key>Label_Armor</key>
       <text>Armor:</text>
+    </string>
+    <string>
+      <key>Label_Dodge</key>
+      <text>Dodge:</text>
     </string>
     <string>
       <key>Label_Seats</key>
@@ -1837,6 +1833,14 @@
       <text>The selected vehicle does not have any valid weapon mounts to add this weapon to.</text>
     </string>
     <string>
+      <key>MessageTitle_NoValidModularMount</key>
+      <text>No Valid Modular Mount Found</text>
+    </string>
+    <string>
+      <key>Message_NoValidModularMount</key>
+      <text>Couldn't find a valid modular connector to attach this cyberware to.</text>
+    </string>
+    <string>
       <key>Message_CyberzombieConfirm</key>
       <text>Are you sure you want to convert this character to a Cyberzombie?</text>
     </string>
@@ -2043,6 +2047,10 @@
     <string>
       <key>Message_DeleteExoticSkill</key>
       <text>Are you sure you want to delete this Exotic Skill?</text>
+    </string>
+    <string>
+      <key>Message_DeleteSkill</key>
+      <text>Are you sure you want to delete this Skill?</text>
     </string>
     <string>
       <key>Message_DeletePositiveQualityCareer</key>
@@ -4908,19 +4916,19 @@
     </string>
     <string>
       <key>Label_RangeShort</key>
-      <text>Short (-0)</text>
+      <text>Short ({0})</text>
     </string>
     <string>
       <key>Label_RangeMedium</key>
-      <text>Medium (-1)</text>
+      <text>Medium ({0})</text>
     </string>
     <string>
       <key>Label_RangeLong</key>
-      <text>Long (-3)</text>
+      <text>Long ({0})</text>
     </string>
     <string>
       <key>Label_RangeExtreme</key>
-      <text>Extreme (-6)</text>
+      <text>Extreme ({0})</text>
     </string>
     <string>
       <key>Label_DicePool</key>
@@ -5533,6 +5541,18 @@
     <string>
       <key>Tip_BuildPositiveQualities</key>
       <text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_CustomTimeFormat</key>
+      <text>Custom Time Format</text>
+    </string>
+    <string>
+      <key>Label_Options_DateFormat</key>
+      <text>Date Format</text>
+    </string>
+    <string>
+      <key>Label_Options_TimeFormat</key>
+      <text>Time Format</text>
     </string>
     <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
@@ -7970,6 +7990,10 @@
       <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
     </string>
     <string>
+      <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+      <text>Maximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
+    </string>    
+    <string>
       <key>Button_ToggleSourcebooks</key>
       <text>Toggle all Sourcebooks On/Off</text>
     </string>
@@ -9681,6 +9705,14 @@
     <string>
       <key>String_SpecialModificationLimit</key>
       <text>Special Modification Limit</text>
+    </string>
+    <string>
+      <key>String_MetersPerHit</key>
+      <text>m/ hit</text>
+    </string>
+    <string>
+      <key>String_SuppressedBy</key>
+      <text>Suppressed by {0}</text>
     </string>
     <!-- End Region -->
     <!-- Region Loading Form -->

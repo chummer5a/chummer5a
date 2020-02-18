@@ -119,7 +119,8 @@ namespace Chummer
         private bool _blnAllowTechnomancerSchooling;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
-        
+        private int _intCyberlimbAttributeBonusCap = 4;
+
         // Karma variables.
         private int _intKarmaAttribute = 5;
         private int _intKarmaCarryover = 7;
@@ -411,6 +412,8 @@ namespace Chummer
             objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString());
             // <allowtechnomancerschooling />
             objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString());
+            // <cyberlimbattributebonuscap />
+            objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString());
 
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
@@ -778,7 +781,9 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _allowFreeGrids);
             // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened. 
             objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
-            
+            // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customisation. 
+            objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
             if (objXmlNode != null)
@@ -2405,6 +2410,14 @@ namespace Chummer
         {
             get => _blnAllowTechnomancerSchooling;
             set => _blnAllowTechnomancerSchooling = value;
+        }
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public int CyberlimbAttributeBonusCap
+        {
+            get => _intCyberlimbAttributeBonusCap;
+            set => _intCyberlimbAttributeBonusCap = value;
         }
 
         #endregion

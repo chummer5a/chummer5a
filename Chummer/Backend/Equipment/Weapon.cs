@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating
 	{
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -103,6 +103,10 @@ namespace Chummer.Backend.Equipment
         private bool _blnAllowAccessory = true;
         private Weapon _objParent;
         private string _strSizeCategory;
+        private int _intRating;
+        private string _strMinRating;
+        private string _strMaxRating;
+        private string _strRatingLabel = "String_Rating";
 
         private XmlNode _nodWirelessBonus;
         private XmlNode _objCachedMyXmlNode;
@@ -174,7 +178,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
-        public void Create(XmlNode objXmlWeapon, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false)
+        public void Create(XmlNode objXmlWeapon, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0)
         {
             if (!objXmlWeapon.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -194,6 +198,14 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("ammo", ref _strAmmo);
             objXmlWeapon.TryGetStringFieldQuickly("mount", ref _strMount);
             objXmlWeapon.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
+            objXmlWeapon.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
+            objXmlWeapon.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            if (_strMaxRating == "0")
+                _strMaxRating = string.Empty;
+            objXmlWeapon.TryGetStringFieldQuickly("minrating", ref _strMinRating);
+            if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
+            _intRating = Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue);
             if (objXmlWeapon["accessorymounts"] != null)
             {
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -460,7 +472,13 @@ namespace Chummer.Backend.Equipment
                 {
                     ParentVehicle = ParentVehicle
                 };
-                objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, blnSkipCost);
+                int intAddWeaponRating = 0;
+                if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                {
+                    intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                        .CheapReplace("{Rating}", () => Rating.ToString()));
+                }
+                objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, blnSkipCost, intAddWeaponRating);
                 objSubWeapon.ParentID = InternalId;
                 objSubWeapon.Cost = "0";
                 lstWeapons.Add(objSubWeapon);
@@ -501,6 +519,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
             objWriter.WriteElementString("sizecategory", _strSizeCategory);
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
+            objWriter.WriteElementString("minrating", _strMinRating);
+            objWriter.WriteElementString("maxrating", _strMaxRating);
+            objWriter.WriteElementString("rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
             {
@@ -654,6 +675,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
+            objNode.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
             if (objNode["firingmode"] != null)
                 _eFiringMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
@@ -999,10 +1023,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("clips");
             foreach (Clip objClip in _lstAmmo)
             {
-                if (string.IsNullOrWhiteSpace(objClip.AmmoName))
-                {
-                    objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
-                }
+                objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
                 objClip.Save(objWriter);
             }
             objWriter.WriteEndElement();
@@ -1028,7 +1049,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="guiAmmo">InternalId of the Ammo to find.</param>
         /// <param name="strLanguage">Language in which to display ammo name.</param>
-        private string GetAmmoName(Guid guiAmmo, string strLanguage)
+        public string GetAmmoName(Guid guiAmmo, string strLanguage)
         {
             if (guiAmmo == Guid.Empty)
                 return string.Empty;
@@ -1100,6 +1121,13 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
+            if (Rating > 0)
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                strReturn += strSpace + '(' +
+                             LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
+                             Rating.ToString(GlobalOptions.CultureInfo) + ')';
+            }
 
             if (!string.IsNullOrEmpty(_strWeaponName))
             {
@@ -1125,6 +1153,97 @@ namespace Chummer.Backend.Equipment
         {
             get => _strWeaponName;
             set => _strWeaponName = value;
+        }
+
+        public int Rating
+        {
+            get => _intRating;
+            set => _intRating = value;
+        }
+
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
+        }
+
+        /// <summary>
+        /// Minimum Rating (string form).
+        /// </summary>
+        public string MinRating
+        {
+            get => _strMinRating;
+            set => _strMinRating = value;
+        }
+
+        /// <summary>
+        /// Maximum Rating (string form).
+        /// </summary>
+        public string MaxRating
+        {
+            get => _strMaxRating;
+            set => _strMaxRating = value;
+        }
+
+        /// <summary>
+        /// Minimum Rating (value form).
+        /// </summary>
+        public int MinRatingValue
+        {
+            get
+            {
+                string strExpression = MinRating;
+                return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
+            }
+            set => MinRating = value.ToString(GlobalOptions.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Maximum Rating (string form).
+        /// </summary>
+        public int MaxRatingValue
+        {
+            get
+            {
+                string strExpression = MaxRating;
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression);
+            }
+            set => MaxRating = value.ToString(GlobalOptions.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        /// <param name="strExpression"></param>
+        /// <returns></returns>
+        private int ProcessRatingString(string strExpression)
+        {
+            if (strExpression.StartsWith("FixedValues("))
+            {
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}",
+                        () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}",
+                        () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                }
+
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+            }
+
+            int.TryParse(strExpression, out int intReturn);
+
+            return intReturn;
         }
 
         /// <summary>
@@ -1912,6 +2031,7 @@ namespace Chummer.Backend.Equipment
                     strDamage = strDamage.CheapReplace(objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
             }
 
+            strDamage.CheapReplace("{Rating}", () => Rating.ToString());
             // Evaluate the min expression if there is one.
             int intStart = strDamage.IndexOf("min(", StringComparison.Ordinal);
             if (intStart != -1)
@@ -2625,6 +2745,7 @@ namespace Chummer.Backend.Equipment
                         objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                         objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
+                    objCost.CheapReplace("{Rating}", () => Rating.ToString());
 
                     // Replace the division sign with "div" since we're using XPath.
                     objCost.Replace("/", " div ");
@@ -2724,7 +2845,7 @@ namespace Chummer.Backend.Equipment
                 strAP = "0";
 
             StringBuilder objAP = new StringBuilder(strAP);
-
+            objAP.CheapReplace("{Rating}", () => Rating.ToString());
             int intUseSTR = 0;
             int intUseAGI = 0;
             int intUseSTRBase = 0;
@@ -2895,7 +3016,7 @@ namespace Chummer.Backend.Equipment
 
             List<Tuple<string, int>> lstRCGroups = new List<Tuple<string, int>>(5);
             List<Tuple<string, int>> lstRCDeployGroups = new List<Tuple<string, int>>(5);
-
+            strRC = strRC.CheapReplace("{Rating}", () => Rating.ToString());
             int intPos = strRC.IndexOf('(');
             if (intPos != -1)
             {
@@ -3141,7 +3262,7 @@ namespace Chummer.Backend.Equipment
                 string strAccuracy = Accuracy;
                 StringBuilder objAccuracy = new StringBuilder(strAccuracy);
                 int intAccuracy = 0;
-
+                objAccuracy.CheapReplace("{Rating}", () => Rating.ToString());
                 int intUseSTR = 0;
                 int intUseAGI = 0;
                 int intUseSTRBase = 0;
@@ -3656,6 +3777,18 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string RangeModifier(string range)
+        {
+            int i = Convert.ToInt32(XmlManager.Load("ranges.xml")
+                .SelectSingleNode($"chummer/modifiers/{range.ToLowerInvariant()}")
+                ?.InnerText);
+            i += WeaponAccessories.Sum(wa => wa.RangeModifier);
+            i = Math.Min(0, i);
+            string strReturn = LanguageManager.GetString($"Label_Range{range}")
+                .Replace("{0}",i.ToString());
+            return strReturn;
+        }
+
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
@@ -3909,8 +4042,18 @@ namespace Chummer.Backend.Equipment
                             // If the character has a Specialization, include it in the Dice Pool string.
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                             {
-                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
-                                    strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
+                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) ||
+                                    objSkill.HasSpecialization(Name) ||
+                                    objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ||
+                                    objSkill.HasSpecialization(Category) ||
+                                    (!string.IsNullOrEmpty(objSkill.Specialization) &&
+                                     (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
+                                {
+                                    strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' +
+                                               (intDicePool + intDicePoolModifier +
+                                                _objCharacter.Options.SpecializationBonus).ToString(objCulture) + ')';
+                                    intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
+                                }
                             }
                         }
 
@@ -4250,6 +4393,7 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                objAvail.CheapReplace("{Rating}", () => Rating.ToString());
 
                 if (blnCheckUnderbarrels && strAvail.Contains("{Children Avail}"))
                 {

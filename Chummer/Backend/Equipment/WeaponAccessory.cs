@@ -78,6 +78,7 @@ namespace Chummer.Backend.Equipment
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
+        private int _intRangeModifier;
 	    private int _intSingleShot;
 	    private int _intShortBurst;
 	    private int _intLongBurst;
@@ -199,6 +200,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
+            objXmlAccessory.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
             objXmlAccessory.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
@@ -314,6 +316,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
+            objWriter.WriteElementString("rangemodifier", _intRangeModifier.ToString());
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
@@ -413,6 +416,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
+            objNode.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -1137,6 +1141,11 @@ namespace Chummer.Backend.Equipment
         /// Range bonus granted by the Accessory.
         /// </summary>
         public int RangeBonus => _intRangeBonus;
+
+        /// <summary>
+        /// Range Dicepool modifier granted by the Accessory.
+        /// </summary>
+        public int RangeModifier => _intRangeModifier;
 
         /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.

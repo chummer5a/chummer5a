@@ -1676,7 +1676,7 @@
         </oneof>
       </required>
       <source>RF</source>
-      <page>102</page>
+      <page>123</page>
     </power>
     <power>
       <id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>

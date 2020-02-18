@@ -200,6 +200,9 @@ namespace Chummer
         private static bool _blnPluginsEnabled;
         private static bool _blnAllowEasterEggs;
         private static bool _blnHideCharts;
+        private static bool _blnCustomDateTimeFormats;
+        private static string _strCustomDateFormat;
+        private static string _strCustomTimeFormat;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
@@ -528,6 +531,10 @@ namespace Chummer
 
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
+
+            LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "customdatetimeformats");
+            LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
+            LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
 
             RebuildCustomDataDirectoryInfoList();
 
@@ -1203,6 +1210,14 @@ namespace Chummer
         public static ObservableCollection<string> FavoritedCharacters => _lstFavoritedCharacters;
 
         public static ObservableCollection<string> MostRecentlyUsedCharacters => _lstMostRecentlyUsedCharacters;
+        public static bool CustomDateTimeFormats => _blnCustomDateTimeFormats;
+        public static string CustomDateFormat => _strCustomDateFormat;
+        public static string CustomTimeFormat => _strCustomTimeFormat;
+        /// <summary>
+        /// Should the application assume that the Black Market Pipeline discount should automatically be used if the character has an appropriate contact?
+        /// </summary>
+        public static bool AssumeBlackMarket { get; set; }
+
         #endregion
 
     }

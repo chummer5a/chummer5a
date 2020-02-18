@@ -72,10 +72,6 @@
 			<text>生命历程</text>
 		</string>
 		<string>
-			<key>String_Life_Module</key>
-			<text>生命历程</text>
-		</string>
-		<string>
 			<key>String_OK</key>
 			<text>OK</text>
 		</string>
@@ -114,10 +110,6 @@
 		<string>
 			<key>String_UnnamedCharacter</key>
 			<text>未命名角色</text>
-		</string>
-		<string>
-			<key>String_Break</key>
-			<text>拆解</text>
 		</string>
 		<string>
 			<key>Checkbox_Free</key>

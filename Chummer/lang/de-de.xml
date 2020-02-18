@@ -908,7 +908,7 @@
 		</string>
 		<string>
 			<key>String_CyberzombieWILDescription</key>
-			<text>Werfen Sie die angegebene Anzahl an Würfeln und tragen Sie die Anzahl der Erfolge im dafür vorgesehenen Feld ein. Das bestimmt den Wert der negativen Eigenschaften, die Sie wählen müssen um ein Cyberzombie zu werden.</text>
+			<text>Werfen Sie die angegebene Anzahl an Würfeln und tragen Sie die Anzahl der Erfolge im dafür vorgesehenen Feld ein. Das bestimmt den Wert der negativen Eigenschaften, die Sie wählen müssen, um ein Cyberzombie zu werden.</text>
 		</string>
 		<string>
 			<key>Message_EnemyLimit</key>
@@ -2846,19 +2846,19 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>kurz</text>
+			<text>kurz ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>mittel</text>
+			<text>mittel ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>lang</text>
+			<text>lang ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>extrem</text>
+			<text>extrem ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>
@@ -3638,7 +3638,7 @@
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_FileName</key>
-			<text>Bitte geben Sie einen Namen ein unter dem dieses Cyberware-Set gespeichert werden soll.</text>
+			<text>Bitte geben Sie einen Namen ein, unter dem dieses Cyberware-Set gespeichert werden soll.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_FileName</key>
@@ -6101,7 +6101,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteImprovementGroup</key>
-			<text>Wollen Sie wirklich diesen Container mit Verbesserungen löschen? Alle beinhalteten Verbesserungen werden zurück in die Hauptgruppe verschoben.</text>
+			<text>Wollen Sie diesen Container mit Verbesserungen wirklich löschen? Alle beinhalteten Verbesserungen werden zurück in die Hauptgruppe verschoben.</text>
 		</string>
 		<string>
 			<key>Button_EnableAll</key>
@@ -6473,10 +6473,6 @@
 			<text>Auf wie vielen Stellen hinter dem Komma soll für die Essenz-Berechnung gerundet werden?</text>
 		</string>
 		<!-- Version 445 -->
-		<string>
-			<key>String_Break</key>
-			<text>Gruppe auftrennen</text>
-		</string>
 		<string>
 			<key>Label_Options_DefaultCharacterSheet</key>
 			<text>Standard Charakterbogen:</text>
@@ -7134,7 +7130,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceptionalNotMaxed</key>
-			<text>Exceptional attributes not at cap, are not maxed</text>
+			<text>Außergewöhnliche Attribute nicht an der Obergrenze, sind nicht begrenzt</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PointsOnBrokenGroups</key>
@@ -7880,10 +7876,6 @@
 		</string>
 		<string>
 			<key>String_LifeModule</key>
-			<text>Lebensmodul</text>
-		</string>
-		<string>
-			<key>String_Life_Module</key>
 			<text>Lebensmodul</text>
 		</string>
 		<string>
@@ -8740,7 +8732,7 @@
 		</string>
 		<string>
 			<key>Label_AddictionThreshold</key>
-			<text>Schwellwert:</text>
+			<text>Schwellenwert:</text>
 		</string>
 		<string>
 			<key>Label_DrugEffects</key>
@@ -9669,7 +9661,7 @@
 		</string>
 		<string>
 			<key>Message_InvalidPowerPoints</key>
-			<text>{0} über den maximalen Adeptenkraftpunkte ({1})</text>
+			<text>{0} über den maximalen Adeptenkraftpunkten ({1})</text>
 		</string>
 		<string>
 			<key>Label_RatingFormat</key>
@@ -9798,6 +9790,38 @@
 		<string>
 			<key>String_Reach</key>
 			<text>Reichweite</text>
+		</string>
+		<string>
+			<key>Message_DeleteSkill</key>
+			<text>Möchten Sie die Fertigkeit wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Label_Dodge</key>
+			<text>Ausweichen:</text>
+		</string>
+		<string>
+			<key>String_MetersPerHit</key>
+			<text>m/Erfolg</text>
+		</string>
+		<string>
+			<key>String_SuppressedBy</key>
+			<text>Verdrängt durch {0}</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+			<text>Maximaler Bonus auf Stärke und Geschicklichkeit, den Cybergliedmaßen haben können (unterliegt unverändert dem erweiterten Maximum)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CustomTimeFormat</key>
+			<text>Benutzerdefiniertes Zeitformat</text>
+		</string>
+		<string>
+			<key>Label_Options_DateFormat</key>
+			<text>Datumsformat</text>
+		</string>
+		<string>
+			<key>Label_Options_TimeFormat</key>
+			<text>Zeitformat</text>
 		</string>
 	</strings>
 </chummer>

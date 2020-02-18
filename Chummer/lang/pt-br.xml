@@ -39,10 +39,6 @@
       <text>Módulo de Vida</text>
     </string>
     <string>
-      <key>String_Life_Module</key>
-      <text>Módulo de Vida</text>
-    </string>
-    <string>
       <key>Label_Stage</key>
       <text>Estágio:</text>
     </string>
@@ -401,10 +397,6 @@
     <string>
       <key>String_UnnamedCharacter</key>
       <text>Personagem sem nome</text>
-    </string>
-    <string>
-      <key>String_Break</key>
-      <text>Dividir</text>
     </string>
     <string>
       <key>Checkbox_Free</key>

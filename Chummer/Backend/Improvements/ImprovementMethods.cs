@@ -437,6 +437,10 @@ namespace Chummer
                     return objImprovementAdder.spellcategorydrain;
                 case "SPELLCATEGORYDAMAGE":
                     return objImprovementAdder.spellcategorydamage;
+                case "SPELLDESCRIPTORDRAIN":
+                    return objImprovementAdder.spelldescriptordrain;
+                case "SPELLDESCRIPTORDAMAGE":
+                    return objImprovementAdder.spelldescriptordamage;
                 case "THROWRANGE":
                     return objImprovementAdder.throwrange;
                 case "THROWRANGESTR":
@@ -521,6 +525,8 @@ namespace Chummer
                     return objImprovementAdder.skillgroupkarmacost;
                 case "KNOWLEDGESKILLKARMACOST":
                     return objImprovementAdder.knowledgeskillkarmacost;
+                case "KNOWLEDGESKILLKARMACOSTMIN":
+                    return objImprovementAdder.knowledgeskillkarmacostmin;
                 case "SKILLDISABLE":
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
@@ -632,6 +638,10 @@ namespace Chummer
                     return objImprovementAdder.attributemaxclamp;
                 case "METAMAGICLIMIT":
                     return objImprovementAdder.metamagiclimit;
+                case "DISABLEQUALITY":
+                    return objImprovementAdder.disablequality;
+                case "FREEQUALITY":
+                    return objImprovementAdder.freequality;
                 // No method matches, return a null pointer
                 default:
                     return null;

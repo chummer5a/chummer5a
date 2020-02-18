@@ -5159,7 +5159,6 @@ namespace Chummer
                 return;
             }
 
-            bool capacityOnly = false;
             string selectedGuid = string.Empty;
             // Make sure the selected item is another piece of Gear.
             if (objSelectedNode.Tag is ArmorMod objMod)
@@ -5169,7 +5168,6 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                capacityOnly = true;
                 selectedGuid = objMod.InternalId;
             }
             else if (objSelectedNode.Tag is Gear objGear)
@@ -5179,7 +5177,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(selectedGuid, capacityOnly);
+                blnAddAgain = PickArmorGear(selectedGuid);
             }
             while (blnAddAgain);
         }
@@ -6620,6 +6618,7 @@ namespace Chummer
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
+            RefreshPasteStatus(sender, e);
         }
 
         private void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -8884,7 +8883,7 @@ namespace Chummer
                 int limit = CharacterObject.FreeSpells;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                if (spellCost <= CharacterObjectOptions.KarmaSpell)
+                if (spellCost <= CharacterObjectOptions.KarmaSpell && CharacterObject.FreeSpells > 0)
                 {
                     // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
                     int intQualityKarmaToSpellPoints = CharacterObjectOptions.KarmaSpell;
@@ -9729,7 +9728,7 @@ namespace Chummer
                     lblCyberlimbSTR.Visible = false;
                 }
                 chkPrototypeTranshuman.Visible = CharacterObject.PrototypeTranshuman != 0;
-                chkPrototypeTranshuman.Enabled = objCyberware.Parent == null;
+                chkPrototypeTranshuman.Enabled = objCyberware.Parent == null && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
                 chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
 
                 // gpbCyberwareMatrix
@@ -9963,6 +9962,10 @@ namespace Chummer
                     lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
                     lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                     IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    lblWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
+                    lblWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
+                    lblWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
+                    lblWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
                     lblWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -11600,6 +11603,10 @@ namespace Chummer
                     lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
                     lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                     IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    lblVehicleWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
+                    lblVehicleWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
+                    lblVehicleWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
+                    lblVehicleWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
                     lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -13840,7 +13847,7 @@ namespace Chummer
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                blnPasteEnabled = treCyberware.SelectedNode?.Tag is ICanPaste selected && selected.AllowPasteXml;
+                blnPasteEnabled = treCyberware.SelectedNode?.Tag is ICanPaste selected && selected.AllowPasteXml || GlobalOptions.ClipboardContentType == ClipboardContentType.Cyberware;
                 blnCopyEnabled = treCyberware.SelectedNode?.Tag is Gear || treCyberware.SelectedNode?.Tag is Cyberware;
             }
             // Vehicles Tab.
@@ -14479,9 +14486,16 @@ namespace Chummer
 
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -14558,9 +14572,16 @@ namespace Chummer
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.

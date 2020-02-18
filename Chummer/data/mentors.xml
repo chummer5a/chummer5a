@@ -2281,6 +2281,20 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <attribute>
+            <name>BOD</name>
+            <natural />
+            <total>4</total>
+          </attribute>
+          <attribute>
+            <name>STR</name>
+            <natural />
+            <total>4</total>
+          </attribute>
+        </allof>
+      </required>
       <source>FA</source>
       <page>99</page>
     </mentor>

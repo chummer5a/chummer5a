@@ -419,14 +419,22 @@ namespace Chummer
                         // Special cases for when we want to check if a special attribute is enabled
                         if (intTargetValue == 1)
                         {
-                            if (objAttribute.Abbrev == "MAG")
-                                return objCharacter.MAGEnabled;
-                            if (objAttribute.Abbrev == "MAGAdept")
-                                return objCharacter.MAGEnabled && objCharacter.IsMysticAdept;
-                            if (objAttribute.Abbrev == "RES")
-                                return objCharacter.RESEnabled;
-                            if (objAttribute.Abbrev == "DEP")
-                                return objCharacter.DEPEnabled;
+                            switch (objAttribute.Abbrev)
+                            {
+                                case "MAG":
+                                    return objCharacter.MAGEnabled;
+                                case "MAGAdept":
+                                    return objCharacter.MAGEnabled && objCharacter.IsMysticAdept;
+                                case "RES":
+                                    return objCharacter.RESEnabled;
+                                case "DEP":
+                                    return objCharacter.DEPEnabled;
+                            }
+                        }
+
+                        if (xmlNode.SelectSingleNode("natural") != null)
+                        {
+                            return objAttribute.Value >= intTargetValue;
                         }
                         return objAttribute.TotalValue >= intTargetValue;
                     }
@@ -443,7 +451,15 @@ namespace Chummer
                             if (strNodeAttributes.Contains(objLoopAttrib.Abbrev))
                             {
                                 strAttributes = strAttributes.Replace(strAttribute, objLoopAttrib.DisplayAbbrev);
-                                strValue = strValue.Replace(strAttribute, objLoopAttrib.Value.ToString());
+                                if (xmlNode.SelectSingleNode("natural") != null)
+                                {
+                                    strValue = strValue.Replace(strAttribute, objLoopAttrib.Value.ToString());
+                                }
+                                else
+                                {
+                                    strValue = strValue.Replace(strAttribute, objLoopAttrib.TotalValue.ToString());
+                                }
+                                
                             }
                         }
                         if (blnShowMessage)

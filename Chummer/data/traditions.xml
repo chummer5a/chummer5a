@@ -103,6 +103,24 @@
       </spirits>
     </tradition>
     <tradition>
+      <id>09843ed9-6fd1-4c43-9e9f-f6d66493ebdc</id>
+      <name>Black Magic [Alt]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>61</page>
+      <bonus>
+        <addquality>Animal Familiar</addquality>
+        <addquality select="Boggle">Dark Ally</addquality>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
       <id>a283220f-2197-4526-b15a-331b9185b326</id>
       <name>Buddhism</name>
       <drain>WIL + INT</drain>

@@ -239,7 +239,8 @@ namespace Chummer
                         //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
                         //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
 
-                        chkInitiationGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
+                        chkJoinGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
+                        chkInitiationGroup.DoDatabinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.
                         if (CharacterObject.Mugshots.Count > 0)
@@ -8334,7 +8335,6 @@ namespace Chummer
                     {
                         // Remove the character from their Group.
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = false;
                         CharacterObject.GroupMember = false;
                         IsRefreshing = false;
                         break;
@@ -8343,7 +8343,6 @@ namespace Chummer
                     {
                         // Put the character back in their Group.
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = true;
                         CharacterObject.GroupMember = true;
                         IsRefreshing = false;
                         break;
@@ -10374,6 +10373,7 @@ namespace Chummer
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
+            RefreshPasteStatus();
         }
 #endregion
 
@@ -12249,8 +12249,6 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
             }
-            CharacterObject.GroupMember = chkJoinGroup.Checked;
-            chkInitiationGroup.DoDatabinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
             if (!chkJoinGroup.Enabled)
             {
@@ -13696,6 +13694,10 @@ namespace Chummer
                     lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
                     lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                     IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    lblWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
+                    lblWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
+                    lblWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
+                    lblWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
                     lblWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -15540,6 +15542,10 @@ namespace Chummer
                     lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
                     lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                     IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    lblVehicleWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
+                    lblVehicleWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
+                    lblVehicleWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
+                    lblVehicleWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
                     lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -15929,9 +15935,13 @@ namespace Chummer
 
                         ListViewItem objItem = new ListViewItem
                         {
-                            Text = objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern) +
-                                   LanguageManager.GetString("String_Space") +
-                                   objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern)
+                            Text = GlobalOptions.CustomDateTimeFormats
+                                ? objExpense.Date.ToString(GlobalOptions.CustomDateFormat) +
+                                  LanguageManager.GetString("String_Space") +
+                                  objExpense.Date.ToString(GlobalOptions.CustomTimeFormat)
+                                : objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern) +
+                                  LanguageManager.GetString("String_Space") +
+                                  objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern)
                         };
                         objItem.SubItems.Add(objAmountItem);
                         objItem.SubItems.Add(objReasonItem);
@@ -17160,9 +17170,16 @@ private void RefreshSelectedSpell()
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
+                Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -17239,9 +17256,16 @@ private void RefreshSelectedSpell()
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId, out VehicleMod objOldParentVehicleMod);
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
+                Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -17567,9 +17591,16 @@ private void RefreshSelectedSpell()
                 if (pickCyber.DialogResult == DialogResult.Cancel)
                     return;
 
-                objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent);
+                objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent, pickCyber.FreeCost);
                 //TODO: Bind displayname to selectednode text properly.
-                treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
+                if (treCyberware.SelectedNode.Tag != objCyberware)
+                {
+                    treCyberware.FindNodeByTag(objCyberware).Text = objCyberware.DisplayName(GlobalOptions.Language);
+                }
+                else
+                {
+                    treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
+                }
             }
             else { Utils.BreakIfDebug(); }
 

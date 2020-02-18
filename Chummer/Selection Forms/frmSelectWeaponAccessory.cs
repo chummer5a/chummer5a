@@ -87,12 +87,15 @@ namespace Chummer
             List<ListItem> lstAccessories = new List<ListItem>();
 
             // Populate the Accessory list.
-            StringBuilder strMount = new StringBuilder("contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+            StringBuilder strMount = new StringBuilder("(contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (var strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
                 strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
             }
+
+            strMount.Append(")");
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+            
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
@@ -523,7 +526,8 @@ namespace Chummer
                 : LanguageManager.GetString("Label_Rating");
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
-            chkBlackMarketDiscount.Checked = _blnIsParentWeaponBlackMarketAllowed;
+            chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
+            chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);

@@ -36,8 +36,21 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
-            DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
-            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
+
+            if (GlobalOptions.CustomDateTimeFormats)
+            {
+                datDate.CustomFormat = GlobalOptions.DatesIncludeTime
+                    ? GlobalOptions.CustomDateFormat+GlobalOptions.CustomTimeFormat
+                    : GlobalOptions.CustomDateFormat;
+            }
+            else
+            {
+                DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
+                datDate.CustomFormat = GlobalOptions.DatesIncludeTime
+                    ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss")
+                    : objDateTimeInfo.LongDatePattern;
+            }
+
             datDate.Value = DateTime.Now;
 
             txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);

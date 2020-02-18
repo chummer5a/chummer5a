@@ -20,7 +20,12 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ranges.xsd">
-
+  <modifiers>
+    <short>0</short>
+    <medium>-1</medium>
+    <long>-3</long>
+    <extreme>-6</extreme>
+  </modifiers>
   <ranges>
     <range>
       <name>Tasers</name>

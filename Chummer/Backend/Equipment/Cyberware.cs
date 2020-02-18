@@ -566,7 +566,13 @@ namespace Chummer.Backend.Equipment
                     {
                         ParentVehicle = ParentVehicle
                     };
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons);
+                    int intAddWeaponRating = 0;
+                    if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                    {
+                        intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                            .CheapReplace("{Rating}", () => Rating.ToString()));
+                    }
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,false, intAddWeaponRating);
                     objGearWeapon.ParentID = InternalId;
                     objGearWeapon.Cost = "0";
                     lstWeapons.Add(objGearWeapon);
@@ -1133,7 +1139,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
             objNode.TryGetDecFieldQuickly("extraessmultiplicativemultiplier", ref _decExtraESSMultiplicativeMultiplier);
             objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
-            if (_objCharacter.PrototypeTranshuman > 0)
+            if (_objCharacter.PrototypeTranshuman > 0 &&  SourceType == Improvement.ImprovementSource.Bioware)
                 objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
             _nodPairBonus = objNode["pairbonus"];
@@ -1421,7 +1427,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
-            objWriter.WriteElementString("extra", Extra);
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
             if (Gear.Count > 0)
             {
@@ -2720,7 +2726,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool PrototypeTranshuman
         {
-            get => _blnPrototypeTranshuman;
+            get => _blnPrototypeTranshuman && SourceType == Improvement.ImprovementSource.Bioware;
             set
             {
                 if (_blnPrototypeTranshuman != value)
@@ -3711,19 +3717,19 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = BaseStrength;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in Children)
+                if (Children.Count > 0)
                 {
-                    // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (s_StrengthEnhancementStrings.Contains(objChild.Name))
-                        intBonus = objChild.Rating;
-                    // If the limb has Customized Strength, this is its new base value.
-                    if (s_StrengthCustomizationStrings.Contains(objChild.Name))
-                        intAttribute = objChild.Rating;
+                    intAttribute = Children.Where(s => s_StrengthCustomizationStrings.Contains(s.Name)).Max(s => s?.Rating) ?? BaseStrength;
+                    intBonus = Children.Where(s => s_StrengthEnhancementStrings.Contains(s.Name)).Max(s => s?.Rating) ?? 0;
                 }
+                if (ParentVehicle == null)
+                {
+                    intBonus += intBonus + _objCharacter.RedlinerBonus;
+                }
+                intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
                 return ParentVehicle == null
-                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus,
-                        _objCharacter.STR.TotalAugmentedMaximum)
+                    ? Math.Min(intAttribute + intBonus, _objCharacter.STR.TotalAugmentedMaximum)
                     : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
@@ -3776,19 +3782,19 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = BaseAgility;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in Children)
+                if (Children.Count > 0)
                 {
-                    // If the limb has Customized Agility, this is its new base value.
-                    if (s_AgilityCustomizationStrings.Contains(objChild.Name))
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (s_AgilityEnhancementStrings.Contains(objChild.Name))
-                        intBonus = objChild.Rating;
+                    intAttribute = Children.Where(s => s_AgilityCustomizationStrings.Contains(s.Name)).Max(s => s?.Rating) ?? BaseAgility;
+                    intBonus     = Children.Where(s => s_AgilityEnhancementStrings  .Contains(s.Name)).Max(s => s?.Rating) ?? 0;
                 }
+                if (ParentVehicle == null)
+                {
+                    intBonus += _objCharacter.RedlinerBonus;
+                }
+                intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
                 return ParentVehicle == null
-                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus,
-                        _objCharacter.AGI.TotalAugmentedMaximum)
+                    ? Math.Min(intAttribute + intBonus, _objCharacter.AGI.TotalAugmentedMaximum)
                     : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
             }
         }
@@ -4879,11 +4885,11 @@ namespace Chummer.Backend.Equipment
 
             if (SourceID == EssenceAntiHoleGUID)
             {
-                _objCharacter.DecreaseEssenceHole(Rating * 100);
+                _objCharacter.DecreaseEssenceHole(Rating);
             }
             else if (SourceID == EssenceHoleGUID)
             {
-                _objCharacter.IncreaseEssenceHole(Rating * 100);
+                _objCharacter.IncreaseEssenceHole(Rating);
             }
             else
             {
@@ -4910,7 +4916,7 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public void Upgrade(Character characterObject, Grade objGrade, int intRating, decimal refundPercentage)
+        public void Upgrade(Character characterObject, Grade objGrade, int intRating, decimal refundPercentage, bool blnFree)
         {
             decimal saleCost = TotalCost * refundPercentage;
             int oldRating = Rating;
@@ -4920,7 +4926,10 @@ namespace Chummer.Backend.Equipment
             Rating = intRating;
             Grade = objGrade;
             decimal newCost = TotalCost - saleCost;
-
+            if (blnFree)
+            {
+                newCost = 0;
+            }
             if (newCost > characterObject.Nuyen)
             {
                 Program.MainForm.ShowMessageBox(

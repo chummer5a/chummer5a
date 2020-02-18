@@ -159,7 +159,8 @@ namespace Chummer
             _blnSkipUpdate = true;
             if (_objSelectedWeapon != null)
             {
-                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
                 
@@ -665,6 +666,8 @@ namespace Chummer
 
                         DialogResult = DialogResult.OK;
                     }
+                    break;
+                default:
                     break;
             }
         }

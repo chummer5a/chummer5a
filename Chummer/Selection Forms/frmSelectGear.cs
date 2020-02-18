@@ -597,7 +597,8 @@ namespace Chummer
                 decMultiplier *= 0.5m;
 
             // Cost.
-            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value);
+            chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+            chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value);
 
             decimal decItemCost = 0.0m;
             bool blnIsSuccess;

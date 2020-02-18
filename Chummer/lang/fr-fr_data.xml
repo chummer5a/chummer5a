@@ -18974,6 +18974,12 @@
 				<translate>Bonus de moniteur de condition de cyber-singularité</translate>
 				<altpage>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</altpage>
 			</improvement>
+			<improvement>
+				<id>freespells</id>
+				<name>Free Spells</name>
+				<translate>Sorts gratuits</translate>
+				<altpage>Permet au personnage de marquer certains sorts comme gratuits pour éviter des coûts en karma.</altpage>
+			</improvement>
 		</improvements>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -29553,8 +29559,8 @@
 			</quality>
 			<quality>
 				<id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-				<name>Magic Sense (Changeling)</name>
-				<translate>Magicoperception (Changelin)</translate>
+				<name>Magic Sense</name>
+				<translate>Magicoperception</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>

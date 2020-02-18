@@ -353,6 +353,7 @@ namespace Chummer
             this.tsArmorGearNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmorMod = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsArmorModNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsArmorModAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsQuality = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsQualityNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSpell = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -5029,9 +5030,19 @@ namespace Chummer
             // cmsArmorMod
             // 
             this.cmsArmorMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsArmorModNotes});
+                this.tsArmorModNotes,
+                this.tsArmorModAddAsPlugin});
             this.cmsArmorMod.Name = "cmsArmorMod";
             this.cmsArmorMod.Size = new System.Drawing.Size(106, 26);
+            // 
+            // tsArmorGearAddAsPlugin
+            // 
+            this.tsArmorModAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsArmorModAddAsPlugin.Name = "tsArmorModAddAsPlugin";
+            this.tsArmorModAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorModAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsArmorModAddAsPlugin.Text = "&Add as Plugin";
+            this.tsArmorModAddAsPlugin.Click += new System.EventHandler(this.tsArmorGearAddAsPlugin_Click);
             // 
             // tsArmorModNotes
             // 
@@ -18836,6 +18847,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareNotes;
         private System.Windows.Forms.ContextMenuStrip cmsArmorMod;
         private System.Windows.Forms.ToolStripMenuItem tsArmorModNotes;
+        private System.Windows.Forms.ToolStripMenuItem tsArmorModAddAsPlugin;
         private System.Windows.Forms.ContextMenuStrip cmsQuality;
         private System.Windows.Forms.ToolStripMenuItem tsQualityNotes;
         private System.Windows.Forms.ToolStripMenuItem tsMartialArtsNotes;

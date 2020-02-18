@@ -201,20 +201,31 @@ namespace Chummer
 
             IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
-            List<string> lstWatch = new List<string>();
+            Dictionary<string,string> dicWatch = new Dictionary<string, string>();
+            int intWatchFolderCount = 0;
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
-                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5");
+                intWatchFolderCount++;
+                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories);
                 for(int i = 0; i < objFiles.Length; ++i)
                 {
                     string strFile = objFiles[i];
                     // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if(lstFavorites.Contains(strFile) ||
+                    if (lstFavorites.Contains(strFile) ||
                         lstRecents.Contains(strFile))
                         continue;
+                    FileInfo objInfo = new FileInfo(strFile);
+                    if (objInfo.Directory == null || objInfo.Directory.FullName == GlobalOptions.CharacterRosterPath)
+                    {
+                        dicWatch.Add(strFile,"Watch");
+                        continue;
+                    }
 
-                    lstWatch.Add(strFile);
+                    string strNewParent = objInfo.Directory.FullName.CheapReplace(GlobalOptions.CharacterRosterPath+"\\", () => "");
+                    dicWatch.Add(strFile,strNewParent);
                 }
+
+                intWatchFolderCount++;
             }
 
             bool blnAddWatchNode = false;
@@ -223,13 +234,15 @@ namespace Chummer
             if(blnRefreshWatch)
             {
                 objWatchNode = treCharacterList.FindNode("Watch", false);
-                if(objWatchNode == null && lstWatch.Count > 0)
+                objWatchNode?.Remove();
+                blnAddWatchNode = dicWatch.Count > 0;
+
+                if (blnAddWatchNode)
                 {
                     objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) { Tag = "Watch" };
-                    blnAddWatchNode = true;
                 }
 
-                lstWatchNodes = new TreeNode[lstWatch.Count];
+                lstWatchNodes = new TreeNode[intWatchFolderCount];
             }
 
             bool blnAddRecentNode = false;
@@ -244,7 +257,7 @@ namespace Chummer
                     // Make sure we're not loading a character that was already loaded by the MRU list.
                     if(lstFavorites.Contains(strFile) ||
                         lstRecents.Contains(strFile) ||
-                        lstWatch.Contains(strFile))
+                        dicWatch.ContainsValue(strFile))
                         continue;
 
                     lstRecents.Add(strFile);
@@ -315,24 +328,35 @@ namespace Chummer
                 {
                     if(objWatchNode != null && lstWatchNodes != null)
                     {
-                        object lstWatchNodesLock = new object();
-
-                        Parallel.For(0, lstWatch.Count, i =>
-                        {
-                            string strFile = lstWatch[i];
-                            TreeNode objNode = CacheCharacter(strFile);
-                            lock(lstWatchNodesLock)
-                                lstWatchNodes[i] = objNode;
-                        });
+                        ConcurrentBag<KeyValuePair<TreeNode,string>> bagNodes = new ConcurrentBag<KeyValuePair<TreeNode, string>>();
+                        Parallel.ForEach(dicWatch, i => bagNodes.Add(new KeyValuePair<TreeNode, string>(CacheCharacter(i.Key), i.Value)));
 
                         if(blnAddWatchNode)
                         {
-                            for(int i = 0; i < lstWatchNodes.Length; i++)
+                            foreach (string s in dicWatch.Values.Distinct())
                             {
-                                TreeNode objNode = lstWatchNodes[i];
-                                if(objNode != null)
-                                    objWatchNode.Nodes.Add(objNode);
+                                if (s == "Watch") continue;
+                                objWatchNode.Nodes.Add(new TreeNode(s){Tag = s});
                             }
+
+                            foreach (KeyValuePair<TreeNode, string> kvtNode in bagNodes)
+                            {
+                                if (kvtNode.Value == "Watch")
+                                {
+                                    objWatchNode.Nodes.Add(kvtNode.Key);
+                                }
+                                else
+                                {
+                                    foreach (TreeNode objNode in objWatchNode.Nodes)
+                                    {
+                                        if (objNode.Tag.ToString() == kvtNode.Value)
+                                        {
+                                            objNode.Nodes.Add(kvtNode.Key);
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     }
                 },
@@ -1049,14 +1073,11 @@ namespace Chummer
             {
                 switch(t.Parent.Tag.ToString())
                 {
-                    case "Recent":
-                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
-                        break;
                     case "Favorite":
                         GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
                         GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                         break;
-                    case "Watch":
+                    default:
                         GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                         break;
                 }

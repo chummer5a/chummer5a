@@ -1,4 +1,62 @@
-Future Build 210
+Future Build 211
+Application Changes:
+- Cyberlimb bonuses are now capped to 4 by default. An optional rule has been added to override this behaviour. Note that the maximum attribute value is still limited to the Total Augmented Maximum of the character's appropriate attribute, irrespective of how the limb arrives at that maximum value. 
+- If a Gear object does not have a bonus node but is provided with a select value in data (ie a Camera with select='Rear-Facing'), this value will now be assigned to the Extra value. 
+- Implemented bonuses for Spell Descriptors to Damage and Drain. Used by the Witness My Hate quality. The improvement type allows a comma-separated list of values; if a descriptor is wrapped in NOT (ie NOT(Area)), it will be prevented from being taken. Conversely, if a spell does not have the descriptor listed, it will not gain the bonus. 
+- Spells now properly show bonuses to Damage provided by improvements.
+- Added support for the base initiative dice value being higher than 1. 
+- Partial refactor of the karma and priority mode choices into a single creation method to avoid duplicating code.
+- Added basic support for Weapons having Ratings. Currently used exclusively by weapons created via addweapon nodes. To be added to other weapons at a later date. (Need to figure out a good way to make it work in the datagrid view)
+- Added the house rule to spend skill points on broken skill groups to the options form. Closes #1990
+- Black Market Pipeline no longer defaults to active if the selected object to be purchased is able to be selected with that option. 
+- Restored the ability to add Gear objects to Armor Mods that have gearcapacity specified.
+- Mentor spirits are now subject to the Requirements system. This allows the use of required and forbidden nodes to hide mentors that are not valid for the character.
+- Added support for specifying that the value of the attribute condition is 'natural', ie excluding bonuses.
+- When attempting to change the mount location of modular cyberware, an error will now be thrown if there are no viable mounts for the selected object. 
+
+Application Fixes:
+- Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
+- Fixed an issue with the Skills tab not showing properly when first creating a character.
+- Fixed specialisations not properly being added to dicepool when firing weapons.
+- Fixed a regression in the behaviour of shapeshifters in karmagen not automatically selecting 'Human' if the 'None' metavariant is selected.
+- Fixed a regression in the behaviour of mastery qualities incorrectly counting towards used spells and karma.
+- Fixed issues with copying and pasting cyberware. Note that it's currently not permissible to paste cyberware into other cyberware.
+- Fixed extraneous messages about leaving a group when updating character properties if the character is a member of an initiation group.
+- Fixed a regression in the behaviour of the spellcategory improvement type that caused all improvements of that type to apply to all spells.
+- Fixed an issue with Talent choices not refreshing unless the metavariant index was refreshed.
+- Fixed bonuses incorrectly being added twice to cyberlimbs.
+- Fixed cyberware improperly being allowed to be flagged as prototype transhuman. Existing cyberware with this flag will be reverted to false.
+
+Data Changes:
+- Removed extraneous Magic Sense quality. Closes #4021
+- Added support to the SR Missions 1.4 Rules customdata file for the ruling that vehicles without defined sensor functions receive them according to the rating of the sensor array. Closes #2206
+- Fixed incorrect name of the aerodynamic molotov cocktail.
+- Added conditions to taking the Witness My Hate quality.
+- Added metavariant stats for insect spirits.
+- Added customdata rule to have shapeshifter initative bonuses apply as the default metatype initiative value instead of a bonus. 
+- Added a selectskill prompt to the Enthralling Performance adept power.
+- Updated shift power to the proper page reference. 
+- Adepts and Mystic Adepts now always qualify for powers from the Undecided Way, irrespective of Art choices. 
+- Converted Shapeshifter Initiaitve to work as the base mode by default instead of being a bonus. Added a new customdata rule to preserve current behaviour.
+- Fixed a typo in the Amphora Mite critter's powers.
+- Fixed incorrect cyberware names for the War Horse and War Dolphin critters.
+- Added missing grenade 'weapons' from Kill Code for the Dousher, DumDum, COS and Fuzzy Boom Boom grenades. Closes #4031
+- Fixed EVO/Yamatetsu Naval Technologies Rampart not having Capacity to install modifications per RAW for shields.
+- The Cyberfinger (Injector), Injector Pen can now add drugs and toxins as children. 
+- Armor Auto-Injectors can properly add Drugs and Toxins as children.
+- Added mod categories for armor mods to properly support black market pipelines.
+- Added requirements to the Oak mentor spirit, per its disadvantage of requiring 4 STR and BOD.
+- Assigned the Trafalger Gun-Cane, Knockoff Gun-Cane and Tiffani Elegance to use Light Pistol, Heavy Pistol and Holdout ammunition, respectively. Note that this is not anywhere near RAW but allows the weapons to actually be used. 
+
+New Strings:
+- Checkbox_Options_CyberlimbAttributeBonusCap
+- Checkbox_Options_CustomTimeFormat
+- Label_Options_DateFormat
+- Label_Options_TimeFormat
+- MessageTitle_NoValidModularMount
+- Message_NoValidModularMount
+
+Build 210
 Application Fixes:
 - Fixed behaviour of the Weapon Accessory mount checks to properly work with accessories that can occupy multiple slots when one of those slots is occupied.
 - Fixed a regression in the behaviour of weapon accessories to ensure they properly save and load their ammoreplace property. Existing accessories that should have this property will need to be re-added.Closes #3947
@@ -20,8 +78,17 @@ Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
 - Fixed an inappropriate bracket for improvements to skills that don't have a condition.
 - Fixed behaviour of html tooltips used by skill controls not properly being rendered for html. Fixes newlines in notes not working. 
+- Added confirmation prompt to Delete action for skills. 
+- Fixed Extra values not being properly translated for Cyberware when printed. Closes #3990
+- Adept Power Way Discounts are now properly limited to MAG /2. Closes #3618
+- Fixed search filtering not working properly in the Weapon Accessory selection window.
+- Fixed an issue with cyberware upgrades not respecting the 'free' choice from the cyberwater selector.
+- Fixed Reflex Recorder Optimisation only selecting the first reflex recorder to compare for defaulting bonuses.
 
 Application Changes:
+- Added a new improvement type to allow qualities to become free. Used to supplant existing code that flags the Mentor Spirit as free with certain qualities. 
+- Added a new improvement type to disable qualities and their associated bonuses. Has limited support for use in the UI at the moment, and only refreshes on load or when other qualities are removed or added. 
+- The Character Roster's Watch Folder now includes subfolders. 
 - Added support for Priority mode using non-ABCDE arrays.
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
@@ -47,8 +114,17 @@ Application Changes:
 - Added support for metamagics being gated behind certain initiate grades, as used by the Islamic traditions from Forbidden Arcana. This is done through an improvement type, metamagiclimit. For each metamagic child node, the name of the Metamagic (or Echo) is specified in the inner text, while the 'grade' attribute limits the metamagic to being taken at that specific grade. If the grade is not specified, this acts as a whitelist for metamagics, ONLY allowing those metamagics.
 - Added Dodge to the Other Info and Condition Monitor panels in Create and Career modes.
 - Added basic support for right-clicking on a character tab and saving, printing or closing the file. Currently only works for the currently-selected tab.
+- Added a new bonus type that sets the minimum Karma cost of increasing a Knowledge skill.  This is used by objects such as the Learning Stimulus nanoware to force the minimum to be higher than one. Closes #3229
+- Added support for the various 'addspirit/sprite' improvements pulling from the critters.xml file as well as traditions.xml.
+- Added a new amendoperation for the amend system: "regexreplace". This operation modifies text data by parsing the starting data with a Regular Expression pattern and then replacing the matched patterns with the text data given by the amend node.
+  - When an amend node is specified with the amendoperation "regexreplace", it must also be specified with the attribute "regexpattern" whose contents must be a proper Regular Expression. If the attribute is not specified, the amend node will instead run as if it had the amend operation "replace". If the attribute is specified, but its contents are not a proper Regular Expression, the program will display an error for the faulty amend node and then continue with the rest of the amend file.
+  - A "regexreplace" amend node will pattern-match and modify all instances of Chummer5a-relevant text data in the base data node (i.e. text contents, attributes) that have corresponding replacement values specified in the amend node. This means that e.g. if one only wishes to modify an attribute, they should make sure the amend node doesn't have an end tag (i.e. "<node />", not "<node></node>"), otherwise the amend node will pattern-match the base node's main text contents and modify the contents by replacing matches with an empty string (i.e. it will remove parts of the contents that match the Regular Expression pattern). If one wishes to regexreplace multiple instances of text data within a base data node (e.g. two different attributes), but have a different Regular Expression pattern for each one, they will need to do so via separate amend nodes for each pattern.
+  - For more information on how Regular Expression replacing works, please consult this page: https://docs.microsoft.com/en-us/dotnet/standard/base-types/substitutions-in-regular-expressions . The way "regexreplace" works internally is that it uses the Regex.Replace() function and takes the base data node's text contents as the input, the contents of the "regexpattern" attribute as the pattern, and the amend node's text contents as the replacement, then sets the base data node's text contents to be equal to the output from the Regex.Replace() operation.
+- Added rangemodifier property to weapon accessories. This modifies the base range modifier according to the given range. 
 
 Data Changes:
+- Replaced all instances of 'forbidden/Celerity' in cyberware with the new disablequality improvement.
+- Added disablequality improvements for vision-based qualities to the Cybereyes Basic System. 
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
 - Added missing adept way discounts to the Mystic Aptitude and State of Purity powers to render them compatible with the Magician's Way.
 - Dareadrenaline properly allows the Poor Self Control (Thrill Seeker) to be taken in addition to it. To accommodate this, a hidden version of the quality has been added.
@@ -76,11 +152,19 @@ Data Changes:
 - Fixed incorrect quality names on the Cactus Cat critter and Drifter life module that prevented them from being selected.
 - Fixed incorrect bonuses on the Islamic traditions from Forbidden Arcana that caused them to throw an error when added. 
 - Added freespells custom improvement to improvements.xml
-
+- Added knowledgeskillkarmacostmin bonus to the Jack of All Trades quality and Learning Stimulator nanoware. 
+- Added missing Black Magic [alt] tradition from FA. Personal Demons bonus not implemented; will need a new bonus created for it.
+- Range Modifiers are now specified in ranges.xml
+- Added SR Missions 1.4 Neotokyo customdata folder. This customdata set hides qualities used in Neo-Tokyo Missions and adjusts the Availability of all Firearms according to the SRM Neo-Tokyo 1.0 document.
+- Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
+- Fixed incorrect  REA maximum for the Wendigo quality.
+- Added customdata entry for Orks getting free Tusks natural weapon from Chrome Flesh.
+- Bio-weapons now benefit from the Natural Weapons skill specialisation. 
 New Strings:
 - String_DisableSkillGroupPrompt
 - Message_CyberzombieRequirementsImprovement
 - Checkbox_Options_AllowTechnomancerSchooling
+- Label_Dodge
 - String_Avail
 - String_Capacity
 - String_Cost
@@ -94,6 +178,9 @@ New Strings:
 - String_Mode
 - String_RC
 - String_Reach
+- Message_DeleteSkill
+- String_MetersPerHit
+- String_SuppressedBy
 
 Build 209
 
