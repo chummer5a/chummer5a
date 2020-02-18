@@ -103,14 +103,7 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            if (objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
-            {
-                objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
-            }
-            else
-            {
-                _blnEncumbrance = true;
-            }
+            objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
 
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
@@ -321,10 +314,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
-            {
-                objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
-            }
+            objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 

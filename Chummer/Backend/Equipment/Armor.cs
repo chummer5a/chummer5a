@@ -70,7 +70,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private int _intSortOrder;
 	    private bool _blnStolen;
-        private bool _blnEncumbrance;
+        private bool _blnEncumbrance = true;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Armor(Character objCharacter)
@@ -175,15 +175,7 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-
-            if (objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
-            {
-                objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
-            }
-            else
-            {
-                _blnEncumbrance = true;
-            }
+            objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = false;
