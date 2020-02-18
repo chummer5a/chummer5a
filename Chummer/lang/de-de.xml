@@ -9823,5 +9823,13 @@
 			<key>Label_Options_TimeFormat</key>
 			<text>Zeitformat</text>
 		</string>
+		<string>
+			<key>MessageTitle_NoValidModularMount</key>
+			<text>Keinen passenden Modulanschluss gefunden</text>
+		</string>
+		<string>
+			<key>Message_NoValidModularMount</key>
+			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden.</text>
+		</string>
 	</strings>
 </chummer>
