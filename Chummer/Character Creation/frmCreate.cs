@@ -9728,7 +9728,7 @@ namespace Chummer
                     lblCyberlimbSTR.Visible = false;
                 }
                 chkPrototypeTranshuman.Visible = CharacterObject.PrototypeTranshuman != 0;
-                chkPrototypeTranshuman.Enabled = objCyberware.Parent == null;
+                chkPrototypeTranshuman.Enabled = objCyberware.Parent == null && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
                 chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
 
                 // gpbCyberwareMatrix

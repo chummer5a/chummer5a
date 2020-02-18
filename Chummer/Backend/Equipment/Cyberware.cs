@@ -1139,7 +1139,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
             objNode.TryGetDecFieldQuickly("extraessmultiplicativemultiplier", ref _decExtraESSMultiplicativeMultiplier);
             objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
-            if (_objCharacter.PrototypeTranshuman > 0)
+            if (_objCharacter.PrototypeTranshuman > 0 &&  SourceType == Improvement.ImprovementSource.Bioware)
                 objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
             _nodPairBonus = objNode["pairbonus"];
@@ -2726,7 +2726,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool PrototypeTranshuman
         {
-            get => _blnPrototypeTranshuman;
+            get => _blnPrototypeTranshuman && SourceType == Improvement.ImprovementSource.Bioware;
             set
             {
                 if (_blnPrototypeTranshuman != value)
