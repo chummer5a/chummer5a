@@ -1833,6 +1833,14 @@
       <text>The selected vehicle does not have any valid weapon mounts to add this weapon to.</text>
     </string>
     <string>
+      <key>MessageTitle_NoValidModularMount</key>
+      <text>No Valid Modular Mount Found</text>
+    </string>
+    <string>
+      <key>Message_NoValidModularMount</key>
+      <text>Couldn't find a valid modular connector to attach this cyberware to.</text>
+    </string>
+    <string>
       <key>Message_CyberzombieConfirm</key>
       <text>Are you sure you want to convert this character to a Cyberzombie?</text>
     </string>

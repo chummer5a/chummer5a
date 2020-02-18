@@ -5864,9 +5864,12 @@ if (!Utils.IsUnitTest){
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <returns></returns>
-        public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware)
+        public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
         {
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            //Mounted cyberware should always be allowed to be dismounted.
+            //Unmounted cyberware requires that a valid mount be present. 
+            blnMountChangeAllowed = objModularCyberware.IsModularCurrentlyEquipped;
             List<ListItem> lstReturn = new List<ListItem>
             {
                 new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
@@ -5887,6 +5890,7 @@ if (!Utils.IsUnitTest){
                         string strName = objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
                                          objLoopCyberware.DisplayName(GlobalOptions.Language);
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                        blnMountChangeAllowed = true;
                     }
                 }
             }
@@ -5913,6 +5917,7 @@ if (!Utils.IsUnitTest){
                                                  (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
                                                   objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                 lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                blnMountChangeAllowed = true;
                             }
                         }
                     }
@@ -5940,6 +5945,7 @@ if (!Utils.IsUnitTest){
                                                      (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
                                                       objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                     lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                    blnMountChangeAllowed = true;
                                 }
                             }
                         }

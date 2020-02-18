@@ -14486,9 +14486,16 @@ namespace Chummer
 
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -14565,9 +14572,16 @@ namespace Chummer
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.

@@ -12,6 +12,7 @@ Application Changes:
 - Restored the ability to add Gear objects to Armor Mods that have gearcapacity specified.
 - Mentor spirits are now subject to the Requirements system. This allows the use of required and forbidden nodes to hide mentors that are not valid for the character.
 - Added support for specifying that the value of the attribute condition is 'natural', ie excluding bonuses.
+- When attempting to change the mount location of modular cyberware, an error will now be thrown if there are no viable mounts for the selected object. 
 
 Application Fixes:
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
@@ -24,7 +25,7 @@ Application Fixes:
 - Fixed a regression in the behaviour of the spellcategory improvement type that caused all improvements of that type to apply to all spells.
 - Fixed an issue with Talent choices not refreshing unless the metavariant index was refreshed.
 - Fixed bonuses incorrectly being added twice to cyberlimbs.
-- Fixed cyberware improperly being allowed to be flagged as prototype transhuman. Existing cyberware with this flag will be reverted to false. 
+- Fixed cyberware improperly being allowed to be flagged as prototype transhuman. Existing cyberware with this flag will be reverted to false.
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
@@ -51,6 +52,8 @@ New Strings:
 - Checkbox_Options_CustomTimeFormat
 - Label_Options_DateFormat
 - Label_Options_TimeFormat
+- MessageTitle_NoValidModularMount
+- Message_NoValidModularMount
 
 Build 210
 Application Fixes:
