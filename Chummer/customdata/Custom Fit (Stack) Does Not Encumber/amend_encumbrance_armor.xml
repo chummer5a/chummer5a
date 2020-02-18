@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <armors>
+    <armor xpathfilter="mods/name[text() = 'Custom Fit (Stack)']">
+      <encumbrance>False</encumbrance>
+    </armor>
+  </armors>
+</chummer>
