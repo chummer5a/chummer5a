@@ -5957,6 +5957,7 @@
       <cost>150</cost>
       <source>RG</source>
       <page>27</page>
+      <ammocategory>Heavy Pistols</ammocategory>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
@@ -5997,6 +5998,7 @@
       <cost>750</cost>
       <source>RG</source>
       <page>27</page>
+      <ammocategory>Light Pistols</ammocategory>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
@@ -6110,6 +6112,7 @@
       <cost>1250</cost>
       <source>RG</source>
       <page>28</page>
+      <ammocategory>Holdouts</ammocategory>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
