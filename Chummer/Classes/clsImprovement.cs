@@ -346,6 +346,7 @@ namespace Chummer
             DisableQuality,
             FreeQuality,
             AstralReputation,
+            AstralReputationWild,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

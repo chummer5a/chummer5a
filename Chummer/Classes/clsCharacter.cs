@@ -183,6 +183,7 @@ namespace Chummer
 
         // Spirit Reputation
         private int _intSpiritIndex;
+        private int _intWildSpiritIndex;
 
         // Priority Selections.
         private string _strGameplayOption = "Standard";
@@ -1423,6 +1424,10 @@ namespace Chummer
             objWriter.WriteElementString("publicawareness", _intPublicAwareness.ToString());
             // <burntstreetcred />
             objWriter.WriteElementString("burntstreetcred", _intBurntStreetCred.ToString());
+            // <spiritindex />
+            objWriter.WriteElementString("spiritindex", _intSpiritIndex.ToString());
+            // <wildspiritindex />
+            objWriter.WriteElementString("wildspiritindex", _intWildSpiritIndex.ToString());
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <maxavail />
@@ -2389,6 +2394,8 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("spiritindex", ref _intSpiritIndex);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("wildspiritindex", ref _intWildSpiritIndex);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
@@ -7246,6 +7253,29 @@ if (!Utils.IsUnitTest){
                 if (_intSpiritIndex != value)
                 {
                     _intSpiritIndex = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Astral Reputation.
+        /// </summary>
+        public int WildReputation =>
+            (int)Math.Max(Math.Floor((double)(SpiritIndex / 25)) +
+                          ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild), 0);
+
+        /// <summary>
+        /// Wild Spirit Index (FA 175).
+        /// </summary>
+        public int WildSpiritIndex
+        {
+            get => _intWildSpiritIndex;
+            set
+            {
+                if (_intWildSpiritIndex != value)
+                {
+                    _intWildSpiritIndex = value;
                     OnPropertyChanged();
                 }
             }
