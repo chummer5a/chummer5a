@@ -4051,7 +4051,8 @@ namespace Chummer.Backend.Equipment
                                     strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' +
                                                (intDicePool + intDicePoolModifier +
                                                 _objCharacter.Options.SpecializationBonus).ToString(objCulture) + ')';
-                                    intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
+                                    //TODO: Should specialisations just be folded into the main value? Why would we keep it separate like this?
+                                    //intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
                                 }
                             }
                         }
