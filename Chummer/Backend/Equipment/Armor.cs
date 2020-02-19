@@ -500,14 +500,9 @@ namespace Chummer.Backend.Equipment
                     _objLocation?.Children.Add(this);
                 }
             }
-            if (objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
-            {
-                objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
-            }
-            else
-            {
-                _blnEncumbrance = true;
-            }
+			
+            if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
+				_blnEncumbrance = true;
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
