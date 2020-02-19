@@ -3972,7 +3972,6 @@ namespace Chummer.Backend.Equipment
             int intDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
             switch (FireMode)
             {
-                //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
                 case FiringMode.DogBrain:
                     {
                         Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
