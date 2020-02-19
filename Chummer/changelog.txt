@@ -13,6 +13,7 @@ Application Changes:
 - Mentor spirits are now subject to the Requirements system. This allows the use of required and forbidden nodes to hide mentors that are not valid for the character.
 - Added support for specifying that the value of the attribute condition is 'natural', ie excluding bonuses.
 - When attempting to change the mount location of modular cyberware, an error will now be thrown if there are no viable mounts for the selected object. 
+- Added support for specifying that a given piece of armour does or does not count towards a character's Encumbrance limit. While this defaults to True for all existing gear, this can be added to any new object by including an encumbrance xml node with a value of False. When applied to armour with an Override Value, ie items with Custom Fit (Stack), they will only be excluded from Encumbrance behaviour when they are expected to provide their + bonus instead. Standard +armour items like Riot Shields can also use this behaviour. See customdata\Custom Fit (Stack) Does Not Encumber\amend_encumbrance_armor.xml for an example. 
 
 Application Fixes:
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
@@ -48,6 +49,7 @@ Data Changes:
 - Added requirements to the Oak mentor spirit, per its disadvantage of requiring 4 STR and BOD.
 - Assigned the Trafalger Gun-Cane, Knockoff Gun-Cane and Tiffani Elegance to use Light Pistol, Heavy Pistol and Holdout ammunition, respectively. Note that this is not anywhere near RAW but allows the weapons to actually be used. 
 - Added painade customdata per German rules. Closes #4023
+- Added a new customdata entry to prevent items with Custom Fit (Stack) from contributing to Encumbrance.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

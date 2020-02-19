@@ -11179,7 +11179,7 @@ if (!Utils.IsUnitTest){
                     {
                         foreach (Armor a in Armor.Where(a =>
                             (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
-                            a.Equipped))
+                            a.Equipped && objArmor.Encumbrance))
                         {
                             if (a.ArmorMods.Any(objMod =>
                                 objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
@@ -11198,7 +11198,7 @@ if (!Utils.IsUnitTest){
                 int intClothing = 0;
                 foreach (Armor objArmor in Armor.Where(objArmor =>
                     (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                    objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
+                    objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped && objArmor.Encumbrance))
                 {
                     if (objArmor.ArmorValue.StartsWith('+'))
                         intClothing += objArmor.TotalArmor;
@@ -11213,7 +11213,7 @@ if (!Utils.IsUnitTest){
 
                 foreach (Armor objArmor in Armor.Where(objArmor =>
                     (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                    objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
+                    objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped && objArmor.Encumbrance))
                 {
                     bool blnDoAdd = true;
                     if (objArmor.Category == "High-Fashion Armor Clothing")

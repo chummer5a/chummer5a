@@ -64,6 +64,7 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
 	    private bool _blnStolen;
+        private bool _blnEncumbrance = true;
         private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -102,6 +103,8 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
+
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
 
@@ -317,6 +320,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
+            objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
@@ -511,6 +515,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+
+        /// <summary>
+        /// Whether or not the Armor Mod contributes to Encumbrance. 
+        /// </summary>
+        public bool Encumbrance => _blnEncumbrance;
 
         /// <summary>
         /// Armor capacity.
