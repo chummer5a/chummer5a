@@ -1942,8 +1942,8 @@ namespace Chummer
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == ImprovedName || x.SourceIDString == ImprovedName);
                     if (objQuality != null)
                     {
-                            //yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.Suppressed));
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Qualities));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.Suppressed));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Qualities));
                     }
                 }
                     break;
