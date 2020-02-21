@@ -847,18 +847,18 @@ namespace Chummer
             get
             {
                 if (_intCachedSuppressed != -1) return _intCachedSuppressed == 1;
-                var impList = _objCharacter.Improvements.Where(imp =>
+                _intCachedSuppressed = Convert.ToInt32(_objCharacter.Improvements.Count(imp =>
                     imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)).ToList();
-                _intCachedSuppressed = impList.Count;
-                //TODO: Probably cheaper to check .Any() and copypaste the predicate. Mostly just did it this way because I found it neater.
-                if (impList.Count > 0)
+                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)));
+                if (_intCachedSuppressed > 0)
                 {
-                    ImprovementManager.DisableImprovements(_objCharacter, impList);
+                    ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                        imp.SourceName == SourceIDString).ToList());
                 }
                 else
                 {
-                    ImprovementManager.EnableImprovements(_objCharacter, impList);
+                    ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                        imp.SourceName == SourceIDString).ToList());
                 }
 
                 return _intCachedSuppressed == 1;

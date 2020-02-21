@@ -3972,7 +3972,6 @@ namespace Chummer.Backend.Equipment
             int intDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
             switch (FireMode)
             {
-                //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
                 case FiringMode.DogBrain:
                     {
                         Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
@@ -4052,7 +4051,8 @@ namespace Chummer.Backend.Equipment
                                     strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' +
                                                (intDicePool + intDicePoolModifier +
                                                 _objCharacter.Options.SpecializationBonus).ToString(objCulture) + ')';
-                                    intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
+                                    //TODO: Should specialisations just be folded into the main value? Why would we keep it separate like this?
+                                    //intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
                                 }
                             }
                         }

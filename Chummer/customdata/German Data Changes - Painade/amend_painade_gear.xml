@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gear amendoperation="addnode">
+  <id>fdcf1c53-da0b-44a3-b22b-9af5d51bce06</id>
+  <name>Grenade: Painade</name>
+  <category>Ammunition</category>
+  <rating>0</rating>
+  <source>CA</source>
+  <page>135</page>
+  <avail>12R</avail>
+  <addweapon>Grenade: Painade</addweapon>
+  <cost>150</cost>
+  <costfor>1</costfor>
+</gear>

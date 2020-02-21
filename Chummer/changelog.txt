@@ -48,6 +48,7 @@ Data Changes:
 - Added mod categories for armor mods to properly support black market pipelines.
 - Added requirements to the Oak mentor spirit, per its disadvantage of requiring 4 STR and BOD.
 - Assigned the Trafalger Gun-Cane, Knockoff Gun-Cane and Tiffani Elegance to use Light Pistol, Heavy Pistol and Holdout ammunition, respectively. Note that this is not anywhere near RAW but allows the weapons to actually be used. 
+- Added painade customdata per German rules. Closes #4023
 - Added a new customdata entry to prevent items with Custom Fit (Stack) from contributing to Encumbrance.
 
 New Strings:
