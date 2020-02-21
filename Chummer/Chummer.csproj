@@ -564,6 +564,9 @@
     <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\custom_crossbow_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Underbarrel Weapons\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Yamaha Kaburaya\amend_kaburaya_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

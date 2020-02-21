@@ -383,7 +383,6 @@
         <mount>Stock</mount>
         <mount>Side</mount>
         <mount>Internal</mount>
-        <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
