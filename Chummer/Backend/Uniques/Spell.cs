@@ -883,6 +883,8 @@ namespace Chummer
                                 {
                                     yield return bestFocus;
                                 }
+
+                                break;
                             }
 
                             yield return objImprovement;
