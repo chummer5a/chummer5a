@@ -45422,6 +45422,20 @@
 				<translate>Granate: Störgrantae Boom Boom Bunnies</translate>
 				<altpage>55</altpage>
 			</weapon>
+			<weapon translated="True">
+				<!-- Translation needed for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
+				<id>78eeb006-e377-4e5a-bf69-adae197bb5d4</id>
+				<name>Underbarrel Flamethrower</name>
+				<translate>Unterlauf-Flammenwerfer</translate>
+				<altpage>52</altpage>
+			</weapon>
+			<weapon translated="True">
+				<!-- Translation needed for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
+				<id>2845e48b-ce4e-4fd0-af23-41f5aba86f5d</id>
+				<name>Underbarrel Chainsaw</name>
+				<translate>Unterlauf-Kettensäge</translate>
+				<altpage>52</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
