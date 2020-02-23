@@ -177,72 +177,6 @@ namespace Chummer
             {
                 strForceGrade = xmlDrug.SelectSingleNode("forcegrade")?.Value;
                 // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
-                XPathNavigator xmlRatingNode = xmlDrug.SelectSingleNode("rating");
-                if (xmlRatingNode != null)
-                {
-                    string strMinRating = xmlDrug.SelectSingleNode("minrating")?.Value;
-                    int intMinRating = 1;
-                    // Not a simple integer, so we need to start mucking around with strings
-                    if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
-                    {
-                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString())
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString())
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString())
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
-
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                        intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
-                    }
-                    nudRating.Minimum = intMinRating;
-
-                    string strMaxRating = xmlRatingNode.Value;
-                    int intMaxRating = 0;
-                    // Not a simple integer, so we need to start mucking around with strings
-                    if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
-                    {
-                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString())
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString())
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString())
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
-
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
-                        intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
-                    }
-                    nudRating.Maximum = intMaxRating;
-                    if (chkHideOverAvailLimit.Checked)
-                    {
-                        int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckAvailRestriction(xmlDrug, _objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
-                        {
-                            nudRating.Maximum -= 1;
-                        }
-                    }
-
-                    if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
-                    {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                        if (chkBlackMarketDiscount.Checked)
-                            decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckNuyenRestriction(xmlDrug, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
-                        {
-                            nudRating.Maximum -= 1;
-                        }
-                    }
-                    nudRating.Value = nudRating.Minimum;
-                    nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
-                    nudRating.Visible = true;
-                    lblRatingNALabel.Visible = false;
-                    lblRatingLabel.Visible = true;
-                }
-                else
-                {
-                    lblRatingLabel.Visible = true;
-                    lblRatingNALabel.Visible = true;
-                    nudRating.Minimum = 0;
-                    nudRating.Value = 0;
-                    nudRating.Visible = false;
-                }
-
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -289,11 +223,6 @@ namespace Chummer
             }
             else
             {
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Minimum = 0;
-                nudRating.Value = 0;
-                nudRating.Visible = false;
                 cboGrade.Enabled = !_blnLockGrade;
                 strForceGrade = string.Empty;
                 Grade objForcedGrade = null;
@@ -511,19 +440,12 @@ namespace Chummer
             // Extract the Avil and Cost values from the Drug info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
-            int intRating = decimal.ToInt32(nudRating.Value);
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = objXmlDrug.SelectSingleNode("avail")?.Value;
             if (!string.IsNullOrEmpty(strAvail))
             {
                 string strAvailExpr = strAvail;
-                if (strAvailExpr.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-
                 string strSuffix = string.Empty;
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
                 if (chrSuffix == 'R')
@@ -546,9 +468,6 @@ namespace Chummer
                     strPrefix = chrPrefix.ToString();
                     strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
                 }
-
-                strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo))
-                    .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
                 if (blnIsSuccess)
@@ -582,11 +501,6 @@ namespace Chummer
                 string strCost = objXmlDrug.SelectSingleNode("cost")?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    if (strCost.StartsWith("FixedValues("))
-                    {
-                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                        strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                    }
                     // Check for a Variable Cost.
                     if (strCost.StartsWith("Variable("))
                     {
@@ -610,9 +524,6 @@ namespace Chummer
                     }
                     else
                     {
-                        strCost = strCost.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
@@ -780,7 +691,6 @@ namespace Chummer
 
             _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D");
             SelectedDrug = strSelectedId;
-            SelectedRating = decimal.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
             Markup = nudMarkup.Value;
 
