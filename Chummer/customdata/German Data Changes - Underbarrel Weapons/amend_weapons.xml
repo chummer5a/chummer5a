@@ -18,6 +18,8 @@
       <cost>500</cost>
       <source>RG</source>
       <page>53</page>
+      <range>Flamethrowers</range>
+      <useskill>Exotic Ranged Weapon</useskill>
       <required>
         <OR>
           <category>Assault Rifles</category>
@@ -59,6 +61,7 @@
       <cost>500</cost>
       <source>RG</source>
       <page>53</page>
+      <useskill>Exotic Ranged Weapon</useskill>
       <required>
         <OR>
           <category>Assault Rifles</category>
