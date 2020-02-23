@@ -17336,7 +17336,7 @@ if (!Utils.IsUnitTest){
         }
         private int _intCachedPositiveQualitiesTotal = int.MinValue;
         /// <summary>
-        /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation . 
+        /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation. 
         /// </summary>
         public int PositiveQualityKarmaTotal
         {
@@ -17344,8 +17344,9 @@ if (!Utils.IsUnitTest){
             {
                 if (_intCachedPositiveQualitiesTotal == int.MinValue)
                 {
+                    // Qualities that count towards the Quality Limit are checked first to support the house rule allowing doubling of qualities over said limit.
                     _intCachedPositiveQualitiesTotal = Qualities
-                                                      .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                                                      .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
                                                       .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualitiesTotal += Contacts
@@ -17365,6 +17366,10 @@ if (!Utils.IsUnitTest){
                             _intCachedPositiveQualitiesTotal += intPositiveQualityExcess;
                         }
                     }
+                    // Qualities that don't count towards the cap are added afterwards. 
+                    _intCachedPositiveQualitiesTotal += Qualities
+                                                           .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && !objQuality.ContributeToLimit)
+                                                           .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
                 }
                 return _intCachedPositiveQualitiesTotal;
             }
