@@ -4661,112 +4661,23 @@ namespace Chummer
 
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
-            // Locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
+            Vehicle objSelectedVehicle;
+            Location objLocation = null;
+            if (treVehicles.SelectedNode?.Tag is Vehicle)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                objSelectedVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
+            }
+            else if (treVehicles.SelectedNode?.Tag is Location)
+            {
+                objLocation = treVehicles.SelectedNode.Tag as Location;
+                objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
+            }
+            else
+            {
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-            bool blnAddAgain;
-
-            do
-            {
-                Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle);
-                frmPickGear.ShowDialog(this);
-                Cursor = Cursors.Default;
-
-                if (frmPickGear.DialogResult == DialogResult.Cancel)
-                {
-                    frmPickGear.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickGear.AddAgain;
-
-                // Open the Gear XML file and locate the selected piece.
-                XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
-
-                Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
-                if (objGear.InternalId.IsEmptyGuid())
-                {
-                    frmPickGear.Dispose();
-                    continue;
-                }
-
-                // Reduce the cost for Do It Yourself components.
-                if (frmPickGear.DoItYourself)
-                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                // If the item was marked as free, change its cost.
-                if (frmPickGear.FreeCost)
-                {
-                    objGear.Cost = "0";
-                }
-
-                objGear.Quantity = frmPickGear.SelectedQty;
-                nudVehicleRating.Increment = objGear.CostFor;
-                nudVehicleRating.Minimum = nudVehicleRating.Increment;
-
-                // Change the cost of the Sensor itself to 0.
-                //if (frmPickGear.SelectedCategory == "Sensors")
-                //{
-                //    objGear.Cost = "0";
-                //    objGear.DictionaryCostN = new Tuple<int, Dictionary<int, string>>(-1, new Dictionary<int, string>());
-                //}
-
-                frmPickGear.Dispose();
-
-                bool blnMatchFound = false;
-                // If this is Ammunition, see if the character already has it on them.
-                if (objGear.Category == "Ammunition")
-                {
-                    foreach (Gear objVehicleGear in objSelectedVehicle.Gear)
-                    {
-                        if (objVehicleGear.Name == objGear.Name &&
-                            objVehicleGear.Category == objGear.Category &&
-                            objVehicleGear.Rating == objGear.Rating &&
-                            objVehicleGear.Extra == objGear.Extra)
-                        {
-                            // A match was found, so increase the quantity instead.
-                            objVehicleGear.Quantity += objGear.Quantity;
-                            blnMatchFound = true;
-
-                            TreeNode objGearNode = objSelectedNode.FindNode(objVehicleGear.InternalId);
-                            if (objGearNode != null)
-                                objGearNode.Text = objVehicleGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-
-                            break;
-                        }
-                    }
-                }
-
-                if (!blnMatchFound)
-                {
-                    // Add the Gear to the Vehicle.
-                    objSelectedVehicle.Gear.Add(objGear);
-                    objGear.Parent = objSelectedVehicle;
-                }
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    objWeapon.ParentVehicle = objSelectedVehicle;
-                    objSelectedVehicle.Weapons.Add(objWeapon);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            PurchaseVehicleGear(objSelectedVehicle, objLocation);
         }
 
         private void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
@@ -11022,8 +10933,6 @@ namespace Chummer
                 objGear.SetActiveCommlink(CharacterObject, true);
             }
 
-            objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
             // reduce the cost for Black Market Pipeline
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
             // Reduce the cost for Do It Yourself components.
@@ -11040,16 +10949,37 @@ namespace Chummer
             {
                 CharacterObject.Weapons.Add(objWeapon);
             }
-
-            if (!blnNullParent)
+            
+            ObservableCollection<Gear> destinationGear =
+                blnNullParent ? CharacterObject.Gear : objSelectedGear.Children;
+            bool blnMatchFound = false;
+            // If this is Ammunition, see if the character already has it on them.
+            if (objGear.Category == "Ammunition")
             {
-                objSelectedGear.Children.Add(objGear);
+                foreach (Gear objVehicleGear in destinationGear)
+                {
+                    if (objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
+                        objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
+                        Enumerable.SequenceEqual(objVehicleGear.Children, objGear.Children))
+                    {
+                        if (Program.MainForm.ShowMessageBox(
+                                LanguageManager.GetString("Message_MergeIdentical", GlobalOptions.Language),
+                                LanguageManager.GetString("MessageTitle_MergeIdentical", GlobalOptions.Language),
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            // A match was found, so increase the quantity instead.
+                            objVehicleGear.Quantity += objGear.Quantity;
+                            blnMatchFound = true;
+                            break;
+                        }
+                    }
+                }
             }
-            else
+
+            if (!blnMatchFound)
             {
-                //objGear.Location = objLocation;
+                destinationGear.Add(objGear);
                 objLocation?.Children.Add(objGear);
-                CharacterObject.Gear.Add(objGear);
             }
 
             IsCharacterUpdateRequested = true;
