@@ -54,7 +54,7 @@
       <reach>1</reach>
       <damage>8P</damage>
       <ap>-4</ap>
-      <mode>SS</mode>
+      <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
       <avail>10R</avail>
