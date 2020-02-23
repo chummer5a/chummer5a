@@ -14143,22 +14143,15 @@ if (!Utils.IsUnitTest){
 
         public void RefreshRedlinerImprovements()
         {
-            List<string> lstSeekerAttributes = new List<string>();
-            List<Improvement> lstSeekerImprovements = new List<Improvement>();
             //Get attributes affected by redliner/cyber singularity seeker
-            foreach(Improvement objLoopImprovement in Improvements)
-            {
-                if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Seeker)
-                {
-                    lstSeekerAttributes.Add(objLoopImprovement.ImprovedName);
-                }
-                else if((objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
-                          objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
-                         objLoopImprovement.SourceName.Contains("SEEKER"))
-                {
-                    lstSeekerImprovements.Add(objLoopImprovement);
-                }
-            }
+            
+            List<Improvement> lstSeekerImprovements = Improvements.Where(objLoopImprovement =>
+                (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
+                 objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
+                objLoopImprovement.SourceName.Contains("SEEKER")).ToList();
+            List<string> lstSeekerAttributes = new List<string>(Improvements
+                .Where(imp => imp.ImproveType == Improvement.ImprovementType.Seeker)
+                .Select(objImprovement => objImprovement.ImprovedName));
 
             //if neither contains anything, it is safe to exit
             if(lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
@@ -14169,18 +14162,10 @@ if (!Utils.IsUnitTest){
             XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
                 .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{GameplayOption}\"]");
             
-            List<string> excludedLimbs = new List<string>();
-            foreach (XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb"))
-            {
-                excludedLimbs.Add(n.Value);
-            }
+            List<string> excludedLimbs = (from XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb") select n.Value).ToList();
 
             //Calculate bonus from cyberlimbs
-            int intCount = 0;
-            foreach(Cyberware objCyberware in Cyberware)
-            {
-                intCount += objCyberware.GetCyberlimbCount(excludedLimbs);
-            }
+            int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
 
             intCount = Math.Min(intCount / 2, 2);
             _intCachedRedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI")

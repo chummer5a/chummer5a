@@ -3724,7 +3724,7 @@ namespace Chummer.Backend.Equipment
                 }
                 if (ParentVehicle == null)
                 {
-                    intBonus += intBonus + _objCharacter.RedlinerBonus;
+                    intBonus += _objCharacter.RedlinerBonus;
                 }
                 intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
