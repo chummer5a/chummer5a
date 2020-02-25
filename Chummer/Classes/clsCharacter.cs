@@ -15145,11 +15145,6 @@ if (!Utils.IsUnitTest){
                 _intCachedAmbidextrous = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
-            {
-                _intCachedAmbidextrous = int.MinValue;
-            }
-
             if(lstNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
             {
                 _intCachedBlackMarketDiscount = int.MinValue;

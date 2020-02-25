@@ -249,7 +249,6 @@ namespace Chummer
                             DataSourceUpdateMode.OnPropertyChanged);
                         txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false,
                             DataSourceUpdateMode.OnPropertyChanged);
-                        chkJoinGroup.Checked = CharacterObject.GroupMember;
 
                         txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
                         txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
