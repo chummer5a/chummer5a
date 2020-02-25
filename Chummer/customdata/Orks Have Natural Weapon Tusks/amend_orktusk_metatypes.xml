@@ -20,7 +20,7 @@
 <chummer>
   <metatypes>
     <metatype>
-      <name>Troll</name>
+      <name>Ork</name>
       <qualities>
         <negative amendoperation="addnode">
           <quality removable="True">Tusks</quality>

@@ -57,6 +57,7 @@ Data Changes:
 - Fixed Busted Ware not being able to be taken multiple times. 
 - Added customdata for the Ares HVAR and GE Vindicator to use German hyper-velocity ammunition rules.
 - Added a customdata override for Skillwires and Skilljack to match German data changes.
+- Fixed the ork tusk customdata rule applying to Trolls instead.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
