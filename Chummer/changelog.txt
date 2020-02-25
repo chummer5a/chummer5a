@@ -54,6 +54,8 @@ Data Changes:
 - Added a new customdata entry to prevent items with Custom Fit (Stack) from contributing to Encumbrance.
 - Fixed incorrect pages for prostitution and bribe gear objects.
 - Fixed incorrect names for the Pit Fighter, Street Preacher and Environmental Combat Specialist life modules that prevented them from being taken.
+- Fixed Busted Ware not being able to be taken multiple times. 
+- Added customdata for the Ares HVAR and GE Vindicator to use German hyper-velocity ammunition rules.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

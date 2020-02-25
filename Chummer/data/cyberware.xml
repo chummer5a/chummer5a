@@ -8357,6 +8357,7 @@
       <name>Busted Ware</name>
       <category>Bodyware</category>
       <ess>0.5</ess>
+      <limit>False</limit>
       <capacity>0</capacity>
       <avail>0</avail>
       <removalcost>16000</removalcost>
