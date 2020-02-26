@@ -578,6 +578,15 @@ namespace Translator
                 dataTable.Columns.Add("Page");
             }
 
+            if (strFileName == "mentors.xml" || strFileName == "paragons.xml")
+            {
+                dataTable.Columns.Add("Advantage");
+                dataTable.Columns.Add("Translated Advantage");
+                dataTable.Columns.Add("Disadvantage");
+                dataTable.Columns.Add("Translated Disadvantage");
+
+            }
+
             dataTable.Columns.Add("Translated?");
             if (blnHasNameOnPage)
                 dataTable.Columns.Add("NameOnPage");
@@ -638,9 +647,15 @@ namespace Translator
                             else
                             {
                                 string strName;
-                                string strPage = string.Empty;
-                                string strSource = string.Empty;
-                                string strNameOnPage = string.Empty;
+                                string strPage            = string.Empty;
+                                string strSource          = string.Empty;
+                                string strNameOnPage      = string.Empty;
+                                string strAdvantage       = string.Empty;
+                                string strAdvantageAlt    = string.Empty;
+                                string strDisadvantage    = string.Empty;
+                                string strDisadvantageAlt = string.Empty;
+
+                                bool blnAdvantage      = strFileName == "mentors.xml" || strFileName == "paragons.xml";
                                 XmlNode xmlChildNameNode = xmlChildNode["name"];
                                 if (xmlChildNameNode == null)
                                 {
@@ -662,13 +677,53 @@ namespace Translator
                                     blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString;
                                     if (blnHasNameOnPage)
                                         strNameOnPage = xmlChildNode["altnameonpage"]?.InnerText ?? string.Empty;
+                                    if (blnAdvantage)
+                                    {
+                                        strAdvantage       = xmlNodeLocal?["advantage"]?.InnerText    ?? string.Empty;
+                                        strDisadvantage    = xmlNodeLocal?["disadvantage"]?.InnerText ?? string.Empty;
+                                        strAdvantageAlt    = xmlChildNode["altadvantage"]?.InnerText ?? string.Empty;
+                                        strDisadvantageAlt = xmlChildNode["altdisadvantage"]?.InnerText ?? string.Empty;
+
+                                        blnTranslated =
+                                            (strName != strTranslated ||
+                                             xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString ||
+                                             strAdvantage != strAdvantageAlt || strDisadvantage != strDisadvantageAlt);
+                                    }
                                 }
 
                                 if (!blnTranslated || !chkOnlyTranslation.Checked)
                                 {
-                                    object[] objArray = blnHasNameOnPage
-                                        ? new object[] { strId, strName, strTranslated, strSource, strPage, blnTranslated, strNameOnPage }
-                                        : new object[] { strId, strName, strTranslated, strSource, strPage, blnTranslated };
+                                    object[] objArray;
+                                    if (blnHasNameOnPage)
+                                        objArray = new object[]
+                                        {
+                                            strId, strName, strTranslated, strSource, strPage, blnTranslated,
+                                            strNameOnPage
+                                        };
+                                    else if (blnAdvantage)
+                                    {
+                                        if (blnHasNameOnPage)
+                                        {
+                                            objArray = new object[]
+                                            {
+                                                strId, strName, strTranslated, strSource, strPage, strAdvantage,
+                                                strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated,
+                                                strNameOnPage
+                                            };
+                                        }
+                                        else
+                                        {
+                                            objArray = new object[]
+                                            {
+                                                strId, strName, strTranslated, strSource, strPage, strAdvantage,
+                                                strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated
+                                            };
+
+                                        }
+                                    }
+                                    else
+                                        objArray = new object[]
+                                            {strId, strName, strTranslated, strSource, strPage, blnTranslated};
                                     lock (arrayRowsToDisplayLock)
                                         arrayRowsToDisplay[i] = objArray;
                                 }
