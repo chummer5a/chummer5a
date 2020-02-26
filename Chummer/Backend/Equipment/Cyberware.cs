@@ -4969,11 +4969,15 @@ namespace Chummer.Backend.Equipment
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
             objExpense.Undo = objUndo;
-
-            if (oldEssence - CalculatedESS() > 0)
+            decimal decEssDelta = oldEssence - CalculatedESS();
+            if (decEssDelta > 0)
             {
                 //The new Essence cost is greater than the old one.
-                characterObject.IncreaseEssenceHole((int) (CalculatedESS() * 100));
+                characterObject.IncreaseEssenceHole((int) (decEssDelta * 100));
+            }
+            else if (decEssDelta < 0)
+            {
+                characterObject.DecreaseEssenceHole((int)(decEssDelta * 100)*-1);
             }
         }
 
