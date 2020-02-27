@@ -16,6 +16,7 @@ Application Changes:
 - Added support for specifying that a given piece of armour does or does not count towards a character's Encumbrance limit. While this defaults to True for all existing gear, this can be added to any new object by including an encumbrance xml node with a value of False. When applied to armour with an Override Value, ie items with Custom Fit (Stack), they will only be excluded from Encumbrance behaviour when they are expected to provide their + bonus instead. Standard +armour items like Riot Shields can also use this behaviour. See customdata\Custom Fit (Stack) Does Not Encumber\amend_encumbrance_armor.xml for an example. 
 - Positive Qualities that do not count towards the quality limit are no longer doubled when using the optional rule to allow qualities to exceed the cap.
 - Translator now allows translating mentor advantages and disadvantages. 
+- Fixed issues with condition monitor controls greater than 24 not being shown.
 
 Application Fixes:
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
@@ -59,6 +60,7 @@ Data Changes:
 - Added customdata for the Ares HVAR and GE Vindicator to use German hyper-velocity ammunition rules.
 - Added a customdata override for Skillwires and Skilljack to match German data changes.
 - Fixed the ork tusk customdata rule applying to Trolls instead.
+- Fixed incorrect page reference for the Realistic Form critter power. 
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

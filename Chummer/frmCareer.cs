@@ -1275,12 +1275,6 @@ namespace Chummer
                 case nameof(Character.CMOverflow):
                 case nameof(Character.CMThreshold):
                 case nameof(Character.CMThresholdOffsets):
-                case nameof(Character.StunCM):
-                case nameof(Character.StunCMFilled):
-                case nameof(Character.StunCMThresholdOffset):
-                case nameof(Character.PhysicalCM):
-                case nameof(Character.PhysicalCMFilled):
-                case nameof(Character.PhysicalCMThresholdOffset):
                     ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
                         CharacterObject.CMThreshold, CharacterObject.PhysicalCMThresholdOffset,
                         CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true,
@@ -1288,6 +1282,21 @@ namespace Chummer
                     ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
                         CharacterObject.CMThreshold, CharacterObject.StunCMThresholdOffset, 0, chkStunCM_CheckedChanged,
                         true, CharacterObject.StunCMFilled);
+                    break;
+                case nameof(Character.StunCM):
+                case nameof(Character.StunCMFilled):
+                case nameof(Character.StunCMThresholdOffset):
+                    ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
+                        CharacterObject.CMThreshold, CharacterObject.StunCMThresholdOffset, 0, chkStunCM_CheckedChanged,
+                        true, CharacterObject.StunCMFilled);
+                    break;
+                case nameof(Character.PhysicalCM):
+                case nameof(Character.PhysicalCMFilled):
+                case nameof(Character.PhysicalCMThresholdOffset):
+                    ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
+                        CharacterObject.CMThreshold, CharacterObject.PhysicalCMThresholdOffset,
+                        CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true,
+                        CharacterObject.PhysicalCMFilled);
                     break;
                 case nameof(Character.MAGEnabled):
                 {
@@ -12860,30 +12869,36 @@ namespace Chummer
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
-                if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Count() < intConditionMax)
+                if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Count() < intConditionMax + intOverflow)
                 {
                     int max = 0;
                     if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Any())
                     {
                         max = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Max(x => Convert.ToInt32(x.Tag));
                     }
-                    for (int i = max; i < intConditionMax; i++)
+
+                    if (max < intConditionMax + intOverflow)
                     {
-                        CheckBox cb = new CheckBox
+                        for (int i = max + 1; i <= intConditionMax + intOverflow; i++)
                         {
-                            Tag = i,
-                            Appearance = Appearance.Button,
-                            Size = new Size(24, 24),
-                            TextAlign = ContentAlignment.MiddleRight,
-                            UseVisualStyleBackColor = true
-                        };
-                        cb.Click += button_Click;
-                        pnlConditionMonitorPanel.Controls.Add(cb);
+                            CheckBox cb = new CheckBox
+                            {
+                                Tag = i,
+                                Appearance = Appearance.Button,
+                                Size = new Size(24, 24),
+                                Margin = new Padding(1, 1, 1, 1),
+                                TextAlign = ContentAlignment.MiddleRight,
+                                UseVisualStyleBackColor = true
+                            };
+                            cb.Click += button_Click;
+                            pnlConditionMonitorPanel.Controls.Add(cb);
+                        }
                     }
                 }
                 foreach (CheckBox chkCmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag);
+                    chkCmBox.BackColor = SystemColors.Control;
                     if (intCurrentBoxTag == value)
                         currentBox = chkCmBox;
                     if (intCurrentBoxTag <= intConditionMax)
