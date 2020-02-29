@@ -103,7 +103,7 @@ namespace Chummer
                 {
                     result = result.Replace(message, translated);
                 }
-                else
+                else if (!string.IsNullOrEmpty(translated))
                 {
                     var pattern = $"{Regex.Escape(message)}";
                     pattern = Regex.Replace(pattern, @"\\{([0-9]+)\}", "(?<group$1>.*)");

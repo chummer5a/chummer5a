@@ -145,7 +145,7 @@ namespace Chummer.Backend.Equipment
         public Guid SourceId => _guiSourceID;
 
         /// <summary>
-        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D");
 

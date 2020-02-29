@@ -3125,10 +3125,12 @@ namespace Chummer
                     break;
                 }
 
-                frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject);
-                frmPickSpell.FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
-                                        (CharacterObject.AllowFreeSpells.Item1 ||
-                                         CharacterObject.AllowFreeSpells.Item2);
+                frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject)
+                {
+                    FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
+                               (CharacterObject.AllowFreeSpells.Item1 ||
+                                CharacterObject.AllowFreeSpells.Item2)
+                };
                 frmPickSpell.ShowDialog(this);
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSpell.DialogResult == DialogResult.Cancel)
@@ -7154,13 +7156,13 @@ namespace Chummer
         {
             Vehicle objSelectedVehicle;
             Location objLocation = null;
-            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            if (treVehicles.SelectedNode?.Tag is Vehicle vehicle)
             {
-                objSelectedVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
+                objSelectedVehicle = vehicle;
             }
-            else if (treVehicles.SelectedNode?.Tag is Location)
+            else if (treVehicles.SelectedNode?.Tag is Location location)
             {
-                objLocation = treVehicles.SelectedNode.Tag as Location;
+                objLocation = location;
                 objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
             }
             else
@@ -14555,8 +14557,7 @@ namespace Chummer
             // Open the Cyberware XML file and locate the selected piece.
             XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]") : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
 
-            Cyberware objCyberware = new Cyberware(CharacterObject);
-            objCyberware.ESSDiscount = frmPickCyberware.SelectedESSDiscount;
+            Cyberware objCyberware = new Cyberware(CharacterObject) {ESSDiscount = frmPickCyberware.SelectedESSDiscount};
             if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount))
             {
                 IsCharacterUpdateRequested = true;
@@ -14583,9 +14584,9 @@ namespace Chummer
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
-            if (iParent is Gear)
+            if (iParent is Gear gear)
             {
-                objSelectedGear = (Gear) iParent;
+                objSelectedGear = gear;
             }
             else
             {
@@ -17471,9 +17472,11 @@ private void RefreshSelectedSpell()
 
                 if (frmSell.DialogResult == DialogResult.Cancel)
                     return;
-                frmSelectCyberware pickCyber = new frmSelectCyberware(CharacterObject, objCyberware.SourceType);
-                pickCyber.DefaultSearchText = objCyberware.DisplayNameShort(GlobalOptions.Language);
-                pickCyber.Upgrading = true;
+                frmSelectCyberware pickCyber = new frmSelectCyberware(CharacterObject, objCyberware.SourceType)
+                {
+                    DefaultSearchText = objCyberware.DisplayNameShort(GlobalOptions.Language),
+                    Upgrading = true
+                };
                 pickCyber.ShowDialog(this);
 
                 if (pickCyber.DialogResult == DialogResult.Cancel)

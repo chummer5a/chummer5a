@@ -451,15 +451,9 @@ namespace Chummer
                             if (strNodeAttributes.Contains(objLoopAttrib.Abbrev))
                             {
                                 strAttributes = strAttributes.Replace(strAttribute, objLoopAttrib.DisplayAbbrev);
-                                if (xmlNode.SelectSingleNode("natural") != null)
-                                {
-                                    strValue = strValue.Replace(strAttribute, objLoopAttrib.Value.ToString());
-                                }
-                                else
-                                {
-                                    strValue = strValue.Replace(strAttribute, objLoopAttrib.TotalValue.ToString());
-                                }
-                                
+                                strValue = strValue.Replace(strAttribute, xmlNode.SelectSingleNode("natural") != null
+                                    ? objLoopAttrib.Value.ToString()
+                                    : objLoopAttrib.TotalValue.ToString());
                             }
                         }
                         if (blnShowMessage)

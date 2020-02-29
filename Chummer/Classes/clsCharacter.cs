@@ -17556,7 +17556,7 @@ if (!Utils.IsUnitTest){
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-            string s = GetNode().SelectSingleNode("altpage").Value ?? Page;
+            string s = GetNode()?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

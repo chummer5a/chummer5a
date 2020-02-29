@@ -2359,10 +2359,10 @@ namespace Chummer
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Load(objXmlNode, true);
                     if (objSelectedObject is ICanPaste selected && selected.AllowPasteXml &&
-                        objSelectedObject is IHasGear)
+                        objSelectedObject is IHasGear gear)
                     {
-                        (objSelectedObject as IHasGear).Gear.Add(objGear);
-                        if (objSelectedObject is ICanEquip selectedEquip && !selectedEquip.Equipped)
+                        gear.Gear.Add(objGear);
+                        if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
                             objGear.ChangeEquippedStatus(false);
                     }
                     else
@@ -4662,13 +4662,13 @@ namespace Chummer
         {
             Vehicle objSelectedVehicle;
             Location objLocation = null;
-            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            if (treVehicles.SelectedNode?.Tag is Vehicle vehicle)
             {
-                objSelectedVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
+                objSelectedVehicle = vehicle;
             }
-            else if (treVehicles.SelectedNode?.Tag is Location)
+            else if (treVehicles.SelectedNode?.Tag is Location location)
             {
-                objLocation = treVehicles.SelectedNode.Tag as Location;
+                objLocation = location;
                 objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
             }
             else
@@ -10959,7 +10959,7 @@ namespace Chummer
                 {
                     if (objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
                         objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                        Enumerable.SequenceEqual(objVehicleGear.Children, objGear.Children))
+                        objVehicleGear.Children.SequenceEqual(objGear.Children))
                     {
                         if (Program.MainForm.ShowMessageBox(
                                 LanguageManager.GetString("Message_MergeIdentical", GlobalOptions.Language),
@@ -12226,7 +12226,7 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(
                                   LanguageManager.GetString("Message_InvalidPowerPoints", GlobalOptions.Language),
-                                  (CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal).ToString(),
+                                  (CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal).ToString(GlobalOptions.CultureInfo),
                                   CharacterObject.PowerPointsTotal.ToString());
             }
 
@@ -14728,14 +14728,9 @@ namespace Chummer
 
             if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
-                if (cboVehicleWeaponFiringMode.SelectedValue == null)
-                {
-                    objWeapon.FireMode = Weapon.FiringMode.DogBrain;
-                }
-                else
-                {
-                    objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue?.ToString());
-                }
+                objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedValue != null
+                    ? Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString())
+                    : Weapon.FiringMode.DogBrain;
                 RefreshSelectedVehicle();
 
                 IsDirty = true;

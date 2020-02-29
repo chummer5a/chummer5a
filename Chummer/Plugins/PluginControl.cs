@@ -91,8 +91,7 @@ namespace Chummer.Plugins
         //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
         public static bool RegisterChummerProtocol()
         {
-            var startupExe = System.Windows.Forms.Application.StartupPath;
-            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            string startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
             RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
             bool reregisterKey = false;
             if (key != null)
@@ -108,8 +107,8 @@ namespace Chummer.Plugins
                 {
                     if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
                         reregisterKey = true;
+                    key.Close();
                 }
-                key.Close();
             }
             else
             {
@@ -138,6 +137,19 @@ namespace Chummer.Plugins
         public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
         {
             RegistryKey Software = Registry.CurrentUser.OpenSubKey("Software");  //open myApp protocol's subkey
+            // Just in case there's something super-weird going on
+            if (Software == null)
+            {
+                try
+                {
+                    Software = Registry.CurrentUser.CreateSubKey("Software", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                }
+                catch (System.UnauthorizedAccessException e)
+                {
+                    Log.Error(e);
+                    return false;
+                }
+            }
             RegistryKey Classes = Software.OpenSubKey("Classes", true);
             if (Classes == null)
             {
@@ -151,18 +163,15 @@ namespace Chummer.Plugins
                     return false;
                 }
             }
-            RegistryKey key = Classes.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
 
-            if (key == null) //if the protocol is not registered yet...we register it
-            {
-                key = Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            }
+            RegistryKey key = Classes.OpenSubKey("Chummer", true) //open myApp protocol's subkey
+                              //if the protocol is not registered yet...we register it
+                              ?? Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
             key.SetValue(string.Empty, "URL: Chummer Protocol");
             key.SetValue("URL Protocol", string.Empty);
 
-            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            if (shell == null)
-                shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree)
+                                ?? key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
             shell.SetValue(string.Empty, myAppPath + " " + "%1");
             //%1 represents the argument - this tells windows to open this program with an argument / parameter
             shell.Close();
@@ -303,9 +312,7 @@ namespace Chummer.Plugins
                 var list = MyPlugins.ToList();
                 foreach(var plugin in list)
                 {
-                    bool enabled = true;
-                    GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out enabled);
-                    if (enabled)
+                    if (!GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
                         result.Add(plugin);
                 }
                 return result;
@@ -327,7 +334,7 @@ namespace Chummer.Plugins
 
         public static void Refresh()
         {
-            foreach (DirectoryCatalog dCatalog in catalog.Catalogs)
+            foreach (DirectoryCatalog dCatalog in catalog.Catalogs.Cast<DirectoryCatalog>())
                 dCatalog.Refresh();
         }
 

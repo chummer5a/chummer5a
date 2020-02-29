@@ -229,7 +229,7 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                                 decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"]?.InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             List<Weapon> lstWeapons = new List<Weapon>();
@@ -1398,22 +1398,32 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         XPathNavigator checkNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gears/gear")?.CreateNavigator();
-
-                        XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
+                        if (checkNode == null)
+                            return false;
                         bool blnAdd = false;
-                        if (xmlGearCategoryList?.Count > 0)
+                        string strCheckValue = checkNode.SelectSingleNode("category")?.Value;
+                        if (!string.IsNullOrEmpty(strCheckValue))
                         {
-                            if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == checkNode.SelectSingleNode("category").Value))
+                            XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
+                            if (xmlGearCategoryList?.Count > 0)
                             {
-                                blnAdd = true;
+                                if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == strCheckValue))
+                                {
+                                    blnAdd = true;
+                                }
                             }
                         }
-                        XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
-                        if (xmlGearNameList?.Count > 0)
+
+                        strCheckValue = checkNode.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strCheckValue))
                         {
-                            if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == checkNode.SelectSingleNode("name").Value))
+                            XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
+                            if (xmlGearNameList?.Count > 0)
                             {
-                                blnAdd = true;
+                                if (xmlGearNameList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == strCheckValue))
+                                {
+                                    blnAdd = true;
+                                }
                             }
                         }
 

@@ -165,8 +165,8 @@ namespace Chummer
 
             // Draw an ellipse 1/2 the size of the eye
             // centered at (px, py).
-            int x = (int)(px - wid / 4);
-            int y = (int)(py - hgt / 4);
+            int x = (int)(px - (double)wid / 4);
+            int y = (int)(py - (double)hgt / 4);
             int width = wid / 2;
             int height = hgt / 2;
             try

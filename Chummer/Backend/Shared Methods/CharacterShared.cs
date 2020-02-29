@@ -60,9 +60,11 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
             string name = "Show_Form_" + this.GetType();
-            PageViewTelemetry pvt = new PageViewTelemetry(name);
-            pvt.Id = Guid.NewGuid().ToString();
-            pvt.Name = name;
+            PageViewTelemetry pvt = new PageViewTelemetry(name)
+			{
+				Id = Guid.NewGuid().ToString(),
+				Name = name
+			};
             pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
             pvt.Properties.Add("Name", objCharacter?.Name);
             pvt.Properties.Add("Path", objCharacter?.FileName);
@@ -6368,7 +6370,7 @@ namespace Chummer
                     foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
                         objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
                         objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                        Enumerable.SequenceEqual(objVehicleGear.Children, objGear.Children)))
+                        objVehicleGear.Children.SequenceEqual(objGear.Children)))
                     {
                         // A match was found, so increase the quantity instead.
                         objVehicleGear.Quantity += objGear.Quantity;
@@ -6381,19 +6383,13 @@ namespace Chummer
                 if (!blnMatchFound)
                 {
                     // Add the Gear to the Vehicle.
-                    if (objLocation != null)
-                    {
-                        objLocation.Children.Add(objGear);
-                    }
+                    objLocation?.Children.Add(objGear);
                     objSelectedVehicle.Gear.Add(objGear);
                     objGear.Parent = objSelectedVehicle;
 
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        if (objLocation != null)
-                        {
-                            objLocation.Children.Add(objGear);
-                        }
+                        objLocation?.Children.Add(objGear);
                         objWeapon.ParentVehicle = objSelectedVehicle;
                         objSelectedVehicle.Weapons.Add(objWeapon);
                     }
