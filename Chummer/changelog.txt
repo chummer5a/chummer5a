@@ -31,6 +31,7 @@ Application Fixes:
 - Fixed bonuses incorrectly being added twice to cyberlimbs.
 - Fixed cyberware improperly being allowed to be flagged as prototype transhuman. Existing cyberware with this flag will be reverted to false.
 - Unified behaviour of gear purchasing for vehicles between create and career mode. Ensures that black market pipeline is properly respected and that ammunition objects can be stacked. 
+- Added catch behaviour to validate that PDF output can correctly save a file to a given path.
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
