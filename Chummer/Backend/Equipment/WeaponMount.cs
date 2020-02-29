@@ -1014,14 +1014,16 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Weapon:
                     {
-                        if (AllowedWeapons != string.Empty)
+                        if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            if (!AllowedWeapons.Contains(GlobalOptions.Clipboard.SelectSingleNode("name").InnerText))
+                            string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("name")?.InnerText;
+                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
                                 return false;
                         }
-                        if (AllowedWeaponCategories != string.Empty)
+                        if (!string.IsNullOrEmpty(AllowedWeaponCategories))
                         {
-                            if (!AllowedWeaponCategories.Contains(GlobalOptions.Clipboard.SelectSingleNode("category").InnerText))
+                            string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("category")?.InnerText;
+                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
                                 return false;
                         }
 

@@ -830,8 +830,7 @@ namespace Chummer
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
-            UseAILogging useAI;
-            Enum.TryParse<UseAILogging>(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out useAI);
+            Enum.TryParse(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out UseAILogging useAI);
             GlobalOptions.UseLoggingApplicationInsights = useAI;
             
             if (string.IsNullOrEmpty(_strSelectedLanguage))
@@ -886,7 +885,7 @@ namespace Chummer
                 objRegistry.SetValue("defaultbuildmethod", cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue);
                 objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
                 objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
-                objRegistry.SetValue("emulatedbrowserversion", nudBrowserVersion.Value.ToString());
+                objRegistry.SetValue("emulatedbrowserversion", nudBrowserVersion.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
                 objRegistry.SetValue("pdfparameters", cboPDFParameters.SelectedValue.ToString());
                 objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
@@ -1938,7 +1937,6 @@ namespace Chummer
                     {
                         Log.Debug(ae);
                     }
-                    
                 }
 
                 if (clbPlugins.Items.Count > 0)
@@ -1951,8 +1949,11 @@ namespace Chummer
         private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
         {
             UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
-            panelPluginOption.Controls.Clear();
-            panelPluginOption.Controls.Add(pluginControl);
+            if (pluginControl != null)
+            {
+                panelPluginOption.Controls.Clear();
+                panelPluginOption.Controls.Add(pluginControl);
+            }
         }
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)

@@ -665,14 +665,7 @@ namespace Chummer
             {
                 _enumUseLoggingApplicationInsights = value;
                 // Sets up logging if the option is changed during runtime
-                if (_enumUseLoggingApplicationInsights <=  UseAILogging.OnlyLocal)
-                {
-                    TelemetryConfiguration.Active.DisableTelemetry = false;
-                }
-                else
-                {
-                    TelemetryConfiguration.Active.DisableTelemetry = true;
-                }
+                TelemetryConfiguration.Active.DisableTelemetry = _enumUseLoggingApplicationInsights > UseAILogging.OnlyLocal;
             }
         }
         /// <summary>

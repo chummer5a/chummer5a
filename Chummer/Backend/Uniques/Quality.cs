@@ -224,9 +224,9 @@ namespace Chummer
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                            if (objXmlAddWeapon.Attributes?["rating"]?.InnerText != null)
                             {
-                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText);
+                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText);
                             }
                             Weapon objGearWeapon = new Weapon(_objCharacter);
                             objGearWeapon.Create(objXmlWeapon, lstWeapons,true, true,true, intAddWeaponRating);

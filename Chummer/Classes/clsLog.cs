@@ -284,24 +284,12 @@ namespace Chummer
             if(!IsLoggerEnabled)
                 return;
 
-            if (String.IsNullOrEmpty(message))
-            {
-                writeLog(
-                    new object[] {exception, exception.StackTrace},
-                    exception.Source,
-                    exception.TargetSite.Name,
-                    (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
-                    LogLevel.Fatal);
-            }
-            else
-            {
-                writeLog(
-                    new object[] {message, exception, exception.StackTrace },
-                    exception.Source,
-                    exception.TargetSite.Name,
-                    (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
-                    LogLevel.Fatal);
-            }
+            writeLog(
+                string.IsNullOrEmpty(message) ? new object[] {exception, exception.StackTrace} : new object[] {message, exception, exception.StackTrace},
+                exception.Source,
+                exception.TargetSite.Name,
+                (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
+                LogLevel.Fatal);
         }
 
         /// <summary>

@@ -979,7 +979,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
-            objWriter.WriteElementString("location", Location?.DisplayName(GlobalOptions.Language));
+            objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");
@@ -1018,7 +1018,7 @@ namespace Chummer.Backend.Equipment
 
             // Currently loaded Ammo.
             Guid guiAmmo = GetClip(_intActiveAmmoSlot).Guid;
-            objWriter.WriteElementString("availableammo", GetAvailableAmmo.ToString());
+            objWriter.WriteElementString("availableammo", GetAvailableAmmo.ToString(objCulture));
             objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo, strLanguageToPrint));
             objWriter.WriteStartElement("clips");
             foreach (Clip objClip in _lstAmmo)

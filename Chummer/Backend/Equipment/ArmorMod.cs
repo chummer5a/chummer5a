@@ -210,9 +210,9 @@ namespace Chummer.Backend.Equipment
                                 : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
                             int intAddWeaponRating = 0;
-                            if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                            if (objXmlAddWeapon.Attributes?["rating"]?.InnerText != null)
                             {
-                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText
                                     .CheapReplace("{Rating}", () => Rating.ToString()));
                             }
                             Weapon objGearWeapon = new Weapon(_objCharacter);
