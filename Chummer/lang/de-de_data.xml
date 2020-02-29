@@ -19419,6 +19419,20 @@
 				<translate>Bolzen: Schockerspitze mit Statikschaft (Schwere Armbrust)</translate>
 				<altpage>180</altpage>
 			</gear>
+			<!-- Begin of translation for custom rule 'Delnar Skills Remake' -->
+			<gear>
+				<id>1efc3ad3-c5d7-4534-ab97-a059f08f1b74</id>
+				<name>Artificing Focus</name>
+				<translate>Entzauberungsfokus</translate>
+				<altpage>318</altpage>
+			</gear>
+			<gear>
+				<id>7676d897-ac6e-40ed-abd1-378ecf2ed36e</id>
+				<name>Artificing Focus Formula</name>
+				<translate>Entzauberungsfokus Formel</translate>
+				<altpage>318</altpage>
+			</gear>
+			<!-- End of translation for custom rule 'Delnar Skills Remake' -->
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -31472,6 +31486,18 @@
 			<name translate="Hexerei">Sorcery</name>
 			<name translate="Heimlichkeit">Stealth</name>
 			<name translate="Tasken">Tasking</name>
+			<!-- Begin of translation for custom rule 'Delnar Skills Remake' -->
+			<name translate="Projektil- und Wurfwaffen">Projectile Weapons</name>
+			<name translate="Leistungsfähigkeit">Prowess</name>
+			<name translate="Fahrzeuge">Driving</name>
+			<name translate="Inszenierung">Stagecraft</name>
+			<name translate="Militärwissenschaft">Military Science</name>
+			<name translate="Computer">Computers</name>
+			<name translate="Biotechnologie">Biotechnology</name>
+			<name translate="Ätherologie">Aetherology</name>
+			<name translate="Zauberei">Sorcery</name>
+			<name translate="Matrixarbeiten">Processing</name>
+			<!-- End of translation for custom rule 'Delnar Skills Remake' -->
 		</skillgroups>
 		<categories>
 			<category type="active" translate="Kampf-Aktionsfertigkeiten">Combat Active</category>
@@ -32470,6 +32496,92 @@
 				</specs>
 				<altpage>394</altpage>
 			</skill>
+			<!-- Begin of translation for custom rule 'Delnar Skills Remake' -->
+			<skill>
+				<id>a9fa961d-07e5-46da-8edc-403ae3e6cc75</id>
+				<name>Acrobatics</name>
+				<translate>Akrobatik</translate>
+				<specs>
+					<spec translate="Klettern">Climbing</spec>
+					<spec translate="Verrenkung">Contortion</spec>
+					<spec translate="Fallen/Freifall">Falling/Free-Falling</spec>
+					<spec translate="Springen">Jumping/Leaping</spec>
+				</specs>
+				<altpage>132</altpage>
+			</skill>
+			<skill>
+				<id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
+				<name>Acting</name>
+				<translate>Schauspielerei</translate>
+				<specs>
+					<spec translate="Emotional (SimSinn)">Emotional (SimSense)</spec>
+					<spec translate="Schminken">Make-Up</spec>
+					<spec translate="Verkörperung">Physical</spec>
+					<spec translate="Stimme">Voice</spec>
+				</specs>
+				<altpage>137</altpage>
+			</skill>
+			<skill>
+				<id>fc89344f-daa6-438e-b61d-23f10dd13e44</id>
+				<name>Alchemy</name>
+				<translate>Alchemie</translate>
+				<specs>
+					<spec translate="Besondere Vorbereitung">[Specific Preparation]</spec>
+				</specs>
+				<altpage>142</altpage>
+			</skill>
+			<skill>
+				<id>0dbcb9cd-f824-4b5d-a387-90d33318b04c</id>
+				<name>Aquatics</name>
+				<translate>Wassersport</translate>
+				<specs>
+					<spec translate="Tauchen">Diving</spec>
+					<spec translate="Paddeln">Paddling</spec>
+					<spec translate="Schwimmen">Swimming</spec>
+					<spec translate="[Muskelkraftgetriebene Wasserfortbewegung]">[Muscle-Powered Water Locomotion]</spec>
+				</specs>
+				<altpage>133</altpage>
+			</skill>
+			<skill>
+				<id>59318078-e071-411b-9194-7222560e9f4a</id>
+				<name>Astral</name>
+				<translate>Astral</translate>
+				<specs>
+					<spec translate="Tauchen">Assensing</spec>
+					<spec translate="Astralkampf">Astral Combat</spec>
+					<spec translate="Astralnavigation">Astral Navigation</spec>
+				</specs>
+				<altpage>142</altpage>
+			</skill>
+			<skill>
+				<id>1531b2d8-6116-4be4-87b0-232dba1fc447</id>
+				<name>Athletics</name>
+				<translate>Athletik</translate>
+				<specs>
+					<spec translate="Fahrradfahren">Cycling</spec>
+					<spec translate="Laufen">Running</spec>
+					<spec translate="Skating">Skating</spec>
+					<spec translate="Skilaufen">Skiing</spec>
+					<spec translate="[Muskelkraftgetriebene Boden- oder Luftfortbewegung]">[Muscle-Powered Ground or Air Locomotion]</spec>
+				</specs>
+				<altpage>132</altpage>
+			</skill>
+			<skill>
+				<id>cd9f6bf7-fa48-464b-9a8f-c7ce26713a72</id>
+				<name>Blunt Weapons</name>
+				<translate>Stumpfe Waffen</translate>
+				<specs>
+					<spec translate="Rammen">Battering Rams</spec>
+					<spec translate="Flexible Waffen">Flexible Weapons</spec>
+					<spec translate="Große Knüppel/Keulen">Large Clubs/Maces</spec>
+					<spec translate="Schilde">Shields</spec>
+					<spec translate="Kleine Knüppel/Keulen">Small Clubs/Maces</spec>
+					<spec translate="Stäbe">Staves</spec>
+					<spec translate="Schockwaffen">Stun Guns</spec>
+				</specs>
+				<altpage>131</altpage>
+			</skill>
+			<!-- End of translation for custom rule 'Delnar Skills Remake' -->
 		</skills>
 		<knowledgeskills>
 			<skill>
@@ -41946,6 +42058,16 @@
 			<category translate="Unterlaufwaffen">Underbarrel Weapons</category>
 			<category translate="Mikrodrohnenwaffen">Micro-Drone Weapons</category>
 			<category translate="Karabiner">Carbines</category>
+			<!-- Begin of translation for custom rule 'Delnar Skills Remake' -->
+			<category translate="Kettensägen">Chainsaws</category>
+			<category translate="Flexible Waffen">Flexible Weapons</category>
+			<category translate="Enterhakenkanonen">Grapple Guns</category>
+			<category translate="Harpunengewehre">Harpoon Guns</category>
+			<category translate="Netzpistolen">Net Guns</category>
+			<category translate="Rammen">Battering Rams</category>
+			<category translate="Schilde">Shields</category>
+			<category translate="Zwillen">Slingshots</category>
+			<!-- End of translation for custom rule 'Delnar Skills Remake' -->
 		</categories>
 		<weapons>
 			<weapon>
@@ -45422,20 +45544,20 @@
 				<translate>Granate: Störgrantae Boom Boom Bunnies</translate>
 				<altpage>55</altpage>
 			</weapon>
+			<!-- Begin of translation for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
 			<weapon translated="True">
-				<!-- Translation needed for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
 				<id>78eeb006-e377-4e5a-bf69-adae197bb5d4</id>
 				<name>Underbarrel Flamethrower</name>
 				<translate>Unterlauf-Flammenwerfer</translate>
 				<altpage>52</altpage>
 			</weapon>
 			<weapon translated="True">
-				<!-- Translation needed for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
 				<id>2845e48b-ce4e-4fd0-af23-41f5aba86f5d</id>
 				<name>Underbarrel Chainsaw</name>
 				<translate>Unterlauf-Kettensäge</translate>
 				<altpage>52</altpage>
 			</weapon>
+			<!-- End of translation for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
 		</weapons>
 		<accessories>
 			<accessory>
