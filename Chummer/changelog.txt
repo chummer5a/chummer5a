@@ -65,6 +65,7 @@ Data Changes:
 - Fixed the ork tusk customdata rule applying to Trolls instead.
 - Fixed incorrect page reference for the Realistic Form critter power. 
 - Added basic vessels per SR5 Structure rules.
+- Fixed incorrect requirements for Dissonance Spike and Causal Nexus complex forms.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
