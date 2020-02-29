@@ -32581,6 +32581,66 @@
 				</specs>
 				<altpage>131</altpage>
 			</skill>
+			<skill>
+				<id>963a548d-c629-4a13-a3e3-31b085a42e20</id>
+				<name>Command</name>
+				<translate>Kommandieren</translate>
+				<specs>
+					<spec translate="Einschüchtern/Befragen">Intimidate/Interrogate</spec>
+					<spec translate="Unterricht">Instruction</spec>
+					<spec translate="Führung">Leadership</spec>
+				</specs>
+				<altpage>138</altpage>
+			</skill>
+			<skill>
+				<id>6e9670cf-3ccc-4a3a-84f3-da4da18cc973</id>
+				<name>Counterthreading</name>
+				<translate>Gegensteuern</translate>
+				<specs>
+					<spec translate="Sofortige komplexe Formen">Instant Complex Forms</spec>
+					<spec translate="Aufrechterhaltene/Permanente kommplexe Formen">Sustained/Permanent Complex Forms</spec>
+					<spec translate="Verschachtelte Formen">Nested Forms</spec>
+				</specs>
+				<altpage>249</altpage>
+			</skill>
+			<skill>
+				<id>7143f979-aa48-4cc8-a29c-e010400e6e11</id>
+				<name>Cyberwarfare</name>
+				<translate>Cyberkriegsführung</translate>
+				<specs>
+					<spec translate="[Angriff-Matrixhandlung]">[Attack Matrix Action]</spec>
+					<spec translate="[Schleicher-Matrixhandlung außer Gerät steuern]">[Sleaze Matrix Action other than Control Device]</spec>
+					<spec translate="[Firewall-Matrixhandlung]">[Firewall Matrix Action]</spec>
+				</specs>
+				<altpage>144</altpage>
+			</skill>
+			<skill>
+				<id>48763fa5-4b89-48c7-80ff-d0a2761de4c0</id>
+				<name>Edged Weapons</name>
+				<translate>Scharfkantige Waffen</translate>
+				<specs>
+					<spec translate="Äxte">Axes</spec>
+					<spec translate="Kettensägen">Chainsaws</spec>
+					<spec translate="Flexible Monofilamentwaffen">Monofilament Flexible Weapons</spec>
+					<spec translate="Große Klingenwaffen">Large Blades</spec>
+					<spec translate="Stangenwaffen">Polearms</spec>
+					<spec translate="Kleine Klingenwaffen">Small Blades</spec>
+				</specs>
+				<altpage>130</altpage>
+			</skill>
+			<skill>
+				<id>41e184e0-7273-403a-9300-fa29a1707bf0</id>
+				<name>Electronics</name>
+				<translate>Elektronik</translate>
+				<specs>
+					<spec translate="Kommlinks">Commlinks</spec>
+					<spec translate="Cyberdecks">Cyberdecks</spec>
+					<spec translate="Cyberware">Cyberware</spec>
+					<spec translate="Harte Nanoware">Hard Nanoware</spec>
+					<spec translate="[Art der Elektronik]">[Electronics Type]</spec>
+				</specs>
+				<altpage>146</altpage>
+			</skill>
 			<!-- End of translation for custom rule 'Delnar Skills Remake' -->
 		</skills>
 		<knowledgeskills>
