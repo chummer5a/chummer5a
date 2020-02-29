@@ -4827,6 +4827,10 @@ namespace Chummer.Classes
         }
 
         // Check for Spell Category bonuses.
+        public void spellcategory(XmlNode bonusNode)
+        {
+            spellcategorydicepool(bonusNode);
+        }
         public void spellcategorydicepool(XmlNode bonusNode)
         {
             Log.Info("spellcategory");
