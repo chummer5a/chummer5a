@@ -2800,61 +2800,14 @@ namespace Chummer
             objMerge.Possessed = true;
             objMerge.Alias = frmSelectVessel.SelectedItem + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
 
-            //TODO: Update spirit attribute values.
-            /*
-            // Get the CharacterAttribute Modifiers for the Vessel.
-            int intBOD = Convert.ToInt32(objSelected["bodmin"].InnerText);
-            int intAGI = Convert.ToInt32(objSelected["agimin"].InnerText);
-            int intREA = Convert.ToInt32(objSelected["reamin"].InnerText);
-            int intSTR = Convert.ToInt32(objSelected["strmin"].InnerText);
-
-            // Add the CharacterAttribute modifiers, making sure that none of them go below 1.
-            int intSetBOD = objMerge.MAG.TotalValue + intBOD;
-            int intSetAGI = objMerge.MAG.TotalValue + intAGI;
-            int intSetREA = objMerge.MAG.TotalValue + intREA;
-            int intSetSTR = objMerge.MAG.TotalValue + intSTR;
-
-            objMerge.BOD.MetatypeMinimum += intBOD;
-            if (objMerge.BOD.MetatypeMinimum < 1)
-                objMerge.BOD.MetatypeMinimum = 1;
-            objMerge.BOD.MetatypeMaximum += intBOD;
-            if (objMerge.BOD.MetatypeMaximum < 1)
-                objMerge.BOD.MetatypeMaximum = 1;
-            objMerge.BOD.Value = intSetBOD;
-            if (objMerge.BOD.Value < 1)
-                objMerge.BOD.Value = 1;
-
-            objMerge.AGI.MetatypeMinimum += intAGI;
-            if (objMerge.AGI.MetatypeMinimum < 1)
-                objMerge.AGI.MetatypeMinimum = 1;
-            objMerge.AGI.MetatypeMaximum += intAGI;
-            if (objMerge.AGI.MetatypeMaximum < 1)
-                objMerge.AGI.MetatypeMaximum = 1;
-            objMerge.AGI.Value = intSetAGI;
-            if (objMerge.AGI.Value < 1)
-                objMerge.AGI.Value = 1;
-
-            objMerge.REA.MetatypeMinimum += intREA;
-            if (objMerge.REA.MetatypeMinimum < 1)
-                objMerge.REA.MetatypeMinimum = 1;
-            objMerge.REA.MetatypeMaximum += intREA;
-            if (objMerge.REA.MetatypeMaximum < 1)
-                objMerge.REA.MetatypeMaximum = 1;
-            objMerge.REA.Value = intSetREA;
-            if (objMerge.REA.Value < 1)
-                objMerge.REA.Value = 1;
-
-            objMerge.STR.MetatypeMinimum += intSTR;
-            if (objMerge.STR.MetatypeMinimum < 1)
-                objMerge.STR.MetatypeMinimum = 1;
-            objMerge.STR.MetatypeMaximum += intSTR;
-            if (objMerge.STR.MetatypeMaximum < 1)
-                objMerge.STR.MetatypeMaximum = 1;
-            objMerge.STR.Value = intSetSTR;
-            if (objMerge.STR.Value < 1)
-                objMerge.STR.Value = 1;
-            */
-
+            ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+            ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+            ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+            ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+            ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.INT.MetatypeMinimum, CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
+            ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.WIL.MetatypeMinimum, CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
+            ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.LOG.MetatypeMinimum, CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
+            ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.CHA.MetatypeMinimum, CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
             XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
 
             // Update the Movement if the Vessel has one.

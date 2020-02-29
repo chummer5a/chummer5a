@@ -33,6 +33,7 @@ Application Fixes:
 - Unified behaviour of gear purchasing for vehicles between create and career mode. Ensures that black market pipeline is properly respected and that ammunition objects can be stacked. 
 - Added catch behaviour to validate that PDF output can correctly save a file to a given path.
 - Fixed issues with Fettered Sprites and Spirits not properly being able to be flagged when the Technoshaman is first purchased. 
+- Fixed inanimate vessel possession not properly assigning attribute values. 
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
@@ -63,6 +64,7 @@ Data Changes:
 - Added a customdata override for Skillwires and Skilljack to match German data changes.
 - Fixed the ork tusk customdata rule applying to Trolls instead.
 - Fixed incorrect page reference for the Realistic Form critter power. 
+- Added basic vessels per SR5 Structure rules.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
