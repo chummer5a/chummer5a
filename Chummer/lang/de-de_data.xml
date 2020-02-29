@@ -32641,6 +32641,147 @@
 				</specs>
 				<altpage>146</altpage>
 			</skill>
+			<skill>
+				<id>adf31a50-b228-4e09-a09c-46ab9f5e59a1</id>
+				<name>Handguns</name>
+				<translate>Handfeuerwaffen</translate>
+				<specs>
+					<spec translate="Druckluftpistolen">Compressed Air Pistols</spec>
+					<spec translate="Große Pistolen">Large Pistols</spec>
+					<spec translate="Revolver">Revolvers</spec>
+					<spec translate="Kleine Pistolen">Small Pistols</spec>
+				</specs>
+				<altpage>130</altpage>
+			</skill>
+			<skill>
+				<id>470d49b8-69b5-496a-8f28-349625c14859</id>
+				<name>Launcher Weapons</name>
+				<translate>Trägerwaffen</translate>
+				<specs>
+					<spec translate="Flammenwerfer">Flare Launchers</spec>
+					<spec translate="Enterhakenkanonen">Grapple Guns</spec>
+					<spec translate="Granatwerfer">Grenade Launchers</spec>
+					<spec translate="Harpunengewehre">Harpoon Guns</spec>
+					<spec translate="Raketenwerfer">Missile/Rocket Launchers</spec>
+					<spec translate="Netzpistolen">Net Guns</spec>
+				</specs>
+				<altpage>454</altpage>
+			</skill>
+			<skill>
+				<id>1c14bf0d-cc69-4126-9a95-1f2429c11aa5</id>
+				<name>Matrix</name>
+				<translate>Matrix</translate>
+				<specs>
+					<spec translate="Gerät steuern">Control Device</spec>
+					<spec translate="Sensoroperationen">Sensor Operations</spec>
+					<spec translate="[Datenverarbeitungsmatrixaktion]">[Data Processing Matrix Action]</spec>
+				</specs>
+				<altpage>145</altpage>
+			</skill>
+			<skill>
+				<id>5e5f2f7f-f63b-4f65-a65d-91b3d4523c6f</id>
+				<name>Mechanics</name>
+				<translate>Mechanik</translate>
+				<specs>
+					<spec translate="Flugzeuge">Aerospace</spec>
+					<spec translate="Bodenfahrzeuge">Groundcraft</spec>
+					<spec translate="Schiffe">Watercraft</spec>
+				</specs>
+				<altpage>147</altpage>
+			</skill>
+			<skill>
+				<id>01555a93-b8cd-4b6e-81a9-f647f5f1010b</id>
+				<name>Nesting</name>
+				<translate>Verschachtelung</translate>
+				<specs>
+					<spec translate="[Spezifische verschachtelte Form]">[Specific Nested Form]</spec>
+				</specs>
+				<altpage>248</altpage>
+			</skill>
+			<skill>
+				<id>f8037e7f-d48b-452b-8f66-2e0c36677fea</id>
+				<name>Query</name>
+				<translate>Abfrage</translate>
+				<specs>
+					<spec translate="Navigation">Navigation</spec>
+					<spec translate="Recherche">Searching</spec>
+					<spec translate="Überwachung/Verfolgung">Tailing/Tracking</spec>
+				</specs>
+				<altpage>147</altpage>
+			</skill>
+			<skill>
+				<id>729c9cee-ef8f-492d-aa7f-17ec1bc3816e</id>
+				<name>Persuade</name>
+				<translate>Überzeugen</translate>
+				<specs>
+					<spec translate="Feilschen/Tauschen">Bargaining/Bartering</spec>
+					<spec translate="Diplomatie/Debattieren">Diplomacy/Debate</spec>
+					<spec translate="Verführen/Verleiten">Seduction</spec>
+				</specs>
+				<altpage>141</altpage>
+			</skill>
+			<skill>
+				<id>ae91a8a6-80e7-4f52-b9eb-21725a5528a4</id>
+				<name>Pilot Groundcraft</name>
+				<translate>Bodenfortbewegung</translate>
+				<specs>
+					<spec translate="Bionisch/Läufer">Bionic/Walker</spec>
+					<spec translate="Geschlossenes Bodenfahrzeug">Enclosed Wheeled</spec>
+					<spec translate="Offenes Bodesfahrzeug (Motorräder, Hänger)">Open Wheeled (Bikes, RVs)</spec>
+					<spec translate="Kettenfahrzeug">Tracked</spec>
+				</specs>
+				<altpage>147</altpage>
+			</skill>
+			<skill>
+				<id>17fbaafa-8dbb-4f29-9244-5ae1cd4ac42f</id>
+				<name>Sleight of Hand</name>
+				<translate>Taschenspielertrick</translate>
+				<specs>
+					<spec translate="Fingerfertigkeit">Palming</spec>
+					<spec translate="Taschendiebstahl">Pickpocketing</spec>
+					<spec translate="Einfangen">Trapping</spec>
+				</specs>
+				<altpage>133</altpage>
+			</skill>
+			<skill>
+				<id>d06dfd90-1df0-4f05-84d5-1fea9d146f87</id>
+				<name>Combat Tactics</name>
+				<translate>Kampftaktiken</translate>
+				<specs>
+					<spec translate="Hinterhalt">Ambush</spec>
+					<spec translate="Guerilla">Guerilla</spec>
+					<spec translate="Patrouille">Patrol</spec>
+					<spec translate="Aufklärung">Reconnaissance</spec>
+					<spec translate="Belagerung">Siege</spec>
+				</specs>
+				<altpage>1</altpage>
+			</skill>
+			<skill>
+				<id>b20acd11-f102-40f3-a641-e3c420fbdb91</id>
+				<name>Socialize</name>
+				<translate>Kontakte</translate>
+				<specs>
+					<spec translate="Straßenkontakte">Street Society</spec>
+					<spec translate="Squatterkontakte">Squatter Society</spec>
+					<spec translate="Unterschichtkontakte">Low Society</spec>
+					<spec translate="Mittelschichtkontakte">Middle Society</spec>
+					<spec translate="Oberschichtkontakte">High Society</spec>
+					<spec translate="Luxusschichtkontakte">Luxury Society</spec>
+					<spec translate="Handelskontakte">Commercial</spec>
+					<spec translate="Reisekontakte">Traveler Society</spec>
+					<spec translate="[Art des Lebensstils]">[Lifestyle or Lifestyle Type]</spec>
+				</specs>
+				<altpage>137</altpage>
+			</skill>
+			<skill>
+				<id>891451fd-a0ef-4ef9-b2c2-5751d8abe935</id>
+				<name>Threading</name>
+				<translate>Weben</translate>
+				<specs>
+					<spec translate="[Spezfische komplexe Form]">[Specific Complex Form]</spec>
+				</specs>
+				<altpage>249</altpage>
+			</skill>
 			<!-- End of translation for custom rule 'Delnar Skills Remake' -->
 		</skills>
 		<knowledgeskills>
