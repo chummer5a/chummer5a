@@ -534,7 +534,7 @@
       <source>FA</source>
       <page>64</page>
       <bonus>
-        <addmetamagic>Exorcism</addmetamagic>
+        <addmetamagic forced="True">Exorcism</addmetamagic>
         <skilldisable>Binding</skilldisable>
         <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
@@ -554,9 +554,9 @@
       <page>64</page>
       <bonus>
         <addqualities>
-          <addquality forced="True">Pacifist</addquality>
+          <addquality forced="True">Pacifist I</addquality>
         </addqualities>
-        <addmetamagic>Exorcism</addmetamagic>
+        <addmetamagic forced="True">Exorcism</addmetamagic>
         <skilldisable>Binding</skilldisable>
       </bonus>
       <spirits>

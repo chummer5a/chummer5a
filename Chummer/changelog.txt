@@ -66,6 +66,7 @@ Data Changes:
 - Fixed incorrect page reference for the Realistic Form critter power. 
 - Added basic vessels per SR5 Structure rules.
 - Fixed incorrect requirements for Dissonance Spike and Causal Nexus complex forms.
+- Fixed typos in the bonuses for the Christian Theurgy [Vigila Evangelica] and Christian Theurgy [Traditional] traditions.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
