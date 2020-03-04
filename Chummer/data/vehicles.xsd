@@ -274,7 +274,8 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="ammobonus" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammobonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammobonuspercent" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="capacity" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="conditionmonitor" type="xs:string" minOccurs="0" maxOccurs="1" />

@@ -2400,6 +2400,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
+            decimal decAmmoBonusPercent = 1.0m;
             if (ParentMount != null)
             {
                 foreach (VehicleMod objMod in ParentMount.Mods)
@@ -2410,6 +2412,7 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                     intAmmoBonus += objMod.AmmoBonus;
+                    decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
                 }
             }
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
@@ -2449,7 +2452,6 @@ namespace Chummer.Backend.Equipment
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => AmmoCapacity(Ammo));
                     // Replace the division sign with "div" since we're using XPath.
                     strThisAmmo = strThisAmmo.Replace("/", " div ");
-                    // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
@@ -2459,8 +2461,13 @@ namespace Chummer.Backend.Equipment
 
                         if (intExtendedMax > 0 && strAmmo.Contains("(c)"))
                         {
-                            //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
+                            //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times original result
                             intAmmo = (intAmmo * (2 + intExtendedMax)) / 2;
+                        }
+
+                        if (decAmmoBonusPercent != 1.0m)
+                        {
+                            intAmmo = decimal.ToInt32(decimal.Ceiling(intAmmo * decAmmoBonusPercent));
                         }
 
                         strThisAmmo = intAmmo.ToString(objCulture) + strAmmo.Substring(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('('));

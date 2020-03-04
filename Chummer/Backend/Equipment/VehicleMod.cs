@@ -71,6 +71,7 @@ namespace Chummer.Backend.Equipment
         private string _strCachedXmlNodeLanguage = string.Empty;
         private string _strAmmoReplace;
         private int _intAmmoBonus;
+        private decimal _decAmmoBonusPercent;
         private int _intSortOrder;
         private bool _blnStolen;
         private readonly Character _objCharacter;
@@ -161,6 +162,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objXmlMod.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objXmlMod.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
             // Add Subsytem information if applicable.
             XmlNode xmlSubsystemsNode = objXmlMod?["subsystems"];
             if (xmlSubsystemsNode != null)
@@ -265,6 +267,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("subsystems", _strSubsystems);
             objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
+            objWriter.WriteElementString("ammobonuspercent", _decAmmoBonusPercent.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ammoreplace", _strAmmoReplace);
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstVehicleWeapons)
@@ -330,6 +333,7 @@ namespace Chummer.Backend.Equipment
             {
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
+            objNode.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
@@ -729,12 +733,21 @@ namespace Chummer.Backend.Equipment
         public Vehicle Parent { internal get; set; }
 
         /// <summary>
-        /// Adjust the Weapon's Ammo amount by the specified percent.
+        /// Adjust the Weapon's Ammo amount by the specified flat value.
         /// </summary>
         public int AmmoBonus
         {
             get => _intAmmoBonus;
             set => _intAmmoBonus = value;
+        }
+
+        /// <summary>
+        /// Adjust the Weapon's Ammo amount by the specified percentage.
+        /// </summary>
+        public decimal AmmoBonusPercent
+        {
+            get => _decAmmoBonusPercent;
+            set => _decAmmoBonusPercent = value;
         }
 
         /// <summary>

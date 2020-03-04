@@ -17,6 +17,7 @@ Application Changes:
 - Positive Qualities that do not count towards the quality limit are no longer doubled when using the optional rule to allow qualities to exceed the cap.
 - Translator now allows translating mentor advantages and disadvantages. 
 - Fixed issues with condition monitor controls greater than 24 not being shown.
+- Added ammobonuspercent node to vehicle mods. This allows for weapon mount mods to modify the ammunition of their attached weapons by a percentage rather than the fixed value of the ammobonus node. 
 
 Application Fixes:
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
@@ -68,6 +69,7 @@ Data Changes:
 - Added basic vessels per SR5 Structure rules.
 - Fixed incorrect requirements for Dissonance Spike and Causal Nexus complex forms.
 - Fixed typos in the bonuses for the Christian Theurgy [Vigila Evangelica] and Christian Theurgy [Traditional] traditions.
+- Fixed a crash when attempting to reload weapons attached to weapon mounts with the Second Bin mod. Existing mounts with this modification will need to be removed and re-added. 
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
