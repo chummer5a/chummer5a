@@ -299,6 +299,7 @@ namespace Chummer
         {
             StringBuilder objReturn = new StringBuilder();
             bool blnExtendedFound = false;
+            if (string.IsNullOrWhiteSpace(Descriptors)) return LanguageManager.GetString("String_None");
             if (_hashDescriptors.Count > 0)
             {
                 foreach (string strDescriptor in _hashDescriptors)

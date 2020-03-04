@@ -36,6 +36,7 @@ Application Fixes:
 - Fixed issues with Fettered Sprites and Spirits not properly being able to be flagged when the Technoshaman is first purchased. 
 - Fixed inanimate vessel possession not properly assigning attribute values. 
 - Fixed a crash when selecting spells with both the Extended and Limited checkboxes.
+- Fixed a regression in Spell Descriptos not using the None string.
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
