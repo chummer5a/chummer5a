@@ -109,8 +109,10 @@
       <source>FA</source>
       <page>61</page>
       <bonus>
-        <addquality>Animal Familiar</addquality>
-        <addquality select="Boggle">Dark Ally</addquality>
+        <addqualities>
+          <addquality forced="True">Animal Familiar</addquality>
+          <addquality forced="True" select="Boggle">Dark Ally</addquality>
+        </addqualities>
       </bonus>
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
@@ -3249,6 +3251,46 @@
       <weaknesses>
         <weakness>Allergy (Fire, Severe)</weakness>
       </weaknesses>
+    </spirit>
+    <spirit>
+      <id>7499b2df-7a18-4390-a812-30c3ba528856</id>
+      <name>Boggle</name>
+      <category>Spirits</category>
+      <bod>F-2</bod>
+      <agi>F-1</agi>
+      <rea>F-1</rea>
+      <str>F-2</str>
+      <cha>F</cha>
+      <int>F</int>
+      <log>F</log>
+      <wil>F+2</wil>
+      <ini>0</ini>
+      <edg>F/2</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <group>Close Combat</group>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>117</page>
     </spirit>
     <!-- End Region -->
   </spirits>

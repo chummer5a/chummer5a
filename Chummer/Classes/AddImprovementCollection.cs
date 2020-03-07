@@ -5942,7 +5942,7 @@ namespace Chummer.Classes
                         }
             }
 
-            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits, ForceItem = ForcedValue};
             frmSelect.ShowDialog();
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {

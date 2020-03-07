@@ -37,6 +37,7 @@ Application Fixes:
 - Fixed inanimate vessel possession not properly assigning attribute values. 
 - Fixed a crash when selecting spells with both the Extended and Limited checkboxes.
 - Fixed a regression in Spell Descriptos not using the None string.
+- Improvements that add Spirits and Sprites now properly use the ForcedValue value to preselct items. 
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
@@ -71,6 +72,7 @@ Data Changes:
 - Fixed incorrect requirements for Dissonance Spike and Causal Nexus complex forms.
 - Fixed typos in the bonuses for the Christian Theurgy [Vigila Evangelica] and Christian Theurgy [Traditional] traditions.
 - Fixed a crash when attempting to reload weapons attached to weapon mounts with the Second Bin mod. Existing mounts with this modification will need to be removed and re-added. 
+- Fixed inability to take the Black Magic [Alt] tradition.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap

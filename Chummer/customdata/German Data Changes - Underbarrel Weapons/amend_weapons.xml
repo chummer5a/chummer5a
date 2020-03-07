@@ -61,7 +61,7 @@
       <cost>500</cost>
       <source>RG</source>
       <page>53</page>
-      <useskill>Exotic Ranged Weapon</useskill>
+      <useskill>Exotic Melee Weapon</useskill>
       <required>
         <OR>
           <category>Assault Rifles</category>
