@@ -38706,6 +38706,12 @@
 				<translate>Verbündeter</translate>
 				<altpage>234</altpage>
 			</spirit>
+			<spirit>
+				<id>7499b2df-7a18-4390-a812-30c3ba528856</id>
+				<name>Boggle</name>
+				<translate>Zersetzer</translate>
+				<altpage>133</altpage>
+			</spirit>
 		</spirits>
 		<drainattributes>
 			<drainattribute translated="True">
@@ -48415,6 +48421,60 @@
 				<name>Wicker Man</name>
 				<translate>Weidenmann</translate>
 				<altpage>87</altpage>
+			</metatype>
+			<metatype>
+				<id>3e980802-7a90-49d2-b878-12983bb4b62f</id>
+				<name>Fragile Material</name>
+				<translate>Zerbrechliches Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>712889bf-cd58-425C-8d14-0e9720b2c713</id>
+				<name>Cheap Material</name>
+				<translate>Billiges Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>af455a22-2b54-469a-9a08-a029473282b3</id>
+				<name>Average Material</name>
+				<translate>Durchschnittliches Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>e1556535-cc23-401a-9635-01ac2d640bec</id>
+				<name>Heavy Material</name>
+				<translate>Schweres Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>2cc51d65-54da-4fda-aef5-b641d4C9ed5f</id>
+				<name>Reinforced Material</name>
+				<translate>Verstärktes Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>39b667f0-48ab-41d6-8fb9-54f3b34d42ac</id>
+				<name>Structural Material</name>
+				<translate>Tragendes Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>2acf277d-76bf-45b7-bc85-fd084d1d7027</id>
+				<name>Heavy Structural Material</name>
+				<translate>Schweres tragendes Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>6b7bdaa6-99a5-4fb2-9648-e1e0e9568e30</id>
+				<name>Armored/Reinforced Material</name>
+				<translate>Gepanzertes verstärktes Material</translate>
+				<altpage>196</altpage>
+			</metatype>
+			<metatype>
+				<id>2643B4A2-05C6-47FF-8E15-FC094415FE44</id>
+				<name>Hardened Material</name>
+				<translate>Gehärtetes Material</translate>
+				<altpage>196</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
