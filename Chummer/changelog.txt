@@ -20,6 +20,7 @@ Application Changes:
 - Added ammobonuspercent node to vehicle mods. This allows for weapon mount mods to modify the ammunition of their attached weapons by a percentage rather than the fixed value of the ammobonus node. 
 
 Application Fixes:
+- Fixed issues witrh missing skills not being loaded properly.
 - Fixed a regression in the behaviour of essence holes incorrectly being saved as 100 times the intended value. 
 - Fixed an issue with the Skills tab not showing properly when first creating a character.
 - Fixed specialisations not properly being added to dicepool when firing weapons.

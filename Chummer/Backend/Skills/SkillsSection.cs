@@ -24,7 +24,9 @@ using System.Linq;
 using System.Xml;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 
@@ -349,6 +351,24 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
+                HashSet<string> hashSkillGuids = new HashSet<string>();
+                XmlDocument skillsDoc = XmlManager.Load("skills.xml");
+                foreach (XmlNode node in skillsDoc.SelectNodes(
+                    $"/chummer/skills/skill[not(exotic) and ({_objCharacter.Options.BookXPath()}) {SkillFilter(FilterOptions.NonSpecial)}]")
+                )
+                {
+                    hashSkillGuids.Add(node["name"].InnerText);
+                }
+
+                foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
+                {
+                    XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{skillId}\"]");
+                    if (objXmlSkillNode != null)
+                    {
+                        Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter);
+                        Skills.Add(objSkill);
+                    }
+                }
                 //This might give subtle bugs in the future,
                 //but right now it needs to be run once when upgrading or it might crash.
                 //As some didn't they crashed on loading skills.
