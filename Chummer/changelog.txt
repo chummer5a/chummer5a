@@ -78,6 +78,7 @@ Data Changes:
 - Fixed missing availability and cost for the Underbarrel Weight weapon accessory. 
 - Fixed laser weapons not using the Laser Weapons specialisation for their Exotic Ranged Weapon skill.
 - Added Tattoo Magic from Street Grimoire as a quality. 
+- Removed Adept requirements for the Imbue Item ritual.
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
