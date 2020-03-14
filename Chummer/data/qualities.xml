@@ -1786,6 +1786,27 @@
     </quality>
     <!--Street Grimoire Positive Qualities -->
     <quality>
+      <id>237EB46A-A012-4E0B-808A-80EDA1C1A586</id>
+      <name>Tattoo Magic</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Apprentice</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>131</page>
+    </quality>
+    <quality>
       <id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
       <name>Spirit Champion</name>
       <karma>14</karma>
