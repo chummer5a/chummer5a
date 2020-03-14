@@ -76,6 +76,7 @@ Data Changes:
 - Fixed a crash when attempting to reload weapons attached to weapon mounts with the Second Bin mod. Existing mounts with this modification will need to be removed and re-added. 
 - Fixed inability to take the Black Magic [Alt] tradition.
 - Fixed missing availability and cost for the Underbarrel Weight weapon accessory. 
+- Fixed laser weapons not using the Laser Weapons specialisation for their Exotic Ranged Weapon skill. 
 
 New Strings:
 - Checkbox_Options_CyberlimbAttributeBonusCap
