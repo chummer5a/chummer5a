@@ -16152,8 +16152,8 @@
       <id>9dc660bb-a0b2-4b14-8c43-f5893b174265</id>
       <name>Underbarrel Weight</name>
       <mount>Under</mount>
-      <avail>0</avail>
-      <cost>0</cost>
+      <avail>4R</avail>
+      <cost>50</cost>
       <source>RG</source>
       <page>53</page>
       <rating>0</rating>

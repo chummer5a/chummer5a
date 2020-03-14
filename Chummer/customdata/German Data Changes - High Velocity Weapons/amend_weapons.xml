@@ -11,9 +11,10 @@
     <weapon>
       <!-- GE Minigun -->
       <id>df19a07f-cc04-44b6-b9b2-6d4fe73062e4</id>
-      <shortburst>4</shortburst>
-      <longburst>8</longburst>
-      <fullburst>12</fullburst>
+      <allowsingleshot>False</allowsingleshot>
+      <mode>FA</mode>
+      <fullburst>15</fullburst>
+      <suppressive>30</suppressive>
     </weapon>
   </weapons>
 </chummer>

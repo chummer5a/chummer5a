@@ -135,6 +135,12 @@ namespace Chummer.Backend.Equipment
         private string _strMount;
         private string _strExtraMount;
 
+        private bool _blnAllowSingleShot  = true;
+        private bool _blnAllowShortBurst  = true;
+        private bool _blnAllowLongBurst   = true;
+        private bool _blnAllowFullBurst   = true;
+        private bool _blnAllowSuppressive = true;
+
         #region Constructor, Create, Save, Load, and Print Methods
         public Weapon(Character objCharacter)
         {
@@ -313,11 +319,16 @@ namespace Chummer.Backend.Equipment
             }
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
-            objXmlWeapon.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
-            objXmlWeapon.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
-            objXmlWeapon.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
-            objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
-            objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+            objXmlWeapon.TryGetInt32FieldQuickly("singleshot",      ref _intSingleShot);
+            objXmlWeapon.TryGetInt32FieldQuickly("shortburst",      ref _intShortBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("longburst",       ref _intLongBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("fullburst",       ref _intFullBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("suppressive",     ref _intSuppressive);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowfullburst",   ref _blnAllowFullBurst);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowlongburst",   ref _blnAllowLongBurst);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowshortburst",  ref _blnAllowShortBurst);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowsingleshot",  ref _blnAllowSingleShot);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowsuppressive", ref _blnAllowSuppressive);
 
             objXmlWeapon.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
             objXmlWeapon.TryGetStringFieldQuickly("useskillspec", ref _strUseSkillSpec);
@@ -546,6 +557,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("longburst", _intLongBurst.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("allowsingleshot", _blnAllowSingleShot.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("allowshortburst", _blnAllowShortBurst.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("allowlongburst", _blnAllowLongBurst.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("allowfullburst", _blnAllowFullBurst.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("allowsuppressive", _blnAllowSuppressive.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
@@ -2501,6 +2517,24 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        public bool AllowSingleShot =>
+            (WeaponType == "Melee" && Ammo != "0") || (_blnAllowSingleShot && (AllowMode(LanguageManager.GetString("String_ModeSingleShot")) ||
+            AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"))));
+
+        public bool AllowShortBurst => _blnAllowShortBurst && (
+                                           AllowMode(LanguageManager.GetString("String_ModeBurstFire")) ||
+                                           AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")) ||
+                                           AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+
+        public bool AllowLongBurst => _blnAllowLongBurst && (
+                                          AllowMode(LanguageManager.GetString("String_ModeBurstFire")) ||
+                                          AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+
+        public bool AllowFullBurst =>
+            _blnAllowFullBurst && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+
+        public bool AllowSuppressive =>
+            _blnAllowSuppressive && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
