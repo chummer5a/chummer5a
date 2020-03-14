@@ -31467,6 +31467,12 @@
 				<translate>Infizierten Erweiterte optionale Kräfte: Psychokinese</translate>
 				<altpage>399</altpage>
 			</quality>
+			<quality translated="True">
+				<id>237eb46a-a012-4e0b-808a-80eda1c1a586</id>
+				<name>Tattoo Magic</name>
+				<translate>Tätowierungsmagie</translate>
+				<altpage>153</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
