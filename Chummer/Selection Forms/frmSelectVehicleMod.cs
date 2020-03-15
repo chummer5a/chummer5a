@@ -441,7 +441,18 @@ namespace Chummer
             if (xmlVehicleMod != null)
             {
                 chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value);
+
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
+                                                     _setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")
+                                                         ?.Value);
+                }
+                else if (!_setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value))
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.

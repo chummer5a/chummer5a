@@ -349,7 +349,17 @@ namespace Chummer
                 }
 
                 chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value);
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
+                                                     _setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")
+                                                         ?.Value);
+                }
+                else if (!_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
                 PopulateGrades(xmlCyberware.SelectSingleNode("nosecondhand") != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);

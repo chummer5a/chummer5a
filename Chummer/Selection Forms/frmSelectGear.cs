@@ -598,7 +598,17 @@ namespace Chummer
 
             // Cost.
             chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-            chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value);
+            if (!chkBlackMarketDiscount.Checked)
+            {
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
+                                                 _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")
+                                                     ?.Value);
+            }
+            else if (!_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
+            {
+                //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                chkBlackMarketDiscount.Checked = false;
+            }
 
             decimal decItemCost = 0.0m;
             bool blnIsSuccess;

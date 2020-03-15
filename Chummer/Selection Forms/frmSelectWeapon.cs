@@ -160,7 +160,17 @@ namespace Chummer
             if (_objSelectedWeapon != null)
             {
                 chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
+                                                     _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                }
+                else if (!_setBlackMarketMaps.Contains(_objSelectedWeapon.Category))
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
                 
