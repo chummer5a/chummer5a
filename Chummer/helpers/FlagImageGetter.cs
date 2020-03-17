@@ -31,7 +31,7 @@ namespace Chummer
         public static System.Drawing.Image GetFlagFromCountryCode(string strCode)
         {
             System.Drawing.Image objReturn;
-            if (String.IsNullOrEmpty(strCode))
+            if (string.IsNullOrEmpty(strCode))
                 strCode = "";
             switch (strCode.ToLowerInvariant())
             {

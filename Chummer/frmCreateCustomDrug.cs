@@ -127,7 +127,7 @@ namespace Chummer
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",
             };
-            if ((_objCharacter != null) && (!String.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
+            if ((_objCharacter != null) && (!string.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
                 _objDrug.Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),
                     Improvement.ImprovementSource.Drug, _objCharacter);
 
@@ -310,7 +310,7 @@ namespace Chummer
 		}
 	}
 
-	class clsNodeData : Object
+	class clsNodeData : object
     {
         public DrugComponent DrugComponent { get; }
         public int Level { get; }

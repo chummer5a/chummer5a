@@ -73,7 +73,7 @@ namespace Chummer.Backend.Uniques
 
         public override string ToString()
         {
-            if (!String.IsNullOrEmpty(_strName))
+            if (!string.IsNullOrEmpty(_strName))
                 return _strName;
             return base.ToString();
         }

@@ -297,7 +297,7 @@ namespace Chummer
         {
             get
             {
-                if (String.IsNullOrEmpty(_strName))
+                if (string.IsNullOrEmpty(_strName))
                 {
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
                         _strName = _objCharacter.MentorSpirits[0].Name;

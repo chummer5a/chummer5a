@@ -49,9 +49,9 @@ namespace Chummer
             //_ListName = ListName;
             _ListInstanceNameFromProperty = listInstanceNameFromProperty;
             _DeleteEmptyTags = deleteEmptyTags;
-            if(!String.IsNullOrEmpty(commentProperties))
+            if(!string.IsNullOrEmpty(commentProperties))
                 _CommentProperties = new List<string>(commentProperties.Split(';'));
-            if(!String.IsNullOrEmpty(extraProperties))
+            if(!string.IsNullOrEmpty(extraProperties))
                 _ExtraProperties = new List<string>(extraProperties.Split(';'));
         }
 

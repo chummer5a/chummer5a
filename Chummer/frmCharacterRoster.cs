@@ -580,7 +580,7 @@ namespace Chummer
                 else
                     lblMetatype.Text = "Error loading metatype!";
                 tabCharacterText.Visible = true;
-                if (!String.IsNullOrEmpty(objCache.ErrorText))
+                if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
                     txtCharacterBio.Text = objCache.ErrorText;
                     txtCharacterBio.ForeColor = Color.Red;
@@ -791,7 +791,7 @@ namespace Chummer
                 set => MugshotBase64 = value.ToBase64String();
             }
 
-            public string MugshotBase64 { get; set; } = String.Empty;
+            public string MugshotBase64 { get; set; } = string.Empty;
 
             public bool Created { get; set; }
             public string SettingsFile { get; set; }
@@ -951,7 +951,7 @@ namespace Chummer
                 }
 
                 FilePath = strFile;
-                if (!String.IsNullOrEmpty(strFile))
+                if (!string.IsNullOrEmpty(strFile))
                 {
                     int last = strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1;
                     if (strFile.Length > last)

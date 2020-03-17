@@ -175,7 +175,7 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                string msg = String.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
+                string msg = string.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
                     y, width, height);
                 Log.Warn(e, msg);
             }

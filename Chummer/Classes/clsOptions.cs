@@ -510,7 +510,7 @@ namespace Chummer
             {
                 string jsonstring = "";
                 LoadStringFromRegistry(ref jsonstring, "plugins");
-                if(!String.IsNullOrEmpty(jsonstring))
+                if(!string.IsNullOrEmpty(jsonstring))
                     _pluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
 
             }
