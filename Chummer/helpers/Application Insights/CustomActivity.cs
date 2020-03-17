@@ -26,8 +26,6 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Chummer
 {
-    
-
     public class CustomActivity : Activity, IDisposable
     {
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
@@ -65,7 +63,7 @@ namespace Chummer
                     MyDependencyTelemetry = new DependencyTelemetry(operationName, MyTelemetryTarget, null, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                     MyDependencyTelemetry.Context.Operation.Id = this.Id;
                     tc.Context.Operation.Id = MyDependencyTelemetry.Context.Operation.Id;
-                break;
+                    break;
                 case OperationType.RequestOperation:
                     MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                     MyRequestTelemetry.Context.Operation.Id = this.Id;
@@ -75,10 +73,8 @@ namespace Chummer
                             MyRequestTelemetry.Url = Uriresult;
                     break;
                 default:
-                    
                     throw new NotImplementedException("Implement OperationType " + operationType);
             }
-           
         }
 
         private void SetParent(string operationName, CustomActivity parentActivity)
@@ -100,12 +96,11 @@ namespace Chummer
                         MyRequestTelemetry.Context.Operation.ParentId = this.ParentId;
                         if (!string.IsNullOrEmpty(MyTelemetryTarget))
                             if (Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
-                                MyRequestTelemetry.Url = new Uri(MyTelemetryTarget);
+                                MyRequestTelemetry.Url = Uriresult;
                         break;
                     default:
                         throw new NotImplementedException("Implement OperationType " + parentActivity.MyOperationType);
                 }
-
             }
             else
             {
@@ -147,7 +142,6 @@ namespace Chummer
                     break;
                 default:
                     throw new NotImplementedException("Implement OperationType " + OperationName);
-
             }
         }
     }

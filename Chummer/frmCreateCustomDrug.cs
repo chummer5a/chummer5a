@@ -99,7 +99,7 @@ namespace Chummer
                 }
             }
         }
-		
+
 		/// <summary>
 		/// Populate the list of Drug Grades.
 		/// </summary>

@@ -427,7 +427,6 @@ namespace Chummer
                     Log.Warn(e);
                     _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
                 }
-                
             }
 
             // Whether or not dates should include the time.
@@ -525,7 +524,7 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox(msg);
 #endif
             }
-            
+
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
@@ -594,7 +593,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
+        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden.
         /// </summary>
         public static bool HideCharacterRoster
         {
@@ -648,12 +647,10 @@ namespace Chummer
                         NLog.LogManager.EnableLogging();
                     else
                         NLog.LogManager.DisableLogging();
-                    
                 }
             }
         }
 
-        
 
         /// <summary>
         /// Whether or not the app should use logging.

@@ -89,7 +89,7 @@ namespace Chummer
         {
             DrawEyes(e.Graphics);
         }
-        
+
         private void Chummy_MouseDown(object sender, MouseEventArgs e)
         {
             switch (e.Button)
@@ -179,7 +179,6 @@ namespace Chummer
                     y, width, height);
                 Log.Warn(e, msg);
             }
-            
         }
         #endregion
         #region Chat Bubble

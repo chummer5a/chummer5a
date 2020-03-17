@@ -779,7 +779,6 @@ namespace Chummer
                 case "noimagedots":
                     objReturn = Properties.Resources.noimagedots;
                     break;
-                    
                 default:
                     Utils.BreakIfDebug();
                     objReturn = Properties.Resources.defaulted;
