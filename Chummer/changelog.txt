@@ -1,4 +1,7 @@
 Future Build 212
+Application Fixes:
+- Fixed inability to click the Character Roster Watch Folder location. Closes #4047
+
 Data Changes:
 - Fixed incorrect Ammo Category on the >Walther Secura Superkompakt.
 

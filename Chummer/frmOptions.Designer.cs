@@ -4855,6 +4855,7 @@ namespace Chummer
             this.cmdCharacterRoster.TabIndex = 47;
             this.cmdCharacterRoster.Text = "...";
             this.cmdCharacterRoster.UseVisualStyleBackColor = true;
+            this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
             // 
             // flowLayoutPanel3
             // 
