@@ -3,7 +3,11 @@ Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 
 Data Changes:
-- Fixed incorrect Ammo Category on the >Walther Secura Superkompakt.
+- Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
+- Reduced Improved Synthskin max rating to 4.
+- Removed redundant selecttext bonuses from the synthlinks.
+- Added 'synthstruments' from Chrome Flesh as new gear objects copied from Run Faster. 
+- Added capacity to False Face cyberware.
 
 Build 211
 Application Changes:

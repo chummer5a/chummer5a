@@ -15372,7 +15372,7 @@
     <gear>
       <id>3b97b2ad-0e63-454e-b5de-60896e423bc9</id>
       <name>Musical Instrument (Cheap)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
@@ -15382,7 +15382,7 @@
     <gear>
       <id>83747c8f-9d39-46c4-bdb6-3f2fb59fae4f</id>
       <name>Musical Instrument (Good)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
@@ -15392,12 +15392,42 @@
     <gear>
       <id>942c3fcb-c099-4f38-abae-87eb679ac08e</id>
       <name>Musical Instrument (Nice)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
       <cost>500</cost>
+    </gear>
+    <gear>
+      <id>9B0A4676-BC13-467A-8398-F0E40B261335</id>
+      <name>Synthstrument (Cheap)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>BF1DD7CE-A966-46AD-9561-143E2EF3210E</id>
+      <name>Synthstrument (Good)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>E3FB93D8-CAD9-4982-8F43-91D52BAF20B5</id>
+      <name>Synthstrument (Nice)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>1000</cost>
     </gear>
     <gear>
       <id>53a62c92-cb9c-4780-8f42-08c0dbb4c499</id>
@@ -18264,7 +18294,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -18281,7 +18311,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -18298,7 +18328,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>6</avail>
       <bonus>
         <selecttext />
@@ -18315,7 +18345,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>12</avail>
       <bonus>
         <selecttext />
@@ -18332,11 +18362,8 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>+4</avail>
-      <bonus>
-        <selecttext />
-      </bonus>
       <requireparent />
       <cost>{Parent Cost}x2</cost>
     </gear>
@@ -18346,11 +18373,8 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>4</avail>
-      <bonus>
-        <selecttext />
-      </bonus>
       <requireparent />
       <cost>2000</cost>
     </gear>
