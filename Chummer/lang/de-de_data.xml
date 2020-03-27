@@ -19419,6 +19419,24 @@
 				<translate>Bolzen: Schockerspitze mit Statikschaft (Schwere Armbrust)</translate>
 				<altpage>180</altpage>
 			</gear>
+			<gear translated="True">
+				<id>9b0a4676-bc13-467a-8398-f0e40b261335</id>
+				<name>Synthstrument (Cheap)</name>
+				<translate>Synthstrument (billig)</translate>
+				<altpage>84</altpage>
+			</gear>
+			<gear translated="True">
+				<id>bf1dd7ce-a966-46ad-9561-143e2ef3210e</id>
+				<name>Synthstrument (Good)</name>
+				<translate>Synthstrument (gut)</translate>
+				<altpage>84</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e3fb93d8-cad9-4982-8f43-91d52baf20b5</id>
+				<name>Synthstrument (Nice)</name>
+				<translate>Synthstrument (sehr gut)</translate>
+				<altpage>84</altpage>
+			</gear>
 			<!-- Begin of translation for custom rule 'Delnar Skills Remake' -->
 			<gear>
 				<id>1efc3ad3-c5d7-4534-ab97-a059f08f1b74</id>
