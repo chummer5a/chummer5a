@@ -1,6 +1,7 @@
 Future Build 212
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
+- Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
@@ -8,6 +9,7 @@ Data Changes:
 - Removed redundant selecttext bonuses from the synthlinks.
 - Added 'synthstruments' from Chrome Flesh as new gear objects copied from Run Faster. 
 - Added capacity to False Face cyberware.
+- Flagged Stolen Gear and In Debt as not contributing to limit, as the karma these qualities provide spent on nuyen. Added customdata file to preserve existing behaviour. 
 
 Build 211
 Application Changes:

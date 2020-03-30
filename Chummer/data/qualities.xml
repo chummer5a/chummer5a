@@ -3879,6 +3879,7 @@
       <name>In Debt</name>
       <karma>-1</karma>
       <category>Negative</category>
+      <contributetobp>False</contributetobp>
       <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>
@@ -19013,6 +19014,7 @@
       <name>Stolen Gear</name>
       <karma>-1</karma>
       <category>Negative</category>
+      <contributetobp>False</contributetobp>
       <limit>20</limit>
       <bonus>
         <nuyenamt condition="Stolen">10000</nuyenamt>

@@ -90,6 +90,7 @@ namespace Chummer
         private bool _blnMutant;
         private string _strNotes = string.Empty;
         private bool _blnImplemented = true;
+        private bool _blnContributeToBP = true;
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
@@ -198,6 +199,7 @@ namespace Chummer
             objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
+            objXmlQuality.TryGetBoolFieldQuickly("contributetobp", ref _blnContributeToBP);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objXmlQuality.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
@@ -353,6 +355,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("bp", _intBP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
+            objWriter.WriteElementString("contributetobp", _blnContributeToBP.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("stagedpurchase", _blnStagedPurchase.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
@@ -413,6 +416,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
+            objNode.TryGetBoolFieldQuickly("contributetobp", ref _blnContributeToBP);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
@@ -806,7 +810,7 @@ namespace Chummer
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && imp.ImprovedName == SourceIDString ||
                     imp.ImprovedName == Name))
                     return false;
-                return true;
+                return _blnContributeToBP;
             }
         }
 

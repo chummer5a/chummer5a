@@ -948,6 +948,7 @@ namespace Chummer
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 _intCachedNegativeQualities = int.MinValue;
+                _intCachedNegativeQualityLimitKarma = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
             }
         }
@@ -15217,6 +15218,7 @@ if (!Utils.IsUnitTest){
             if (lstNamesOfChangedProperties.Contains(nameof(Qualities)))
             {
                 _intCachedNegativeQualities = int.MinValue;
+                _intCachedNegativeQualityLimitKarma = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
                 _intCachedPositiveQualitiesTotal = int.MinValue;
                 _intCachedMetagenicNegativeQualities = int.MinValue;
@@ -17412,14 +17414,63 @@ if (!Utils.IsUnitTest){
                             _intCachedNegativeQualities = intNegativeQualityLimit;
                         }
                     }
+
+                    _intCachedNegativeQualities *= -1;
                 }
 
                 return _intCachedNegativeQualities;
             }
         }
 
-        public string DisplayNegativeQualityKarma =>
-            $"{NegativeQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+        private int _intCachedNegativeQualityLimitKarma = int.MinValue;
+        /// <summary>
+        /// Negative qualities that contribute to the character's Quality Limit during character creation. 
+        /// </summary>
+        public int NegativeQualityLimitKarma
+        {
+            get
+            {
+                if (_intCachedNegativeQualityLimitKarma == int.MinValue)
+                {
+                    _intCachedNegativeQualityLimitKarma = Qualities
+                                                      .Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
+                                                      .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
+                    // Group contacts are counted as positive qualities
+                    _intCachedNegativeQualityLimitKarma += EnemyKarma;
+
+                    // Deduct the amount for free Qualities.
+                    _intCachedNegativeQualityLimitKarma -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+
+                    // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+                    if (Options.ExceedNegativeQualitiesLimit)
+                    {
+                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        if (_intCachedNegativeQualityLimitKarma < intNegativeQualityLimit)
+                        {
+                            _intCachedNegativeQualityLimitKarma = intNegativeQualityLimit;
+                        }
+                    }
+                    _intCachedNegativeQualityLimitKarma *= -1;
+                }
+
+                return _intCachedNegativeQualityLimitKarma;
+            }
+        }
+
+        public string DisplayNegativeQualityKarma
+        {
+            get
+            {
+                if (NegativeQualityLimitKarma != NegativeQualityKarma)
+                {
+                    return
+                        $"{NegativeQualityKarma.ToString(GlobalOptions.CultureInfo)} ({NegativeQualityLimitKarma.ToString(GlobalOptions.CultureInfo)})/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+                }
+                return
+                    $"{NegativeQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+            }
+        }
 
         private int _intCachedMetagenicPositiveQualities = int.MinValue;
 

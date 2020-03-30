@@ -8687,7 +8687,7 @@ namespace Chummer
                 }
             }
 
-            int intQualityPointsUsed = intLifeModuleQualities + CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
+            int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -12071,12 +12071,12 @@ namespace Chummer
 
             int totalNeg = CharacterObjectOptions.EnemyKarmaQualityLimit
                 ? CharacterObject.NegativeQualityKarma
-                : (CharacterObject.NegativeQualityKarma - (CharacterObject.Contacts
+                : (CharacterObject.NegativeQualityKarma + (CharacterObject.Contacts
                        .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
                        .Sum(x => (x.Connection + x.Loyalty) * CharacterObjectOptions.KarmaEnemy)));
 
             // if negative points > 25
-            if (totalNeg < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
+            if (totalNeg > (CharacterObject.GameplayOptionQualityLimit) && !CharacterObjectOptions.ExceedNegativeQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language)
