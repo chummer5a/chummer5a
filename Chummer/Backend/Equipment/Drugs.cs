@@ -947,7 +947,7 @@ namespace Chummer.Backend.Equipment
 
             if (Qualities.Count > 0)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");

@@ -111,7 +111,7 @@ namespace Chummer
                         let strName = objXmlWeapon["name"]?.InnerText
                         where !string.IsNullOrEmpty(strName)
                         select new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
-            using (XmlNodeList objXmlSelectedSkill = XmlManager.Load("skills.xml")
+            using (XmlNodeList objXmlSelectedSkill = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary)
                 .SelectNodes($"/chummer/skills/skill[name = \"{strSelectedCategory}\" and ({_objCharacter.Options.BookXPath()})]/specs/spec"))
                 if (objXmlSelectedSkill?.Count > 0)
                     lstSkillSpecializations.AddRange(from XmlNode objXmlSpecialization in objXmlSelectedSkill

@@ -1181,7 +1181,7 @@ namespace Chummer
                     // Character needs a specific spirit form provided by their Tradition.
                     if (blnShowMessage)
                     {
-                        string strTranslate = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        string strTranslate = XmlManager.Load("critterpowers.xml", objCharacter.Options.CustomDataDictionary).SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                         strName = !string.IsNullOrEmpty(strTranslate)
                             ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
@@ -1192,7 +1192,7 @@ namespace Chummer
                 {
                     // Character needs a specific Weapon.
                     if (!blnShowMessage) return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
-                    string strTranslate = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode($"/chummer/weapons/weapon[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                    string strTranslate = XmlManager.Load("weapons.xml", objCharacter.Options.CustomDataDictionary).SelectSingleNode($"/chummer/weapons/weapon[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                     strName = !string.IsNullOrEmpty(strTranslate)
                         ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
                         : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
@@ -1202,7 +1202,7 @@ namespace Chummer
                 {
                     if (!blnShowMessage)
                         return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
-                    string strTranslate = XmlManager.Load("weapons.xml")
+                    string strTranslate = XmlManager.Load("weapons.xml", objCharacter.Options.CustomDataDictionary)
                         .SelectSingleNode(
                             $"/chummer/accessories/accessory[name = {strNodeInnerText.CleanXPath()}]/translate")
                         ?.InnerText;
@@ -1215,7 +1215,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        string strTranslate = XmlManager.Load("armor.xml")
+                        string strTranslate = XmlManager.Load("armor.xml", objCharacter.Options.CustomDataDictionary)
                             .SelectSingleNode(
                                 $"/chummer/armormods/armormod[name = {strNodeInnerText.CleanXPath()}]/translate")
                             ?.InnerText;

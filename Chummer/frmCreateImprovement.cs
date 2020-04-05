@@ -389,7 +389,8 @@ namespace Chummer
                     break;
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
-                    using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
+                    using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml", _objCharacter.Options.CustomDataDictionary)
+                        .SelectNodes("/chummer/spells/spell"))
                         if (xmlSpellList != null)
                             foreach (XmlNode xmlSpell in xmlSpellList.Cast<XmlNode>().Where(x => x["name"] != null))
                             {
@@ -590,7 +591,7 @@ namespace Chummer
                     }
                     else
                     {
-                        objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
+                        objXmlNode = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
                         return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
                     }
 

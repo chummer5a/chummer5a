@@ -357,7 +357,7 @@ namespace Chummer.Backend.Equipment
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
-                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml", _objCharacter.Options.CustomDataDictionary);
                 XmlNode xmlLifestyleNode =
                     xmlLifestyleDocument.SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{_strBaseLifestyle}\"]");
                 {
@@ -366,7 +366,7 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
             {
-                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml", _objCharacter.Options.CustomDataDictionary);
                 XmlNode xmlLifestyleNode =
                     xmlLifestyleDocument.SelectSingleNode($"/chummer/comforts/comfort[name = \"{_strBaseLifestyle}\"]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);

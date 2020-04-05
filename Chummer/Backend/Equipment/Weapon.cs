@@ -3820,7 +3820,7 @@ namespace Chummer.Backend.Equipment
 
         public string RangeModifier(string range)
         {
-            int i = Convert.ToInt32(XmlManager.Load("ranges.xml")
+            int i = Convert.ToInt32(XmlManager.Load("ranges.xml", _objCharacter.Options.CustomDataDictionary)
                 .SelectSingleNode($"chummer/modifiers/{range.ToLowerInvariant()}")
                 ?.InnerText);
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
@@ -4149,7 +4149,7 @@ namespace Chummer.Backend.Equipment
                 string spec = GetNode()?["category"]?.Attributes["gunneryspec"]?.InnerText ?? string.Empty;
                 if (spec == string.Empty)
                 {
-                    spec = XmlManager.Load("weapons.xml")
+                    spec = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary)
                                .SelectSingleNode($"/chummer/categories/category[. = \"{Category}\"]")
                                ?.Attributes?["gunneryspec"]?.InnerText ?? "None";
                 }

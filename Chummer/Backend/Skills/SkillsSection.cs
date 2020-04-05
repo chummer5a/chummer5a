@@ -352,7 +352,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 HashSet<string> hashSkillGuids = new HashSet<string>();
-                XmlDocument skillsDoc = XmlManager.Load("skills.xml");
+                XmlDocument skillsDoc = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary);
                 foreach (XmlNode node in skillsDoc.SelectNodes(
                     $"/chummer/skills/skill[not(exotic) and ({_objCharacter.Options.BookXPath()}) {SkillFilter(FilterOptions.NonSpecial)}]")
                 )

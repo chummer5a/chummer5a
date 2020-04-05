@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
         /// Load the Grade from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, Dictionary<string,bool> dicCustomBooks)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
 
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
                         ? "bioware.xml"
                         : _eSource == Improvement.ImprovementSource.Drug
                             ? "drugcomponents.xml"
-                            : "cyberware.xml", GlobalOptions.Language)
+                            : "cyberware.xml", dicCustomBooks, GlobalOptions.Language)
                     .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();

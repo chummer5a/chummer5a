@@ -199,6 +199,7 @@ namespace Chummer
                     // Attempt to cache all XML files that are used the most.
                     using (var op_cache = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                     {
+                        Dictionary<string,bool> dicBooks = new Dictionary<string, bool>();
                         Parallel.Invoke(
                             () => XmlManager.Load("armor.xml", dicBooks),
                             () => XmlManager.Load("bioware.xml", dicBooks),

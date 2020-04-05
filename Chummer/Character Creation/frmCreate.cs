@@ -208,7 +208,7 @@ namespace Chummer
                                 CharacterObject.GameplayOption = GlobalOptions.DefaultGameplayOption;
                             }
 
-                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml", _objCharacter.Options.CustomDataDictionary)
+                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml", CharacterObject.Options.CustomDataDictionary)
                                 .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
                                                   CharacterObject.GameplayOption + "\"]");
                             if (objXmlGameplayOption != null)
@@ -396,7 +396,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+                            XmlManager.Load("traditions.xml", CharacterObject.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>();
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -566,7 +566,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            XmlManager.Load("streams.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+                            XmlManager.Load("streams.xml", CharacterObject.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>();
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -3653,7 +3653,8 @@ namespace Chummer
                         // Create the Qualities that come with the Metatype.
                         foreach (XmlNode objXmlQualityItem in xmlCharacterNode.Select("qualities/*/quality[text() = \"" + objSelectedQuality.Name + "\"]"))
                         {
-                            XmlNode objXmlQuality = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                            XmlNode objXmlQuality = XmlManager.Load("qualities.xml", CharacterObject.Options.CustomDataDictionary)
+                                .SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
                             Quality objQuality = new Quality(CharacterObject);
                             string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                             QualitySource objSource = objXmlQualityItem.Attributes?["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
@@ -10587,7 +10588,7 @@ namespace Chummer
             if (CharacterObject.MetatypeCategory == "Shapeshifter")
             {
                 List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
-                XmlDocument xmlDoc = XmlManager.Load("metatypes.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument xmlDoc = XmlManager.Load("metatypes.xml", CharacterObject.Options.CustomDataDictionary);
                 string strMetavariantXPath = $"/chummer/metatypes/metatype[id = \"{CharacterObject.MetatypeGuid}\"]/metavariants/metavariant[id = \"{CharacterObject.MetavariantGuid}\"]";
                 foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                 {

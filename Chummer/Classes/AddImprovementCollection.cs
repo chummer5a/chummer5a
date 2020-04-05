@@ -5931,7 +5931,8 @@ namespace Chummer.Classes
 
             if (strCritterCategory != string.Empty)
             {
-                using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml").SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
+                using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml", _objCharacter.Options.CustomDataDictionary)
+                    .SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
                     if (xmlSpirits?.Count > 0)
                         foreach (XmlNode xmlSpirit in xmlSpirits)
                         {

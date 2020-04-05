@@ -889,7 +889,7 @@ namespace Chummer
         private XPathNavigator _xmlMetatypeNode;
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
         {
-            XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
+            XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", Options.CustomDataDictionary);
             if (blnReturnMetatypeOnly)
             {
                 return xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
@@ -1408,7 +1408,7 @@ namespace Chummer
             }
 
             // Add any Complex Forms the Critter comes with (typically Sprites)
-            XmlDocument xmlComplexFormDocument = XmlManager.Load("complexforms.xml");
+            XmlDocument xmlComplexFormDocument = XmlManager.Load("complexforms.xml", Options.CustomDataDictionary);
             foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
             {
                 XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + xmlComplexForm.InnerText + "\"]");
@@ -1444,7 +1444,7 @@ namespace Chummer
             }
 
             //Load any cyberware the character has.
-            XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+            XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml", Options.CustomDataDictionary);
             foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
             {
                 XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode($"chummer/cyberwares/cyberware[name = \"{node.InnerText}\"]");
@@ -1462,7 +1462,7 @@ namespace Chummer
             }
 
             //Load any bioware the character has.
-            XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+            XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml", Options.CustomDataDictionary);
             foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
             {
                 XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode($"chummer/biowares/bioware[name = \"{node.InnerText}\"]");
@@ -1480,7 +1480,7 @@ namespace Chummer
             }
 
             // Add any Advanced Programs the Critter comes with (typically A.I.s)
-            XmlDocument xmlAIProgramDocument = XmlManager.Load("programs.xml");
+            XmlDocument xmlAIProgramDocument = XmlManager.Load("programs.xml", Options.CustomDataDictionary);
             foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
             {
                 XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + xmlAIProgram.InnerText + "\"]");
@@ -1515,7 +1515,7 @@ namespace Chummer
             }
 
             // Add any Gear the Critter comes with (typically Programs for A.I.s)
-            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml", Options.CustomDataDictionary);
             foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
             {
                 XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
@@ -2304,7 +2304,7 @@ namespace Chummer
 
             // <sources>
             objWriter.WriteStartElement("customdatadirectorynames");
-            foreach(CustomDataDirectoryInfo dicDirectoryName in _objOptions.CustomDataDirectories.Where(dir => dir.Enabled))
+            foreach(CustomDataDirectoryInfo dicDirectoryName in Options.CustomDataDirectories.Where(dir => dir.Enabled))
             {
                 objWriter.WriteElementString("directoryname", dicDirectoryName.Name);
             }
@@ -2579,7 +2579,7 @@ if (!Utils.IsUnitTest){
                         {
                             string strLoopString = xmlDirectoryName.Value;
                             if (strLoopString.Length > 0 &&
-                                !Options.CustomDataDirectoryNames.Contains(strLoopString))
+                                !GlobalOptions.CustomDataDirectoryPaths.Any(path => path.Name == strLoopString))
                             {
                                 strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
                             }
@@ -5767,7 +5767,7 @@ if (!Utils.IsUnitTest){
                     foreach(XmlNode objNode in xmlGradeList)
                     {
                         Grade objGrade = new Grade(objSource);
-                        objGrade.Load(objNode);
+                        objGrade.Load(objNode, Options.CustomDataDictionary);
                         lstGrades.Add(objGrade);
                     }
 
@@ -14160,7 +14160,7 @@ if (!Utils.IsUnitTest){
                 _intCachedRedlinerBonus = 0;
                 return;
             }
-            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
+            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml", Options.CustomDataDictionary)
                 .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{GameplayOption}\"]");
             
             List<string> excludedLimbs = (from XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb") select n.Value).ToList();
@@ -16200,7 +16200,7 @@ if (!Utils.IsUnitTest){
                     {
 
                         // Armor.
-                        xmlGearDocument = XmlManager.Load("gear.xml");
+                        xmlGearDocument = XmlManager.Load("gear.xml", Options.CustomDataDictionary);
                         XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml", Options.CustomDataDictionary);
                         foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes(
                             "gear/armor/item[@useradded != \"no\"]"))
@@ -17214,7 +17214,7 @@ if (!Utils.IsUnitTest){
                         if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
                         {
                             XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml", Options.CustomDataDictionary)
-                                .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{_strGameplayOption}}\"]");
+                                .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{_strGameplayOption}\"]");
                             if (objXmlGameplayOption != null)
                             {
                                 string strKarma = objXmlGameplayOption["karma"]?.InnerText;
@@ -17692,7 +17692,7 @@ if (!Utils.IsUnitTest){
             // Add the Cyberzombie Lifestyle if it is not already taken.
             if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
             {
-                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml", Options.CustomDataDictionary);
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
 
                 if (objXmlLifestyle != null)
@@ -17712,7 +17712,7 @@ if (!Utils.IsUnitTest){
             // Gain the Dual Natured Critter Power if it does not yet exist.
             if (CritterPowers.All(x => x.Name != "Dual Natured"))
             {
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml", Options.CustomDataDictionary).SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
 
                 if (objXmlPowerNode != null)
                 {
@@ -17725,7 +17725,7 @@ if (!Utils.IsUnitTest){
             // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
             if (!CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
             {
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml", Options.CustomDataDictionary).SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                 if (objXmlPowerNode != null)
                 {

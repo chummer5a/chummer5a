@@ -67,7 +67,8 @@ namespace Chummer
             _objParentObject = objParentNode;
             _objParentNode = (_objParentObject as IHasXmlNode)?.GetNode()?.CreateNavigator();
 
-            _xmlBaseDrugDataNode = XmlManager.Load("drugcomponents.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDrugDataNode = XmlManager.Load("drugcomponents.xml", _objCharacter.Options.CustomDataDictionary)
+                .GetFastNavigator().SelectSingleNode("/chummer");
             _strNodeXPath = "Drugs/Drug";
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);

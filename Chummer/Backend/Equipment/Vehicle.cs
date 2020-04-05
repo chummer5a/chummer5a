@@ -310,7 +310,7 @@ namespace Chummer.Backend.Equipment
                                         using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
                                             if (objXmlSubSystemNameList?.Count > 0)
                                             {
-                                                XmlDocument objXmlWareDocument = XmlManager.Load("cyberware.xml");
+                                                XmlDocument objXmlWareDocument = XmlManager.Load("cyberware.xml", _objCharacter.Options.CustomDataDictionary);
                                                 foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                                                 {
                                                     XmlNode objXmlSubsystem = objXmlWareDocument.SelectSingleNode(

@@ -636,7 +636,7 @@ namespace Chummer
                 strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
                 int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
 
-                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
+                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/knowledgeskills"));
                 
                 // begin priority based character settings
                 // Load the Priority information.
