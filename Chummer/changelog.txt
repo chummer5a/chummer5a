@@ -10,6 +10,7 @@ Data Changes:
 - Added 'synthstruments' from Chrome Flesh as new gear objects copied from Run Faster. 
 - Added capacity to False Face cyberware.
 - Flagged Stolen Gear and In Debt as not contributing to limit, as the karma these qualities provide spent on nuyen. Added customdata file to preserve existing behaviour. 
+- Fixed an issue in character sheets not correctly showing values for 'already addicted' addiction resistance pools. Closes #4082
 
 Build 211
 Application Changes:
