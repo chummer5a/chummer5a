@@ -11660,6 +11660,16 @@
       <cost>250</cost>
     </gear>
     <gear>
+      <id>447827BE-96A4-471F-929F-CB4BFF4CCBB4</id>
+      <name>Reaper</name>
+      <category>Drugs</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>183</page>
+      <avail>8R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
       <id>cd2dd310-464f-4f12-ae42-cdc293e3a2df</id>
       <name>Snuff</name>
       <category>Drugs</category>
