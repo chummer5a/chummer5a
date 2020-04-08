@@ -1979,7 +1979,6 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2015,7 +2014,6 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2066,7 +2064,6 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2103,14 +2100,13 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
-          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2142,7 +2138,6 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2241,7 +2236,6 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2270,9 +2264,9 @@
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2336,14 +2330,13 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
-          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2372,14 +2365,13 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
-          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
-          <quality>The Twisted Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2391,35 +2383,6 @@
       </required>
       <source>SG</source>
       <page>178</page>
-    </quality>
-    <quality>
-      <id>43be9ef8-d7e9-47fe-ac79-7d15c508a2ad</id>
-      <name>The Twisted Way</name>
-      <karma>20</karma>
-      <category>Positive</category>
-      <doublecareer>False</doublecareer>
-      <forbidden>
-        <oneof>
-          <quality>The Artisan's Way</quality>
-          <quality>The Artist's Way</quality>
-          <quality>The Athlete's Way</quality>
-          <quality>The Beast's Way</quality>
-          <quality>The Burnout's Way</quality>
-          <quality>The Invisible Way</quality>
-          <quality>The Magician's Way</quality>
-          <quality>The Speaker's Way</quality>
-          <quality>The Spiritual Way</quality>
-          <quality>The Warrior's Way</quality>
-        </oneof>
-      </forbidden>
-      <required>
-        <oneof>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
-        </oneof>
-      </required>
-      <source>SG</source>
-      <page>85</page>
     </quality>
     <quality>
       <id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
@@ -2435,7 +2398,6 @@
       </bonus>
       <forbidden>
         <oneof>
-          <quality>The Artist's Way</quality>
           <quality>The Artisan's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
@@ -2444,7 +2406,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Twisted Way</quality>
+          <quality>The Artist's Way</quality>
         </oneof>
       </forbidden>
       <required>
