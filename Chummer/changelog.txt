@@ -3,6 +3,7 @@ Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 - Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
 - Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
+- Traditions that have an empty Drain value will automatically be permitted to choose their drain attribute. Allows the Toxic tradition to select the Drain attributes to use.
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
@@ -13,6 +14,7 @@ Data Changes:
 - Flagged Stolen Gear and In Debt as not contributing to limit, as the karma these qualities provide spent on nuyen. Added customdata file to preserve existing behaviour. 
 - Fixed an issue in character sheets not correctly showing values for 'already addicted' addiction resistance pools. Closes #4082
 - Added 'Reaper' variant of Slab drug from Chrome Flesh. Closes #4081
+- Added the Toxic tradition.
 
 Build 211
 Application Changes:

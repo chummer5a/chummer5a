@@ -853,6 +853,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -885,6 +890,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -918,6 +928,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -942,6 +957,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
