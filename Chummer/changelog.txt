@@ -2,6 +2,7 @@ Future Build 212
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 - Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
+- Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.

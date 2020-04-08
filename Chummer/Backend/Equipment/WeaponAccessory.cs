@@ -177,6 +177,38 @@ namespace Chummer.Backend.Equipment
             _nodAllowGear = objXmlAccessory["allowgear"];
             if (!objXmlAccessory.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
+            
+            if (string.IsNullOrEmpty(Notes))
+            {
+                string strEnglishNameOnPage = Name;
+                string strNameOnPage = string.Empty;
+                // make sure we have something and not just an empty tag
+                if (objXmlAccessory.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                    !string.IsNullOrEmpty(strNameOnPage))
+                    strEnglishNameOnPage = strNameOnPage;
+
+                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+
+                if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                {
+                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+
+                    // don't check again it is not translated
+                    if (strTranslatedNameOnPage != _strName)
+                    {
+                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                        if (objXmlAccessory.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                            strTranslatedNameOnPage = strNameOnPage;
+
+                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                            strTranslatedNameOnPage);
+                    }
+                }
+                else
+                    Notes = strGearNotes;
+            }
+
             objXmlAccessory.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlAccessory.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
