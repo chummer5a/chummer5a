@@ -187,7 +187,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                         if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                             Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            _objCharacter.Options.UseCyberlimbCalculation &&
                             !string.IsNullOrWhiteSpace(LimbSlot) &&
                             !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
                         {
@@ -224,7 +224,7 @@ namespace Chummer.Backend.Equipment
                         objOldItem.Parent = null;
                         if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                             Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            _objCharacter.Options.UseCyberlimbCalculation &&
                             !string.IsNullOrWhiteSpace(LimbSlot) &&
                             !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
                         {
@@ -261,7 +261,7 @@ namespace Chummer.Backend.Equipment
                         objOldItem.Parent = null;
                         if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                             Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            _objCharacter.Options.UseCyberlimbCalculation &&
                             !string.IsNullOrWhiteSpace(LimbSlot) &&
                             !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
                         {
@@ -294,7 +294,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                         if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                             Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            _objCharacter.Options.UseCyberlimbCalculation &&
                             !string.IsNullOrWhiteSpace(LimbSlot) &&
                             !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
                         {
@@ -328,7 +328,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Reset:
                     blnDoEssenceImprovementsRefresh = true;
                     if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                        !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                        _objCharacter.Options.UseCyberlimbCalculation &&
                         !string.IsNullOrWhiteSpace(LimbSlot) &&
                         !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
                     {
@@ -1583,7 +1583,7 @@ namespace Chummer.Backend.Equipment
                 _lstIncludeInWirelessPairBonus.Add(value);
                 _strName = value;
                 if (_objParent?.Category != "Cyberlimb" || _objParent.Parent?.InheritAttributes == false ||
-                    _objParent.ParentVehicle != null || _objCharacter.Options.DontUseCyberlimbCalculation ||
+                    _objParent.ParentVehicle != null || !_objCharacter.Options.UseCyberlimbCalculation ||
                     string.IsNullOrWhiteSpace(_objParent.LimbSlot) ||
                     _objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot)) return;
                 bool blnDoMovementUpdate = false;
@@ -1697,28 +1697,24 @@ namespace Chummer.Backend.Equipment
             get => _strCategory;
             set
             {
-                if (_strCategory != value)
+                if (_strCategory == value) return;
+                string strOldValue = _strCategory;
+                _strCategory = value;
+                if ((value != "Cyberlimb" && strOldValue != "Cyberlimb") || Parent?.InheritAttributes == false ||
+                    ParentVehicle != null || !_objCharacter.Options.UseCyberlimbCalculation ||
+                    string.IsNullOrWhiteSpace(LimbSlot) ||
+                    _objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot)) return;
+                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                    .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    string strOldValue = _strCategory;
-                    _strCategory = value;
-                    if ((value == "Cyberlimb" || strOldValue == "Cyberlimb") && Parent?.InheritAttributes != false &&
-                        ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(LimbSlot) &&
-                        !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                    if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                        {
-                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
-                            {
-                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                            }
-                        }
-
-                        if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                     }
                 }
+
+                if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
             }
         }
 
@@ -1734,24 +1730,22 @@ namespace Chummer.Backend.Equipment
                 {
                     string strOldValue = _strLimbSlot;
                     _strLimbSlot = value;
-                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                        !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        (!string.IsNullOrWhiteSpace(value) && !_objCharacter.Options.ExcludeLimbSlot.Contains(value)) ||
-                        (!string.IsNullOrWhiteSpace(strOldValue) &&
-                         !_objCharacter.Options.ExcludeLimbSlot.Contains(strOldValue)))
+                    if ((Category != "Cyberlimb" || Parent?.InheritAttributes == false || ParentVehicle != null ||
+                         !_objCharacter.Options.UseCyberlimbCalculation ||
+                         (string.IsNullOrWhiteSpace(value) || _objCharacter.Options.ExcludeLimbSlot.Contains(value))) &&
+                        (string.IsNullOrWhiteSpace(strOldValue) ||
+                         _objCharacter.Options.ExcludeLimbSlot.Contains(strOldValue))) return;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
                         {
-                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
-                            {
-                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                            }
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
-
-                        if (_objCharacter.Options.CyberlegMovement && (value == "leg" || strOldValue == "leg"))
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
+
+                    if (_objCharacter.Options.CyberlegMovement && (value == "leg" || strOldValue == "leg"))
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                 }
             }
         }
@@ -1774,27 +1768,22 @@ namespace Chummer.Backend.Equipment
             set
             {
                 string strNewValue = value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
-                if (_strLimbSlotCount != strNewValue)
+                if (_strLimbSlotCount == strNewValue) return;
+                _strLimbSlotCount = strNewValue;
+                if (Category != "Cyberlimb" || Parent?.InheritAttributes == false || ParentVehicle != null ||
+                    !_objCharacter.Options.UseCyberlimbCalculation || string.IsNullOrWhiteSpace(LimbSlot) ||
+                    _objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot)) return;
+                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                    .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    _strLimbSlotCount = strNewValue;
-                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                        !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(LimbSlot) &&
-                        !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                    if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                        {
-                            if (objCharacterAttrib.Abbrev == "AGI" || objCharacterAttrib.Abbrev == "STR")
-                            {
-                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                            }
-                        }
-
-                        if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                     }
                 }
+
+                if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
             }
         }
 
@@ -2296,7 +2285,7 @@ namespace Chummer.Backend.Equipment
                 _intRating = intNewValue;
                 bool blnDoMovementUpdate = false;
                 if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false &&
-                    _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                    _objParent.ParentVehicle == null && _objCharacter.Options.UseCyberlimbCalculation &&
                     !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
                     !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                 {

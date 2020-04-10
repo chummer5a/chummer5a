@@ -1123,7 +1123,7 @@ namespace Chummer
             // Make sure the character has enough Karma to pay for the Quality.
             if (Type == QualityType.Positive)
             {
-                if (objCharacter.Created && !objCharacter.Options.DontDoubleQualityPurchases)
+                if (objCharacter.Created && objCharacter.Options.DoubleQualityPurchases)
                 {
                     intKarmaCost *= 2;
                 }
@@ -1156,7 +1156,7 @@ namespace Chummer
             }
             else
             {
-                if (!objCharacter.Options.DontDoubleQualityRefunds)
+                if (objCharacter.Options.DoubleQualityRefunds)
                 {
                     intKarmaCost *= 2;
                 }

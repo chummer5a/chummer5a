@@ -19,27 +19,6 @@ namespace Chummer
         public string FileName { get; internal set; }
         #region Default Values
         // Settings.
-        //TODO: Im sure they had some effect. Or remove them
-        /*
-		private bool _blnAllow2ndMaxAttribute;
-		private bool _blnAllowAttributePointsOnExceptional;
-	    private bool _blnAlternateArmorEncumbrance;
-		private bool _blnAlternateComplexFormCost;
-		private bool _blnAlternateMatrixAttribute;
-	    private bool _blnAutomaticCopyProtection = true;
-		private bool _blnAutomaticRegistration = true;
-	    private bool _blnCalculateCommlinkResponse = true;
-	    private bool _blnEnforceSkillMaximumModifiedRating;
-		private bool _blnErgonomicProgramsLimit = true;
-	    private bool _blnIgnoreArmorEncumbrance = true;
-	    private bool _blnMayBuyQualities;
-	    private bool _blnNoSingleArmorEncumbrance;
-		private bool _blnPrintArcanaAlternates;
-	    private bool _blnPrintLeadershipAlternates;
-	    private bool _blnSpecialAttributeKarmaLimit;
-	    private bool _blnUseContactPoints;
-	    private int _intFreeContactsFlatNumber = 0;
-        */
 
         private readonly XmlDocument _objBookDoc = new XmlDocument();
 		private string _strBookXPath = "";
@@ -62,16 +41,9 @@ namespace Chummer
 		/// <param name="strCode">Book code to convert.</param>
 		public string BookFromCode(string strCode)
 		{
-			string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				strReturn = objXmlBook["name"].InnerText;
-			}
-			catch
-			{
-			}
-			return strReturn;
+            string strReturn = objXmlBook?["name"]?.InnerText ?? strCode;
+            return strReturn;
 		}
 
 		/// <summary>
@@ -83,19 +55,9 @@ namespace Chummer
 			if (strCode == "")
 				return "";
 
-			string strReturn = "";
 			XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-			try
-			{
-				if (objXmlBook["altcode"] != null)
-					strReturn = objXmlBook["altcode"].InnerText;
-				else
-					strReturn = strCode;
-			}
-			catch
-			{
-			}
-			return strReturn;
+            string strReturn = objXmlBook?["altcode"]?.InnerText ?? strCode;
+            return strReturn;
 		}
 
 		/// <summary>
@@ -209,28 +171,268 @@ namespace Chummer
 		{
 			return EnabledBooks().ToList();
 		}
-		#endregion
+        #endregion
+        
+        /// <summary>
+        /// Setting name.
+        /// </summary>
+        [DisplayIgnore] //TODO: Do something
+        public string Name { get; set; } = "Default Settings";
 
-	    #region Character behavour
-	    [OptionAttributes("OptionHeader_CharacterOptions")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [DisplayIgnore] //TODO: Do something
+        public string RecentImageFolder { get; set; } = "";
 
-	    /// <summary>
-	    /// Number of Limbs a standard character has.
-	    /// </summary>
-	    [SavePropertyAs("limbcount")]
-	    
+        #region Books
+        /// <summary>
+        /// Sourcebooks.
+        /// </summary>
+        public Dictionary<string, bool> Books { get; } = GlobalOptions.Instance.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
+
+        public IEnumerable<string> EnabledBooks()
+        {
+            foreach (KeyValuePair<string, bool> book in Books)
+            {
+                if (book.Value)
+                    yield return book.Key;
+            }
+        }
+        #endregion
+
+        #region Character behavour
+        /// <summary>
+        /// Number of Limbs a standard character has.
+        /// </summary>
+        [OptionAttributes("OptionHeader_CharacterOptions")]
+        [SavePropertyAs("limbcount")]
 	    public LimbCount LimbCount { get; set; } = LimbCount.All;
 
-	    /// <summary>
-	    /// Exclude a particular Limb Slot from count towards the Limb Count.
-	    /// </summary>
-	    [DisplayIgnore] //TODO: Do something
+        /// <summary>
+        /// Whether Life Modules should automatically generate a character background.
+        /// </summary>
+        public bool AutomaticBackstory { get; set; } = true;
+
+        private int _nuyenDecimals = 2;
+        /// <summary>
+        /// Number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public int NuyenDecimals
+        {
+            get => _nuyenDecimals;
+            set
+            {
+                _nuyenDecimals = value;
+                EssenceFormat = "#,0" + (value > 0 ? ("." + new string('#', value)) : "");
+            }
+        }
+
+        private int _essenceDecimals = 2;
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        [SavePropertyAs("essencedecimals")]
+        public int EssenceDecimals
+        {
+            get => _essenceDecimals;
+            set
+            {
+                int intCurrentEssenceDecimals = EssenceDecimals;
+                int intNewEssenceDecimals = Math.Max(value, 0);
+                if (intNewEssenceDecimals < intCurrentEssenceDecimals)
+                {
+                    if (intNewEssenceDecimals > 0)
+                    {
+                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
+                        if (length < 3) length = 3;
+                        EssenceFormat = EssenceFormat.Substring(0, length);
+                    }
+                    else
+                    {
+                        int intDecimalPlaces = EssenceFormat.IndexOf('.');
+                        if (intDecimalPlaces != -1)
+                            EssenceFormat = EssenceFormat.Substring(0, intDecimalPlaces);
+                    }
+                }
+                else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
+                {
+                    StringBuilder objEssenceFormat = string.IsNullOrEmpty(EssenceFormat) ? new StringBuilder("#,0") : new StringBuilder(EssenceFormat);
+                    if (intCurrentEssenceDecimals == 0)
+                    {
+                        objEssenceFormat.Append(".");
+                    }
+                    intNewEssenceDecimals -= intCurrentEssenceDecimals;
+                    for (int i = 0; i < intNewEssenceDecimals; ++i)
+                    {
+                        objEssenceFormat.Append("0");
+                    }
+                    EssenceFormat = objEssenceFormat.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Exclude a particular Limb Slot from count towards the Limb Count.
+        /// </summary>
+        [DisplayIgnore] //TODO: Do something
 	    [SavePropertyAs("excludelimbslot")]
 	    //TODO: Handler for comboboxes
 	    public string ExcludeLimbSlot { get; set; } = "";
 
+        #region Character Creation
+
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_CharacterCreation")]
+        // ReSharper disable once InvalidXmlDocComment
+        /// <summary>
+        /// Whether or not the FreeContactsMultiplier house rule is enabled.
+        /// </summary>
+        [SavePropertyAs("freecontactsmultiplierenabled")]
+        public bool FreeContactsMultiplierEnabled { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// </summary>
+        public bool AllowPointBuySpecializationsOnKarmaSkills { get; set; }
+
+        /// <summary>
+        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// </summary>
+        public bool UnarmedImprovementsApplyToWeapons { get; set; }
+
+        /// <summary>
+        /// Whether or not characters can spend skill points on broken groups.
+        /// </summary>
+        public bool UsePointsOnBrokenGroups { get; set; } = false;
+
+        /// <summary>
+        /// Constrains the FreeContactsMultiplier option to only be enabled if the freecontactsmultiplierenabled rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+        private OptionConstraint<CharacterOptions> ContactsMultiplierConstraint { get; } =
+            new OptionConstraint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
+
+        /// <summary>
+        /// The CHA multiplier to be used with the Free Contacts Option.
+        /// </summary>
+        [SavePropertyAs("freekarmacontactsmultiplier")]
+        public int FreeContactsMultiplier { get; set; } = 3;
+
+
+        /// <summary>
+        /// Whether or not the multiplier for Free Knowledge points are used.
+        /// </summary>
+        [SavePropertyAs("freekarmaknowledgemultiplierenabled")]
+        public bool FreeKnowledgeMultiplierEnabled { get; set; }
+
+        /// <summary>
+        /// Constrains the FreeContactsMultiplier option to only be enabled if the freecontactsmultiplierenabled rule is enabled.
+        /// </summary>
+        [UsedImplicitly]
+        private OptionConstraint<CharacterOptions> KnowledgeMultiplierConstraint { get; } =
+            new OptionConstraint<CharacterOptions>(option => option.FreeKnowledgeMultiplierEnabled);
+
+        /// <summary>
+        /// The INT+LOG multiplier to be used with the Free Knowledge Option.
+        /// </summary>
+        [SavePropertyAs("freekarmaknowledgemultiplier")]
+        public int FreeKnowledgeMultiplier { get; set; } = 2;
+
+        /// <summary>
+        /// Whether or not Metatypes cost Karma.
+        /// </summary>
+        [SavePropertyAs("metatypecostskarma")]
+        public bool MetatypeCostsKarma { get; set; } = true;
+
+        /// <summary>
+        /// Multiplier for Metatype Karma Costs.
+        /// </summary>
+        [SavePropertyAs("metatypecostskarmamultiplier")]
+        public int MetatypeCostsKarmaMultiplier { get; set; } = 1;
+
+        /// <summary>
+        /// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+        /// </summary>
+        [SavePropertyAs("alternatemetatypeattributekarma")]
+        public bool AlternateMetatypeAttributeKarma { get; set; }
+
+        /// <summary>
+        /// Maximum amount of remaining Karma that is carried over to the character once they are created.
+        /// </summary>
+        [SavePropertyAs("karmacarryover")]
+        public int KarmaCarryover { get; set; } = 7;
+
+        /// <summary>
+        /// Amount of Nuyen gained per Karma spent.
+        /// </summary>
+        [SavePropertyAs("karmanuyenper")]
+        public int NuyenPerBP { get; set; } = 2000;
+
+
+        /// <summary>
+        /// Whether you benefit from augmented values for contact points.
+        /// </summary>
+        [SavePropertyAs("usetotalvalueforcontacts")]
+        public bool UseTotalValueForFreeContacts { get; set; }
+
+        /// <summary>
+        /// Whether you benefit from augmented values for free knowledge points.
+        /// </summary>
+        [SavePropertyAs("usetotalvalueforknowledge")]
+        public bool UseTotalValueForFreeKnowledge { get; set; }
+        #endregion
+
         #region Optional Rules
         [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules")]
+
+        // ReSharper disable once InvalidXmlDocComment
+        /// <summary>
+        /// Only round essence when its value is displayed
+        /// </summary>
+        public bool DontRoundEssenceInternally { get; set; }
+
+        /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public bool EnemyKarmaQualityLimit { get; set; } = true;
+
+        /// <summary>
+        /// Whether Martial Arts grant a free specialisation in a skill.
+        /// </summary>
+        public bool FreeMartialArtSpecialization { get; set; }
+
+        /// <summary>
+        /// Whether or not to ignore the art requirements from street grimoire.
+        /// </summary>
+        public bool IgnoreArt { get; set; }
+
+        /// <summary>
+        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// </summary>
+        public bool IgnoreComplexFormLimit { get; set; }
+
+        /// <summary>
+        /// House Rule: Ignore Armor Encumbrance entirely.
+        /// </summary>
+        public bool NoArmorEncumbrance { get; set; }
+
+        /// <summary>
+        /// Whether Spells from Magic Priority can also be spent on power points.
+        /// </summary>
+        public bool PrioritySpellsAsAdeptPowers { get; set; } = false;
+
+        // ReSharper disable once InvalidXmlDocComment
+        /// <summary>
+        /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        [SavePropertyAs("allow2ndmaxattribute")]
+        public bool AllowSecondMaxAttribute { get; set; }
+
+        /// <summary>
+        /// Allow Mystic Adepts to increase their power points during career mode
+        /// </summary>
+        public bool MysAdeptAllowPPCareer { get; set; }
 
         /// <summary>
         /// Whether or not to require licensing restricted items.
@@ -399,24 +601,17 @@ namespace Chummer
 		[SavePropertyAs("allowskilldicerolling")]
 		public bool AllowSkillDiceRolling { get; set; }
 
-	    /// <summary>
-		/// Whether or not cyberlimbs stats are used in attribute calculation
-		/// </summary>
-		[SavePropertyAs("dontusecyberlimbcalculation")]
-		public bool DontUseCyberlimbCalculation { get; set; }
+        /// <summary>
+        /// Whether or not cyberlimbs stats are used in attribute calculation
+        /// </summary>
+        [SavePropertyAs("UseCyberlimbCalculation")]
+        public bool UseCyberlimbCalculation { get; set; } = true;
 
 	    /// <summary>
 		/// Whether or not Bioware Suites can be added and created.
 		/// </summary>
 		[SavePropertyAs("allowbiowaresuites")]
 		public bool AllowBiowareSuites { get; set; }
-
-	    /// <summary>
-		/// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-		/// </summary>
-		//TODO: Find out what this is and probably remove it
-		[SavePropertyAs("freespiritpowerpointsmag")]
-		public bool FreeSpiritPowerPointsMAG { get; set; }
 
 	    /// <summary>
 		/// Whether or not Technomancers can select Autosofts as Complex Forms.
@@ -429,37 +624,70 @@ namespace Chummer
         /// </summary>
         [DisplayIgnore] //TODO: should actually display
         public bool MysAdeptSecondMAGAttribute { get; set; }
-        private bool _blnAllowTechnomancerSchooling;
-        private bool _allowFreeGrids;
-        private bool _increasedImprovedAbilityMultiplier;
 
+        /// <summary>
+        /// The Pilot attribute for drones is capped to double the original value. 
+        /// </summary>
+        public bool DronemodsMaximumPilot { get; set; }
+
+        /// <summary>
+        /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+        /// </summary>
+        public bool CompensateSkillGroupKarmaDifference { get; set; }
+
+        #region SR4 Rules
         [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules/SR4")]
+
+        // ReSharper disable once InvalidXmlDocComment
         /// <summary>
         /// Whether or not the More Lethal Gameplay optional rule is enabled.
         /// </summary>
-        //
         [SavePropertyAs("morelethalgameplay")]
         public bool MoreLethalGameplay { get; set; }
 
         /// <summary>
+        /// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
+        /// </summary>
+        [SavePropertyAs("freespiritpowerpointsmag")]
+        public bool FreeSpiritPowerPointsMAG { get; set; }
+
+
+        /// <summary>
+        /// Whether or not Stacked Foci can have a combined Force higher than 6.
+        /// </summary>
+        public bool AllowStackedFoci { get; set; }
+
+        /// <summary>
+        /// Whether or not Stacked Foci can have a combined Force higher than 6.
+        /// </summary>
+        public bool AllowHigherStackedFoci { get; set; }
+
+        /// <summary>
         /// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
         /// </summary>
-        //TODO: Does this still exist?
         [SavePropertyAs("allowobsolescentupgrade")]
         public bool AllowObsolescentUpgrade { get; set; }
+        #endregion
+        #region Qualities
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules/String_Qualities")]
+
+        // ReSharper disable once InvalidXmlDocComment
+        /// <summary>
+        /// If true, the karma cost of qualities is doubled after the initial 25.
+        /// </summary>
+        public bool ExceedPositiveQualitiesCostDoubled { get; set; }
 
         /// <summary>
         /// Whether or not characters in Career Mode should pay double for qualities.
         /// </summary>
-        [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules/String_Qualities")]
-        [SavePropertyAs("dontdoublequalities")]
-        public bool DontDoubleQualityPurchases { get; set; }
+        [SavePropertyAs("doublequalities")]
+        public bool DoubleQualityPurchases { get; set; } = true;
 
         /// <summary>
         /// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
         /// </summary>
-        [SavePropertyAs("dontdoublequalityrefunds")]
-        public bool DontDoubleQualityRefunds { get; set; }
+        [SavePropertyAs("doublequalityrefunds")]
+        public bool DoubleQualityRefunds { get; set; } = true;
 
         /// <summary>
         /// Whether or not characters can have more than 25 BP in Positive Qualities.
@@ -478,18 +706,16 @@ namespace Chummer
         /// </summary>
         [SavePropertyAs("exceednegativequalitieslimit")]
         public bool ExceedNegativeQualitiesLimit { get; set; }
-
+        #endregion
+        #region Optional Rules
         [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
         public bool DroneMods { get; set; } = false;
-
 
         /// <summary>
         /// Allows characters to spend their Karma before Priority Points.
         /// </summary>
-        [DisplayIgnore] //TODO: should actually display
         public bool ReverseAttributePriorityOrder { get; set; }
 
-        //Its debateable if this should really be an option per character or globally. Its very much a global option, but you might want to change it
         #region Printing
         /// <summary>
         /// Whether or not all Active Skills with a total score higher than 0 should be printed.
@@ -499,103 +725,19 @@ namespace Chummer
         public bool PrintSkillsWithZeroRating { get; set; } = true;
 
         /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// </summary>
+        public bool PrintFreeExpenses { get; set; } = true;
+
+        /// <summary>
         /// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
         /// </summary>
-        [SavePropertyAs("printexpenses")]
         public bool PrintExpenses { get; set; }
 
         /// <summary>
         /// Whether or not Notes should be printed.
         /// </summary>
-        [SavePropertyAs("printnotes")]
         public bool PrintNotes { get; set; }
-        #endregion
-
-
-        #region Character Creation
-        //TODO: HEADER[OptionAttributes("House Rules/Character Creation")]
-
-        /// <summary>
-        /// Whether or not the FreeContactsMultiplier house rule is enabled.
-        /// </summary>
-        [SavePropertyAs("freecontactsmultiplierenabled")]
-        public bool FreeContactsMultiplierEnabled { get; set; }
-
-        /// <summary>
-        /// Constrains the FreeContactsMultiplier option to only be enabled if the freecontactsmultiplierenabled rule is enabled.
-        /// </summary>
-        [UsedImplicitly]
-        private OptionConstraint<CharacterOptions> ContactsMultiplierConstraint { get; } =
-            new OptionConstraint<CharacterOptions>(option => option.FreeContactsMultiplierEnabled);
-
-        /// <summary>
-        /// The CHA multiplier to be used with the Free Contacts Option.
-        /// </summary>
-        [SavePropertyAs("freekarmacontactsmultiplier")]
-        public int FreeContactsMultiplier { get; set; } = 3;
-
-
-        /// <summary>
-        /// Whether or not the multiplier for Free Knowledge points are used.
-        /// </summary>
-        [SavePropertyAs("freekarmaknowledgemultiplierenabled")]
-        public bool FreeKnowledgeMultiplierEnabled { get; set; }
-
-        /// <summary>
-        /// Constrains the FreeContactsMultiplier option to only be enabled if the freecontactsmultiplierenabled rule is enabled.
-        /// </summary>
-        [UsedImplicitly]
-        private OptionConstraint<CharacterOptions> KnowledgeMultiplierConstraint { get; } =
-            new OptionConstraint<CharacterOptions>(option => option.FreeKnowledgeMultiplierEnabled);
-
-        /// <summary>
-        /// The INT+LOG multiplier to be used with the Free Knowledge Option.
-        /// </summary>
-        [SavePropertyAs("freekarmaknowledgemultiplier")]
-		public int FreeKnowledgeMultiplier { get; set; } = 2;
-
-	    /// <summary>
-		/// Whether or not Metatypes cost Karma.
-		/// </summary>
-		[SavePropertyAs("metatypecostskarma")]
-		public bool MetatypeCostsKarma { get; set; } = true;
-
-	    /// <summary>
-		/// Mutiplier for Metatype Karma Costs.
-		/// </summary>
-		[SavePropertyAs("metatypecostskarmamultiplier")]
-		public int MetatypeCostsKarmaMultiplier { get; set; } = 1;
-
-	    /// <summary>
-		/// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-		/// </summary>
-		[SavePropertyAs("alternatemetatypeattributekarma")]
-		public bool AlternateMetatypeAttributeKarma { get; set; }
-
-	    /// <summary>
-		/// Maximum amount of remaining Karma that is carried over to the character once they are created.
-		/// </summary>
-		[SavePropertyAs("karmacarryover")]
-		public int KarmaCarryover { get; set; } = 7;
-
-	    /// <summary>
-		/// Amount of Nuyen gained per Karma spent.
-		/// </summary>
-		[SavePropertyAs("karmanuyenper")]
-		public int NuyenPerBP { get; set; } = 2000;
-
-
-	    /// <summary>
-		/// Whether you benefit from augmented values for contact points.
-		/// </summary>
-		[SavePropertyAs("usetotalvalueforcontacts")]
-		public bool UseTotalValueForFreeContacts { get; set; }
-
-	    /// <summary>
-		/// Whether you benefit from augmented values for free knowledge points.
-		/// </summary>
-		[SavePropertyAs("usetotalvalueforknowledge")]
-		public bool UseTotalValueForFreeKnowledge { get; set; }
         #endregion
 
         #endregion
@@ -683,11 +825,35 @@ namespace Chummer
 		[SavePropertyAs("karmamaneuver")]
 		public int KarmaManeuver { get; set; } = 5;
 
-	    #region Skills
-		/// <summary>
-		/// Karma cost to purchase a Specialization = this value.
-		/// </summary>
-		[Header("Skills")]
+        /// <summary>
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
+        /// </summary>
+        [SavePropertyAs("karmainitiationflat")]
+        public int KarmaInitiationFlat { get; set; } = 10;
+
+        /// <summary>
+        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
+        /// </summary>
+        [SavePropertyAs("karmaknowledgespecialization")]
+        public int KarmaKnowledgeSpecialization { get; set; } = 7;
+
+        /// <summary>
+        /// How much Karma a single Power Point costs for a Mystic Adept.
+        /// </summary>
+        [SavePropertyAs("karmamysticadeptpowerpoint")]
+        public int KarmaMysticAdeptPowerPoint { get; set; } = 5;
+
+        /// <summary>
+        /// Amount of Nuyen obtained per Karma point.
+        /// </summary>
+        [SavePropertyAs("karmanuyenper")]
+        public int KarmaNuyenPer { get; set; } = 5;
+
+        #region Skills
+        /// <summary>
+        /// Karma cost to purchase a Specialization = this value.
+        /// </summary>
+        [Header("Skills")]
 		[SavePropertyAs("karmaspecialization")]
 		public int KarmaSpecialization { get; set; } = 7;
 
@@ -708,7 +874,6 @@ namespace Chummer
 		/// </summary>
 		[SavePropertyAs("karmanewskillgroup")]
 		public int KarmaNewSkillGroup { get; set; } = 5;
-        private bool _cyberwareRounding;
 
 	    /// <summary>
 		/// Karma cost to improve a Knowledge Skill = New Rating x this value.
@@ -875,7 +1040,6 @@ namespace Chummer
 		/// <summary>
 		/// Karma cost for a new Complex Form = this value.
 		/// </summary>
-		//TODO: HEADER[OptionAttributes("Karma Costs/Complex Forms")]
 		[Header("Complex Forms")]
 		[SavePropertyAs("karmanewcomplexform")]
 		public int KarmaNewComplexForm { get; set; } = 4;
@@ -892,193 +1056,28 @@ namespace Chummer
 		[SavePropertyAs("karmacomplexformoption")]
 		public int KarmaComplexFormOption { get; set; } = 2;
 
-	    #endregion
-		#endregion
-
-	    #endregion
-
-	    /// <summary>
-	    /// Sourcebooks.
-	    /// </summary>
-	    public Dictionary<string, bool> Books { get; } = GlobalOptions.Instance.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
-
-	    public IEnumerable<string> EnabledBooks()
-	    {
-	        foreach (KeyValuePair<string,bool> book in Books)
-	        {
-	            if (book.Value)
-	                yield return book.Key;
-	        }
-	    }
-
-	    /// <summary>
-		/// Setting name.
-		/// </summary>
-		[DisplayIgnore] //TODO: Do something
-		public string Name { get; set; } = "Default Settings";
-
-	    /// <summary>
-		/// 
-		/// </summary>
-		[DisplayIgnore] //TODO: Do something
-	    public string RecentImageFolder { get; set; } = "";
-
-
-
-        //TODO: things I didn't quite decide where to put
-        /// <summary>
-        /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        public bool Allow2ndMaxAttribute { get; set; }
-
-
-        /// <summary>
-        /// Whether or not Stacked Foci can have a combined Force higher than 6.
-        /// </summary>
-        public bool AllowHigherStackedFoci { get; set; }
-
-        /// <summary>
-        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
-        /// </summary>
-        public bool AllowPointBuySpecializationsOnKarmaSkills { get; set; }
-
-        /// <summary>
-        /// Whether Life Modules should automatically generate a character background.
-        /// </summary>
-        public bool AutomaticBackstory { get; set; } = true;
-
-        /// <summary>
-        /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
-        /// </summary>
-        public bool CompensateSkillGroupKarmaDifference { get; set; }
-
-        /// <summary>
-        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
-        /// </summary>
-        public int KarmaInitiationFlat { get; set; } = 10;
-
-        /// <summary>
-        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
-        /// </summary>
-        public int KarmaKnowledgeSpecialization { get; set; } = 7;
-
-        /// <summary>
-        /// How much Karma a single Power Point costs for a Mystic Adept.
-        /// </summary>
-        public int KarmaMysticAdeptPowerPoint { get; set; } = 5;
-
-        /// <summary>
-        /// Amount of Nuyen obtained per Karma point.
-        /// </summary>
-        public int KarmaNuyenPer { get; set; } = 5;
-
-        /// <summary>
-        /// Allow Mystic Adepts to increase their power points during career mode
-        /// </summary>
-        public bool MysAdeptAllowPPCareer { get; set; }
-
-
-        //TODO: things that I havent sorted nicely yet
-
-
-        [DisplayIgnore]
-        public List<string> CustomDataDirectoryNames { get; } = new List<string>();
-
-
-        /// <summary>
-        /// Only round essence when its value is displayed
-        /// </summary>
-        public bool DontRoundEssenceInternally { get; set; }
-
-
-        
-       
-
-        /// <summary>
-        /// Do Enemies count towards Negative Quality Karma limit in create mode?
-        /// </summary>
-        public bool EnemyKarmaQualityLimit { get; set; } = true;
-
-        /// <summary>
-        /// If true, the karma cost of qualities is doubled after the initial 25.
-        /// </summary>
-        public bool ExceedPositiveQualitiesCostDoubled { get; set; }
-
-        /// <summary>
-        /// Whether Martial Arts grant a free specialisation in a skill.
-        /// </summary>
-        public bool FreeMartialArtSpecialization { get; set; }
-
-        /// <summary>
-        /// Whether or not to ignore the art requirements from street grimoire.
-        /// </summary>
-        public bool IgnoreArt { get; set; }
-
-        /// <summary>
-        /// Whether or not to ignore the limit on Complex Forms in Career mode.
-        /// </summary>
-        public bool IgnoreComplexFormLimit { get; set; }
-
+        #endregion
+        #region AI Programs
         /// <summary>
         /// Karma cost for a new AI Program
         /// </summary>
+        [Header("AI Programs")]
+        [SavePropertyAs("karmanewaiprogram")]
         public int KarmaNewAIProgram { get; set; } = 5;
 
         /// <summary>
         /// Karma cost for a new AI Advanced Program
         /// </summary>
+        [SavePropertyAs("karmanewaiadvancedprogram")]
         public int KarmaNewAIAdvancedProgram { get; set; } = 8;
+        #endregion
+        #endregion
 
-        /// <summary>
-        /// House Rule: Ignore Armor Encumbrance entirely.
-        /// </summary>
-        public bool NoArmorEncumbrance { get; set; }
-
-        /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
-        /// </summary>
-        public bool PrintFreeExpenses { get; set; } = true;
-
-        /// <summary>
-        /// Whether Spells from Magic Priority can also be spent on power points.
-        /// </summary>
-        public bool PrioritySpellsAsAdeptPowers { get; set; } = false;
-
-        //TODO: Global option methinks
-        /// <summary>
-        /// Whether searching in a selection form will limit itself to the current Category that's selected.
-        /// </summary>
-        public bool SearchInCategoryOnly { get; set; } = true;
-
-        /// <summary>
-        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
-        /// </summary>
-        public bool UnarmedImprovementsApplyToWeapons { get; set; }
-
-
-
-        /// <summary>
-        /// Whether or not characters can spend skill points on broken groups.
-        /// </summary>
-        public bool UsePointsOnBrokenGroups { get; set; } = false;
-
-        private int _nuyenDecimals = 2;
-        /// <summary>
-        /// Number of decimal places to round to when diplaying nuyen values.
-        /// </summary>
-        public int NuyenDecimals
-        {
-            get
-            {
-                return _nuyenDecimals;
-            }
-            set
-            {
-                _nuyenDecimals = value;
-                EssenceFormat = "#,0" + (value > 0 ? ("." + new string('#', value)) : "");
-            }
-        }
+        #endregion
+        
+        #endregion
+        [DisplayIgnore]
+        public List<string> CustomDataDirectoryNames { get; } = new List<string>();
 
         /// <summary>
         /// Format in which nuyen values should be displayed (does not include nuyen symbol).
@@ -1086,75 +1085,21 @@ namespace Chummer
         [DisplayIgnore]
         public string NuyenFormat { get; private set; } = "";
 
-        private int _essenceDecimals = 2;
-        /// <summary>
-        /// Number of decimal places to round to when calculating Essence.
-        /// </summary>
-        [SavePropertyAs("essencedecimals")]
-        public int EssenceDecimals
-        {
-            get { return _essenceDecimals; }
-            set
-            {
-                int intCurrentEssenceDecimals = EssenceDecimals;
-                int intNewEssenceDecimals = Math.Max(value, 0);
-                if (intNewEssenceDecimals < intCurrentEssenceDecimals)
-                {
-                    if (intNewEssenceDecimals > 0)
-                    {
-                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
-                        if (length < 3) length = 3;
-                        EssenceFormat = EssenceFormat.Substring(0, length);
-                    }
-                    else
-                    {
-                        int intDecimalPlaces = EssenceFormat.IndexOf('.');
-                        if (intDecimalPlaces != -1)
-                            EssenceFormat = EssenceFormat.Substring(0, intDecimalPlaces);
-                    }
-                }
-                else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
-                {
-                    StringBuilder objEssenceFormat = string.IsNullOrEmpty(EssenceFormat) ? new StringBuilder("#,0") : new StringBuilder(EssenceFormat);
-                    if (intCurrentEssenceDecimals == 0)
-                    {
-                        objEssenceFormat.Append(".");
-                    }
-                    intNewEssenceDecimals -= intCurrentEssenceDecimals;
-                    for (int i = 0; i < intNewEssenceDecimals; ++i)
-                    {
-                        objEssenceFormat.Append("0");
-                    }
-                    EssenceFormat = objEssenceFormat.ToString();
-                }
-            }
-        }
-
         /// <summary>
         /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating. 
         /// </summary>
-        public bool IncreasedImprovedAbilityMultiplier
-        {
-            get => _increasedImprovedAbilityMultiplier;
-            set => _increasedImprovedAbilityMultiplier = value;
-        }
+        public bool IncreasedImprovedAbilityMultiplier;
+
         /// <summary>
         /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
         /// </summary>
-        public bool AllowFreeGrids
-        {
-            get => _allowFreeGrids;
-            set => _allowFreeGrids = value;
-        }
+        public bool AllowFreeGrids;
 
         /// <summary>
         /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened. 
         /// </summary>
-        public bool AllowTechnomancerSchooling
-        {
-            get => _blnAllowTechnomancerSchooling;
-            set => _blnAllowTechnomancerSchooling = value;
-        }
+        public bool AllowTechnomancerSchooling;
+
         /// <summary>
         /// The value by which Specializations add to dicepool. 
         /// </summary>
@@ -1162,8 +1107,6 @@ namespace Chummer
 
         [DisplayIgnore]
         public string EssenceFormat { get; private set; } = "0.00";
-
-        public bool DronemodsMaximumPilot { get; set; }
 
         public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
     }

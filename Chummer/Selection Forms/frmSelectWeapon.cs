@@ -592,7 +592,7 @@ namespace Chummer
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strFilter += " and category = \"" + strCategory + '\"';
             else
             {
@@ -634,7 +634,7 @@ namespace Chummer
                     objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
                     if (objNode != null)
                     {
-                        s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                        s_StrSelectCategory = (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                         _strSelectedWeapon = objNode["id"]?.InnerText;
                         _decMarkup = nudMarkup.Value;
                         _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
@@ -658,7 +658,7 @@ namespace Chummer
                         }
                         if (objNode != null)
                         {
-                            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                            s_StrSelectCategory = (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
                         }
                         _decMarkup = nudMarkup.Value;

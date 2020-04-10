@@ -175,15 +175,14 @@ namespace Chummer.Backend.Options
         {
             try
             {
-                string displayString;
-                string toolTip;
-                if (!LanguageManager.TryGetString("Display_" + arg.Name, out displayString))
+                if (!LanguageManager.TryGetString("Display_" + arg.Name, out var displayString))
                 {
-                    Console.WriteLine($"No translation found for {arg.DeclaringType.Name}.{arg.Name}");
+                    Console.WriteLine($"No translation found for {arg.DeclaringType?.Name}.{arg.Name}");
+                    displayString = $"Missing String: {arg.Name}";
                     Utils.BreakIfDebug();
                 }
 
-                LanguageManager.TryGetString("Tooltip_" + arg.Name, out toolTip);
+                LanguageManager.TryGetString("Tooltip_" + arg.Name, out var toolTip);
 
 
                 OptionEntryProxy option = new OptionEntryProxy(target, arg, displayString, toolTip:toolTip);

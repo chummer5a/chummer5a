@@ -267,7 +267,7 @@ namespace Chummer
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strFilter += " and category = \"" + strCategory + '\"';
             else
             {
@@ -376,7 +376,7 @@ namespace Chummer
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
                                         objXmlSpell.SelectSingleNode("name")?.Value ??
                                         LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                if (!GlobalOptions.Instance.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     if (!string.IsNullOrEmpty(strSpellCategory))
                     {
@@ -453,7 +453,7 @@ namespace Chummer
             }
 
             _strSelectedSpell = strSelectedItem;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0)
+            s_StrSelectCategory = (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()
                 : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = \"" + _strSelectedSpell + "\"]/category")?.Value ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;

@@ -351,7 +351,7 @@ namespace Chummer
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
 
             string strCategory = cboCategory.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strFilter += " and category = \"" + strCategory + '\"';
             else
             {
@@ -452,7 +452,7 @@ namespace Chummer
                              SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
                         {
                             string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
-                            if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                            if (!GlobalOptions.Instance.SearchInCategoryOnly && txtSearch.TextLength != 0)
                             {
                                 string strCategory = objXmlArmor["category"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strCategory))
@@ -501,7 +501,7 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]/category")?.InnerText;
+                s_StrSelectCategory = (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]/category")?.InnerText;
                 _strSelectedArmor = strSelectedId;
                 _decMarkup = nudMarkup.Value;
                 _intRating = decimal.ToInt32(nudRating.Value);

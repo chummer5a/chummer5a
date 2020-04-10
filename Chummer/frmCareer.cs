@@ -211,6 +211,8 @@ namespace Chummer
 
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
+                        cmdCreateStackedFocus.Visible = CharacterObjectOptions.AllowStackedFoci;
+
                         txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false,
                             DataSourceUpdateMode.OnPropertyChanged);
                         txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false,
@@ -4978,7 +4980,7 @@ namespace Chummer
                 }
 
                 int intKarmaCost = intQualityBP * CharacterObjectOptions.KarmaQuality;
-                if (!CharacterObjectOptions.DontDoubleQualityPurchases && objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
+                if (CharacterObjectOptions.DoubleQualityPurchases && objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
                     intKarmaCost *= 2;
 
                 // Make sure the character has enough Karma to pay for the Quality.
@@ -5158,7 +5160,7 @@ namespace Chummer
                     intBP = Convert.ToInt32(objXmlDeleteQuality["karma"]?.InnerText) * CharacterObjectOptions.KarmaQuality;
                     if (blnCompleteDelete)
                         intBP *= objSelectedQuality.Levels;
-                    if (!CharacterObjectOptions.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                    if (CharacterObjectOptions.DoubleQualityPurchases && objSelectedQuality.DoubleCost)
                     {
                         intBP *= 2;
                     }
@@ -5180,7 +5182,7 @@ namespace Chummer
                 {
                     int intKarmaCost = objSelectedQuality.BP * CharacterObjectOptions.KarmaQuality;
 
-                    if (!CharacterObjectOptions.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                    if (CharacterObjectOptions.DoubleQualityPurchases && objSelectedQuality.DoubleCost)
                     {
                         intKarmaCost *= 2;
                     }
@@ -5209,7 +5211,7 @@ namespace Chummer
             {
                 // Make sure the character has enough Karma to buy off the Quality.
                 int intKarmaCost = -(objSelectedQuality.BP * CharacterObjectOptions.KarmaQuality);
-                if (!CharacterObjectOptions.DontDoubleQualityRefunds)
+                if (CharacterObjectOptions.DoubleQualityRefunds)
                 {
                     intKarmaCost *= 2;
                 }
@@ -5402,7 +5404,7 @@ namespace Chummer
                     }
 
                     int intKarmaCost = intQualityBP * CharacterObjectOptions.KarmaQuality;
-                    if (!CharacterObjectOptions.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                    if (CharacterObjectOptions.DoubleQualityPurchases && objSelectedQuality.DoubleCost)
                         intKarmaCost *= 2;
 
                     // Make sure the character has enough Karma to pay for the Quality.

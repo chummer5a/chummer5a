@@ -285,6 +285,8 @@ namespace Chummer
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
                         mnuSpecialCreateBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
+                        cmdCreateStackedFocus.Visible = CharacterObjectOptions.AllowStackedFoci;
+
                         chkJoinGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
                         chkInitiationGroup.DoDatabinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 

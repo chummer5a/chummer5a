@@ -315,6 +315,7 @@ namespace Chummer
         }
 
         //TODO: Is this re-implementing exceptions?
+        [DisplayIgnore]
         public string ErrorMessage { get; } = string.Empty;
 
         /// <summary>
@@ -324,6 +325,11 @@ namespace Chummer
 
 
         public bool LiveUpdateCleanCharacterFiles { get; set; }
+
+        /// <summary>
+        /// Whether searching in a selection form will limit itself to the current Category that's selected.
+        /// </summary>
+        public bool SearchInCategoryOnly { get; set; } = true;
 
         //is apparently stored here, for reasons
 

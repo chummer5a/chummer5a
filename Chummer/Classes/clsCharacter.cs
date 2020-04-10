@@ -1173,7 +1173,7 @@ namespace Chummer
                     foreach(Cyberware objNewItem in e.NewItems)
                     {
                         setEssenceImprovementsToRefresh.Add(objNewItem.EssencePropertyName);
-                        if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
+                        if(!blnDoCyberlimbAttributesRefresh && Options.UseCyberlimbCalculation &&
                             objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
                             objNewItem.ParentVehicle == null &&
                             !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
@@ -1189,7 +1189,7 @@ namespace Chummer
                     foreach(Cyberware objOldItem in e.OldItems)
                     {
                         setEssenceImprovementsToRefresh.Add(objOldItem.EssencePropertyName);
-                        if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
+                        if(!blnDoCyberlimbAttributesRefresh && Options.UseCyberlimbCalculation &&
                             objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
                             objOldItem.ParentVehicle == null &&
                             !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
@@ -1202,12 +1202,12 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
-                    if(!Options.DontUseCyberlimbCalculation)
+                    if(!Options.UseCyberlimbCalculation)
                     {
                         foreach(Cyberware objOldItem in e.OldItems)
                         {
                             setEssenceImprovementsToRefresh.Add(objOldItem.EssencePropertyName);
-                            if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
+                            if(!blnDoCyberlimbAttributesRefresh && Options.UseCyberlimbCalculation &&
                                 objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
                                 objOldItem.ParentVehicle == null &&
                                 !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
@@ -1220,7 +1220,7 @@ namespace Chummer
                         foreach(Cyberware objNewItem in e.NewItems)
                         {
                             setEssenceImprovementsToRefresh.Add(objNewItem.EssencePropertyName);
-                            if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
+                            if(!blnDoCyberlimbAttributesRefresh && Options.UseCyberlimbCalculation &&
                                 objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
                                 objNewItem.ParentVehicle == null &&
                                 !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
@@ -1233,7 +1233,7 @@ namespace Chummer
 
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    blnDoCyberlimbAttributesRefresh = !Options.DontUseCyberlimbCalculation;
+                    blnDoCyberlimbAttributesRefresh = Options.UseCyberlimbCalculation;
                     setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
                     setEssenceImprovementsToRefresh.Add(nameof(Essence));
                     break;

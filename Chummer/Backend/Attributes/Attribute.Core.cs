@@ -404,7 +404,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!_objCharacter.Options.DontUseCyberlimbCalculation && (Abbrev == "AGI" || Abbrev == "STR"))
+                if (_objCharacter.Options.UseCyberlimbCalculation && (Abbrev == "AGI" || Abbrev == "STR"))
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
@@ -499,7 +499,7 @@ namespace Chummer.Backend.Attributes
             int intReturn = intMeat;
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
-            if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
+            if ((Abbrev == "AGI" || Abbrev == "STR") && _objCharacter.Options.UseCyberlimbCalculation && blnIncludeCyberlimbs)
             {
                 int intLimbTotal = 0;
                 int intLimbCount = 0;
@@ -849,7 +849,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
-                if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
+                if ((Abbrev == "AGI" || Abbrev == "STR") && _objCharacter.Options.UseCyberlimbCalculation)
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
@@ -1023,7 +1023,7 @@ namespace Chummer.Backend.Attributes
             }
             else if (e.PropertyName == nameof(Character.LimbCount))
             {
-                if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
+                if (CharacterObject.Options.UseCyberlimbCalculation &&
                     (Abbrev == "AGI" || Abbrev == "STR") &&
                     CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                 {

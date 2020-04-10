@@ -202,7 +202,7 @@ namespace Chummer.UI.Attributes
             if (intValue < intTotalMaximum || intTotalMaximum == 0) return true;
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
             //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value. 
-            int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
+            int intMaxOtherAttributesAtMax = _objCharacter.Options.AllowSecondMaxAttribute ? 1 : 0;
             int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
                 att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 

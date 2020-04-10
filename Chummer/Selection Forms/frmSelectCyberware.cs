@@ -922,7 +922,7 @@ namespace Chummer
 
             string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
             string strCategoryFilter = "(";
-            if (strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (strCategory != "Show All" && (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strCategoryFilter += "category = \"" + strCategory + '\"';
             else
             {
@@ -1226,7 +1226,7 @@ namespace Chummer
                 else
                     return;
             }
-            _sStrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
+            _sStrSelectCategory = (GlobalOptions.Instance.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
             SelectedRating = decimal.ToInt32(nudRating.Value);

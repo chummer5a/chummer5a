@@ -5559,10 +5559,6 @@
       <text>Use Drone Modification rules (R5 122)</text>
     </string>
     <string>
-      <key>Checkbox_Options_Dronemods_Pilot</key>
-      <text>Use Maximum Attribute for Pilot Attribute</text>
-    </string>
-    <string>
       <key>Checkbox_Options_UseCalculatedPublicAwareness</key>
       <text>Public Awareness should be (Street Cred + Notoriety /3)</text>
     </string>
@@ -5589,14 +5585,6 @@
     <string>
       <key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
       <text>Mystic Adepts use second MAG attribute for Adept abilities instead of special PP rules</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_CompensateSkillGroupKarmaDifference</key>
-      <text>Compensate for higher karma costs when raising the rating of the last skill in a skill group</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_EnemyKarmaQualityLimit</key>
-      <text>Karma spent on enemies counts towards negative Quality limit in create mode</text>
     </string>
     <string>
       <key>Checkbox_Options_EnablePlugins</key>
@@ -7302,10 +7290,6 @@
       <text>Print Karma and Nuyen Expenses</text>
     </string>
     <string>
-      <key>Checkbox_Options_PrintFreeExpenses</key>
-      <text>Print Free Karma and Nuyen Expenses</text>
-    </string>
-    <string>
       <key>Label_Options_BPAttribute</key>
       <text>Attribute</text>
     </string>
@@ -7602,10 +7586,6 @@
       <text>Don't double the cost of purchasing Positive Qualities in Career Mode</text>
     </string>
     <string>
-      <key>Checkbox_Options_IgnoreArt</key>
-      <text>Ignore Art Requirements from Street Grimoire</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AllowFreeGrids</key>
       <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
     </string>
@@ -7674,10 +7654,6 @@
       <text>Essence loss only reduces MAG/RES maximum</text>
     </string>
     <string>
-      <key>Checkbox_Options_NoArmorEncumbrance</key>
-      <text>No Armor Encumbrance</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AlternateArmorEncumbrance</key>
       <text>Alternate Armor Encumbrance Threshold (BOD+STR)</text>
     </string>
@@ -7734,10 +7710,6 @@
       <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
     </string>
     <string>
-      <key>Checkbox_Options_IgnoreComplexFormLimit</key>
-      <text>Ignore 2*RES Complex Form limit in Career Mode</text>
-    </string>
-    <string>
       <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
       <text>Use Restrictions to Recoil Compensation (RG 53)</text>
     </string>
@@ -7788,18 +7760,6 @@
     <string>
       <key>Checkbox_Options_ReverseAttributePriorityOrder</key>
       <text>Spend Karma on Attributes before Priority Points</text>
-    </string>
-    <string>
-      <key>Checkbox_Option_AllowMysadPowerPointCareer</key>
-      <text>Allow Mystic Adepts to buy power points during career</text>
-    </string>
-    <string>
-      <key>Checkbox_Option_FreeMartialArtSpecialization</key>
-      <text>Allow Martial Arts to grant a free specialisation in a skill</text>
-    </string>
-    <string>
-      <key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
-      <text>Allow spending of free spells from Magic Priority as power points</text>
     </string>
     <string>
       <key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
@@ -7872,10 +7832,6 @@
     <string>
       <key>Label_Options_EssenceDecimals</key>
       <text>Number of decimal places to round Essence to:</text>
-    </string>
-    <string>
-      <key>Checkbox_Option_DontRoundEssenceInternally</key>
-      <text>Only round Essence for display purposes, not for internal calculations</text>
     </string>
     <string>
       <key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
@@ -7964,10 +7920,6 @@
     <string>
       <key>Checkbox_Options_OpenPDFsAsUnix</key>
       <text>Use Unix-Style Parameters when opening PDFs</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_SearchInCategoryOnly</key>
-      <text>Searching in selection forms is restricted to the current Category</text>
     </string>
     <string>
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>
@@ -10028,10 +9980,6 @@
       <text>{}\tCreate backup of character before moving them to Career Mode</text>
     </string>
     <string>
-      <key>Display_EssenceDecimals</key>
-      <text>\tRound Essence to {} decimals</text>
-    </string>
-    <string>
       <key>Display_BuildMethod</key>
       <text>\tDefault Build Method: {}</text>
     </string>
@@ -10049,19 +9997,27 @@
     </string>
     <string>
       <key>Display_PrintSkillsWithZeroRating</key>
-      <text>{} Print all Active Skills with total score higher than 0</text>
+      <text>{}\tPrint all Active Skills with total score higher than 0</text>
     </string>
     <string>
       <key>Display_PrintExpenses</key>
-      <text>{} Print Karma and Nuyen Expenses</text>
+      <text>{}\tPrint Karma and Nuyen Expenses</text>
     </string>
     <string>
       <key>Display_PrintNotes</key>
-      <text>{} Print Notes</text>
+      <text>{}\tPrint Notes</text>
     </string>
     <string>
       <key>Display_LimbCount</key>
-      <text>Limbs for Standard Characters:{}</text>
+      <text>Limbs for Standard Characters:\t{}</text>
+    </string>
+    <string>
+      <key>Display_NuyenDecimals</key>
+      <text>Number of Nuyen decimal places to display:\t{}</text>
+    </string>
+    <string>
+      <key>Display_EssenceDecimals</key>
+      <text>Round Essence to {} decimals</text>
     </string>
     <string>
       <key>Display_ExcludeLimbSlot</key>
@@ -10069,51 +10025,67 @@
     </string>
     <string>
       <key>Display_MoreLethalGameplay</key>
-      <text>{}\t More Lethal Gameplay (somewhere?)</text>
+      <text>{}\tUse 4th Edition Rules for More Lethal Gameplay (SR4 75)</text>
+    </string>
+    <string>
+      <key>Display_AllowStackedFoci</key>
+      <text>{}\tUse 4th Edition Rules for Stacked Foci (SM 84)</text>
+    </string>
+    <string>
+      <key>Display_AllowHigherStackedFoci</key>
+      <text>{}\tAllow Stacked Foci to exceed Force 6</text>
+    </string>
+    <string>
+      <key>Display_AllowSecondMaxAttribute</key>
+      <text>{}\tAllow two Attributes to be at maximum during character creation</text>
     </string>
     <string>
       <key>Display_LicenseRestricted</key>
-      <text>{}\t License each Restricted item</text>
+      <text>{}\tLicense each Restricted item</text>
     </string>
     <string>
       <key>Display_SpiritForceBasedOnTotalMAG</key>
-      <text>{}\t Spirit Force based on total MAG</text>
+      <text>{}\tSpirit Force based on total MAG</text>
     </string>
     <string>
       <key>Display_KnucksUseUnarmed</key>
-      <text>{}\t Knucks Benefit from Unarmed Attack Bonuses</text>
+      <text>{}\tKnucks Benefit from Unarmed Attack Bonuses</text>
     </string>
     <string>
       <key>Display_AllowInitiationInCreateMode</key>
-      <text>{}\t Allow Initiation/Submersion in Create mode</text>
+      <text>{}\tAllow Initiation/Submersion in Create mode</text>
     </string>
     <string>
       <key>Display_ESSLossReducesMaximumOnly</key>
-      <text>{}\t Essence loss only reduces maximum MAG/RES mimimum (Can cause Crashes)</text>
+      <text>{}\tEssence loss only reduces maximum MAG/RES mimimum (Can cause Crashes)</text>
     </string>
     <string>
       <key>Display_AllowCyberwareESSDiscounts</key>
-      <text>{}\t Allow Cyber/Bioware Essence costs to be customized\t\t</text>
+      <text>{}\tAllow Cyber/Bioware Essence costs to be customized\t\t</text>
     </string>
     <string>
       <key>Display_MaximumArmorModifications</key>
-      <text>{}\t Use Maximum Armor Modifications</text>
+      <text>{}\tUse Maximum Armor Modifications</text>
     </string>
     <string>
       <key>Display_ArmorDegradation</key>
-      <text>{}\t Allow Armor Degradation</text>
+      <text>{}\tAllow Armor Degradation</text>
     </string>
     <string>
       <key>Display_SpecialKarmaCostBasedOnShownValue</key>
-      <text>{}\t Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
+      <text>{}\tKarma cost for increasing Special Attributes is not reduced with Essence Loss</text>
     </string>
     <string>
       <key>Display_ExceedPositiveQualities</key>
-      <text>{}\t Allow characters to exceed their Positive Quality limit</text>
+      <text>{}\tAllow characters to exceed their Positive Quality limit</text>
+    </string>
+    <string>
+      <key>Display_ExceedPositiveQualitiesCostDoubled</key>
+      <text>{}\tUse Career costs for all Positive Quality karma costs in excess of the limit</text>
     </string>
     <string>
       <key>Display_ExceedNegativeQualities</key>
-      <text>{}\t Allow characters to exceed their Negative Quality limit</text>
+      <text>{}\tAllow characters to exceed their Negative Quality limit</text>
     </string>
     <string>
       <key>Display_ExceedNegativeQualitiesLimit</key>
@@ -10177,11 +10149,11 @@
     </string>
     <string>
       <key>Display_StrictSkillGroupsInCreateMode</key>
-      <text>{}\tStrict interprentation of breaking skill groups in create mode</text>
+      <text>{}\tStrict interpretation of breaking skill groups in create mode</text>
     </string>
     <string>
       <key>Display_ExtendAnyDetectionSpell</key>
-      <text>{}\tAllow any dection spell to be bought as extended version</text>
+      <text>{}\tAllow any detection spell to be bought as extended version</text>
     </string>
     <string>
       <key>Display_AllowSkillDiceRolling</key>
@@ -10189,16 +10161,16 @@
       <!--Should be "Enable dice rolling", In Program Options?-->
     </string>
     <string>
-      <key>Display_DontUseCyberlimbCalculation</key>
-      <text>{}\tDon't use Cyberlimbs for calculating argumented Attributes</text>
+      <key>Display_UseCyberlimbCalculation</key>
+      <text>{}\tUse Cyberlimbs for calculating augmented Attributes</text>
     </string>
     <string>
-      <key>Display_DontDoubleQualityPurchases</key>
-      <text>{}\tDon't double the cost of purchasing Positive Qualities in Career Mode</text>
+      <key>Display_DoubleQualityPurchases</key>
+      <text>{}\tDouble the cost of purchasing Positive Qualities in Career Mode</text>
     </string>
     <string>
-      <key>Display_DontDoubleQualityRefunds</key>
-      <text>{}\tDon't double the cost of removing Negative Qualities in Career Mode</text>
+      <key>Display_DoubleQualityRefunds</key>
+      <text>{}\tDouble the cost of removing Negative Qualities in Career Mode</text>
     </string>
     <string>
       <key>Display_AllowObsolescentUpgrade</key>
@@ -10210,7 +10182,7 @@
     </string>
     <string>
       <key>Display_FreeSpiritPowerPointsMAG</key>
-      <text>{}\tNo idea?</text>
+      <text>{}\tFree Spirits receive Power Points based on MAG instead of EDG</text>
     </string>
     <string>
       <key>Display_TechnomancerAllowAutosoft</key>
@@ -10254,19 +10226,59 @@
     </string>
     <string>
       <key>Display_UseTotalValueForFreeContacts</key>
-      <text>{}\tUse Argumented values for Free Contact points\t</text>
+      <text>{}\tUse Augmented values for Free Contact points\t</text>
     </string>
     <string>
       <key>Display_UseTotalValueForFreeKnowledge</key>
-      <text>{}\tUse Argumented values for Free Knowledge points\t</text>
+      <text>{}\tUse Augmented values for Free Knowledge points\t</text>
     </string>
     <string>
       <key>Display_DroneMods</key>
-      <text>{} Use Drone Modification rules (R5 122)</text>
+      <text>{}\tUse Drone Modification rules (R5 122)</text>
     </string>
     <string>
       <key>Display_BreakSkillGroupsWithPoints</key>
-      <text>{} Allow spending Skill Points to break Skill Groups</text>
+      <text>{}\tAllow spending Skill Points to break Skill Groups</text>
+    </string>
+    <string>
+      <key>Display_HideItemsOverAvailLimit</key>
+      <text>{}\tHide items over the Availability Limit during character creation</text>
+    </string>
+    <string>
+      <key>Display_AllowHoverIncrement</key>
+      <text>{}\tAllow using the mousewheel to increment numbers when hovering over number spinners.</text>
+    </string>
+    <string>
+      <key>Display_MaxMruSize</key>
+      <text>{}\tMaximum number of Most Recently Used entries that are kept.</text>
+    </string>
+    <string>
+      <key>Display_HideCharts</key>
+      <text>{}\tWhether or not to render charts that can cause rendering issues in Linux.</text>
+    </string>
+    <string>
+      <key>Display_AllowEasterEggs</key>
+      <text>{}\tWhether or not to show Easter Eggs.</text>
+    </string>
+    <string>
+      <key>Display_HideCharacterRoster</key>
+      <text>{}\tWhether or not to show the Character Roster.</text>
+    </string>
+    <string>
+      <key>Display_PluginsEnabled</key>
+      <text>{}\tWhether or not to enable use of 3rd-party plugins.</text>
+    </string>
+    <string>
+      <key>Display_UseLoggingApplicationInsights</key>
+      <text>{}\tMicrosoft Application Insights logging level.</text>
+    </string>
+    <string>
+      <key>Display_EmulatedBrowserVersion</key>
+      <text>{}\tVersion of Internet Explorer to emulate. (Linux fix?)</text>
+    </string>
+    <string>
+      <key>Display_LiveUpdateCleanCharacterFiles</key>
+      <text>{}\tAutomatically load changes from open characters' save files if there are no pending changes to be saved.</text>
     </string>
     <string>
       <key>Display_CapSkillRating</key>
@@ -10274,11 +10286,11 @@
     </string>
     <string>
       <key>Display_SkillDefaultingIncludesModifiers</key>
-      <text>{} Skill defaulting should include modifiers</text>
+      <text>{}\tSkill defaulting should include modifiers</text>
     </string>
     <string>
       <key>Display_AllowSkillRegrouping</key>
-      <text>{} Allow Skills to be re-Grouped if all Ratings are the same\t\t</text>
+      <text>{}\tAllow Skills to be re-Grouped if all Ratings are the same\t\t</text>
     </string>
     <string>
       <key>Display_StrengthAffectsRecoil</key>
@@ -10286,7 +10298,7 @@
     </string>
     <string>
       <key>Display_ArmorSuitCapacity</key>
-      <text>{} Use Armor Suit Capacity</text>
+      <text>{}\tUse Armor Suit Capacity</text>
     </string>
     <string>
       <key>Display_KarmaComplexFormSkillsoft</key>
@@ -10299,6 +10311,10 @@
     <string>
       <key>Display_KarmaQuality</key>
       <text>Positive/Negative Quality\t\t{} x Karma Cost</text>
+    </string>
+    <string>
+      <key>Display_KarmaMysticAdeptPowerPoint</key>
+      <text>Mystic Adept Power Points\t\t{}</text>
     </string>
     <string>
       <key>Display_KarmaContact</key>
@@ -10355,7 +10371,7 @@
     </string>
     <string>
       <key>Display_KarmaInitiation</key>
-      <text>Initiation/Submersion\t(\t{}x New Rating) + 10</text>
+      <text>Initiation/Submersion\t\t({}x New Rating) + 10</text>
     </string>
     <string>
       <key>Display_KarmaMetamagic</key>
@@ -10442,8 +10458,36 @@
       <text>Improve Complex Form\t\t{}</text>
     </string>
     <string>
+      <key>Display_KarmaNewAIProgram</key>
+      <text>New AI Program\t\t{}</text>
+    </string>
+    <string>
+      <key>Display_KarmaNewAIAdvancedProgram</key>
+      <text>New AI Advanced Program\t\t{}</text>
+    </string>
+    <string>
       <key>Display_KarmaComplexFormOption</key>
       <text>Complex Form Options\t\t{}x Rating</text>
+    </string>
+    <string>
+      <key>Display_KarmaImproveComplexForm</key>
+      <text>Improve Complex Form\t\t{}</text>
+    </string>
+    <string>
+      <key>Display_KarmaInitiationFlat</key>
+      <text>Base cost for Initiation\t\t{}</text>
+    </string>
+    <string>
+      <key>Display_KarmaKnowledgeSpecialization</key>
+      <text>Purchase Knowledge Skill Specialization\t\t{}</text>
+    </string>
+    <string>
+      <key>Display_KarmaNuyenPer</key>
+      <text>Nuyen gained per point of Karma\t\t{}</text>
+    </string>
+    <string>
+      <key>Display_ReverseAttributePriorityOrder</key>
+      <text>{}\tSpend Karma on Attributes before Priority Points</text>
     </string>
     <string>
       <key>Display_Name</key>
@@ -10587,11 +10631,11 @@
     </string>
     <string>
       <key>Display_FreeKarmaContacts</key>
-      <text>{} Karma Build: Free Contacts like Priority Build</text>
+      <text>{}\tKarma Build: Free Contacts like Priority Build</text>
     </string>
     <string>
       <key>Display_FreeKarmaKnowledge</key>
-      <text>{} Karma Build: Free Knowledge skills like Priority Build</text>
+      <text>{}\tKarma Build: Free Knowledge skills like Priority Build</text>
     </string>
     <string>
       <key>Display_Books</key>
@@ -10599,7 +10643,7 @@
     </string>
     <string>
       <key>Display_UseLifeModule</key>
-      <text>{} Life modules available</text>
+      <text>{}\tLife modules available</text>
     </string>
     <string>
       <key>OptionHeader_CharacterOptions</key>
@@ -10629,7 +10673,70 @@
       <key>Display_KarmaCosts</key>
       <text>Karma Costs</text>
     </string>
+    <string>
+      <key>Display_CharacterCreation</key>
+      <text>Character Creation</text>
+    </string>
+    <string>
+      <key>Display_MysAdeptAllowPPCareer</key>
+      <text>{}\tAllow Mystic Adepts to buy power points during career</text>
+    </string>
+    <string>
+      <key>Display_FreeMartialArtSpecialization</key>
+      <text>{}\tAllow Martial Arts to grant a free specialisation in a skill</text>
+    </string>
+    <string>
+      <key>Display_PrioritySpellsAsAdeptPowers</key>
+      <text>{}\tAllow spending of free spells from Magic Priority as power points</text>
+    </string>
+    <string>
+      <key>Display_CompensateSkillGroupKarmaDifference</key>
+      <text>{}\tCompensate for higher karma costs when raising the rating of the last skill in a skill group</text>
+    </string>
+    <string>
+      <key>Display_EnemyKarmaQualityLimit</key>
+      <text>{}\tKarma spent on enemies counts towards negative Quality limit in create mode</text>
+    </string>
+    <string>
+      <key>Display_SearchInCategoryOnly</key>
+      <text>{}\tSearching in selection forms is restricted to the current Category</text>
+    </string>
+    <string>
+      <key>Display_AllowPointBuySpecializationsOnKarmaSkills</key>
+      <text>{}\tAllow skill points to be used to buy specializations for karma-bought skills.</text>
+    </string>
+    <string>
+      <key>Display_PrintFreeExpenses</key>
+      <text>{}\tPrint Free Karma and Nuyen Expenses</text>
+    </string>
+    <string>
+      <key>Display_NoArmorEncumbrance</key>
+      <text>{}\tNo Armor Encumbrance</text>
+    </string>
+    <string>
+      <key>Display_IgnoreComplexFormLimit</key>
+      <text>{}\tIgnore 2*RES Complex Form limit in Career Mode</text>
+    </string>
+    <string>
+      <key>Display_IgnoreArt</key>
+      <text>{}\tIgnore Art Requirements from Street Grimoire</text>
+    </string>
+    <string>
+      <key>Display_DontRoundEssenceInternally</key>
+      <text>{}\tOnly round Essence for display purposes, not for internal calculations</text>
+    </string>
+    <string>
+      <key>Display_DronemodsMaximumPilot</key>
+      <text>{}\tDrones ignore the double Attribute limit for the Pilot Attribute (R5 123)</text>
+    </string>
+    <string>
+      <key>Display_UnarmedImprovementsApplyToWeapons</key>
+      <text>{}\tUnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill</text>
+    </string>
+    <string>
+      <key>Display_UsePointsOnBrokenGroups</key>
+      <text>{}\tSkill Points can be spent on skill groups that have been broken with Skill Group Points.</text>
+    </string>
     <!-- End Region	-->
-
   </strings>
 </chummer>
