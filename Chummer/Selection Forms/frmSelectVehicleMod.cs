@@ -55,7 +55,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNode("modcategories"));
             if (lstExistingMods != null)
                 _lstMods.AddRange(lstExistingMods);
         }
@@ -440,7 +440,19 @@ namespace Chummer
 
             if (xmlVehicleMod != null)
             {
-                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value);
+                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.Instance.AssumeBlackMarket &&
+                                                     _setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")
+                                                         ?.Value);
+                }
+                else if (!_setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value))
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.

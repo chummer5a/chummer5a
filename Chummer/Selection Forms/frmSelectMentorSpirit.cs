@@ -230,6 +230,8 @@ namespace Chummer
             List<ListItem> lstMentors = new List<ListItem>();
             foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select("mentors/mentor[" + strFilter + "]"))
             {
+                if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
+
                 string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strId = objXmlMentor.SelectSingleNode("id")?.Value ?? string.Empty;
                 if (strName == _strForceMentor)

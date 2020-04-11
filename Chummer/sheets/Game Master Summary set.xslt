@@ -16,10 +16,10 @@
         <xsl:with-param name="alias" select="alias"/>
       </xsl:call-template>
     </xsl:variable>
-    <title><xsl:value-of select="$TitleName"/></title>
 
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
+        <title><xsl:value-of select="$TitleName"/></title>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
@@ -302,7 +302,7 @@
                         </tr>
                         <xsl:if test="accessories/accessory or mods/weaponmod">
                           <tr>
-                            <td colspan="5" class="indent">
+                            <td colspan="7" class="indent">
                               <xsl:if test="position() mod 2 != 1">
                                 <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
                               </xsl:if>
@@ -404,6 +404,7 @@
                                     </xsl:if>
                                   </xsl:for-each>)
                                 </xsl:if>
+	                            <xsl:if test="position() != last()">, </xsl:if>
                               </xsl:for-each>
                             </td>
                           </tr>

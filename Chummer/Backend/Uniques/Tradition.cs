@@ -421,6 +421,8 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public bool IsCustomTradition => SourceIDString == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
 
+        public bool CanChooseDrainAttribute => IsCustomTradition || _strDrainExpression == string.Empty;
+
         /// <summary>
         /// Tradition name.
         /// </summary>

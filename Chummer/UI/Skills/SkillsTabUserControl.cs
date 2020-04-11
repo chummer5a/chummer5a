@@ -130,6 +130,12 @@ namespace Chummer.UI.Skills
             SuspendLayout();
 
             Stopwatch swDisplays = Stopwatch.StartNew();
+            // Load the active skills first, since Skill Groups are created from querying Skills.
+            // TODO: Skill groups need to be able to be generated without referring to a skill.
+            _lstActiveSkills = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
+            {
+                Location = new Point(265, 42),
+            };
             _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups, group => new SkillGroupControl(group))
             {
                 Location = new Point(0, 15),
@@ -156,11 +162,6 @@ namespace Chummer.UI.Skills
             splitSkills.Panel1.Controls.Add(_lstSkillGroups);
 
             swDisplays.TaskEnd("_lstSkillGroups add");
-
-            _lstActiveSkills = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
-            {
-                Location = new Point(265, 42),
-            };
             intNameLabelWidth = 0;
             foreach (SkillControl2 objSkillControl in _lstSkillControls)
             {

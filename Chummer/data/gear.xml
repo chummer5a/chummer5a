@@ -1405,7 +1405,7 @@
       <category>Ammunition</category>
       <rating>6</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>49</page>
       <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
       <cost>FixedValues(20,30,40,50,100,200)</cost>
       <costfor>10</costfor>
@@ -1419,7 +1419,7 @@
       <category>Ammunition</category>
       <rating>2</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>50</page>
       <avail>FixedValues(10R,12R)</avail>
       <cost>FixedValues(30,50)</cost>
       <costfor>10</costfor>
@@ -1433,7 +1433,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
@@ -1448,7 +1448,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>60</cost>
       <bonus>
@@ -1466,7 +1466,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
@@ -1484,7 +1484,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
@@ -1499,7 +1499,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>60</cost>
       <bonus>
@@ -1517,7 +1517,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
@@ -1537,7 +1537,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>6R</avail>
       <cost>25</cost>
     </gear>
@@ -1547,7 +1547,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>8R</avail>
       <cost>75</cost>
     </gear>
@@ -1557,7 +1557,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>10R</avail>
       <cost>200</cost>
     </gear>
@@ -1567,7 +1567,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>12R</avail>
       <cost>400</cost>
     </gear>
@@ -1577,11 +1577,10 @@
       <category>Ammunition</category>
       <rating>20</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <!-- TODO: Grenade weapons
-      <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -1589,11 +1588,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>54</page>
       <avail>10R</avail>
       <cost>500</cost>
-      <!-- TODO: Grenade weapons
-      <addweapon>Grenade: COS</addweapon>-->
+      <addweapon>Grenade: COS</addweapon>
     </gear>
     <gear>
       <id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
@@ -1601,11 +1599,10 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>54</page>
       <avail>Rating*2F</avail>
       <cost>Rating*50</cost>
-      <!-- TODO: Grenade weapons
-    <addweapon>Grenade: Douser</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Douser</addweapon>
     </gear>
     <gear>
       <id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
@@ -1613,11 +1610,10 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>55</page>
       <avail>Rating*2R</avail>
       <cost>Rating*50</cost>
-      <!-- TODO: Grenade weapons
-    <addweapon>Grenade: DumDum</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: DumDum</addweapon>
     </gear>
     <!-- End Region -->
     <!-- End Region -->
@@ -11664,6 +11660,16 @@
       <cost>250</cost>
     </gear>
     <gear>
+      <id>447827BE-96A4-471F-929F-CB4BFF4CCBB4</id>
+      <name>Reaper</name>
+      <category>Drugs</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>183</page>
+      <avail>8R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
       <id>cd2dd310-464f-4f12-ae42-cdc293e3a2df</id>
       <name>Snuff</name>
       <category>Drugs</category>
@@ -14412,7 +14418,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>20</cost>
     </gear>
@@ -14422,7 +14428,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>100</cost>
     </gear>
@@ -14432,7 +14438,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>2000</cost>
     </gear>
@@ -14442,7 +14448,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>2</avail>
       <cost>20</cost>
     </gear>
@@ -14452,7 +14458,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>4</avail>
       <cost>100</cost>
     </gear>
@@ -14462,7 +14468,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>8</avail>
       <cost>500</cost>
     </gear>
@@ -14472,7 +14478,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>8</cost>
     </gear>
@@ -14482,7 +14488,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>4</avail>
       <cost>20</cost>
     </gear>
@@ -14492,7 +14498,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>8</avail>
       <cost>50</cost>
     </gear>
@@ -15376,7 +15382,7 @@
     <gear>
       <id>3b97b2ad-0e63-454e-b5de-60896e423bc9</id>
       <name>Musical Instrument (Cheap)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
@@ -15386,7 +15392,7 @@
     <gear>
       <id>83747c8f-9d39-46c4-bdb6-3f2fb59fae4f</id>
       <name>Musical Instrument (Good)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
@@ -15396,12 +15402,42 @@
     <gear>
       <id>942c3fcb-c099-4f38-abae-87eb679ac08e</id>
       <name>Musical Instrument (Nice)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
       <cost>500</cost>
+    </gear>
+    <gear>
+      <id>9B0A4676-BC13-467A-8398-F0E40B261335</id>
+      <name>Synthstrument (Cheap)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>BF1DD7CE-A966-46AD-9561-143E2EF3210E</id>
+      <name>Synthstrument (Good)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>E3FB93D8-CAD9-4982-8F43-91D52BAF20B5</id>
+      <name>Synthstrument (Nice)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>1000</cost>
     </gear>
     <gear>
       <id>53a62c92-cb9c-4780-8f42-08c0dbb4c499</id>
@@ -18268,7 +18304,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -18285,7 +18321,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -18302,7 +18338,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>6</avail>
       <bonus>
         <selecttext />
@@ -18319,7 +18355,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>12</avail>
       <bonus>
         <selecttext />
@@ -18336,11 +18372,8 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>+4</avail>
-      <bonus>
-        <selecttext />
-      </bonus>
       <requireparent />
       <cost>{Parent Cost}x2</cost>
     </gear>
@@ -18350,11 +18383,8 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>4</avail>
-      <bonus>
-        <selecttext />
-      </bonus>
       <requireparent />
       <cost>2000</cost>
     </gear>

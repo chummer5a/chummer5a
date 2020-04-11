@@ -290,18 +290,19 @@ namespace Chummer
             set => _strDescriptors = value;
         }
 
+        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.Split(',').ToList());
+
         /// <summary>
         /// Translated Descriptors.
         /// </summary>
         public string DisplayDescriptors(string strLanguage)
         {
             StringBuilder objReturn = new StringBuilder();
-
-            string[] strDescriptorsIn = Descriptors.Split(',');
             bool blnExtendedFound = false;
-            if (strDescriptorsIn.Length > 0)
+            if (string.IsNullOrWhiteSpace(Descriptors)) return LanguageManager.GetString("String_None");
+            if (_hashDescriptors.Count > 0)
             {
-                foreach (string strDescriptor in strDescriptorsIn)
+                foreach (string strDescriptor in _hashDescriptors)
                 {
                     switch (strDescriptor.Trim())
                     {
@@ -453,7 +454,7 @@ namespace Chummer
                     }
                 }
 
-                List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).ToList();
+                List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
                 if (lstDrainImprovements.Count <= 0) return strTip.ToString();
                 strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
@@ -507,15 +508,31 @@ namespace Chummer
         /// </summary>
         public string DisplayDamage(string strLanguage)
         {
+            if (Damage != "S" && Damage != "P") return LanguageManager.GetString("String_None", strLanguage);
+            StringBuilder sBld = new StringBuilder("0");
+
+            foreach (var improvement in RelevantImprovements(i =>
+                i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage ||
+                i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
+                sBld.Append($" + {improvement.Value:0;-0;0}");
+            string output = sBld.ToString();
+
+            object xprResult = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'), out bool blnIsSuccess);
+            sBld = blnIsSuccess ? new StringBuilder(xprResult.ToString()) : new StringBuilder();
+
             switch (Damage)
             {
                 case "P":
-                    return LanguageManager.GetString("String_DamagePhysical", strLanguage);
+                    sBld.Append(LanguageManager.GetString("String_DamagePhysical", strLanguage));
+                    break;
                 case "S":
-                    return LanguageManager.GetString("String_DamageStun", strLanguage);
-                default:
-                    return LanguageManager.GetString("String_None", strLanguage);
+                    sBld.Append(LanguageManager.GetString("String_DamageStun", strLanguage));
+                    break;
             }
+
+
+            return sBld.ToString();
+
         }
 
         /// <summary>
@@ -557,7 +574,8 @@ namespace Chummer
                 string strReturn = _strDV;
                 if (!Limited && (!Extended || Name.EndsWith("Extended")) && !RelevantImprovements(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue ||
-                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).Any()) return strReturn;
+                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
+                        o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).Any()) return strReturn;
                 bool force = strReturn.StartsWith('F');
                 string strDV = strReturn.TrimStartOnce('F');
                 //Navigator can't do math on a single value, so inject a mathable value.
@@ -582,7 +600,10 @@ namespace Chummer
                     }
                 }
 
-                foreach (var improvement in RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain))
+                foreach (var improvement in RelevantImprovements(i =>
+                    i.ImproveType == Improvement.ImprovementType.DrainValue ||
+                    i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
+                    i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
                     strDV = strDV + $" + {improvement.Value:0;-0;0}";
                 if (Limited)
                 {
@@ -849,28 +870,60 @@ namespace Chummer
                             yield return objImprovement;
                         break;
                     case Improvement.ImprovementType.SpellCategory:
-                        // SR5 318: Regardless of the number of bonded foci you have,
-                        // only one focus may add its Force to a dicepool for any given test.
-                        // We need to do some checking to make sure this is the most powerful focus before we add it in
-                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
+                        if (objImprovement.ImprovedName == Category)
                         {
-                            //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
-                            // we are returning either the original improvement, null or a newly instantiated improvement
-                            Improvement bestFocus = CompareFocusPower(objImprovement);
-                            if (bestFocus != null)
+                            // SR5 318: Regardless of the number of bonded foci you have,
+                            // only one focus may add its Force to a dicepool for any given test.
+                            // We need to do some checking to make sure this is the most powerful focus before we add it in
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
                             {
-                                yield return bestFocus;
+                                //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
+                                // we are returning either the original improvement, null or a newly instantiated improvement
+                                Improvement bestFocus = CompareFocusPower(objImprovement);
+                                if (bestFocus != null)
+                                {
+                                    yield return bestFocus;
+                                }
+
+                                break;
                             }
-                            break;
-                        }
-                        else
-                        {
+
                             yield return objImprovement;
-                            break;
                         }
+
+                        break;
+                    case Improvement.ImprovementType.SpellCategoryDamage:
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
                             yield return objImprovement;
+                        break;
+                    case Improvement.ImprovementType.SpellDescriptorDrain:
+                    case Improvement.ImprovementType.SpellDescriptorDamage:
+                        if (_hashDescriptors.Count > 0)
+                        {
+                            HashSet<string> _hashImp = new HashSet<string>(objImprovement.ImprovedName.Split(','));
+                            bool allow = false;
+                            foreach (string hash in _hashImp)
+                            {
+                                if (hash.StartsWith("NOT"))
+                                {
+                                    if (_hashDescriptors.Any(s => hash == $"NOT({s})"))
+                                    {
+                                        allow = false;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    allow = _hashDescriptors.Any(s => s == hash);
+                                }
+                            }
+
+                            if (allow)
+                            {
+                                yield return objImprovement;
+                            }
+                        }
                         break;
                     case Improvement.ImprovementType.DrainValue:
                         yield return objImprovement;
@@ -884,27 +937,35 @@ namespace Chummer
         /// </summary>
         private Improvement CompareFocusPower(Improvement objImprovement)
         {
-            // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-            var powerFocusRating = _objCharacter.Foci
-                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).Select(x => x.Rating)
-                .DefaultIfEmpty().Max();
-
-            // If our focus is higher, add in a partial bonus
-            if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+            var list = _objCharacter.Foci
+                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).ToList();
+            if (list.Any())
             {
-                // This is hackz -- because we don't want to lose the original improvement's value
-                // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                return new Improvement(_objCharacter)
-                {
-                    Value = objImprovement.Value - powerFocusRating,
-                    SourceName = objImprovement.SourceName,
-                    ImprovedName = objImprovement.ImprovedName,
-                    ImproveSource = objImprovement.ImproveSource,
-                    ImproveType = objImprovement.ImproveType,
-                };
-            }
+                // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                var powerFocusRating = list.Select(x => x.Rating)
+                    .DefaultIfEmpty().Max();
 
-            return powerFocusRating > 0 ? null : objImprovement;
+                // If our focus is higher, add in a partial bonus
+                if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+                {
+                    // This is hackz -- because we don't want to lose the original improvement's value
+                    // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                    return new Improvement(_objCharacter)
+                    {
+                        Value = objImprovement.Value - powerFocusRating,
+                        SourceName = objImprovement.SourceName,
+                        ImprovedName = objImprovement.ImprovedName,
+                        ImproveSource = objImprovement.ImproveSource,
+                        ImproveType = objImprovement.ImproveType,
+                    };
+                }
+                return powerFocusRating > 0 ? null : objImprovement;
+            }
+            else
+            {
+                return objImprovement;
+            }
+            
         }
 
         #endregion

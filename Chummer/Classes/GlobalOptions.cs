@@ -89,13 +89,29 @@ namespace Chummer
         [SavePropertyAs("maxmrusize")]
         public int MaxMruSize { get; set; } = 10;
 
+        /// <summary>
+        /// Do drones use the Drone Modification rules from Rigger 5.
+        /// </summary>
         [SavePropertyAs("dronemods")]
 		public bool Dronemods { get; set; } = false;
-        
-		/// <summary>
-		/// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
-		/// </summary>
-		[SavePropertyAs("printtofilefirst")]
+
+        /// <summary>
+        /// Should Chummer assume that relevant items are purchased through a Black Market Pipeline contact when available and automatically select the option. 
+        /// </summary>
+        [SavePropertyAs("assumeblackmarket")]
+        public bool AssumeBlackMarket { get; set; } = false;
+
+        /// <summary>
+        /// Are date-time formats other than the system default in use. 
+        /// </summary>
+        [SavePropertyAs("customdatetimeformats")]
+        public bool CustomDateTimeFormats { get; set; } = false;
+        public string CustomDateFormat { get; set; }
+        public string CustomTimeFormat { get; set; }
+        /// <summary>
+        /// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
+        /// </summary>
+        [SavePropertyAs("printtofilefirst")]
 		public bool PrintToFileFirst { get; set; } = false;
 
         /// <summary>

@@ -1215,10 +1215,9 @@ namespace Chummer.Classes
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickSkill.Description = string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName);
-                else
-                    frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
+                frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
 
                 string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
@@ -1356,10 +1355,9 @@ namespace Chummer.Classes
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickSkill.Description = string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName);
-                else
-                    frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
+                frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
 
                 string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
@@ -3024,7 +3022,7 @@ namespace Chummer.Classes
             Log.Info("reach");
             Log.Info("reach = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            string strWeapon = bonusNode.Attributes["name"]?.InnerText ?? string.Empty;
+            string strWeapon = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
             CreateImprovement(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
                 _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -4829,6 +4827,10 @@ namespace Chummer.Classes
         }
 
         // Check for Spell Category bonuses.
+        public void spellcategory(XmlNode bonusNode)
+        {
+            spellcategorydicepool(bonusNode);
+        }
         public void spellcategorydicepool(XmlNode bonusNode)
         {
             Log.Info("spellcategory");
@@ -4871,6 +4873,28 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["category"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategoryDamage, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for Spell descriptor Damage bonuses.
+        public void spelldescriptordamage(XmlNode bonusNode)
+        {
+            Log.Info("spelldescriptordamage");
+            Log.Info("spelldescriptordamage = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for Spell descriptor drain bonuses.
+        public void spelldescriptordrain(XmlNode bonusNode)
+        {
+            Log.Info("spelldescriptordrain");
+            Log.Info("spelldescriptordrain = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
         // Check for Throwing Range bonuses.
@@ -5903,9 +5927,9 @@ namespace Chummer.Classes
                         if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
                         lstSpirits.Add(new ListItem(strSpiritName,
                             xmlSpirit["translate"]?.InnerText ?? strSpiritName));
-            }
+                    }
 
-			frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits, ForceItem = ForcedValue };
             frmSelect.ShowDialog();
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {
@@ -6670,10 +6694,10 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             foreach (XmlNode child in bonusNode.SelectNodes("metamagic"))
             {
-                int intRating = Convert.ToInt32(child.Attributes["grade"]?.InnerText ?? "-1");
+                int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1");
                 CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
             }
-            
+
         }
 
         public void disablequality(XmlNode bonusNode)

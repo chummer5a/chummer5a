@@ -49,7 +49,7 @@ using System.Runtime.InteropServices;
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.209.0.0")]
-[assembly: AssemblyFileVersion("5.209.0.0")]
+[assembly: AssemblyVersion("5.211.0.0")]
+[assembly: AssemblyFileVersion("5.211.0.0")]
 
 [assembly: InternalsVisibleTo("Chummer.Test")]

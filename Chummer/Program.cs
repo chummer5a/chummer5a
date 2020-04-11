@@ -306,7 +306,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin", StringComparison.Ordinal) + 8);
                                     //some external apps choose to add a '/' before a ':' even in the middle of an url...
                                     whatplugin = whatplugin.TrimStart(':');
                                     int endplugin = whatplugin.IndexOf(':');
@@ -317,10 +317,7 @@ namespace Chummer
                                             a.ToString() == whatplugin);
                                     if (plugin == null)
                                     {
-                                        var notactive =
-                                            Program.PluginLoader.MyPlugins.FirstOrDefault(a =>
-                                                a.ToString() == whatplugin);
-                                        if (notactive != null)
+                                        if (Program.PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
                                         {
                                             string msg = "Plugin " + whatplugin + " is not enabled in the options!" + Environment.NewLine;
                                             msg +=
@@ -329,7 +326,7 @@ namespace Chummer
                                             MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
-                                    if (plugin != null)
+                                    else
                                     {
                                         showMainForm &= plugin.ProcessCommandLine(parameter);
                                     }

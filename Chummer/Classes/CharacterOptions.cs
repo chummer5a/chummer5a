@@ -656,6 +656,7 @@ namespace Chummer
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowStackedFoci { get; set; }
+        private int _intCyberlimbAttributeBonusCap = 4;
 
         /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
@@ -1104,6 +1105,14 @@ namespace Chummer
         /// The value by which Specializations add to dicepool. 
         /// </summary>
         public int SpecializationBonus = 2;
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public int CyberlimbAttributeBonusCap
+        {
+            get => _intCyberlimbAttributeBonusCap;
+            set => _intCyberlimbAttributeBonusCap = value;
+        }
 
         [DisplayIgnore]
         public string EssenceFormat { get; private set; } = "0.00";

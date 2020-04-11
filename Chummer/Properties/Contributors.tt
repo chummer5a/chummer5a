@@ -34,64 +34,135 @@ namespace Chummer.Properties
         private static readonly string[] _lstUsernames = {
 <#
     // Code originally written by joha4270
+
+    string strOAuthToken = Environment.GetEnvironmentVariable("CHUMMER_OAUTH_TOKEN") ?? string.Empty;
+    if (string.IsNullOrEmpty(strOAuthToken))
+    {
+#>
+#warning No OAuth token specified, so for everyone past the 59th place in the list, only usernames will be fetched
+<#
+    }
+    else if (!strOAuthToken.StartsWith("client_id="))
+        strOAuthToken = "client_id=" + strOAuthToken;
+    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+    JavaScriptSerializer jss = new JavaScriptSerializer();
+
+    // TODO: Add support for proper pagination if we get more than 200 total contributors
+    string strPerPageString = string.IsNullOrEmpty(strOAuthToken) ? "per_page=200" : "&per_page=200";
+    HttpWebRequest webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strOAuthToken}{strPerPageString}") as HttpWebRequest;
+    webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+    webRequest.Accept = "application/json";
+    webRequest.Timeout = 5000;
+
+    bool blnGenerateList = true;
+    string strRequestReturn = string.Empty;
     try
     {
-        string strOAuthToken = Environment.GetEnvironmentVariable("CHUMMER_OAUTH_TOKEN") ?? string.Empty;
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        JavaScriptSerializer jss = new JavaScriptSerializer();
-
-        // TODO: Add support for proper pagination if we get more than 200 total contributors
-        string strPerPageString = string.IsNullOrEmpty(strOAuthToken) ? "per_page=200" : "&per_page=200";
-        HttpWebRequest webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strOAuthToken}{strPerPageString}") as HttpWebRequest;
-        webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-        webRequest.Accept = "application/json";
-        webRequest.Timeout = 5000;
-
-        string strRequestReturn = string.Empty;
         using (System.IO.StreamReader responseReader = new System.IO.StreamReader(webRequest.GetResponse().GetResponseStream()))
             strRequestReturn = responseReader.ReadToEnd();
+    }
+    catch(Exception ex)
+    {
+        if (!string.IsNullOrEmpty(strOAuthToken))
+        {
+            // Try again, but this time without the OAuthToken
+            strOAuthToken = string.Empty;
+            strPerPageString = strPerPageString.Substring(1, strPerPageString.Length); // Escape the "&"
+            webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strPerPageString}") as HttpWebRequest;
+            webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+            webRequest.Accept = "application/json";
+            webRequest.Timeout = 5000;
+            try
+            {
+                using (System.IO.StreamReader responseReader = new System.IO.StreamReader(webRequest.GetResponse().GetResponseStream()))
+                    strRequestReturn = responseReader.ReadToEnd();
 
+#>
+#warning An OAuth token was specified, but it failed authentication, so for everyone past the 59th place in the list, only usernames will be fetched
+<#
+            }
+            catch(Exception ex2)
+            {
+#>
+#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in comments below).
+        /* "<#= ex2.ToString() #>"
+<#
+                if (ex2.ToString().Contains("(403)"))
+                {
+#>
+        *
+        * Note: if you are getting a 403 error despite having CHUMMER_OAUTH_TOKEN defined as an environment variable, it may
+        * be because it is no longer a valid GitHub OAuth token. GitHub puts limits on anonymous data queries to prevent abuse,
+        * so OAuth tokens are needed if you are making a bunch of requests in a short time interval like how Contributors.tt
+        * works (creates a separate query request for every single contributor)
+<#
+                }
+#>
+        */
+<#
+                blnGenerateList = false;
+            }
+        }
+        else
+        {
+#>
+#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in comments below).
+        /* "<#= ex.ToString() #>"
+<#
+            if (ex.ToString().Contains("(403)"))
+            {
+#>
+        *
+        * Note: if you are getting a 403 error, make sure you have the CHUMMER_OAUTH_TOKEN environment variable set to
+        * a GitHub OAuth token for your GitHub account. GitHub puts limits on anonymous data queries to prevent abuse,
+        * so OAuth tokens are needed if you are making a bunch of requests in a short time interval like how Contributors.tt
+        * works (creates a separate query request for every single contributor)
+<#
+            }
+#>
+        */
+<#
+            blnGenerateList = false;
+        }
+    }
+
+    if (blnGenerateList)
+    {
         var json = jss.DeserializeObject(strRequestReturn);
-            
         object[] parts = (object[]) json;
         foreach (object part in parts)
         {
             Dictionary<string, object> contributer = (Dictionary<string, object>) part;
             string username = contributer["login"].ToString();
+            string name = string.Empty;
 
-            webRequest = System.Net.WebRequest.Create($"https://api.github.com/users/{username}?{strOAuthToken}") as HttpWebRequest;
+            webRequest = System.Net.WebRequest.Create(contributer["url"].ToString() + "?" + strOAuthToken) as HttpWebRequest;
             webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             webRequest.Accept = "application/json";
             webRequest.Timeout = 5000;
 
-            strRequestReturn = string.Empty;
-            using (System.IO.StreamReader responseReader = new System.IO.StreamReader(webRequest.GetResponse().GetResponseStream()))
-                strRequestReturn = responseReader.ReadToEnd();
+            try
+            {
+                strRequestReturn = string.Empty;
+                using (System.IO.StreamReader responseReader = new System.IO.StreamReader(webRequest.GetResponse().GetResponseStream()))
+                    strRequestReturn = responseReader.ReadToEnd();
 
-            var userjson = jss.DeserializeObject(strRequestReturn);
+                var userjson = jss.DeserializeObject(strRequestReturn);
                     
-            Dictionary<string, object> userdict = (Dictionary<string, object>) userjson;
-            string name = userdict["name"]?.ToString();
+                Dictionary<string, object> userdict = (Dictionary<string, object>) userjson;
+                name = userdict["name"]?.ToString();
+            }
+            catch (Exception)
+            {
+            }
             
-            string fin;
-            if(name == null)
-            {
-                fin = username;
-            }
-            else
-            {
+            string fin = username;
+            if(!string.IsNullOrEmpty(name))
                 fin = $"{name}<{username}>";
-            }
 #>
             "<#= fin #>",
 <#
         }
-    }
-    catch(Exception ex)
-    {
-                #>
-            @"<#= ex.ToString() #>", 
-                <#
     }
 #>
         };

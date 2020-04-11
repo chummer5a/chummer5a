@@ -27,5 +27,73 @@
       <name>Holo-Conference Drone (Small)</name>
       <cost>9000</cost>
     </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '1' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '1'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '2' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '2'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '3' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '3'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '4' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '4'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+            <gear select="Front-Facing">Laser Range Finder</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '5' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '5'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+            <gear select="Front-Facing">Laser Range Finder</gear>
+            <gear select="Rear-Facing">Laser Range Finder</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '6' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '6'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+            <gear select="Front-Facing">Laser Range Finder</gear>
+            <gear select="Rear-Facing">Laser Range Finder</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
   </vehicles>
 </chummer>

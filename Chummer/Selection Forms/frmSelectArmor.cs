@@ -519,8 +519,9 @@ namespace Chummer
             _blnSkipUpdate = true;
             if (_objSelectedArmor != null)
             {
-                chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+                chkBlackMarketDiscount.Checked = GlobalOptions.Instance.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
                 _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
                 

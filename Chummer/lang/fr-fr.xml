@@ -104,6 +104,375 @@
 			<key>String_UnnamedCharacter</key>
 			<text>Personnage sans nom</text>
 		</string>
+	  <string>
+		<key>Checkbox_Free</key>
+		<text>Gratuit</text>
+	  </string>
+	  <string>
+		<key>Checkbox_BlackMarketDiscount</key>
+		<text>Réduction contact au marché noir (10 %)</text>
+	  </string>
+	  <string>
+		<key>Checkbox_HomeNode</key>
+		<text>Noeud de résidence</text>
+	  </string>
+	  <string>
+		<key>Checkbox_Wireless</key>
+		<text>WiFi activé</text>
+	  </string>
+	  <string>
+		<key>Checkbox_Commlinks</key>
+		<text>Afficher uniquement les commlinks</text>
+	  </string>
+	  <string>
+		<key>Checkbox_ActiveCommlink</key>
+		<text>Commlink actif</text>
+	  </string>
+	  <string>
+		<key>Label_BP</key>
+		<text>PC :</text>
+	  </string>
+	  <string>
+		<key>Label_BPRemaining</key>
+		<text>PC restants :</text>
+	  </string>
+	  <string>
+		<key>Label_Karma</key>
+		<text>Karma :</text>
+	  </string>
+	  <string>
+		<key>Label_LP</key>
+		<text>PV :</text>
+	  </string>
+	  <string>
+		<key>Label_BonusLP</key>
+		<text>PV bonus :</text>
+	  </string>
+	  <string>
+		<key>Label_QualityLP</key>
+		<text>PV qualité :</text>
+	  </string>
+	  <string>
+		<key>Label_QualityCost</key>
+		<text>Coût :</text>
+	  </string>
+	  <string>
+		<key>Label_QualitySource</key>
+		<text>Source :</text>
+	  </string>
+	  <string>
+		<key>Checkbox_Randomize1D6</key>
+		<text>Lancer 1D6</text>
+	  </string>
+	  <string>
+		<key>String_KarmaRemaining</key>
+		<text>Karma restant</text>
+	  </string>
+	  <string>
+		<key>Label_KarmaRemaining</key>
+		<text>Karma restant :</text>
+	  </string>
+	  <string>
+		<key>Label_Source</key>
+		<text>Source :</text>
+	  </string>
+	  <string>
+		<key>Label_Name</key>
+		<text>Nom :</text>
+	  </string>
+	  <string>
+		<key>Label_Bonus</key>
+		<text>Bonus :</text>
+	  </string>
+	  <string>
+		<key>Label_Category</key>
+		<text>Catégorie :</text>
+	  </string>
+	  <string>
+		<key>Label_Handling</key>
+		<text>Maniabilité :</text>
+	  </string>
+	  <string>
+		<key>Label_Accel</key>
+		<text>Accélération :</text>
+	  </string>
+	  <string>
+		<key>Label_Speed</key>
+		<text>Vitesse :</text>
+	  </string>
+	  <string>
+		<key>String_Handling</key>
+		<text>Maniabilité</text>
+	  </string>
+	  <string>
+		<key>Label_Response</key>
+		<text>Réponse :</text>
+	  </string>
+	  <string>
+		<key>Label_Device</key>
+		<text>Appareil :</text>
+	  </string>
+	  <string>
+		<key>Label_Pilot</key>
+		<text>Autopilote :</text>
+	  </string>
+	  <string>
+		<key>Label_Body</key>
+		<text>Structure :</text>
+	  </string>
+	  <string>
+		<key>String_VehicleBody</key>
+		<text>Structure</text>
+	  </string>
+	  <string>
+		<key>Label_Armor</key>
+		<text>Blindage :</text>
+	  </string>
+	  <string>
+		<key>Label_Seats</key>
+		<text>Places :</text>
+	  </string>
+	  <string>
+		<key>Label_Sensor</key>
+		<text>Senseurs :</text>
+	  </string>
+	  <string>
+		<key>String_Sensor</key>
+		<text>Senseurs</text>
+	  </string>
+	  <string>
+		<key>Label_Avail</key>
+		<text>Disponibilité :</text>
+	  </string>
+	  <string>
+		<key>Label_Cost</key>
+		<text>Coût :</text>
+	  </string>
+	  <string>
+		<key>Label_Accuracy</key>
+		<text>Précision :</text>
+	  </string>
+	  <string>
+		<key>Label_Slots</key>
+		<text>Emplacements :</text>
+	  </string>
+	  <string>
+		<key>Label_Weapons</key>
+		<text>Armes:</text>
+	  </string>
+	  <string>
+		<key>Label_Protection</key>
+		<text>Protection :</text>
+	  </string>
+	  <string>
+		<key>Label_Powertrain</key>
+		<text>Puissance :</text>
+	  </string>
+	  <string>
+		<key>Label_Bodymod</key>
+		<text>Modifs :</text>
+	  </string>
+	  <string>
+		<key>Label_Electromagnetic</key>
+		<text>Électro :</text>
+	  </string>
+	  <string>
+		<key>Label_Cosmetic</key>
+		<text>Esthétique :</text>
+	  </string>
+	  <string>
+		<key>Label_DroneModSlots</key>
+		<text>Emplacements pour modification :</text>
+	  </string>
+	  <string>
+		<key>Label_Rating</key>
+		<text>Indice :</text>
+	  </string>
+	  <string>
+		<key>Label_Qty</key>
+		<text>Quantité :</text>
+	  </string>
+	  <string>
+		<key>Label_Grade</key>
+		<text>Gamme :</text>
+	  </string>
+	  <string>
+		<key>Label_Essence</key>
+		<text>Essence :</text>
+	  </string>
+	  <string>
+		<key>Label_Type</key>
+		<text>Type :</text>
+	  </string>
+	  <string>
+		<key>Label_Action</key>
+		<text>Action :</text>
+	  </string>
+	  <string>
+		<key>Label_Range</key>
+		<text>Portée :</text>
+	  </string>
+	  <string>
+		<key>Label_Duration</key>
+		<text>Durée :</text>
+	  </string>
+	  <string>
+		<key>Label_Points</key>
+		<text>Points :</text>
+	  </string>
+	  <string>
+		<key>Label_Descriptors</key>
+		<text>Descriptions :</text>
+	  </string>
+	  <string>
+		<key>Label_Damage</key>
+		<text>Dommages :</text>
+	  </string>
+	  <string>
+		<key>Label_DV</key>
+		<text>VD :</text>
+	  </string>
+	  <string>
+		<key>Label_RC</key>
+		<text>CR :</text>
+	  </string>
+	  <string>
+		<key>Label_AP</key>
+		<text>PA :</text>
+	  </string>
+	  <string>
+		<key>Label_Ammo</key>
+		<text>Munitions :</text>
+	  </string>
+	  <string>
+		<key>Label_Reach</key>
+		<text>Allonge :</text>
+	  </string>
+	  <string>
+		<key>Label_Mode</key>
+		<text>Mode :</text>
+	  </string>
+	  <string>
+		<key>Label_Mount</key>
+		<text>Monture :</text>
+	  </string>
+	  <string>
+		<key>Label_ExtraMount</key>
+		<text>Monture supp. :</text>
+	  </string>
+	  <string>
+		<key>Label_DataFile</key>
+		<text>Fichiers :</text>
+	  </string>
+	  <string>
+		<key>Label_Search</key>
+		<text>&amp;Rechercher :</text>
+	  </string>
+	  <string>
+		<key>Label_Capacity</key>
+		<text>Capacité :</text>
+	  </string>
+	  <string>
+		<key>Label_DeviceRating</key>
+		<text>Indice :</text>
+	  </string>
+	  <string>
+		<key>Label_Signal</key>
+		<text>Signal :</text>
+	  </string>
+	  <string>
+		<key>Label_System</key>
+		<text>Système :</text>
+	  </string>
+	  <string>
+		<key>Label_Attack</key>
+		<text>Attaque :</text>
+	  </string>
+	  <string>
+		<key>Label_Sleaze</key>
+		<text>Corruption :</text>
+	  </string>
+	  <string>
+		<key>Label_DataProcessing</key>
+		<text>Traitement de données :</text>
+	  </string>
+	  <string>
+		<key>Label_Firewall</key>
+		<text>Firewall :</text>
+	  </string>
+	  <string>
+		<key>Label_BiofeedbackFilter</key>
+		<text>Filtre de biofeedback :</text>
+	  </string>
+	  <string>
+		<key>Label_MaximumCapacityAllowed</key>
+		<text>Capacité maximum autorisée :</text>
+	  </string>
+	  <string>
+		<key>Label_ArmorShort</key>
+		<text>Nom :</text>
+	  </string>
+	  <string>
+		<key>Label_ArmorValueShort</key>
+		<text>Armure :</text>
+	  </string>
+	  <string>
+		<key>Label_ArmorLong</key>
+		<text>Armure :</text>
+	  </string>
+	  <string>
+		<key>Label_Test</key>
+		<text>Test :</text>
+	  </string>
+	  <string>
+		<key>String_None</key>
+		<text>Aucun</text>
+	  </string>
+	  <string>
+		<key>String_Varies</key>
+		<text>Variable</text>
+	  </string>
+	  <string>
+		<key>String_Qualities</key>
+		<text>Traits</text>
+	  </string>
+	  <string>
+		<key>Label_Qualities</key>
+		<text>Traits :</text>
+	  </string>
+	  <string>
+		<key>String_Quality</key>
+		<text>Qualité</text>
+	  </string>
+	  <string>
+		<key>Label_Metavariant</key>
+		<text>Métavariante :</text>
+	  </string>
+	  <string>
+		<key>Title_ChooseCharacterPriorities</key>
+		<text>Choisir les priorités des personnages</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityHeritage</key>
+		<text>Métatype :</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityTalent</key>
+		<text>Magie ou Résonance :</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityAttributes</key>
+		<text>Attributs :</text>
+	  </string>
+	  <string>
+		<key>Label_PrioritySkills</key>
+		<text>Compétences :</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityResources</key>
+		<text>Ressources :</text>
+	  </string>
+	  <string>
 		<string>
 			<key>Checkbox_Free</key>
 			<text>Gratuit</text>

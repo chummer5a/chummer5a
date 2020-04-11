@@ -71,6 +71,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private int _intSortOrder;
 	    private bool _blnStolen;
+        private bool _blnEncumbrance = true;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Armor(Character objCharacter)
@@ -175,6 +176,39 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            if (string.IsNullOrEmpty(Notes))
+            {
+                string strEnglishNameOnPage = Name;
+                string strNameOnPage = string.Empty;
+                // make sure we have something and not just an empty tag
+                if (objXmlArmorNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                    !string.IsNullOrEmpty(strNameOnPage))
+                    strEnglishNameOnPage = strNameOnPage;
+
+                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+
+                if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                {
+                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+
+                    // don't check again it is not translated
+                    if (strTranslatedNameOnPage != _strName)
+                    {
+                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                        if (objXmlArmorNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                            strTranslatedNameOnPage = strNameOnPage;
+
+                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                            strTranslatedNameOnPage);
+                    }
+                }
+                else
+                    Notes = strGearNotes;
+            }
+
+            objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = false;
@@ -380,8 +414,14 @@ namespace Chummer.Backend.Equipment
                     ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                     : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
+                int intAddWeaponRating = 0;
+                if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                {
+                    intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                        .CheapReplace("{Rating}", () => Rating.ToString()));
+                }
                 Weapon objGearWeapon = new Weapon(_objCharacter);
-                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost);
+                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost, intAddWeaponRating);
                 objGearWeapon.ParentID = InternalId;
                 objGearWeapon.Cost = "0";
                 lstWeapons.Add(objGearWeapon);
@@ -417,6 +457,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("stolen", _blnStolen.ToString());
+            objWriter.WriteElementString("emcumbrance", _blnEncumbrance.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
             {
@@ -492,6 +533,9 @@ namespace Chummer.Backend.Equipment
                     _objLocation?.Children.Add(this);
                 }
             }
+			
+            if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
+				_blnEncumbrance = true;
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -686,6 +730,11 @@ namespace Chummer.Backend.Equipment
             get => _strCategory;
             set => _strCategory = value;
         }
+
+        /// <summary>
+        /// Whether or not the Armor contributes to Encumbrance. 
+        /// </summary>
+        public bool Encumbrance => _blnEncumbrance;
 
         /// <summary>
         /// Armor's Armor value.

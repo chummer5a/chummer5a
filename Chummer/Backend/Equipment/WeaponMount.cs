@@ -1015,12 +1015,12 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Weapon:
                     {
-                        if (AllowedWeapons != string.Empty)
+                        if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
                             if (!AllowedWeapons.Contains(ClipboardManager.Clipboard.SelectSingleNode("name").InnerText))
                                 return false;
                         }
-                        if (AllowedWeaponCategories != string.Empty)
+                        if (!string.IsNullOrEmpty(AllowedWeaponCategories))
                         {
                             if (!AllowedWeaponCategories.Contains(ClipboardManager.Clipboard.SelectSingleNode("category").InnerText))
                                 return false;

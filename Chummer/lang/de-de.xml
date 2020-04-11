@@ -6474,10 +6474,6 @@
 		</string>
 		<!-- Version 445 -->
 		<string>
-			<key>String_Break</key>
-			<text>Gruppe auftrennen</text>
-		</string>
-		<string>
 			<key>Label_Options_DefaultCharacterSheet</key>
 			<text>Standard Charakterbogen:</text>
 		</string>
@@ -9799,6 +9795,47 @@
 			<key>String_Reach</key>
 			<text>Reichweite</text>
 		</string>
+		<string>
+			<key>Message_DeleteSkill</key>
+			<text>Möchten Sie die Fertigkeit wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Label_Dodge</key>
+			<text>Ausweichen:</text>
+		</string>
+		<string>
+			<key>String_MetersPerHit</key>
+			<text>m/Erfolg</text>
+		</string>
+		<string>
+			<key>String_SuppressedBy</key>
+			<text>Verdrängt durch {0}</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+			<text>Maximaler Bonus auf Stärke und Geschicklichkeit, den Cybergliedmaßen haben können (unterliegt unverändert dem erweiterten Maximum)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CustomTimeFormat</key>
+			<text>Benutzerdefiniertes Zeitformat</text>
+		</string>
+		<string>
+			<key>Label_Options_DateFormat</key>
+			<text>Datumsformat</text>
+		</string>
+		<string>
+			<key>Label_Options_TimeFormat</key>
+			<text>Zeitformat</text>
+		</string>
+		<string>
+			<key>MessageTitle_NoValidModularMount</key>
+			<text>Keinen passenden Modulanschluss gefunden</text>
+		</string>
+		<string>
+			<key>Message_NoValidModularMount</key>
+			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden.</text>
+		</string>
+	</strings>
     <!-- Newoptions layout strings-->
     <string>
       <key>Display_KarmaCosts</key>

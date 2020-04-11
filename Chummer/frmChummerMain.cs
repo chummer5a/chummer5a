@@ -590,7 +590,7 @@ namespace Chummer
 
         private void CheckForUpdate(object sender, RunWorkerCompletedEventArgs e)
         {
-            if(!e.Cancelled && Utils.GitUpdateAvailable() > 0)
+            if(!e.Cancelled && Utils.GitUpdateAvailable > 0)
             {
                 if(GlobalOptions.Instance.AutomaticUpdate)
                 {

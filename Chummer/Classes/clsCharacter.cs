@@ -149,6 +149,7 @@ namespace Chummer
         private string _strSource;
         private string _strPage;
         private int _intMetatypeBP;
+        private int    _intInitiativeDice = 1;
 
         // Special Flags.
 
@@ -943,6 +944,7 @@ namespace Chummer
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 _intCachedNegativeQualities = int.MinValue;
+                _intCachedNegativeQualityLimitKarma = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
             }
         }
@@ -1261,6 +1263,432 @@ namespace Chummer
         public AttributeSection AttributeSection { get; }
 
         public bool IsSaving { get; set; }
+        #region Create, Save, Load and Print Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode _xmlQualityDocumentQualitiesNode, XmlNode _xmlCritterPowerDocumentPowersNode, XmlNode _xmlSkillsDocumentKnowledgeSkillsNode, string strSelectedPossessionMethod = "", bool blnBloodSpirit = false)
+        {
+            // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+            if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
+                strMetavariantId = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id").InnerText;
+            XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = \"" + strMetavariantId + "\"]");
+
+            // Set Metatype information.
+            int intMinModifier = 0;
+            int intMaxModifier = 0;
+            XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" || strMetavariantId == Guid.Empty.ToString() ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
+            AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
+            MetatypeGuid = new Guid(strMetatypeId);
+            Metatype = objXmlMetatype["name"].InnerText;
+            MetatypeCategory = strSelectedMetatypeCategory;
+            MetavariantGuid = new Guid(strMetavariantId);
+            Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant["name"].InnerText : "None";
+            // We only reverted to the base metatype to get the attributes.
+            if (strSelectedMetatypeCategory == "Shapeshifter")
+            {
+                charNode = objXmlMetavariant ?? objXmlMetatype;
+            }
+            Source = charNode["source"].InnerText;
+            Page = charNode["page"]?.InnerText ?? "0";
+            charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
+            charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
+
+            string strMovement = objXmlMetatype["movement"]?.InnerText;
+            if (!string.IsNullOrEmpty(strMovement))
+                Movement = strMovement;
+
+            // Determine if the Metatype has any bonuses.
+            XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
+            if (xmlBonusNode != null)
+                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, xmlBonusNode, false, 1, strMetatypeId);
+
+            List<Weapon> lstWeapons = new List<Weapon>();
+            // Create the Qualities that come with the Metatype.
+            using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
+                if (xmlQualityList != null)
+                    foreach (XmlNode objXmlQualityItem in xmlQualityList)
+                    {
+                        XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                        Quality objQuality = new Quality(this);
+                        string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
+                        QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
+                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
+                        objQuality.ContributeToLimit = false;
+                        Qualities.Add(objQuality);
+                    }
+
+            //Load any critter powers the character has.
+            foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
+            {
+                XmlNode objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + objXmlPower.InnerText + "\"]");
+                CritterPower objPower = new CritterPower(this);
+                string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
+                int intRating = Convert.ToInt32(objXmlPower.Attributes["rating"]?.InnerText);
+
+                objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                objPower.CountTowardsLimit = false;
+                CritterPowers.Add(objPower);
+                ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                ImprovementManager.Commit(this);
+            }
+
+            //Load any natural weapons the character has.
+            foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
+            {
+                Weapon objWeapon = new Weapon(this)
+                {
+                    Name = objXmlNaturalWeapon["name"].InnerText,
+                    Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                    WeaponType = "Melee",
+                    Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"]?.InnerText),
+                    Damage = objXmlNaturalWeapon["damage"].InnerText,
+                    AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
+                    Mode = "0",
+                    RC = "0",
+                    Concealability = 0,
+                    Avail = "0",
+                    Cost = "0",
+                    UseSkill = objXmlNaturalWeapon["useskill"]?.InnerText,
+                    Source = objXmlNaturalWeapon["source"].InnerText,
+                    Page = objXmlNaturalWeapon["page"].InnerText
+                };
+
+                Weapons.Add(objWeapon);
+            }
+            //Set the Active Skill Ratings for the Critter.
+            foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
+            {
+                string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
+
+                if (!string.IsNullOrEmpty(strRating))
+                {
+                    ImprovementManager.CreateImprovement(this, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating));
+                    ImprovementManager.Commit(this);
+                }
+                string strSkill = xmlSkill.InnerText;
+                Skill objSkill = SkillsSection.GetActiveSkill(strSkill);
+                if (objSkill == null) continue;
+                string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                SkillSpecialization spec = new SkillSpecialization(strSpec, true, objSkill);
+                objSkill.Specializations.Add(spec);
+            }
+            //Set the Skill Group Ratings for the Critter.
+            foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))
+            {
+                string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerText;
+                if (!string.IsNullOrEmpty(strRating))
+                {
+                    ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillGroupLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating));
+                    ImprovementManager.Commit(this);
+                }
+            }
+
+            //Set the Knowledge Skill Ratings for the Critter.
+            foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
+            {
+                string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
+                if (!string.IsNullOrEmpty(strRating))
+                {
+                    if (SkillsSection.KnowledgeSkills.All(x => x.Name != xmlSkill.InnerText))
+                    {
+                        XmlNode objXmlSkillNode = _xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = \"" + xmlSkill.InnerText + "\"]");
+                        if (objXmlSkillNode != null)
+                        {
+                            KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this) as KnowledgeSkill;
+                            SkillsSection.KnowledgeSkills.Add(objSkill);
+                        }
+                        else
+                        {
+                            KnowledgeSkill objSkill = new KnowledgeSkill(this, xmlSkill.InnerText, true)
+                            {
+                                Type = xmlSkill.Attributes?["category"]?.InnerText
+                            };
+                            SkillsSection.KnowledgeSkills.Add(objSkill);
+                        }
+                    }
+                    ImprovementManager.CreateImprovement(this, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating));
+                    ImprovementManager.Commit(this);
+                }
+            }
+
+            // Add any Complex Forms the Critter comes with (typically Sprites)
+            XmlDocument xmlComplexFormDocument = XmlManager.Load("complexforms.xml");
+            foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
+            {
+                XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + xmlComplexForm.InnerText + "\"]");
+                if (xmlComplexFormData == null)
+                    continue;
+
+                // Check for SelectText.
+                string strExtra = xmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
+                XmlNode xmlSelectText = xmlComplexFormData.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
+                {
+                    frmSelectText frmPickText = new frmSelectText
+                    {
+                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
+                    };
+                    frmPickText.ShowDialog();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                        continue;
+                    strExtra = frmPickText.SelectedValue;
+                }
+
+                ComplexForm objComplexform = new ComplexForm(this);
+                objComplexform.Create(xmlComplexFormData, strExtra);
+                if (objComplexform.InternalId.IsEmptyGuid())
+                    continue;
+                objComplexform.Grade = -1;
+
+                ComplexForms.Add(objComplexform);
+
+                ImprovementManager.CreateImprovement(this, objComplexform.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.ComplexForm, string.Empty);
+                ImprovementManager.Commit(this);
+            }
+
+            //Load any cyberware the character has.
+            XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+            foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
+            {
+                XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode($"chummer/cyberwares/cyberware[name = \"{node.InnerText}\"]");
+                var objWare = new Cyberware(this);
+                string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                objWare.Create(objXmlCyberwareNode,
+                    GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                        .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                    Weapons, Vehicles, true, true, strForcedValue);
+                Cyberware.Add(objWare);
+                ImprovementManager.CreateImprovement(this, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                ImprovementManager.Commit(this);
+            }
+
+            //Load any bioware the character has.
+            XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+            foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
+            {
+                XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode($"chummer/biowares/bioware[name = \"{node.InnerText}\"]");
+                var objWare = new Cyberware(this);
+                string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                objWare.Create(objXmlCyberwareNode,
+                    GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                        .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                    Weapons, Vehicles, true, true, strForcedValue);
+                Cyberware.Add(objWare);
+                ImprovementManager.CreateImprovement(this, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                ImprovementManager.Commit(this);
+            }
+
+            // Add any Advanced Programs the Critter comes with (typically A.I.s)
+            XmlDocument xmlAIProgramDocument = XmlManager.Load("programs.xml");
+            foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
+            {
+                XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + xmlAIProgram.InnerText + "\"]");
+                if (xmlAIProgramData == null)
+                    continue;
+
+                // Check for SelectText.
+                string strExtra = xmlAIProgram.Attributes?["select"]?.InnerText ?? string.Empty;
+                XmlNode xmlSelectText = xmlAIProgramData.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
+                {
+                    frmSelectText frmPickText = new frmSelectText
+                    {
+                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
+                    };
+                    frmPickText.ShowDialog();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                        continue;
+                    strExtra = frmPickText.SelectedValue;
+                }
+
+                AIProgram objAIProgram = new AIProgram(this);
+                objAIProgram.Create(xmlAIProgram, strExtra, false);
+                if (objAIProgram.InternalId.IsEmptyGuid())
+                    continue;
+
+                AIPrograms.Add(objAIProgram);
+
+                ImprovementManager.CreateImprovement(this, objAIProgram.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.AIProgram, string.Empty);
+                ImprovementManager.Commit(this);
+            }
+
+            // Add any Gear the Critter comes with (typically Programs for A.I.s)
+            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+            foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
+            {
+                XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
+                if (xmlGearData == null)
+                    continue;
+
+                int intRating = 1;
+                if (xmlGear["rating"] != null)
+                    intRating = Convert.ToInt32(xmlGear["rating"].InnerText);
+                decimal decQty = 1.0m;
+                if (xmlGear["quantity"] != null)
+                    decQty = Convert.ToDecimal(xmlGear["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
+                string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
+
+                Gear objGear = new Gear(this);
+                objGear.Create(xmlGearData, intRating, lstWeapons, strForceValue);
+
+                if (objGear.InternalId.IsEmptyGuid())
+                    continue;
+
+                objGear.Quantity = decQty;
+
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (ActiveCommlink == null && objGear.IsCommlink)
+                {
+                    objGear.SetActiveCommlink(this, true);
+                }
+
+                objGear.Cost = "0";
+                // Create any Weapons that came with this Gear.
+                foreach (Weapon objWeapon in lstWeapons)
+                    Weapons.Add(objWeapon);
+
+                objGear.ParentID = Guid.NewGuid().ToString();
+
+                Gear.Add(objGear);
+
+                ImprovementManager.CreateImprovement(this, objGear.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.Gear, string.Empty);
+                ImprovementManager.Commit(this);
+            }
+
+            // Add any created Weapons to the character.
+            foreach (Weapon objWeapon in lstWeapons)
+                Weapons.Add(objWeapon);
+
+            // Sprites can never have Physical Attributes
+            if (DEPEnabled || strSelectedMetatypeCategory.EndsWith("Sprite") || strSelectedMetatypeCategory.EndsWith("Sprites"))
+            {
+                BOD.AssignLimits("0", "0", "0");
+                AGI.AssignLimits("0", "0", "0");
+                REA.AssignLimits("0", "0", "0");
+                STR.AssignLimits("0", "0", "0");
+                MAG.AssignLimits("0", "0", "0");
+                MAGAdept.AssignLimits("0", "0", "0");
+            }
+
+
+            if (strSelectedMetatypeCategory == "Spirits")
+            {
+                XmlNode xmlOptionalPowersNode = charNode["optionalpowers"];
+                if (xmlOptionalPowersNode != null)
+                {
+                    //For every 3 full points of Force a spirit has, it may gain one Optional Power.
+                    for (int i = intForce - 3; i >= 0; i -= 3)
+                    {
+                        XmlDocument objDummyDocument = new XmlDocument();
+                        XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
+                        objDummyDocument.AppendChild(bonusNode);
+                        XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
+                        objDummyDocument.ImportNode(powerNode, true);
+                        bonusNode.AppendChild(powerNode);
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, bonusNode, false, 1, strMetatypeId);
+                    }
+                }
+                //If this is a Blood Spirit, add their free Critter Powers.
+                if (blnBloodSpirit)
+                {
+                    XmlNode objXmlCritterPower;
+                    CritterPower objPower;
+
+                    //Energy Drain.
+                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Energy Drain"))
+                    {
+                        objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Energy Drain\"]");
+                        objPower = new CritterPower(this);
+                        objPower.Create(objXmlCritterPower, 0, string.Empty);
+                        objPower.CountTowardsLimit = false;
+                        CritterPowers.Add(objPower);
+                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                        ImprovementManager.Commit(this);
+                    }
+
+                    // Fear.
+                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Fear"))
+                    {
+                        objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Fear\"]");
+                        objPower = new CritterPower(this);
+                        objPower.Create(objXmlCritterPower, 0, string.Empty);
+                        objPower.CountTowardsLimit = false;
+                        CritterPowers.Add(objPower);
+                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                        ImprovementManager.Commit(this);
+                    }
+
+                    // Natural Weapon.
+                    objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Natural Weapon\"]");
+                    objPower = new CritterPower(this);
+                    objPower.Create(objXmlCritterPower, 0, "DV " + intForce.ToString() + "P, AP 0");
+                    objPower.CountTowardsLimit = false;
+                    CritterPowers.Add(objPower);
+                    ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                    ImprovementManager.Commit(this);
+
+                    // Evanescence.
+                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Evanescence"))
+                    {
+                        objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Evanescence\"]");
+                        objPower = new CritterPower(this);
+                        objPower.Create(objXmlCritterPower, 0, string.Empty);
+                        objPower.CountTowardsLimit = false;
+                        CritterPowers.Add(objPower);
+                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                        ImprovementManager.Commit(this);
+                    }
+                }
+
+                // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
+                if (strSelectedPossessionMethod != string.Empty)
+                {
+                    CritterPower objMaterializationPower = CritterPowers.FirstOrDefault(x => x.Name == "Materialization");
+                    if (objMaterializationPower != null)
+                        CritterPowers.Remove(objMaterializationPower);
+
+                    if (CritterPowers.All(x => x.Name != strSelectedPossessionMethod))
+                    {
+                        // Add the selected Power.
+                        XmlNode objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + strSelectedPossessionMethod + "\"]");
+                        if (objXmlCritterPower != null)
+                        {
+                            CritterPower objPower = new CritterPower(this);
+                            objPower.Create(objXmlCritterPower, 0, string.Empty);
+                            objPower.CountTowardsLimit = false;
+                            CritterPowers.Add(objPower);
+
+                            ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                            ImprovementManager.Commit(this);
+                        }
+                    }
+                }
+                else if (CritterPowers.All(x => x.Name != "Materialization"))
+                {
+                    // Add the Materialization Power.
+                    XmlNode objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Materialization\"]");
+                    if (objXmlCritterPower != null)
+                    {
+                        CritterPower objPower = new CritterPower(this);
+                        objPower.Create(objXmlCritterPower, 0, string.Empty);
+                        objPower.CountTowardsLimit = false;
+                        CritterPowers.Add(objPower);
+
+                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                        ImprovementManager.Commit(this);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
@@ -1328,6 +1756,8 @@ namespace Chummer
             objWriter.WriteElementString("runalt", _strRun);
             // <sprint />
             objWriter.WriteElementString("sprintalt", _strSprint);
+            // <initiativedice />
+            objWriter.WriteElementString("initiativedice", _intInitiativeDice.ToString());
 
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
@@ -1919,11 +2349,11 @@ namespace Chummer
             //calculatedValues
             objWriter.WriteStartElement("calculatedvalues");
             objWriter.WriteComment("these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
-            objWriter.WriteElementString("physicalcm", this.PhysicalCM.ToString());
-            objWriter.WriteElementString("physicalcmthresholdoffset", this.PhysicalCMThresholdOffset.ToString());
-            objWriter.WriteElementString("physicalcmoverflow", this.CMOverflow.ToString());
-            objWriter.WriteElementString("stuncm", this.StunCM.ToString());
-            objWriter.WriteElementString("stuncmthresholdoffset", this.StunCMThresholdOffset.ToString());
+            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString());
+            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString());
+            objWriter.WriteElementString("physicalcmoverflow", CMOverflow.ToString());
+            objWriter.WriteElementString("stuncm", StunCM.ToString());
+            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString());
             objWriter.WriteEndElement();
             // </calculatedValues>
 
@@ -1963,7 +2393,7 @@ namespace Chummer
 
             objWriter.Close();
             if(addToMRU)
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, this.FileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, FileName);
 
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
@@ -1990,7 +2420,7 @@ namespace Chummer
                 {
                     using (var AIOptionsActivity = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                     {
-                        UploadObjectAsMetric.UploadObject(TelemetryClient, this.Options);
+                        UploadObjectAsMetric.UploadObject(TelemetryClient, Options);
                     }
                     XmlDocument objXmlDocument = new XmlDocument();
                     XmlNode objXmlCharacter;
@@ -2211,7 +2641,7 @@ if (!Utils.IsUnitTest){
                         _strRunAlt = xmlCharacterNavigator.SelectSingleNode("run/@alt")?.Value ?? string.Empty;
                         _strWalkAlt = xmlCharacterNavigator.SelectSingleNode("walk/@alt")?.Value ?? string.Empty;
                         _strSprintAlt = xmlCharacterNavigator.SelectSingleNode("sprint/@alt")?.Value ?? string.Empty;
-
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
                         //Shim for characters created prior to Run Faster Errata
@@ -4651,7 +5081,7 @@ if (!Utils.IsUnitTest){
             // </character>
             objWriter.WriteEndElement();
         }
-
+        #endregion
         /// <summary>
         /// Remove stray event handlers and clear all info used by this character
         /// </summary>
@@ -5440,9 +5870,12 @@ if (!Utils.IsUnitTest){
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <returns></returns>
-        public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware)
+        public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
         {
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            //Mounted cyberware should always be allowed to be dismounted.
+            //Unmounted cyberware requires that a valid mount be present. 
+            blnMountChangeAllowed = objModularCyberware.IsModularCurrentlyEquipped;
             List<ListItem> lstReturn = new List<ListItem>
             {
                 new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
@@ -5463,6 +5896,7 @@ if (!Utils.IsUnitTest){
                         string strName = objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
                                          objLoopCyberware.DisplayName(GlobalOptions.Language);
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                        blnMountChangeAllowed = true;
                     }
                 }
             }
@@ -5489,6 +5923,7 @@ if (!Utils.IsUnitTest){
                                                  (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
                                                   objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                 lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                blnMountChangeAllowed = true;
                             }
                         }
                     }
@@ -5516,6 +5951,7 @@ if (!Utils.IsUnitTest){
                                                      (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
                                                       objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                     lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                    blnMountChangeAllowed = true;
                                 }
                             }
                         }
@@ -5802,12 +6238,21 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlBaseChummerNode)
+        public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
         {
             HashSet<string> setBlackMarketMaps = new HashSet<string>();
             // Character has no Black Market discount qualities. Fail out early.
-            if(BlackMarketDiscount && xmlBaseChummerNode != null)
+            if(BlackMarketDiscount)
             {
+                if (xmlCategoryList == null)
+                {
+                    return setBlackMarketMaps;
+                }
+                // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter. 
+                if (xmlCategoryList.Name == "chummer")
+                {
+                    xmlCategoryList = xmlCategoryList.SelectSingleNode("categories");
+                }
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
                 HashSet<string> setNames = new HashSet<string>();
                 foreach(Improvement objImprovement in Improvements)
@@ -5818,7 +6263,7 @@ if (!Utils.IsUnitTest){
                 }
 
                 // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                foreach(XPathNavigator xmlCategoryNode in xmlBaseChummerNode.Select("categories/category"))
+                foreach(XPathNavigator xmlCategoryNode in xmlCategoryList.Select("category"))
                 {
                     string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNode("@blackmarket")?.Value;
                     if(!string.IsNullOrEmpty(strBlackMarketAttribute) &&
@@ -8657,7 +9102,7 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                int intExtraIP = 1 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice) +
+                int intExtraIP = _intInitiativeDice + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice) +
                                  ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd);
 
                 return Math.Min(intExtraIP, 5);
@@ -10880,13 +11325,14 @@ if (!Utils.IsUnitTest){
                     {
                         return objVehicle.PhysicalCM;
                     }
-
+                    if (DEP != null)
                     // A.I.s use Core Condition Monitors instead of Physical Condition Monitors if they are not in a vehicle or drone.
-                    intCMPhysical += (DEP.TotalValue + 1) / 2;
+                        intCMPhysical += (DEP.TotalValue + 1) / 2;
                 }
                 else
                 {
-                    intCMPhysical += (BOD.TotalValue + 1) / 2;
+                    if (BOD != null)
+                        intCMPhysical += (BOD.TotalValue + 1) / 2;
                 }
 
                 // Include Improvements in the Condition Monitor values.
@@ -11045,24 +11491,24 @@ if (!Utils.IsUnitTest){
                 int intTotalA = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // This is used for Custom-Fit armour's stacking.
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
+                foreach (Armor objArmor in Armor.Where(objArmor =>
+                    objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
                 {
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
-                    if(objArmor.Category == "High-Fashion Armor Clothing")
+                    if (objArmor.Category == "High-Fashion Armor Clothing")
                     {
-                        foreach(Armor a in Armor.Where(a =>
-                           (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
-                           a.Equipped))
+                        foreach (Armor a in Armor.Where(a =>
+                            (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
+                            a.Equipped && objArmor.Encumbrance))
                         {
-                            if(a.ArmorMods.Any(objMod =>
-                               objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
+                            if (a.ArmorMods.Any(objMod =>
+                                objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
                                 intLoopTotal += Convert.ToInt32(a.ArmorOverrideValue);
                         }
                     }
 
-                    if(intLoopTotal > intHighest)
+                    if (intLoopTotal > intHighest)
                     {
                         intHighest = intLoopTotal;
                         strHighest = strArmorName;
@@ -11071,31 +11517,31 @@ if (!Utils.IsUnitTest){
 
                 // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
                 int intClothing = 0;
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                   objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor =>
+                    (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
+                    objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped && objArmor.Encumbrance))
                 {
-                    if(objArmor.ArmorValue.StartsWith('+'))
+                    if (objArmor.ArmorValue.StartsWith('+'))
                         intClothing += objArmor.TotalArmor;
                     else
                         intClothing += objArmor.TotalOverrideArmor;
                 }
 
-                if(intClothing > intHighest)
+                if (intClothing > intHighest)
                 {
                     strHighest = string.Empty;
                 }
 
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                   objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in Armor.Where(objArmor =>
+                    (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
+                    objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped && objArmor.Encumbrance))
                 {
                     bool blnDoAdd = true;
-                    if(objArmor.Category == "High-Fashion Armor Clothing")
+                    if (objArmor.Category == "High-Fashion Armor Clothing")
                     {
-                        foreach(ArmorMod objMod in objArmor.ArmorMods)
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            if(objMod.Name == "Custom Fit (Stack)")
+                            if (objMod.Name == "Custom Fit (Stack)")
                             {
                                 blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
                                 break;
@@ -11103,9 +11549,9 @@ if (!Utils.IsUnitTest){
                         }
                     }
 
-                    if(blnDoAdd)
+                    if (blnDoAdd)
                     {
-                        if(objArmor.ArmorValue.StartsWith('+'))
+                        if (objArmor.ArmorValue.StartsWith('+'))
                             intTotalA += objArmor.TotalArmor;
                         else
                             intTotalA += objArmor.TotalOverrideArmor;
@@ -11113,12 +11559,12 @@ if (!Utils.IsUnitTest){
                 }
 
                 // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
-                if(string.IsNullOrEmpty(strHighest))
+                if (string.IsNullOrEmpty(strHighest))
                     intTotalA += intClothing;
 
                 // calculate armor encumberance
                 int intSTRTotalValue = STR.TotalValue;
-                if(intTotalA > intSTRTotalValue + 1)
+                if (intTotalA > intSTRTotalValue + 1)
                     return (intSTRTotalValue - intTotalA) / 2; // a negative number is expected
                 return 0;
             }
@@ -13704,22 +14150,15 @@ if (!Utils.IsUnitTest){
 
         public void RefreshRedlinerImprovements()
         {
-            List<string> lstSeekerAttributes = new List<string>();
-            List<Improvement> lstSeekerImprovements = new List<Improvement>();
             //Get attributes affected by redliner/cyber singularity seeker
-            foreach(Improvement objLoopImprovement in Improvements)
-            {
-                if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Seeker)
-                {
-                    lstSeekerAttributes.Add(objLoopImprovement.ImprovedName);
-                }
-                else if((objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
-                          objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
-                         objLoopImprovement.SourceName.Contains("SEEKER"))
-                {
-                    lstSeekerImprovements.Add(objLoopImprovement);
-                }
-            }
+            
+            List<Improvement> lstSeekerImprovements = Improvements.Where(objLoopImprovement =>
+                (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
+                 objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
+                objLoopImprovement.SourceName.Contains("SEEKER")).ToList();
+            List<string> lstSeekerAttributes = new List<string>(Improvements
+                .Where(imp => imp.ImproveType == Improvement.ImprovementType.Seeker)
+                .Select(objImprovement => objImprovement.ImprovedName));
 
             //if neither contains anything, it is safe to exit
             if(lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
@@ -13730,18 +14169,10 @@ if (!Utils.IsUnitTest){
             XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
                 .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{GameplayOption}\"]");
             
-            List<string> excludedLimbs = new List<string>();
-            foreach (XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb"))
-            {
-                excludedLimbs.Add(n.Value);
-            }
+            List<string> excludedLimbs = (from XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb") select n.Value).ToList();
 
             //Calculate bonus from cyberlimbs
-            int intCount = 0;
-            foreach(Cyberware objCyberware in Cyberware)
-            {
-                intCount += objCyberware.GetCyberlimbCount(excludedLimbs);
-            }
+            int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
 
             intCount = Math.Min(intCount / 2, 2);
             _intCachedRedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI")
@@ -14600,7 +15031,7 @@ if (!Utils.IsUnitTest){
                             if (imp.UniqueName.Contains("half")) intSkillValue = (intSkillValue + 1) / 2;
                             if (imp.UniqueName.Contains("touchonly")) intFreeTouchOnlySpells += intSkillValue;
                             else intFreeGenericSpells += intSkillValue;
-                            //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                            //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
                             intFreeGenericSpells += skill.Specializations.Where(spec =>
                                 Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus)).Count();
                             break;
@@ -14721,11 +15152,6 @@ if (!Utils.IsUnitTest){
                 _intCachedAmbidextrous = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
-            {
-                _intCachedAmbidextrous = int.MinValue;
-            }
-
             if(lstNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
             {
                 _intCachedBlackMarketDiscount = int.MinValue;
@@ -14798,6 +15224,7 @@ if (!Utils.IsUnitTest){
             if (lstNamesOfChangedProperties.Contains(nameof(Qualities)))
             {
                 _intCachedNegativeQualities = int.MinValue;
+                _intCachedNegativeQualityLimitKarma = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
                 _intCachedPositiveQualitiesTotal = int.MinValue;
                 _intCachedMetagenicNegativeQualities = int.MinValue;
@@ -14879,7 +15306,20 @@ if (!Utils.IsUnitTest){
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
                         .Sum(x => x.ContactPoints);
-
+                    // Each spell costs KarmaSpell.
+                    int spellCost = SpellKarmaCost("Spells");
+                    int spells = 0;
+                    // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                    if (spellCost <= Options.KarmaSpell && FreeSpells > 0)
+                    {
+                        // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                        int intQualityKarmaToSpellPoints = Options.KarmaSpell;
+                        if (Options.KarmaSpell != 0)
+                            intQualityKarmaToSpellPoints = Math.Min(FreeSpells, (Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * Options.KarmaQuality) / Options.KarmaSpell);
+                        spells += intQualityKarmaToSpellPoints;
+                        // Add the karma paid for by spell points back into the available karma pool.
+                        _intCachedPositiveQualities -= intQualityKarmaToSpellPoints * Options.KarmaSpell;
+                    }
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualities -=
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
@@ -14899,7 +15339,7 @@ if (!Utils.IsUnitTest){
         }
         private int _intCachedPositiveQualitiesTotal = int.MinValue;
         /// <summary>
-        /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation . 
+        /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation. 
         /// </summary>
         public int PositiveQualityKarmaTotal
         {
@@ -14907,8 +15347,9 @@ if (!Utils.IsUnitTest){
             {
                 if (_intCachedPositiveQualitiesTotal == int.MinValue)
                 {
+                    // Qualities that count towards the Quality Limit are checked first to support the house rule allowing doubling of qualities over said limit.
                     _intCachedPositiveQualitiesTotal = Qualities
-                                                      .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                                                      .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
                                                       .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualitiesTotal += Contacts
@@ -14928,6 +15369,10 @@ if (!Utils.IsUnitTest){
                             _intCachedPositiveQualitiesTotal += intPositiveQualityExcess;
                         }
                     }
+                    // Qualities that don't count towards the cap are added afterwards. 
+                    _intCachedPositiveQualitiesTotal += Qualities
+                                                           .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && !objQuality.ContributeToLimit)
+                                                           .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
                 }
                 return _intCachedPositiveQualitiesTotal;
             }
@@ -14975,9 +15420,47 @@ if (!Utils.IsUnitTest){
                             _intCachedNegativeQualities = intNegativeQualityLimit;
                         }
                     }
+
+                    _intCachedNegativeQualities *= -1;
                 }
 
                 return _intCachedNegativeQualities;
+            }
+        }
+
+        private int _intCachedNegativeQualityLimitKarma = int.MinValue;
+        /// <summary>
+        /// Negative qualities that contribute to the character's Quality Limit during character creation. 
+        /// </summary>
+        public int NegativeQualityLimitKarma
+        {
+            get
+            {
+                if (_intCachedNegativeQualityLimitKarma == int.MinValue)
+                {
+                    _intCachedNegativeQualityLimitKarma = Qualities
+                                                      .Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
+                                                      .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
+                    // Group contacts are counted as positive qualities
+                    _intCachedNegativeQualityLimitKarma += EnemyKarma;
+
+                    // Deduct the amount for free Qualities.
+                    _intCachedNegativeQualityLimitKarma -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+
+                    // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+                    if (Options.ExceedNegativeQualitiesLimit)
+                    {
+                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        if (_intCachedNegativeQualityLimitKarma < intNegativeQualityLimit)
+                        {
+                            _intCachedNegativeQualityLimitKarma = intNegativeQualityLimit;
+                        }
+                    }
+                    _intCachedNegativeQualityLimitKarma *= -1;
+                }
+
+                return _intCachedNegativeQualityLimitKarma;
             }
         }
 
@@ -15085,7 +15568,7 @@ if (!Utils.IsUnitTest){
             set => _strPage = value;
         }
 
-        public string PriorityArray { get; set; }
+        public string PriorityArray { get; set; } = string.Empty;
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
@@ -15097,7 +15580,7 @@ if (!Utils.IsUnitTest){
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-            string s = GetNode().SelectSingleNode("altpage").Value ?? Page;
+            string s = GetNode()?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

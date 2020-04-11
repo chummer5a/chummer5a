@@ -749,8 +749,8 @@
       <action>Auto</action>
       <range>Self</range>
       <duration>Special</duration>
-      <source>RF</source>
-      <page>215</page>
+      <source>SG</source>
+      <page>198</page>
     </power>
     <power>
       <id>c9045794-c7f7-4517-9156-b74438a2d5f1</id>
@@ -1676,7 +1676,7 @@
         </oneof>
       </required>
       <source>RF</source>
-      <page>102</page>
+      <page>123</page>
     </power>
     <power>
       <id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>

@@ -71,6 +71,11 @@
                     <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="allowaccessory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="allowmod" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowfullburst" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowlongburst" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowshortburst" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowsingleshot" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowsuppressive" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="alternaterange" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:simpleContent>

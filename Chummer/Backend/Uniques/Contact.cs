@@ -507,7 +507,7 @@ namespace Chummer
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
                 objMetatypeNode = objMetatypeNode?.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
 
-                string strMetatypeTranslate = objMetatypeNode.SelectSingleNode("translate")?.Value;
+                string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
                     ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
                     : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';

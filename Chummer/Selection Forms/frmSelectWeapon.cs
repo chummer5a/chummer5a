@@ -159,7 +159,18 @@ namespace Chummer
             _blnSkipUpdate = true;
             if (_objSelectedWeapon != null)
             {
-                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.Instance.AssumeBlackMarket &&
+                                                     _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                }
+                else if (!_setBlackMarketMaps.Contains(_objSelectedWeapon.Category))
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
                 
@@ -665,6 +676,8 @@ namespace Chummer
 
                         DialogResult = DialogResult.OK;
                     }
+                    break;
+                default:
                     break;
             }
         }

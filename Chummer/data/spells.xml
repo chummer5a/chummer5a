@@ -3243,10 +3243,6 @@
         <allof>
           <metamagicart>Advanced Ritual Casting</metamagicart>
         </allof>
-        <oneof>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
-        </oneof>
       </required>
     </spell>
     <spell>

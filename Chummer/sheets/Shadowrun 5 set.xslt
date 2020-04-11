@@ -2852,7 +2852,7 @@
               <xsl:value-of select="psychologicaladdictionresistfirsttime"/>
             </td>
             <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="psychologicaladdictionresistfirsttime"/>
+              <xsl:value-of select="psychologicaladdictionresistalreadyaddicted"/>
             </td>
           </tr>
         </table>

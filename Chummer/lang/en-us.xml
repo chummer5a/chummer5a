@@ -487,10 +487,6 @@
       <text>Unnamed Character</text>
     </string>
     <string>
-      <key>String_Break</key>
-      <text>Break</text>
-    </string>
-    <string>
       <key>Checkbox_Free</key>
       <text>Free!</text>
     </string>
@@ -1835,6 +1831,14 @@
     <string>
       <key>Message_NoValidWeaponMount</key>
       <text>The selected vehicle does not have any valid weapon mounts to add this weapon to.</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoValidModularMount</key>
+      <text>No Valid Modular Mount Found</text>
+    </string>
+    <string>
+      <key>Message_NoValidModularMount</key>
+      <text>Couldn't find a valid modular connector to attach this cyberware to.</text>
     </string>
     <string>
       <key>Message_CyberzombieConfirm</key>
@@ -5539,6 +5543,18 @@
       <text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
     </string>
     <string>
+      <key>Checkbox_Options_CustomTimeFormat</key>
+      <text>Custom Time Format</text>
+    </string>
+    <string>
+      <key>Label_Options_DateFormat</key>
+      <text>Date Format</text>
+    </string>
+    <string>
+      <key>Label_Options_TimeFormat</key>
+      <text>Time Format</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
       <text>Allow incrementing values of numericupdown controls by hovering over the control</text>
     </string>
@@ -7925,6 +7941,10 @@
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>
       <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
     </string>
+    <string>
+      <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+      <text>Maximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
+    </string>    
     <string>
       <key>Button_ToggleSourcebooks</key>
       <text>Toggle all Sourcebooks On/Off</text>

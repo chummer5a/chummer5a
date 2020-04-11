@@ -13358,7 +13358,9 @@
       <cost>50</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <ammoreplace>Weapon * 2</ammoreplace>
+      <!--TODO: This should probably add a second ammo slot or something instead.
+      Also, needs to safeguard against underbarrel weapons picking up the extra ammo. -->
+      <ammobonuspercent>100</ammobonuspercent>
       <optionaldrone />
       <required>
         <vehicledetails>
