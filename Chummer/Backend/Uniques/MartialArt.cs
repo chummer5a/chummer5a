@@ -73,7 +73,7 @@ namespace Chummer
             if (objXmlArtNode["bonus"] != null)
             {
                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, InternalId,
-                    objXmlArtNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language));
+                    objXmlArtNode["bonus"], 1, DisplayNameShort(GlobalOptions.Language));
             }
             if (string.IsNullOrEmpty(Notes))
             {
