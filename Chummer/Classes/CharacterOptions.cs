@@ -2063,7 +2063,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost for an Initiation = KarmaInititationFlat + (New Rating x this value).
+        /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
         public int KarmaInitiation
         {
@@ -2072,9 +2072,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost for an Initiation = this value + (New Rating x KarmaInititation).
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
         /// </summary>
-        public int KarmaInititationFlat
+        public int KarmaInitiationFlat
         {
             get => _intKarmaInitiationFlat;
             set => _intKarmaInitiationFlat = value;
@@ -2419,6 +2419,36 @@ namespace Chummer
             get => _intCyberlimbAttributeBonusCap;
             set => _intCyberlimbAttributeBonusCap = value;
         }
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
+        public decimal KarmaMAGInitiationGroupPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
+        /// </summary>
+        public decimal KarmaRESInitiationGroupPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaMAGInitiationOrdealPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaRESInitiationOrdealPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaMAGInitiationSchoolingPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaRESInitiationSchoolingPercent { get; set; } = 0.1m;
 
         #endregion
 

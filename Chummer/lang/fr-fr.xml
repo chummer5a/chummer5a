@@ -3668,19 +3668,19 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_GroupInitiation</key>
-			<text>Initiation de Groupe (-10%)</text>
+			<text>Initiation de Groupe (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>Epreuve initiatique (-10%)</text>
+			<text>Epreuve initiatique (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>Submersion en Réseau (-20%)</text>
+			<text>Submersion en Réseau (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>Tâche de Submersion (-20%)</text>
+			<text>Tâche de Submersion (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>

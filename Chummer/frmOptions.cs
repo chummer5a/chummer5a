@@ -274,7 +274,7 @@ namespace Chummer
                 _characterOptions.KarmaSpirit = decimal.ToInt32(nudKarmaSpirit.Value);
                 _characterOptions.KarmaManeuver = decimal.ToInt32(nudKarmaManeuver.Value);
                 _characterOptions.KarmaInitiation = decimal.ToInt32(nudKarmaInitiation.Value);
-                _characterOptions.KarmaInititationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
+                _characterOptions.KarmaInitiationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
                 _characterOptions.KarmaComplexFormOption = decimal.ToInt32(nudKarmaComplexFormOption.Value);
                 _characterOptions.KarmaComplexFormSkillsoft = decimal.ToInt32(nudKarmaComplexFormSkillsoft.Value);
                 _characterOptions.KarmaJoinGroup = decimal.ToInt32(nudKarmaJoinGroup.Value);
@@ -801,7 +801,7 @@ namespace Chummer
             nudKarmaSpirit.Value = _characterOptions.KarmaSpirit;
             nudKarmaManeuver.Value = _characterOptions.KarmaManeuver;
             nudKarmaInitiation.Value = _characterOptions.KarmaInitiation;
-            nudKarmaInitiationFlat.Value = _characterOptions.KarmaInititationFlat;
+            nudKarmaInitiationFlat.Value = _characterOptions.KarmaInitiationFlat;
             nudKarmaMetamagic.Value = _characterOptions.KarmaMetamagic;
             nudKarmaJoinGroup.Value = _characterOptions.KarmaJoinGroup;
             nudKarmaLeaveGroup.Value = _characterOptions.KarmaLeaveGroup;

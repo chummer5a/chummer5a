@@ -176,20 +176,26 @@ namespace Chummer
         {
             get
             {
-                decimal decCost = _objOptions.KarmaInititationFlat + (Grade * _objOptions.KarmaInitiation);
+                decimal decCost = _objOptions.KarmaInitiationFlat + (Grade * _objOptions.KarmaInitiation);
                 decimal decMultiplier = 1.0m;
 
                 // Discount for Group.
                 if (Group)
-                    decMultiplier -= 0.1m;
+                    decMultiplier -= Technomancer
+                        ? _objOptions.KarmaRESInitiationGroupPercent
+                        : _objOptions.KarmaMAGInitiationGroupPercent;
 
                 // Discount for Ordeal.
                 if (Ordeal)
-                    decMultiplier -= Technomancer ? 0.2m : 0.1m;
+                    decMultiplier -= Technomancer
+                        ? _objOptions.KarmaRESInitiationOrdealPercent
+                        : _objOptions.KarmaMAGInitiationOrdealPercent;
 
                 // Discount for Schooling.
                 if (Schooling)
-                    decMultiplier -= 0.1m;
+                    decMultiplier -= Technomancer
+                        ? _objOptions.KarmaRESInitiationSchoolingPercent
+                        : _objOptions.KarmaMAGInitiationSchoolingPercent;
 
                 return decimal.ToInt32(decimal.Ceiling(decCost * decMultiplier));
             }

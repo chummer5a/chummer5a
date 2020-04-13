@@ -2733,20 +2733,20 @@
 			<text>Netzwerk:</text>
 		</string>
 		<string>
-			<key>Checkbox_GroupInitiation</key>
-			<text>Gruppeninitiation (-20%)</text>
+			<key>Checkbox_InitiationGroup</key>
+			<text>Gruppeninitiation (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>Initiationsprüfung (-20%)</text>
+			<text>Initiationsprüfung (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>Netzwerkwandlung (-20%)</text>
+			<text>Netzwerkwandlung (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>Wandlungsaufgabe (-20%)</text>
+			<text>Wandlungsaufgabe (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>

@@ -3519,7 +3519,7 @@
     </string>
     <string>
       <key>String_ExpenseJoinNetwork</key>
-      <text>Joined a Network</text>
+      <text>Joined a Submersion Group</text>
     </string>
     <string>
       <key>String_ExpenseLeaveNetwork</key>
@@ -4707,24 +4707,24 @@
       <text>New Submersion Type</text>
     </string>
     <string>
-      <key>Checkbox_GroupInitiation</key>
-      <text>Group Initiation (-10%)</text>
+      <key>Checkbox_InitiationGroup</key>
+      <text>Group Initiation (-{0})</text>
     </string>
     <string>
       <key>Checkbox_InitiationOrdeal</key>
-      <text>Initiation Ordeal (-10%)</text>
+      <text>Initiation Ordeal (-{0})</text>
     </string>
     <string>
       <key>Checkbox_InitiationSchooling</key>
-      <text>Schooling (-10%)</text>
+      <text>Schooling (-{0})</text>
     </string>
     <string>
       <key>Checkbox_NetworkSubmersion</key>
-      <text>Network Submersion (-20%)</text>
+      <text>Group Submersion (-{0})</text>
     </string>
     <string>
       <key>Checkbox_SubmersionTask</key>
-      <text>Submersion Task (-20%)</text>
+      <text>Submersion Task (-{0})</text>
     </string>
     <string>
       <key>Checkbox_JoinedGroup</key>
@@ -4732,7 +4732,7 @@
     </string>
     <string>
       <key>Checkbox_JoinedNetwork</key>
-      <text>Joined Network</text>
+      <text>Joined Submersion Group</text>
     </string>
     <string>
       <key>Button_AddInitiateGrade</key>
