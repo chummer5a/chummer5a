@@ -12001,7 +12001,7 @@ namespace Chummer
 
         private void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || IsLoading)
+            if (IsRefreshing || IsLoading || chkJoinGroup.Checked == CharacterObject.GroupMember)
                 return;
 
             // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.

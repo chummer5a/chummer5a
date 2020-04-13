@@ -4,6 +4,8 @@ Application Fixes:
 - Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
 - Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
 - Traditions that have an empty Drain value will automatically be permitted to choose their drain attribute. Allows the Toxic tradition to select the Drain attributes to use.
+- Fixed a regression in behaviour of Initiation Group prompt to spend karma when selecting the Initiation tab.
+- Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
@@ -15,6 +17,16 @@ Data Changes:
 - Fixed an issue in character sheets not correctly showing values for 'already addicted' addiction resistance pools. Closes #4082
 - Added 'Reaper' variant of Slab drug from Chrome Flesh. Closes #4081
 - Added the Toxic tradition.
+
+Changed strings:
+- String_ExpenseJoinNetwork
+- Checkbox_NetworkSubmersion
+- Checkbox_JoinedNetwork
+- Checkbox_GroupInitiation
+- Checkbox_InitiationOrdeal
+- Checkbox_InitiationSchooling
+- Checkbox_NetworkSubmersion
+- Checkbox_SubmersionTask
 
 Build 211
 Application Changes:
