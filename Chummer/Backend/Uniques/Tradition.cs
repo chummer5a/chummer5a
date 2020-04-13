@@ -125,7 +125,6 @@ namespace Chummer.Backend.Uniques
                 ImprovementManager.ForcedValue = strForcedValue;
                 if(!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: DisplayNameShort(GlobalOptions.Language)))
                 {
-                    _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;
                     return false;
                 }
