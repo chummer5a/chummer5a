@@ -5080,8 +5080,7 @@ namespace Chummer.Backend.Equipment
                 if (WirelessBonus?.InnerText != null)
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod,
-                        _guiID.ToString("D") + "Wireless", WirelessBonus, false, 1,
-                        DisplayNameShort(GlobalOptions.Language));
+                        _guiID.ToString("D") + "Wireless", WirelessBonus, 1, DisplayNameShort(GlobalOptions.Language));
                 }
             }
             else

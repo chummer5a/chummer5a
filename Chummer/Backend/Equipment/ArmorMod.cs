@@ -188,7 +188,7 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), objXmlArmorNode["bonus"], intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -372,7 +372,7 @@ namespace Chummer.Backend.Equipment
             if (!blnCopy) return;
             if (!string.IsNullOrEmpty(Extra))
                 ImprovementManager.ForcedValue = Extra;
-            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
+            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), Bonus, 1, DisplayNameShort(GlobalOptions.Language));
             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
             {
                 Extra = ImprovementManager.SelectedValue;
@@ -1146,8 +1146,7 @@ namespace Chummer.Backend.Equipment
                 if (WirelessBonus?.InnerText != null)
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod,
-                        _guiID.ToString("D") + "Wireless", WirelessBonus, false, Rating,
-                        DisplayNameShort(GlobalOptions.Language));
+                        _guiID.ToString("D") + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
                 }
 
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))

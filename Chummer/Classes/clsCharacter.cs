@@ -1295,7 +1295,7 @@ namespace Chummer
             // Determine if the Metatype has any bonuses.
             XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
             if (xmlBonusNode != null)
-                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, xmlBonusNode, false, 1, strMetatypeId);
+                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, xmlBonusNode, 1, strMetatypeId);
 
             List<Weapon> lstWeapons = new List<Weapon>();
             // Create the Qualities that come with the Metatype.
@@ -1587,7 +1587,7 @@ namespace Chummer
                         XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
                         objDummyDocument.ImportNode(powerNode, true);
                         bonusNode.AppendChild(powerNode);
-                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, bonusNode, false, 1, strMetatypeId);
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, bonusNode, 1, strMetatypeId);
                     }
                 }
                 //If this is a Blood Spirit, add their free Critter Powers.
@@ -2995,8 +2995,7 @@ if (!Utils.IsUnitTest){
                                                 ImprovementManager.ForcedValue = objQuality.Extra;
                                                 ImprovementManager.CreateImprovements(this,
                                                     Improvement.ImprovementSource.Quality,
-                                                    objQuality.InternalId, objQuality.Bonus, false, 1,
-                                                    objQuality.DisplayNameShort(GlobalOptions.Language));
+                                                    objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                 {
                                                     objQuality.Extra = ImprovementManager.SelectedValue;
@@ -3024,8 +3023,7 @@ if (!Utils.IsUnitTest){
                                                     ImprovementManager.ForcedValue = objQuality.Extra;
                                                     ImprovementManager.CreateImprovements(this,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        objQuality.FirstLevelBonus, false, 1,
-                                                        objQuality.DisplayNameShort(GlobalOptions.Language));
+                                                        objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     {
                                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -3447,8 +3445,7 @@ if (!Utils.IsUnitTest){
                                     if (objCyberware.Bonus != null)
                                     {
                                         ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                            objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
-                                            objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                            objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
                                     }
@@ -3456,8 +3453,7 @@ if (!Utils.IsUnitTest){
                                     if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                     {
                                         ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                            objCyberware.InternalId, objCyberware.WirelessBonus, false,
-                                            objCyberware.Rating,
+                                            objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating,
                                             objCyberware.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                             string.IsNullOrEmpty(objCyberware.Extra))
@@ -3512,8 +3508,7 @@ if (!Utils.IsUnitTest){
                                         if (objCyberware.Bonus != null)
                                         {
                                             ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                                objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
-                                                objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                                objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                                         }
@@ -3521,8 +3516,7 @@ if (!Utils.IsUnitTest){
                                         if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                         {
                                             ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                                objCyberware.InternalId, objCyberware.WirelessBonus, false,
-                                                objCyberware.Rating,
+                                                objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating,
                                                 objCyberware.DisplayNameShort(GlobalOptions.Language));
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                 string.IsNullOrEmpty(objCyberware.Extra))
@@ -3588,8 +3582,7 @@ if (!Utils.IsUnitTest){
                                             objCyberware.Forced != "Left")
                                             ImprovementManager.ForcedValue = objCyberware.Forced;
                                         ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType,
-                                            objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false,
-                                            objLoopCyberware.Rating,
+                                            objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
                                             objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                             string.IsNullOrEmpty(objCyberware.Extra))
@@ -3805,8 +3798,7 @@ if (!Utils.IsUnitTest){
                                 {
                                     ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                     ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality,
-                                        objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1,
-                                        objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
+                                        objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, 1, objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -3835,7 +3827,6 @@ if (!Utils.IsUnitTest){
                                         ImprovementManager.CreateImprovements(this,
                                             Improvement.ImprovementSource.Quality,
                                             objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus,
-                                            false,
                                             1,
                                             objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -6611,13 +6602,18 @@ if (!Utils.IsUnitTest){
             {
                 // Determine if this is a Location.
                 TreeNode nodVehicleNode = nodDestination;
-                do
+                Location objLocation = null;
+                while (nodVehicleNode.Level > 1)
                 {
+                    if (objLocation is null && nodVehicleNode.Tag is Location loc)
+                    {
+                        objLocation = loc;
+                    }
                     nodVehicleNode = nodVehicleNode.Parent;
-                } while(nodVehicleNode.Level > 1);
+                }
 
                 // Determine if this is a Location in the destination Vehicle.
-                if(nodDestination.Tag is Location objLocation)
+                if(nodDestination.Tag is Vehicle objNewVehicle)
                 {
                     // Remove the Gear from the Vehicle.
                     if(objGear.Parent is IHasChildren<Gear> parent)
@@ -6630,7 +6626,12 @@ if (!Utils.IsUnitTest){
                         objOldVehicle.Gear.Remove(objGear);
 
                     // Add the Gear to the Vehicle and set its Location.
-                    objGear.Location = objLocation;
+                    objGear.Parent = objNewVehicle;
+                    objNewVehicle.Gear.Add(objGear);
+                    if (objLocation != null)
+                    {
+                        objLocation.Children.Add(objGear);
+                    }
                 }
             }
         }

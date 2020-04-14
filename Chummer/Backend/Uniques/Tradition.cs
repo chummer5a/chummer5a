@@ -119,14 +119,12 @@ namespace Chummer.Backend.Uniques
             _nodBonus = xmlTraditionNode["bonus"];
             if(_nodBonus != null)
             {
-                int intRating = _objCharacter.SubmersionGrade > 0 ? _objCharacter.SubmersionGrade : _objCharacter.InitiateGrade;
 
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if(!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if(!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: DisplayNameShort(GlobalOptions.Language)))
                 {
-                    _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;
                     return false;
                 }

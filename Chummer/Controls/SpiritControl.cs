@@ -551,7 +551,7 @@ namespace Chummer
 
             // Determine if the Metatype has any bonuses.
             if (objXmlMetatype.InnerXml.Contains("bonus"))
-                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), false, 1, strCritterName);
+                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), 1, strCritterName);
 
             // Create the Qualities that come with the Metatype.
             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
@@ -595,7 +595,7 @@ namespace Chummer
                     XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true), true);
                     objDummyDocument.ImportNode(powerNode, true);
                     bonusNode.AppendChild(powerNode);
-                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, false, 1, objCharacter.Metatype);
+                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
                 }
             }
             // Add any Complex Forms the Critter comes with (typically Sprites)

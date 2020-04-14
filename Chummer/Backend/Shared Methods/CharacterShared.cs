@@ -958,7 +958,7 @@ namespace Chummer
                                     if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
                                     {
                                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
-                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.SubmersionGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objMetamagic.Bonus, CharacterObject.SubmersionGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
                                     }
                                 }
                             }
@@ -979,7 +979,7 @@ namespace Chummer
                                     if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
                                     {
                                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, false, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
                                     }
                                 }
                             }
@@ -1096,7 +1096,7 @@ namespace Chummer
                     if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
                     {
                         ImprovementManager.RemoveImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId);
-                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId, objMetamagic.Bonus, false, grade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId, objMetamagic.Bonus, grade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
                     }
                 }
             }
@@ -3671,9 +3671,9 @@ namespace Chummer
                                             {
                                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                     ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                 if (objFociGear.WirelessOn)
-                                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                             }
                                         }
 
@@ -3759,9 +3759,9 @@ namespace Chummer
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                             if (objFociGear.WirelessOn)
-                                                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                         }
                                                     }
 
@@ -3926,9 +3926,9 @@ namespace Chummer
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                             if (objFociGear.WirelessOn)
-                                                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                         }
                                                     }
 

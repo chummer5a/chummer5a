@@ -83,7 +83,7 @@ namespace Chummer
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;

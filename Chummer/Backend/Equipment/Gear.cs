@@ -401,7 +401,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.ForcedValue = _strForcedValue;
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                        strSource, Bonus, false, intRating, DisplayNameShort(GlobalOptions.Language)))
+                        strSource, Bonus, intRating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -1014,12 +1014,12 @@ namespace Chummer.Backend.Equipment
                                 ImprovementManager.ForcedValue = Extra;
                             if (Bonus != null)
                             {
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, Rating, DisplayNameShort(GlobalOptions.Language));
                                 Extra = ImprovementManager.SelectedValue;
                             }
                             if (WirelessOn && WirelessBonus != null)
                             {
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
                             }
                         }
                     }
@@ -1036,14 +1036,12 @@ namespace Chummer.Backend.Equipment
                                         ImprovementManager.ForcedValue = objFociGear.Extra;
                                     if (objFociGear.Bonus != null)
                                     {
-                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating,
-                                            objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                         objFociGear.Extra = ImprovementManager.SelectedValue;
                                     }
                                     if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
                                     {
-                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, Rating,
-                                            objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                     }
                                 }
                             }
@@ -1069,12 +1067,12 @@ namespace Chummer.Backend.Equipment
                             ImprovementManager.ForcedValue = Extra;
                         if (Bonus != null)
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, Rating, DisplayNameShort(GlobalOptions.Language));
                             Extra = ImprovementManager.SelectedValue;
                         }
                         if (WirelessOn && WirelessBonus != null)
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
                         }
                     }
                 }
@@ -1091,14 +1089,12 @@ namespace Chummer.Backend.Equipment
                                     ImprovementManager.ForcedValue = objFociGear.Extra;
                                 if (objFociGear.Bonus != null)
                                 {
-                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating,
-                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                     objFociGear.Extra = ImprovementManager.SelectedValue;
                                 }
                                 if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
                                 {
-                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, Rating,
-                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                 }
                             }
                         }
@@ -2839,7 +2835,7 @@ namespace Chummer.Backend.Equipment
                         if (Bonus != null)
                         {
                             ImprovementManager.ForcedValue = Extra;
-                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, Bonus, Rating, DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 Extra = ImprovementManager.SelectedValue;
@@ -2851,7 +2847,7 @@ namespace Chummer.Backend.Equipment
                         if (WirelessOn && WirelessBonus != null)
                         {
                             ImprovementManager.ForcedValue = Extra;
-                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 Extra = ImprovementManager.SelectedValue;
@@ -3376,9 +3372,9 @@ namespace Chummer.Backend.Equipment
                     strForce = Extra;
                 ImprovementManager.ForcedValue = strForce;
                 if (Bonus != null)
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, Bonus, true, Rating, DisplayNameShort(GlobalOptions.Language));
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, Bonus, Rating, DisplayNameShort(GlobalOptions.Language));
                 if (WirelessOn && WirelessBonus != null)
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, true, Rating, DisplayNameShort(GlobalOptions.Language));
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
             }
             foreach (Gear objChild in Children)
                 objChild.AddGearImprovements();
