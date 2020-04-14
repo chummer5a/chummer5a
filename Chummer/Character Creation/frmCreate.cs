@@ -7602,8 +7602,6 @@ namespace Chummer
             }
             else
             {
-                if (_eDragButton == MouseButtons.Left)
-                    return;
                 CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
             }
 
