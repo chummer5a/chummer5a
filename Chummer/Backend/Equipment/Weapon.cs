@@ -2460,7 +2460,10 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                     intAmmoBonus += objMod.AmmoBonus;
-                    decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
+                    if (objMod.AmmoBonusPercent != 0)
+                    {
+                        decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
+                    }
                 }
             }
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);

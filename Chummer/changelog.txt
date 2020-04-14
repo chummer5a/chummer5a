@@ -6,6 +6,7 @@ Application Fixes:
 - Traditions that have an empty Drain value will automatically be permitted to choose their drain attribute. Allows the Toxic tradition to select the Drain attributes to use.
 - Fixed a regression in behaviour of Initiation Group prompt to spend karma when selecting the Initiation tab.
 - Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
+- Fixed an issue with ammo modification plugins for Weapon Mounts that caused some weapons to show 0 ammunition. Closes #4089
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
