@@ -202,7 +202,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(_strExtra))
                     ImprovementManager.ForcedValue = _strExtra;
                 if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
-                    InternalId, xmlBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                    InternalId, xmlBonus, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldForced;

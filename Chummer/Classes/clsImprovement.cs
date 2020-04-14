@@ -3218,19 +3218,18 @@ namespace Chummer
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
         /// <param name="strSourceName">Name of the item that grants these Improvements.</param>
         /// <param name="nodBonus">bonus XMLXode from the source data file.</param>
-        /// <param name="blnConcatSelectedValue">Whether or not any selected values should be concatinated with the SourceName string when storing.</param>
         /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
         /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
         /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
+        /// 
         /// <returns>True if successfull</returns>
         public static bool CreateImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName,
-            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
+            XmlNode nodBonus, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
         {
             Log.Debug("CreateImprovements enter");
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
             Log.Info("strSourceName = " + strSourceName);
             Log.Info("nodBonus = " + nodBonus?.OuterXml);
-            Log.Info("blnConcatSelectedValue = " + blnConcatSelectedValue.ToString());
             Log.Info("intRating = " + intRating.ToString());
             Log.Info("strFriendlyName = " + strFriendlyName);
             Log.Info("intRating = " + intRating.ToString());
@@ -3307,8 +3306,6 @@ namespace Chummer
 
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
-                    if (blnConcatSelectedValue)
-                        strSourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 
@@ -3323,8 +3320,8 @@ namespace Chummer
                 // Check to see what bonuses the node grants.
                 foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
-                    if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
-                        strFriendlyName, bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                    if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating, strFriendlyName,
+                        bonusNode, strUnique, !blnAddImprovementsToCharacter))
                     {
                         Rollback(objCharacter);
                         return false;
@@ -3373,7 +3370,7 @@ namespace Chummer
         }
 
         private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
-            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique, bool blnIgnoreMethodNotFound = false)
+            int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique, bool blnIgnoreMethodNotFound = false)
         {
             if (bonusNode == null)
                 return false;
@@ -3382,8 +3379,8 @@ namespace Chummer
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, blnConcatSelectedValue,
-                strFriendlyName, intRating);
+                strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, strFriendlyName,
+                intRating);
 
             Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
             if (objImprovementMethod != null)
@@ -3985,6 +3982,13 @@ namespace Chummer
             List<Improvement> objImprovementList = string.IsNullOrEmpty(strSourceName)
                 ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
                 : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
+            // Compatibility fix for when blnConcatSelectedValue was around
+            if (Guid.TryParseExact(strSourceName, "D", out var dummyResult))
+            {
+                var space = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                objImprovementList.AddRange(objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource &&
+                    (objImprovement.SourceName.StartsWith(strSourceName + space) || objImprovement.SourceName.StartsWith(strSourceName + " "))));
+            }
             return RemoveImprovements(objCharacter, objImprovementList);
         }
 
