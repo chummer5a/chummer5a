@@ -6611,13 +6611,18 @@ if (!Utils.IsUnitTest){
             {
                 // Determine if this is a Location.
                 TreeNode nodVehicleNode = nodDestination;
-                do
+                Location objLocation = null;
+                while (nodVehicleNode.Level > 1)
                 {
+                    if (objLocation is null && nodVehicleNode.Tag is Location loc)
+                    {
+                        objLocation = loc;
+                    }
                     nodVehicleNode = nodVehicleNode.Parent;
-                } while(nodVehicleNode.Level > 1);
+                }
 
                 // Determine if this is a Location in the destination Vehicle.
-                if(nodDestination.Tag is Location objLocation)
+                if(nodDestination.Tag is Vehicle objNewVehicle)
                 {
                     // Remove the Gear from the Vehicle.
                     if(objGear.Parent is IHasChildren<Gear> parent)
@@ -6630,7 +6635,12 @@ if (!Utils.IsUnitTest){
                         objOldVehicle.Gear.Remove(objGear);
 
                     // Add the Gear to the Vehicle and set its Location.
-                    objGear.Location = objLocation;
+                    objGear.Parent = objNewVehicle;
+                    objNewVehicle.Gear.Add(objGear);
+                    if (objLocation != null)
+                    {
+                        objLocation.Children.Add(objGear);
+                    }
                 }
             }
         }

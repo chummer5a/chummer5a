@@ -11259,16 +11259,20 @@ namespace Chummer
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+            // Determine if this is a piece of Gear or a Vehicle. If not, don't let the user drag it.
+            if (treVehicles.SelectedNode?.Tag is Gear)
             {
-                // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
-                if (treVehicles.SelectedNode?.Tag is Gear)
-                {
-                    _eDragButton = e.Button;
-                    _blnDraggingGear = true;
-                    _intDragLevel = treVehicles.SelectedNode.Level;
-                    DoDragDrop(e.Item, DragDropEffects.Move);
-                }
+                _eDragButton = e.Button;
+                _blnDraggingGear = true;
+                _intDragLevel = treVehicles.SelectedNode.Level;
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
+            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            {
+                _eDragButton = e.Button;
+                _blnDraggingGear = false;
+                _intDragLevel = treVehicles.SelectedNode.Level;
+                DoDragDrop(e.Item, DragDropEffects.Move);
             }
         }
 
@@ -11301,8 +11305,6 @@ namespace Chummer
             }
             else
             {
-                if (_eDragButton == MouseButtons.Left)
-                    return;
                 CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
             }
 
