@@ -4017,9 +4017,17 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
+            TaggedObservableCollection<Location> destCollection;
             // Make sure a Vehicle is selected.
-            Vehicle objVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
-            if (!(objVehicle == null || treVehicles.SelectedNode?.Tag == null))
+            if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
+            {
+                destCollection = objVehicle.Locations;
+            }
+            else if (treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles" || treVehicles.SelectedNode?.Tag == null)
+            {
+                destCollection = CharacterObject.VehicleLocations;
+            }
+            else
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4032,9 +4040,8 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            ObservableCollection<Location> lstParent = objVehicle?.Locations ?? CharacterObject.VehicleLocations;
-            Location objLocation = new Location(CharacterObject, lstParent, frmPickText.SelectedValue);
-            lstParent.Add(objLocation);
+            Location objLocation = new Location(CharacterObject, destCollection, frmPickText.SelectedValue);
+            destCollection.Add(objLocation);
 
             IsDirty = true;
         }
