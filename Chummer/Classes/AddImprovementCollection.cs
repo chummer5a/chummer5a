@@ -3941,7 +3941,7 @@ namespace Chummer.Classes
                                     objNewPower.DeletePower();
                                 }
                                 Log.Info("Calling CreateImprovement");
-                                CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
+                                CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
                             }
                         }
             }

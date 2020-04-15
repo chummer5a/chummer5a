@@ -8,6 +8,7 @@ Application Fixes:
 - Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
 - Fixed an issue with ammo modification plugins for Weapon Mounts that caused some weapons to show 0 ammunition. Closes #4089
 - Fixed focus binding karma cost improvements incorrectly being applied to all focus types. This would be exhibited by an adept with the Athlete's Way being able to purchase Qi Foci used for Improved Ability with a total discount of 8 karma instead of 2. Closes #4094
+- Fixed an issue with the SelectPowers bonus that caused it to provide free power points instead of free levels for a power.
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
