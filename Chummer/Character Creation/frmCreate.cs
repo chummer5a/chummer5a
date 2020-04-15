@@ -9025,7 +9025,10 @@ namespace Chummer
                         intKarmaMultiplier = CharacterObjectOptions.KarmaFlexibleSignatureFocus;
                         break;
                 }
-                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || x.Target.Contains(strFocusExtra)) && x.Enabled))
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x =>
+                    x.ImprovedName == strFocusName &&
+                    (string.IsNullOrEmpty(x.Target) ||
+                     (!string.IsNullOrWhiteSpace(strFocusExtra) && x.Target.Contains(strFocusExtra))) && x.Enabled))
                 {
                     if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
                         intExtraKarmaCost += objLoopImprovement.Value;

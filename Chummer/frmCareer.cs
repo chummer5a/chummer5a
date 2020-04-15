@@ -11639,7 +11639,10 @@ namespace Chummer
                         break;
                     }
                 }
-                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || x.Target.Contains(strFocusExtra)) && x.Enabled))
+                // We only want improvements where 1) the ImprovedName matches the Name of the Focus and 2) The improvement applies globally or 3) the focus's extra value matches the improvement's target but is not empty. 
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName &&
+                    (string.IsNullOrEmpty(x.Target) ||
+                     (!string.IsNullOrWhiteSpace(strFocusExtra) && x.Target.Contains(strFocusExtra))) && x.Enabled))
                 {
                     if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
                         intExtraKarmaCost += objLoopImprovement.Value;
