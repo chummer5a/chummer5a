@@ -178,7 +178,7 @@ namespace Chummer.Backend.Options
                 if (!LanguageManager.TryGetString("Display_" + arg.Name, out var displayString))
                 {
                     Console.WriteLine($"No translation found for {arg.DeclaringType?.Name}.{arg.Name}");
-                    displayString = $"Missing String: {arg.Name}";
+                    displayString = $"{{}} Missing String: {arg.Name}";
                     Utils.BreakIfDebug();
                 }
 

@@ -280,6 +280,36 @@ namespace Chummer
 	    //TODO: Handler for comboboxes
 	    public string ExcludeLimbSlot { get; set; } = "";
 
+        /// <summary>
+        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
+        /// </summary>
+        [DisplayIgnore]
+        public string NuyenFormat { get; private set; } = "";
+
+        /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating. 
+        /// </summary>
+        public bool IncreasedImprovedAbilityMultiplier;
+
+        /// <summary>
+        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
+        /// </summary>
+        public bool AllowFreeGrids;
+
+        /// <summary>
+        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened. 
+        /// </summary>
+        public bool AllowTechnomancerSchooling;
+
+        /// <summary>
+        /// The value by which Specializations add to dicepool. 
+        /// </summary>
+        public int SpecializationBonus = 2;
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public int CyberlimbAttributeBonusCap { get; set; } = 4;
+
         #region Character Creation
 
         [OptionAttributes("OptionHeader_CharacterOptions/Display_CharacterCreation")]
@@ -656,7 +686,6 @@ namespace Chummer
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowStackedFoci { get; set; }
-        private int _intCyberlimbAttributeBonusCap = 4;
 
         /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
@@ -1079,40 +1108,6 @@ namespace Chummer
         #endregion
         [DisplayIgnore]
         public List<string> CustomDataDirectoryNames { get; } = new List<string>();
-
-        /// <summary>
-        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
-        /// </summary>
-        [DisplayIgnore]
-        public string NuyenFormat { get; private set; } = "";
-
-        /// <summary>
-        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating. 
-        /// </summary>
-        public bool IncreasedImprovedAbilityMultiplier;
-
-        /// <summary>
-        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
-        /// </summary>
-        public bool AllowFreeGrids;
-
-        /// <summary>
-        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened. 
-        /// </summary>
-        public bool AllowTechnomancerSchooling;
-
-        /// <summary>
-        /// The value by which Specializations add to dicepool. 
-        /// </summary>
-        public int SpecializationBonus = 2;
-        /// <summary>
-        /// Maximum value of bonuses that can affect cyberlimbs.
-        /// </summary>
-        public int CyberlimbAttributeBonusCap
-        {
-            get => _intCyberlimbAttributeBonusCap;
-            set => _intCyberlimbAttributeBonusCap = value;
-        }
 
         [DisplayIgnore]
         public string EssenceFormat { get; private set; } = "0.00";

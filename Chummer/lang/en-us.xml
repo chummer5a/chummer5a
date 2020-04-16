@@ -7940,10 +7940,6 @@
     <string>
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>
       <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
-      <text>Maximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
     </string>    
     <string>
       <key>Button_ToggleSourcebooks</key>
@@ -10756,6 +10752,26 @@
     <string>
       <key>Display_UsePointsOnBrokenGroups</key>
       <text>{}\tSkill Points can be spent on skill groups that have been broken with Skill Group Points.</text>
+    </string>
+    <string>
+      <key>Display_CyberlimbAttributeBonusCap</key>
+      <text>{}\tMaximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
+    </string>
+    <string>
+      <key>Display_AssumeBlackMarket</key>
+      <text>{}\tFor characters with Black Market Pipeline, automatically check the Black Market Pipeline checkbox if items match the requirements.</text>
+    </string>
+    <string>
+      <key>Display_CustomDateTimeFormats</key>
+      <text>{}\tShould Chummer use a date-time format other than that used by the selected Language?</text>
+    </string>
+    <string>
+      <key>Display_CustomDateFormat</key>
+      <text>{}\tCustom Date Format</text>
+    </string>
+    <string>
+      <key>Display_CustomTimeFormat</key>
+      <text>{}\tCustom Time Format</text>
     </string>
     <!-- End Region	-->
   </strings>
