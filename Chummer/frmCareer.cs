@@ -7656,12 +7656,20 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject));
+                var lifeStyle = new Lifestyle(CharacterObject);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, lifeStyle);
                 frmPickLifestyle.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                 {
+                    //And if it was, remove Improvements that was already added based on the lifestyle
+                    foreach (var lifestyleQuality in lifeStyle.LifestyleQualities)
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, lifestyleQuality.InternalId);
+
+                    foreach (var publicGrid in lifeStyle.FreeGrids)
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, publicGrid.InternalId);
+
                     frmPickLifestyle.Dispose();
                     break;
                 }
