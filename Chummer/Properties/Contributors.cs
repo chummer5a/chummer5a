@@ -26,6 +26,7 @@ namespace Chummer.Properties
         public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(_lstUsernames);
 
         private static readonly string[] _lstUsernames = {
+#warning No OAuth token specified, so for everyone past the 59th place in the list, only usernames will be fetched
             "Chummer 5 Is Alive<chummer5a>",
             "DelnarErsike",
             "Johannes Elgaard<joha4270>",
@@ -70,10 +71,11 @@ namespace Chummer.Properties
             "Richard Zang<richard-zang>",
             "Gimbalhawk",
             "APN-Pucky",
+            "Alex Es<ElectronicRU>",
             "LeonardoDeQuirm",
             "SquadronROE",
             "bodison",
-            "graptis",
+            "Gerasimos \"Gerry\" Raptis<graptis>",
             "Johannes Novotny<jonovotny>",
             "Alec<batchii>",
             "Andrew Hild<hirudan>",
@@ -84,7 +86,7 @@ namespace Chummer.Properties
             "Jamey Johnston<Hood281>",
             "James Brown<Maxis010>",
             "GearheadLydia",
-            "Making GitHub Delicious.<waffle-iron>",
+            "waffle-iron",
             "Malkleth",
             "MemeticContagion",
             "crazymykl",
@@ -96,6 +98,7 @@ namespace Chummer.Properties
             "TDW89",
             "UrsZeidler",
             "Xenryusho",
+            "ZachSchaffer",
             "Zeidra-Senester",
             "Zitchas",
             "ai-tsurugi",
