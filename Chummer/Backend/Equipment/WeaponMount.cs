@@ -359,7 +359,8 @@ namespace Chummer.Backend.Equipment
                                 Parent = Parent,
                                 WeaponMountParent = this
                             };
-                            objMod.Load(xmlModNode);
+                            xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{xmlModNode.InnerText}\"]");
+                            objMod.Load(xmlDataNode);
                             _lstMods.Add(objMod);
                         }
             }
