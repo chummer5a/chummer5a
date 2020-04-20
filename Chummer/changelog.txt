@@ -23,6 +23,7 @@ Data Changes:
 - Fixed an issue in character sheets not correctly showing values for 'already addicted' addiction resistance pools. Closes #4082
 - Added 'Reaper' variant of Slab drug from Chrome Flesh. Closes #4081
 - Added the Toxic tradition.
+- Fixed incorrect Karma value for the Sprite Combusion quality.
 
 Changed strings:
 - String_ExpenseJoinNetwork
