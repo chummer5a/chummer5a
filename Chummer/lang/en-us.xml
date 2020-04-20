@@ -6642,6 +6642,10 @@
       <text>Refund (does not count towards Total Career Nuyen)</text>
     </string>
     <string>
+      <key>Checkbox_Expense_ForceCareerVisible</key>
+      <text>Show in Career Karma/Nuyen</text>
+    </string>
+    <string>
       <key>String_WorkingForTheMan</key>
       <text>Working for the Man</text>
     </string>

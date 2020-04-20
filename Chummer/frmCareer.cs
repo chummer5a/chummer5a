@@ -4069,6 +4069,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                 CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
@@ -4106,6 +4107,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
             objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+            objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
             CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -4120,6 +4122,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                 CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
@@ -4171,6 +4174,7 @@ namespace Chummer
                 objEntry = new ExpenseLogEntry(CharacterObject);
                 int intAmount = -decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
                 objEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                 CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
@@ -4223,6 +4227,7 @@ namespace Chummer
                 objEntry = new ExpenseLogEntry(CharacterObject);
                 int intAmount = decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
                 objEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                 CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
                 objUndo = new ExpenseUndo();
@@ -12222,7 +12227,8 @@ namespace Chummer
                 Reason = objEntry.Reason,
                 Amount = objEntry.Amount,
                 Refund = objEntry.Refund,
-                SelectedDate = objEntry.Date
+                SelectedDate = objEntry.Date,
+                ForceCareerVisible = objEntry.ForceCareerVisible
             };
             frmEditExpense.LockFields(blnAllowEdit);
 
@@ -12282,7 +12288,8 @@ namespace Chummer
                 Reason = objEntry.Reason,
                 Amount = objEntry.Amount,
                 Refund = objEntry.Refund,
-                SelectedDate = objEntry.Date
+                SelectedDate = objEntry.Date,
+                ForceCareerVisible = objEntry.ForceCareerVisible
             };
             frmEditExpense.LockFields(blnAllowEdit);
 

@@ -1,4 +1,7 @@
 Future Build 212
+Application Changes:
+- When entering Nuyen and Karma expenses for Working for the Man/People, it's now possible to flag the expense entry as always being present in the Expense log. This will in effect reduce the Career Karma or Career Nuyen by the selected amount. Closes #4096, closes #3613
+
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 - Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
@@ -35,6 +38,7 @@ Changed strings:
 - Checkbox_InitiationSchooling
 - Checkbox_NetworkSubmersion
 - Checkbox_SubmersionTask
+- Checkbox_Expense_ForceCareerVisible
 
 Build 211
 Application Changes:

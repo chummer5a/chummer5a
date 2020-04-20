@@ -1042,7 +1042,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach(ExpenseLogEntry objNewItem in e.NewItems)
                     {
-                        if(objNewItem.Amount > 0 && !objNewItem.Refund)
+                        if((objNewItem.Amount > 0 || objNewItem.ForceCareerVisible) && !objNewItem.Refund)
                         {
                             setPropertiesToRefresh.Add(objNewItem.Type == ExpenseType.Nuyen
                                 ? nameof(CareerNuyen)
@@ -1054,7 +1054,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach(ExpenseLogEntry objOldItem in e.OldItems)
                     {
-                        if(objOldItem.Amount > 0 && !objOldItem.Refund)
+                        if ((objOldItem.Amount > 0 || objOldItem.ForceCareerVisible) && !objOldItem.Refund)
                         {
                             setPropertiesToRefresh.Add(objOldItem.Type == ExpenseType.Nuyen
                                 ? nameof(CareerNuyen)
@@ -1066,7 +1066,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     foreach(ExpenseLogEntry objOldItem in e.OldItems)
                     {
-                        if(objOldItem.Amount > 0 && !objOldItem.Refund)
+                        if ((objOldItem.Amount > 0 || objOldItem.ForceCareerVisible) && !objOldItem.Refund)
                         {
                             setPropertiesToRefresh.Add(objOldItem.Type == ExpenseType.Nuyen
                                 ? nameof(CareerNuyen)
@@ -1076,7 +1076,7 @@ namespace Chummer
 
                     foreach(ExpenseLogEntry objNewItem in e.NewItems)
                     {
-                        if(objNewItem.Amount > 0 && !objNewItem.Refund)
+                        if ((objNewItem.Amount > 0 || objNewItem.ForceCareerVisible) && !objNewItem.Refund)
                         {
                             setPropertiesToRefresh.Add(objNewItem.Type == ExpenseType.Nuyen
                                 ? nameof(CareerNuyen)
@@ -7951,7 +7951,7 @@ if (!Utils.IsUnitTest){
                 foreach(ExpenseLogEntry objEntry in _lstExpenseLog)
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
-                    if(objEntry.Type == ExpenseType.Karma && objEntry.Amount > 0 && !objEntry.Refund)
+                    if(objEntry.Type == ExpenseType.Karma && (objEntry.Amount > 0 || objEntry.ForceCareerVisible) && !objEntry.Refund)
                         intKarma += decimal.ToInt32(objEntry.Amount);
                 }
 

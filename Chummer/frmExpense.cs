@@ -116,6 +116,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not this is a Karma refund.
+        /// </summary>
+        public bool ForceCareerVisible
+        {
+            get => chkForceCareerVisible.Checked;
+            set => chkForceCareerVisible.Checked = value;
+        }
+
+        /// <summary>
         /// Date and Time that was selected.
         /// </summary>
         public DateTime SelectedDate
@@ -185,6 +194,12 @@ namespace Chummer
             {
                 nudAmount.Increment = 1;
             }
+
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            if (!chkForceCareerVisible.Enabled)
+            {
+                chkForceCareerVisible.Checked = false;
+            }
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
@@ -192,6 +207,7 @@ namespace Chummer
         {
             chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
         }
     }
 }
