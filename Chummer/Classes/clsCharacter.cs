@@ -17580,10 +17580,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 int intMAG;
-                if (IsMysticAdept)
+                if (IsMysticAdept && Options.MysAdeptSecondMAGAttribute)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = Options.MysAdeptSecondMAGAttribute ? MAGAdept.TotalValue : MysticAdeptPowerPoints;
+                    intMAG = MAGAdept.TotalValue;
                 }
                 else
                 {
