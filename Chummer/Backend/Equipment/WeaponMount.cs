@@ -157,7 +157,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
-			objWriter.WriteElementString("equuipped", _blnEquipped.ToString());
+			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strAllowedWeaponCategories);
 			objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
