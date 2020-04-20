@@ -12,6 +12,7 @@ Application Fixes:
 - Fixed an issue with built-in weapon mount mods not being populated for vehicles.
 - Fixed a bug where canceling the creation of an advanced lifestyle would lead to orphaned improvements
 - Fixed behaviour of Mystic Adepts receiving Power Point discounts from their total magic instead of the number of power points that have been paid for. 
+- Fixed a regression in behaviour of weapon mount options that caused them to be included in the cost of vehicles where the weapon mount comes with the weapon. Existing vehicles with this behaviour will need to be re-purchased. 
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
