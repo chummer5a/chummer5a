@@ -1,14 +1,14 @@
 Future Build 212
 Application Changes:
 - When entering Nuyen and Karma expenses for Working for the Man/People, it's now possible to flag the expense entry as always being present in the Expense log. This will in effect reduce the Career Karma or Career Nuyen by the selected amount. Closes #4096, closes #3613
+- Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
+- Traditions that have an empty Drain value will automatically be permitted to choose their drain attribute. Allows the Toxic tradition to select the Drain attributes to use.
+- Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
+- Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
-- Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
-- Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
-- Traditions that have an empty Drain value will automatically be permitted to choose their drain attribute. Allows the Toxic tradition to select the Drain attributes to use.
 - Fixed a regression in behaviour of Initiation Group prompt to spend karma when selecting the Initiation tab.
-- Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
 - Fixed an issue with ammo modification plugins for Weapon Mounts that caused some weapons to show 0 ammunition. Closes #4089
 - Fixed focus binding karma cost improvements incorrectly being applied to all focus types. This would be exhibited by an adept with the Athlete's Way being able to purchase Qi Foci used for Improved Ability with a total discount of 8 karma instead of 2. Closes #4094
 - Fixed an issue with the SelectPowers bonus that caused it to provide free power points instead of free levels for a power.
@@ -16,6 +16,7 @@ Application Fixes:
 - Fixed a bug where canceling the creation of an advanced lifestyle would lead to orphaned improvements
 - Fixed behaviour of Mystic Adepts receiving Power Point discounts from their total magic instead of the number of power points that have been paid for. 
 - Fixed a regression in behaviour of weapon mount options that caused them to be included in the cost of vehicles where the weapon mount comes with the weapon. Existing vehicles with this behaviour will need to be re-purchased. 
+- Fixed a regression with Custom Traditions not being properly loaded. Closes #4077
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.

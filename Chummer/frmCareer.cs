@@ -610,8 +610,6 @@ namespace Chummer
 
                     }
 
-                    IsLoading = false;
-
                     using (var op_load_frm_career_selectStuff =
                         Timekeeper.StartSyncron("load_frm_career_selectStuff", op_load_frm_career))
                     {
@@ -631,6 +629,8 @@ namespace Chummer
                             cboStream.SelectedIndex = 0;
 
                     }
+
+                    IsLoading = false;
 
                     using (var op_load_frm_career_databindingCallbacks2 =
                         Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))

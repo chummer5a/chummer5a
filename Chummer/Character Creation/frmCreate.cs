@@ -602,9 +602,6 @@ namespace Chummer
                         nudMysticAdeptMAGMagician.DoDatabinding("Value", CharacterObject,
                             nameof(Character.MysticAdeptPowerPoints));
 
-
-                        IsLoading = false;
-
                         // Select the Magician's Tradition.
                         if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
                             cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
@@ -619,6 +616,8 @@ namespace Chummer
                         else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                             cboStream.SelectedIndex = 0;
                     }
+
+                    IsLoading = false;
 
                     treGear.ItemDrag += treGear_ItemDrag;
                     treGear.DragEnter += treGear_DragEnter;
