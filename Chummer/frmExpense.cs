@@ -72,6 +72,37 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
+        private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkKarmaNuyenExchange.Checked && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString))
+            {
+                txtDescription.Text = KarmaNuyenExchangeString;
+            }
+            if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
+            {
+                nudAmount.Increment = _objCharacterOptions.NuyenPerBP;
+                nudAmount.Value = _objCharacterOptions.NuyenPerBP;
+            }
+            else
+            {
+                nudAmount.Increment = 1;
+            }
+
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            if (!chkForceCareerVisible.Enabled)
+            {
+                chkForceCareerVisible.Checked = false;
+            }
+            KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
+        }
+
+        private void frmExpanse_Load(object sender, EventArgs e)
+        {
+            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
+            chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            chkGenerateExpenses.Visible = GenerateExpensesVisible;
+        }
         #endregion
 
         #region Properties
@@ -116,13 +147,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether or not to force this Expense to be visible, even if it's a negative value or Refund.
         /// </summary>
         public bool ForceCareerVisible
         {
             get => chkForceCareerVisible.Checked;
             set => chkForceCareerVisible.Checked = value;
         }
+
+        /// <summary>
+        /// Whether or not to prompt user for generation of additional expenses.
+        /// </summary>
+        public bool GenerateExpenses
+        {
+            get => chkGenerateExpenses.Checked;
+            internal set => chkGenerateExpenses.Checked = value && GenerateExpensesVisible;
+        }
+
+        /// <summary>
+        /// Whether or not to prompt user for generation of additional expenses.
+        /// </summary>
+        public bool GenerateExpensesVisible { get; set; }
 
         /// <summary>
         /// Date and Time that was selected.
@@ -179,35 +224,5 @@ namespace Chummer
         }
         #endregion
 
-        private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkKarmaNuyenExchange.Checked && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString))
-            {
-                txtDescription.Text = KarmaNuyenExchangeString;
-            }
-            if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
-            {
-                nudAmount.Increment = _objCharacterOptions.NuyenPerBP;
-                nudAmount.Value = _objCharacterOptions.NuyenPerBP;
-            }
-            else
-            {
-                nudAmount.Increment = 1;
-            }
-
-            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
-            if (!chkForceCareerVisible.Enabled)
-            {
-                chkForceCareerVisible.Checked = false;
-            }
-            KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
-        }
-
-        private void frmExpanse_Load(object sender, EventArgs e)
-        {
-            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
-            chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
-            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
-        }
     }
 }

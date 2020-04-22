@@ -4045,7 +4045,8 @@ namespace Chummer
         {
             frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
-                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople")
+                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople"),
+                GenerateExpensesVisible = CharacterObject.Improvements.Any(imp => imp.Enabled && imp.ImproveType == Improvement.ImprovementType.NuyenExpense)
             };
             frmNewExpense.ShowDialog(this);
 
@@ -4089,7 +4090,8 @@ namespace Chummer
         {
             frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
-                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan")
+                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan"),
+                GenerateExpensesVisible = CharacterObject.Improvements.Any(imp => imp.Enabled && imp.ImproveType == Improvement.ImprovementType.NuyenExpense)
             };
 
             frmNewExpense.ShowDialog(this);
@@ -4120,17 +4122,32 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                objExchangeEntry = new ExpenseLogEntry(CharacterObject);
+                decimal decNuyen = frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP;
+                foreach (Improvement imp in CharacterObject.Improvements.Where(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.NuyenExpense && imp.Enabled))
+                {
+                    decimal d = (decNuyen * (1.0m / imp.Value) * -1);
+                    decNuyen += d;
+                    ExpenseLogEntry objForcedEntry = new ExpenseLogEntry(CharacterObject);
+                    objForcedEntry.Create(d, $"{frmNewExpense.Reason} ({CharacterObject.GetObjectName(imp, GlobalOptions.Language)}: -{imp.Value}%)", ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                    objForcedEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                    CharacterObject.ExpenseEntries.AddWithSort(objForcedEntry);
 
-                objUndo = new ExpenseUndo();
-                objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
-                objEntry.Undo = objUndo;
+                    objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.ImprovementForcedExpense, imp.SourceName);
+                    objForcedEntry.Undo = objUndo;
+                }
 
                 // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP;
+                CharacterObject.Nuyen += decNuyen;
+                objExchangeEntry.Create(decNuyen, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                objExchangeEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                CharacterObject.ExpenseEntries.AddWithSort(objExchangeEntry);
+
+                objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.NuyenFromKarma, objEntry.InternalId);
+                objExchangeEntry.Undo = objUndo;
             }
 
             IsCharacterUpdateRequested = true;
@@ -4148,7 +4165,8 @@ namespace Chummer
             frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
-                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan")
+                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan"),
+                GenerateExpensesVisible = CharacterObject.Improvements.Any(imp => imp.Enabled && imp.ImproveType == Improvement.ImprovementType.NuyenExpense)
             };
             frmNewExpense.ShowDialog(this);
 
@@ -4195,7 +4213,8 @@ namespace Chummer
             frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
-                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople")
+                KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople"),
+                GenerateExpensesVisible = CharacterObject.Improvements.Any(imp => imp.Enabled && imp.ImproveType == Improvement.ImprovementType.NuyenExpense)
             };
             frmNewExpense.ShowDialog(this);
 

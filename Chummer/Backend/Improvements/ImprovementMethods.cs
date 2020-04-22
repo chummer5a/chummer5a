@@ -160,6 +160,8 @@ namespace Chummer
                     return objImprovementAdder.sociallimit;
                 case "NUYENAMT":
                     return objImprovementAdder.nuyenamt;
+                case "NUYENEXPENSE":
+                    return objImprovementAdder.nuyenexpense;
                 case "CONDITIONMONITOR":
                     return objImprovementAdder.conditionmonitor;
                 case "LIVINGPERSONA":

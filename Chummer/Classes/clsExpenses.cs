@@ -60,7 +60,8 @@ namespace Chummer
         AddAIAdvancedProgram,
         AddCritterPower,
         SpiritFettering,
-        AddMartialArtTechnique
+        AddMartialArtTechnique,
+        KarmaFromNuyen
     }
 
     public enum NuyenExpenseType
@@ -88,6 +89,8 @@ namespace Chummer
         AddWeaponGear,
         ImproveInitiateGrade,
         AddVehicleWeaponMountMod,
+        NuyenFromKarma,
+        ImprovementForcedExpense
     }
 
     /// <summary>

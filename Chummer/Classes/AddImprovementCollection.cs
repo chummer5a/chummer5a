@@ -2378,6 +2378,16 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // When in Career mode, automatically create expenses when gaining nuyen.
+        public void nuyenexpense(XmlNode bonusNode)
+        {
+            Log.Info("nuyenexpense");
+            Log.Info("nuyenexpense = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NuyenExpense, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Improve Condition Monitors.
         public void conditionmonitor(XmlNode bonusNode)
         {
