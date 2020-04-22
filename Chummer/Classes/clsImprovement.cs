@@ -58,6 +58,7 @@ namespace Chummer
             Dodge,
             Reach,
             Nuyen,
+            NuyenExpense,
             PhysicalCM,
             StunCM,
             UnarmedDV,
@@ -2149,6 +2150,12 @@ namespace Chummer
                 {
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
                         nameof(Character.AllowSpriteFettering));
+                    break;
+                }
+                case ImprovementType.Surprise:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        nameof(Character.Surprise));
                     break;
                 }
             }
