@@ -61,6 +61,7 @@ namespace Chummer
         AddCritterPower,
         SpiritFettering,
         AddMartialArtTechnique,
+        KarmaToNuyen,
         KarmaFromNuyen
     }
 
@@ -90,6 +91,7 @@ namespace Chummer
         ImproveInitiateGrade,
         AddVehicleWeaponMountMod,
         NuyenFromKarma,
+        NuyenToKarma,
         ImprovementForcedExpense
     }
 

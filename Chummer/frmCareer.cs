@@ -4113,7 +4113,7 @@ namespace Chummer
             CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
             ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+            objUndo.CreateKarma(KarmaExpenseType.KarmaToNuyen, string.Empty);
             objEntry.Undo = objUndo;
 
             // Adjust the character's Karma total.
@@ -4122,20 +4122,18 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objExchangeEntry = new ExpenseLogEntry(CharacterObject);
+                ExpenseLogEntry objExchangeEntry = new ExpenseLogEntry(CharacterObject);
                 decimal decNuyen = frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP;
                 foreach (Improvement imp in CharacterObject.Improvements.Where(imp =>
                     imp.ImproveType == Improvement.ImprovementType.NuyenExpense && imp.Enabled))
                 {
-                    decimal d = (decNuyen * (1.0m / imp.Value) * -1);
-                    decNuyen += d;
                     ExpenseLogEntry objForcedEntry = new ExpenseLogEntry(CharacterObject);
-                    objForcedEntry.Create(d, $"{frmNewExpense.Reason} ({CharacterObject.GetObjectName(imp, GlobalOptions.Language)}: -{imp.Value}%)", ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                    objForcedEntry.Create((decNuyen * (1.0m / imp.Value) * -1), $"{frmNewExpense.Reason} ({CharacterObject.GetObjectName(imp, GlobalOptions.Language)}: -{imp.Value}%)", ExpenseType.Nuyen, frmNewExpense.SelectedDate);
                     objForcedEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objForcedEntry);
 
                     objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.ImprovementForcedExpense, imp.SourceName);
+                    objUndo.CreateNuyen(NuyenExpenseType.ImprovementForcedExpense, objExchangeEntry.InternalId);
                     objForcedEntry.Undo = objUndo;
                 }
 
@@ -8252,7 +8250,7 @@ namespace Chummer
                     break;
                 case KarmaExpenseType.AddCritterPower:
                     {
-                        foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(objPower => objPower.InternalId == objEntry.Undo.ObjectId).ToList())
+                        foreach (CritterPower objPower in Enumerable.Where(CharacterObject.CritterPowers, objPower => objPower.InternalId == objEntry.Undo.ObjectId).ToList())
                         {
                             // Remove any Improvements created by the Critter Power.
                             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
@@ -8260,6 +8258,31 @@ namespace Chummer
                         }
                     }
                     break;
+                case KarmaExpenseType.KarmaToNuyen:
+                {
+                    ExpenseLogEntry objNuyenEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.Undo.ObjectId == objEntry.InternalId);
+                    // Refund the Nuyen amount and remove the Expense Entry.
+                    CharacterObject.Nuyen -= objNuyenEntry.Amount;
+                    CharacterObject.ExpenseEntries.Remove(objNuyenEntry);
+
+                    for (int i = CharacterObject.ExpenseEntries.Count - 1; i > -1; i--)
+                    {
+                        if (CharacterObject.ExpenseEntries[i].Undo.ObjectId == objNuyenEntry.InternalId)
+                        {
+                            CharacterObject.Nuyen -= CharacterObject.ExpenseEntries[i].Amount;
+                            CharacterObject.ExpenseEntries.RemoveAt(i);
+                        }
+                    }
+                    break;
+                }
+                case KarmaExpenseType.KarmaFromNuyen:
+                {
+                    ExpenseLogEntry objKarmaEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.Undo.ObjectId == objEntry.InternalId);
+                    // Refund the Nuyen amount and remove the Expense Entry.
+                    CharacterObject.Karma -= (int)objKarmaEntry.Amount;
+                    CharacterObject.ExpenseEntries.Remove(objKarmaEntry);
+                    break;
+                }
 
             }
             // Refund the Karma amount and remove the Expense Entry.
@@ -8730,6 +8753,28 @@ namespace Chummer
                     case NuyenExpenseType.ManualAdd:
                     case NuyenExpenseType.ManualSubtract:
                         break;
+                    case NuyenExpenseType.NuyenFromKarma:
+                    {
+                        ExpenseLogEntry objNuyenEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.Undo.ObjectId == objEntry.InternalId);
+                        // Refund the Nuyen amount and remove the Expense Entry.
+                        CharacterObject.Karma -= Convert.ToInt32(objNuyenEntry.Amount);
+                        CharacterObject.ExpenseEntries.Remove(objNuyenEntry);
+                        foreach (ExpenseLogEntry objTaxEntry in CharacterObject.ExpenseEntries.Where(x =>
+                            x.Undo.ObjectId == objNuyenEntry.InternalId))
+                        {
+                            CharacterObject.Nuyen -= objTaxEntry.Amount;
+                            CharacterObject.ExpenseEntries.Remove(objTaxEntry);
+                        }
+                        break;
+                    }
+                    case NuyenExpenseType.NuyenToKarma:
+                        {
+                            ExpenseLogEntry objKarmaEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.Undo.ObjectId == objEntry.InternalId);
+                            // Refund the Karma amount and remove the Expense Entry.
+                            CharacterObject.Karma -= (int)objKarmaEntry.Amount;
+                            CharacterObject.ExpenseEntries.Remove(objKarmaEntry);
+                            break;
+                        }
                 }
             }
 
