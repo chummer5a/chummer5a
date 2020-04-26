@@ -3530,6 +3530,10 @@
       <text>Fettered a Spirit</text>
     </string>
     <string>
+      <key>Checkbox_Expense_GenerateExpenses</key>
+      <text>Generate additional expenses from Improvements</text>
+    </string>
+    <string>
       <key>String_CloningMachineNumber</key>
       <text>How many clones would you like to create?</text>
     </string>

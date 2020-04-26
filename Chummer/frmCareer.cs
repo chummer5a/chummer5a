@@ -4068,17 +4068,18 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                ExpenseLogEntry objExchangeEntry = new ExpenseLogEntry(CharacterObject);
+                int intAmount = decimal.ToInt32((frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP) * -1);
+                objExchangeEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                objExchangeEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                CharacterObject.ExpenseEntries.AddWithSort(objExchangeEntry);
 
                 objUndo = new ExpenseUndo();
-                objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
-                objEntry.Undo = objUndo;
+                objUndo.CreateNuyen(NuyenExpenseType.NuyenToKarma, objEntry.InternalId);
+                objExchangeEntry.Undo = objUndo;
 
-                // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP;
+                // Adjust the character's Karma total.
+                CharacterObject.Karma += intAmount;
             }
 
             IsCharacterUpdateRequested = true;
@@ -4131,7 +4132,7 @@ namespace Chummer
                     objForcedEntry.Create((decNuyen * (1.0m / imp.Value) * -1), $"{frmNewExpense.Reason} ({CharacterObject.GetObjectName(imp, GlobalOptions.Language)}: -{imp.Value}%)", ExpenseType.Nuyen, frmNewExpense.SelectedDate);
                     objForcedEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objForcedEntry);
-
+                    CharacterObject.Nuyen += (decNuyen * (1.0m / imp.Value) * -1);
                     objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.ImprovementForcedExpense, objExchangeEntry.InternalId);
                     objForcedEntry.Undo = objUndo;
@@ -4177,28 +4178,47 @@ namespace Chummer
             objEntry.Refund = frmNewExpense.Refund;
             CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
-            objEntry.Undo = objUndo;
-
-            // Adjust the character's Nuyen total.
-            CharacterObject.Nuyen += frmNewExpense.Amount;
-
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry(CharacterObject);
-                int intAmount = -decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
-                objEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                ExpenseLogEntry objNuyenEntry = new ExpenseLogEntry(CharacterObject);
+                decimal decNuyen = frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP;
+                ExpenseUndo objUndo;
+                foreach (Improvement imp in CharacterObject.Improvements.Where(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.NuyenExpense && imp.Enabled))
+                {
+                    ExpenseLogEntry objForcedEntry = new ExpenseLogEntry(CharacterObject);
+                    objForcedEntry.Create((decNuyen * (1.0m / imp.Value) * -1), $"{frmNewExpense.Reason} ({CharacterObject.GetObjectName(imp, GlobalOptions.Language)}: -{imp.Value}%)", ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                    objForcedEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                    CharacterObject.ExpenseEntries.AddWithSort(objForcedEntry);
+                    CharacterObject.Nuyen += (decNuyen * (1.0m / imp.Value) * -1);
+                    objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.ImprovementForcedExpense, objEntry.InternalId);
+                    objForcedEntry.Undo = objUndo;
+                }
+
+                // Adjust the character's Nuyen total.
+                CharacterObject.Nuyen += decNuyen;
+                objNuyenEntry.Create(decNuyen, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                objNuyenEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                CharacterObject.ExpenseEntries.AddWithSort(objNuyenEntry);
 
                 objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                objUndo.CreateKarma(KarmaExpenseType.KarmaToNuyen, objNuyenEntry.InternalId);
                 objEntry.Undo = objUndo;
 
-                // Adjust the character's Karma total.
-                CharacterObject.Karma += intAmount;
+                objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.NuyenFromKarma, objEntry.InternalId);
+                objNuyenEntry.Undo = objUndo;
+            }
+            else
+            {
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
+                objEntry.Undo = objUndo;
+
+                // Adjust the character's Nuyen total.
+                CharacterObject.Nuyen += frmNewExpense.Amount;
             }
 
             IsCharacterUpdateRequested = true;
@@ -4241,15 +4261,15 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry(CharacterObject);
+                ExpenseLogEntry objExchangeEntry = new ExpenseLogEntry(CharacterObject);
                 int intAmount = decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
-                objEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                objEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                objExchangeEntry.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                objExchangeEntry.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                CharacterObject.ExpenseEntries.AddWithSort(objExchangeEntry);
 
                 objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
-                objEntry.Undo = objUndo;
+                objUndo.CreateKarma(KarmaExpenseType.KarmaFromNuyen, objEntry.InternalId);
+                objExchangeEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
                 CharacterObject.Karma += intAmount;
@@ -8756,9 +8776,10 @@ namespace Chummer
                     case NuyenExpenseType.NuyenFromKarma:
                     {
                         ExpenseLogEntry objNuyenEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.Undo.ObjectId == objEntry.InternalId);
-                        // Refund the Nuyen amount and remove the Expense Entry.
+                        // Refund the Karma amount and remove the Expense Entry.
                         CharacterObject.Karma -= Convert.ToInt32(objNuyenEntry.Amount);
                         CharacterObject.ExpenseEntries.Remove(objNuyenEntry);
+                        //Refund linked expenses for the nuyen expense
                         foreach (ExpenseLogEntry objTaxEntry in CharacterObject.ExpenseEntries.Where(x =>
                             x.Undo.ObjectId == objNuyenEntry.InternalId))
                         {
@@ -8769,7 +8790,7 @@ namespace Chummer
                     }
                     case NuyenExpenseType.NuyenToKarma:
                         {
-                            ExpenseLogEntry objKarmaEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.Undo.ObjectId == objEntry.InternalId);
+                            ExpenseLogEntry objKarmaEntry = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.InternalId == objEntry.Undo.);
                             // Refund the Karma amount and remove the Expense Entry.
                             CharacterObject.Karma -= (int)objKarmaEntry.Amount;
                             CharacterObject.ExpenseEntries.Remove(objKarmaEntry);

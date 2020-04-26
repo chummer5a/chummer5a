@@ -782,5 +782,15 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the character's Social Limit by the listed value.</page>
     </improvement>
+    <improvement>
+      <name>Nuyen Expense Modifier</name>
+      <id>nuyenexpense</id>
+      <internal>nuyenexpense</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Allows for automatic creation of expenses when a nuyen purchase is made. Value is a percentage, so a 1000¥ purchase with a value of 10 will cause you to receive an additional expense of -100.</page>
+    </improvement>
   </improvements>
 </chummer>
