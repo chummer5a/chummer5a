@@ -29,6 +29,7 @@ Data Changes:
 - Added 'Reaper' variant of Slab drug from Chrome Flesh. Closes #4081
 - Added the Toxic tradition.
 - Fixed incorrect Karma value for the Sprite Combusion quality.
+- Yard lifestyle quality can now be taken multiple times. Fixes incorrect page references for Yard and Zen Den.
 
 Changed strings:
 - String_ExpenseJoinNetwork
