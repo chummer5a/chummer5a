@@ -9749,6 +9749,1080 @@
       <cost>Rating * 7000</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Individualized Foci (SG 230) -->
+
+    <!-- Region Foci -->
+    <gear>
+      <id>7576D46D-87F3-47C3-A2A4-1D8E75EBA0AA</id>
+      <name>Alchemical Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Alchemy, Individualized, Partial</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>28B75B07-9C52-4B91-B703-5B8056155ECF</id>
+      <name>Disenchanting Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Disenchanting, Individualized, Partial</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>43B96B66-7EEA-4329-99FB-D1B235427F77</id>
+      <name>Centering Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>20537E69-CF47-42CC-95FA-697D4328580C</id>
+      <name>Flexible Signature Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>E4E9BC30-3381-40CC-981D-EE911B3701A8</id>
+      <name>Masking Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>FF0D4D9C-1286-4E08-908B-6D74D3E5F64F</id>
+      <name>Spell Shaping Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>9A36D4CB-2766-429D-ACE8-39B6615E5A25</id>
+      <name>Power Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <skillattribute>
+          <name precedence="0">MAG, Individualized, Partial</name>
+          <bonus>Rating</bonus>
+        </skillattribute>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 18000</cost>
+    </gear>
+    <gear>
+      <id>A4E9723D-0EF6-4A9E-8DDB-FC088780C52F</id>
+      <name>Qi Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selectpowers>
+          <selectpower>
+            <ignorerating>True</ignorerating>
+            <val>Rating</val>
+            <limit>Rating</limit>
+            <pointsperlevel>0.25</pointsperlevel>
+          </selectpower>
+        </selectpowers>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 3000</cost>
+    </gear>
+    <gear>
+      <id>584AAC51-6E93-4B42-868B-183EC26727C7</id>
+      <name>Counterspelling Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>DB4E9091-929E-4004-AA1E-57030BAF557F</id>
+      <name>Ritual Spellcasting Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A6747F35-5806-4162-8646-52249123D74B</id>
+      <name>Spellcasting Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Combat, Individualized, Partial</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>1215E656-51F6-4963-86A2-47A68A3C129F</id>
+      <name>Sustaining Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A11827B3-187F-4D50-96F4-34FE066B19A8</id>
+      <name>Counterspelling Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>8A24D83C-34B1-41FA-9F76-413FBC935848</id>
+      <name>Ritual Spellcasting Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>C00F7A3B-7329-4808-86FE-99E147613F03</id>
+      <name>Spellcasting Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Detection, Individualized, Partial</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>ED3B94D3-ABE1-4038-BE1F-84ACEC230750</id>
+      <name>Sustaining Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>9C07DBC7-FCD2-42AD-B916-8036046B21C4</id>
+      <name>Counterspelling Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>7E1C7451-46E4-43C9-A2C1-F2146D5DC0D6</id>
+      <name>Ritual Spellcasting Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>50220493-C055-44D5-BAB0-84C689EB666B</id>
+      <name>Spellcasting Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Health, Individualized, Partial</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>402C3ABD-6AF7-491B-BCA0-85D3F13F14F7</id>
+      <name>Sustaining Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>95407529-4089-4E0D-BBF2-8D22EA7F4609</id>
+      <name>Counterspelling Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>346AA42D-452D-4BB7-A318-620F9E2A4547</id>
+      <name>Ritual Spellcasting Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>0B34228E-05EB-40FB-B330-90AE54966292</id>
+      <name>Spellcasting Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Illusion, Individualized, Partial</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>49E16F6A-2054-4FFA-A3A0-CD58D1CA46A3</id>
+      <name>Sustaining Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>1FEDF8B4-11C1-4BE9-B32D-70056B80DD50</id>
+      <name>Counterspelling Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>DE2FDF51-DE6C-4315-B3F1-B266DAA06169</id>
+      <name>Ritual Spellcasting Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>16D3B0D0-363F-4DF4-9AA1-42146168DA96</id>
+      <name>Spellcasting Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Manipulation, Individualized, Partial</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2EEB0C3A-790A-4FB5-A4D6-26D42739E168</id>
+      <name>Sustaining Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A4DCE79A-AF2D-4AC1-9CBB-F5A54B143C15</id>
+      <name>Summoning Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>ABA82B09-FC70-443A-9DC7-0B56446AABCE</id>
+      <name>Banishing Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>D329D94D-9649-4B0B-8C7C-8299A288822A</id>
+      <name>Binding Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>CC2DFA43-6185-45AF-88A4-E6AF89C18D6D</id>
+      <name>Weapon Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <weaponspecificdice type="Melee">Rating</weaponspecificdice>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 7000</cost>
+    </gear>
+    <gear>
+      <id>5F4DC485-31FB-4CE1-9B5A-463ADD1E3C58</id>
+      <name>Alchemical Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Alchemy, Individualized, Complete</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>CD7A43BA-6B74-4DFF-AB74-ADD8B2633E2D</id>
+      <name>Disenchanting Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Disenchanting, Individualized, Complete</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>5CB38A41-A296-4AA2-B2A4-3E0D68C7EB7B</id>
+      <name>Centering Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>52009B1B-A82D-4162-B598-21584DE66799</id>
+      <name>Flexible Signature Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>33B0643C-B9F3-4792-93EA-64F27A533C9E</id>
+      <name>Masking Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>9777864F-B693-4B6C-ADEF-AA5068C20F89</id>
+      <name>Spell Shaping Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>9998AB1B-8C0A-4F71-9459-D2D231E07419</id>
+      <name>Power Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <skillattribute>
+          <name precedence="0">MAG, Individualized, Complete</name>
+          <bonus>Rating</bonus>
+        </skillattribute>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 18000</cost>
+    </gear>
+    <gear>
+      <id>C758A074-D7FE-4152-B029-3DADCC4AD8A0</id>
+      <name>Qi Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selectpowers>
+          <selectpower>
+            <ignorerating>True</ignorerating>
+            <val>Rating</val>
+            <limit>Rating</limit>
+            <pointsperlevel>0.25</pointsperlevel>
+          </selectpower>
+        </selectpowers>
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 3000</cost>
+    </gear>
+    <gear>
+      <id>20D409B4-2F9E-40C0-9421-E5DCDE4890E3</id>
+      <name>Counterspelling Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>54A5D681-0C23-4DC5-8ED2-019755F83D2E</id>
+      <name>Ritual Spellcasting Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>F5FCBE07-9D7B-4AEA-99C6-171754F0751A</id>
+      <name>Spellcasting Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Combat, Individualized, Complete</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>068631C4-1834-4812-8121-DA4A07EF5D6D</id>
+      <name>Sustaining Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>4BC6A78F-0824-4EE3-AA9C-411771518301</id>
+      <name>Counterspelling Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>BBC2DF76-248B-446F-B9D8-0D4B0BEDA4D8</id>
+      <name>Ritual Spellcasting Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>984273A0-B31B-4ADD-9446-8399930EE158</id>
+      <name>Spellcasting Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Detection, Individualized, Complete</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>5BBB0D19-882D-4CBA-A28B-CC9FE41808EB</id>
+      <name>Sustaining Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>8ED17B61-C4A2-4922-9DC9-8A7B1B416476</id>
+      <name>Counterspelling Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>17343042-B2F3-4B38-A502-A7755B215AFD</id>
+      <name>Ritual Spellcasting Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>0581EC22-F018-40C7-9BEF-20EC3BBC3BF0</id>
+      <name>Spellcasting Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Health, Individualized, Complete</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>BA54CD71-5750-4060-859C-8589DF2A88DD</id>
+      <name>Sustaining Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>924E1822-AFDE-4B5B-9F08-628CFDF0C5EA</id>
+      <name>Counterspelling Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2A2E2C5F-20A5-44A1-A043-2610A4B1633C</id>
+      <name>Ritual Spellcasting Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>F64A3EDC-35B8-427D-A94E-29EE098A41F3</id>
+      <name>Spellcasting Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Illusion, Individualized, Complete</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2813520C-748B-4281-92B3-55DF561FB62C</id>
+      <name>Sustaining Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>306D9A36-F344-4D8D-A3A9-40778996D5AB</id>
+      <name>Counterspelling Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>F9DD1033-C78F-4E7D-8CDD-AE7B03F1CF4F</id>
+      <name>Ritual Spellcasting Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>5BF36F32-579A-4278-BC8B-0E2AEF12090A</id>
+      <name>Spellcasting Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Manipulation, Individualized, Complete</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>B2872926-18E3-4AF7-9CB8-BEEA78ECFC0C</id>
+      <name>Sustaining Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>7E63B243-6AB9-40AA-8FD3-429C6A85F3FB</id>
+      <name>Summoning Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>DA4BC317-B29D-4990-BEDD-B607EE0B5D75</id>
+      <name>Banishing Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A50A38E7-C46A-4EA9-A0DA-F6FFA11090BF</id>
+      <name>Binding Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2C40882C-E5CD-452A-8F55-CEB60507240B</id>
+      <name>Weapon Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <weaponspecificdice type="Melee">Rating</weaponspecificdice>
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 7000</cost>
+    </gear>
+    <!-- End Region -->
     <!-- Region Formulae-->
     <gear>
       <id>4d620cf5-8443-448a-9e3e-0e887d889789</id>

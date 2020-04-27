@@ -7,6 +7,8 @@ Application Changes:
 - Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
 - Altered behaviour of special attributes having an effective metatype minimum below zero during character creation that requires spending additional priority points. 
 - Added an optional rule to preserve existing behaviour.
+- Merged karma cost checks for Foci into the Focus object instead of separate Create and Career methods.
+- Added support for individualising a focus based on the rules presented in Street Grimoire on page 230.
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
@@ -32,6 +34,7 @@ Data Changes:
 - Added the Toxic tradition.
 - Fixed incorrect Karma value for the Sprite Combusion quality.
 - Yard lifestyle quality can now be taken multiple times. Fixes incorrect page references for Yard and Zen Den.
+- Added new Focus objects in gear.xml to support Individualising Focus rules from Street Grimoire. 
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum

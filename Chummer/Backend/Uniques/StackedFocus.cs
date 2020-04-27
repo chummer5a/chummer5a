@@ -149,6 +149,16 @@ namespace Chummer
                         strFocusName = strFocusName.Substring(0, intPosition);
                     int intKarmaMultiplier;
                     int intExtraKarmaCost = 0;
+                    if (strFocusName.EndsWith(", Individualized, Complete"))
+                    {
+                        intExtraKarmaCost = -2;
+                        strFocusName = strFocusName.Replace(", Individualized, Complete", "");
+                    }
+                    else if (strFocusName.EndsWith(", Individualized, Partial"))
+                    {
+                        intExtraKarmaCost = -1;
+                        strFocusName = strFocusName.Replace(", Individualized, Partial", "");
+                    }
                     switch (strFocusName)
                     {
                         case "Qi Focus":
