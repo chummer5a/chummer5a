@@ -51,7 +51,6 @@ namespace Chummer
             this.chkAllowEasterEggs = new System.Windows.Forms.CheckBox();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
-            this.cmdPDFAppPath = new System.Windows.Forms.Button();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.lblPDFAppPath = new System.Windows.Forms.Label();
             this.chkHideCharacterRoster = new System.Windows.Forms.CheckBox();
@@ -69,7 +68,6 @@ namespace Chummer
             this.chkDatesIncludeTime = new System.Windows.Forms.CheckBox();
             this.lblPDFParametersLabel = new System.Windows.Forms.Label();
             this.cboPDFParameters = new Chummer.ElasticComboBox();
-            this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.tlpSelectedSourcebook = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
@@ -88,7 +86,6 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
             this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
-            this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
             this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
             this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
             this.grpCharacterDefaults = new System.Windows.Forms.GroupBox();
@@ -104,6 +101,13 @@ namespace Chummer
             this.cbUseLoggingApplicationInsights = new System.Windows.Forms.ComboBox();
             this.cbUseLoggingHelp = new Chummer.ButtonWithToolTip();
             this.cbPluginsHelp = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
+            this.cmdCharacterRoster = new System.Windows.Forms.Button();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtPDFAppPath = new System.Windows.Forms.TextBox();
+            this.cmdPDFAppPath = new System.Windows.Forms.Button();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
             this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treSourcebook = new System.Windows.Forms.TreeView();
@@ -325,10 +329,7 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdCharacterRoster = new System.Windows.Forms.Button();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkUnclampAttributeMinimum = new System.Windows.Forms.CheckBox();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -347,6 +348,8 @@ namespace Chummer
             this.tableLayoutPanel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).BeginInit();
+            this.flowLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.tabCharacterOptions.SuspendLayout();
             this.tlpCharacterOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMinimum)).BeginInit();
@@ -415,8 +418,6 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.SuspendLayout();
             this.grpAvailablePlugins.SuspendLayout();
             this.flpOKCancel.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainPanel
@@ -811,18 +812,6 @@ namespace Chummer
             this.chkSearchInCategoryOnly.UseVisualStyleBackColor = true;
             this.chkSearchInCategoryOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // cmdPDFAppPath
-            // 
-            this.cmdPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdPDFAppPath.AutoSize = true;
-            this.cmdPDFAppPath.Location = new System.Drawing.Point(197, 3);
-            this.cmdPDFAppPath.Name = "cmdPDFAppPath";
-            this.cmdPDFAppPath.Size = new System.Drawing.Size(31, 23);
-            this.cmdPDFAppPath.TabIndex = 11;
-            this.cmdPDFAppPath.Text = "...";
-            this.cmdPDFAppPath.UseVisualStyleBackColor = true;
-            this.cmdPDFAppPath.Click += new System.EventHandler(this.cmdPDFAppPath_Click);
-            // 
             // lblLanguage
             // 
             this.lblLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1073,16 +1062,6 @@ namespace Chummer
             this.cboPDFParameters.TabIndex = 26;
             this.cboPDFParameters.TooltipText = "";
             this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // txtPDFAppPath
-            // 
-            this.txtPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtPDFAppPath.Location = new System.Drawing.Point(3, 4);
-            this.txtPDFAppPath.Name = "txtPDFAppPath";
-            this.txtPDFAppPath.ReadOnly = true;
-            this.txtPDFAppPath.Size = new System.Drawing.Size(188, 20);
-            this.txtPDFAppPath.TabIndex = 10;
-            this.txtPDFAppPath.TextChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // grpSelectedSourcebook
             // 
@@ -1367,16 +1346,6 @@ namespace Chummer
             this.lblCharacterRosterLabel.Tag = "Label_Options_CharacterRoster";
             this.lblCharacterRosterLabel.Text = "Character Roster Watch Folder:";
             // 
-            // txtCharacterRosterPath
-            // 
-            this.txtCharacterRosterPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtCharacterRosterPath.Location = new System.Drawing.Point(3, 3);
-            this.txtCharacterRosterPath.Name = "txtCharacterRosterPath";
-            this.txtCharacterRosterPath.ReadOnly = true;
-            this.txtCharacterRosterPath.Size = new System.Drawing.Size(188, 20);
-            this.txtCharacterRosterPath.TabIndex = 45;
-            this.txtCharacterRosterPath.TextChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkCreateBackupOnCareer
             // 
             this.chkCreateBackupOnCareer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1594,6 +1563,79 @@ namespace Chummer
             this.cbPluginsHelp.Text = "?";
             this.cbPluginsHelp.UseVisualStyleBackColor = true;
             this.cbPluginsHelp.Click += new System.EventHandler(this.cbPluginsHelp_Click);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(1122, 283);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(128, 100);
+            this.flowLayoutPanel1.TabIndex = 62;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpGlobal.SetColumnSpan(this.flowLayoutPanel2, 4);
+            this.flowLayoutPanel2.Controls.Add(this.txtCharacterRosterPath);
+            this.flowLayoutPanel2.Controls.Add(this.cmdCharacterRoster);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(467, 668);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(227, 26);
+            this.flowLayoutPanel2.TabIndex = 63;
+            // 
+            // txtCharacterRosterPath
+            // 
+            this.txtCharacterRosterPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCharacterRosterPath.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterRosterPath.Name = "txtCharacterRosterPath";
+            this.txtCharacterRosterPath.ReadOnly = true;
+            this.txtCharacterRosterPath.Size = new System.Drawing.Size(188, 20);
+            this.txtCharacterRosterPath.TabIndex = 45;
+            this.txtCharacterRosterPath.TextChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // cmdCharacterRoster
+            // 
+            this.cmdCharacterRoster.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdCharacterRoster.Location = new System.Drawing.Point(197, 3);
+            this.cmdCharacterRoster.Name = "cmdCharacterRoster";
+            this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 20);
+            this.cmdCharacterRoster.TabIndex = 47;
+            this.cmdCharacterRoster.Text = "...";
+            this.cmdCharacterRoster.UseVisualStyleBackColor = true;
+            this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.AutoSize = true;
+            this.tlpGlobal.SetColumnSpan(this.flowLayoutPanel3, 4);
+            this.flowLayoutPanel3.Controls.Add(this.txtPDFAppPath);
+            this.flowLayoutPanel3.Controls.Add(this.cmdPDFAppPath);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(467, 727);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(231, 29);
+            this.flowLayoutPanel3.TabIndex = 64;
+            // 
+            // txtPDFAppPath
+            // 
+            this.txtPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtPDFAppPath.Location = new System.Drawing.Point(3, 4);
+            this.txtPDFAppPath.Name = "txtPDFAppPath";
+            this.txtPDFAppPath.ReadOnly = true;
+            this.txtPDFAppPath.Size = new System.Drawing.Size(188, 20);
+            this.txtPDFAppPath.TabIndex = 10;
+            this.txtPDFAppPath.TextChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // cmdPDFAppPath
+            // 
+            this.cmdPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdPDFAppPath.AutoSize = true;
+            this.cmdPDFAppPath.Location = new System.Drawing.Point(197, 3);
+            this.cmdPDFAppPath.Name = "cmdPDFAppPath";
+            this.cmdPDFAppPath.Size = new System.Drawing.Size(31, 23);
+            this.cmdPDFAppPath.TabIndex = 11;
+            this.cmdPDFAppPath.Text = "...";
+            this.cmdPDFAppPath.UseVisualStyleBackColor = true;
+            this.cmdPDFAppPath.Click += new System.EventHandler(this.cmdPDFAppPath_Click);
             // 
             // tabCharacterOptions
             // 
@@ -3861,6 +3903,7 @@ namespace Chummer
             this.tlpHouseRules.Controls.Add(this.chkAllowFreeGrids, 4, 13);
             this.tlpHouseRules.Controls.Add(this.chkAllowTechnomancerSchooling, 0, 8);
             this.tlpHouseRules.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 6);
+            this.tlpHouseRules.Controls.Add(this.chkUnclampAttributeMinimum, 4, 18);
             this.tlpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRules.Location = new System.Drawing.Point(9, 9);
             this.tlpHouseRules.Name = "tlpHouseRules";
@@ -4727,7 +4770,7 @@ namespace Chummer
             this.tabPlugins.Location = new System.Drawing.Point(4, 22);
             this.tabPlugins.Name = "tabPlugins";
             this.tabPlugins.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPlugins.Size = new System.Drawing.Size(1017, 718);
+            this.tabPlugins.Size = new System.Drawing.Size(1271, 866);
             this.tabPlugins.TabIndex = 6;
             this.tabPlugins.Tag = "Tab_Options_Plugins";
             this.tabPlugins.Text = "Plugins";
@@ -4748,7 +4791,7 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.RowCount = 2;
             this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(1011, 712);
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(1265, 860);
             this.bufferedTableLayoutPanel1.TabIndex = 0;
             // 
             // grpAvailablePlugins
@@ -4757,7 +4800,7 @@ namespace Chummer
             this.grpAvailablePlugins.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAvailablePlugins.Location = new System.Drawing.Point(3, 3);
             this.grpAvailablePlugins.Name = "grpAvailablePlugins";
-            this.grpAvailablePlugins.Size = new System.Drawing.Size(145, 686);
+            this.grpAvailablePlugins.Size = new System.Drawing.Size(183, 834);
             this.grpAvailablePlugins.TabIndex = 0;
             this.grpAvailablePlugins.TabStop = false;
             this.grpAvailablePlugins.Tag = "String_AvailablePlugins";
@@ -4769,7 +4812,7 @@ namespace Chummer
             this.clbPlugins.FormattingEnabled = true;
             this.clbPlugins.Location = new System.Drawing.Point(3, 16);
             this.clbPlugins.Name = "clbPlugins";
-            this.clbPlugins.Size = new System.Drawing.Size(139, 667);
+            this.clbPlugins.Size = new System.Drawing.Size(177, 815);
             this.clbPlugins.TabIndex = 0;
             this.clbPlugins.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbPlugins_ItemCheck);
             this.clbPlugins.SelectedValueChanged += new System.EventHandler(this.clbPlugins_SelectedValueChanged);
@@ -4780,9 +4823,9 @@ namespace Chummer
             this.panelPluginOption.AutoSize = true;
             this.panelPluginOption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panelPluginOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelPluginOption.Location = new System.Drawing.Point(154, 3);
+            this.panelPluginOption.Location = new System.Drawing.Point(192, 3);
             this.panelPluginOption.Name = "panelPluginOption";
-            this.panelPluginOption.Size = new System.Drawing.Size(854, 686);
+            this.panelPluginOption.Size = new System.Drawing.Size(1070, 834);
             this.panelPluginOption.TabIndex = 1;
             // 
             // flpOKCancel
@@ -4827,46 +4870,17 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // flowLayoutPanel1
+            // chkUnclampAttributeMinimum
             // 
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(1122, 283);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(128, 100);
-            this.flowLayoutPanel1.TabIndex = 62;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpGlobal.SetColumnSpan(this.flowLayoutPanel2, 4);
-            this.flowLayoutPanel2.Controls.Add(this.txtCharacterRosterPath);
-            this.flowLayoutPanel2.Controls.Add(this.cmdCharacterRoster);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(467, 668);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(227, 26);
-            this.flowLayoutPanel2.TabIndex = 63;
-            // 
-            // cmdCharacterRoster
-            // 
-            this.cmdCharacterRoster.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cmdCharacterRoster.Location = new System.Drawing.Point(197, 3);
-            this.cmdCharacterRoster.Name = "cmdCharacterRoster";
-            this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 20);
-            this.cmdCharacterRoster.TabIndex = 47;
-            this.cmdCharacterRoster.Text = "...";
-            this.cmdCharacterRoster.UseVisualStyleBackColor = true;
-            this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.AutoSize = true;
-            this.tlpGlobal.SetColumnSpan(this.flowLayoutPanel3, 4);
-            this.flowLayoutPanel3.Controls.Add(this.txtPDFAppPath);
-            this.flowLayoutPanel3.Controls.Add(this.cmdPDFAppPath);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(467, 727);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(231, 29);
-            this.flowLayoutPanel3.TabIndex = 64;
+            this.chkUnclampAttributeMinimum.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkUnclampAttributeMinimum, 2);
+            this.chkUnclampAttributeMinimum.Location = new System.Drawing.Point(627, 455);
+            this.chkUnclampAttributeMinimum.Name = "chkUnclampAttributeMinimum";
+            this.chkUnclampAttributeMinimum.Size = new System.Drawing.Size(328, 17);
+            this.chkUnclampAttributeMinimum.TabIndex = 50;
+            this.chkUnclampAttributeMinimum.Tag = "Checkbox_Options_UnclampAttributeMinimum";
+            this.chkUnclampAttributeMinimum.Text = "Attribute values are allowed to go below 0 due to Essence Loss.";
+            this.chkUnclampAttributeMinimum.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -4919,6 +4933,10 @@ namespace Chummer
             this.tableLayoutPanel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).EndInit();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
             this.tabCharacterOptions.ResumeLayout(false);
             this.tabCharacterOptions.PerformLayout();
             this.tlpCharacterOptions.ResumeLayout(false);
@@ -4999,10 +5017,6 @@ namespace Chummer
             this.grpAvailablePlugins.ResumeLayout(false);
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -5309,5 +5323,6 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button cmdCharacterRoster;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.CheckBox chkUnclampAttributeMinimum;
     }
 }

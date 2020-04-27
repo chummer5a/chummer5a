@@ -577,7 +577,10 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
         /// </summary>
-        public int RawMinimum => MetatypeMinimum + MinimumModifiers;
+        public int RawMinimum =>
+            CharacterObject.Options.UnclampAttributeMinimum
+                ? MetatypeMinimum + MinimumModifiers
+                : Math.Max(MetatypeMinimum + MinimumModifiers, 0);
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).

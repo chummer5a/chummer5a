@@ -120,6 +120,7 @@ namespace Chummer
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
         private int _intCyberlimbAttributeBonusCap = 4;
+        private bool _blnUnclampAttributeMinimum = false;
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
@@ -414,7 +415,9 @@ namespace Chummer
             objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString());
             // <cyberlimbattributebonuscap />
             objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString());
-
+            // <clampattributeminimum />
+            objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString());
+            
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
             // <karmaattribute />
@@ -783,7 +786,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
             // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customisation. 
             objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
-
+            // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss. 
+            objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
             if (objXmlNode != null)
@@ -1843,8 +1847,17 @@ namespace Chummer
             get => _blnFreeSpiritPowerPointsMAG;
             set => _blnFreeSpiritPowerPointsMAG = value;
         }
+
+        /// <summary>
+        /// House rule: Attribute values are clamped to 0 or are allowed to go below 0 due to Essence Loss.
+        /// </summary>
+        public bool UnclampAttributeMinimum
+        {
+            get => _blnUnclampAttributeMinimum;
+            set => _blnUnclampAttributeMinimum = value;
+        }
         #endregion
-        
+
         #region Karma
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.

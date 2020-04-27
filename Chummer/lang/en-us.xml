@@ -7996,7 +7996,11 @@
     <string>
       <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
       <text>Maximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
-    </string>    
+    </string>
+    <string>
+      <key>Checkbox_Options_UnclampAttributeMinimum</key>
+      <text>Attribute values are allowed to go below 0 due to Essence Loss.</text>
+    </string>
     <string>
       <key>Button_ToggleSourcebooks</key>
       <text>Toggle all Sourcebooks On/Off</text>

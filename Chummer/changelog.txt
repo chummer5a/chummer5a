@@ -5,6 +5,8 @@ Application Changes:
 - Traditions that have an empty Drain value will automatically be permitted to choose their drain attribute. Allows the Toxic tradition to select the Drain attributes to use.
 - Added contributetobp property to Qualities as an accessible property via XML. Allows for a quality to contribute to your Limit, but not consume karma during character creation. Has no effect during career mode. 
 - Exposed Note-fetching mechanism to Armor, Armor Mods, Cyberware, Gear, Lifestyle Qualities, Vehicles, Vehicle Mods, Weapons, and Weapon Accessories. When created, Chummer will attempt to fetch relevant text from the PDF, if it is linked.
+- Altered behaviour of special attributes having an effective metatype minimum below zero during character creation that requires spending additional priority points. 
+- Added an optional rule to preserve existing behaviour.
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
@@ -31,7 +33,8 @@ Data Changes:
 - Fixed incorrect Karma value for the Sprite Combusion quality.
 - Yard lifestyle quality can now be taken multiple times. Fixes incorrect page references for Yard and Zen Den.
 
-Changed strings:
+Changed/new strings:
+- Checkbox_Options_UnclampAttributeMinimum
 - String_ExpenseJoinNetwork
 - Checkbox_NetworkSubmersion
 - Checkbox_JoinedNetwork
