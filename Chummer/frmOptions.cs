@@ -208,6 +208,9 @@ namespace Chummer
             _characterOptions.IncreasedImprovedAbilityMultiplier = chkIncreasedImprovedAbilityModifier.Checked;
             _characterOptions.AllowFreeGrids = chkAllowFreeGrids.Checked;
             _characterOptions.AllowTechnomancerSchooling = chkAllowTechnomancerSchooling.Checked;
+            _characterOptions.CyberlimbAttributeBonusCap = decimal.ToInt32(nudCyberlimbAttributeBonusCap.Value);
+            _characterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
+
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
             if(string.IsNullOrEmpty(strLimbCount))
             {
@@ -271,7 +274,7 @@ namespace Chummer
                 _characterOptions.KarmaSpirit = decimal.ToInt32(nudKarmaSpirit.Value);
                 _characterOptions.KarmaManeuver = decimal.ToInt32(nudKarmaManeuver.Value);
                 _characterOptions.KarmaInitiation = decimal.ToInt32(nudKarmaInitiation.Value);
-                _characterOptions.KarmaInititationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
+                _characterOptions.KarmaInitiationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
                 _characterOptions.KarmaComplexFormOption = decimal.ToInt32(nudKarmaComplexFormOption.Value);
                 _characterOptions.KarmaComplexFormSkillsoft = decimal.ToInt32(nudKarmaComplexFormSkillsoft.Value);
                 _characterOptions.KarmaJoinGroup = decimal.ToInt32(nudKarmaJoinGroup.Value);
@@ -727,6 +730,10 @@ namespace Chummer
             chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
             chkCompensateSkillGroupKarmaDifference.Checked = _characterOptions.CompensateSkillGroupKarmaDifference;
             chkEnemyKarmaQualityLimit.Checked = _characterOptions.EnemyKarmaQualityLimit;
+            chkAllowTechnomancerSchooling.Checked = _characterOptions.AllowTechnomancerSchooling;
+            chkCyberlimbAttributeBonusCap.Checked = _characterOptions.CyberlimbAttributeBonusCap != 4;
+            nudCyberlimbAttributeBonusCap.Enabled = chkCyberlimbAttributeBonusCap.Checked;
+            nudCyberlimbAttributeBonusCap.Value = _characterOptions.CyberlimbAttributeBonusCap;
             chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
             chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
             chkSearchInCategoryOnly.Checked = _characterOptions.SearchInCategoryOnly;
@@ -740,6 +747,8 @@ namespace Chummer
             nudDroneArmorMultiplier.Value = _characterOptions.DroneArmorMultiplier;
             nudMetatypeCostsKarmaMultiplier.Value = _characterOptions.MetatypeCostsKarmaMultiplier;
             nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
+            chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
+
             txtSettingName.Enabled = cboSetting.SelectedValue?.ToString() != "default.xml";
             txtSettingName.Text = _characterOptions.Name;
 
@@ -792,7 +801,7 @@ namespace Chummer
             nudKarmaSpirit.Value = _characterOptions.KarmaSpirit;
             nudKarmaManeuver.Value = _characterOptions.KarmaManeuver;
             nudKarmaInitiation.Value = _characterOptions.KarmaInitiation;
-            nudKarmaInitiationFlat.Value = _characterOptions.KarmaInititationFlat;
+            nudKarmaInitiationFlat.Value = _characterOptions.KarmaInitiationFlat;
             nudKarmaMetamagic.Value = _characterOptions.KarmaMetamagic;
             nudKarmaJoinGroup.Value = _characterOptions.KarmaJoinGroup;
             nudKarmaLeaveGroup.Value = _characterOptions.KarmaLeaveGroup;
@@ -821,8 +830,7 @@ namespace Chummer
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
-            UseAILogging useAI;
-            Enum.TryParse<UseAILogging>(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out useAI);
+            Enum.TryParse(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out UseAILogging useAI);
             GlobalOptions.UseLoggingApplicationInsights = useAI;
             
             if (string.IsNullOrEmpty(_strSelectedLanguage))
@@ -877,7 +885,7 @@ namespace Chummer
                 objRegistry.SetValue("defaultbuildmethod", cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue);
                 objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
                 objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
-                objRegistry.SetValue("emulatedbrowserversion", nudBrowserVersion.Value.ToString());
+                objRegistry.SetValue("emulatedbrowserversion", nudBrowserVersion.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
                 objRegistry.SetValue("pdfparameters", cboPDFParameters.SelectedValue.ToString());
                 objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
@@ -891,6 +899,9 @@ namespace Chummer
                 objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
                 objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked);
                 objRegistry.SetValue("hidecharts", chkHideCharts.Checked);
+                objRegistry.SetValue("usecustomdatetime",chkCustomDateTimeFormats.Checked);
+                objRegistry.SetValue("customdateformat",txtDateFormat.Text);
+                objRegistry.SetValue("customtimeformat", txtTimeFormat.Text);
 
                 //Save the Plugins-Dictionary
                 string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
@@ -1437,6 +1448,9 @@ namespace Chummer
             chkCreateBackupOnCareer.Checked = GlobalOptions.CreateBackupOnCareer;
             chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
             chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
+            chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
+            txtDateFormat.Text = GlobalOptions.CustomDateFormat;
+            txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
             PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
@@ -1880,7 +1894,14 @@ namespace Chummer
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
-                Program.PluginLoader.LoadPlugins(null);
+                try
+                {
+                    Program.PluginLoader.LoadPlugins(null);
+                }
+                catch (ApplicationException e)
+                {
+                    //swallo this
+                }
             }
             else
             {
@@ -1900,14 +1921,21 @@ namespace Chummer
             {
                 foreach (var plugin in Program.PluginLoader.MyPlugins)
                 {
-                    plugin.CustomInitialize(Program.MainForm);
-                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                    try
                     {
-                        clbPlugins.Items.Add(plugin, check);
+                        plugin.CustomInitialize(Program.MainForm);
+                        if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                        {
+                            clbPlugins.Items.Add(plugin, check);
+                        }
+                        else
+                        {
+                            clbPlugins.Items.Add(plugin);
+                        }
                     }
-                    else
+                    catch (ApplicationException ae)
                     {
-                        clbPlugins.Items.Add(plugin);
+                        Log.Debug(ae);
                     }
                 }
 
@@ -1921,8 +1949,11 @@ namespace Chummer
         private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
         {
             UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
-            panelPluginOption.Controls.Clear();
-            panelPluginOption.Controls.Add(pluginControl);
+            if (pluginControl != null)
+            {
+                panelPluginOption.Controls.Clear();
+                panelPluginOption.Controls.Add(pluginControl);
+            }
         }
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
@@ -1985,6 +2016,40 @@ namespace Chummer
         private void cbPluginsHelp_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
+        }
+
+        private void ChkCyberlimbAttributeBonusCap_CheckedChanged(object sender, EventArgs e)
+        {
+            nudCyberlimbAttributeBonusCap.Enabled = chkCyberlimbAttributeBonusCap.Checked;
+            if (!chkCyberlimbAttributeBonusCap.Checked)
+            {
+                nudCyberlimbAttributeBonusCap.Value = 4;
+                nudCyberlimbAttributeBonusCap.Enabled = false;
+            }
+        }
+
+        private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)
+        {
+            grpDateFormat.Enabled = chkCustomDateTimeFormats.Checked;
+            grpTimeFormat.Enabled = chkCustomDateTimeFormats.Checked;
+            if (!chkCustomDateTimeFormats.Checked)
+            {
+                txtDateFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern;
+                txtTimeFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern;
+            }
+            OptionsChanged(sender, e);
+        }
+
+        private void txtDateFormat_TextChanged(object sender, EventArgs e)
+        {
+            txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text);
+            OptionsChanged(sender, e);
+        }
+
+        private void txtTimeFormat_TextChanged(object sender, EventArgs e)
+        {
+            txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text);
+            OptionsChanged(sender, e);
         }
     }
 }

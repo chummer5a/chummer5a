@@ -236,6 +236,7 @@ namespace Chummer
         private string _strReason = string.Empty;
         private ExpenseType _objExpenseType;
         private bool _blnRefund;
+        private bool _blnForceCareerVisible = false;
 
         #region Helper Methods
         public int CompareTo(object obj)
@@ -302,6 +303,7 @@ namespace Chummer
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());
+            objWriter.WriteElementString("forcecareervisible", _blnForceCareerVisible.ToString());
             Undo?.Save(objWriter);
             objWriter.WriteEndElement();
         }
@@ -320,6 +322,7 @@ namespace Chummer
             if (objNode["type"] != null)
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
+            objNode.TryGetBoolFieldQuickly("forcecareervisible", ref _blnForceCareerVisible);
 
             if (objNode["undo"] != null)
             {
@@ -432,6 +435,15 @@ namespace Chummer
                         _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
                 }
             }
+        }
+
+        /// <summary>
+        /// Should this Expense be presented to the Total Career Karma and Nuyen values?
+        /// </summary>
+        public bool ForceCareerVisible
+        {
+            get => _blnForceCareerVisible;
+            set => _blnForceCareerVisible = value;
         }
 
         /// <summary>

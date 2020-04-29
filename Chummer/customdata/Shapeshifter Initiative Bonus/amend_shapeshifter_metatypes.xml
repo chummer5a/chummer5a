@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <metatypes>
+    <metatype xpathfilter="starts-with(name, 'Shapeshifter')">
+      <metavariants>
+        <metavariant xpathfilter="contains(initiativedice, '1')">
+          <initiativedice amendoperation="remove" />
+          <bonus>
+            <initiativedice>1</initiativedice>
+          </bonus>
+        </metavariant>
+        <metavariant xpathfilter="contains(initiativedice, '2')">
+          <initiativedice amendoperation="remove" />
+          <bonus>
+            <initiativedice>2</initiativedice>
+          </bonus>
+        </metavariant>
+        <metavariant xpathfilter="contains(initiativedice, '3')">
+          <initiativedice amendoperation="remove" />
+          <bonus>
+            <initiativedice>3</initiativedice>
+          </bonus>
+        </metavariant>
+      </metavariants>
+    </metatype>
+  </metatypes>
+</chummer>

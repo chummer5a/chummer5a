@@ -21,6 +21,8 @@
  using System.Diagnostics;
 ﻿using System.IO;
 using System.Reflection;
+ using System.Security.AccessControl;
+ using System.Security.Principal;
  using System.Windows.Forms;
  using NLog;
 
@@ -52,19 +54,43 @@ namespace Chummer
         /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
 
-        public static string GetStartupPath
-        {
-            get
-            {
-                return !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            }
-        }
+        public static string GetStartupPath => !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
-        public static int GitUpdateAvailable()
+        public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
+
+        /// <summary>
+        /// Can the current user context write to a given file path?
+        /// </summary>
+        /// <param name="strPath">File path to evaluate.</param>
+        /// <returns></returns>
+        public static bool CanWriteToPath(string strPath)
         {
-            Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
-            int intResult = CachedGitVersion?.CompareTo(verCurrentversion) ?? 0;
-            return intResult;
+            try
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath));
+                AuthorizationRuleCollection authRules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
+
+                foreach (FileSystemAccessRule accessRule in authRules)
+                {
+                    if (!principal.IsInRole(accessRule.IdentityReference as SecurityIdentifier)) continue;
+                    if ((FileSystemRights.WriteData & accessRule.FileSystemRights) !=
+                        FileSystemRights.WriteData) continue;
+                    switch (accessRule.AccessControlType)
+                    {
+                        case AccessControlType.Allow:
+                            return true;
+                        case AccessControlType.Deny:
+                            //Deny usually overrides any Allow
+                            return false;
+                    }
+                }
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
         }
 
         /// <summary>

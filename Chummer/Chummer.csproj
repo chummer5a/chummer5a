@@ -540,10 +540,22 @@
     <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </Compile>
+    <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\amend_encumbrance_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Availability and costs of Chameleon Suit\amend_chameleonsuit_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - High Velocity Weapons\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Painade\amend_painade_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Painade\amend_painade_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Quality Karma Costs\amend_costs_qualities.xml">
@@ -555,10 +567,16 @@
     <Content Include="customdata\German Data Changes - Reduced Weapon Mount Prices\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Skilljacks and Skillwires\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\amend_crossbow_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\custom_crossbow_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Underbarrel Weapons\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Yamaha Kaburaya\amend_kaburaya_vehicles.xml">
@@ -570,6 +588,15 @@
     <Content Include="customdata\Morrissey Alta Availability\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Orks Have Natural Weapon Tusks\amend_orktusk_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Orks Have Natural Weapon Tusks\custom_orktusk_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -577,6 +604,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Stolen Gear and In Debt Contribute to BP\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Unrestricted Kill Code Qualities\amend_qualities.xml">

@@ -94,10 +94,6 @@
 			<text>新規キャラクター</text>
 		</string>
 		<string>
-			<key>String_Break</key>
-			<text>分割</text>
-		</string>
-		<string>
 			<key>Checkbox_Free</key>
 			<text>無料!</text>
 		</string>
@@ -3052,19 +3048,19 @@
 		</string>
 		<string>
 			<key>Checkbox_GroupInitiation</key>
-			<text>グループ・イニシエーション (-20%)</text>
+			<text>グループ・イニシエーション (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>イニシエイト時の試練 (-20%)</text>
+			<text>イニシエイト時の試練 (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>ネットワーク・サブマージョン (-20%)</text>
+			<text>ネットワーク・サブマージョン (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>サブマージョン時のタスク (-20%)</text>
+			<text>サブマージョン時のタスク (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>

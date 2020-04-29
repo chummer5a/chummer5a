@@ -190,6 +190,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!(lstGridNodes?.Count > 0)) return;
 
+                    foreach(var grid in FreeGrids)
+                    {
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, grid.InternalId);
+                    }
                     FreeGrids.Clear();
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {

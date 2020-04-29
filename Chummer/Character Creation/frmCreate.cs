@@ -249,7 +249,6 @@ namespace Chummer
                             DataSourceUpdateMode.OnPropertyChanged);
                         txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false,
                             DataSourceUpdateMode.OnPropertyChanged);
-                        chkJoinGroup.Checked = CharacterObject.GroupMember;
 
                         txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
                         txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
@@ -603,9 +602,6 @@ namespace Chummer
                         nudMysticAdeptMAGMagician.DoDatabinding("Value", CharacterObject,
                             nameof(Character.MysticAdeptPowerPoints));
 
-
-                        IsLoading = false;
-
                         // Select the Magician's Tradition.
                         if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
                             cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
@@ -620,6 +616,8 @@ namespace Chummer
                         else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                             cboStream.SelectedIndex = 0;
                     }
+
+                    IsLoading = false;
 
                     treGear.ItemDrag += treGear_ItemDrag;
                     treGear.DragEnter += treGear_DragEnter;
@@ -1108,9 +1106,14 @@ namespace Chummer
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Language);
                             cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade", GlobalOptions.Language);
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language);
+                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language)
+                                .CheapReplace("{0}", ()=> (CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo)));
                             gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType", GlobalOptions.Language);
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup", GlobalOptions.Language);
+                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_InitiationGroup")
+                                .CheapReplace("{0}", () => (CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo)));
+                            chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
+                                .CheapReplace("{0}", () => (CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo)));
 
                             chkInitiationSchooling.Enabled = true;
                             tsMetamagicAddArt.Visible = true;
@@ -1120,10 +1123,9 @@ namespace Chummer
 
                             string strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language)
                                 , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
-                                , (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.CultureInfo));
+                                , (CharacterObjectOptions.KarmaInitiationFlat + ((CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation", GlobalOptions.Language);
 
                             if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                             {
@@ -1175,10 +1177,14 @@ namespace Chummer
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade", GlobalOptions.Language);
                             cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveSubmersionGrade", GlobalOptions.Language);
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask", GlobalOptions.Language);
                             gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType", GlobalOptions.Language);
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork", GlobalOptions.Language);
-
+                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask", GlobalOptions.Language)
+                                .CheapReplace("{0}", () => (CharacterObjectOptions.KarmaRESInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo)));
+                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion")
+                                .CheapReplace("{0}", () => (CharacterObjectOptions.KarmaRESInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo)));
+                            chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
+                                .CheapReplace("{0}", () => (CharacterObjectOptions.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo)));
                             chkInitiationSchooling.Enabled = CharacterObjectOptions.AllowTechnomancerSchooling;
                             tsMetamagicAddArt.Visible = false;
                             tsMetamagicAddEnchantment.Visible = false;
@@ -1187,10 +1193,9 @@ namespace Chummer
 
                             string strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language)
                                 , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)
-                                , (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.CultureInfo));
+                                , (CharacterObjectOptions.KarmaInitiationFlat + ((CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion", GlobalOptions.Language);
 
                             if (CharacterObject.AttributeSection.Attributes != null && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
                             {
@@ -1750,7 +1755,7 @@ namespace Chummer
                     if (objQuality.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = strSelected;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objQuality.Extra = ImprovementManager.SelectedValue;
@@ -1778,7 +1783,7 @@ namespace Chummer
                         if (blnDoFirstLevel)
                         {
                             ImprovementManager.ForcedValue = strSelected;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objQuality.Extra = ImprovementManager.SelectedValue;
@@ -1806,7 +1811,7 @@ namespace Chummer
                     {
                         if (objMartialArtNode["bonus"] != null)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], false, 1, objMartialArt.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], 1, objMartialArt.DisplayNameShort(GlobalOptions.Language));
                         }
                     }
                     foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
@@ -1815,7 +1820,7 @@ namespace Chummer
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], false, 1, objTechnique.DisplayName(GlobalOptions.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], 1, objTechnique.DisplayName(GlobalOptions.Language));
                         }
                         else
                         {
@@ -1838,7 +1843,7 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objSpell.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], false, 1, objSpell.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1, objSpell.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objSpell.Extra = ImprovementManager.SelectedValue;
@@ -1864,7 +1869,7 @@ namespace Chummer
                     if (objPower.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = objPower.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort(GlobalOptions.Language));
                     }
                 }
                 else
@@ -1882,7 +1887,7 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objComplexForm.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], 1, objComplexForm.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objComplexForm.Extra = ImprovementManager.SelectedValue;
@@ -1907,7 +1912,7 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objProgram.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], 1, objProgram.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objProgram.Extra = ImprovementManager.SelectedValue;
@@ -1938,7 +1943,7 @@ namespace Chummer
                             intRating = 1;
                             ImprovementManager.ForcedValue = strSelected;
                         }
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, false, intRating, objPower.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, intRating, objPower.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objPower.Extra = ImprovementManager.SelectedValue;
@@ -1970,7 +1975,7 @@ namespace Chummer
                     objMetamagic.Bonus = objNode["bonus"];
                     if (objMetamagic.Bonus != null)
                     {
-                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, false, 1, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, 1, objMetamagic.DisplayNameShort(GlobalOptions.Language));
                     }
                 }
                 else
@@ -1996,13 +2001,13 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objCyberware.Forced;
                         if (objCyberware.Bonus != null)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
                         if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
@@ -2061,7 +2066,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                 ImprovementManager.ForcedValue = objCyberware.Forced;
-                            ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                             TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
@@ -2092,7 +2097,7 @@ namespace Chummer
                             if (objArmor.Equipped)
                             {
                                 ImprovementManager.ForcedValue = objArmor.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort(GlobalOptions.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, objArmor.Rating, objArmor.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objArmor.Extra = ImprovementManager.SelectedValue;
@@ -2125,7 +2130,7 @@ namespace Chummer
                                 if (objMod.Equipped)
                                 {
                                     ImprovementManager.ForcedValue = objMod.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objMod.Extra = ImprovementManager.SelectedValue;
@@ -2360,10 +2365,10 @@ namespace Chummer
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Load(objXmlNode, true);
                     if (objSelectedObject is ICanPaste selected && selected.AllowPasteXml &&
-                        objSelectedObject is IHasGear)
+                        objSelectedObject is IHasGear gear)
                     {
-                        (objSelectedObject as IHasGear).Gear.Add(objGear);
-                        if (objSelectedObject is ICanEquip selectedEquip && !selectedEquip.Equipped)
+                        gear.Gear.Add(objGear);
+                        if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
                             objGear.ChangeEquippedStatus(false);
                     }
                     else
@@ -2964,7 +2969,6 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
             XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + frmPickVehicle.SelectedVehicle + "\"]");
-
             Vehicle objVehicle = new Vehicle(CharacterObject);
             objVehicle.Create(objXmlVehicle);
             // Update the Used Vehicle information if applicable.
@@ -4012,9 +4016,17 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
+            TaggedObservableCollection<Location> destCollection;
             // Make sure a Vehicle is selected.
-            Vehicle objVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
-            if (!(objVehicle == null || treVehicles.SelectedNode?.Tag == null))
+            if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
+            {
+                destCollection = objVehicle.Locations;
+            }
+            else if (treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles" || treVehicles.SelectedNode?.Tag == null)
+            {
+                destCollection = CharacterObject.VehicleLocations;
+            }
+            else
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4027,9 +4039,8 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            ObservableCollection<Location> lstParent = objVehicle?.Locations ?? CharacterObject.VehicleLocations;
-            Location objLocation = new Location(CharacterObject, lstParent, frmPickText.SelectedValue);
-            lstParent.Add(objLocation);
+            Location objLocation = new Location(CharacterObject, destCollection, frmPickText.SelectedValue);
+            destCollection.Add(objLocation);
 
             IsDirty = true;
         }
@@ -4661,112 +4672,23 @@ namespace Chummer
 
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
-            // Locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
+            Vehicle objSelectedVehicle;
+            Location objLocation = null;
+            if (treVehicles.SelectedNode?.Tag is Vehicle vehicle)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                objSelectedVehicle = vehicle;
+            }
+            else if (treVehicles.SelectedNode?.Tag is Location location)
+            {
+                objLocation = location;
+                objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
+            }
+            else
+            {
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-            bool blnAddAgain;
-
-            do
-            {
-                Cursor = Cursors.WaitCursor;
-                frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle);
-                frmPickGear.ShowDialog(this);
-                Cursor = Cursors.Default;
-
-                if (frmPickGear.DialogResult == DialogResult.Cancel)
-                {
-                    frmPickGear.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickGear.AddAgain;
-
-                // Open the Gear XML file and locate the selected piece.
-                XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
-
-                Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
-                if (objGear.InternalId.IsEmptyGuid())
-                {
-                    frmPickGear.Dispose();
-                    continue;
-                }
-
-                // Reduce the cost for Do It Yourself components.
-                if (frmPickGear.DoItYourself)
-                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                // If the item was marked as free, change its cost.
-                if (frmPickGear.FreeCost)
-                {
-                    objGear.Cost = "0";
-                }
-
-                objGear.Quantity = frmPickGear.SelectedQty;
-                nudVehicleRating.Increment = objGear.CostFor;
-                nudVehicleRating.Minimum = nudVehicleRating.Increment;
-
-                // Change the cost of the Sensor itself to 0.
-                //if (frmPickGear.SelectedCategory == "Sensors")
-                //{
-                //    objGear.Cost = "0";
-                //    objGear.DictionaryCostN = new Tuple<int, Dictionary<int, string>>(-1, new Dictionary<int, string>());
-                //}
-
-                frmPickGear.Dispose();
-
-                bool blnMatchFound = false;
-                // If this is Ammunition, see if the character already has it on them.
-                if (objGear.Category == "Ammunition")
-                {
-                    foreach (Gear objVehicleGear in objSelectedVehicle.Gear)
-                    {
-                        if (objVehicleGear.Name == objGear.Name &&
-                            objVehicleGear.Category == objGear.Category &&
-                            objVehicleGear.Rating == objGear.Rating &&
-                            objVehicleGear.Extra == objGear.Extra)
-                        {
-                            // A match was found, so increase the quantity instead.
-                            objVehicleGear.Quantity += objGear.Quantity;
-                            blnMatchFound = true;
-
-                            TreeNode objGearNode = objSelectedNode.FindNode(objVehicleGear.InternalId);
-                            if (objGearNode != null)
-                                objGearNode.Text = objVehicleGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-
-                            break;
-                        }
-                    }
-                }
-
-                if (!blnMatchFound)
-                {
-                    // Add the Gear to the Vehicle.
-                    objSelectedVehicle.Gear.Add(objGear);
-                    objGear.Parent = objSelectedVehicle;
-                }
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    objWeapon.ParentVehicle = objSelectedVehicle;
-                    objSelectedVehicle.Weapons.Add(objWeapon);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            PurchaseVehicleGear(objSelectedVehicle, objLocation);
         }
 
         private void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
@@ -5159,7 +5081,6 @@ namespace Chummer
                 return;
             }
 
-            bool capacityOnly = false;
             string selectedGuid = string.Empty;
             // Make sure the selected item is another piece of Gear.
             if (objSelectedNode.Tag is ArmorMod objMod)
@@ -5169,7 +5090,6 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                capacityOnly = true;
                 selectedGuid = objMod.InternalId;
             }
             else if (objSelectedNode.Tag is Gear objGear)
@@ -5179,7 +5099,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(selectedGuid, capacityOnly);
+                blnAddAgain = PickArmorGear(selectedGuid);
             }
             while (blnAddAgain);
         }
@@ -6620,6 +6540,7 @@ namespace Chummer
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
+            RefreshPasteStatus(sender, e);
         }
 
         private void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -6679,9 +6600,9 @@ namespace Chummer
                         // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                         ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
                         if (objCyberware.Bonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                         if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
 
                         if (objCyberware.PairBonus != null)
                         {
@@ -6708,7 +6629,7 @@ namespace Chummer
                                 // Go down the list and create pair bonuses for every second item
                                 if (intCyberwaresCount > 0 && (intCyberwaresCount & 1) == 0)
                                 {
-                                    ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                                 }
                                 intCyberwaresCount -= 1;
                             }
@@ -6745,9 +6666,9 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                         }
                         if (objGear.Bonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
 
                         if (!objGear.Equipped)
                             objGear.ChangeEquippedStatus(false);
@@ -7098,9 +7019,9 @@ namespace Chummer
                     if (blnAddBonus)
                     {
                         if (objGear.Bonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                     }
 
                     if (!objGear.Equipped)
@@ -7634,16 +7555,20 @@ namespace Chummer
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+            // Determine if this is a piece of Gear or a Vehicle. If not, don't let the user drag it.
+            if (treVehicles.SelectedNode?.Tag is Gear)
             {
-                // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
-                if (treVehicles.SelectedNode?.Tag is Gear)
-                {
-                    _eDragButton = e.Button;
-                    _blnDraggingGear = true;
-                    _intDragLevel = treVehicles.SelectedNode.Level;
-                    DoDragDrop(e.Item, DragDropEffects.Move);
-                }
+                _eDragButton = e.Button;
+                _blnDraggingGear = true;
+                _intDragLevel = treVehicles.SelectedNode.Level;
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
+            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            {
+                _eDragButton = e.Button;
+                _blnDraggingGear = false;
+                _intDragLevel = treVehicles.SelectedNode.Level;
+                DoDragDrop(e.Item, DragDropEffects.Move);
             }
         }
 
@@ -7671,11 +7596,11 @@ namespace Chummer
             TreeNode objSelected = treVehicles.SelectedNode;
 
             if (!_blnDraggingGear)
+            {
                 CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected);
+            }
             else
             {
-                if (_eDragButton == MouseButtons.Left)
-                    return;
                 CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
             }
 
@@ -7927,7 +7852,7 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objSelectedFocus.Extra;
                         if (objSelectedFocus.Bonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
                                 objSelectedFocus.ChangeEquippedStatus(false);
@@ -7939,7 +7864,7 @@ namespace Chummer
                         }
                         if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
                                 objSelectedFocus.ChangeEquippedStatus(false);
@@ -7972,7 +7897,7 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objGear.Extra;
                                 if (objGear.Bonus != null)
                                 {
-                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
+                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                     {
                                         // Clear created improvements
                                         objStackGear.ChangeEquippedStatus(false);
@@ -7984,7 +7909,7 @@ namespace Chummer
                                 }
                                 if (objGear.WirelessOn && objGear.WirelessBonus != null)
                                 {
-                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
+                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                     {
                                         // Clear created improvements
                                         objStackGear.ChangeEquippedStatus(false);
@@ -8023,9 +7948,9 @@ namespace Chummer
                     // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                     if (objMod.Bonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                 }
             }
             else if (treArmor.SelectedNode?.Tag is Gear objGear)
@@ -8050,9 +7975,9 @@ namespace Chummer
                     // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                     if (objGear.Bonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
 
                     if (!objGear.Equipped)
                         objGear.ChangeEquippedStatus(false);
@@ -8107,7 +8032,6 @@ namespace Chummer
             {
                 if (CharacterObject.MagicTradition.Create(xmlTradition))
                 {
-                    cboDrain.Visible = !CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled;
                     lblTraditionName.Visible = true;
                     txtTraditionName.Visible = true;
                     lblSpiritCombat.Visible = true;
@@ -8142,7 +8066,6 @@ namespace Chummer
             {
                 if (CharacterObject.MagicTradition.Create(xmlTradition))
                 {
-                    cboDrain.Visible = false;
                     lblTraditionName.Visible = false;
                     txtTraditionName.Visible = false;
                     lblSpiritCombat.Visible = true;
@@ -8175,6 +8098,9 @@ namespace Chummer
                     cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
                 }
             }
+
+            cboDrain.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
+                               CharacterObject.MagicTradition.CanChooseDrainAttribute;
         }
 #endregion
 
@@ -8778,7 +8704,7 @@ namespace Chummer
                 }
             }
 
-            int intQualityPointsUsed = intLifeModuleQualities + CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
+            int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -8884,7 +8810,7 @@ namespace Chummer
                 int limit = CharacterObject.FreeSpells;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                if (spellCost <= CharacterObjectOptions.KarmaSpell)
+                if (spellCost <= CharacterObjectOptions.KarmaSpell && CharacterObject.FreeSpells > 0)
                 {
                     // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
                     int intQualityKarmaToSpellPoints = CharacterObjectOptions.KarmaSpell;
@@ -9035,85 +8961,13 @@ namespace Chummer
             StringBuilder strFociPointsTooltip = new StringBuilder();
             foreach (Focus objFocus in CharacterObject.Foci)
             {
-                Gear objFocusGear =  objFocus.GearObject;
-                // Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
-                string strFocusName = objFocusGear.Name;
-                string strFocusExtra = objFocusGear.Extra;
-                int intPosition = strFocusName.IndexOf('(');
-                if (intPosition > -1)
-                    strFocusName = strFocusName.Substring(0, intPosition - 1);
-                intPosition = strFocusName.IndexOf(',');
-                if (intPosition > -1)
-                    strFocusName = strFocusName.Substring(0, intPosition);
-                int intKarmaMultiplier = 1;
-                int intExtraKarmaCost = 0;
-                switch (strFocusName)
-                {
-                    case "Qi Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaQiFocus;
-                        break;
-                    case "Sustaining Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaSustainingFocus;
-                        break;
-                    case "Counterspelling Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaCounterspellingFocus;
-                        break;
-                    case "Banishing Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaBanishingFocus;
-                        break;
-                    case "Binding Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaBindingFocus;
-                        break;
-                    case "Weapon Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaWeaponFocus;
-                        break;
-                    case "Spellcasting Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaSpellcastingFocus;
-                        break;
-                    case "Ritual Spellcasting Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaRitualSpellcastingFocus;
-                        break;
-                    case "Spell Shaping Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaSpellShapingFocus;
-                        break;
-                    case "Summoning Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaSummoningFocus;
-                        break;
-                    case "Alchemical Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaAlchemicalFocus;
-                        break;
-                    case "Centering Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaCenteringFocus;
-                        break;
-                    case "Masking Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaMaskingFocus;
-                        break;
-                    case "Disenchanting Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaDisenchantingFocus;
-                        break;
-                    case "Power Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaPowerFocus;
-                        break;
-                    case "Flexible Signature Focus":
-                        intKarmaMultiplier = CharacterObjectOptions.KarmaFlexibleSignatureFocus;
-                        break;
-                }
-                foreach (Improvement objLoopImprovement in CharacterObject.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || x.Target.Contains(strFocusExtra)) && x.Enabled))
-                {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
-                        intExtraKarmaCost += objLoopImprovement.Value;
-                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
-                        intKarmaMultiplier += objLoopImprovement.Value;
-                }
-
-                int intLoopCost = objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
-                intFociPointsUsed += intLoopCost;
+                intFociPointsUsed += objFocus.BindingKarmaCost();
 
                 if (blnDoUIUpdate)
                 {
                     if (strFociPointsTooltip.Length > 0)
                         strFociPointsTooltip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                    strFociPointsTooltip.Append(objFocusGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
+                    strFociPointsTooltip.Append(objFocus.GearObject.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language) + strSpaceCharacter + '(' + objFocus.BindingKarmaCost().ToString(GlobalOptions.CultureInfo) + ')');
                 }
             }
             intKarmaPointsRemain -= intFociPointsUsed;
@@ -9729,7 +9583,7 @@ namespace Chummer
                     lblCyberlimbSTR.Visible = false;
                 }
                 chkPrototypeTranshuman.Visible = CharacterObject.PrototypeTranshuman != 0;
-                chkPrototypeTranshuman.Enabled = objCyberware.Parent == null;
+                chkPrototypeTranshuman.Enabled = objCyberware.Parent == null && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
                 chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
 
                 // gpbCyberwareMatrix
@@ -11023,8 +10877,6 @@ namespace Chummer
                 objGear.SetActiveCommlink(CharacterObject, true);
             }
 
-            objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
             // reduce the cost for Black Market Pipeline
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
             // Reduce the cost for Do It Yourself components.
@@ -11041,16 +10893,37 @@ namespace Chummer
             {
                 CharacterObject.Weapons.Add(objWeapon);
             }
-
-            if (!blnNullParent)
+            
+            ObservableCollection<Gear> destinationGear =
+                blnNullParent ? CharacterObject.Gear : objSelectedGear.Children;
+            bool blnMatchFound = false;
+            // If this is Ammunition, see if the character already has it on them.
+            if (objGear.Category == "Ammunition")
             {
-                objSelectedGear.Children.Add(objGear);
+                foreach (Gear objVehicleGear in destinationGear)
+                {
+                    if (objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
+                        objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
+                        objVehicleGear.Children.SequenceEqual(objGear.Children))
+                    {
+                        if (Program.MainForm.ShowMessageBox(
+                                LanguageManager.GetString("Message_MergeIdentical", GlobalOptions.Language),
+                                LanguageManager.GetString("MessageTitle_MergeIdentical", GlobalOptions.Language),
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            // A match was found, so increase the quantity instead.
+                            objVehicleGear.Quantity += objGear.Quantity;
+                            blnMatchFound = true;
+                            break;
+                        }
+                    }
+                }
             }
-            else
+
+            if (!blnMatchFound)
             {
-                //objGear.Location = objLocation;
+                destinationGear.Add(objGear);
                 objLocation?.Children.Add(objGear);
-                CharacterObject.Gear.Add(objGear);
             }
 
             IsCharacterUpdateRequested = true;
@@ -12143,12 +12016,12 @@ namespace Chummer
 
             int totalNeg = CharacterObjectOptions.EnemyKarmaQualityLimit
                 ? CharacterObject.NegativeQualityKarma
-                : (CharacterObject.NegativeQualityKarma - (CharacterObject.Contacts
+                : (CharacterObject.NegativeQualityKarma + (CharacterObject.Contacts
                        .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
                        .Sum(x => (x.Connection + x.Loyalty) * CharacterObjectOptions.KarmaEnemy)));
 
             // if negative points > 25
-            if (totalNeg < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
+            if (totalNeg > (CharacterObject.GameplayOptionQualityLimit) && !CharacterObjectOptions.ExceedNegativeQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language)
@@ -12298,7 +12171,7 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(
                                   LanguageManager.GetString("Message_InvalidPowerPoints", GlobalOptions.Language),
-                                  (CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal).ToString(),
+                                  (CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal).ToString(GlobalOptions.CultureInfo),
                                   CharacterObject.PowerPointsTotal.ToString());
             }
 
@@ -13473,12 +13346,12 @@ namespace Chummer
             if (CharacterObject.MAGEnabled)
             {
                 if (chkInitiationGroup.Checked)
-                    decMultiplier -= 0.1m;
+                    decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationGroupPercent;
                 if (chkInitiationOrdeal.Checked)
-                    decMultiplier -= 0.1m;
+                    decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationOrdealPercent;
                 if (chkInitiationSchooling.Checked)
-                    decMultiplier -= 0.1m;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
+                    decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent;
+                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
 
                 strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language)
                     , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
@@ -13487,12 +13360,12 @@ namespace Chummer
             else
             {
                 if (chkInitiationGroup.Checked)
-                    decMultiplier -= 0.2m;
+                    decMultiplier -= CharacterObjectOptions.KarmaRESInitiationGroupPercent;
                 if (chkInitiationOrdeal.Checked)
-                    decMultiplier -= 0.2m;
+                    decMultiplier -= CharacterObjectOptions.KarmaRESInitiationOrdealPercent;
                 if (chkInitiationSchooling.Checked)
-                    decMultiplier -= 0.1m;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
+                    decMultiplier -= CharacterObjectOptions.KarmaRESInitiationSchoolingPercent;
+                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
 
                 strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language)
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)
@@ -13620,14 +13493,14 @@ namespace Chummer
                     foreach (Quality objQuality in lstRemoveQualities)
                     {
                         ImprovementManager.ForcedValue = objQuality.Extra;
-                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
                         {
                             continue;
                         }
                         if (objQuality.FirstLevelBonus?.ChildNodes.Count > 0 && objQuality.Levels == 0)
                         {
                             ImprovementManager.ForcedValue = objQuality.Extra;
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 continue;
                             }
@@ -13648,14 +13521,14 @@ namespace Chummer
                     foreach (Quality objQuality in lstRemoveQualities)
                     {
                         ImprovementManager.ForcedValue = objQuality.Extra;
-                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
                         {
                             continue;
                         }
                         if (objQuality.FirstLevelBonus?.ChildNodes.Count > 0 && objQuality.Levels == 0)
                         {
                             ImprovementManager.ForcedValue = objQuality.Extra;
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 continue;
                             }
@@ -13848,7 +13721,7 @@ namespace Chummer
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                blnPasteEnabled = treCyberware.SelectedNode?.Tag is ICanPaste selected && selected.AllowPasteXml;
+                blnPasteEnabled = treCyberware.SelectedNode?.Tag is ICanPaste selected && selected.AllowPasteXml || GlobalOptions.ClipboardContentType == ClipboardContentType.Cyberware;
                 blnCopyEnabled = treCyberware.SelectedNode?.Tag is Gear || treCyberware.SelectedNode?.Tag is Cyberware;
             }
             // Vehicles Tab.
@@ -14487,9 +14360,16 @@ namespace Chummer
 
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -14566,9 +14446,16 @@ namespace Chummer
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
+            if (!blnMountChangeAllowed)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_NoValidModularMount", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -14645,12 +14532,15 @@ namespace Chummer
         {
             if (panContacts.Controls.Count > 0)
             {
+                panContacts.SuspendLayout();
                 bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
 
                 foreach (ContactControl c in panContacts.Controls)
                 {
                     c.Expanded = !toggle;
                 }
+
+                panContacts.ResumeLayout();
             }
         }
 
@@ -14786,14 +14676,9 @@ namespace Chummer
 
             if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
-                if (cboVehicleWeaponFiringMode.SelectedValue == null)
-                {
-                    objWeapon.FireMode = Weapon.FiringMode.DogBrain;
-                }
-                else
-                {
-                    objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue?.ToString());
-                }
+                objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedValue != null
+                    ? Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString())
+                    : Weapon.FiringMode.DogBrain;
                 RefreshSelectedVehicle();
 
                 IsDirty = true;

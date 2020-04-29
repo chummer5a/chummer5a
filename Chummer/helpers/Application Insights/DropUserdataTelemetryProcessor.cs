@@ -34,7 +34,7 @@ namespace Chummer
     public class DropUserdataTelemetryProcessor : ITelemetryProcessor
     {
         
-        private string UserProfilePath = String.Empty;
+        private readonly string UserProfilePath;
         private ITelemetryProcessor Next { get; set; }
 
         // You can pass values from .config
@@ -68,9 +68,7 @@ namespace Chummer
             }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
             {
-                if ((item is MetricTelemetry)
-                    || (item is PageViewTelemetry)
-                    || (item is PageViewPerformanceTelemetry))
+                if ((item is MetricTelemetry))
                 {
                     this.Next.Process(item);
                     return;
@@ -78,6 +76,12 @@ namespace Chummer
             }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Info)
             {
+                if ((item is PageViewTelemetry)
+                    || (item is PageViewPerformanceTelemetry))
+                {
+                    this.Next.Process(item);
+                    return;
+                } 
                 if (item is TraceTelemetry traceTelemetry)
                 {
                     if (traceTelemetry.SeverityLevel >= SeverityLevel.Information)
@@ -96,21 +100,20 @@ namespace Chummer
         {
             if (item is TraceTelemetry trace)
             {
-                trace.Message = trace.Message?.CheapReplace(UserProfilePath, () => @"{username}", true);
+                trace.Message = trace.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                 return;
             }
 
             if (item is RequestTelemetry req)
             {
-                string newurl = req.Url?.ToString()?.CheapReplace(UserProfilePath, () => @"{username}", true);
-                if (!String.IsNullOrEmpty(newurl))
+                string newurl = req.Url?.ToString()?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(newurl))
                     req.Url = new Uri(newurl);
                 return;
             }
 
             if (item is ExceptionTelemetry exception)
             {
-                
                 if (exception.Exception != null)
                 {
                     foreach (DictionaryEntry de in exception.Exception.Data)
@@ -120,15 +123,12 @@ namespace Chummer
                     }
                     if (exception.Message == null)
                     {
-                        exception.Message = exception.Exception.Message?.CheapReplace(UserProfilePath, () => @"{username}", true);
+                        exception.Message = exception.Exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                     }
                 }
                 else
-                    exception.Message = exception.Message?.CheapReplace(UserProfilePath, () => @"{username}", true);
-                return;
+                    exception.Message = exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
             }
-            
-            
         }
 
     }

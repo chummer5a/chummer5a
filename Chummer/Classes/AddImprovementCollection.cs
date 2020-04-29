@@ -37,7 +37,7 @@ namespace Chummer.Classes
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
 
-        public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, bool blnConcatSelectedValue, string strFriendlyName, int intRating)
+        public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, string strFriendlyName, int intRating)
         {
             _objCharacter = character;
             _objImprovementSource = objImprovementSource;
@@ -46,7 +46,6 @@ namespace Chummer.Classes
             ForcedValue = forcedValue;
             LimitSelection = limitSelection;
             SelectedValue = selectedValue;
-            _blnConcatSelectedValue = blnConcatSelectedValue;
             _strFriendlyName = strFriendlyName;
             _intRating = intRating;
         }
@@ -59,7 +58,6 @@ namespace Chummer.Classes
 
         private readonly Improvement.ImprovementSource _objImprovementSource;
         private readonly string _strUnique;
-        private readonly bool _blnConcatSelectedValue;
         private readonly string _strFriendlyName;
         private readonly int _intRating;
 
@@ -80,8 +78,7 @@ namespace Chummer.Classes
                 SelectedValue = selectedValue;
             else
                 SelectedValue += ", " + selectedValue;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + selectedValue + ')';
+            string sourceName = SourceName;
             Log.Info("_strSelectedValue = " + selectedValue);
             Log.Info("SourceName = " + SourceName);
 
@@ -405,9 +402,6 @@ namespace Chummer.Classes
                 SelectedValue = frmPickItem.SelectedName;
             }
 
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
-
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
 
@@ -464,7 +458,6 @@ namespace Chummer.Classes
                 SelectedValue = frmPickItem.SelectedName;
             }
 
-            if (_blnConcatSelectedValue) SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
 
@@ -558,8 +551,6 @@ namespace Chummer.Classes
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
 
             SelectedValue = strSelectedSkill;
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -899,8 +890,6 @@ namespace Chummer.Classes
             }
 
             SelectedValue = sBld.ToString();
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
         }
 
         // Select an CharacterAttribute.
@@ -971,8 +960,6 @@ namespace Chummer.Classes
             }
 
             SelectedValue = frmPickAttribute.SelectedAttribute;
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1117,8 +1104,6 @@ namespace Chummer.Classes
             }
 
             SelectedValue = frmPickLimit.SelectedDisplayLimit;
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             if (bonusNode["affectbase"] != null)
                 strLimit += "Base";
@@ -1201,9 +1186,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedValue = frmPickAttribute.SelectedAttribute;
-
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
             }
 
             string strLimitToSkill = bonusNode.SelectSingleNode("limittoskill")?.InnerText;
@@ -1215,10 +1197,9 @@ namespace Chummer.Classes
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickSkill.Description = string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName);
-                else
-                    frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
+                frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
 
                 string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
@@ -1257,9 +1238,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedTarget = frmPickSkill.SelectedSkill;
-
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedTarget + ')';
             }
 
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -1342,9 +1320,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedValue = frmPickAttribute.SelectedAttribute;
-
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
             }
 
             string strLimitToSkill = bonusNode.SelectSingleNode("limittoskill")?.InnerText;
@@ -1356,10 +1331,9 @@ namespace Chummer.Classes
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickSkill.Description = string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName);
-                else
-                    frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
+                frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
 
                 string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
@@ -1398,9 +1372,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedTarget = frmPickSkill.SelectedSkill;
-
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedTarget + ')';
             }
 
             // TODO: Allow selection of specializations through frmSelectSkillSpec
@@ -1492,8 +1463,6 @@ namespace Chummer.Classes
             Log.Info("addspell = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1611,8 +1580,6 @@ namespace Chummer.Classes
             Log.Info("addcomplexform = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1664,8 +1631,6 @@ namespace Chummer.Classes
             Log.Info("addgear = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1747,8 +1712,6 @@ namespace Chummer.Classes
             Log.Info("addweapon = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1797,8 +1760,6 @@ namespace Chummer.Classes
             Log.Info("naturalweapon = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1894,8 +1855,6 @@ namespace Chummer.Classes
                 _objCharacter.AIPrograms.Add(objProgram);
 
                 SelectedValue = objProgram.DisplayNameShort(GlobalOptions.Language);
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SourceName = " + SourceName);
@@ -1967,8 +1926,6 @@ namespace Chummer.Classes
                     throw new AbortedException();
 
                 SelectedValue = objProgram.DisplayNameShort(GlobalOptions.Language);
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SourceName = " + SourceName);
@@ -2204,8 +2161,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedValue = frmPickAttribute.SelectedAttribute;
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
                 Log.Info("SourceName = " + SourceName);
@@ -2257,9 +2212,6 @@ namespace Chummer.Classes
                 throw new AbortedException();
 
             string strVal = bonusNode["val"]?.InnerText;
-
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             if (SelectedValue.Contains("Exotic Melee Weapon") ||
                 SelectedValue.Contains("Exotic Ranged Weapon") ||
@@ -2325,9 +2277,6 @@ namespace Chummer.Classes
             SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill) : strForcedValue;
 
             string strVal = bonusNode["val"]?.InnerText;
-
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -3024,7 +2973,7 @@ namespace Chummer.Classes
             Log.Info("reach");
             Log.Info("reach = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            string strWeapon = bonusNode.Attributes["name"]?.InnerText ?? string.Empty;
+            string strWeapon = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
             CreateImprovement(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
                 _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3629,8 +3578,6 @@ namespace Chummer.Classes
             SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
             string strHoldValue = SelectedValue;
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -3668,8 +3615,6 @@ namespace Chummer.Classes
             SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
             string strHoldValue = SelectedValue;
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -3981,8 +3926,6 @@ namespace Chummer.Classes
                                     throw new AbortedException();
 
                                 SelectedValue = objNewPower.DisplayName;
-                                if (_blnConcatSelectedValue)
-                                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
                                 List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
 
@@ -3998,7 +3941,7 @@ namespace Chummer.Classes
                                     objNewPower.DeletePower();
                                 }
                                 Log.Info("Calling CreateImprovement");
-                                CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
+                                CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
                             }
                         }
             }
@@ -4328,9 +4271,6 @@ namespace Chummer.Classes
 
             bool blnDummy = false;
             SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
-
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -4829,6 +4769,10 @@ namespace Chummer.Classes
         }
 
         // Check for Spell Category bonuses.
+        public void spellcategory(XmlNode bonusNode)
+        {
+            spellcategorydicepool(bonusNode);
+        }
         public void spellcategorydicepool(XmlNode bonusNode)
         {
             Log.Info("spellcategory");
@@ -4871,6 +4815,28 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["category"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategoryDamage, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for Spell descriptor Damage bonuses.
+        public void spelldescriptordamage(XmlNode bonusNode)
+        {
+            Log.Info("spelldescriptordamage");
+            Log.Info("spelldescriptordamage = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for Spell descriptor drain bonuses.
+        public void spelldescriptordrain(XmlNode bonusNode)
+        {
+            Log.Info("spelldescriptordrain");
+            Log.Info("spelldescriptordrain = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
         // Check for Throwing Range bonuses.
@@ -5062,8 +5028,6 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
                 SelectedValue = frmPickItem.SelectedName;
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + frmPickItem.SelectedName + ')';
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SelectedValue = " + SelectedValue);
@@ -5136,8 +5100,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedValue = frmPickItem.SelectedItem;
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SelectedValue = " + frmPickItem.SelectedItem);
@@ -5195,8 +5157,6 @@ namespace Chummer.Classes
             }
 
             SelectedValue = frmPickItem.SelectedItem;
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             string strSelectedValue = frmPickItem.SelectedItem;
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -5238,8 +5198,6 @@ namespace Chummer.Classes
                 }
 
                 SelectedValue = frmPickText.SelectedValue;
-                if (_blnConcatSelectedValue)
-                    SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SelectedValue = " + frmPickText.SelectedValue);
@@ -5286,8 +5244,6 @@ namespace Chummer.Classes
                     }
 
                     SelectedValue = frmPickItem.SelectedName;
-                    if (_blnConcatSelectedValue)
-                        SourceName += " (" + frmPickItem.SelectedName + ')';
 
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("SelectedValue = " + SelectedValue);
@@ -5295,8 +5251,6 @@ namespace Chummer.Classes
                 else
                 {
                     SelectedValue = LimitSelection;
-                    if (_blnConcatSelectedValue)
-                        SourceName += " (" + LimitSelection + ')';
 
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("SelectedValue = " + SelectedValue);
@@ -5462,8 +5416,6 @@ namespace Chummer.Classes
             }
 
             SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem, GlobalOptions.Language);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
             Log.Info("SourceName = " + SourceName);
@@ -5918,7 +5870,7 @@ namespace Chummer.Classes
                         }
             }
 
-            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits, ForceItem = ForcedValue};
             frmSelect.ShowDialog();
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {
@@ -5930,7 +5882,6 @@ namespace Chummer.Classes
                 if (string.IsNullOrEmpty(SelectedValue)) SelectedValue = frmSelect.SelectedItem;
                 else SelectedValue += ", " + frmSelect.SelectedItem;
             }
-            if (_blnConcatSelectedValue) SourceName += " (" + frmSelect.SelectedItem + ')';
             Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
             Log.Info("Calling CreateImprovement");
@@ -6491,8 +6442,6 @@ namespace Chummer.Classes
             Log.Info("addware = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
-            if (_blnConcatSelectedValue)
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -6575,9 +6524,6 @@ namespace Chummer.Classes
             }
 
             string strVal = bonusNode["value"]?.InnerText;
-
-            if (_blnConcatSelectedValue && !string.IsNullOrEmpty(SelectedValue))
-                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
 
             Log.Info("Calling CreateImprovement");
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponSkillAccuracy, _strUnique,
@@ -6683,7 +6629,7 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             foreach (XmlNode child in bonusNode.SelectNodes("metamagic"))
             {
-                int intRating = Convert.ToInt32(child.Attributes["grade"]?.InnerText ?? "-1");
+                int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1");
                 CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
             }
 

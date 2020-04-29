@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <weapons>
+    <weapon>
+      <id>78eeb006-e377-4e5a-bf69-adae197bb5d4</id>
+      <name>Underbarrel Flamethrower</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>10P</damage>
+      <ap>-4</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>4(c)</ammo>
+      <avail>16F</avail>
+      <cost>2500</cost>
+      <source>RG</source>
+      <page>53</page>
+      <range>Flamethrowers</range>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <required>
+        <OR>
+          <category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
+          <useskill>Longarms</useskill>
+          <useskill>Heavy Weapons</useskill>
+          <AND>
+            <useskill NOT="" operation="exists" />
+            <OR>
+              <category>Shotguns</category>
+              <category>Sporting Rifles</category>
+              <category>Sniper Rifles</category>
+              <category>Light Machine Guns</category>
+              <category>Medium Machine Guns</category>
+              <category>Heavy Machine Guns</category>
+              <category>Assault Cannons</category>
+              <category>Grenade Launchers</category>
+              <category>Missile Launchers</category>
+            </OR>
+          </AND>
+        </OR>
+      </required>
+    </weapon>
+    <weapon>
+      <id>2845e48b-ce4e-4fd0-af23-41f5aba86f5d</id>
+      <name>Underbarrel Chainsaw</name>
+      <category>Underbarrel Weapons</category>
+      <type>Melee</type>
+      <conceal>6</conceal>
+      <accuracy>5</accuracy>
+      <reach>1</reach>
+      <damage>8P</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>10R</avail>
+      <cost>500</cost>
+      <source>RG</source>
+      <page>53</page>
+      <useskill>Exotic Melee Weapon</useskill>
+      <required>
+        <OR>
+          <category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
+          <useskill>Longarms</useskill>
+          <useskill>Heavy Weapons</useskill>
+          <AND>
+            <useskill NOT="" operation="exists" />
+            <OR>
+              <category>Shotguns</category>
+              <category>Sporting Rifles</category>
+              <category>Sniper Rifles</category>
+              <category>Light Machine Guns</category>
+              <category>Medium Machine Guns</category>
+              <category>Heavy Machine Guns</category>
+              <category>Assault Cannons</category>
+              <category>Grenade Launchers</category>
+              <category>Missile Launchers</category>
+            </OR>
+          </AND>
+        </OR>
+      </required>
+    </weapon>
+  </weapons>
+  <accessories>
+    <accessory>
+      <name>Underbarrel Chainsaw</name>
+      <hide />
+    </accessory>
+    <accessory>
+      <name>Underbarrel Flamethrower</name>
+      <hide />
+    </accessory>
+  </accessories>
+</chummer>

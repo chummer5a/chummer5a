@@ -82,7 +82,7 @@ namespace Chummer
                     txtSelect.Text = _objEditImprovement.ImprovedName;
                     // get the selection type of improvement and generate translation
                     XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]/fields/field");
-                    txtTranslateSelection.Text = TranslateField(objFetchNode.InnerText, _objEditImprovement.ImprovedName);
+                    txtTranslateSelection.Text = TranslateField(objFetchNode?.InnerText, _objEditImprovement.ImprovedName);
                 }
             }
             cboImprovemetType.EndUpdate();
@@ -177,9 +177,9 @@ namespace Chummer
                     List<ListItem> lstActions = new List<ListItem>();
                     using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
                         if (xmlActionList != null)
-                            foreach (XmlNode xmlAction in xmlActionList)
+                            foreach (XmlNode xmlAction in xmlActionList.Cast<XmlNode>().Where(x => x["name"] != null))
                             {
-                                lstActions.Add(new ListItem(xmlAction["name"].InnerText, xmlAction["translate"]?.InnerText ?? xmlAction["name"]?.InnerText));
+                                lstActions.Add(new ListItem(xmlAction["name"].InnerText, xmlAction["translate"]?.InnerText ?? xmlAction["name"].InnerText));
                             }
 
                     frmSelectItem select = new frmSelectItem
@@ -391,9 +391,9 @@ namespace Chummer
                     List<ListItem> lstSpells = new List<ListItem>();
                     using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
                         if (xmlSpellList != null)
-                            foreach (XmlNode xmlSpell in xmlSpellList)
+                            foreach (XmlNode xmlSpell in xmlSpellList.Cast<XmlNode>().Where(x => x["name"] != null))
                             {
-                                lstSpells.Add(new ListItem(xmlSpell["name"].InnerText, xmlSpell["translate"]?.InnerText ?? xmlSpell["name"]?.InnerText));
+                                lstSpells.Add(new ListItem(xmlSpell["name"].InnerText, xmlSpell["translate"]?.InnerText ?? xmlSpell["name"].InnerText));
                             }
 
                     frmSelectItem selectSpell = new frmSelectItem
@@ -525,7 +525,7 @@ namespace Chummer
 
             // Pass it to the Improvement Manager so that it can be added to the character.
             string strGuid = Guid.NewGuid().ToString("D");
-            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
+            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, 1, txtName.Text);
 
             // If an Improvement was passed in, remove it from the character.
             string strNotes = string.Empty;

@@ -163,6 +163,37 @@ namespace Chummer.Backend.Equipment
                     ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')')
                     : string.Empty;
 
+
+            if (string.IsNullOrEmpty(Notes))
+            {
+                string strEnglishNameOnPage = Name;
+                string strNameOnPage = string.Empty;
+                // make sure we have something and not just an empty tag
+                if (objXmlLifestyleQuality.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                    !string.IsNullOrEmpty(strNameOnPage))
+                    strEnglishNameOnPage = strNameOnPage;
+
+                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+
+                if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                {
+                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+
+                    // don't check again it is not translated
+                    if (strTranslatedNameOnPage != _strName)
+                    {
+                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                        if (objXmlLifestyleQuality.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                            strTranslatedNameOnPage = strNameOnPage;
+
+                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                            strTranslatedNameOnPage);
+                    }
+                }
+                else
+                    Notes = strGearNotes;
+            }
             // If the item grants a bonus, pass the information to the Improvement Manager.
             XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
             if (xmlBonus != null)
@@ -171,7 +202,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(_strExtra))
                     ImprovementManager.ForcedValue = _strExtra;
                 if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
-                    InternalId, xmlBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                    InternalId, xmlBonus, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldForced;

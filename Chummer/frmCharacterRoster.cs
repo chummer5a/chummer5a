@@ -155,8 +155,7 @@ namespace Chummer
             {
                 foreach(TreeNode objCharacterNode in objTypeNode.Nodes)
                 {
-                    CharacterCache objCache = objCharacterNode.Tag as CharacterCache;
-                    if (objCache != null)
+                    if (objCharacterNode.Tag is CharacterCache objCache)
                     {
                         objCharacterNode.Text = objCache.CalculatedName();
                         objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
@@ -202,7 +201,6 @@ namespace Chummer
             IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
-            HashSet<string> dicWatchRoot = new HashSet<string>();
             int intWatchFolderCount = 0;
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
@@ -235,10 +233,12 @@ namespace Chummer
             if(blnRefreshWatch)
             {
                 objWatchNode = treCharacterList.FindNode("Watch", false);
-                if(objWatchNode == null && dicWatch.Count > 0)
+                objWatchNode?.Remove();
+                blnAddWatchNode = dicWatch.Count > 0;
+
+                if (blnAddWatchNode)
                 {
                     objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) { Tag = "Watch" };
-                    blnAddWatchNode = true;
                 }
 
                 lstWatchNodes = new TreeNode[intWatchFolderCount];
@@ -380,21 +380,18 @@ namespace Chummer
                             {
                                 foreach(var node in nodelist)
                                 {
-                                    var querycoll = treCharacterList.Nodes.Cast<TreeNode>().ToList();
-                                    var found = (from a in querycoll
-                                                where a.Text == node.Text && a.Tag == node.Tag
-                                                select a).ToList();
+                                    TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
                                     Program.MainForm.DoThreadSafe(() =>
                                     {
                                         try
                                         {
-                                            if (found.Any() == true)
+                                            if (objExistingNode != null)
                                             {
-                                                treCharacterList.Nodes.Remove(found.FirstOrDefault());
+                                                treCharacterList.Nodes.Remove(objExistingNode);
                                             }
 
-                                            if ((node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
-                                                || (node.Tag != null))
+                                            if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
+                                                || node.Tag != null)
                                             {
                                                 if (treCharacterList.IsDisposed)
                                                     return;
@@ -421,7 +418,6 @@ namespace Chummer
                                         {
                                             Log.Warn(e);
                                         }
-                                        
                                     });
                                 }
                             }
@@ -863,8 +859,7 @@ namespace Chummer
             
             public async void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
             {
-                var t = sender as TreeNode;
-                if (t != null)
+                if (sender is TreeNode t)
                 {
                     switch (t.Parent.Tag?.ToString())
                     {
@@ -1049,7 +1044,7 @@ namespace Chummer
                         break;
                 }
             }
-            else
+            else if (t?.Tag != null)
             {
                 switch (t.Tag.ToString())
                 {

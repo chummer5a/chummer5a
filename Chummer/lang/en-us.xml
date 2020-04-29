@@ -487,10 +487,6 @@
       <text>Unnamed Character</text>
     </string>
     <string>
-      <key>String_Break</key>
-      <text>Break</text>
-    </string>
-    <string>
       <key>Checkbox_Free</key>
       <text>Free!</text>
     </string>
@@ -1835,6 +1831,14 @@
     <string>
       <key>Message_NoValidWeaponMount</key>
       <text>The selected vehicle does not have any valid weapon mounts to add this weapon to.</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoValidModularMount</key>
+      <text>No Valid Modular Mount Found</text>
+    </string>
+    <string>
+      <key>Message_NoValidModularMount</key>
+      <text>Couldn't find a valid modular connector to attach this cyberware to.</text>
     </string>
     <string>
       <key>Message_CyberzombieConfirm</key>
@@ -3515,7 +3519,7 @@
     </string>
     <string>
       <key>String_ExpenseJoinNetwork</key>
-      <text>Joined a Network</text>
+      <text>Joined a Submersion Group</text>
     </string>
     <string>
       <key>String_ExpenseLeaveNetwork</key>
@@ -4703,24 +4707,24 @@
       <text>New Submersion Type</text>
     </string>
     <string>
-      <key>Checkbox_GroupInitiation</key>
-      <text>Group Initiation (-10%)</text>
+      <key>Checkbox_InitiationGroup</key>
+      <text>Group Initiation (-{0})</text>
     </string>
     <string>
       <key>Checkbox_InitiationOrdeal</key>
-      <text>Initiation Ordeal (-10%)</text>
+      <text>Initiation Ordeal (-{0})</text>
     </string>
     <string>
       <key>Checkbox_InitiationSchooling</key>
-      <text>Schooling (-10%)</text>
+      <text>Schooling (-{0})</text>
     </string>
     <string>
       <key>Checkbox_NetworkSubmersion</key>
-      <text>Network Submersion (-20%)</text>
+      <text>Group Submersion (-{0})</text>
     </string>
     <string>
       <key>Checkbox_SubmersionTask</key>
-      <text>Submersion Task (-20%)</text>
+      <text>Submersion Task (-{0})</text>
     </string>
     <string>
       <key>Checkbox_JoinedGroup</key>
@@ -4728,7 +4732,7 @@
     </string>
     <string>
       <key>Checkbox_JoinedNetwork</key>
-      <text>Joined Network</text>
+      <text>Joined Submersion Group</text>
     </string>
     <string>
       <key>Button_AddInitiateGrade</key>
@@ -5537,6 +5541,18 @@
     <string>
       <key>Tip_BuildPositiveQualities</key>
       <text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_CustomTimeFormat</key>
+      <text>Custom Time Format</text>
+    </string>
+    <string>
+      <key>Label_Options_DateFormat</key>
+      <text>Date Format</text>
+    </string>
+    <string>
+      <key>Label_Options_TimeFormat</key>
+      <text>Time Format</text>
     </string>
     <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
@@ -6624,6 +6640,10 @@
     <string>
       <key>Checkbox_Expense_RefundNuyen</key>
       <text>Refund (does not count towards Total Career Nuyen)</text>
+    </string>
+    <string>
+      <key>Checkbox_Expense_ForceCareerVisible</key>
+      <text>Show in Career Karma/Nuyen</text>
     </string>
     <string>
       <key>String_WorkingForTheMan</key>
@@ -7972,6 +7992,14 @@
     <string>
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>
       <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+      <text>Maximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_UnclampAttributeMinimum</key>
+      <text>Attribute values are allowed to go below 0 due to Essence Loss.</text>
     </string>
     <string>
       <key>Button_ToggleSourcebooks</key>

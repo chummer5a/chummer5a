@@ -157,7 +157,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
-			objWriter.WriteElementString("equuipped", _blnEquipped.ToString());
+			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strAllowedWeaponCategories);
 			objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
@@ -328,6 +328,7 @@ namespace Chummer.Backend.Equipment
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                     objWeaponMountOption.Create(xmlDataNode);
+                    objWeaponMountOption.IncludedInParent = true;
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
 
@@ -336,6 +337,7 @@ namespace Chummer.Backend.Equipment
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                     objWeaponMountOption.Create(xmlDataNode);
+                    objWeaponMountOption.IncludedInParent = true;
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
 
@@ -344,6 +346,7 @@ namespace Chummer.Backend.Equipment
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                     objWeaponMountOption.Create(xmlDataNode);
+                    objWeaponMountOption.IncludedInParent = true;
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
                 _strLocation = xmlNode["location"]?.InnerText ?? string.Empty;
@@ -359,7 +362,8 @@ namespace Chummer.Backend.Equipment
                                 Parent = Parent,
                                 WeaponMountParent = this
                             };
-                            objMod.Load(xmlModNode);
+                            xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{xmlModNode.InnerText}\"]");
+                            objMod.Load(xmlDataNode);
                             _lstMods.Add(objMod);
                         }
             }
@@ -699,7 +703,7 @@ namespace Chummer.Backend.Equipment
                 {
                     cost += OwnCost;
                 }
-                return cost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost) + Mods.Sum(m => m.TotalCost);
+                return cost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
 			}
         }
 
@@ -1014,14 +1018,16 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Weapon:
                     {
-                        if (AllowedWeapons != string.Empty)
+                        if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            if (!AllowedWeapons.Contains(GlobalOptions.Clipboard.SelectSingleNode("name").InnerText))
+                            string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("name")?.InnerText;
+                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
                                 return false;
                         }
-                        if (AllowedWeaponCategories != string.Empty)
+                        if (!string.IsNullOrEmpty(AllowedWeaponCategories))
                         {
-                            if (!AllowedWeaponCategories.Contains(GlobalOptions.Clipboard.SelectSingleNode("category").InnerText))
+                            string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("category")?.InnerText;
+                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
                                 return false;
                         }
 
@@ -1051,6 +1057,7 @@ namespace Chummer.Backend.Equipment
         private int _intSlots;
         private string _strAllowedWeaponCategories;
         private string _strAllowedWeapons;
+        private bool _blnIncludedInParent;
 
         #region Constructor, Create, Save and Load Methods
         public WeaponMountOption(Character objCharacter)
@@ -1139,6 +1146,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("slots", _intSlots.ToString());
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
             objWriter.WriteEndElement();
         }
 
@@ -1165,6 +1173,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("allowedweapons", ref _strAllowedWeapons);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
         }
         #endregion
 
@@ -1211,6 +1220,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public decimal TotalCost => IncludedInParent ? 0 : Cost;
         /// <summary>
         /// Slots consumed by the WeaponMountOption.
         /// </summary>
@@ -1239,6 +1249,14 @@ namespace Chummer.Backend.Equipment
 
         public int StolenTotalCost { get; set; }
 
+        /// <summary>
+        /// Does the option come with the parent object?
+        /// </summary>
+        public bool IncludedInParent
+        {
+            get => _blnIncludedInParent;
+            set => _blnIncludedInParent = value;
+        }
         #endregion
 
         #region Complex Properties

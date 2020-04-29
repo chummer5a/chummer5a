@@ -7127,7 +7127,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
           <addquality>Quick Healer</addquality>
         </addqualities>
       </bonus>
@@ -8458,7 +8458,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Hobo with a Shotgun</addquality>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
         </addqualities>
       </bonus>
       <story>A flood is coming that will wash away the filth from the streets, and $real has a message of salvation to deliver. Their mission is paramount, they know it. $real understands that salvation comes from odd angles in these godless times, and that they might have to do unconventional things for the greater good. $real's body is strong, and their resolve is stronger.</story>
@@ -12163,7 +12163,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
           <addquality>Outdoorsman</addquality>
           <addquality>Will to Live</addquality>
         </addqualities>

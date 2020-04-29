@@ -32,6 +32,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strOldValue">Substring to replace</param>
+        /// <param name="strNewValue">Substring with which <paramref name="strOldValue"/> gets replaced</param>
+        /// <param name="eStringComparison">String Comparison to use when checking for identity</param>
+        /// <returns>New string with all instances of <paramref name="strOldValue"/> replaced with <paramref name="strNewValue"/>, but where the equality check was custom-defined by <paramref name="eStringComparison"/></returns>
+        public static string Replace(this string strInput, string strOldValue, string strNewValue, StringComparison eStringComparison)
+        {
+            // Built-in Replace method uses Ordinal comparison, so just defer to that if that is what we have defined
+            if (eStringComparison == StringComparison.Ordinal)
+                return strInput.Replace(strOldValue, strNewValue);
+            // Do the check first before we do anything else so that we exit out quickly if nothing needs replacing
+            int intHead = strInput.IndexOf(strOldValue, eStringComparison);
+            if (intHead == -1)
+                return strInput;
+            // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
+            StringBuilder sbdReturn = new StringBuilder(strInput.Length + 1 + Math.Max(0, strInput.Length * (strNewValue.Length - strOldValue.Length) / strOldValue.Length));
+            int intEndPositionOfLastReplace = 0;
+            // intHead already set to the index of the first instance, for loop's initializer can be left empty
+            for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
+            {
+                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace));
+                sbdReturn.Append(strNewValue);
+                intEndPositionOfLastReplace = intHead + strOldValue.Length;
+            }
+            sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
+            return sbdReturn.ToString();
+        }
+
+        /// <summary>
         /// Method to quickly remove all instances of a char from a string (much faster than using Replace() with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -667,53 +698,67 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="strInput">Base string in which the replacing takes place.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
-        /// <param name="ToLowerInvariant">Should the match be caseINsensitiv?</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, bool ToLowerInvariant = false)
+        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            if (strInput?.Contains(strOldValue) == true)
-                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
-            if (ToLowerInvariant)
+            if (eStringComparison == StringComparison.Ordinal)
             {
-                if (strInput?.ToLowerInvariant().Contains(strOldValue.ToLowerInvariant()) == true)
-                    return strInput.ToLowerInvariant().Replace(strOldValue.ToLowerInvariant(), funcNewValueFactory.Invoke());
+                if (strInput?.Contains(strOldValue) == true)
+                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
             }
+            else if (!string.IsNullOrEmpty(strInput) && strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison);
 
             return strInput;
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="strbldInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder strbldInput, string strOldValue, Func<string> funcNewValueFactory)
+        public static void CheapReplace(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            strbldInput.CheapReplace(strbldInput.ToString(), strOldValue, funcNewValueFactory);
+            sbdInput.CheapReplace(sbdInput.ToString(), strOldValue, funcNewValueFactory, eStringComparison);
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="strbldInput">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
         /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder strbldInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory)
+        public static void CheapReplace(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            if (strOriginal?.Contains(strOldValue) == true)
-                strbldInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+            if (eStringComparison == StringComparison.Ordinal)
+            {
+                if (strOriginal?.Contains(strOldValue) == true)
+                    sbdInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+            }
+            else if (!string.IsNullOrEmpty(strOriginal) && strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+            {
+                string strOldStringBuilderValue = sbdInput.ToString();
+                sbdInput.Clear();
+                sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
+            }
         }
 
         /// <summary>

@@ -51,6 +51,7 @@
           <xs:sequence>
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="total" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            <xs:element name="natural" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -59,6 +60,7 @@
           <xs:sequence>
             <xs:element name="attributes" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            <xs:element name="natural" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>

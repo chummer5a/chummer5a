@@ -1786,6 +1786,27 @@
     </quality>
     <!--Street Grimoire Positive Qualities -->
     <quality>
+      <id>237EB46A-A012-4E0B-808A-80EDA1C1A586</id>
+      <name>Tattoo Magic</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Apprentice</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>131</page>
+    </quality>
+    <quality>
       <id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
       <name>Spirit Champion</name>
       <karma>14</karma>
@@ -1958,6 +1979,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -1993,6 +2015,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2043,6 +2066,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2086,6 +2110,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2117,6 +2142,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2215,6 +2241,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2246,6 +2273,7 @@
           <quality>The Artist's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2316,6 +2344,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Artist's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2344,13 +2373,14 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
-          <quality>The Artist's Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2362,6 +2392,43 @@
       </required>
       <source>SG</source>
       <page>178</page>
+    </quality>
+    <quality>
+      <id>43be9ef8-d7e9-47fe-ac79-7d15c508a2ad</id>
+      <name>The Twisted Way</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <!-- <bonus>
+        <forcetradition>Toxic</forcetradition>
+      </bonus> -->
+      <forbidden>
+        <oneof>
+          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
+          <quality>The Athlete's Way</quality>
+          <quality>The Beast's Way</quality>
+          <quality>The Burnout's Way</quality>
+          <quality>The Invisible Way</quality>
+          <quality>The Magician's Way</quality>
+          <quality>The Speaker's Way</quality>
+          <quality>The Spiritual Way</quality>
+          <quality>The Warrior's Way</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Apprentice</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>85</page>
     </quality>
     <quality>
       <id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
@@ -2378,6 +2445,7 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
@@ -2385,7 +2453,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Artist's Way</quality>
+          <quality>The Twisted Way</quality>
         </oneof>
       </forbidden>
       <required>
@@ -3458,7 +3526,22 @@
       <name>Witness My Hate</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <spelldescriptordamage>
+          <descriptor>Direct,NOT(Area)</descriptor>
+          <val>2</val>
+        </spelldescriptordamage>
+        <spelldescriptordrain>
+          <descriptor>Direct,NOT(Area)</descriptor>
+          <val>2</val>
+        </spelldescriptordrain>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aspected Magician</quality>
+          <quality>Magician</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3859,6 +3942,7 @@
       <name>In Debt</name>
       <karma>-1</karma>
       <category>Negative</category>
+      <contributetobp>False</contributetobp>
       <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>
@@ -4479,19 +4563,6 @@
       </required>
       <source>RF</source>
       <page>105</page>
-    </quality>
-    <quality>
-      <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
-      <name>Magic Sense</name>
-      <karma>7</karma>
-      <category>Positive</category>
-      <required>
-        <allof>
-          <metatype>Centaur</metatype>
-        </allof>
-      </required>
-      <source>SG</source>
-      <page>172</page>
     </quality>
     <quality>
       <id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
@@ -5576,13 +5647,14 @@
     </quality>
     <quality>
       <id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-      <name>Magic Sense (Changeling)</name>
+      <name>Magic Sense</name>
       <karma>7</karma>
       <category>Positive</category>
       <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
+          <metatype>Centaur</metatype>
           <quality>Changeling (Class I SURGE)</quality>
           <quality>Changeling (Class II SURGE)</quality>
           <quality>Changeling (Class III SURGE)</quality>
@@ -18481,7 +18553,7 @@
     <quality>
       <id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
       <name>Sprite Combustion</name>
-      <karma>-5</karma>
+      <karma>-13</karma>
       <category>Negative</category>
       <bonus />
       <required>
@@ -19005,6 +19077,7 @@
       <name>Stolen Gear</name>
       <karma>-1</karma>
       <category>Negative</category>
+      <contributetobp>False</contributetobp>
       <limit>20</limit>
       <bonus>
         <nuyenamt condition="Stolen">10000</nuyenamt>

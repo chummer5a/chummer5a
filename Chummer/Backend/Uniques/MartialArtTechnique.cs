@@ -97,7 +97,7 @@ namespace Chummer
 
             if (xmlTechniqueDataNode["bonus"] == null) return;
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique,
-                _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
+                _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], 1, DisplayName(GlobalOptions.Language)))
             {
                 _guiID = Guid.Empty;
             }

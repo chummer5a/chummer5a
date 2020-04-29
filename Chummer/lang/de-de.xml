@@ -2733,20 +2733,20 @@
 			<text>Netzwerk:</text>
 		</string>
 		<string>
-			<key>Checkbox_GroupInitiation</key>
-			<text>Gruppeninitiation (-20%)</text>
+			<key>Checkbox_InitiationGroup</key>
+			<text>Gruppeninitiation (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>Initiationsprüfung (-20%)</text>
+			<text>Initiationsprüfung (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>Netzwerkwandlung (-20%)</text>
+			<text>Netzwerkwandlung (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>Wandlungsaufgabe (-20%)</text>
+			<text>Wandlungsaufgabe (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>
@@ -6474,10 +6474,6 @@
 		</string>
 		<!-- Version 445 -->
 		<string>
-			<key>String_Break</key>
-			<text>Gruppe auftrennen</text>
-		</string>
-		<string>
 			<key>Label_Options_DefaultCharacterSheet</key>
 			<text>Standard Charakterbogen:</text>
 		</string>
@@ -9806,6 +9802,34 @@
 		<string>
 			<key>String_MetersPerHit</key>
 			<text>m/Erfolg</text>
+		</string>
+		<string>
+			<key>String_SuppressedBy</key>
+			<text>Verdrängt durch {0}</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+			<text>Maximaler Bonus auf Stärke und Geschicklichkeit, den Cybergliedmaßen haben können (unterliegt unverändert dem erweiterten Maximum)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CustomTimeFormat</key>
+			<text>Benutzerdefiniertes Zeitformat</text>
+		</string>
+		<string>
+			<key>Label_Options_DateFormat</key>
+			<text>Datumsformat</text>
+		</string>
+		<string>
+			<key>Label_Options_TimeFormat</key>
+			<text>Zeitformat</text>
+		</string>
+		<string>
+			<key>MessageTitle_NoValidModularMount</key>
+			<text>Keinen passenden Modulanschluss gefunden</text>
+		</string>
+		<string>
+			<key>Message_NoValidModularMount</key>
+			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden.</text>
 		</string>
 	</strings>
 </chummer>

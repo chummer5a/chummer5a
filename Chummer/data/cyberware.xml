@@ -2182,7 +2182,7 @@
       <name>False Face</name>
       <category>Headware</category>
       <ess>0.5</ess>
-      <capacity>0</capacity>
+      <capacity>[8]</capacity>
       <avail>12R</avail>
       <cost>20000</cost>
       <source>CF</source>
@@ -4541,7 +4541,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>87</page>
-      <rating>6</rating>
+      <rating>4</rating>
       <required>
         <parentdetails>
           <OR>
@@ -6006,6 +6006,10 @@
       <cost>650</cost>
       <source>HT</source>
       <page>186</page>
+      <allowgear>
+        <gearcategory>Drugs</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+      </allowgear>
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <required>
         <parentdetails>
@@ -8353,6 +8357,7 @@
       <name>Busted Ware</name>
       <category>Bodyware</category>
       <ess>0.5</ess>
+      <limit>False</limit>
       <capacity>0</capacity>
       <avail>0</avail>
       <removalcost>16000</removalcost>

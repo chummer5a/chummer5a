@@ -679,67 +679,46 @@ namespace Chummer
                     .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
             }
 
-            if (chkExtended.Checked && !blnExtendedFound)
+            bool force = strDV.StartsWith('F');
+            strDV = strDV.TrimStartOnce('F');
+            //Navigator can't do math on a single value, so inject a mathable value.
+            if (string.IsNullOrEmpty(strDV))
             {
-                // Add +2 to the DV value if Extended is selected.
-                int intPos = strDV.IndexOf(')') + 1;
-                string strAfter;
-                if (intPos > 0)
-                {
-                    strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                    strDV = strDV.Substring(0, intPos);
-                    if (string.IsNullOrEmpty(strAfter))
-                        strAfter = "+2";
-                    else
-                    {
-                        int intValue = Convert.ToInt32(strAfter) + 2;
-                        if (intValue == 0)
-                            strAfter = string.Empty;
-                        else if (intValue > 0)
-                            strAfter = '+' + intValue.ToString();
-                        else
-                            strAfter = intValue.ToString();
-                    }
-                }
-                else
-                {
-                    strAfter = "+2";
-                }
-                
-                strDV += strAfter;
+                strDV = "0";
             }
-
-            if (chkLimited.Checked)
+            else
             {
                 int intPos = strDV.IndexOf('-');
                 if (intPos != -1)
                 {
-                    intPos = intPos + 1;
-                    string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                    strDV = strDV.Substring(0, intPos);
-                    int intAfter = Convert.ToInt32(strAfter);
-                    intAfter += 2;
-                    strDV += intAfter.ToString();
+                    strDV = strDV.Substring(intPos);
                 }
                 else
                 {
                     intPos = strDV.IndexOf('+');
                     if (intPos != -1)
                     {
-                        string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                        strDV = strDV.Substring(0, intPos);
-                        int intAfter = Convert.ToInt32(strAfter);
-                        intAfter -= 2;
-                        if (intAfter > 0)
-                            strDV += '+' + intAfter.ToString();
-                        else if (intAfter < 0)
-                            strDV += intAfter.ToString();
-                    }
-                    else
-                    {
-                        strDV += "-2";
+                        strDV = strDV.Substring(intPos);
                     }
                 }
+            }
+
+            if (Limited)
+            {
+                strDV += " + -2";
+            }
+            if (Extended && !Name.EndsWith("Extended"))
+            {
+                strDV += " + 2";
+            }
+            object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
+            if (force)
+            {
+                strDV = $"F{xprResult:+0;-0;}";
+            }
+            else if (xprResult.ToString() != "0")
+            {
+                strDV += xprResult;
             }
 
             lblDV.Text = strDV;

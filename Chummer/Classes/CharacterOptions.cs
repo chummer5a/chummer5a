@@ -119,7 +119,9 @@ namespace Chummer
         private bool _blnAllowTechnomancerSchooling;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
-        
+        private int _intCyberlimbAttributeBonusCap = 4;
+        private bool _blnUnclampAttributeMinimum = false;
+
         // Karma variables.
         private int _intKarmaAttribute = 5;
         private int _intKarmaCarryover = 7;
@@ -411,7 +413,11 @@ namespace Chummer
             objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString());
             // <allowtechnomancerschooling />
             objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString());
-
+            // <cyberlimbattributebonuscap />
+            objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString());
+            // <clampattributeminimum />
+            objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString());
+            
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
             // <karmaattribute />
@@ -778,7 +784,10 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _allowFreeGrids);
             // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened. 
             objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
-            
+            // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customisation. 
+            objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+            // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss. 
+            objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
             if (objXmlNode != null)
@@ -1838,8 +1847,17 @@ namespace Chummer
             get => _blnFreeSpiritPowerPointsMAG;
             set => _blnFreeSpiritPowerPointsMAG = value;
         }
+
+        /// <summary>
+        /// House rule: Attribute values are clamped to 0 or are allowed to go below 0 due to Essence Loss.
+        /// </summary>
+        public bool UnclampAttributeMinimum
+        {
+            get => _blnUnclampAttributeMinimum;
+            set => _blnUnclampAttributeMinimum = value;
+        }
         #endregion
-        
+
         #region Karma
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.
@@ -2058,7 +2076,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost for an Initiation = KarmaInititationFlat + (New Rating x this value).
+        /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
         public int KarmaInitiation
         {
@@ -2067,9 +2085,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost for an Initiation = this value + (New Rating x KarmaInititation).
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
         /// </summary>
-        public int KarmaInititationFlat
+        public int KarmaInitiationFlat
         {
             get => _intKarmaInitiationFlat;
             set => _intKarmaInitiationFlat = value;
@@ -2406,6 +2424,44 @@ namespace Chummer
             get => _blnAllowTechnomancerSchooling;
             set => _blnAllowTechnomancerSchooling = value;
         }
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public int CyberlimbAttributeBonusCap
+        {
+            get => _intCyberlimbAttributeBonusCap;
+            set => _intCyberlimbAttributeBonusCap = value;
+        }
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
+        public decimal KarmaMAGInitiationGroupPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
+        /// </summary>
+        public decimal KarmaRESInitiationGroupPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaMAGInitiationOrdealPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaRESInitiationOrdealPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaMAGInitiationSchoolingPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaRESInitiationSchoolingPercent { get; set; } = 0.1m;
 
         #endregion
 

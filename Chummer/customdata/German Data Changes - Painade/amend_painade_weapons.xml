@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<weapon amendoperation="addnode">
+  <id>e52049c2-35d1-4918-96b6-8c7bbf3010a6</id>
+  <name>Grenade: Painade</name>
+  <category>Gear</category>
+  <type>Ranged</type>
+  <conceal>0</conceal>
+  <accuracy>Physical</accuracy>
+  <reach>0</reach>
+  <damage>Special</damage>
+  <ap>-</ap>
+  <mode>0</mode>
+  <rc>0</rc>
+  <ammo>0</ammo>
+  <avail>12R</avail>
+  <cost>150</cost>
+  <source>CA</source>
+  <page>135</page>
+  <range>Standard Grenade</range>
+  <spec>Non-Aerodynamic</spec>
+  <useskill>Throwing Weapons</useskill>
+</weapon>

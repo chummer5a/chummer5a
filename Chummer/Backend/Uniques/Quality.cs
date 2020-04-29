@@ -90,6 +90,7 @@ namespace Chummer
         private bool _blnMutant;
         private string _strNotes = string.Empty;
         private bool _blnImplemented = true;
+        private bool _blnContributeToBP = true;
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
@@ -187,7 +188,8 @@ namespace Chummer
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             if (!objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic))
             {
-                objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic);
+                //Shim for customdata files that have the old name for the metagenic flag. 
+                objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenic);
             }
             if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -198,6 +200,7 @@ namespace Chummer
             objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
+            objXmlQuality.TryGetBoolFieldQuickly("contributetobp", ref _blnContributeToBP);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objXmlQuality.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
@@ -221,14 +224,25 @@ namespace Chummer
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                        if (objXmlWeapon != null)
+                        {
+                            int intAddWeaponRating = 0;
+                            if (objXmlAddWeapon.Attributes?["rating"]?.InnerText != null)
+                            {
+                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText);
+                            }
+                            Weapon objGearWeapon = new Weapon(_objCharacter);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons,true, true,true, intAddWeaponRating);
+                            objGearWeapon.ParentID = InternalId;
+                            objGearWeapon.Cost = "0";
+                            lstWeapons.Add(objGearWeapon);
 
-                        Weapon objGearWeapon = new Weapon(_objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                        objGearWeapon.ParentID = InternalId;
-                        objGearWeapon.Cost = "0";
-                        lstWeapons.Add(objGearWeapon);
-
-                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                            Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                        }
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                        }
                     }
                 }
 
@@ -270,7 +284,7 @@ namespace Chummer
             if (_nodBonus?.ChildNodes.Count > 0)
             {
                 ImprovementManager.ForcedValue = strForceValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, _nodBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, _nodBonus, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -288,7 +302,7 @@ namespace Chummer
             if (_nodFirstLevelBonus?.ChildNodes.Count > 0 && Levels == 0)
             {
                 ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, _nodFirstLevelBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, _nodFirstLevelBonus, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -342,6 +356,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("bp", _intBP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
+            objWriter.WriteElementString("contributetobp", _blnContributeToBP.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("stagedpurchase", _blnStagedPurchase.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
@@ -402,6 +417,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
+            objNode.TryGetBoolFieldQuickly("contributetobp", ref _blnContributeToBP);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
@@ -411,6 +427,11 @@ namespace Chummer
             _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp))
+            {
+                _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
+            }
+            //Shim for characters files that have the old name for the metagenic flag. 
+            else if (objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
             {
                 _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
             }
@@ -795,7 +816,7 @@ namespace Chummer
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && imp.ImprovedName == SourceIDString ||
                     imp.ImprovedName == Name))
                     return false;
-                return true;
+                return _blnContributeToBP;
             }
         }
 
@@ -836,18 +857,18 @@ namespace Chummer
             get
             {
                 if (_intCachedSuppressed != -1) return _intCachedSuppressed == 1;
-                var impList = _objCharacter.Improvements.Where(imp =>
+                _intCachedSuppressed = Convert.ToInt32(_objCharacter.Improvements.Count(imp =>
                     imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)).ToList();
-                _intCachedSuppressed = impList.Count;
-                //TODO: Probably cheaper to check .Any() and copypaste the predicate. Mostly just did it this way because I found it neater.
-                if (impList.Count > 0)
+                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)));
+                if (_intCachedSuppressed > 0)
                 {
-                    ImprovementManager.DisableImprovements(_objCharacter, impList);
+                    ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                        imp.SourceName == SourceIDString).ToList());
                 }
                 else
                 {
-                    ImprovementManager.EnableImprovements(_objCharacter, impList);
+                    ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                        imp.SourceName == SourceIDString).ToList());
                 }
 
                 return _intCachedSuppressed == 1;

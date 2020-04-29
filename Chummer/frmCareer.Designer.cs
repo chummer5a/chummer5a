@@ -260,6 +260,8 @@ namespace Chummer
             this.grpCMEdge = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblEDGInfo = new System.Windows.Forms.Label();
+            this.lblCMDodgeLabel = new Chummer.LabelWithToolTip();
+            this.lblCMDodge = new Chummer.LabelWithToolTip();
             this.tabOtherInfo = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblFlyLabel = new System.Windows.Forms.Label();
@@ -285,6 +287,8 @@ namespace Chummer
             this.lblESSMax = new System.Windows.Forms.Label();
             this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
             this.lblSurprise = new Chummer.LabelWithToolTip();
+            this.lblDodgeLabel = new Chummer.LabelWithToolTip();
+            this.lblDodge = new Chummer.LabelWithToolTip();
             this.tabDefences = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
@@ -353,6 +357,7 @@ namespace Chummer
             this.tsArmorGearNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmorMod = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsArmorModNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsArmorModAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsQuality = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsQualityNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSpell = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -563,8 +568,6 @@ namespace Chummer
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.flpInitiationButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddMetamagic = new SplitButton();
-            this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
@@ -1309,6 +1312,8 @@ namespace Chummer
             this.flowLayoutPanel29 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddPet = new SplitButton();
             this.panPets = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.panAttributes = new System.Windows.Forms.Panel();
             this.cmsBioware = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsBiowareNotes = new System.Windows.Forms.ToolStripMenuItem();
@@ -1357,10 +1362,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblCMDodgeLabel = new Chummer.LabelWithToolTip();
-            this.lblCMDodge = new Chummer.LabelWithToolTip();
-            this.lblDodgeLabel = new Chummer.LabelWithToolTip();
-            this.lblDodge = new Chummer.LabelWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1462,7 +1463,6 @@ namespace Chummer
             this.tabInitiation.SuspendLayout();
             this.tlpInitiation.SuspendLayout();
             this.flpInitiationButtons.SuspendLayout();
-            this.cmsInitiationNotes.SuspendLayout();
             this.flpInitiation.SuspendLayout();
             this.gpbInitiationType.SuspendLayout();
             this.flpInitiationCheckboxes.SuspendLayout();
@@ -1603,6 +1603,7 @@ namespace Chummer
             this.tabPets.SuspendLayout();
             this.tlpPets.SuspendLayout();
             this.flowLayoutPanel29.SuspendLayout();
+            this.cmsInitiationNotes.SuspendLayout();
             this.cmsBioware.SuspendLayout();
             this.cmsAdvancedLifestyle.SuspendLayout();
             this.cmsGearLocation.SuspendLayout();
@@ -3955,6 +3956,30 @@ namespace Chummer
             this.lblEDGInfo.Text = "[0]";
             this.lblEDGInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblCMDodgeLabel
+            // 
+            this.lblCMDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCMDodgeLabel.AutoSize = true;
+            this.lblCMDodgeLabel.Location = new System.Drawing.Point(64, 56);
+            this.lblCMDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMDodgeLabel.Name = "lblCMDodgeLabel";
+            this.lblCMDodgeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblCMDodgeLabel.TabIndex = 76;
+            this.lblCMDodgeLabel.Tag = "Label_Dodge";
+            this.lblCMDodgeLabel.Text = "Dodge:";
+            this.lblCMDodgeLabel.ToolTipText = "";
+            // 
+            // lblCMDodge
+            // 
+            this.lblCMDodge.AutoSize = true;
+            this.lblCMDodge.Location = new System.Drawing.Point(112, 56);
+            this.lblCMDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMDodge.Name = "lblCMDodge";
+            this.lblCMDodge.Size = new System.Drawing.Size(19, 13);
+            this.lblCMDodge.TabIndex = 77;
+            this.lblCMDodge.Text = "[0]";
+            this.lblCMDodge.ToolTipText = "";
+            // 
             // tabOtherInfo
             // 
             this.tabOtherInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
@@ -4293,6 +4318,30 @@ namespace Chummer
             this.lblSurprise.TabIndex = 90;
             this.lblSurprise.Text = "0";
             this.lblSurprise.ToolTipText = "";
+            // 
+            // lblDodgeLabel
+            // 
+            this.lblDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDodgeLabel.AutoSize = true;
+            this.lblDodgeLabel.Location = new System.Drawing.Point(96, 231);
+            this.lblDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodgeLabel.Name = "lblDodgeLabel";
+            this.lblDodgeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblDodgeLabel.TabIndex = 91;
+            this.lblDodgeLabel.Tag = "Label_Dodge";
+            this.lblDodgeLabel.Text = "Dodge:";
+            this.lblDodgeLabel.ToolTipText = "";
+            // 
+            // lblDodge
+            // 
+            this.lblDodge.AutoSize = true;
+            this.lblDodge.Location = new System.Drawing.Point(144, 231);
+            this.lblDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodge.Name = "lblDodge";
+            this.lblDodge.Size = new System.Drawing.Size(13, 13);
+            this.lblDodge.TabIndex = 92;
+            this.lblDodge.Text = "0";
+            this.lblDodge.ToolTipText = "";
             // 
             // tabDefences
             // 
@@ -5029,18 +5078,28 @@ namespace Chummer
             // cmsArmorMod
             // 
             this.cmsArmorMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsArmorModNotes});
+            this.tsArmorModNotes,
+            this.tsArmorModAddAsPlugin});
             this.cmsArmorMod.Name = "cmsArmorMod";
-            this.cmsArmorMod.Size = new System.Drawing.Size(106, 26);
+            this.cmsArmorMod.Size = new System.Drawing.Size(148, 48);
             // 
             // tsArmorModNotes
             // 
             this.tsArmorModNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsArmorModNotes.Name = "tsArmorModNotes";
-            this.tsArmorModNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsArmorModNotes.Size = new System.Drawing.Size(147, 22);
             this.tsArmorModNotes.Tag = "Menu_Notes";
             this.tsArmorModNotes.Text = "&Notes";
             this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
+            // 
+            // tsArmorModAddAsPlugin
+            // 
+            this.tsArmorModAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsArmorModAddAsPlugin.Name = "tsArmorModAddAsPlugin";
+            this.tsArmorModAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorModAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsArmorModAddAsPlugin.Text = "&Add as Plugin";
+            this.tsArmorModAddAsPlugin.Click += new System.EventHandler(this.tsArmorGearAddAsPlugin_Click);
             // 
             // cmsQuality
             // 
@@ -7851,22 +7910,6 @@ namespace Chummer
             this.cmdAddMetamagic.UseVisualStyleBackColor = true;
             this.cmdAddMetamagic.Click += new System.EventHandler(this.cmdAddMetamagic_Click);
             // 
-            // cmsInitiationNotes
-            // 
-            this.cmsInitiationNotes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsInitiationNotes});
-            this.cmsInitiationNotes.Name = "cmsMetamagic";
-            this.cmsInitiationNotes.Size = new System.Drawing.Size(106, 26);
-            // 
-            // tsInitiationNotes
-            // 
-            this.tsInitiationNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsInitiationNotes.Name = "tsInitiationNotes";
-            this.tsInitiationNotes.Size = new System.Drawing.Size(105, 22);
-            this.tsInitiationNotes.Tag = "Menu_Notes";
-            this.tsInitiationNotes.Text = "&Notes";
-            this.tsInitiationNotes.Click += new System.EventHandler(this.tsInitiationNotes_Click);
-            // 
             // cmdDeleteMetamagic
             // 
             this.cmdDeleteMetamagic.AutoSize = true;
@@ -8024,7 +8067,7 @@ namespace Chummer
             this.chkInitiationGroup.Name = "chkInitiationGroup";
             this.chkInitiationGroup.Size = new System.Drawing.Size(129, 17);
             this.chkInitiationGroup.TabIndex = 126;
-            this.chkInitiationGroup.Tag = "Checkbox_GroupInitiation";
+            this.chkInitiationGroup.Tag = "Checkbox_InitiationGroup";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
             this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
@@ -16211,7 +16254,6 @@ namespace Chummer
             this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode24});
             this.treVehicles.ShowNodeToolTips = true;
-            this.treVehicles.ShowRootLines = false;
             this.treVehicles.Size = new System.Drawing.Size(295, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
@@ -17823,6 +17865,22 @@ namespace Chummer
             this.panPets.Size = new System.Drawing.Size(178, 570);
             this.panPets.TabIndex = 25;
             // 
+            // cmsInitiationNotes
+            // 
+            this.cmsInitiationNotes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsInitiationNotes});
+            this.cmsInitiationNotes.Name = "cmsMetamagic";
+            this.cmsInitiationNotes.Size = new System.Drawing.Size(106, 26);
+            // 
+            // tsInitiationNotes
+            // 
+            this.tsInitiationNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsInitiationNotes.Name = "tsInitiationNotes";
+            this.tsInitiationNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsInitiationNotes.Tag = "Menu_Notes";
+            this.tsInitiationNotes.Text = "&Notes";
+            this.tsInitiationNotes.Click += new System.EventHandler(this.tsInitiationNotes_Click);
+            // 
             // panAttributes
             // 
             this.panAttributes.Location = new System.Drawing.Point(0, 0);
@@ -18229,50 +18287,6 @@ namespace Chummer
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
-            // lblCMDodgeLabel
-            // 
-            this.lblCMDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCMDodgeLabel.AutoSize = true;
-            this.lblCMDodgeLabel.Location = new System.Drawing.Point(64, 56);
-            this.lblCMDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCMDodgeLabel.Name = "lblCMDodgeLabel";
-            this.lblCMDodgeLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblCMDodgeLabel.TabIndex = 76;
-            this.lblCMDodgeLabel.Tag = "Label_Dodge";
-            this.lblCMDodgeLabel.Text = "Dodge:";
-            // 
-            // lblCMDodge
-            // 
-            this.lblCMDodge.AutoSize = true;
-            this.lblCMDodge.Location = new System.Drawing.Point(112, 56);
-            this.lblCMDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCMDodge.Name = "lblCMDodge";
-            this.lblCMDodge.Size = new System.Drawing.Size(19, 13);
-            this.lblCMDodge.TabIndex = 77;
-            this.lblCMDodge.Text = "[0]";
-            // 
-            // lblDodgeLabel
-            // 
-            this.lblDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblDodgeLabel.AutoSize = true;
-            this.lblDodgeLabel.Location = new System.Drawing.Point(96, 231);
-            this.lblDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDodgeLabel.Name = "lblDodgeLabel";
-            this.lblDodgeLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblDodgeLabel.TabIndex = 91;
-            this.lblDodgeLabel.Tag = "Label_Dodge";
-            this.lblDodgeLabel.Text = "Dodge:";
-            // 
-            // lblDodge
-            // 
-            this.lblDodge.AutoSize = true;
-            this.lblDodge.Location = new System.Drawing.Point(144, 231);
-            this.lblDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDodge.Name = "lblDodge";
-            this.lblDodge.Size = new System.Drawing.Size(13, 13);
-            this.lblDodge.TabIndex = 92;
-            this.lblDodge.Text = "0";
-            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -18447,7 +18461,6 @@ namespace Chummer
             this.tlpInitiation.PerformLayout();
             this.flpInitiationButtons.ResumeLayout(false);
             this.flpInitiationButtons.PerformLayout();
-            this.cmsInitiationNotes.ResumeLayout(false);
             this.flpInitiation.ResumeLayout(false);
             this.flpInitiation.PerformLayout();
             this.gpbInitiationType.ResumeLayout(false);
@@ -18696,6 +18709,7 @@ namespace Chummer
             this.tlpPets.PerformLayout();
             this.flowLayoutPanel29.ResumeLayout(false);
             this.flowLayoutPanel29.PerformLayout();
+            this.cmsInitiationNotes.ResumeLayout(false);
             this.cmsBioware.ResumeLayout(false);
             this.cmsAdvancedLifestyle.ResumeLayout(false);
             this.cmsGearLocation.ResumeLayout(false);
@@ -18836,6 +18850,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareNotes;
         private System.Windows.Forms.ContextMenuStrip cmsArmorMod;
         private System.Windows.Forms.ToolStripMenuItem tsArmorModNotes;
+        private System.Windows.Forms.ToolStripMenuItem tsArmorModAddAsPlugin;
         private System.Windows.Forms.ContextMenuStrip cmsQuality;
         private System.Windows.Forms.ToolStripMenuItem tsQualityNotes;
         private System.Windows.Forms.ToolStripMenuItem tsMartialArtsNotes;

@@ -526,7 +526,19 @@ namespace Chummer
                 : LanguageManager.GetString("Label_Rating");
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
-            chkBlackMarketDiscount.Checked = _blnIsParentWeaponBlackMarketAllowed;
+
+
+            if (!chkBlackMarketDiscount.Checked)
+            {
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
+            }
+            else if (!_blnIsParentWeaponBlackMarketAllowed)
+            {
+                //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                chkBlackMarketDiscount.Checked = false;
+            }
+
+            chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
