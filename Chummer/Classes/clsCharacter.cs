@@ -185,6 +185,8 @@ namespace Chummer
         // Spirit Reputation
         private int _intSpiritIndex;
         private int _intWildSpiritIndex;
+        private int _intWildReputationBurned;
+        private int _intAstralReputationBurned;
 
         // Priority Selections.
         private string _strGameplayOption = "Standard";
@@ -1858,6 +1860,10 @@ namespace Chummer
             objWriter.WriteElementString("spiritindex", _intSpiritIndex.ToString());
             // <wildspiritindex />
             objWriter.WriteElementString("wildspiritindex", _intWildSpiritIndex.ToString());
+            // <wildreputationburned />
+            objWriter.WriteElementString("wildreputationburned", _intWildReputationBurned.ToString());
+            // <wildreputationburned />
+            objWriter.WriteElementString("astralreputationburned", _intAstralReputationBurned.ToString());
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <maxavail />
@@ -2826,6 +2832,8 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("spiritindex", ref _intSpiritIndex);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("wildspiritindex", ref _intWildSpiritIndex);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("wildreputationburned", ref _intWildReputationBurned);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("astralreputationburned", ref _intAstralReputationBurned);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
@@ -7686,7 +7694,23 @@ if (!Utils.IsUnitTest){
         /// </summary>
         public int AstralReputation =>
             (int) Math.Max(Math.Floor((double) (SpiritIndex / 25)) +
-                ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation), 0);
+                ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation) - AstralReputationBurned, 0);
+
+        /// <summary>
+        /// Points of Astral Reputation that have been burned. Mostly expected to have been burned by reducing Wild Reputation.
+        /// </summary>
+        public int AstralReputationBurned
+        {
+            get => _intAstralReputationBurned;
+            set
+            {
+                if (_intAstralReputationBurned != value)
+                {
+                    _intAstralReputationBurned = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Spirit Index (SG 207).
@@ -7705,12 +7729,29 @@ if (!Utils.IsUnitTest){
         }
 
         /// <summary>
-        /// Astral Reputation.
+        /// Reputation with Wild Spirits (FA 175).
         /// </summary>
         public int WildReputation =>
-            (int)Math.Max(Math.Floor((double)(SpiritIndex / 25)) +
-                          ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild), 0);
+            (int) Math.Max(
+                Math.Floor((double) (WildSpiritIndex / 25)) +
+                ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild) -
+                WildReputationBurned, 0);
 
+        /// <summary>
+        /// Points of Wild Reputation that have been burned. Mostly expected to have been burned by reducing Astral Reputation.
+        /// </summary>
+        public int WildReputationBurned
+        {
+            get => _intWildReputationBurned;
+            set
+            {
+                if (_intWildReputationBurned != value)
+                {
+                    _intWildReputationBurned = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         /// <summary>
         /// Wild Spirit Index (FA 175).
         /// </summary>
