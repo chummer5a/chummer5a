@@ -188,7 +188,8 @@ namespace Chummer
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             if (!objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic))
             {
-                objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic);
+                //Shim for customdata files that have the old name for the metagenic flag. 
+                objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenic);
             }
             if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -426,6 +427,11 @@ namespace Chummer
             _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp))
+            {
+                _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
+            }
+            //Shim for characters files that have the old name for the metagenic flag. 
+            else if (objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
             {
                 _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
             }

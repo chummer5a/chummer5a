@@ -21,6 +21,7 @@ Application Fixes:
 - Fixed behaviour of Mystic Adepts receiving Power Point discounts from their total magic instead of the number of power points that have been paid for. 
 - Fixed a regression in behaviour of weapon mount options that caused them to be included in the cost of vehicles where the weapon mount comes with the weapon. Existing vehicles with this behaviour will need to be re-purchased. 
 - Fixed a regression with Custom Traditions not being properly loaded. Closes #4077
+- Fixed a regression in behaviour of metagenetic qualities not loading their metagenic flag properly when using the old naming convention.
 
 Data Changes:
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
