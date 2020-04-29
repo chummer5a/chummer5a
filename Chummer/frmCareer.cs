@@ -17107,12 +17107,15 @@ private void RefreshSelectedSpell()
         {
             if (panContacts.Controls.Count > 0)
             {
+                panContacts.SuspendLayout();
                 bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
 
                 foreach (ContactControl c in panContacts.Controls)
                 {
                     c.Expanded = !toggle;
                 }
+
+                panContacts.ResumeLayout();
             }
         }
 
