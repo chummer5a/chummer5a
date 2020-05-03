@@ -9829,7 +9829,15 @@
 		</string>
 		<string>
 			<key>Message_NoValidModularMount</key>
-			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden.</text>
+			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UnclampAttributeMinimum</key>
+			<text>Attributswerte dürfen wegen Essenzverlust unter 0 sinken</text>
+		</string>
+		<string>
+			<key>Checkbox_Expense_ForceCareerVisible</key>
+			<text>Anzeigen von Karma/Nuyen im Karrieremodus</text>
 		</string>
 	</strings>
 </chummer>
