@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <mentors>
+    <mentor>
+      <name>Disease</name>
+      <required amendoperation="replace">
+        <oneof>
+          <quality>The Twisted Way</quality>
+          <tradition>Toxic</tradition>
+        </oneof>
+      </required>
+    </mentor>
+    <mentor>
+      <name>Doom</name>
+      <required amendoperation="replace">
+        <oneof>
+          <quality>The Twisted Way</quality>
+          <tradition>Toxic</tradition>
+        </oneof>
+      </required>
+    </mentor>
+    <mentor>
+      <name>Mutation</name>
+      <required amendoperation="replace">
+        <oneof>
+          <quality>The Twisted Way</quality>
+          <tradition>Toxic</tradition>
+        </oneof>
+      </required>
+    </mentor>
+    <mentor>
+      <name>Pollution</name>
+      <required amendoperation="replace">
+        <oneof>
+          <quality>The Twisted Way</quality>
+          <tradition>Toxic</tradition>
+        </oneof>
+      </required>
+    </mentor>
+  </mentors>
+</chummer>

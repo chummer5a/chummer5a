@@ -1,0 +1,8 @@
+<tradition>
+  <name>Toxic</name>
+  <required amendoperation="remove">
+    <allof>
+      <quality>The Twisted Way</quality>
+    </allof>
+  </required>
+</tradition>

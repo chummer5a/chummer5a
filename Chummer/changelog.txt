@@ -36,6 +36,7 @@ Data Changes:
 - Fixed incorrect Karma value for the Sprite Combusion quality.
 - Yard lifestyle quality can now be taken multiple times. Fixes incorrect page references for Yard and Zen Den.
 - Added new Focus objects in gear.xml to support Individualising Focus rules from Street Grimoire. 
+- Added amend files to remove the requirement for the toxic tradition and toxic mentors from requiring the Twisted Way.
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum
