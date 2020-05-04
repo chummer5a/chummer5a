@@ -236,7 +236,7 @@ namespace Chummer
 
                 string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
                 if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
+                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + Condition + ')';
                 return strReturn;
             }
         }
