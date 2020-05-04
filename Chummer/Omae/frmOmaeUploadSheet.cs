@@ -106,7 +106,7 @@ namespace Chummer
             // Make sure there is at least some sort of description.
             if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OameUpload_SheetDescription", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetDescription", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_SheetDescription", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetDescription", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 

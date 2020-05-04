@@ -158,13 +158,41 @@ namespace Chummer
             set => _strLimit = value;
         }
 
+        private string _strCachedCondition = string.Empty;
+
         /// <summary>
         /// Condition.
         /// </summary>
         public string Condition
         {
-            get => _strCondition;
-            set => _strCondition = value;
+            get
+            {
+                // If we've already cached a value for this, just return it.
+                // TODO: invalidate cache if active language changes
+                // (Ghetto fix cache culture tag and compare to current?)
+                if (!string.IsNullOrWhiteSpace(_strCachedCondition))
+                {
+                    return _strCachedCondition;
+                }
+
+                // Assume that if the original string contains spaces it's not a
+                // valid language key. Spare checking it against the dictionary. 
+                _strCachedCondition = _strCondition.Contains(' ')
+                    ? _strCondition
+                    : LanguageManager.GetString(_strCondition, false);
+                if (string.IsNullOrWhiteSpace(_strCachedCondition))
+                {
+                    _strCachedCondition = _strCondition;
+                }
+
+                return _strCachedCondition;
+            }
+            set
+            {
+                if (value == _strCondition) return;
+                _strCondition = value;
+                _strCachedCondition = string.Empty;
+            }
         }
 
         /// <summary>

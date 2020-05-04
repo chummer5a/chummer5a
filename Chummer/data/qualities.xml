@@ -2551,7 +2551,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Academic Knowledge Skills</condition>
+          <condition>LimitCondition_SkillsKnowledgeAcademic</condition>
         </limitmodifier>
       </bonus>
       <source>SASS</source>
@@ -2782,7 +2782,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Limited to Single Sprawl</condition>
+          <condition>LimitCondition_Sprawl</condition>
         </limitmodifier>
         <publicawareness>2</publicawareness>
         <skillcategory>
@@ -2810,7 +2810,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must have 4+ Ranks in National Language</condition>
+          <condition>LimitCondition_NationalLanguageRanks</condition>
         </limitmodifier>
         <publicawareness>3</publicawareness>
         <skillcategory>
@@ -2838,7 +2838,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Limited to Single Megacorp</condition>
+          <condition>LimitCondition_Megacorp</condition>
         </limitmodifier>
         <publicawareness>5</publicawareness>
         <skillcategory>
@@ -3462,7 +3462,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for situations involving trust.</condition>
+          <condition>LimitCondition_QualityTrustworthy</condition>
         </limitmodifier>
         <skillgroup>
           <name>Influence</name>
@@ -11199,7 +11199,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only when communicating via AR or VR.</condition>
+          <condition>LimitCondition_QualityChatty</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -12247,7 +12247,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Does not include Intimidation.</condition>
+          <condition>LimitCondition_ExcludeIntimidation</condition>
         </limitmodifier>
       </bonus>
       <source>HT</source>

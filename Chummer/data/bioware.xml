@@ -831,7 +831,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Escape Artist</condition>
+          <condition>LimitCondition_SkillsActiveEscapeArtist</condition>
         </limitmodifier>
       </bonus>
         <forbidden>
@@ -872,7 +872,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Swimming</condition>
+          <condition>LimitCondition_SkillsActiveSwimming</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -898,7 +898,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Swimming</condition>
+          <condition>LimitCondition_SkillsActiveSwimming</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -1026,12 +1026,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for tests involving speaking</condition>
+          <condition>LimitCondition_TestSpeech</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Performance (Singing)</condition>
+          <condition>LimitCondition_SkillsActivePerformanceSinging</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1049,12 +1049,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for test involving speaking</condition>
+          <condition>LimitCondition_TestSpeech</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Performance (Singing)</condition>
+          <condition>LimitCondition_SkillsActivePerformanceSinging</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1709,7 +1709,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Stealth group, Must be completely naked</condition>
+          <condition>LimitCondition_SkillGroupStealthNaked</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1727,7 +1727,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Stealth group, Must be completely naked</condition>
+          <condition>LimitCondition_SkillGroupStealthNaked</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -3349,7 +3349,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Escape Artist</condition>
+          <condition>LimitCondition_SkillsActiveEscapeArtist</condition>
         </limitmodifier>
         <specificskill>
           <name>Escape Artist</name>

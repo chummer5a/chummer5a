@@ -883,7 +883,7 @@
       <text>Location:</text>
     </string>
     <string>
-      <key>Label_Archtype</key>
+      <key>Label_Archetype</key>
       <text>Archetype:</text>
     </string>
     <string>
@@ -1283,7 +1283,7 @@
       <text>&amp;Help</text>
     </string>
     <string>
-      <key>Menu_Main_NewCharater</key>
+      <key>Menu_Main_NewCharacter</key>
       <text>&amp;New Character</text>
     </string>
     <string>
@@ -1517,7 +1517,7 @@
       <text>Convert to Toxic Critter</text>
     </string>
     <string>
-      <key>Menu_SpecialConverToCyberzombie</key>
+      <key>Menu_SpecialConvertToCyberzombie</key>
       <text>Convert to Cyberzombie</text>
     </string>
     <string>
@@ -1721,7 +1721,7 @@
       <text>Cyberware and Bioware</text>
     </string>
     <string>
-      <key>Tab_StreeGear</key>
+      <key>Tab_StreetGear</key>
       <text>Street Gear</text>
     </string>
     <string>
@@ -2210,7 +2210,7 @@
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
-      <text>You cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata'd).</text>
+      <text>You cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata).</text>
     </string>
     <string>
       <key>Message_PriorityComplexFormLimit</key>
@@ -2489,7 +2489,7 @@
       <text>This Complex Form does not allow Options.</text>
     </string>
     <string>
-      <key>Message_ConntAddComplexFormOptionLimit</key>
+      <key>Message_CannotAddComplexFormOptionLimit</key>
       <text>This Complex Form cannot have more than {0} Options because of its Rating.</text>
     </string>
     <string>
@@ -3182,7 +3182,7 @@
     </string>
     <string>
       <key>String_SkillFilterNoSkillGroup</key>
-      <text>Show ungrouped Active Skills</text>
+      <text>Show un-grouped Active Skills</text>
     </string>
     <string>
       <key>String_SkillFilterBrokenSkillGroup</key>
@@ -3466,12 +3466,12 @@
       <text>Sold Bioware</text>
     </string>
     <string>
-      <key>String_ExpensePurchaseCyberwearGear</key>
-      <text>Purchased Cyberwear Gear</text>
+      <key>String_ExpensePurchaseCyberwareGear</key>
+      <text>Purchased Cyberware Gear</text>
     </string>
     <string>
       <key>String_ExpenseSoldCyberwareGear</key>
-      <text>Sold Cyberwear Gear</text>
+      <text>Sold Cyberware Gear</text>
     </string>
     <string>
       <key>String_ExpenseAddPositiveQuality</key>
@@ -5415,7 +5415,7 @@
     <!-- End Region-->
     <!-- Region Improvements Tab -->
     <string>
-      <key>Button_AddImproevment</key>
+      <key>Button_AddImprovement</key>
       <text>&amp;Add Improvement</text>
     </string>
     <string>
@@ -5891,7 +5891,7 @@
       <text>Spend a point of Edge</text>
     </string>
     <!-- End Region-->
-    <!-- Region Spell Defence Tab-->
+    <!-- Region Spell Defense Tab-->
     <string>
       <key>String_SpellDefense</key>
       <text>Spell Defense</text>
@@ -5905,71 +5905,71 @@
       <text>Counterspelling Dice</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIndirectDodge</key>
+      <key>Label_SpellDefenseIndirectDodge</key>
       <text>Indirect Dodge</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIndirect</key>
+      <key>Label_SpellDefenseIndirect</key>
       <text>Indirect Soak</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDirectSoakMana</key>
+      <key>Label_SpellDefenseDirectSoakMana</key>
       <text>Direct Soak - Mana</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDirectSoakPhysical</key>
+      <key>Label_SpellDefenseDirectSoakPhysical</key>
       <text>Direct Soak - Physical</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDetection</key>
+      <key>Label_SpellDefenseDetection</key>
       <text>Detection Spells</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttBOD</key>
+      <key>Label_SpellDefenseDecAttBOD</key>
       <text>Decrease Attribute (BOD)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttSTR</key>
+      <key>Label_SpellDefenseDecAttSTR</key>
       <text>Decrease Attribute (STR)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttAGI</key>
+      <key>Label_SpellDefenseDecAttAGI</key>
       <text>Decrease Attribute (AGI)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttREA</key>
+      <key>Label_SpellDefenseDecAttREA</key>
       <text>Decrease Attribute (REA)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttLOG</key>
+      <key>Label_SpellDefenseDecAttLOG</key>
       <text>Decrease Attribute (LOG)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttWIL</key>
+      <key>Label_SpellDefenseDecAttWIL</key>
       <text>Decrease Attribute (WIL)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttINT</key>
+      <key>Label_SpellDefenseDecAttINT</key>
       <text>Decrease Attribute (INT)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttCHA</key>
+      <key>Label_SpellDefenseDecAttCHA</key>
       <text>Decrease Attribute (CHA)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIllusionMana</key>
+      <key>Label_SpellDefenseIllusionMana</key>
       <text>Illusion - Mana</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIllusionPhysical</key>
+      <key>Label_SpellDefenseIllusionPhysical</key>
       <text>Illusion - Physical</text>
     </string>
     <string>
-      <key>Label_SpellDefenceManipMental</key>
+      <key>Label_SpellDefenseManipMental</key>
       <text>Manipulation - Mental</text>
     </string>
     <string>
-      <key>Label_SpellDefenceManipPhysical</key>
+      <key>Label_SpellDefenseManipPhysical</key>
       <text>Manipulation - Physical</text>
     </string>
     <!-- End Region -->
@@ -7128,7 +7128,7 @@
       <text>Data File Name</text>
     </string>
     <string>
-      <key>Message_OameUpload_DataDescription</key>
+      <key>Message_OmaeUpload_DataDescription</key>
       <text>Please provide a short description of what this data file contains.</text>
     </string>
     <string>
@@ -7148,7 +7148,7 @@
       <text>Character Sheet Name</text>
     </string>
     <string>
-      <key>Message_OameUpload_SheetDescription</key>
+      <key>Message_OmaeUpload_SheetDescription</key>
       <text>Please provide a short description of what this character sheet contains.</text>
     </string>
     <string>
@@ -9994,6 +9994,244 @@
     <string>
       <key>String_Reach</key>
       <text>Reach</text>
+    </string>
+    <!-- End Region -->
+    <!-- Region Limit Condition Translations -->
+    <string>
+      <key>LimitCondition_ExcludeIntimidation</key>
+      <text>Does not include Intimidation</text>
+    </string>
+    <string>
+      <key>LimitCondition_ExcludeFansGangers</key>
+      <text>Except for Urban Brawl Fans and Gangers</text>
+    </string>
+    <string>
+      <key>LimitCondition_SportsFans</key>
+      <text>Fans of Sports Team</text>
+    </string>
+    <string>
+      <key>LimitCondition_ShieldPhysicalPenalty</key>
+      <text>For actions where Shield might get in the way.</text>
+    </string>
+    <string>
+      <key>LimitCondition_ExcludeIntimidationVisible</key>
+      <text>For all tests except Intimidation, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_ClimbingTests</key>
+      <text>For climbing only</text>
+    </string>
+    <string>
+      <key>LimitCondition_GangVisible</key>
+      <text>Gang members only, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_PublicVisible</key>
+      <text>General public only, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_Megacorp</key>
+      <text>Limited to Single Megacorp</text>
+    </string>
+    <string>
+      <key>LimitCondition_Sprawl</key>
+      <text>Limited to Single Sprawl</text>
+    </string>
+    <string>
+      <key>LimitCondition_Visible</key>
+      <text>Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_NationalLanguageRanks</key>
+      <text>Must have 4+ Ranks in National Language</text>
+    </string>
+    <string>
+      <key>LimitCondition_BunkerGearVisible</key>
+      <text>Only during emergency situations, Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestAttribAGI</key>
+      <text>Only for Agility-linked Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsKnowledgeAcademic</key>
+      <text>Only for Academic Knowledge Skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveContortion</key>
+      <text>Only for Contortion</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveDisguiseImpersonation</key>
+      <text>Only for Disguise and Impersonation</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveEscapeArtistGrappleLoose</key>
+      <text>Only for Escape Artist and Grappling, Must be loosened</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveEscapeArtist</key>
+      <text>Only for Escape Artist</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveFirstAidMedicine</key>
+      <text>Only for First Aid and Medicine</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareBalanceTail</key>
+      <text>Only for Gymnastics (Climbing), Gymnastics (Jumping), Running, and knockdown resist</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveGymnasticsClimbing</key>
+      <text>Only for Gymnastics (Climbing)</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareHydraulicJacks</key>
+      <text>Only for Gymnastics (Jumping) and Running (Sprinting)</text>
+    </string>
+    <string>
+      <key>LimitCondition_IntimidationVisible</key>
+      <text>Only for Intimidation, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_Intimidation</key>
+      <text>Only for Intimidation</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveNavigation</key>
+      <text>Only for Navigation</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionHearing</key>
+      <text>Only for Perception (Hearing)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionVisual</key>
+      <text>Only for Perception (Visual)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionSpatialRecognizer</key>
+      <text>Only for Perception to find the source of a sound</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerception</key>
+      <text>Only for Perception</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerformanceSinging</key>
+      <text>Only for Performance (Singing)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
+      <text>Only for Performance, Must use linked synthtrument</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerformance</key>
+      <text>Only for Performance</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsKnowledgeScientificTechnical</key>
+      <text>Only for Scientific or Technical Knowledge Skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_Skillwires</key>
+      <text>Only for Skillwires</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestSneakingThermal</key>
+      <text>Only for Sneaking against Thermographic Vision or thermal sensors.</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSneaking</key>
+      <text>Only for Sneaking against Thermographic Vision or thermal sensors.</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSneakingNaked</key>
+      <text>Only for Sneaking, Must be completely naked</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSneakingVisible</key>
+      <text>Only for Sneaking, Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillGroupStealthNaked</key>
+      <text>Only for Stealth group, Must be completely naked</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillGroupStealth</key>
+      <text>Only for Stealth group</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSwimming</key>
+      <text>Only for Swimming</text>
+    </string>
+    <string>
+      <key>LimitCondition_KnockdownResistanceFootAnchor</key>
+      <text>Only for knockdown resist, Must be engaged.</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareCyberfins</key>
+      <text>Only for making repairs, typing, dancing etc., Must be engaged</text>
+    </string>
+    <string>
+      <key>LimitCondition_GearAutopicker</key>
+      <text>Only for picking mechanical locks</text>
+    </string>
+    <string>
+      <key>LimitCondition_QualityTrustworthy</key>
+      <text>Only for situations involving trust.</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestSpeech</key>
+      <text>Only for test involving speaking</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestsEndurance</key>
+      <text>Only for tests involving endurance, Must be tightened</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareRaptorFoot</key>
+      <text>Only when attacking with the legs</text>
+    </string>
+    <string>
+      <key>LimitCondition_QualityChatty</key>
+      <text>Only when communicating via AR or VR.</text>
+    </string>
+    <string>
+      <key>LimitCondition_InUse</key>
+      <text>Only when in use</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareMonkeyFoot</key>
+      <text>Only when used as hand</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestAttribINT</key>
+      <text>Only with Intuition Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_AttribSkillINT</key>
+      <text>Only with Intuition-linked skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestAttribLOG</key>
+      <text>Only with Logic Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_AttribSkillLOG</key>
+      <text>Only with Logic-linked skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_CorporationVisible</key>
+      <text>Only with appropriate corp, Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareSnakeFingers</key>
+      <text>Only with manual dexterity</text>
+    </string>
+    <string>
+      <key>LimitCondition_SportsRivals</key>
+      <text>Rivals of Sports Team</text>
     </string>
     <!-- End Region -->
   </strings>

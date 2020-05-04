@@ -1919,10 +1919,10 @@
         </xsl:for-each>
       </td></tr>
     </xsl:if>
-    <xsl:if test="cyberwares/cyberware/children/cyberwear/gears/gear[isprogram = 'True']">
+    <xsl:if test="cyberwares/cyberware/children/cyberware/gears/gear[isprogram = 'True']">
       <tr><td colspan="100%">
         <span class="title"><xsl:value-of select="Programs"/></span><br/>
-        <xsl:for-each select="cyberwares/cyberware/children/cyberwear/gears/gear[isprogram = 'True']">
+        <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[isprogram = 'True']">
           <xsl:sort select="name"/>
           <xsl:call-template name="programdetails"/>
         </xsl:for-each>

@@ -697,75 +697,75 @@ namespace Chummer
                         lblDodge.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.DodgeToolTip));
 
-                        lblSpellDefenceIndirectDodge.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIndirectDodge.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIndirectDodge));
-                        lblSpellDefenceIndirectDodge.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIndirectDodge.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIndirectDodgeToolTip));
-                        lblSpellDefenceIndirectSoak.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIndirectSoak.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIndirectSoak));
-                        lblSpellDefenceIndirectSoak.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIndirectSoak.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIndirectSoakToolTip));
-                        lblSpellDefenceDirectSoakMana.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDirectSoakMana.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDirectSoakMana));
-                        lblSpellDefenceDirectSoakMana.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDirectSoakMana.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDirectSoakManaToolTip));
-                        lblSpellDefenceDirectSoakPhysical.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDirectSoakPhysical.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
-                        lblSpellDefenceDirectSoakPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDirectSoakPhysical.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
 
-                        lblSpellDefenceDetection.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDetection.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDetection));
-                        lblSpellDefenceDetection.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDetection.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDetectionToolTip));
-                        lblSpellDefenceDecAttBOD.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttBOD.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseBOD));
-                        lblSpellDefenceDecAttBOD.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttBOD.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseBODToolTip));
-                        lblSpellDefenceDecAttAGI.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttAGI.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseAGI));
-                        lblSpellDefenceDecAttAGI.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttAGI.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseAGIToolTip));
-                        lblSpellDefenceDecAttREA.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttREA.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseREA));
-                        lblSpellDefenceDecAttREA.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttREA.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseREAToolTip));
-                        lblSpellDefenceDecAttSTR.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttSTR.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseSTR));
-                        lblSpellDefenceDecAttSTR.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttSTR.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseSTRToolTip));
-                        lblSpellDefenceDecAttCHA.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttCHA.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseCHA));
-                        lblSpellDefenceDecAttCHA.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttCHA.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseCHAToolTip));
-                        lblSpellDefenceDecAttINT.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttINT.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseINT));
-                        lblSpellDefenceDecAttINT.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttINT.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseINTToolTip));
-                        lblSpellDefenceDecAttLOG.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttLOG.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseLOG));
-                        lblSpellDefenceDecAttLOG.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttLOG.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseLOGToolTip));
-                        lblSpellDefenceDecAttWIL.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttWIL.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseWIL));
-                        lblSpellDefenceDecAttWIL.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttWIL.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseWILToolTip));
 
-                        lblSpellDefenceIllusionMana.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIllusionMana.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIllusionMana));
-                        lblSpellDefenceIllusionMana.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIllusionMana.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIllusionManaToolTip));
-                        lblSpellDefenceIllusionPhysical.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIllusionPhysical.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIllusionPhysical));
-                        lblSpellDefenceIllusionPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIllusionPhysical.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIllusionPhysicalToolTip));
-                        lblSpellDefenceManipMental.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseManipMental.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseManipulationMental));
-                        lblSpellDefenceManipMental.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseManipMental.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseManipulationMentalToolTip));
-                        lblSpellDefenceManipPhysical.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseManipPhysical.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseManipulationPhysical));
-                        lblSpellDefenceManipPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseManipPhysical.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseManipulationPhysicalToolTip));
                         nudCounterspellingDice.DoDatabinding("Value", CharacterObject,
                             nameof(Character.CurrentCounterspellingDice));

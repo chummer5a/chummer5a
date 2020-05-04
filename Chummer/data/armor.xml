@@ -131,7 +131,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Sneaking, Must be visible</condition>
+          <condition>LimitCondition_SkillsActiveSneakingVisible</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -199,7 +199,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>For actions where Shield might get in the way.</condition>
+          <condition>LimitCondition_ShieldPhysicalPenalty</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -218,7 +218,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>For actions where Shield might get in the way.</condition>
+          <condition>LimitCondition_ShieldPhysicalPenalty</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -238,7 +238,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -262,7 +262,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -286,7 +286,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -314,7 +314,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -342,7 +342,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -370,7 +370,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -398,7 +398,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -427,7 +427,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -456,7 +456,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -485,7 +485,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -513,7 +513,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -577,7 +577,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>3</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -681,7 +681,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </wirelessbonus>
       <mods>
@@ -702,7 +702,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </wirelessbonus>
       <mods>
@@ -727,7 +727,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </wirelessbonus>
       <mods>
@@ -751,7 +751,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </wirelessbonus>
       <mods>
@@ -777,14 +777,14 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </wirelessbonus>
       <mods>
@@ -806,7 +806,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -828,7 +828,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -850,7 +850,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -872,7 +872,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -894,7 +894,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -916,7 +916,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <addmodcategory>Nightshade IR</addmodcategory>
@@ -1047,7 +1047,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only with appropriate corp, Must be visible</condition>
+          <condition>LimitCondition_CorporationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1128,7 +1128,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1151,7 +1151,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1174,7 +1174,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1208,7 +1208,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1234,7 +1234,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1260,7 +1260,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1319,7 +1319,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only during emergency situations, Must be visible</condition>
+          <condition>LimitCondition_BunkerGearVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1358,7 +1358,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1369,7 +1369,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </wirelessbonus>
       <source>RG</source>
@@ -1398,12 +1398,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Intimidation, Must be visible.</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>For all tests except Intimidation, Must be visible.</condition>
+          <condition>LimitCondition_ExcludeIntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1413,7 +1413,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>3</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </wirelessbonus>
       <source>RG</source>
@@ -1442,7 +1442,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -1460,7 +1460,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -1478,7 +1478,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -1496,7 +1496,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1518,12 +1518,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>General public only, Must be visible.</condition>
+          <condition>LimitCondition_PublicVisible</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Gang members only, Must be visible.</condition>
+          <condition>LimitCondition_GangVisible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -1541,12 +1541,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>General public only, Must be visible.</condition>
+          <condition>LimitCondition_PublicVisible</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Gang members only, Must be visible.</condition>
+          <condition>LimitCondition_GangVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1611,7 +1611,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <addmodcategory>Ballistic Mask</addmodcategory>
@@ -1630,7 +1630,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Intimidation, Must be visible</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <addmodcategory>Ballistic Mask</addmodcategory>
@@ -1666,7 +1666,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -1754,7 +1754,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>For climbing only</condition>
+          <condition>LimitCondition_ClimbingTests</condition>
         </limitmodifier>
       </wirelessbonus>
       <source>RG</source>
@@ -1772,7 +1772,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing)</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1789,7 +1789,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>For climbing only</condition>
+          <condition>LimitCondition_ClimbingTests</condition>
         </limitmodifier>
       </wirelessbonus>
       <source>RG</source>
@@ -2687,12 +2687,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Fans of Sports Team</condition>
+          <condition>LimitCondition_SportsFans</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Rivals of Sports Team</condition>
+          <condition>LimitCondition_SportsRivals</condition>
         </limitmodifier>
         <selecttext />
       </bonus>
@@ -2711,12 +2711,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Fans of Sports Team</condition>
+          <condition>LimitCondition_SportsFans</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Rivals of Sports Team</condition>
+          <condition>LimitCondition_SportsRivals</condition>
         </limitmodifier>
         <selecttext />
       </bonus>
@@ -2942,7 +2942,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -2963,7 +2963,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -3014,7 +3014,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -3079,7 +3079,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Except for Urban Brawl Fans and Gangers</condition>
+          <condition>LimitCondition_ExcludeFansGangers</condition>
         </limitmodifier>
       </bonus>
       <source>SAG</source>
@@ -3097,7 +3097,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Except for Urban Brawl Fans and Gangers</condition>
+          <condition>LimitCondition_ExcludeFansGangers</condition>
         </limitmodifier>
       </bonus>
       <source>SAG</source>
@@ -3115,7 +3115,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Except for Urban Brawl Fans and Gangers</condition>
+          <condition>LimitCondition_ExcludeFansGangers</condition>
         </limitmodifier>
       </bonus>
       <source>SAG</source>
@@ -3133,7 +3133,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Except for Urban Brawl Fans and Gangers</condition>
+          <condition>LimitCondition_ExcludeFansGangers</condition>
         </limitmodifier>
       </bonus>
       <source>SAG</source>
@@ -3153,7 +3153,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>TCT</source>
@@ -3219,7 +3219,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible, only for Intimidation</condition>
+          <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -3518,7 +3518,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for Sneaking against Thermographic Vision or thermal sensors.</condition>
+          <condition>LimitCondition_TestSneakingThermal</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -3909,7 +3909,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -3928,7 +3928,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -3947,7 +3947,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>3</value>
-          <condition>Must be visible</condition>
+          <condition>LimitCondition_Visible</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -4110,7 +4110,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Perception</condition>
+          <condition>LimitCondition_SkillsActivePerception</condition>
         </limitmodifier>
       </wirelessbonus>
       <source>RG</source>

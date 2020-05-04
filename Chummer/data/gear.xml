@@ -6078,7 +6078,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation</condition>
+          <condition>LimitCondition_Intimidation</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -7090,7 +7090,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Visual)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -7215,7 +7215,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Hearing)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -7248,7 +7248,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Perception to find the source of a sound</condition>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
         </limitmodifier>
       </bonus>
       <capacity>[2]</capacity>
@@ -8026,7 +8026,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for picking mechanical locks</condition>
+          <condition>LimitCondition_GearAutopicker</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 500</cost>
@@ -8881,7 +8881,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for First Aid and Medicine</condition>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -16644,7 +16644,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Disguise and Impersonation</condition>
+          <condition>LimitCondition_SkillsActiveDisguiseImpersonation</condition>
         </limitmodifier>
       </bonus>
       <cost>+250</cost>
@@ -19063,7 +19063,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>3</value>
-          <condition>Only for First Aid and Medicine</condition>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </limitmodifier>
       </bonus>
       <cost>200</cost>

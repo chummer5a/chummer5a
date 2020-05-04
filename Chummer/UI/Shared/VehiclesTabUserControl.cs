@@ -1802,7 +1802,7 @@ namespace Chummer.UI.Shared
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -2080,7 +2080,7 @@ namespace Chummer.UI.Shared
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
