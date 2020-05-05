@@ -10,6 +10,13 @@ Application Changes:
 - Merged karma cost checks for Foci into the Focus object instead of separate Create and Career methods.
 - Added support for individualising a focus based on the rules presented in Street Grimoire on page 230.
 - Added support for Limit Conditions fetching their condition string from the language file instead of being baked into the object. Existing characters with these string will need to use Reapply Improvements to apply the new values. 
+- Expanded functionality for the SelectText bonus type to allow providing a list of values from the XML files.
+  This is provided by three node attributes:
+  'xml' indicates the document to load from the data folder
+  'xpath' indicates the nodes to be evaluated (Note that it's not necessary to include the final Name node
+  'allowedit="True"' indicates that the user should be able to enter their own value. If not specified or 'False', the user can only choose from the filtered values.
+  As an example, the SINner (Corporate) quality uses the following node: <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+  It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to one of the existing document files; completely new files may work, but are unsupported at this time.
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047

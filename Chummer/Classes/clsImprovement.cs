@@ -29,6 +29,8 @@ using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml.XPath;
 using static Chummer.Backend.Skills.SkillsSection;
 using Chummer.Backend.Uniques;
 using NLog;
@@ -3292,26 +3294,83 @@ namespace Chummer
                     {
                         s_StrSelectedValue = LimitSelection;
                     }
-                    else
+                    else if (nodBonus.Attributes == null)
                     {
                         // Display the Select Text window and record the value that was entered.
-                        frmSelectText frmPickText = new frmSelectText
+                        using (frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName)
-                        };
-                        frmPickText.ShowDialog();
+                            Description =
+                                string.Format(
+                                    LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language),
+                                    strFriendlyName)
+                        })
+                        {
+                            frmPickText.ShowDialog();
 
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
-                        {
-                            Rollback(objCharacter);
-                            ForcedValue = string.Empty;
-                            LimitSelection = string.Empty;
-                            Log.Debug("CreateImprovements exit");
-                            return false;
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickText.DialogResult == DialogResult.Cancel)
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
+                                return false;
+                            }
+
+                            s_StrSelectedValue = frmPickText.SelectedValue;
                         }
+                    }
+                    else
+                    {
+                        using (frmSelectItem frmSelect = new frmSelectItem())
+                        {
+                            string strXPath = nodBonus["selecttext"].Attributes["xpath"]?.InnerText ?? string.Empty;
+                            if (strXPath == string.Empty)
+                            {
+                                Rollback(objCharacter);
+                                return false;
+                            }
+                            XPathNavigator xmlDoc = XmlManager.Load(nodBonus["selecttext"].Attributes["xml"]?.InnerText)
+                                .GetFastNavigator();
+                            List<ListItem> lstItems = new List<ListItem>();
+                            foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                            {
+                                string strName = objNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                                if (string.IsNullOrWhiteSpace(strName))
+                                {
+                                    // Assume that if we're not looking at something that has an XML node,
+                                    // we're looking at a direct xpath filter or something that has proper names
+                                    // like the lifemodule storybuilder macros. 
+                                    lstItems.Add(new ListItem(objNode.Value, objNode.Value));
+                                }
+                                else
+                                {
+                                    lstItems.Add(new ListItem(strName,
+                                        objNode.SelectSingleNode("translate")?.Value ?? strName));
+                                }
+                            }
 
-                        s_StrSelectedValue = frmPickText.SelectedValue;
+                            if (lstItems.Count == 0)
+                            {
+                                Rollback(objCharacter);
+                                return false;
+                            }
+
+                            if (Convert.ToBoolean(nodBonus["selecttext"].Attributes["allowedit"]?.InnerText))
+                            {
+                                frmSelect.DropdownItems = lstItems;
+                            }
+                            else
+                            {
+                                frmSelect.GeneralItems = lstItems;
+                            }
+
+                            frmSelect.ShowDialog();
+
+                            if (frmSelect.DialogResult == DialogResult.Cancel)
+                                throw new AbortedException();
+                            s_StrSelectedValue = frmSelect.SelectedItem;
+                        }
                     }
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);

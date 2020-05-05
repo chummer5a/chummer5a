@@ -1533,7 +1533,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
       <forbidden>
         <oneof>
@@ -1569,7 +1569,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*"/>
       </bonus>
       <forbidden>
         <oneof>
