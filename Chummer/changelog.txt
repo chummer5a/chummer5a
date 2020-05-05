@@ -46,6 +46,7 @@ Data Changes:
 - Added new Focus objects in gear.xml to support Individualising Focus rules from Street Grimoire. 
 - Added amend files to remove the requirement for the toxic tradition and toxic mentors from requiring the Twisted Way.
 - Resolved an issue with character sheets not properly showing programs connected to a piece of cyberware. 
+- Reverted shapeshifter metatypes improperly flagging metatype qualities as shapeshifter or metahuman forms only.
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum
