@@ -3328,6 +3328,9 @@ namespace Chummer
                             if (strXPath == string.Empty)
                             {
                                 Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
                                 return false;
                             }
                             XPathNavigator xmlDoc = XmlManager.Load(nodBonus["selecttext"].Attributes["xml"]?.InnerText)
@@ -3353,6 +3356,9 @@ namespace Chummer
                             if (lstItems.Count == 0)
                             {
                                 Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
                                 return false;
                             }
 
@@ -3368,7 +3374,13 @@ namespace Chummer
                             frmSelect.ShowDialog();
 
                             if (frmSelect.DialogResult == DialogResult.Cancel)
-                                throw new AbortedException();
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
+                                return false;
+                            }
                             s_StrSelectedValue = frmSelect.SelectedItem;
                         }
                     }
