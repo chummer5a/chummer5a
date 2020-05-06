@@ -3294,7 +3294,7 @@ namespace Chummer
                     {
                         s_StrSelectedValue = LimitSelection;
                     }
-                    else if (nodBonus.Attributes == null)
+                    else if (nodBonus.Attributes?.Count == 0)
                     {
                         // Display the Select Text window and record the value that was entered.
                         using (frmSelectText frmPickText = new frmSelectText
