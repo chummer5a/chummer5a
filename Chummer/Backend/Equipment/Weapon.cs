@@ -4114,6 +4114,16 @@ namespace Chummer.Backend.Equipment
                         if (objSkill != null)
                         {
                             intDicePool = objSkill.Pool;
+
+                            if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                            {
+                                intDicePoolModifier +=
+                                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                            }
+
+                            intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                            intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
+
                             // If the character has a Specialization, include it in the Dice Pool string.
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                             {
@@ -4132,15 +4142,6 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
-
-                        if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
-                        {
-                            intDicePoolModifier +=
-                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
-                        }
-
-                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
-                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
                         break;
                     }
                 default:
