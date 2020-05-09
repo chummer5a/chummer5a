@@ -442,14 +442,17 @@ namespace Chummer
                     break;
                 default:
                     List<ListItem> lstArmors = new List<ListItem>();
+                    int intOverLimit = 0;
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
-                        if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) &&
-                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                             SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
+                        bool blnUnderAvail = !chkHideOverAvailLimit.Checked || chkHideOverAvailLimit.Checked &&
+                                             SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter);
+                        bool blnUnderCost = chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked || chkShowOnlyAffordItems.Checked &&
+                                            SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier);
+                        if (blnUnderAvail && blnUnderCost)
                         {
                             string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
                             if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
@@ -467,6 +470,17 @@ namespace Chummer
 
                             lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
                         }
+                        else
+                        {
+                            intOverLimit++;
+                        }
+                    }
+
+                    if (intOverLimit > 0)
+                    {
+                        lstArmors.Add(new ListItem("String_RestrictedItemsHidden",
+                            LanguageManager.GetString("String_RestrictedItemsHidden")
+                            .Replace("{0}", intOverLimit.ToString())));
                     }
                     lstArmors.Sort(CompareListItems.CompareNames);
                     _blnLoading = true;

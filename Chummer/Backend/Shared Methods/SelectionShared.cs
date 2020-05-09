@@ -1239,6 +1239,14 @@ namespace Chummer
             return false;
         }
 
+        /// <summary>
+        ///     Evaluates the availability of a given node against Availability Limits in Create Mode
+        /// </summary>
+        /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
+        /// <param name="objCharacter">Character that we're comparing the Availability against.</param>
+        /// <param name="intRating">Effective Rating of the object.</param>
+        /// <param name="intAvailModifier">Availability Modifier from other sources.</param>
+        /// <returns>Returns False if not permitted with the current gameplay restrictions. Returns True if valid.</returns>
         public static bool CheckAvailRestriction(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
         {
             if (objXmlGear == null)
@@ -1296,7 +1304,14 @@ namespace Chummer
                 intAvail += Convert.ToInt32(objProcess);
             return intAvail <= objCharacter.MaximumAvailability;
         }
-
+        /// <summary>
+        ///     Evaluates whether a given node can be purchased.
+        /// </summary>
+        /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
+        /// <param name="decMaxNuyen">Total nuyen amount that the character possesses.</param>
+        /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
+        /// <param name="intRating">Effective Rating of the object.</param>
+        /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
         public static bool CheckNuyenRestriction(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
             // Cost.
