@@ -15,9 +15,10 @@ Application Changes:
   'xml' indicates the document to load from the data folder
   'xpath' indicates the nodes to be evaluated (Note that it's not necessary to include the final Name node
   'allowedit="True"' indicates that the user should be able to enter their own value. If not specified or 'False', the user can only choose from the filtered values.
-  As an example, the SINner (Corporate) quality uses the following node: <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
-  It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to one of the existing document files; completely new files may work, but are unsupported at this time.
-
+  As an example, the SINner (Corporate) quality uses the following node: <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>, while the Metaposeur bioware uses <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
+  It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to options.xml; completely new files may work, but are unsupported at this time.
+  Duplicate values will automatically be filtered.
+- Added better support for basic lifestyles and primary tenant/roommate splits bestween costs. Closes #4054
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 - Fixed a regression in behaviour of Initiation Group prompt to spend karma when selecting the Initiation tab.
@@ -48,6 +49,7 @@ Data Changes:
 - Resolved an issue with character sheets not properly showing programs connected to a piece of cyberware. 
 - Reverted shapeshifter metatypes improperly flagging metatype qualities as shapeshifter or metahuman forms only.
 - Fixed an incorrect bonus for the Mystic Guardian mentor that caused it to provide incorrect bonus types.
+- Metaposeur bioware includes metatype prompts now.
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum

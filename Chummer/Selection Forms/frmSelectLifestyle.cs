@@ -125,8 +125,10 @@ namespace Chummer
                     if (objNode != null)
                         objNode.Checked = true;
                 }
-            }
 
+                chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
+            }
+            
             _blnSkipRefresh = false;
             CalculateValues();
         }
@@ -155,21 +157,29 @@ namespace Chummer
 
         private void treQualities_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            if (_blnSkipRefresh)
+                return;
             CalculateValues();
         }
 
-        private void cboLifestyle_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshValues(object sender, EventArgs e)
         {
-            CalculateValues();
-        }
-
-        private void nudPercentage_ValueChanged(object sender, EventArgs e)
-        {
+            if (_blnSkipRefresh)
+                return;
             CalculateValues();
         }
 
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
+            if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
+            {
+                chkPrimaryTenant.Checked = true;
+            }
+
+            chkPrimaryTenant.Enabled = nudRoommates.Value > 0;
+
+            if (_blnSkipRefresh)
+                return;
             CalculateValues();
         }
 
@@ -247,6 +257,7 @@ namespace Chummer
                 _objLifestyle.StyleType = StyleType;
                 _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText);
                 _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
 
                 if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
                 {
@@ -345,16 +356,24 @@ namespace Chummer
                     }
 
                     decBaseCost += decBaseCost * decBaseMultiplier;
+                    if (nudRoommates.Value > 0)
+                    {
+                        decimal d = nudRoommates.Value * 10;
+                        d += 100M;
+                        d = Math.Max(d / 100, 0);
+                        decBaseCost *= (d);
+                    }
                 }
             }
 
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            if (nudPercentage.Value != 100)
+            if (nudPercentage.Value != 100 || (nudRoommates.Value > 0 && !chkPrimaryTenant.Checked))
             {
                 decimal decDiscount = decNuyen;
-                decDiscount = decDiscount * (nudPercentage.Value / 100);
+                decDiscount *= (nudPercentage.Value / 100);
+                decDiscount /= (nudRoommates.Value);
                 lblCost.Text += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
 

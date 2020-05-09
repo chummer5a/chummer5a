@@ -2981,7 +2981,7 @@
       <cost>38000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
       <source>CF</source>
       <page>158</page>
