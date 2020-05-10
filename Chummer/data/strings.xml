@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <matrixattributes>
+    <attribute>Attack</attribute>
+    <attribute>Data Processing</attribute>
+    <attribute>Firewall</attribute>
+    <attribute>Sleaze</attribute>
+  </matrixattributes>
+  <elements>
+    <element>Acid</element>
+    <element>Cold</element>
+    <element>Electricity</element>
+    <element>Fire</element>
+    <element>Pollutant</element>
+    <element>Radiation</element>
+    <element>Water</element>
+  </elements>
+  <immunities>
+    <immunity>Age</immunity>
+    <immunity>Normal Weapons</immunity>
+  </immunities>
+  <spiritcategories>
+    <category>Combat</category>
+    <category>Detection</category>
+    <category>Health</category>
+    <category>Illusion</category>
+    <category>Manipulation</category>
+  </spiritcategories>
+</chummer>

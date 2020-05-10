@@ -259,7 +259,7 @@
       <range>LOS</range>
       <duration>Instant</duration>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True"/>
       </bonus>
       <source>SR5</source>
       <page>396</page>
@@ -350,7 +350,7 @@
       <range>Self</range>
       <duration>Always</duration>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element | /chummer/immunities/immunity" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>397</page>
@@ -2341,7 +2341,7 @@
       <range>As ritual</range>
       <duration>As ritual</duration>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = Rituals]" />
       </bonus>
       <source>HS</source>
       <page>193</page>

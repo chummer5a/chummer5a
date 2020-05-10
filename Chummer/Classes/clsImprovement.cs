@@ -3322,7 +3322,13 @@ namespace Chummer
                     }
                     else
                     {
-                        using (frmSelectItem frmSelect = new frmSelectItem())
+                        using (frmSelectItem frmSelect = new frmSelectItem
+                        {
+                            Description =
+                                string.Format(
+                                    LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language),
+                                    strFriendlyName)
+                        })
                         {
                             string strXPath = nodBonus["selecttext"].Attributes["xpath"]?.InnerText ?? string.Empty;
                             if (strXPath == string.Empty)

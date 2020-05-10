@@ -2732,21 +2732,8 @@ namespace Chummer
                 if (objXmlComplexForm == null)
                     continue;
 
-                // Check for SelectText.
-                string strExtra = string.Empty;
-                XmlNode xmlSelectText = objXmlComplexForm.SelectSingleNode("bonus/selecttext");
-                if (xmlSelectText != null)
-                {
-                    frmSelectText frmPickText = new frmSelectText
-                    {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"]?.InnerText)
-                    };
-                    frmPickText.ShowDialog(this);
-                    strExtra = frmPickText.SelectedValue;
-                }
-
                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                objComplexForm.Create(objXmlComplexForm, strExtra);
+                objComplexForm.Create(objXmlComplexForm);
                 if (objComplexForm.InternalId.IsEmptyGuid())
                     continue;
 
@@ -12829,10 +12816,8 @@ namespace Chummer
                     XmlNode objXmlComplexFormNode = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlComplexForm["name"].InnerText + "\"]");
                     if (objXmlComplexFormNode != null)
                     {
-                        string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-
                         ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                        objComplexForm.Create(objXmlComplexFormNode, strForceValue);
+                        objComplexForm.Create(objXmlComplexFormNode);
 
                         CharacterObject.ComplexForms.Add(objComplexForm);
                     }

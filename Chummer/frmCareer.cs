@@ -3313,22 +3313,8 @@ namespace Chummer
                 frmPickComplexForm.Dispose();
                 if (objXmlComplexForm == null)
                     continue;
-
-                // Check for SelectText.
-                string strExtra = string.Empty;
-                XmlNode xmlSelectText = objXmlComplexForm.SelectSingleNode("bonus/selecttext");
-                if (xmlSelectText != null)
-                {
-                    frmSelectText frmPickText = new frmSelectText
-                    {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText"), objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown"))
-                    };
-                    frmPickText.ShowDialog(this);
-                    strExtra = frmPickText.SelectedValue;
-                }
-
                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                objComplexForm.Create(objXmlComplexForm, strExtra);
+                objComplexForm.Create(objXmlComplexForm);
                 if (objComplexForm.InternalId.IsEmptyGuid())
                     continue;
 

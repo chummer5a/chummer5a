@@ -78,17 +78,23 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
             if (!objXmlComplexFormNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            _strExtra = strExtra;
-
-            /*
-            if (string.IsNullOrEmpty(_strNotes))
+            if (objXmlComplexFormNode["bonus"] != null)
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
-                if (string.IsNullOrEmpty(_strNotes))
+                ImprovementManager.ForcedValue = strExtra;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString("D"), objXmlComplexFormNode["bonus"], 1, DisplayNameShort(GlobalOptions.Language)))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _guiID = Guid.Empty;
+                    return;
                 }
-            }*/
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else
+            {
+                _strExtra = strExtra;
+            }
         }
 
 

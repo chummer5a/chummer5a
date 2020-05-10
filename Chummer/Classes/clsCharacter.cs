@@ -1415,24 +1415,8 @@ namespace Chummer
                 if (xmlComplexFormData == null)
                     continue;
 
-                // Check for SelectText.
-                string strExtra = xmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                XmlNode xmlSelectText = xmlComplexFormData.SelectSingleNode("bonus/selecttext");
-                if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
-                {
-                    frmSelectText frmPickText = new frmSelectText
-                    {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
-                    };
-                    frmPickText.ShowDialog();
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
-                        continue;
-                    strExtra = frmPickText.SelectedValue;
-                }
-
                 ComplexForm objComplexform = new ComplexForm(this);
-                objComplexform.Create(xmlComplexFormData, strExtra);
+                objComplexform.Create(xmlComplexFormData);
                 if (objComplexform.InternalId.IsEmptyGuid())
                     continue;
                 objComplexform.Grade = -1;

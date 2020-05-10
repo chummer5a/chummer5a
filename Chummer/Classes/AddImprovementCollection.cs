@@ -1542,24 +1542,7 @@ namespace Chummer.Classes
             SelectedValue = node["name"]?.InnerText;
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            // Check for SelectText.
-            string strExtra = string.Empty;
-            XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
-            if (xmlSelectText != null)
-            {
-                frmSelectText frmPickText = new frmSelectText
-                {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
-                };
-                frmPickText.ShowDialog();
-                // Make sure the dialogue window was not canceled.
-                if (frmPickText.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-                strExtra = frmPickText.SelectedValue;
-            }
-            objComplexform.Create(node, strExtra);
+            objComplexform.Create(node);
             if (objComplexform.InternalId.IsEmptyGuid())
                 throw new AbortedException();
             objComplexform.Grade = -1;
@@ -1591,26 +1574,9 @@ namespace Chummer.Classes
 
             if (node == null)
                 throw new AbortedException();
-            // Check for SelectText.
-            string strExtra = string.Empty;
-            XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
-            if (xmlSelectText != null)
-            {
-                frmSelectText frmPickText = new frmSelectText
-                {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
-                };
-                frmPickText.ShowDialog();
-                // Make sure the dialogue window was not canceled.
-                if (frmPickText.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-                strExtra = frmPickText.SelectedValue;
-            }
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            objComplexform.Create(node, strExtra);
+            objComplexform.Create(node);
             if (objComplexform.InternalId.IsEmptyGuid())
                 throw new AbortedException();
             objComplexform.Grade = -1;

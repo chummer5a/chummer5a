@@ -50,6 +50,9 @@ Data Changes:
 - Reverted shapeshifter metatypes improperly flagging metatype qualities as shapeshifter or metahuman forms only.
 - Fixed an incorrect bonus for the Mystic Guardian mentor that caused it to provide incorrect bonus types.
 - Metaposeur bioware includes metatype prompts now.
+- Removed redundant selecttext improvement for Anti-tox nanoware.
+- Fixed bonus type for Cyberlimb Optimisation to properly increase dicepools for the selected Skill.
+- Added whitelisted selecttext improvements for most current uses of the improvement type. 
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum

@@ -95,7 +95,7 @@
       <source>SR5</source>
       <page>258</page>
       <bonus>
-        <selecttext />
+        <selecttext xml="programs.xml" xpath="/chummer/programs/program" />
       </bonus>
       <limit>False</limit>
     </echo>

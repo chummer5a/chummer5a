@@ -807,7 +807,7 @@
         <addweapon>
           <name>Elemental Body</name>
         </addweapon>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -834,7 +834,7 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -860,7 +860,7 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element" allowedit="True" />
       </bonus>
     </power>
     <power>
