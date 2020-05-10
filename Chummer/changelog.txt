@@ -33,6 +33,7 @@ Application Fixes:
 - Fixed a regression in behaviour of metagenetic qualities not loading their metagenic flag properly when using the old naming convention.
 
 Data Changes:
+- Fixed incorrect stacking behaviour for the suprathyroid gland, muscle replacement and muscle toner that caused them to fail to stack correctly. (Muscle replacement, muscle augmentation and muscle toner shouldn't stack, but suprathyroid should)
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
 - Reduced Improved Synthskin max rating to 4.
 - Removed redundant selecttext bonuses from the synthlinks.
@@ -53,6 +54,7 @@ Data Changes:
 - Removed redundant selecttext improvement for Anti-tox nanoware.
 - Fixed bonus type for Cyberlimb Optimisation to properly increase dicepools for the selected Skill.
 - Added whitelisted selecttext improvements for most current uses of the improvement type. 
+- Replaced incorrect bonus for Nephritic Screen (2050)
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum

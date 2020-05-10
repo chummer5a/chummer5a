@@ -308,9 +308,9 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 32000</cost>
-      <bonus>
+      <bonus unique="muscle">
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -450,7 +450,7 @@
           <val>1</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>1</val>
         </specificattribute>
       </bonus>
@@ -3382,7 +3382,7 @@
           <val>1</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>1</val>
         </specificattribute>
       </bonus>
@@ -3484,9 +3484,9 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 20000</cost>
-      <bonus>
+      <bonus unique="muscle">
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -3508,10 +3508,18 @@
       <avail>4</avail>
       <cost>Rating * 24000</cost>
       <bonus>
-        <specificattribute>
-          <name precedence="0">STR</name>
-          <val>Rating</val>
-        </specificattribute>
+        <physiologicaladdictionfirsttime>Rating</physiologicaladdictionfirsttime>
+        <psychologicaladdictionfirsttime>Rating</psychologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>Rating</physiologicaladdictionalreadyaddicted>
+        <psychologicaladdictionalreadyaddicted>Rating</psychologicaladdictionalreadyaddicted>
+        <toxincontactresist>Rating</toxincontactresist>
+        <toxiningestionresist>Rating</toxiningestionresist>
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <toxininjectionresist>Rating</toxininjectionresist>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
       </bonus>
       <rating>6</rating>
       <source>2050</source>
