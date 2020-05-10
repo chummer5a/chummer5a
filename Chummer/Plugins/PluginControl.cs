@@ -62,7 +62,7 @@ namespace Chummer.Plugins
         Assembly GetPluginAssembly();
         void Dispose();
         bool SetCharacterRosterNode(TreeNode objNode);
-        Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, System.Windows.Forms.TreeView treCharacterList);
+        Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList);
     }
 
 
@@ -70,14 +70,13 @@ namespace Chummer.Plugins
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
-        public static CompositionContainer Container { get { return container; } }
+        public static CompositionContainer Container => container;
         public string PathToPlugins { get; set; }
         private static AggregateCatalog catalog;
-        private static DirectoryCatalog myDirectoryCatalog = null;
+        private static DirectoryCatalog myDirectoryCatalog;
 
         public PluginControl()
         {
-            
         }
 
         ~PluginControl()
@@ -187,7 +186,7 @@ namespace Chummer.Plugins
             try
             {
                 RegisterChummerProtocol();
-                if (GlobalOptions.PluginsEnabled == false)
+                if (!GlobalOptions.PluginsEnabled)
                 {
                     Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
                     return;
@@ -218,8 +217,7 @@ namespace Chummer.Plugins
                     {
                         Log.Trace(infofile +  " found: parsing it!");
 
-                        System.IO.StreamReader file =
-                            new System.IO.StreamReader(infofile);
+                        System.IO.StreamReader file = new System.IO.StreamReader(infofile);
                         string line;
                         while ((line = file.ReadLine()) != null)
                         {
@@ -248,7 +246,6 @@ namespace Chummer.Plugins
                         Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
                         catalog.Catalogs.Add(myDirectoryCatalog);
                     }
-                    
                 }
 
                 container = new CompositionContainer(catalog);
@@ -295,7 +292,6 @@ namespace Chummer.Plugins
                 Log.Fatal(e);
                 throw;
             }
-            
         }
 
         [ImportMany(typeof(IPlugin))]
@@ -322,7 +318,11 @@ namespace Chummer.Plugins
 
         private static void StartWatch()
         {
-            var watcher = new FileSystemWatcher() { Path = ".", NotifyFilter = NotifyFilters.LastWrite };
+            var watcher = new FileSystemWatcher
+            {
+                Path = ".",
+                NotifyFilter = NotifyFilters.LastWrite
+            };
             watcher.Changed += (s, e) =>
             {
                 string lName = e.Name.ToLower();
@@ -357,28 +357,26 @@ namespace Chummer.Plugins
             }
             catch (ReflectionTypeLoadException e)
             {
-                string msg = "Exception loading plugins: " + Environment.NewLine;
+                StringBuilder msg = new StringBuilder("Exception loading plugins: " + Environment.NewLine);
                 foreach (var exp in e.LoaderExceptions)
                 {
-                    msg += exp.Message + Environment.NewLine;
+                    msg.AppendLine(exp.Message);
                 }
-
-                msg += Environment.NewLine;
-                msg += e.ToString();
-                Log.Warn(e, msg);
+                msg.AppendLine();
+                msg.Append(e);
+                Log.Warn(e, msg.ToString());
             }
             catch (CompositionException e)
             {
-                string msg = "Exception loading plugins: " + Environment.NewLine;
-
+                StringBuilder msg = new StringBuilder("Exception loading plugins: " + Environment.NewLine);
                 foreach (var exp in e.Errors)
                 {
-                    msg += exp.Exception + Environment.NewLine;
+                    msg.AppendLine(exp.Exception.ToString());
                 }
+                msg.AppendLine();
+                msg.Append(e);
 
-                msg += Environment.NewLine;
-                msg += e.ToString();
-                Log.Error(e, msg);
+                Log.Error(e, msg.ToString());
             }
             catch (ApplicationException e)
             {

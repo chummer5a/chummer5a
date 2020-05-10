@@ -76,8 +76,10 @@ namespace Chummer.Plugins
             return "SINners";
         }
 
-        bool IPlugin.SetCharacterRosterNode(TreeNode objNode)
+        public bool SetCharacterRosterNode(TreeNode objNode)
         {
+            if (objNode == null)
+                return false;
             if (objNode.ContextMenuStrip == null)
                 objNode.ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.CreateContextMenuStrip();
             ContextMenuStrip cmsRoster = new ContextMenuStrip();
@@ -107,14 +109,14 @@ namespace Chummer.Plugins
                     };
                     newShare.Click += NewShareOnClick;
                     objNode.ContextMenuStrip.Items.Add(newShare);
-                    
+
                     //is it a favorite sinner?
-                    Object objFavorite = null;
-                    if (member.MyPluginDataDic.TryGetValue("IsSINnerFavorite", out objFavorite))
+                    if (member.MyPluginDataDic.TryGetValue("IsSINnerFavorite", out object objFavorite))
                     {
-                        if ((objFavorite is bool isFavorite) && (isFavorite == true))
+                        ToolStripMenuItem newFavorite = null;
+                        if (objFavorite is bool isFavorite && isFavorite)
                         {
-                            ToolStripMenuItem newFavorite = new ToolStripMenuItem("RemovePinned")
+                            newFavorite = new ToolStripMenuItem("RemovePinned")
                             {
                                 Name = "tsRemovePinnedChummer",
                                 Tag = "Menu_RemovePinnedChummer",
@@ -123,11 +125,10 @@ namespace Chummer.Plugins
                                 Image = global::Chummer.Properties.Resources.user_delete
                             };
                             newFavorite.Click += RemovePinnedOnClick;
-                            objNode.ContextMenuStrip.Items.Add(newFavorite);
                         }
                         else
                         {
-                            ToolStripMenuItem newFavorite = new ToolStripMenuItem("AddPinned")
+                            newFavorite = new ToolStripMenuItem("AddPinned")
                             {
                                 Name = "tsAddPinnedChummer",
                                 Tag = "Menu_AddPinnedChummer",
@@ -136,8 +137,8 @@ namespace Chummer.Plugins
                                 Image = global::Chummer.Properties.Resources.user_add
                             };
                             newFavorite.Click += AddPinnedOnClick;
-                            objNode.ContextMenuStrip.Items.Add(newFavorite);
                         }
+                        objNode.ContextMenuStrip.Items.Add(newFavorite);
                     }
                     ToolStripMenuItem newDelete = new ToolStripMenuItem("DeleteFromSINners")
                     {
@@ -147,7 +148,7 @@ namespace Chummer.Plugins
                         Size = new System.Drawing.Size(177, 22),
                         Image = global::Chummer.Properties.Resources.delete
                     };
-                    newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click; 
+                    newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click;
                     objNode.ContextMenuStrip.Items.Add(newDelete);
                     LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
                 });
@@ -163,10 +164,8 @@ namespace Chummer.Plugins
                 checkNode = checkNode.Parent;
             }
             if (!isPluginNode)
-            {
                 return true;
-            }
-            
+
             if (objNode.Tag is SINnerSearchGroup group)
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>
@@ -183,10 +182,10 @@ namespace Chummer.Plugins
                     objNode.ContextMenuStrip.Items.Add(newShare);
 
                     //is it a favorite sinner?
-                    Object objFavorite = null;
+                    ToolStripMenuItem newFavorite = null;
                     if (group.IsFavorite == true)
                     {
-                        ToolStripMenuItem newFavorite = new ToolStripMenuItem("RemovePinned")
+                        newFavorite = new ToolStripMenuItem("RemovePinned")
                         {
                             Name = "tsRemovePinnedGroup",
                             Tag = "Menu_RemovePinnedGroup",
@@ -199,7 +198,7 @@ namespace Chummer.Plugins
                     }
                     else
                     {
-                        ToolStripMenuItem newFavorite = new ToolStripMenuItem("AddPinned")
+                        newFavorite = new ToolStripMenuItem("AddPinned")
                         {
                             Name = "tsAddPinnedGroup",
                             Tag = "Menu_AddPinnedGroup",
@@ -208,24 +207,19 @@ namespace Chummer.Plugins
                             Image = global::Chummer.Properties.Resources.user_add
                         };
                         newFavorite.Click += AddPinnedOnClick;
-                        objNode.ContextMenuStrip.Items.Add(newFavorite);
                     }
+                    objNode.ContextMenuStrip.Items.Add(newFavorite);
                     LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
                 });
             }
 
-            
             var menuitems = objNode.ContextMenuStrip.Items.Cast<ToolStripItem>().ToArray();
             foreach (var item in menuitems)
             {
                 switch (item.Name)
                 {
                     case "tsToggleFav":
-                        objNode.ContextMenuStrip.Items.Remove(item);
-                        break;
                     case "tsCloseOpenCharacter":
-                        objNode.ContextMenuStrip.Items.Remove(item);
-                        break;
                     case "tsSort":
                         objNode.ContextMenuStrip.Items.Remove(item);
                         break;
@@ -235,12 +229,9 @@ namespace Chummer.Plugins
                         newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click;
                         objNode.ContextMenuStrip.Items.Add(newDelete);
                         break;
-                    default:
-                        break;
                 }
             }
-            
-            
+
             return true;
         }
 
@@ -258,7 +249,7 @@ namespace Chummer.Plugins
         bool IPlugin.ProcessCommandLine(string parameter)
         {
             Log.Debug("ChummerHub.Client.PluginHandler ProcessCommandLine: " + parameter);
-            string argument = "";
+            string argument = string.Empty;
             string onlyparameter = parameter;
             if (parameter.Contains(':'))
             {
@@ -270,12 +261,8 @@ namespace Chummer.Plugins
             {
                 case "Load":
                     return HandleLoadCommand(argument);
-                    break;
-                default:
-                    Log.Warn("Unknown command line parameter: " + parameter);
-                    return true;
-                    break;
             }
+            Log.Warn("Unknown command line parameter: " + parameter);
             return true;
         }
 
@@ -287,7 +274,6 @@ namespace Chummer.Plugins
                 if (!BlnHasDuplicate)
                     PipeManager.StopServer();
             }
-                
         }
 
         private bool HandleLoadCommand(string argument)
@@ -304,8 +290,7 @@ namespace Chummer.Plugins
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
-            
-            var thread = new Thread((myargument) =>
+            var thread = new Thread(myargument =>
             {
                 if (!blnHasDuplicate)
                 {
@@ -319,8 +304,7 @@ namespace Chummer.Plugins
                 {
                     try
                     {
-                        string SINnerIdvalue = argument.Substring(5);
-                        SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        string SINnerIdvalue = argument.Substring(5).Trim('/');
                         int transactionInt = SINnerIdvalue.IndexOf(':');
                         string transaction = null;
                         int callbackInt = -1;
@@ -342,8 +326,7 @@ namespace Chummer.Plugins
                             }
                             var task = Task.Run(async () =>
                             {
-                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 10,
-                                    "Sending Open Character Request");
+                                await StaticUtils.WebCall(callback, 10, "Sending Open Character Request").ConfigureAwait(true);
                             });
                             task.Wait();
                         }
@@ -365,11 +348,21 @@ namespace Chummer.Plugins
                 Environment.ExitCode = -1;
                 return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
-        IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
+        public IEnumerable<TabPage> GetTabPages(frmCareer input)
+        {
+            return GetTabPagesCommon(input);
+        }
+
+        public IEnumerable<TabPage> GetTabPages(frmCreate input)
+        {
+            return GetTabPagesCommon(input);
+        }
+
+        private IEnumerable<TabPage> GetTabPagesCommon(CharacterShared input)
         {
             if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
                 return null;
@@ -377,30 +370,18 @@ namespace Chummer.Plugins
             var ce = uc.SetCharacterFrom(input);
             if (ce.Status == TaskStatus.Faulted)
             {
-                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
+                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception).RunSynchronously();
                 return new List<TabPage>();
             }
-            TabPage page = new TabPage("SINners");
-            page.Name = "SINners";
-            page.Controls.Add(uc);
-            return new List<TabPage>() { page };
-        }
-
-        IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
-        {
-            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
-                return null;
-            ucSINnersUserControl uc = new ucSINnersUserControl();
-            var ce = uc.SetCharacterFrom(input);
-            if (ce.Status == TaskStatus.Faulted)
+            TabPage page = new TabPage("SINners")
             {
-                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
-                return new List<TabPage>();
-            }
-            TabPage page = new TabPage("SINners");
-            page.Name = "SINners";
+                Name = "SINners"
+            };
             page.Controls.Add(uc);
-            return new List<TabPage>() { page };
+            return new List<TabPage>
+            {
+                page
+            };
         }
 
         private static bool _isSaving = false;
@@ -411,12 +392,10 @@ namespace Chummer.Plugins
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce = GetMyCe(input);
-            
             var jsonResolver = new PropertyRenameAndIgnoreSerializerContractResolver();
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
-                ContractResolver = jsonResolver,
-                
+                ContractResolver = jsonResolver
             };
             //remove the reflection tag - no need to save it
             Tag refTag = null;
@@ -432,16 +411,11 @@ namespace Chummer.Plugins
                 }
                 returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
                 ce.MySINnerFile.SiNnerMetaData.Tags.Add(refTag);
-                return returnme;
             }
-            else
-            {
-                if (ce != null)
-                    returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
-            }
+            else if (ce != null)
+                returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
 
             return returnme;
-
         }
 
         public static async void MyOnSaveUpload(object sender, Character input)
@@ -465,20 +439,16 @@ namespace Chummer.Plugins
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                     }
 
-                    await ce.Upload();
-                    
+                    await ce.Upload().ConfigureAwait(true);
 
                     TabPage tabPage = null;
-                    var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
-                        .FirstOrDefault();
-                    if ((found is frmCreate frm) && (frm.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                    var found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
+                    if (found is frmCreate frm && frm.TabCharacterTabs.TabPages.ContainsKey("SINners"))
                     {
                         var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                         tabPage = frm.TabCharacterTabs.TabPages[index];
                     }
-
-
-                    if ((found is frmCareer frm2) && (frm2.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                    else if (found is frmCareer frm2 && frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"))
                     {
                         var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                         tabPage = frm2.TabCharacterTabs.TabPages[index];
@@ -490,7 +460,7 @@ namespace Chummer.Plugins
                     foreach (var uc in ucseq)
                     {
                         if (uc is ucSINnersBasic sb)
-                            await sb?.CheckSINnerStatus();
+                            await sb.CheckSINnerStatus().ConfigureAwait(true);
                     }
 
                     var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
@@ -513,17 +483,14 @@ namespace Chummer.Plugins
             if (MainForm?.OpenCharacterForms != null)
                 foreach (CharacterShared a in (MainForm?.OpenCharacterForms))
                 {
-                    if (a?.CharacterObject != input) continue;
+                    if (a?.CharacterObject != input)
+                        continue;
                     found = a;
                     break;
                 }
             TabPage sinnertab = null;
             if (found != null)
             {
-
-
-
-                
                 TabControl.TabPageCollection myCollection = null;
                 switch (found)
                 {
@@ -538,14 +505,7 @@ namespace Chummer.Plugins
                 if (myCollection == null)
                     return null;
 
-                foreach (TabPage tab in myCollection)
-                {
-                    if (tab.Name == "SINners")
-                    {
-                        sinnertab = tab;
-                        break;
-                    }
-                }
+                sinnertab = myCollection.OfType<TabPage>().FirstOrDefault(x => x.Name == "SINners");
             }
 
             CharacterExtended ce;
@@ -556,24 +516,17 @@ namespace Chummer.Plugins
             }
             else
             {
-                ucSINnersUserControl myUcSIN = null;
-                foreach (ucSINnersUserControl ucSIN in sinnertab.Controls)
-                {
-                    myUcSIN = ucSIN;
-                    break;
-                }
-
+                ucSINnersUserControl myUcSIN = sinnertab.Controls.OfType<ucSINnersUserControl>().FirstOrDefault();
                 ce = myUcSIN == null ? new CharacterExtended(input, null, null, myCharacterCache) : myUcSIN.MyCE;
             }
             return ce;
         }
 
-        void IPlugin.LoadFileElement(Character input, string fileElement)
+        public void LoadFileElement(Character input, string fileElement)
         {
             try
             {
-                CharacterExtended ce;
-                ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
+                CharacterExtended ce = new CharacterExtended(input, fileElement, MySINnerLoading);
             }
             catch (Exception e)
             {
@@ -582,7 +535,7 @@ namespace Chummer.Plugins
                 throw;
 #endif
             }
-            
+
         }
 
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)
@@ -650,10 +603,8 @@ namespace Chummer.Plugins
                 using (new CursorWait(true, MainForm))
                 {
                     var client = StaticUtils.GetClient();
-                    res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes", null, null);
-                    var result =
-                        await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
-                    if (result == null)
+                    res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
+                    if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return;
                     if (result.CallSuccess == true)
                     {
@@ -663,7 +614,7 @@ namespace Chummer.Plugins
                         {
                             using (new CursorWait(true, MainForm))
                             {
-                                if (ssgr1 != null && ssgr1.SinGroups?.Any() == true)
+                                if (ssgr1 != null && ssgr1.SinGroups?.Count > 0)
                                 {
                                     var list = ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes").ToList();
                                     var nodelist =
@@ -676,7 +627,7 @@ namespace Chummer.Plugins
 
                                     PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
                                     PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode =
-                                        nodelist.FirstOrDefault(a => a.Name ==  "Archetypes");
+                                        nodelist.FirstOrDefault(a => a.Name == "Archetypes");
                                     PluginHandler.MainForm.BringToFront();
                                 }
                                 else
@@ -694,25 +645,29 @@ namespace Chummer.Plugins
             {
                 throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                var result =
-                       await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
-                if (result == null)
+                if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res?.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                     return;
+            }
+            finally
+            {
+                res?.Dispose();
             }
         }
 
-        public static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
+        public static readonly ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
 
-        private async void mnuSINners_Click(object sender, EventArgs ea)
+        private void mnuSINners_Click(object sender, EventArgs ea)
         {
             try
             {
                 using (new CursorWait(true, PluginHandler.MainForm))
                 {
-                    frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null);
-                    frmSearch.TopMost = true;
+                    frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null)
+                    {
+                        TopMost = true
+                    };
                     frmSearch.Show(PluginHandler.MainForm);
                 }
 
@@ -733,18 +688,23 @@ namespace Chummer.Plugins
                     Log.Warn(e);
                     TreeNode node = new TreeNode("Error: " + e.Message)
                     {
-                        ToolTipText = e.ToString(), Tag = e
+                        ToolTipText = e.ToString(),
+                        Tag = e
                     };
                 }
             }
             catch (Exception e)
             {
                 Log.Warn(e);
-                TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
+                TreeNode node = new TreeNode("SINners Error: please log in")
+                {
+                    ToolTipText = e.ToString(),
+                    Tag = e
+                };
             }
         }
 
-        
+
         public Assembly GetPluginAssembly()
         {
             return typeof(ucSINnersUserControl).Assembly;
@@ -753,11 +713,9 @@ namespace Chummer.Plugins
         public void SetIsUnitTest(bool isUnitTest)
         {
             StaticUtils.MyUtils.IsUnitTest = isUnitTest;
-            if (!StaticUtils.MyUtils.IsUnitTest)
-                MyUploadClient.ChummerVersion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
-            else
-                MyUploadClient.ChummerVersion = System.Reflection.Assembly.GetCallingAssembly().GetName().Version.ToString();
-
+            MyUploadClient.ChummerVersion = !StaticUtils.MyUtils.IsUnitTest
+                ? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? string.Empty
+                : System.Reflection.Assembly.GetCallingAssembly().GetName().Version.ToString();
         }
 
         public System.Windows.Forms.UserControl GetOptionsControl()
@@ -765,7 +723,6 @@ namespace Chummer.Plugins
             return new ucSINnersOptions();
         }
 
-        
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
         {
             try
@@ -782,7 +739,7 @@ namespace Chummer.Plugins
                             try
                             {
                                 var client = StaticUtils.GetClient();
-                                var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+                                var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true);
                                 return ret;
                             }
                             catch (Exception e)
@@ -807,41 +764,49 @@ namespace Chummer.Plugins
                     //AddContextMenuStripRecursive(list, myContextMenuStrip);
                     return list;
                 }
-                    
             }
             catch(Microsoft.Rest.SerializationException e)
             {
-                
                 if (e.Content.Contains("Log in - ChummerHub"))
                 {
-                    TreeNode node = new TreeNode("Online, but not logged in!")
-                    {
-                        ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login", Tag = e
-                    };
                     Log.Warn(e, "Online, but not logged in!");
-                    return new List<TreeNode>() { node };
+                    return new List<TreeNode>
+                    {
+                        new TreeNode("Online, but not logged in!")
+                        {
+                            ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
+                            Tag = e
+                        }
+                    };
                 }
                 else
                 {
                     Log.Error(e);
-                    TreeNode node = new TreeNode("Error: " + e.Message) {ToolTipText = e.ToString(), Tag = e};
-                    return new List<TreeNode>() { node };
+                    return new List<TreeNode>
+                    {
+                        new TreeNode("Error: " + e.Message)
+                        {
+                            ToolTipText = e.ToString(),
+                            Tag = e
+                        }
+                    };
                 }
             }
             catch(Exception e)
             {
                 Log.Error(e);
-                TreeNode node = new TreeNode("SINners Error: please log in") {ToolTipText = e.ToString(), Tag = e};
-                var objCache = new frmCharacterRoster.CharacterCache
+                return new List<TreeNode>
                 {
-                    ErrorText = e.ToString()
+                    new TreeNode("SINners Error: please log in")
+                    {
+                        ToolTipText = e.ToString(),
+                        Tag = e
+                    }
                 };
-                node.Tag = objCache;
-                return new List<TreeNode>() { node };
             }
         }
 
-        
+
         private async void ShowMySINnersOnClick(object sender, EventArgs e)
         {
             //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
@@ -849,13 +814,11 @@ namespace Chummer.Plugins
             {
                 using (new CursorWait(true, PluginHandler.MainForm.CharacterRoster))
                 {
-                    var MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
-                    var item = (from a in MySINSearchGroupResult.SinGroups
-                        where a.Groupname?.Contains("My Data") == true
-                        select a).FirstOrDefault();
+                    var MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null).ConfigureAwait(true);
+                    var item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
                     if (item != null)
                     {
-                        var list = new List<SINnerSearchGroup>() { item };
+                        var list = new List<SINnerSearchGroup> { item };
                         var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
                         foreach (var node in nodelist)
                         {
@@ -890,22 +853,23 @@ namespace Chummer.Plugins
 
                     if (Guid.TryParse(sinneridstring, out Guid sinnerid))
                     {
+                        HttpOperationResponse<object> res = null;
                         try
                         {
-                            var res = await client.PutSINerInGroupWithHttpMessagesAsync(Guid.Empty, sinnerid);
+                            res = await client.PutSINerInGroupWithHttpMessagesAsync(Guid.Empty, sinnerid).ConfigureAwait(true);
                             var response = ChummerHub.Client.Backend.Utils.HandleError(res, res.Body);
                             if (res.Response.StatusCode == HttpStatusCode.OK)
-                            {
                                 PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                            }
                         }
                         catch (Exception exception)
                         {
-                            await ChummerHub.Client.Backend.Utils.HandleError(exception);
+                            await ChummerHub.Client.Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                        }
+                        finally
+                        {
+                            res?.Dispose();
                         }
                     }
-
-
                 }
                 catch (Exception exception)
                 {
@@ -915,10 +879,11 @@ namespace Chummer.Plugins
             }
             else if (t?.Tag is SINnerSearchGroup ssg)
             {
+                HttpOperationResponse<ResultGroupPutGroupInGroup> res = null;
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    var res = await client.PutGroupInGroupWithHttpMessagesAsync(ssg.Id, null, Guid.Empty);
+                    res = await client.PutGroupInGroupWithHttpMessagesAsync(ssg.Id, null, Guid.Empty).ConfigureAwait(true);
                     var response = ChummerHub.Client.Backend.Utils.HandleError(res, res.Body);
                     if (res.Response.StatusCode == HttpStatusCode.OK)
                     {
@@ -927,7 +892,11 @@ namespace Chummer.Plugins
                 }
                 catch (Exception exception)
                 {
-                    await ChummerHub.Client.Backend.Utils.HandleError(exception);
+                    await ChummerHub.Client.Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                }
+                finally
+                {
+                    res?.Dispose();
                 }
             }
         }
@@ -963,7 +932,7 @@ namespace Chummer.Plugins
                             await ChummerHub.Client.Backend.Utils.HandleError(exception);
                         }
                     }
-                  
+
 
                 }
                 catch (Exception exception)
@@ -991,7 +960,7 @@ namespace Chummer.Plugins
             }
         }
 
-       
+
         private async void NewShareOnClick(object sender, EventArgs e)
         {
             TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
@@ -1011,7 +980,7 @@ namespace Chummer.Plugins
                     Log.Error(exception);
                     PluginHandler.MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
                 }
-                
+
             }
             else if (t?.Tag is SINnerSearchGroup ssg)
             {
@@ -1039,7 +1008,7 @@ namespace Chummer.Plugins
         //        {
         //            if (node.Tag is SINnerSearchGroup group)
         //            {
-                        
+
         //            }
         //            else if (node.Tag is frmCharacterRoster.CharacterCache member)
         //            {
@@ -1116,7 +1085,7 @@ namespace Chummer.Plugins
                     {
                         if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
                             PluginHandler.MainForm.WindowState = FormWindowState.Normal;
-                      
+
                     });
                 }
 
@@ -1162,7 +1131,7 @@ namespace Chummer.Plugins
 
                         if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
                         {
-                                
+
                             var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
                             await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
                             if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -1190,7 +1159,7 @@ namespace Chummer.Plugins
                         Log.Error(e);
                         PluginHandler.MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
                     }
-                        
+
                 }
                 else
                 {
@@ -1201,7 +1170,7 @@ namespace Chummer.Plugins
 
         private static async Task<Character> MainFormLoadChar(string fileToLoad)
         {
-            
+
                 using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileToLoad })
                 {
                     Character objCharacter = new Character()
@@ -1243,7 +1212,7 @@ namespace Chummer.Plugins
                     });
                     return objCharacter;
                 }
-      
+
         }
 
         public async Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs e, System.Windows.Forms.TreeView treCharacterList )

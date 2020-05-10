@@ -19,13 +19,13 @@ namespace ChummerHub.Client.UI
             MyUcSINnerShare.MyFrmSINnerShare = this;
         }
 
-       
+
 
         public ucSINnerShare MyUcSINnerShare
         {
             get { return ucSINnerShare1; }
         }
 
-        
+
     }
 }

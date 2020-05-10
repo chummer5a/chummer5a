@@ -60,9 +60,8 @@ namespace ChummerHub.Client.Backend
 
         private bool IsRenamed(Type type, string jsonPropertyName, out string newJsonPropertyName)
         {
-            Dictionary<string, string> renames;
-
-            if (!_renames.TryGetValue(type, out renames) || !renames.TryGetValue(jsonPropertyName, out newJsonPropertyName))
+            if (!_renames.TryGetValue(type, out Dictionary<string, string> renames)
+                || !renames.TryGetValue(jsonPropertyName, out newJsonPropertyName))
             {
                 newJsonPropertyName = null;
                 return false;

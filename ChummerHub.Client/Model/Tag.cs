@@ -17,27 +17,27 @@ namespace SINners.Models
         [JsonIgnore]
         public Tag MyParentTag { get; set; }
 
-        public Tag (Object myRuntimeObject, Chummer.HubTagAttribute hubTag)
+        public Tag (object myRuntimeObject, Chummer.HubTagAttribute hubTag)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubTag = hubTag;
-            this.Tags = new List<Tag>();
+            Tags = new List<Tag>();
         }
 
         public Tag (bool isUserGenerated)
         {
-            this.Id = Guid.NewGuid();
-            this.IsUserGenerated = isUserGenerated;
-            this.Tags = new List<Tag>();
+            Id = Guid.NewGuid();
+            IsUserGenerated = isUserGenerated;
+            Tags = new List<Tag>();
         }
 
-        public Tag(Object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
+        public Tag(object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubClassTag = hubClassTag;
-            this.Tags = new List<Tag>();
+            Tags = new List<Tag>();
         }
 
         [IgnoreDataMember]
@@ -63,7 +63,6 @@ namespace SINners.Models
                     str += " (" + this.TagComment + ")";
                 return str;
             }
-            
         }
 
         [IgnoreDataMember]
@@ -74,7 +73,7 @@ namespace SINners.Models
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Object MyRuntimeObject { get; set; }
+        public object MyRuntimeObject { get; set; }
 
         [IgnoreDataMember]
         [XmlIgnore]
@@ -88,8 +87,8 @@ namespace SINners.Models
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
-            this.SiNnerId = id;
-            foreach(var childtag in this.Tags)
+            SiNnerId = id;
+            foreach(var childtag in Tags)
                 childtag.SetSinnerIdRecursive(id);
         }
 
