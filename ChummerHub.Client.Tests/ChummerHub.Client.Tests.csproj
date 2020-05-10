@@ -214,7 +214,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>echo Statement 3: copy $(SolutionDir)ChummerHub.Client\bin\$(ConfigurationName)\ChummerHub.Client*.* $(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\ /Y
-copy $(SolutionDir)ChummerHub.Client\bin\$(ConfigurationName)\ChummerHub.Client*.* $(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\ /Y</PostBuildEvent>
+copy "$(SolutionDir)ChummerHub.Client\bin\$(ConfigurationName)\ChummerHub.Client*.*" "$(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\" /Y</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
