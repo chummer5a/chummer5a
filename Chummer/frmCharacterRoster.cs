@@ -53,15 +53,12 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            
-
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
                 watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.CharacterRosterPath, "*.chum5");
             }
         }
 
-        
 
         public void SetMyEventHandlers(bool deleteThem = false)
         {
@@ -73,7 +70,6 @@ namespace Chummer
                 treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver += treCharacterList_OnDefaultDragOver;
                 OnMyMouseDown += OnDefaultMouseDown;
-                
                 if (watcherCharacterRosterFolder != null)
                 {
                     watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
@@ -365,7 +361,7 @@ namespace Chummer
                     {
                         var t = Task.Factory.StartNew<IEnumerable<List<TreeNode>>>(() =>
                         {
-                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
+                            Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
                             var result = new List<List<TreeNode>>();
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
@@ -374,7 +370,7 @@ namespace Chummer
                             }
                             return result;
                         });
-                        t.ContinueWith((nodestask) =>
+                        t.ContinueWith(nodestask =>
                         {
                             foreach(var nodelist in nodestask.Result)
                             {
@@ -436,7 +432,7 @@ namespace Chummer
                 else
                 {
                     objFavoriteNode.Nodes.Clear();
-                    for(int i = 0; i < lstFavoritesNodes.Length; i++)
+                    for (int i = 0; i < lstFavoritesNodes.Length; i++)
                     {
                         TreeNode objNode = lstFavoritesNodes[i];
                         if(objNode != null)
@@ -580,11 +576,11 @@ namespace Chummer
                 else
                     lblMetatype.Text = "Error loading metatype!";
                 tabCharacterText.Visible = true;
-                if (!String.IsNullOrEmpty(objCache.ErrorText))
+                if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
                     txtCharacterBio.Text = objCache.ErrorText;
                     txtCharacterBio.ForeColor = Color.Red;
-                    txtCharacterBio.BringToFront();                    
+                    txtCharacterBio.BringToFront();
                 }
             }
             else
@@ -791,7 +787,7 @@ namespace Chummer
                 set => MugshotBase64 = value.ToBase64String();
             }
 
-            public string MugshotBase64 { get; set; } = String.Empty;
+            public string MugshotBase64 { get; set; } = string.Empty;
 
             public bool Created { get; set; }
             public string SettingsFile { get; set; }
@@ -856,7 +852,7 @@ namespace Chummer
                 }
             }
 
-            
+
             public async void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
             {
                 if (sender is TreeNode t)
@@ -951,7 +947,7 @@ namespace Chummer
                 }
 
                 FilePath = strFile;
-                if (!String.IsNullOrEmpty(strFile))
+                if (!string.IsNullOrEmpty(strFile))
                 {
                     int last = strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1;
                     if (strFile.Length > last)
@@ -1031,7 +1027,7 @@ namespace Chummer
         private void tsSort_Click(object sender, EventArgs e)
         {
             TreeNode t = treCharacterList.SelectedNode;
-            
+
             if (t?.Tag is CharacterCache)
             {
                 switch (t.Parent.Tag.ToString())
@@ -1245,8 +1241,6 @@ namespace Chummer
             tsCloseOpenCharacter.Tag = "Menu_Close";
             tsCloseOpenCharacter.Text = "&Close this character";
             tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
-
-          
 
             return cmsRoster;
         }

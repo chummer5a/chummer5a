@@ -1100,12 +1100,12 @@ namespace Chummer
         /// <param name="caption"></param>
         /// <param name="defaultButton"></param>
         /// <returns></returns>
-        public DialogResult ShowMessageBox(String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
             return ShowMessageBox(new Form() { TopMost = true }, message, caption, buttons, icon);
         }
 
-        public DialogResult ShowMessageBox(Control owner, String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
             if (Utils.IsUnitTest)
             {
@@ -1157,7 +1157,7 @@ namespace Chummer
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(
-            String s1, String s2, MessageBoxButtons buttons,
+            string s1, string s2, MessageBoxButtons buttons,
             MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
 
         /// <summary>

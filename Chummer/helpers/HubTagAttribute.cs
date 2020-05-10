@@ -31,11 +31,6 @@ namespace Chummer
     public class HubClassTagAttribute : System.Attribute
     {
         //private string _ListName;
-        private string _ListInstanceNameFromProperty;
-        private bool _DeleteEmptyTags = false;
-        private List<string> _CommentProperties = new List<string>();
-        private List<string> _ExtraProperties = new List<string>();
-
 
         /// <summary>
         /// Constructor
@@ -47,86 +42,63 @@ namespace Chummer
         public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags, string commentProperties, string extraProperties)
         {
             //_ListName = ListName;
-            _ListInstanceNameFromProperty = listInstanceNameFromProperty;
-            _DeleteEmptyTags = deleteEmptyTags;
-            if(!String.IsNullOrEmpty(commentProperties))
-                _CommentProperties = new List<string>(commentProperties.Split(';'));
-            if(!String.IsNullOrEmpty(extraProperties))
-                _ExtraProperties = new List<string>(extraProperties.Split(';'));
+            ListInstanceNameFromProperty = listInstanceNameFromProperty;
+            DeleteEmptyTags = deleteEmptyTags;
+            if(!string.IsNullOrEmpty(commentProperties))
+                ListCommentProperties = new List<string>(commentProperties.Split(';'));
+            if(!string.IsNullOrEmpty(extraProperties))
+                ListExtraProperties = new List<string>(extraProperties.Split(';'));
         }
 
-        public List<string> ListCommentProperties { get { return _CommentProperties; } }
+        public List<string> ListCommentProperties { get; } = new List<string>();
 
-        public List<string> ListExtraProperties { get { return _ExtraProperties; } }
+        public List<string> ListExtraProperties { get; } = new List<string>();
 
 
-        public string ListInstanceNameFromProperty
-        { get { return _ListInstanceNameFromProperty; } }
-        public bool DeleteEmptyTags
-        { get { return _DeleteEmptyTags; } }
+        public string ListInstanceNameFromProperty { get; }
 
+        public bool DeleteEmptyTags { get; }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
     public class HubTagAttribute : System.Attribute
     {
-        private string _TagName;
-        private string _TagValueFromProperty;
-        private string _TagNameFromProperty;
-        private bool _deleteIfEmpty = false;
-
         public HubTagAttribute()
         {
 
         }
 
-        public HubTagAttribute(
-                  string TagName,
-                  string TagNameFromProperty,
-                  string TagValueFromProperty,
-                  bool deleteIfEmpty)
+        public HubTagAttribute(string TagName, string TagNameFromProperty, string TagValueFromProperty, bool deleteIfEmpty)
         {
-            this._TagName = TagName;
-            this._TagNameFromProperty = TagNameFromProperty;
-            this._TagValueFromProperty = TagValueFromProperty;
-            this._deleteIfEmpty = deleteIfEmpty;
+            this.TagName = TagName;
+            this.TagNameFromProperty = TagNameFromProperty;
+            this.TagValueFromProperty = TagValueFromProperty;
+            DeleteIfEmpty = deleteIfEmpty;
         }
 
 
-        public HubTagAttribute(
-          string TagName,
-          string TagNameFromProperty)
+        public HubTagAttribute(string TagName, string TagNameFromProperty)
         {
-            this._TagName = TagName;
-            this._TagNameFromProperty = TagNameFromProperty;
+            this.TagName = TagName;
+            this.TagNameFromProperty = TagNameFromProperty;
         }
 
-        public HubTagAttribute(
-          string TagName)
+        public HubTagAttribute(string TagName)
         {
-            this._TagName = TagName;
+            this.TagName = TagName;
         }
 
-        public HubTagAttribute(
-          bool deleteIfEmpty)
+        public HubTagAttribute(bool deleteIfEmpty)
         {
-            this._deleteIfEmpty = deleteIfEmpty;
+            DeleteIfEmpty = deleteIfEmpty;
         }
 
-        public string TagName
-        { get { return _TagName; } }
+        public string TagName { get; }
 
-        public string TagNameFromProperty
-        { get { return _TagNameFromProperty; } }
+        public string TagNameFromProperty { get; }
 
-        public string TagValueFromProperty
-        { get { return _TagValueFromProperty; } }
+        public string TagValueFromProperty { get; }
 
-        public bool DeleteIfEmpty
-        { get { return _deleteIfEmpty; } }
-
-
-
-
+        public bool DeleteIfEmpty { get; }
     }
 }

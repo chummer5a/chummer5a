@@ -73,7 +73,7 @@ namespace Chummer.Backend.Uniques
 
         public override string ToString()
         {
-            if (!String.IsNullOrEmpty(_strName))
+            if (!string.IsNullOrEmpty(_strName))
                 return _strName;
             return base.ToString();
         }
@@ -980,14 +980,16 @@ namespace Chummer.Backend.Uniques
         {
             List<Tradition> result = new List<Tradition>();
             XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml").SelectNodes("/chummer/traditions/tradition");
-            foreach(XmlNode node in xmlTraditions)
+            if (xmlTraditions != null)
             {
-                Tradition tradition = new Tradition(character);
-                tradition.Create(node);
-                result.Add(tradition);
+                foreach (XmlNode node in xmlTraditions)
+                {
+                    Tradition tradition = new Tradition(character);
+                    tradition.Create(node);
+                    result.Add(tradition);
+                }
             }
             return result;
-
         }
 
         #endregion

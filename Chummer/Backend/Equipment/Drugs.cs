@@ -1587,7 +1587,7 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Drug Effect
 	/// </summary>
-	public class DrugEffect : Object
+	public class DrugEffect : object
 	{
 	    public DrugEffect()
 		{

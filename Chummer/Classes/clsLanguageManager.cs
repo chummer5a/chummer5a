@@ -260,11 +260,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft)
         {
             if (objParent == null)
                 return;
-            
+
             objParent.RightToLeft = eIntoRightToLeft;
 
             if (objParent is Form frmForm)
@@ -758,7 +759,7 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
-            if (String.IsNullOrEmpty(strExtra)) return "";
+            if (string.IsNullOrEmpty(strExtra)) return "";
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
