@@ -3258,14 +3258,6 @@ namespace Chummer
             Log.Info("_strForcedValue = " + s_StrForcedValue);
             Log.Info("_strLimitSelection = " + s_StrLimitSelection);
 
-            // If there is no character object, don't attempt to add any Improvements.
-            if (objCharacter == null && blnAddImprovementsToCharacter)
-            {
-                Log.Info("_objCharacter = Null");
-                Log.Debug("CreateImprovements exit");
-                return true;
-            }
-
             string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
             // If no friendly name was provided, use the one from SourceName.
             if (string.IsNullOrEmpty(strFriendlyName))
@@ -3405,6 +3397,14 @@ namespace Chummer
                         strUnique);
                 }
 
+                // If there is no character object, don't attempt to add any Improvements.
+                if (objCharacter == null && blnAddImprovementsToCharacter)
+                {
+                    Log.Info("_objCharacter = Null");
+                    Log.Debug("CreateImprovements exit");
+                    return true;
+                }
+
                 // Check to see what bonuses the node grants.
                 foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
@@ -3416,9 +3416,17 @@ namespace Chummer
                     }
                 }
             }
+            // If there is no character object, don't attempt to add any Improvements.
+            else if (objCharacter == null && blnAddImprovementsToCharacter)
+            {
+                Log.Info("_objCharacter = Null");
+                Log.Debug("CreateImprovements exit");
+                return true;
+            }
+
 
             // If we've made it this far, everything went OK, so commit the Improvements.
-            
+
             if (blnAddImprovementsToCharacter)
             {
                 Log.Info("Calling Commit");

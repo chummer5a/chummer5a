@@ -390,7 +390,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (Bonus != null && blnAddImprovements)
+            if (Bonus != null && (blnAddImprovements || Bonus.ChildNodes.Count == 1 && Bonus["selecttext"] != null))
             {
                 // Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
