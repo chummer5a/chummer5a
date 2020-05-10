@@ -6288,6 +6288,10 @@
       <text>Services Owed:</text>
     </string>
     <string>
+      <key>Label_Sprite_TasksOwed</key>
+      <text>Tasks Owed:</text>
+    </string>
+    <string>
       <key>Checkbox_Spirit_Bound</key>
       <text>Bound</text>
     </string>

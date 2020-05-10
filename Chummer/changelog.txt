@@ -19,6 +19,8 @@ Application Changes:
   It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to options.xml; completely new files may work, but are unsupported at this time.
   Duplicate values will automatically be filtered.
 - Added better support for basic lifestyles and primary tenant/roommate splits bestween costs. Closes #4054
+- Altered spirit control to support width flexion due to different string lengths.
+
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 - Fixed a regression in behaviour of Initiation Group prompt to spend karma when selecting the Initiation tab.
@@ -126,6 +128,7 @@ Changed/new strings:
 - LimitCondition_CorporationVisible
 - LimitCondition_CyberwareSnakeFingers
 - LimitCondition_SportsRivals
+- Label_Sprite_TasksOwed
 
 Build 211
 Application Changes:
