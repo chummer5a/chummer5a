@@ -49,9 +49,7 @@ namespace Chummer.Plugins
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
         bool ProcessCommandLine(string parameter);
 
-
-
-        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
+        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
         UserControl GetOptionsControl();
 
         string GetSaveToFileElement(Character input);

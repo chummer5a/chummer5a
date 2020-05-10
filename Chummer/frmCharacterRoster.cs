@@ -359,63 +359,59 @@ namespace Chummer
                 {
                     foreach(var plugin in Program.PluginLoader.MyActivePlugins)
                     {
-                        var t = Task.Factory.StartNew<IEnumerable<List<TreeNode>>>(() =>
+                        var t = Task.Factory.StartNew<ICollection<TreeNode>>(() =>
                         {
                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
-                            var result = new List<List<TreeNode>>();
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
                             {
-                                result.Add(task.Result.OrderBy(a => a.Text).ToList());
+                                return task.Result.OrderBy(a => a.Text).ToList();
                             }
-                            return result;
+                            return new List<TreeNode>();
                         });
-                        t.ContinueWith(nodestask =>
+                        t.ContinueWith(nodelist =>
                         {
-                            foreach(var nodelist in nodestask.Result)
+                            foreach(TreeNode node in nodelist.Result)
                             {
-                                foreach(var node in nodelist)
+                                TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
+                                Program.MainForm.DoThreadSafe(() =>
                                 {
-                                    TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
-                                    Program.MainForm.DoThreadSafe(() =>
+                                    try
                                     {
-                                        try
+                                        if (objExistingNode != null)
                                         {
-                                            if (objExistingNode != null)
-                                            {
-                                                treCharacterList.Nodes.Remove(objExistingNode);
-                                            }
+                                            treCharacterList.Nodes.Remove(objExistingNode);
+                                        }
 
-                                            if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
-                                                || node.Tag != null)
-                                            {
-                                                if (treCharacterList.IsDisposed)
-                                                    return;
-                                                if (treCharacterList.Nodes.ContainsKey(node.Name))
-                                                    treCharacterList.Nodes.RemoveByKey(node.Name);
-                                                treCharacterList.Nodes.Insert(1, node);
-                                            }
+                                        if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
+                                            || node.Tag != null)
+                                        {
+                                            if (treCharacterList.IsDisposed)
+                                                return;
+                                            if (treCharacterList.Nodes.ContainsKey(node.Name))
+                                                treCharacterList.Nodes.RemoveByKey(node.Name);
+                                            treCharacterList.Nodes.Insert(1, node);
+                                        }
 
-                                            node.Expand();
-                                        }
-                                        catch (ObjectDisposedException e)
-                                        {
-                                            Log.Trace(e);
-                                        }
-                                        catch (InvalidAsynchronousStateException e)
-                                        {
-                                            Log.Trace(e);
-                                        }
-                                        catch (ArgumentException e)
-                                        {
-                                            Log.Trace(e);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Log.Warn(e);
-                                        }
-                                    });
-                                }
+                                        node.Expand();
+                                    }
+                                    catch (ObjectDisposedException e)
+                                    {
+                                        Log.Trace(e);
+                                    }
+                                    catch (InvalidAsynchronousStateException e)
+                                    {
+                                        Log.Trace(e);
+                                    }
+                                    catch (ArgumentException e)
+                                    {
+                                        Log.Trace(e);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log.Warn(e);
+                                    }
+                                });
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin.ToString() + " finished.");
                         });

@@ -56,17 +56,16 @@ namespace ChummerHub.Client.UI
                     return input;
                 }
 
-                var list = SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimePropertyValue, stag);
-                if (list.Any())
+                List<SearchTag> list = new List<SearchTag>(SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimePropertyValue).OrderBy(x => x.TagName));
+                if (list.Count > 0)
                 {
-                    var ordered = (from a in list orderby a.TagName select a).ToList();
                     ComboBox cb = new ComboBox
                     {
                         DropDownStyle = ComboBoxStyle.DropDownList,
                         FlatStyle = FlatStyle.Standard
                     };
                     flpReflectionMembers.Controls.Add(cb);
-                    cb.DataSource = ordered;
+                    cb.DataSource = list;
                     cb.DisplayMember = "TagName";
                     cb.SelectedValueChanged += (sender, e) =>
                     {

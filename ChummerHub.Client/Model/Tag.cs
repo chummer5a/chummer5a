@@ -1,11 +1,14 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Chummer;
 
 namespace SINners.Models
 {
@@ -47,21 +50,21 @@ namespace SINners.Models
         {
             get
             {
-                string str = "";
-                Tag tempParent = this;
+                StringBuilder sbdReturn = new StringBuilder(TagName);
+                if (!string.IsNullOrEmpty(TagValue))
+                    sbdReturn.Append(": " + TagValue);
+                Tag tempParent = MyParentTag;
                 while (tempParent != null)
                 {
                     string tempstr = tempParent.TagName;
-                    if (!String.IsNullOrEmpty(tempParent.TagValue))
+                    if (!string.IsNullOrEmpty(tempParent.TagValue))
                         tempstr += ": " + tempParent.TagValue;
-                    if (!String.IsNullOrEmpty(str))
-                        tempstr += " -> " + str;
-                    str = tempstr;
+                    sbdReturn.Insert(0, tempstr + " -> ");
                     tempParent = tempParent.MyParentTag;
                 }
-                if(!String.IsNullOrEmpty(this.TagComment))
-                    str += " (" + this.TagComment + ")";
-                return str;
+                if(!string.IsNullOrEmpty(TagComment))
+                    sbdReturn.Append(" (" + TagComment + ")");
+                return sbdReturn.ToString();
             }
         }
 
@@ -92,5 +95,65 @@ namespace SINners.Models
                 childtag.SetSinnerIdRecursive(id);
         }
 
+        internal void SetTagTypeEnumFromCLRType(Type typeValue)
+        {
+            if (typeof(int).IsAssignableFrom(typeValue))
+            {
+                TagType = "int";
+            }
+            else if (typeof(double).IsAssignableFrom(typeValue))
+            {
+                TagType = "double";
+            }
+            else if (typeof(bool).IsAssignableFrom(typeValue))
+            {
+                TagType = "bool";
+            }
+            else if (typeof(string).IsAssignableFrom(typeValue))
+            {
+                TagType = "string";
+            }
+            else if (typeof(Guid).IsAssignableFrom(typeValue))
+            {
+                TagType = "Guid";
+            }
+            else
+            {
+                TagType = "other";
+            }
+
+            if (typeof(IEnumerable).IsAssignableFrom(typeValue) && !typeof(string).IsAssignableFrom(typeValue))
+            {
+                TagType = "list";
+                TagValue = string.Empty;
+                TagValueFloat = null;
+            }
+            else if (TagValue == typeValue.FullName)
+            {
+                TagValue = string.Empty;
+                TagValueFloat = null;
+            }
+        }
+
+        internal void AddPropertyValuesToTagComment(object objItem, HubClassTagAttribute objAttribute)
+        {
+            if (objItem == null || objAttribute == null)
+                return;
+            Type objItemType = objItem.GetType();
+            StringBuilder sbdPropertyValues = new StringBuilder();
+            foreach (string strProperty in objAttribute.ListCommentProperties)
+            {
+                PropertyInfo objProperty = objItemType.GetProperties().FirstOrDefault(p => p.Name == strProperty);
+                if (objProperty == null)
+                    throw new ArgumentOutOfRangeException("Could not find property " + strProperty + " on instance of type " + objItemType + ".");
+
+                string strPropertyValue = objProperty.GetValue(objItem)?.ToString();
+                if (!string.IsNullOrEmpty(strPropertyValue))
+                    sbdPropertyValues.Append(strPropertyValue + " ");
+            }
+            if (sbdPropertyValues.Length > 0)
+                sbdPropertyValues.Remove(sbdPropertyValues.Length - 1, 1); // Remove trailing whitespace
+            TagComment = TagComment + sbdPropertyValues;
+        }
     }
 }

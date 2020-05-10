@@ -151,7 +151,7 @@ namespace ChummerHub.Client.Model
                 SiNnerId = MySINnerFile.Id,
                 TagName = "Reflection"
             };
-            var tags = TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
+            tag.Tags.AddRange(TagExtractor.ExtractTagsFromAttributes(MyCharacter));
             foreach (var f in MySINnerFile.SiNnerMetaData.Tags.Where(x => x?.TagName == "Reflection").ToList())
             {
                 MySINnerFile.SiNnerMetaData.Tags.Remove(f);

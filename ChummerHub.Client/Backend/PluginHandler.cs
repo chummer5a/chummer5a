@@ -306,22 +306,16 @@ namespace Chummer.Plugins
                     {
                         string SINnerIdvalue = argument.Substring(5).Trim('/');
                         int transactionInt = SINnerIdvalue.IndexOf(':');
-                        string transaction = null;
-                        int callbackInt = -1;
-                        string callback = null;
                         if (transactionInt != -1)
                         {
-                            transaction = SINnerIdvalue.Substring(transactionInt);
-                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
-                            SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
-                            transaction = transaction.TrimStart(':');
-                            callbackInt = transaction.IndexOf(':');
+                            string transaction = SINnerIdvalue.Substring(transactionInt).TrimStart(':');
+                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt).TrimEnd(':');
+                            string callback = string.Empty;
+                            int callbackInt = transaction.IndexOf(':');
                             if (callbackInt != -1)
                             {
-                                callback = transaction.Substring(callbackInt);
-                                transaction = transaction.Substring(0, callbackInt);
-                                transaction = transaction.TrimEnd(':');
-                                callback = callback.TrimStart(':');
+                                callback = transaction.Substring(callbackInt).TrimStart(':');
+                                transaction = transaction.Substring(0, callbackInt).TrimEnd(':');
                                 callback = WebUtility.UrlDecode(callback);
                             }
                             var task = Task.Run(async () =>
@@ -398,17 +392,11 @@ namespace Chummer.Plugins
                 ContractResolver = jsonResolver
             };
             //remove the reflection tag - no need to save it
-            Tag refTag = null;
-            string returnme = null;
-            if (ce?.MySINnerFile?.SiNnerMetaData?.Tags != null)
+            string returnme = string.Empty;
+            Tag refTag = ce?.MySINnerFile?.SiNnerMetaData?.Tags?.FirstOrDefault(x => x?.TagName == "Reflection");
+            if (refTag != null)
             {
-                var reflectionseq =
-                    (from a in ce.MySINnerFile.SiNnerMetaData.Tags where a != null && a.TagName == "Reflection" select a);
-                if (reflectionseq?.Any() == true)
-                {
-                    refTag = reflectionseq.FirstOrDefault();
-                    ce.MySINnerFile.SiNnerMetaData.Tags.Remove(refTag);
-                }
+                ce.MySINnerFile.SiNnerMetaData.Tags.Remove(refTag);
                 returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
                 ce.MySINnerFile.SiNnerMetaData.Tags.Add(refTag);
             }
@@ -538,54 +526,50 @@ namespace Chummer.Plugins
 
         }
 
-        IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)
+        public IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem input)
         {
-            var list = new List<ToolStripMenuItem>();
-
 #if DEBUG
-            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered)
             {
                 ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
                 {
                     Name = "mnuSINSearch",
-                    Text = "&SINner Search"
+                    Text = "&SINner Search",
+                    Image = ChummerHub.Client.Properties.Resources.@group,
+                    ImageTransparentColor = System.Drawing.Color.Black,
+                    Size = new System.Drawing.Size(148, 22),
+                    Tag = "Menu_Tools_SINnerSearch"
                 };
-                mnuSINnerSearchs.Click += new System.EventHandler(mnuSINnerSearchs_Click);
-                mnuSINnerSearchs.Image = ChummerHub.Client.Properties.Resources.group;
-                mnuSINnerSearchs.ImageTransparentColor = System.Drawing.Color.Black;
-                mnuSINnerSearchs.Size = new System.Drawing.Size(148, 22);
-                mnuSINnerSearchs.Tag = "Menu_Tools_SINnerSearch";
-                list.Add(mnuSINnerSearchs);
+                mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
+                yield return mnuSINnerSearchs;
             }
 #endif
             ToolStripMenuItem mnuSINnersArchetypes = new ToolStripMenuItem
             {
                 Name = "mnuSINnersArchetypes",
-                Text = "&Archetypes"
+                Text = "&Archetypes",
+                Image = ChummerHub.Client.Properties.Resources.@group,
+                ImageTransparentColor = System.Drawing.Color.Black,
+                Size = new System.Drawing.Size(148, 22),
+                Tag = "Menu_Tools_SINnersArchetypes"
             };
-            mnuSINnersArchetypes.Click += new System.EventHandler(mnuSINnersArchetypes_Click);
-            mnuSINnersArchetypes.Image = ChummerHub.Client.Properties.Resources.group;
-            mnuSINnersArchetypes.ImageTransparentColor = System.Drawing.Color.Black;
-            mnuSINnersArchetypes.Size = new System.Drawing.Size(148, 22);
-            mnuSINnersArchetypes.Tag = "Menu_Tools_SINnersArchetypes";
-            list.Add(mnuSINnersArchetypes);
+            mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
+            yield return mnuSINnersArchetypes;
 
-            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered)
             {
                 ToolStripMenuItem mnuSINners = new ToolStripMenuItem
                 {
                     Name = "mnuSINners",
-                    Text = "&SINners"
+                    Text = "&SINners",
+                    Image = ChummerHub.Client.Properties.Resources.@group,
+                    ImageTransparentColor = System.Drawing.Color.Black,
+                    Size = new System.Drawing.Size(148, 22),
+                    Tag = "Menu_Tools_SINners"
                 };
-                mnuSINners.Click += new System.EventHandler(mnuSINners_Click);
-                mnuSINners.Image = ChummerHub.Client.Properties.Resources.group;
-                mnuSINners.ImageTransparentColor = System.Drawing.Color.Black;
-                mnuSINners.Size = new System.Drawing.Size(148, 22);
-                mnuSINners.Tag = "Menu_Tools_SINners";
-                list.Add(mnuSINners);
+                mnuSINners.Click += mnuSINners_Click;
+                yield return mnuSINners;
             }
-
-            return list;
         }
 
         private void mnuSINnerSearchs_Click(object sender, EventArgs e)
@@ -723,18 +707,18 @@ namespace Chummer.Plugins
             return new ucSINnersOptions();
         }
 
-        public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
+        public async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
         {
             try
             {
-                ContextMenuStrip myContextMenuStrip = null;
-                List<TreeNode> list = new List<TreeNode>();
                 using (new CursorWait(true, frmCharRoster))
                 {
+                    IEnumerable<TreeNode> res = null;
                     if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
                     {
                         Log.Info("Loading CharacterRoster from SINners...");
-                        Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
+
+                        async Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>> getSINnersFunction()
                         {
                             try
                             {
@@ -747,22 +731,17 @@ namespace Chummer.Plugins
                                 Log.Error(e);
                                 throw;
                             }
-                        };
-                        var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, myMethodName);
+                        }
+
+                        res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, getSINnersFunction).ConfigureAwait(true);
                         if (res == null)
                         {
                             throw new ArgumentException("Could not load owned SINners from WebService.");
                         }
-                        list = res.ToList();
-                    }
-                    var myadd = MyTreeNodes2Add.ToList();
-                    var mysortadd = (from a in myadd orderby a.Value.Text select a).ToList();
-                    foreach (var addme in mysortadd)
-                    {
-                        list.Add(addme.Value);
                     }
                     //AddContextMenuStripRecursive(list, myContextMenuStrip);
-                    return list;
+                    return res?.Concat(MyTreeNodes2Add.Select(x => x.Value).OrderBy(x => x.Text)).ToList()
+                           ?? MyTreeNodes2Add.Select(x => x.Value).OrderBy(x => x.Text).ToList();
                 }
             }
             catch(Microsoft.Rest.SerializationException e)

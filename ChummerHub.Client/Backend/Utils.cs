@@ -64,7 +64,7 @@ namespace ChummerHub.Client.Backend
         private static CookieContainer _AuthorizationCookieContainer = null;
 
         private static List<string> _userRoles = null;
-        public static List<string> UserRoles
+        public static IList<string> UserRoles
         {
             get
             {
@@ -91,11 +91,11 @@ namespace ChummerHub.Client.Backend
                 }
                 return _userRoles;
             }
-            set => _userRoles = value;
+            set => _userRoles = new List<string>(value);
         }
 
         private static List<string> _possibleRoles = null;
-        public static List<string> PossibleRoles
+        public static IList<string> PossibleRoles
         {
             get
             {
@@ -119,7 +119,7 @@ namespace ChummerHub.Client.Backend
                 }
                 return _possibleRoles;
             }
-            set => _possibleRoles = value;
+            set => _possibleRoles = new List<string>(value);
         }
 
         public static CookieContainer AuthorizationCookieContainer
@@ -315,6 +315,7 @@ namespace ChummerHub.Client.Backend
 
         private static SINnersClient GetSINnersClient()
         {
+            HttpClientHandler httpClientHandler = null;
             SINnersClient client = null;
             try
             {
@@ -338,6 +339,7 @@ namespace ChummerHub.Client.Backend
                         Log.Info("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                     }
                 }
+
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
@@ -355,7 +357,7 @@ namespace ChummerHub.Client.Backend
                 }
 
                 DelegatingHandler delegatingHandler = new MyMessageHandler();
-                HttpClientHandler httpClientHandler = new HttpClientHandler();
+                httpClientHandler = new HttpClientHandler();
                 var temp = AuthorizationCookieContainer;
                 if (temp != null)
                     httpClientHandler.CookieContainer = temp;
@@ -372,13 +374,14 @@ namespace ChummerHub.Client.Backend
                         inner = inner.InnerException;
                     string msg = "Error connecting to SINners: " + Environment.NewLine;
                     msg += "(the complete error description is copied to clipboard)" + Environment.NewLine + Environment.NewLine + inner.ToString();
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        System.Windows.Forms.Clipboard.SetText(ex.ToString());
-                    });
+                    PluginHandler.MainForm.DoThreadSafe(() => { System.Windows.Forms.Clipboard.SetText(ex.ToString()); });
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
                     Program.MainForm.ShowMessageBox(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+            }
+            finally
+            {
+                httpClientHandler?.Dispose();
             }
             return client;
         }
@@ -425,17 +428,17 @@ namespace ChummerHub.Client.Backend
         public bool IsUnitTest { get; set; }
 
         private static List<TreeNode> _myTreeNodeList = null;
-        private static List<TreeNode> MyTreeNodeList
+        private static IList<TreeNode> MyTreeNodeList
         {
             get => _myTreeNodeList ?? (_myTreeNodeList = new List<TreeNode>());
-            set => _myTreeNodeList = value;
+            set => _myTreeNodeList = new List<TreeNode>(value);
         }
 
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myGetSINnersFunction)
+        internal async static Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myGetSINnersFunction)
         {
             if (MyTreeNodeList != null && !forceUpdate)
                 return MyTreeNodeList;
@@ -514,7 +517,7 @@ namespace ChummerHub.Client.Backend
                     errornode.Tag = errorCache;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
-                            MyTreeNodeList.Add(errornode);
+                        MyTreeNodeList.Add(errornode);
                     });
                     return MyTreeNodeList;
                 }
@@ -526,7 +529,7 @@ namespace ChummerHub.Client.Backend
                 string info = "Connected to SINners in version " + result?.Version?.AssemblyVersion + ".";
                 Log.Info(info);
                 var groups = result?.SinGroups.ToList();
-                MyTreeNodeList = CharacterRosterTreeNodifyGroupList(groups);
+                MyTreeNodeList.AddRange(CharacterRosterTreeNodifyGroupList(groups));
                 return MyTreeNodeList;
             }
             catch (Exception ex)
@@ -649,7 +652,7 @@ namespace ChummerHub.Client.Backend
         }
 
 
-        public static List<TreeNode> CharacterRosterTreeNodifyGroupList(List<SINnerSearchGroup> groups)
+        public static IList<TreeNode> CharacterRosterTreeNodifyGroupList(IList<SINnerSearchGroup> groups)
         {
             if (groups == null)
             {
