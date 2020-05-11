@@ -1,15 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
-using GroupControls;
 using NLog;
 using SINners.Models;
 
@@ -17,11 +10,11 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerVisibility : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Logger Log = LogManager.GetCurrentClassLogger();
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {
-            get { return _mySINnerVisibility; }
+            get => _mySINnerVisibility;
             set
             {
                 _mySINnerVisibility = value;
@@ -29,101 +22,75 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        public CheckedListBox MyCheckBoxList
-        {
-            get { return this.clbVisibilityToUsers; }
-        }
+        public CheckedListBox MyCheckBoxList => clbVisibilityToUsers;
 
-        public CheckBox MyCheckBoxGroupVisible
-        {
-            get { return this.cbVisibleInGroups; }
-        }
+        public CheckBox MyCheckBoxGroupVisible => cbVisibleInGroups;
 
         public ucSINnerVisibility()
         {
             InitializeComponent();
-            this.cbVisibleInGroups.Checked = true;
+            cbVisibleInGroups.Checked = true;
             MyVisibility = new SINnerVisibility()
             {
                 UserRights = new List<SINnerUserRight>()
             };
-            this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
+            clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
         public ucSINnerVisibility(SINnerVisibility vis)
         {
             MyVisibility = vis;
             InitializeComponent();
-            if (MyVisibility?.IsGroupVisible.HasValue == true)
-                this.cbVisibleInGroups.Checked = MyVisibility.IsGroupVisible.Value;
-            else
-                this.cbVisibleInGroups.Checked = true;
-            this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
+            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible.HasValue != true || MyVisibility.IsGroupVisible.Value;
+            clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
         private void FillVisibilityListBox()
         {
-            PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+            PluginHandler.MainForm.DoThreadSafe(() =>
             {
                 try
                 {
-                    //((ListBox)clbVisibilityToUsers).DataSource = null;
+                    //clbVisibilityToUsers.DataSource = null;
                     if (MyVisibility != null)
                     {
-                        ((ListBox)clbVisibilityToUsers).DataSource = MyVisibility.UserRightsObservable;
+                        clbVisibilityToUsers.DataSource = MyVisibility.UserRightsObservable;
                     }
-                    ((ListBox)clbVisibilityToUsers).DisplayMember = "EMail";
-                    ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
+                    clbVisibilityToUsers.DisplayMember = "EMail";
+                    clbVisibilityToUsers.ValueMember = "CanEdit";
                     for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
                     {
                         SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
                     }
                     clbVisibilityToUsers.Refresh();
-                    if (MyVisibility?.IsGroupVisible.HasValue == true)
-                        this.cbVisibleInGroups.Checked = MyVisibility.IsGroupVisible.Value;
-                    else
-                        this.cbVisibleInGroups.Checked = true;
+                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible.HasValue != true || MyVisibility.IsGroupVisible.Value;
                 }
                 catch (Exception e)
                 {
                     Log.Error(e);
                     throw;
                 }
-
-            }));
-
-
+            });
         }
 
         private void bVisibilityAddEmail_Click(object sender, EventArgs e)
         {
-            string email = this.tbVisibilityAddEmail.Text;
+            string email = tbVisibilityAddEmail.Text;
             MyVisibility.AddVisibilityForEmail(email);
             FillVisibilityListBox();
-            
         }
-
-        
 
         private void clbVisibilityToUsers_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(clbVisibilityToUsers);
-            selectedItems = clbVisibilityToUsers.SelectedItems;
-
             if (clbVisibilityToUsers.SelectedIndex != -1)
             {
-                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                ListBox.SelectedObjectCollection selectedItems = clbVisibilityToUsers.SelectedItems;
+                for (int i = selectedItems.Count - 1; i >= 0; --i)
                 {
-                    var userright = selectedItems[i] as SINnerUserRight;
-                    if (userright != null)
+                    if (selectedItems[i] is SINnerUserRight userright)
                     {
-                        if (e.NewValue == CheckState.Checked)
-                            userright.CanEdit = true;
-                        else
-                        {
-                            userright.CanEdit = false;
-                        }
+                        userright.CanEdit = e.NewValue == CheckState.Checked;
                     }
                 }
             }
@@ -133,15 +100,15 @@ namespace ChummerHub.Client.UI
 
         private void bVisibilityRemove_Click(object sender, EventArgs e)
         {
-            ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(clbVisibilityToUsers);
-            selectedItems = clbVisibilityToUsers.SelectedItems;
-
             if (clbVisibilityToUsers.SelectedIndex != -1)
             {
-                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                ListBox.SelectedObjectCollection selectedItems = clbVisibilityToUsers.SelectedItems;
+                for (int i = selectedItems.Count - 1; i >= 0; --i)
                 {
-                    var userright = selectedItems[i] as SINnerUserRight;
-                    MyVisibility.UserRightsObservable.Remove(userright);
+                    if (selectedItems[i] is SINnerUserRight userright)
+                    {
+                        MyVisibility.UserRightsObservable.Remove(userright);
+                    }
                 }
                 FillVisibilityListBox();
             }
@@ -151,7 +118,7 @@ namespace ChummerHub.Client.UI
 
         private void CbVisibleInGroups_Click(object sender, EventArgs e)
         {
-            this.MyVisibility.IsGroupVisible = this.cbVisibleInGroups.Checked;
+            MyVisibility.IsGroupVisible = cbVisibleInGroups.Checked;
         }
     }
 }

@@ -24,12 +24,12 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             MySINnerGroupCreate.MyGroup = group;
-            if (group.Id == null || group.Id == Guid.Empty)
+            if (group?.Id == null || group.Id == Guid.Empty)
                 MySINnerGroupCreate.EditMode = true;
             MySINnerGroupCreate.InitializeMe(onlyPWHash);
         }
-        
 
-        public ucSINnerGroupCreate MySINnerGroupCreate { get { return this.siNnerGroupCreate1; } }
+
+        public ucSINnerGroupCreate MySINnerGroupCreate => siNnerGroupCreate1;
     }
 }

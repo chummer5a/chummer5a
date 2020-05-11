@@ -45,7 +45,7 @@ namespace ChummerHub.Client.UI
             //MyTagTreeView.Nodes.Add(root);
         }
 
-       
+
 
         private void cmdPopulateTags_Click(object sender, EventArgs e)
         {
@@ -65,12 +65,11 @@ namespace ChummerHub.Client.UI
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
             MySINnersUsercontrol.MyCE.PrepareModel();
-            
         }
 
         private async void cmdPostSINnerMetaData_Click(object sender, EventArgs e)
         {
-            await ChummerHub.Client.Backend.Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE);
+            await Backend.Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
         }
 
         private void MyTagTreeView_VisibleChanged(object sender, EventArgs e)
@@ -85,12 +84,7 @@ namespace ChummerHub.Client.UI
 
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
-            await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE);
+            await Backend.Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
         }
-
-       
-
-       
-       
     }
 }

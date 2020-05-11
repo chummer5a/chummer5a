@@ -16,22 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Plugins;
-using Chummer;
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace Chummer
 {
     public class CursorWait : IDisposable
     {
-        UserControl _control = null;
-        Form _form = null;
+        readonly UserControl _control;
+        readonly Form _form;
         public CursorWait(bool appStarting = false, UserControl control = null)
         {
             // Wait
@@ -39,11 +33,11 @@ namespace Chummer
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             Program.MainForm.DoThreadSafe(() =>
             {
-                if (_control == null) Application.UseWaitCursor = true;
-                else _control.Cursor = Cursor.Current;
+                if (_control == null)
+                    Application.UseWaitCursor = true;
+                else
+                    _control.Cursor = Cursor.Current;
             });
-
-            
         }
 
         public CursorWait(bool appStarting = false)
@@ -53,8 +47,6 @@ namespace Chummer
             {
                 Application.UseWaitCursor = true;
             });
-
-
         }
 
         public CursorWait(bool appStarting = false, Form form = null)
@@ -64,10 +56,11 @@ namespace Chummer
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             Program.MainForm.DoThreadSafe(() =>
             {
-                if (_form == null) Application.UseWaitCursor = true;
-                else _form.Cursor = Cursor.Current;
+                if (_form == null)
+                    Application.UseWaitCursor = true;
+                else
+                    _form.Cursor = Cursor.Current;
             });
-
         }
 
         public void Dispose()
@@ -82,7 +75,6 @@ namespace Chummer
                 if (_form != null)
                     _form.Cursor = Cursors.Default;
             });
-
         }
     }
 }

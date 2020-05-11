@@ -54,7 +54,6 @@ namespace Chummer
 
         public List<string> ListExtraProperties { get; } = new List<string>();
 
-
         public string ListInstanceNameFromProperty { get; }
 
         public bool DeleteEmptyTags { get; }

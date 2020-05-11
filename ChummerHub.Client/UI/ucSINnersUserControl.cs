@@ -31,21 +31,18 @@ namespace ChummerHub.Client.UI
 
         public CharacterShared MySINner => _mySINner;
 
-        public ucSINnersAdvanced TabSINnersAdvanced = null;
+        private ucSINnersAdvanced TabSINnersAdvanced = null;
 
         public CharacterExtended MyCE { get; set; }
 
         public Character CharacterObject => MySINner.CharacterObject;
-
-        
 
         public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
         {
             InitializeComponent();
             _mySINner = mySINner;
             MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = await MyCE.PrepareModel();
-            
+            MyCE.ZipFilePath = await MyCE.PrepareModel().ConfigureAwait(true);
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {
@@ -59,10 +56,9 @@ namespace ChummerHub.Client.UI
 
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
-           
             this.AutoSize = true;
 
-            if ((ucSINnersOptions.UploadOnSave == true))
+            if (ucSINnersOptions.UploadOnSave)
             {
                 try
                 {
@@ -73,22 +69,17 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Warn(e);
                 }
-                
             }
             //MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
             return MyCE;
         }
-
-        
-
-        
 
         public async Task RemoveSINnerAsync()
         {
             try
             {
                 var client = StaticUtils.GetClient();
-                await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
+                await client.DeleteAsync(MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -96,7 +87,5 @@ namespace ChummerHub.Client.UI
                 throw;
             }
         }
-
-  
     }
 }

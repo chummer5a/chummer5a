@@ -23,9 +23,9 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-       
 
-       
+
+
 
         private string LoginUrl
         {
@@ -45,7 +45,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-       
+
 
         private void frmWebBrowser_Load(object sender, EventArgs e)
         {
@@ -85,7 +85,7 @@ namespace ChummerHub.Client.UI
                         Log.Error("Cloud not create an instance of SINnersclient!");
                         return;
                     }
-                    var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
+                    var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true);
                     if (user.Body?.CallSuccess == true)
                     {
                         if (user.Body != null)
@@ -120,7 +120,7 @@ namespace ChummerHub.Client.UI
                     Log.Error(exception);
                     throw;
                 }
-                
+
             }
         }
 

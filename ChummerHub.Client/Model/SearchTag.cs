@@ -22,32 +22,28 @@ namespace SINners.Models
 
     public partial class SearchTag
     {
-
-        
-
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
         public SearchTag MyParentTag { get; set; }
 
-        
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
         public object MyRuntimePropertyValue { get; set; }
 
-        public SearchTag(PropertyInfo myPropertyInfo, Chummer.HubTagAttribute hubTag)
+        public SearchTag(PropertyInfo myPropertyInfo, HubTagAttribute hubTag)
         {
             MyPropertyInfo = myPropertyInfo;
             MyRuntimeHubTag = hubTag;
-            this.SearchTags = new List<SearchTag>();
+            SearchTags = new List<SearchTag>();
         }
 
-        public SearchTag(PropertyInfo myPropertyInfo, Chummer.HubClassTagAttribute hubClassTag)
+        public SearchTag(PropertyInfo myPropertyInfo, HubClassTagAttribute hubClassTag)
         {
             MyPropertyInfo = myPropertyInfo;
             MyRuntimeHubClassTag = hubClassTag;
-            this.SearchTags = new List<SearchTag>();
+            SearchTags = new List<SearchTag>();
         }
 
         [IgnoreDataMember]
@@ -65,12 +61,8 @@ namespace SINners.Models
         [JsonIgnore]
         public HubTagAttribute MyRuntimeHubTag { get;  set; }
 
-        public String DisplayText
-        {
-            get
-            {
-                return this.TagName + " " + this.SearchOpterator + " " + this.TagValue;
-            }
-        }
+        public string DisplayText => TagName + " " + SearchOpterator + " " + TagValue;
+
+        public string SearchOperator { get; set; }
     }
 }

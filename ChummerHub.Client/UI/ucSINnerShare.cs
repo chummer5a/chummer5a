@@ -65,11 +65,12 @@ namespace ChummerHub.Client.UI
         {
             if (this.MySINnerSearchGroup != null)
             {
-                return await ShareChummerGroup();
+                return await ShareChummerGroup().ConfigureAwait(true);
             }
-            else if (this.MyCharacterCache != null)
+
+            if (this.MyCharacterCache != null)
             {
-                return await ShareSingleChummer();
+                return await ShareSingleChummer().ConfigureAwait(true);
             }
 
             throw new ArgumentException("Either MySINnerSearchGroup or MyCharacterCache must be set!");
@@ -85,11 +86,8 @@ namespace ChummerHub.Client.UI
                 {
                     MyUserState myState = new MyUserState(this);
                     var client = StaticUtils.GetClient();
-                  
-                    
-                    
 
-                    if ((String.IsNullOrEmpty(MySINnerSearchGroup?.Id?.ToString())))
+                    if (string.IsNullOrEmpty(MySINnerSearchGroup?.Id?.ToString()))
                     {
                         myState.StatusText = "Group Id is unknown or not issued!";
                         ReportProgress(30, myState);
@@ -101,14 +99,12 @@ namespace ChummerHub.Client.UI
                         ReportProgress(myState.CurrentProgress, myState);
                     }
 
-
-                    HttpOperationResponse<ResultGroupGetGroupById> checkresult = null;
                     //check if char is already online and updated
                     using (var op_checkOnlineVersionChummer = Timekeeper.StartSyncron(
                         "check if online", op_shareChummer,
                         CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                     {
-                        checkresult = await client.GetGroupByIdWithHttpMessagesAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false);
+                        HttpOperationResponse<ResultGroupGetGroupById> checkresult = await client.GetGroupByIdWithHttpMessagesAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false);
                         if (checkresult == null)
                             throw new ArgumentException("Could not parse result from SINners Webservice!");
                         if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
@@ -119,14 +115,10 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + checkresult.Body.ErrorText,
                                         myException);
-                                else
-                                    throw new ArgumentException("Error from SINners Webservice: " +
-                                                                checkresult.Body.ErrorText);
+                                throw new ArgumentException("Error from SINners Webservice: " +
+                                                            checkresult.Body.ErrorText);
                             }
-                            else
-                            {
-                                hash = checkresult.Body.MyGroup.MyHash;
-                            }
+                            hash = checkresult.Body.MyGroup.MyHash;
                         }
                     }
 
@@ -194,7 +186,7 @@ namespace ChummerHub.Client.UI
                                     myState.StatusText = "Loading chummer file...";
                                     myState.CurrentProgress += 10;
                                     ReportProgress(myState.CurrentProgress, myState);
-                                    await c.Load(frmLoadingForm, false);
+                                    await c.Load(frmLoadingForm, false).ConfigureAwait(true);
                                 }
                             }
 
@@ -217,14 +209,13 @@ namespace ChummerHub.Client.UI
                     }
                     else
                     {
-                        ce = await GetCharacterExtended(op_shareChummer);
+                        ce = await GetCharacterExtended(op_shareChummer).ConfigureAwait(true);
                         sinnerid = ce.MySINnerFile.Id.ToString();
                         hash = ce?.MySINnerFile?.MyHash;
                     }
 
 
-                    if ((String.IsNullOrEmpty(sinnerid)
-                         || (!Guid.TryParse(sinnerid, out SINid))))
+                    if (string.IsNullOrEmpty(sinnerid) || !Guid.TryParse(sinnerid, out SINid))
                     {
                         myState.StatusText = "SINner Id is unknown or not issued!";
                         ReportProgress(30, myState);
@@ -243,7 +234,7 @@ namespace ChummerHub.Client.UI
                         "check if online", op_shareChummer,
                         CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                     {
-                        checkresult = await client.GetSINByIdWithHttpMessagesAsync(SINid);
+                        checkresult = await client.GetSINByIdWithHttpMessagesAsync(SINid).ConfigureAwait(true);
                         if (checkresult == null)
                             throw new ArgumentException("Could not parse result from SINners Webservice!");
                         if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
@@ -254,28 +245,24 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + checkresult.Body.ErrorText,
                                         myException);
-                                else
-                                    throw new ArgumentException("Error from SINners Webservice: " +
-                                                                checkresult.Body.ErrorText);
+                                throw new ArgumentException("Error from SINners Webservice: " +
+                                                            checkresult.Body.ErrorText);
                             }
-                            else
-                            {
-                                hash = checkresult.Body.MySINner.MyHash;
-                            }
+                            hash = checkresult.Body.MySINner.MyHash;
                         }
                     }
 
 
                     var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
                     if (checkresult.Response.StatusCode == HttpStatusCode.NotFound
-                        || (checkresult.Body.MySINner.LastChange < lastWriteTimeUtc))
+                        || checkresult.Body.MySINner.LastChange < lastWriteTimeUtc)
                     {
                         if (ce == null)
                         {
                             myState.StatusText = "The Chummer is newer and has to be uploaded again.";
                             myState.CurrentProgress = 30;
                             ReportProgress(myState.CurrentProgress, myState);
-                            ce = await GetCharacterExtended(op_shareChummer);
+                            ce = await GetCharacterExtended(op_shareChummer).ConfigureAwait(true);
                         }
 
                         using (var op_uploadChummer = Timekeeper.StartSyncron(
@@ -286,9 +273,9 @@ namespace ChummerHub.Client.UI
                             myState.CurrentProgress = 35;
                             ReportProgress(myState.CurrentProgress, myState);
                             myState.ProgressSteps = 10;
-                            var uploadtask = await ce.Upload(myState, op_uploadChummer);
+                            var uploadtask = await ce.Upload(myState, op_uploadChummer).ConfigureAwait(true);
                             SINid = ce.MySINnerFile.Id.Value;
-                            var result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
+                            var result = await client.GetSINByIdWithHttpMessagesAsync(SINid).ConfigureAwait(true);
                             if (result == null)
                                 throw new ArgumentException("Could not parse result from SINners Webservice!");
                             if (result.Body?.CallSuccess != true)
@@ -297,14 +284,10 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + result.Body?.ErrorText,
                                         myException);
-                                else
-                                    throw new ArgumentException(
-                                        "Error from SINners Webservice: " + result.Body?.ErrorText);
+                                throw new ArgumentException(
+                                    "Error from SINners Webservice: " + result.Body?.ErrorText);
                             }
-                            else
-                            {
-                                hash = result.Body.MySINner.MyHash;
-                            }
+                            hash = result.Body.MySINner.MyHash;
                         }
                     }
 

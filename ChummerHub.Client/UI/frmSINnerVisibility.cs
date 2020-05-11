@@ -25,7 +25,7 @@ namespace ChummerHub.Client.UI
             this.AcceptButton = bOk;
         }
 
-        
+
 
         private void BOk_Click(object sender, EventArgs e)
         {
