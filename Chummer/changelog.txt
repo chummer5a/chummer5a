@@ -21,6 +21,9 @@ Application Changes:
 - Added better support for basic lifestyles and primary tenant/roommate splits bestween costs. Closes #4054
 - Altered spirit control to support width flexion due to different string lengths.
 - Fixed issues with vehicles not properly being allowed to select autosofts and such. Closes #3887
+- Fixed regression in condition monitor boxes > 24 not showing. Closes #4074
+- Right-hand panel now autoscrolls if window is below normal size. Closes #2829
+
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
 - Fixed a regression in behaviour of Initiation Group prompt to spend karma when selecting the Initiation tab.

@@ -242,8 +242,8 @@ namespace Chummer
             this.tsArmorGearAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsArmorGearNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmorMod = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsArmorModAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsArmorModNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsArmorModAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsQuality = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsQualityNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSpell = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -469,6 +469,13 @@ namespace Chummer
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.flpInitiationButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddMetamagic = new SplitButton();
+            this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsMetamagicAddArt = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddEnchantment = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddEnhancement = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddMetamagic = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddRitual = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
@@ -1027,13 +1034,6 @@ namespace Chummer
             this.panel1 = new System.Windows.Forms.Panel();
             this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsMetamagicAddArt = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddEnchantment = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddEnhancement = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddMetamagic = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddRitual = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1128,6 +1128,7 @@ namespace Chummer
             this.tabInitiation.SuspendLayout();
             this.tlpInitiation.SuspendLayout();
             this.flpInitiationButtons.SuspendLayout();
+            this.cmsMetamagic.SuspendLayout();
             this.flpInitiation.SuspendLayout();
             this.gpbInitiationType.SuspendLayout();
             this.flpInitiationCheckBoxes.SuspendLayout();
@@ -1242,7 +1243,6 @@ namespace Chummer
             this.tlpSpellDefense.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
             this.cmsInitiationNotes.SuspendLayout();
-            this.cmsMetamagic.SuspendLayout();
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsGearAllowRename.SuspendLayout();
@@ -3151,9 +3151,18 @@ namespace Chummer
             this.tsArmorModNotes,
             this.tsArmorModAddAsPlugin});
             this.cmsArmorMod.Name = "cmsArmorMod";
-            this.cmsArmorMod.Size = new System.Drawing.Size(106, 26);
+            this.cmsArmorMod.Size = new System.Drawing.Size(148, 48);
             // 
-            // tsArmorGearAddAsPlugin
+            // tsArmorModNotes
+            // 
+            this.tsArmorModNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsArmorModNotes.Name = "tsArmorModNotes";
+            this.tsArmorModNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorModNotes.Tag = "Menu_Notes";
+            this.tsArmorModNotes.Text = "&Notes";
+            this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
+            // 
+            // tsArmorModAddAsPlugin
             // 
             this.tsArmorModAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
             this.tsArmorModAddAsPlugin.Name = "tsArmorModAddAsPlugin";
@@ -3161,15 +3170,6 @@ namespace Chummer
             this.tsArmorModAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsArmorModAddAsPlugin.Text = "&Add as Plugin";
             this.tsArmorModAddAsPlugin.Click += new System.EventHandler(this.tsArmorGearAddAsPlugin_Click);
-            // 
-            // tsArmorModNotes
-            // 
-            this.tsArmorModNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsArmorModNotes.Name = "tsArmorModNotes";
-            this.tsArmorModNotes.Size = new System.Drawing.Size(105, 22);
-            this.tsArmorModNotes.Tag = "Menu_Notes";
-            this.tsArmorModNotes.Text = "&Notes";
-            this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
             // 
             // cmsQuality
             // 
@@ -6055,7 +6055,7 @@ namespace Chummer
             this.flpInitiationButtons.Location = new System.Drawing.Point(0, 0);
             this.flpInitiationButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpInitiationButtons.Name = "flpInitiationButtons";
-            this.flpInitiationButtons.Size = new System.Drawing.Size(237, 29);
+            this.flpInitiationButtons.Size = new System.Drawing.Size(255, 29);
             this.flpInitiationButtons.TabIndex = 131;
             // 
             // cmdAddMetamagic
@@ -6064,15 +6064,72 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdAddMetamagic.AutoSize = true;
             this.cmdAddMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddMetamagic.ContextMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.Location = new System.Drawing.Point(3, 3);
             this.cmdAddMetamagic.Name = "cmdAddMetamagic";
-            this.cmdAddMetamagic.Size = new System.Drawing.Size(102, 23);
+            this.cmdAddMetamagic.Size = new System.Drawing.Size(120, 23);
+            this.cmdAddMetamagic.SplitMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.TabIndex = 93;
             this.cmdAddMetamagic.Tag = "Button_AddInitiateGrade";
             this.cmdAddMetamagic.Text = "&Add Initiate Grade";
             this.cmdAddMetamagic.UseVisualStyleBackColor = true;
-            this.cmdAddMetamagic.ContextMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.Click += new System.EventHandler(this.cmdAddMetamagic_Click);
+            // 
+            // cmsMetamagic
+            // 
+            this.cmsMetamagic.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsMetamagicAddArt,
+            this.tsMetamagicAddEnchantment,
+            this.tsMetamagicAddEnhancement,
+            this.tsMetamagicAddMetamagic,
+            this.tsMetamagicAddRitual,
+            this.tsMetamagicNotes});
+            this.cmsMetamagic.Name = "cmsMetamagic";
+            this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
+            // 
+            // tsMetamagicAddArt
+            // 
+            this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
+            this.tsMetamagicAddArt.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddArt.Text = "Add Art";
+            this.tsMetamagicAddArt.Click += new System.EventHandler(this.tsMetamagicAddArt_Click);
+            // 
+            // tsMetamagicAddEnchantment
+            // 
+            this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
+            this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
+            this.tsMetamagicAddEnchantment.Click += new System.EventHandler(this.tsMetamagicAddEnchantment_Click);
+            // 
+            // tsMetamagicAddEnhancement
+            // 
+            this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
+            this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
+            this.tsMetamagicAddEnhancement.Click += new System.EventHandler(this.tsMetamagicAddEnhancement_Click);
+            // 
+            // tsMetamagicAddMetamagic
+            // 
+            this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
+            this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
+            this.tsMetamagicAddMetamagic.Click += new System.EventHandler(this.tsMetamagicAddMetamagic_Click);
+            // 
+            // tsMetamagicAddRitual
+            // 
+            this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
+            this.tsMetamagicAddRitual.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddRitual.Text = "Add Ritual";
+            this.tsMetamagicAddRitual.Click += new System.EventHandler(this.tsMetamagicAddRitual_Click);
+            // 
+            // tsMetamagicNotes
+            // 
+            this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsMetamagicNotes.Name = "tsMetamagicNotes";
+            this.tsMetamagicNotes.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicNotes.Tag = "Menu_Notes";
+            this.tsMetamagicNotes.Text = "&Notes";
+            this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
             // 
             // cmdDeleteMetamagic
             // 
@@ -6080,7 +6137,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDeleteMetamagic.AutoSize = true;
             this.cmdDeleteMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(111, 3);
+            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(129, 3);
             this.cmdDeleteMetamagic.Name = "cmdDeleteMetamagic";
             this.cmdDeleteMetamagic.Size = new System.Drawing.Size(123, 23);
             this.cmdDeleteMetamagic.TabIndex = 94;
@@ -12656,6 +12713,7 @@ namespace Chummer
             // 
             // tlpKarmaSummary
             // 
+            this.tlpKarmaSummary.AutoScroll = true;
             this.tlpKarmaSummary.AutoSize = true;
             this.tlpKarmaSummary.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpKarmaSummary.ColumnCount = 2;
@@ -13042,6 +13100,7 @@ namespace Chummer
             // 
             // tlpOtherInfo
             // 
+            this.tlpOtherInfo.AutoScroll = true;
             this.tlpOtherInfo.AutoSize = true;
             this.tlpOtherInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpOtherInfo.ColumnCount = 2;
@@ -13405,6 +13464,7 @@ namespace Chummer
             // 
             // tlpSpellDefense
             // 
+            this.tlpSpellDefense.AutoScroll = true;
             this.tlpSpellDefense.AutoSize = true;
             this.tlpSpellDefense.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpSpellDefense.ColumnCount = 2;
@@ -13693,62 +13753,6 @@ namespace Chummer
             this.tsInitiationNotes.Text = "&Notes";
             this.tsInitiationNotes.Click += new System.EventHandler(this.tsInitiationNotes_Click);
             // 
-            // cmsMetamagic
-            // 
-            this.cmsMetamagic.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsMetamagicAddArt,
-            this.tsMetamagicAddEnchantment,
-            this.tsMetamagicAddEnhancement,
-            this.tsMetamagicAddMetamagic,
-            this.tsMetamagicAddRitual,
-            this.tsMetamagicNotes});
-            this.cmsMetamagic.Name = "cmsMetamagic";
-            this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
-            // 
-            // tsMetamagicAddArt
-            // 
-            this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
-            this.tsMetamagicAddArt.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddArt.Text = "Add Art";
-            this.tsMetamagicAddArt.Click += new System.EventHandler(this.tsMetamagicAddArt_Click);
-            // 
-            // tsMetamagicAddEnchantment
-            // 
-            this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
-            this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
-            this.tsMetamagicAddEnchantment.Click += new System.EventHandler(this.tsMetamagicAddEnchantment_Click);
-            // 
-            // tsMetamagicAddEnhancement
-            // 
-            this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
-            this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
-            this.tsMetamagicAddEnhancement.Click += new System.EventHandler(this.tsMetamagicAddEnhancement_Click);
-            // 
-            // tsMetamagicAddMetamagic
-            // 
-            this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
-            this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
-            this.tsMetamagicAddMetamagic.Click += new System.EventHandler(this.tsMetamagicAddMetamagic_Click);
-            // 
-            // tsMetamagicAddRitual
-            // 
-            this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
-            this.tsMetamagicAddRitual.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddRitual.Text = "Add Ritual";
-            this.tsMetamagicAddRitual.Click += new System.EventHandler(this.tsMetamagicAddRitual_Click);
-            // 
-            // tsMetamagicNotes
-            // 
-            this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsMetamagicNotes.Name = "tsMetamagicNotes";
-            this.tsMetamagicNotes.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicNotes.Tag = "Menu_Notes";
-            this.tsMetamagicNotes.Text = "&Notes";
-            this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
-            // 
             // cmsTechnique
             // 
             this.cmsTechnique.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -13952,6 +13956,7 @@ namespace Chummer
             this.tlpInitiation.PerformLayout();
             this.flpInitiationButtons.ResumeLayout(false);
             this.flpInitiationButtons.PerformLayout();
+            this.cmsMetamagic.ResumeLayout(false);
             this.flpInitiation.ResumeLayout(false);
             this.flpInitiation.PerformLayout();
             this.gpbInitiationType.ResumeLayout(false);
@@ -14150,7 +14155,6 @@ namespace Chummer
             this.tlpSpellDefense.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
             this.cmsInitiationNotes.ResumeLayout(false);
-            this.cmsMetamagic.ResumeLayout(false);
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsGearAllowRename.ResumeLayout(false);
