@@ -1775,6 +1775,11 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                if (value == null)
+                {
+                    _objWeaponMount = null;
+                }
+
                 foreach (Weapon objChild in Children)
                     objChild.ParentVehicle = value;
             }

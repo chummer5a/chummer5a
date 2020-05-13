@@ -23,6 +23,7 @@ Application Changes:
 - Fixed issues with vehicles not properly being allowed to select autosofts and such. Closes #3887
 - Fixed regression in condition monitor boxes > 24 not showing. Closes #4074
 - Right-hand panel now autoscrolls if window is below normal size. Closes #2829
+- Fixed weapons not properly clearing their weapon mount when moved between character and vehicle. Closes #4108
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
