@@ -315,7 +315,6 @@ namespace ChummerHub.Client.Backend
 
         private static SINnersClient GetSINnersClient()
         {
-            HttpClientHandler httpClientHandler = null;
             SINnersClient client = null;
             try
             {
@@ -357,7 +356,7 @@ namespace ChummerHub.Client.Backend
                 }
 
                 DelegatingHandler delegatingHandler = new MyMessageHandler();
-                httpClientHandler = new HttpClientHandler();
+                HttpClientHandler httpClientHandler = new HttpClientHandler();
                 var temp = AuthorizationCookieContainer;
                 if (temp != null)
                     httpClientHandler.CookieContainer = temp;
@@ -378,10 +377,6 @@ namespace ChummerHub.Client.Backend
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
                     Program.MainForm.ShowMessageBox(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-            }
-            finally
-            {
-                httpClientHandler?.Dispose();
             }
             return client;
         }
@@ -438,7 +433,7 @@ namespace ChummerHub.Client.Backend
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        internal async static Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myGetSINnersFunction)
+        internal static async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myGetSINnersFunction)
         {
             if (MyTreeNodeList != null && !forceUpdate)
                 return MyTreeNodeList;
@@ -497,7 +492,7 @@ namespace ChummerHub.Client.Backend
                         msg += Environment.NewLine + "Content: " + content;
                     }
                     Log.Warn(msg);
-                    var errornode = new TreeNode()
+                    var errornode = new TreeNode
                     {
                         Text = "Error contacting SINners"
                     };
@@ -652,32 +647,32 @@ namespace ChummerHub.Client.Backend
         }
 
 
-        public static IList<TreeNode> CharacterRosterTreeNodifyGroupList(IList<SINnerSearchGroup> groups)
+        public static IEnumerable<TreeNode> CharacterRosterTreeNodifyGroupList(IList<SINnerSearchGroup> groups)
         {
             if (groups == null)
             {
-                return MyTreeNodeList;
+                yield break;
             }
 
+            bool bFoundOneChummer = false;
+            bool bBreak = false;
             foreach (var parentlist in groups)
             {
+                TreeNode objListNode;
                 try
                 {
                     //list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
-                    TreeNode objListNode = GetCharacterRosterTreeNodeRecursive(parentlist)
-                                           ?? new TreeNode("no owned chummers found")
-                                           {
-                                               Name = "no owned chummers found",
-                                               ToolTipText =
-                                                   "To upload a chummer go into the sinners-tabpage after opening a character and press upload (and wait a bit)."
-                                           };
-                    objListNode.Tag = PluginHandler.MyPluginHandlerInstance;
-                    PluginHandler.MainForm.DoThreadSafe(() => MyTreeNodeList.Add(objListNode));
+                    objListNode = GetCharacterRosterTreeNodeRecursive(parentlist);
+                    if (objListNode.Nodes.Count > 0)
+                    {
+                        bFoundOneChummer = true;
+                        objListNode.Tag = PluginHandler.MyPluginHandlerInstance;
+                    }
                 }
                 catch (Exception e)
                 {
                     Log.Error(e, "Could not deserialize CharacterCache-Object: ");
-                    TreeNode errorNode = new TreeNode
+                    objListNode = new TreeNode
                     {
                         Text = "Error loading Char from WebService",
                         Tag = new CharacterCache
@@ -685,25 +680,27 @@ namespace ChummerHub.Client.Backend
                             ErrorText = e.ToString()
                         }
                     };
-                    return new List<TreeNode> {errorNode};
+                    bBreak = true;
+                }
+
+                if (bBreak || objListNode.Nodes.Count > 0)
+                {
+                    yield return objListNode;
+                    if (bBreak)
+                        yield break;
                 }
             }
 
-            if (MyTreeNodeList.Count == 0)
+            if (!bFoundOneChummer)
             {
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                TreeNode node = new TreeNode("Online, but no chummers uploaded")
                 {
-                    TreeNode node = new TreeNode("Online, but no chummers uploaded")
-                    {
-                        Tag = PluginHandler.MyPluginHandlerInstance,
-                        ToolTipText = "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit)."
-                    };
-                    Log.Info("Online, but no chummers uploaded");
-                    MyTreeNodeList.Add(node);
-                });
+                    Tag = PluginHandler.MyPluginHandlerInstance,
+                    ToolTipText = "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit)."
+                };
+                Log.Info("Online, but no chummers uploaded");
+                yield return node;
             }
-
-            return MyTreeNodeList;
         }
 
         /// <summary>
