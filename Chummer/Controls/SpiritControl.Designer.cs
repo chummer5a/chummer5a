@@ -113,11 +113,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudForce.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.nudForce.Name = "nudForce";
             this.nudForce.Size = new System.Drawing.Size(40, 20);
             this.nudForce.TabIndex = 2;

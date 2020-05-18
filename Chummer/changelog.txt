@@ -37,6 +37,8 @@ Application Fixes:
 - Fixed a regression in behaviour of weapon mount options that caused them to be included in the cost of vehicles where the weapon mount comes with the weapon. Existing vehicles with this behaviour will need to be re-purchased. 
 - Fixed a regression with Custom Traditions not being properly loaded. Closes #4077
 - Fixed a regression in behaviour of metagenetic qualities not loading their metagenic flag properly when using the old naming convention.
+- Fixed an issue with cyberware that uses FixedValues not correctly requesting Essence value recalculation when changing the Rating.
+- Fixed a crash when updating Spirit Maximum Force during create mode if the character was reduced to 0 MAG. Closes #4099
 
 Data Changes:
 - Fixed incorrect stacking behaviour for the suprathyroid gland, muscle replacement and muscle toner that caused them to fail to stack correctly. (Muscle replacement, muscle augmentation and muscle toner shouldn't stack, but suprathyroid should)

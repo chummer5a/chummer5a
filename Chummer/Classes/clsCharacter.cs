@@ -8396,13 +8396,20 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
         /// </summary>
-        public int MaxSpiritForce =>
-            (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
+        public int MaxSpiritForce
+        {
+            get
+            {
+                return ((Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value) > 0)
+                    ? (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value)
+                    : 0;
+            }
+        }
 
         /// <summary>
         /// Maximum level of sprites compilable/registerable by the character. Limited to RES at creation.
         /// </summary>
-        public int MaxSpriteLevel => (Created ? 2 : 1) * RES.TotalValue;
+        public int MaxSpriteLevel => RES.TotalValue > 0 ? (Created ? 2 : 1) * RES.TotalValue : 0;
 
         /// <summary>
         /// Amount of Power Points for Mystic Adepts.
@@ -15216,31 +15223,31 @@ if (!Utils.IsUnitTest){
                 _intCachedMetagenicPositiveQualities = int.MinValue;
             }
 
+            foreach(string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+
             if (!Created)
             {
                 // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
-                if(lstNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
+                if (lstNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
                 {
-                    foreach(Spirit objSpirit in Spirits)
+                    foreach (Spirit objSpirit in Spirits)
                     {
                         if(objSpirit.EntityType != SpiritType.Spirit)
                             objSpirit.Force = MaxSpriteLevel;
                     }
                 }
 
-                if(lstNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
+                if (lstNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
                 {
-                    foreach(Spirit objSpirit in Spirits)
+                    foreach (Spirit objSpirit in Spirits)
                     {
                         if(objSpirit.EntityType == SpiritType.Spirit)
                             objSpirit.Force = MaxSpiritForce;
                     }
                 }
-            }
-
-            foreach(string strPropertyToChange in lstNamesOfChangedProperties)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
 
             if (Program.MainForm == null) return;

@@ -2356,7 +2356,7 @@ namespace Chummer.Backend.Equipment
 
                 blnDoMovementUpdate =
                     blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
-                bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) &&
+                bool blnDoEssenceUpdate = (ESS.Contains("Rating") || ESS.Contains("FixedValues")) && (Parent == null || AddToParentESS) &&
                                           string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
                 if (blnDoMovementUpdate && blnDoEssenceUpdate)
                     _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
