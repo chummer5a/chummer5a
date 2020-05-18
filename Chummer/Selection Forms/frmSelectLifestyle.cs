@@ -369,11 +369,15 @@ namespace Chummer
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            if (nudPercentage.Value != 100 || (nudRoommates.Value > 0 && !chkPrimaryTenant.Checked))
+            if (nudPercentage.Value != 100 || (nudRoommates.Value != 0 && !chkPrimaryTenant.Checked))
             {
                 decimal decDiscount = decNuyen;
                 decDiscount *= (nudPercentage.Value / 100);
-                decDiscount /= (nudRoommates.Value);
+                if (nudRoommates.Value != 0)
+                {
+                    decDiscount /= (nudRoommates.Value);
+                }
+
                 lblCost.Text += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
 
