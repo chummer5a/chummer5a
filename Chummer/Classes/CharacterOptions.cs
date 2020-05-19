@@ -2451,7 +2451,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
-        public decimal KarmaRESInitiationOrdealPercent { get; set; } = 0.1m;
+        public decimal KarmaRESInitiationOrdealPercent { get; set; } = 0.2m;
 
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.

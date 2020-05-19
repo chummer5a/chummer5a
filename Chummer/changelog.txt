@@ -1,4 +1,9 @@
-Future Build 212
+Future Build 213
+Application Fixes:
+- Fixed an incorrect tag on submersion groups in career mode. 
+- Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
+
+Build 212
 Application Changes:
 - When entering Nuyen and Karma expenses for Working for the Man/People, it's now possible to flag the expense entry as always being present in the Expense log. This will in effect reduce the Career Karma or Career Nuyen by the selected amount. Closes #4096, closes #3613
 - Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
