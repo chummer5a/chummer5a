@@ -8824,6 +8824,7 @@ namespace Chummer
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
                 {
                     Skill skill = CharacterObject.SkillsSection.GetActiveSkill(imp.ImprovedName);
+                    if (skill == null) continue;
                     int intSkillValue = skill.TotalBaseRating;
 
                     if (imp.UniqueName.Contains("half"))
