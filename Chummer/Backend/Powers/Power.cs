@@ -922,43 +922,43 @@ namespace Chummer
                 DiscountedAdeptWay = false;
         }
 
-        private static readonly DependancyGraph<string> PowerDependencyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(DisplayPoints),
-                    new DependancyGraphNode<string>(nameof(PowerPoints),
-                        new DependancyGraphNode<string>(nameof(TotalRating),
-                            new DependancyGraphNode<string>(nameof(Rating)),
-                            new DependancyGraphNode<string>(nameof(FreeLevels),
-                                new DependancyGraphNode<string>(nameof(FreePoints)),
-                                new DependancyGraphNode<string>(nameof(ExtraPointCost)),
-                                new DependancyGraphNode<string>(nameof(PointsPerLevel))
+        private static readonly DependencyGraph<string> PowerDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(DisplayPoints),
+                    new DependencyGraphNode<string>(nameof(PowerPoints),
+                        new DependencyGraphNode<string>(nameof(TotalRating),
+                            new DependencyGraphNode<string>(nameof(Rating)),
+                            new DependencyGraphNode<string>(nameof(FreeLevels),
+                                new DependencyGraphNode<string>(nameof(FreePoints)),
+                                new DependencyGraphNode<string>(nameof(ExtraPointCost)),
+                                new DependencyGraphNode<string>(nameof(PointsPerLevel))
                             ),
-                            new DependancyGraphNode<string>(nameof(TotalMaximumLevels),
-                                new DependancyGraphNode<string>(nameof(LevelsEnabled)),
-                                new DependancyGraphNode<string>(nameof(MaxLevels))
+                            new DependencyGraphNode<string>(nameof(TotalMaximumLevels),
+                                new DependencyGraphNode<string>(nameof(LevelsEnabled)),
+                                new DependencyGraphNode<string>(nameof(MaxLevels))
                             )
                         ),
-                        new DependancyGraphNode<string>(nameof(Rating)),
-                        new DependancyGraphNode<string>(nameof(LevelsEnabled)),
-                        new DependancyGraphNode<string>(nameof(FreeLevels)),
-                        new DependancyGraphNode<string>(nameof(PointsPerLevel)),
-                        new DependancyGraphNode<string>(nameof(FreePoints)),
-                        new DependancyGraphNode<string>(nameof(ExtraPointCost)),
-                        new DependancyGraphNode<string>(nameof(Discount),
-                            new DependancyGraphNode<string>(nameof(DiscountedAdeptWay)),
-                            new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
+                        new DependencyGraphNode<string>(nameof(Rating)),
+                        new DependencyGraphNode<string>(nameof(LevelsEnabled)),
+                        new DependencyGraphNode<string>(nameof(FreeLevels)),
+                        new DependencyGraphNode<string>(nameof(PointsPerLevel)),
+                        new DependencyGraphNode<string>(nameof(FreePoints)),
+                        new DependencyGraphNode<string>(nameof(ExtraPointCost)),
+                        new DependencyGraphNode<string>(nameof(Discount),
+                            new DependencyGraphNode<string>(nameof(DiscountedAdeptWay)),
+                            new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(ToolTip),
-                    new DependancyGraphNode<string>(nameof(Rating)),
-                    new DependancyGraphNode<string>(nameof(PointsPerLevel))
+                new DependencyGraphNode<string>(nameof(ToolTip),
+                    new DependencyGraphNode<string>(nameof(Rating)),
+                    new DependencyGraphNode<string>(nameof(PointsPerLevel))
                 ),
-                new DependancyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
-                    new DependancyGraphNode<string>(nameof(FreeLevels))
+                new DependencyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
+                    new DependencyGraphNode<string>(nameof(FreeLevels))
                 ),
-                new DependancyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
-                    new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
+                new DependencyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
+                    new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
                 )
             );
 
@@ -976,10 +976,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

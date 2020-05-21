@@ -690,10 +690,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -707,20 +707,20 @@ namespace Chummer
             }
         }
 
-        private static readonly DependancyGraph<string> SpiritDependencyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(NoLinkedCharacter),
-                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+        private static readonly DependencyGraph<string> SpiritDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(NoLinkedCharacter),
+                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
                 ),
-                new DependancyGraphNode<string>(nameof(CritterName),
-                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(CritterName),
+                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
                 ),
-                new DependancyGraphNode<string>(nameof(MainMugshot),
-                    new DependancyGraphNode<string>(nameof(LinkedCharacter)),
-                    new DependancyGraphNode<string>(nameof(Mugshots),
-                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(MainMugshot),
+                    new DependencyGraphNode<string>(nameof(LinkedCharacter)),
+                    new DependencyGraphNode<string>(nameof(Mugshots),
+                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
                     ),
-                    new DependancyGraphNode<string>(nameof(MainMugshotIndex))
+                    new DependencyGraphNode<string>(nameof(MainMugshotIndex))
                 )
             );
 

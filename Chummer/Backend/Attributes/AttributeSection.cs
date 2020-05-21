@@ -47,10 +47,10 @@ namespace Chummer.Backend.Attributes
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -64,8 +64,8 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static readonly DependancyGraph<string> AttributeSectionDependencyGraph =
-            new DependancyGraph<string>(
+        private static readonly DependencyGraph<string> AttributeSectionDependencyGraph =
+            new DependencyGraph<string>(
             );
 
 	    private ObservableCollection<CharacterAttrib> _colAttributes;

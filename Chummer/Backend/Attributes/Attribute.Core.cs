@@ -1047,10 +1047,10 @@ namespace Chummer.Backend.Attributes
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = AttributeDependancyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in AttributeDependancyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -1115,67 +1115,67 @@ namespace Chummer.Backend.Attributes
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependancyGraph<string> AttributeDependancyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(ToolTip),
-                    new DependancyGraphNode<string>(nameof(DisplayValue),
-                        new DependancyGraphNode<string>(nameof(HasModifiers)),
-                        new DependancyGraphNode<string>(nameof(TotalValue),
-                            new DependancyGraphNode<string>(nameof(AttributeModifiers)),
-                            new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
-                            new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
-                            new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum),
-                                new DependancyGraphNode<string>(nameof(AugmentedMaximumModifiers)),
-                                new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
-                                new DependancyGraphNode<string>(nameof(MaximumModifiers))
+        private static readonly DependencyGraph<string> s_AttributeDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(ToolTip),
+                    new DependencyGraphNode<string>(nameof(DisplayValue),
+                        new DependencyGraphNode<string>(nameof(HasModifiers)),
+                        new DependencyGraphNode<string>(nameof(TotalValue),
+                            new DependencyGraphNode<string>(nameof(AttributeModifiers)),
+                            new DependencyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                            new DependencyGraphNode<string>(nameof(MetatypeMaximum)),
+                            new DependencyGraphNode<string>(nameof(TotalAugmentedMaximum),
+                                new DependencyGraphNode<string>(nameof(AugmentedMaximumModifiers)),
+                                new DependencyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                                new DependencyGraphNode<string>(nameof(MaximumModifiers))
                             ),
-                            new DependancyGraphNode<string>(nameof(Value),
-                                new DependancyGraphNode<string>(nameof(Karma)),
-                                new DependancyGraphNode<string>(nameof(Base)),
-                                new DependancyGraphNode<string>(nameof(FreeBase)),
-                                new DependancyGraphNode<string>(nameof(AttributeValueModifiers)),
-                                new DependancyGraphNode<string>(nameof(TotalMinimum),
-                                    new DependancyGraphNode<string>(nameof(RawMinimum),
-                                        new DependancyGraphNode<string>(nameof(MetatypeMinimum)),
-                                        new DependancyGraphNode<string>(nameof(MinimumModifiers))
+                            new DependencyGraphNode<string>(nameof(Value),
+                                new DependencyGraphNode<string>(nameof(Karma)),
+                                new DependencyGraphNode<string>(nameof(Base)),
+                                new DependencyGraphNode<string>(nameof(FreeBase)),
+                                new DependencyGraphNode<string>(nameof(AttributeValueModifiers)),
+                                new DependencyGraphNode<string>(nameof(TotalMinimum),
+                                    new DependencyGraphNode<string>(nameof(RawMinimum),
+                                        new DependencyGraphNode<string>(nameof(MetatypeMinimum)),
+                                        new DependencyGraphNode<string>(nameof(MinimumModifiers))
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(TotalMaximum),
-                                    new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
-                                    new DependancyGraphNode<string>(nameof(MaximumModifiers))
+                                new DependencyGraphNode<string>(nameof(TotalMaximum),
+                                    new DependencyGraphNode<string>(nameof(MetatypeMaximum)),
+                                    new DependencyGraphNode<string>(nameof(MaximumModifiers))
                                 )
                             )
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(AugmentedMetatypeLimits),
-                    new DependancyGraphNode<string>(nameof(TotalMinimum)),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum)),
-                    new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum))
+                new DependencyGraphNode<string>(nameof(AugmentedMetatypeLimits),
+                    new DependencyGraphNode<string>(nameof(TotalMinimum)),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum)),
+                    new DependencyGraphNode<string>(nameof(TotalAugmentedMaximum))
                 ),
-                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
-                        new DependancyGraphNode<string>(nameof(Value))
+                new DependencyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependencyGraphNode<string>(nameof(Value))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(CanUpgradeCareer),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
-                    new DependancyGraphNode<string>(nameof(Value)),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum))
+                new DependencyGraphNode<string>(nameof(CanUpgradeCareer),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependencyGraphNode<string>(nameof(Value)),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum))
                 ),
-                new DependancyGraphNode<string>(nameof(KarmaMaximum),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum)),
-                    new DependancyGraphNode<string>(nameof(TotalBase))
+                new DependencyGraphNode<string>(nameof(KarmaMaximum),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum)),
+                    new DependencyGraphNode<string>(nameof(TotalBase))
                 ),
-                new DependancyGraphNode<string>(nameof(PriorityMaximum),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum)),
-                    new DependancyGraphNode<string>(nameof(Karma)),
-                    new DependancyGraphNode<string>(nameof(FreeBase)),
-                    new DependancyGraphNode<string>(nameof(RawMinimum))
+                new DependencyGraphNode<string>(nameof(PriorityMaximum),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum)),
+                    new DependencyGraphNode<string>(nameof(Karma)),
+                    new DependencyGraphNode<string>(nameof(FreeBase)),
+                    new DependencyGraphNode<string>(nameof(RawMinimum))
                 ),
-                new DependancyGraphNode<string>(nameof(CareerRemainingString),
-                    new DependancyGraphNode<string>(nameof(TotalValue)),
-                    new DependancyGraphNode<string>(nameof(Value))
+                new DependencyGraphNode<string>(nameof(CareerRemainingString),
+                    new DependencyGraphNode<string>(nameof(TotalValue)),
+                    new DependencyGraphNode<string>(nameof(Value))
                 )
             );
 

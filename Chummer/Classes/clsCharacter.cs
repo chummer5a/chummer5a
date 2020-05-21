@@ -292,556 +292,556 @@ namespace Chummer
 
             #region DependencyGraph
             CharacterDependencyGraph =
-                new DependancyGraph<string>(
-                    new DependancyGraphNode<string>(nameof(CharacterName),
-                        new DependancyGraphNode<string>(nameof(Alias)),
-                        new DependancyGraphNode<string>(nameof(Name), () => string.IsNullOrWhiteSpace(Alias))
+                new DependencyGraph<string>(
+                    new DependencyGraphNode<string>(nameof(CharacterName),
+                        new DependencyGraphNode<string>(nameof(Alias)),
+                        new DependencyGraphNode<string>(nameof(Name), () => string.IsNullOrWhiteSpace(Alias))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayPowerPointsRemaining),
-                        new DependancyGraphNode<string>(nameof(PowerPointsTotal),
-                            new DependancyGraphNode<string>(nameof(UseMysticAdeptPPs),
-                                new DependancyGraphNode<string>(nameof(IsMysticAdept),
-                                    new DependancyGraphNode<string>(nameof(AdeptEnabled)),
-                                    new DependancyGraphNode<string>(nameof(MagicianEnabled))
+                    new DependencyGraphNode<string>(nameof(DisplayPowerPointsRemaining),
+                        new DependencyGraphNode<string>(nameof(PowerPointsTotal),
+                            new DependencyGraphNode<string>(nameof(UseMysticAdeptPPs),
+                                new DependencyGraphNode<string>(nameof(IsMysticAdept),
+                                    new DependencyGraphNode<string>(nameof(AdeptEnabled)),
+                                    new DependencyGraphNode<string>(nameof(MagicianEnabled))
                                 )
                             ),
-                            new DependancyGraphNode<string>(nameof(MysticAdeptPowerPoints), () => UseMysticAdeptPPs)
+                            new DependencyGraphNode<string>(nameof(MysticAdeptPowerPoints), () => UseMysticAdeptPPs)
                         ),
-                        new DependancyGraphNode<string>(nameof(PowerPointsUsed))
+                        new DependencyGraphNode<string>(nameof(PowerPointsUsed))
                     ),
-                    new DependancyGraphNode<string>(nameof(CanAffordCareerPP),
-                        new DependancyGraphNode<string>(nameof(MysAdeptAllowPPCareer),
-                            new DependancyGraphNode<string>(nameof(UseMysticAdeptPPs))
+                    new DependencyGraphNode<string>(nameof(CanAffordCareerPP),
+                        new DependencyGraphNode<string>(nameof(MysAdeptAllowPPCareer),
+                            new DependencyGraphNode<string>(nameof(UseMysticAdeptPPs))
                         ),
-                        new DependancyGraphNode<string>(nameof(MysticAdeptPowerPoints)),
-                        new DependancyGraphNode<string>(nameof(Karma))
+                        new DependencyGraphNode<string>(nameof(MysticAdeptPowerPoints)),
+                        new DependencyGraphNode<string>(nameof(Karma))
                     ),
-                    new DependancyGraphNode<string>(nameof(AddInitiationsAllowed),
-                        new DependancyGraphNode<string>(nameof(IgnoreRules)),
-                        new DependancyGraphNode<string>(nameof(Created))
+                    new DependencyGraphNode<string>(nameof(AddInitiationsAllowed),
+                        new DependencyGraphNode<string>(nameof(IgnoreRules)),
+                        new DependencyGraphNode<string>(nameof(Created))
                     ),
-                    new DependancyGraphNode<string>(nameof(InitiationEnabled),
-                        new DependancyGraphNode<string>(nameof(MAGEnabled)),
-                        new DependancyGraphNode<string>(nameof(RESEnabled)),
-                        new DependancyGraphNode<string>(nameof(InitiationForceDisabled))
+                    new DependencyGraphNode<string>(nameof(InitiationEnabled),
+                        new DependencyGraphNode<string>(nameof(MAGEnabled)),
+                        new DependencyGraphNode<string>(nameof(RESEnabled)),
+                        new DependencyGraphNode<string>(nameof(InitiationForceDisabled))
                     ),
-                    new DependancyGraphNode<string>(nameof(InitiativeToolTip),
-                        new DependancyGraphNode<string>(nameof(Initiative),
-                            new DependancyGraphNode<string>(nameof(InitiativeDice)),
-                            new DependancyGraphNode<string>(nameof(InitiativeValue),
-                                new DependancyGraphNode<string>(nameof(WoundModifier))
+                    new DependencyGraphNode<string>(nameof(InitiativeToolTip),
+                        new DependencyGraphNode<string>(nameof(Initiative),
+                            new DependencyGraphNode<string>(nameof(InitiativeDice)),
+                            new DependencyGraphNode<string>(nameof(InitiativeValue),
+                                new DependencyGraphNode<string>(nameof(WoundModifier))
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(AstralInitiativeToolTip),
-                        new DependancyGraphNode<string>(nameof(AstralInitiative),
-                            new DependancyGraphNode<string>(nameof(AstralInitiativeDice)),
-                            new DependancyGraphNode<string>(nameof(AstralInitiativeValue),
-                                new DependancyGraphNode<string>(nameof(WoundModifier))
+                    new DependencyGraphNode<string>(nameof(AstralInitiativeToolTip),
+                        new DependencyGraphNode<string>(nameof(AstralInitiative),
+                            new DependencyGraphNode<string>(nameof(AstralInitiativeDice)),
+                            new DependencyGraphNode<string>(nameof(AstralInitiativeValue),
+                                new DependencyGraphNode<string>(nameof(WoundModifier))
                             )
                         ),
-                        new DependancyGraphNode<string>(nameof(MAGEnabled))
+                        new DependencyGraphNode<string>(nameof(MAGEnabled))
                     ),
-                    new DependancyGraphNode<string>(nameof(MatrixInitiativeToolTip),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiative),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeDice),
-                                new DependancyGraphNode<string>(nameof(IsAI)),
-                                new DependancyGraphNode<string>(nameof(InitiativeDice), () => !IsAI)
+                    new DependencyGraphNode<string>(nameof(MatrixInitiativeToolTip),
+                        new DependencyGraphNode<string>(nameof(MatrixInitiative),
+                            new DependencyGraphNode<string>(nameof(MatrixInitiativeDice),
+                                new DependencyGraphNode<string>(nameof(IsAI)),
+                                new DependencyGraphNode<string>(nameof(InitiativeDice), () => !IsAI)
                             ),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeValue),
-                                new DependancyGraphNode<string>(nameof(IsAI)),
-                                new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI),
-                                new DependancyGraphNode<string>(nameof(WoundModifier), () => IsAI),
-                                new DependancyGraphNode<string>(nameof(InitiativeValue), () => !IsAI)
+                            new DependencyGraphNode<string>(nameof(MatrixInitiativeValue),
+                                new DependencyGraphNode<string>(nameof(IsAI)),
+                                new DependencyGraphNode<string>(nameof(HomeNode), () => IsAI),
+                                new DependencyGraphNode<string>(nameof(WoundModifier), () => IsAI),
+                                new DependencyGraphNode<string>(nameof(InitiativeValue), () => !IsAI)
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(MatrixInitiativeColdToolTip),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeCold),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeColdDice),
-                                new DependancyGraphNode<string>(nameof(IsAI)),
-                                new DependancyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
+                    new DependencyGraphNode<string>(nameof(MatrixInitiativeColdToolTip),
+                        new DependencyGraphNode<string>(nameof(MatrixInitiativeCold),
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
+                            new DependencyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
+                            new DependencyGraphNode<string>(nameof(MatrixInitiativeColdDice),
+                                new DependencyGraphNode<string>(nameof(IsAI)),
+                                new DependencyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
                             ),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeColdValue),
-                                new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                                new DependancyGraphNode<string>(nameof(IsAI)),
-                                new DependancyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
-                                new DependancyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
+                            new DependencyGraphNode<string>(nameof(MatrixInitiativeColdValue),
+                                new DependencyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
+                                new DependencyGraphNode<string>(nameof(IsAI)),
+                                new DependencyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
+                                new DependencyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(MatrixInitiativeHotToolTip),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeHot),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeHotDice),
-                                new DependancyGraphNode<string>(nameof(IsAI)),
-                                new DependancyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
+                    new DependencyGraphNode<string>(nameof(MatrixInitiativeHotToolTip),
+                        new DependencyGraphNode<string>(nameof(MatrixInitiativeHot),
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
+                            new DependencyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
+                            new DependencyGraphNode<string>(nameof(MatrixInitiativeHotDice),
+                                new DependencyGraphNode<string>(nameof(IsAI)),
+                                new DependencyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
                             ),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeHotValue),
-                                new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                                new DependancyGraphNode<string>(nameof(IsAI)),
-                                new DependancyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
-                                new DependancyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
+                            new DependencyGraphNode<string>(nameof(MatrixInitiativeHotValue),
+                                new DependencyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
+                                new DependencyGraphNode<string>(nameof(IsAI)),
+                                new DependencyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
+                                new DependencyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(IsSprite),
-                        new DependancyGraphNode<string>(nameof(IsFreeSprite),
-                            new DependancyGraphNode<string>(nameof(MetatypeCategory))
+                    new DependencyGraphNode<string>(nameof(IsSprite),
+                        new DependencyGraphNode<string>(nameof(IsFreeSprite),
+                            new DependencyGraphNode<string>(nameof(MetatypeCategory))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayMetatypeBP),
-                        new DependancyGraphNode<string>(nameof(MetatypeBP))
+                    new DependencyGraphNode<string>(nameof(DisplayMetatypeBP),
+                        new DependencyGraphNode<string>(nameof(MetatypeBP))
                     ),
-                    new DependancyGraphNode<string>(nameof(PhysicalCMLabelText),
-                        new DependancyGraphNode<string>(nameof(IsAI)),
-                        new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(PhysicalCMLabelText),
+                        new DependencyGraphNode<string>(nameof(IsAI)),
+                        new DependencyGraphNode<string>(nameof(HomeNode))
                     ),
-                    new DependancyGraphNode<string>(nameof(PhysicalCMToolTip),
-                        new DependancyGraphNode<string>(nameof(PhysicalCM))
+                    new DependencyGraphNode<string>(nameof(PhysicalCMToolTip),
+                        new DependencyGraphNode<string>(nameof(PhysicalCM))
                     ),
-                    new DependancyGraphNode<string>(nameof(StunCMToolTip),
-                        new DependancyGraphNode<string>(nameof(StunCM))
+                    new DependencyGraphNode<string>(nameof(StunCMToolTip),
+                        new DependencyGraphNode<string>(nameof(StunCM))
                     ),
-                    new DependancyGraphNode<string>(nameof(StunCMVisible),
-                        new DependancyGraphNode<string>(nameof(IsAI)),
-                        new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(StunCMVisible),
+                        new DependencyGraphNode<string>(nameof(IsAI)),
+                        new DependencyGraphNode<string>(nameof(HomeNode))
                     ),
-                    new DependancyGraphNode<string>(nameof(StunCMLabelText),
-                        new DependancyGraphNode<string>(nameof(IsAI)),
-                        new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(StunCMLabelText),
+                        new DependencyGraphNode<string>(nameof(IsAI)),
+                        new DependencyGraphNode<string>(nameof(HomeNode))
                     ),
-                    new DependancyGraphNode<string>(nameof(WoundModifier),
-                        new DependancyGraphNode<string>(nameof(PhysicalCMFilled),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(WoundModifier),
+                        new DependencyGraphNode<string>(nameof(PhysicalCMFilled),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         ),
-                        new DependancyGraphNode<string>(nameof(PhysicalCM),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                        new DependencyGraphNode<string>(nameof(PhysicalCM),
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         ),
-                        new DependancyGraphNode<string>(nameof(StunCMFilled),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                        new DependencyGraphNode<string>(nameof(StunCMFilled),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         ),
-                        new DependancyGraphNode<string>(nameof(StunCM),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                        new DependencyGraphNode<string>(nameof(StunCM),
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         ),
-                        new DependancyGraphNode<string>(nameof(CMThreshold)),
-                        new DependancyGraphNode<string>(nameof(PhysicalCMThresholdOffset),
-                            new DependancyGraphNode<string>(nameof(StunCMFilled)),
-                            new DependancyGraphNode<string>(nameof(CMThreshold)),
-                            new DependancyGraphNode<string>(nameof(IsAI))
+                        new DependencyGraphNode<string>(nameof(CMThreshold)),
+                        new DependencyGraphNode<string>(nameof(PhysicalCMThresholdOffset),
+                            new DependencyGraphNode<string>(nameof(StunCMFilled)),
+                            new DependencyGraphNode<string>(nameof(CMThreshold)),
+                            new DependencyGraphNode<string>(nameof(IsAI))
                         ),
-                        new DependancyGraphNode<string>(nameof(StunCMThresholdOffset),
-                            new DependancyGraphNode<string>(nameof(PhysicalCMFilled)),
-                            new DependancyGraphNode<string>(nameof(CMThreshold)),
-                            new DependancyGraphNode<string>(nameof(IsAI))
+                        new DependencyGraphNode<string>(nameof(StunCMThresholdOffset),
+                            new DependencyGraphNode<string>(nameof(PhysicalCMFilled)),
+                            new DependencyGraphNode<string>(nameof(CMThreshold)),
+                            new DependencyGraphNode<string>(nameof(IsAI))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(CMThresholdOffsets),
-                        new DependancyGraphNode<string>(nameof(PhysicalCMThresholdOffset)),
-                        new DependancyGraphNode<string>(nameof(StunCMThresholdOffset))
+                    new DependencyGraphNode<string>(nameof(CMThresholdOffsets),
+                        new DependencyGraphNode<string>(nameof(PhysicalCMThresholdOffset)),
+                        new DependencyGraphNode<string>(nameof(StunCMThresholdOffset))
                     ),
-                    new DependancyGraphNode<string>(nameof(BuildMethodHasSkillPoints),
-                        new DependancyGraphNode<string>(nameof(BuildMethod))
+                    new DependencyGraphNode<string>(nameof(BuildMethodHasSkillPoints),
+                        new DependencyGraphNode<string>(nameof(BuildMethod))
                     ),
-                    new DependancyGraphNode<string>(nameof(DamageResistancePoolToolTip),
-                        new DependancyGraphNode<string>(nameof(DamageResistancePool),
-                            new DependancyGraphNode<string>(nameof(TotalArmorRating),
-                                new DependancyGraphNode<string>(nameof(ArmorRating))
+                    new DependencyGraphNode<string>(nameof(DamageResistancePoolToolTip),
+                        new DependencyGraphNode<string>(nameof(DamageResistancePool),
+                            new DependencyGraphNode<string>(nameof(TotalArmorRating),
+                                new DependencyGraphNode<string>(nameof(ArmorRating))
                             ),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI)
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(HomeNode), () => IsAI)
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(IsAI),
-                        new DependancyGraphNode<string>(nameof(DEPEnabled))
+                    new DependencyGraphNode<string>(nameof(IsAI),
+                        new DependencyGraphNode<string>(nameof(DEPEnabled))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodgeToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodge),
-                            new DependancyGraphNode<string>(nameof(TotalBonusDodgeRating))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseIndirectDodgeToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIndirectDodge),
+                            new DependencyGraphNode<string>(nameof(TotalBonusDodgeRating))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DodgeToolTip),
-                        new DependancyGraphNode<string>(nameof(Dodge),
-                            new DependancyGraphNode<string>(nameof(TotalBonusDodgeRating))
+                    new DependencyGraphNode<string>(nameof(DodgeToolTip),
+                        new DependencyGraphNode<string>(nameof(Dodge),
+                            new DependencyGraphNode<string>(nameof(TotalBonusDodgeRating))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIndirectDodge),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodge))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseIndirectDodge),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIndirectDodge))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseIndirectSoakToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIndirectSoak),
-                            new DependancyGraphNode<string>(nameof(TotalArmorRating)),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseIndirectSoakToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIndirectSoak),
+                            new DependencyGraphNode<string>(nameof(TotalArmorRating)),
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(HomeNode), () => IsAI),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIndirectSoak),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIndirectSoak))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseIndirectSoak),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIndirectSoak))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakManaToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakMana),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDirectSoakManaToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDirectSoakMana),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDirectSoakMana),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakMana))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDirectSoakMana),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDirectSoakMana))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysicalToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysical),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysicalToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysical),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDirectSoakPhysical),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysical))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDirectSoakPhysical),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDirectSoakPhysical))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDetectionToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDetection),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDetectionToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDetection),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDetection),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDetection))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDetection),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDetection))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseBODToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseBOD),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseBODToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseBOD),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseBOD),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseBOD))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseBOD),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseBOD))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseAGIToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseAGI),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseAGIToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseAGI),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseAGI),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseAGI))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseAGI),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseAGI))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseREAToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseREA),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseREAToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseREA),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseREA),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseREA))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseREA),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseREA))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseSTRToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseSTR),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseSTRToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseSTR),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseSTR),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseSTR))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseSTR),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseSTR))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseCHAToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseCHA),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseCHAToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseCHA),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseCHA),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseCHA))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseCHA),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseCHA))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseINTToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseINT),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseINTToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseINT),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseINT),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseINT))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseINT),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseINT))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseLOGToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseLOG),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseLOGToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseLOG),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseLOG),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseLOG))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseLOG),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseLOG))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseWILToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseWIL),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseWILToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseWIL),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseWIL),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseDecreaseWIL))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseDecreaseWIL),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseDecreaseWIL))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseIllusionManaToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIllusionMana),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseIllusionManaToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIllusionMana),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIllusionMana),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIllusionMana))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseIllusionMana),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIllusionMana))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseIllusionPhysicalToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIllusionPhysical),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseIllusionPhysicalToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIllusionPhysical),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIllusionPhysical),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseIllusionPhysical))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseIllusionPhysical),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseIllusionPhysical))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseManipulationMentalToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseManipulationMental),
-                            new DependancyGraphNode<string>(nameof(SpellResistance))
+                    new DependencyGraphNode<string>(nameof(SpellDefenseManipulationMentalToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseManipulationMental),
+                            new DependencyGraphNode<string>(nameof(SpellResistance))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseManipulationMental),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseManipulationMental))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseManipulationMental),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseManipulationMental))
                     ),
-                    new DependancyGraphNode<string>(nameof(SpellDefenseManipulationPhysicalToolTip),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseManipulationPhysical),
-                            new DependancyGraphNode<string>(nameof(SpellResistance)),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI)
+                    new DependencyGraphNode<string>(nameof(SpellDefenseManipulationPhysicalToolTip),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseManipulationPhysical),
+                            new DependencyGraphNode<string>(nameof(SpellResistance)),
+                            new DependencyGraphNode<string>(nameof(IsAI)),
+                            new DependencyGraphNode<string>(nameof(HomeNode), () => IsAI)
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySpellDefenseManipulationPhysical),
-                        new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
-                        new DependancyGraphNode<string>(nameof(SpellDefenseManipulationPhysical))
+                    new DependencyGraphNode<string>(nameof(DisplaySpellDefenseManipulationPhysical),
+                        new DependencyGraphNode<string>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string>(nameof(SpellDefenseManipulationPhysical))
                     ),
-                    new DependancyGraphNode<string>(nameof(TotalArmorRatingToolTip),
-                        new DependancyGraphNode<string>(nameof(TotalArmorRating))
+                    new DependencyGraphNode<string>(nameof(TotalArmorRatingToolTip),
+                        new DependencyGraphNode<string>(nameof(TotalArmorRating))
                     ),
-                    new DependancyGraphNode<string>(nameof(TotalFireArmorRating),
-                        new DependancyGraphNode<string>(nameof(TotalArmorRating))
+                    new DependencyGraphNode<string>(nameof(TotalFireArmorRating),
+                        new DependencyGraphNode<string>(nameof(TotalArmorRating))
                     ),
-                    new DependancyGraphNode<string>(nameof(TotalColdArmorRating),
-                        new DependancyGraphNode<string>(nameof(TotalArmorRating))
+                    new DependencyGraphNode<string>(nameof(TotalColdArmorRating),
+                        new DependencyGraphNode<string>(nameof(TotalArmorRating))
                     ),
-                    new DependancyGraphNode<string>(nameof(TotalElectricityArmorRating),
-                        new DependancyGraphNode<string>(nameof(TotalArmorRating))
+                    new DependencyGraphNode<string>(nameof(TotalElectricityArmorRating),
+                        new DependencyGraphNode<string>(nameof(TotalArmorRating))
                     ),
-                    new DependancyGraphNode<string>(nameof(TotalAcidArmorRating),
-                        new DependancyGraphNode<string>(nameof(TotalArmorRating))
+                    new DependencyGraphNode<string>(nameof(TotalAcidArmorRating),
+                        new DependencyGraphNode<string>(nameof(TotalArmorRating))
                     ),
-                    new DependancyGraphNode<string>(nameof(TotalFallingArmorRating),
-                        new DependancyGraphNode<string>(nameof(TotalArmorRating))
+                    new DependencyGraphNode<string>(nameof(TotalFallingArmorRating),
+                        new DependencyGraphNode<string>(nameof(TotalArmorRating))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayEssence),
-                        new DependancyGraphNode<string>(nameof(Essence),
-                            new DependancyGraphNode<string>(nameof(CyberwareEssence)),
-                            new DependancyGraphNode<string>(nameof(BiowareEssence)),
-                            new DependancyGraphNode<string>(nameof(PrototypeTranshumanEssenceUsed)),
-                            new DependancyGraphNode<string>(nameof(EssenceHole))
+                    new DependencyGraphNode<string>(nameof(DisplayEssence),
+                        new DependencyGraphNode<string>(nameof(Essence),
+                            new DependencyGraphNode<string>(nameof(CyberwareEssence)),
+                            new DependencyGraphNode<string>(nameof(BiowareEssence)),
+                            new DependencyGraphNode<string>(nameof(PrototypeTranshumanEssenceUsed)),
+                            new DependencyGraphNode<string>(nameof(EssenceHole))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(ComposureToolTip),
-                        new DependancyGraphNode<string>(nameof(Composure))
+                    new DependencyGraphNode<string>(nameof(ComposureToolTip),
+                        new DependencyGraphNode<string>(nameof(Composure))
                     ),
-                    new DependancyGraphNode<string>(nameof(SurpriseToolTip),
-                        new DependancyGraphNode<string>(nameof(Surprise))
+                    new DependencyGraphNode<string>(nameof(SurpriseToolTip),
+                        new DependencyGraphNode<string>(nameof(Surprise))
                     ),
-                    new DependancyGraphNode<string>(nameof(JudgeIntentionsToolTip),
-                        new DependancyGraphNode<string>(nameof(JudgeIntentions))
+                    new DependencyGraphNode<string>(nameof(JudgeIntentionsToolTip),
+                        new DependencyGraphNode<string>(nameof(JudgeIntentions))
                     ),
-                    new DependancyGraphNode<string>(nameof(JudgeIntentionsResistToolTip),
-                        new DependancyGraphNode<string>(nameof(JudgeIntentionsResist))
+                    new DependencyGraphNode<string>(nameof(JudgeIntentionsResistToolTip),
+                        new DependencyGraphNode<string>(nameof(JudgeIntentionsResist))
                     ),
-                    new DependancyGraphNode<string>(nameof(LiftAndCarryToolTip),
-                        new DependancyGraphNode<string>(nameof(LiftAndCarry))
+                    new DependencyGraphNode<string>(nameof(LiftAndCarryToolTip),
+                        new DependencyGraphNode<string>(nameof(LiftAndCarry))
                     ),
-                    new DependancyGraphNode<string>(nameof(MemoryToolTip),
-                        new DependancyGraphNode<string>(nameof(Memory))
+                    new DependencyGraphNode<string>(nameof(MemoryToolTip),
+                        new DependencyGraphNode<string>(nameof(Memory))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayCyberwareEssence),
-                        new DependancyGraphNode<string>(nameof(CyberwareEssence))
+                    new DependencyGraphNode<string>(nameof(DisplayCyberwareEssence),
+                        new DependencyGraphNode<string>(nameof(CyberwareEssence))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayBiowareEssence),
-                        new DependancyGraphNode<string>(nameof(BiowareEssence))
+                    new DependencyGraphNode<string>(nameof(DisplayBiowareEssence),
+                        new DependencyGraphNode<string>(nameof(BiowareEssence))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayEssenceHole),
-                        new DependancyGraphNode<string>(nameof(EssenceHole))
+                    new DependencyGraphNode<string>(nameof(DisplayEssenceHole),
+                        new DependencyGraphNode<string>(nameof(EssenceHole))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayPrototypeTranshumanEssenceUsed),
-                        new DependancyGraphNode<string>(nameof(PrototypeTranshumanEssenceUsed)),
-                        new DependancyGraphNode<string>(nameof(PrototypeTranshuman))
+                    new DependencyGraphNode<string>(nameof(DisplayPrototypeTranshumanEssenceUsed),
+                        new DependencyGraphNode<string>(nameof(PrototypeTranshumanEssenceUsed)),
+                        new DependencyGraphNode<string>(nameof(PrototypeTranshuman))
                     ),
-                    new DependancyGraphNode<string>(nameof(IsPrototypeTranshuman),
-                        new DependancyGraphNode<string>(nameof(PrototypeTranshuman))
+                    new DependencyGraphNode<string>(nameof(IsPrototypeTranshuman),
+                        new DependencyGraphNode<string>(nameof(PrototypeTranshuman))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayNuyen),
-                        new DependancyGraphNode<string>(nameof(Nuyen))
+                    new DependencyGraphNode<string>(nameof(DisplayNuyen),
+                        new DependencyGraphNode<string>(nameof(Nuyen))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayStolenNuyen),
-                        new DependancyGraphNode<string>(nameof(StolenNuyen))
+                    new DependencyGraphNode<string>(nameof(DisplayStolenNuyen),
+                        new DependencyGraphNode<string>(nameof(StolenNuyen))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayKarma),
-                        new DependancyGraphNode<string>(nameof(Karma))
+                    new DependencyGraphNode<string>(nameof(DisplayKarma),
+                        new DependencyGraphNode<string>(nameof(Karma))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayTotalStartingNuyen),
-                        new DependancyGraphNode<string>(nameof(TotalStartingNuyen),
-                            new DependancyGraphNode<string>(nameof(StartingNuyen)),
-                            new DependancyGraphNode<string>(nameof(StartingNuyenModifiers)),
-                            new DependancyGraphNode<string>(nameof(NuyenBP),
-                                new DependancyGraphNode<string>(nameof(TotalNuyenMaximumBP),
-                                    new DependancyGraphNode<string>(nameof(StolenNuyen)),
-                                    new DependancyGraphNode<string>(nameof(NuyenMaximumBP)),
-                                    new DependancyGraphNode<string>(nameof(IgnoreRules))
+                    new DependencyGraphNode<string>(nameof(DisplayTotalStartingNuyen),
+                        new DependencyGraphNode<string>(nameof(TotalStartingNuyen),
+                            new DependencyGraphNode<string>(nameof(StartingNuyen)),
+                            new DependencyGraphNode<string>(nameof(StartingNuyenModifiers)),
+                            new DependencyGraphNode<string>(nameof(NuyenBP),
+                                new DependencyGraphNode<string>(nameof(TotalNuyenMaximumBP),
+                                    new DependencyGraphNode<string>(nameof(StolenNuyen)),
+                                    new DependencyGraphNode<string>(nameof(NuyenMaximumBP)),
+                                    new DependencyGraphNode<string>(nameof(IgnoreRules))
                                 )
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayCareerNuyen),
-                        new DependancyGraphNode<string>(nameof(CareerNuyen))
+                    new DependencyGraphNode<string>(nameof(DisplayCareerNuyen),
+                        new DependencyGraphNode<string>(nameof(CareerNuyen))
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayCareerKarma),
-                        new DependancyGraphNode<string>(nameof(CareerKarma))
+                    new DependencyGraphNode<string>(nameof(DisplayCareerKarma),
+                        new DependencyGraphNode<string>(nameof(CareerKarma))
                     ),
-                    new DependancyGraphNode<string>(nameof(ContactPoints),
-                        new DependancyGraphNode<string>(nameof(ContactMultiplier))
+                    new DependencyGraphNode<string>(nameof(ContactPoints),
+                        new DependencyGraphNode<string>(nameof(ContactMultiplier))
                     ),
-                    new DependancyGraphNode<string>(nameof(StreetCredTooltip),
-                        new DependancyGraphNode<string>(nameof(TotalStreetCred),
-                            new DependancyGraphNode<string>(nameof(StreetCred)),
-                            new DependancyGraphNode<string>(nameof(CalculatedStreetCred),
-                                new DependancyGraphNode<string>(nameof(CareerKarma)),
-                                new DependancyGraphNode<string>(nameof(BurntStreetCred))
+                    new DependencyGraphNode<string>(nameof(StreetCredTooltip),
+                        new DependencyGraphNode<string>(nameof(TotalStreetCred),
+                            new DependencyGraphNode<string>(nameof(StreetCred)),
+                            new DependencyGraphNode<string>(nameof(CalculatedStreetCred),
+                                new DependencyGraphNode<string>(nameof(CareerKarma)),
+                                new DependencyGraphNode<string>(nameof(BurntStreetCred))
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(CanBurnStreetCred),
-                        new DependancyGraphNode<string>(nameof(TotalStreetCred))
+                    new DependencyGraphNode<string>(nameof(CanBurnStreetCred),
+                        new DependencyGraphNode<string>(nameof(TotalStreetCred))
                     ),
-                    new DependancyGraphNode<string>(nameof(NotorietyTooltip),
-                        new DependancyGraphNode<string>(nameof(TotalNotoriety),
-                            new DependancyGraphNode<string>(nameof(Notoriety)),
-                            new DependancyGraphNode<string>(nameof(CalculatedNotoriety)),
-                            new DependancyGraphNode<string>(nameof(BurntStreetCred))
+                    new DependencyGraphNode<string>(nameof(NotorietyTooltip),
+                        new DependencyGraphNode<string>(nameof(TotalNotoriety),
+                            new DependencyGraphNode<string>(nameof(Notoriety)),
+                            new DependencyGraphNode<string>(nameof(CalculatedNotoriety)),
+                            new DependencyGraphNode<string>(nameof(BurntStreetCred))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(PublicAwarenessTooltip),
-                        new DependancyGraphNode<string>(nameof(TotalPublicAwareness),
-                            new DependancyGraphNode<string>(nameof(Erased)),
-                            new DependancyGraphNode<string>(nameof(CalculatedPublicAwareness),
-                                new DependancyGraphNode<string>(nameof(PublicAwareness)),
-                                new DependancyGraphNode<string>(nameof(TotalStreetCred),
+                    new DependencyGraphNode<string>(nameof(PublicAwarenessTooltip),
+                        new DependencyGraphNode<string>(nameof(TotalPublicAwareness),
+                            new DependencyGraphNode<string>(nameof(Erased)),
+                            new DependencyGraphNode<string>(nameof(CalculatedPublicAwareness),
+                                new DependencyGraphNode<string>(nameof(PublicAwareness)),
+                                new DependencyGraphNode<string>(nameof(TotalStreetCred),
                                     () => Options.UseCalculatedPublicAwareness),
-                                new DependancyGraphNode<string>(nameof(TotalNotoriety),
+                                new DependencyGraphNode<string>(nameof(TotalNotoriety),
                                     () => Options.UseCalculatedPublicAwareness)
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(CareerDisplayStreetCred),
-                        new DependancyGraphNode<string>(nameof(TotalStreetCred))
+                    new DependencyGraphNode<string>(nameof(CareerDisplayStreetCred),
+                        new DependencyGraphNode<string>(nameof(TotalStreetCred))
                     ),
-                    new DependancyGraphNode<string>(nameof(CareerDisplayNotoriety),
-                        new DependancyGraphNode<string>(nameof(TotalNotoriety))
+                    new DependencyGraphNode<string>(nameof(CareerDisplayNotoriety),
+                        new DependencyGraphNode<string>(nameof(TotalNotoriety))
                     ),
-                    new DependancyGraphNode<string>(nameof(CareerDisplayPublicAwareness),
-                        new DependancyGraphNode<string>(nameof(TotalPublicAwareness))
+                    new DependencyGraphNode<string>(nameof(CareerDisplayPublicAwareness),
+                        new DependencyGraphNode<string>(nameof(TotalPublicAwareness))
                     ),
-                    new DependancyGraphNode<string>(nameof(AddBiowareEnabled),
-                        new DependancyGraphNode<string>(nameof(CyberwareDisabled))
+                    new DependencyGraphNode<string>(nameof(AddBiowareEnabled),
+                        new DependencyGraphNode<string>(nameof(CyberwareDisabled))
                     ),
-                    new DependancyGraphNode<string>(nameof(AddCyberwareEnabled),
-                        new DependancyGraphNode<string>(nameof(CyberwareDisabled))
+                    new DependencyGraphNode<string>(nameof(AddCyberwareEnabled),
+                        new DependencyGraphNode<string>(nameof(CyberwareDisabled))
                     ),
-                    new DependancyGraphNode<string>(nameof(HasMentorSpirit),
-                        new DependancyGraphNode<string>(nameof(MentorSpirits))
+                    new DependencyGraphNode<string>(nameof(HasMentorSpirit),
+                        new DependencyGraphNode<string>(nameof(MentorSpirits))
                     ),
-                    new DependancyGraphNode<string>(nameof(CharacterGrammaticGender),
-                        new DependancyGraphNode<string>(nameof(Sex))
+                    new DependencyGraphNode<string>(nameof(CharacterGrammaticGender),
+                        new DependencyGraphNode<string>(nameof(Sex))
                     ),
-                    new DependancyGraphNode<string>(nameof(FirstMentorSpiritDisplayName),
-                        new DependancyGraphNode<string>(nameof(MentorSpirits))
+                    new DependencyGraphNode<string>(nameof(FirstMentorSpiritDisplayName),
+                        new DependencyGraphNode<string>(nameof(MentorSpirits))
                     ),
-                    new DependancyGraphNode<string>(nameof(FirstMentorSpiritDisplayInformation),
-                        new DependancyGraphNode<string>(nameof(MentorSpirits))
+                    new DependencyGraphNode<string>(nameof(FirstMentorSpiritDisplayInformation),
+                        new DependencyGraphNode<string>(nameof(MentorSpirits))
                     ),
-                    new DependancyGraphNode<string>(nameof(LimitPhysicalToolTip),
-                        new DependancyGraphNode<string>(nameof(LimitPhysical),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(LimitPhysicalToolTip),
+                        new DependencyGraphNode<string>(nameof(LimitPhysical),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(LimitMentalToolTip),
-                        new DependancyGraphNode<string>(nameof(LimitMental),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(LimitMentalToolTip),
+                        new DependencyGraphNode<string>(nameof(LimitMental),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(LimitSocialToolTip),
-                        new DependancyGraphNode<string>(nameof(LimitSocial),
-                            new DependancyGraphNode<string>(nameof(HomeNode))
+                    new DependencyGraphNode<string>(nameof(LimitSocialToolTip),
+                        new DependencyGraphNode<string>(nameof(LimitSocial),
+                            new DependencyGraphNode<string>(nameof(HomeNode))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(LimitAstralToolTip),
-                        new DependancyGraphNode<string>(nameof(LimitAstral),
-                            new DependancyGraphNode<string>(nameof(LimitMental)),
-                            new DependancyGraphNode<string>(nameof(LimitSocial))
+                    new DependencyGraphNode<string>(nameof(LimitAstralToolTip),
+                        new DependencyGraphNode<string>(nameof(LimitAstral),
+                            new DependencyGraphNode<string>(nameof(LimitMental)),
+                            new DependencyGraphNode<string>(nameof(LimitSocial))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayMovement),
-                        new DependancyGraphNode<string>(nameof(GetMovement),
-                            new DependancyGraphNode<string>(nameof(Movement)),
-                            new DependancyGraphNode<string>(nameof(CalculatedMovement),
-                                new DependancyGraphNode<string>(nameof(WalkingRate),
-                                    new DependancyGraphNode<string>(nameof(CurrentWalkingRateString),
-                                        new DependancyGraphNode<string>(nameof(WalkString),
+                    new DependencyGraphNode<string>(nameof(DisplayMovement),
+                        new DependencyGraphNode<string>(nameof(GetMovement),
+                            new DependencyGraphNode<string>(nameof(Movement)),
+                            new DependencyGraphNode<string>(nameof(CalculatedMovement),
+                                new DependencyGraphNode<string>(nameof(WalkingRate),
+                                    new DependencyGraphNode<string>(nameof(CurrentWalkingRateString),
+                                        new DependencyGraphNode<string>(nameof(WalkString),
                                             () => AttributeSection.AttributeCategory ==
                                                   CharacterAttrib.AttributeCategory.Standard),
-                                        new DependancyGraphNode<string>(nameof(WalkAltString),
+                                        new DependencyGraphNode<string>(nameof(WalkAltString),
                                             () => AttributeSection.AttributeCategory !=
                                                   CharacterAttrib.AttributeCategory.Standard)
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(RunningRate),
-                                    new DependancyGraphNode<string>(nameof(CurrentRunningRateString),
-                                        new DependancyGraphNode<string>(nameof(RunString),
+                                new DependencyGraphNode<string>(nameof(RunningRate),
+                                    new DependencyGraphNode<string>(nameof(CurrentRunningRateString),
+                                        new DependencyGraphNode<string>(nameof(RunString),
                                             () => AttributeSection.AttributeCategory ==
                                                   CharacterAttrib.AttributeCategory.Standard),
-                                        new DependancyGraphNode<string>(nameof(RunAltString),
+                                        new DependencyGraphNode<string>(nameof(RunAltString),
                                             () => AttributeSection.AttributeCategory !=
                                                   CharacterAttrib.AttributeCategory.Standard)
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(SprintingRate),
-                                    new DependancyGraphNode<string>(nameof(CurrentSprintingRateString),
-                                        new DependancyGraphNode<string>(nameof(SprintString),
+                                new DependencyGraphNode<string>(nameof(SprintingRate),
+                                    new DependencyGraphNode<string>(nameof(CurrentSprintingRateString),
+                                        new DependencyGraphNode<string>(nameof(SprintString),
                                             () => AttributeSection.AttributeCategory ==
                                                   CharacterAttrib.AttributeCategory.Standard),
-                                        new DependancyGraphNode<string>(nameof(SprintAltString),
+                                        new DependencyGraphNode<string>(nameof(SprintAltString),
                                             () => AttributeSection.AttributeCategory !=
                                                   CharacterAttrib.AttributeCategory.Standard)
                                     )
@@ -849,36 +849,36 @@ namespace Chummer
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplaySwim),
-                        new DependancyGraphNode<string>(nameof(GetSwim),
-                            new DependancyGraphNode<string>(nameof(Movement)),
-                            new DependancyGraphNode<string>(nameof(CalculatedMovement))
+                    new DependencyGraphNode<string>(nameof(DisplaySwim),
+                        new DependencyGraphNode<string>(nameof(GetSwim),
+                            new DependencyGraphNode<string>(nameof(Movement)),
+                            new DependencyGraphNode<string>(nameof(CalculatedMovement))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayFly),
-                        new DependancyGraphNode<string>(nameof(GetFly),
-                            new DependancyGraphNode<string>(nameof(Movement)),
-                            new DependancyGraphNode<string>(nameof(CalculatedMovement))
+                    new DependencyGraphNode<string>(nameof(DisplayFly),
+                        new DependencyGraphNode<string>(nameof(GetFly),
+                            new DependencyGraphNode<string>(nameof(Movement)),
+                            new DependencyGraphNode<string>(nameof(CalculatedMovement))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayNegativeQualityKarma),
-                        new DependancyGraphNode<string>(nameof(NegativeQualityKarma),
-                            new DependancyGraphNode<string>(nameof(EnemyKarma)),
-                            new DependancyGraphNode<string>(nameof(Contacts)),
-                            new DependancyGraphNode<string>(nameof(Qualities))
+                    new DependencyGraphNode<string>(nameof(DisplayNegativeQualityKarma),
+                        new DependencyGraphNode<string>(nameof(NegativeQualityKarma),
+                            new DependencyGraphNode<string>(nameof(EnemyKarma)),
+                            new DependencyGraphNode<string>(nameof(Contacts)),
+                            new DependencyGraphNode<string>(nameof(Qualities))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayPositiveQualityKarma),
-                        new DependancyGraphNode<string>(nameof(PositiveQualityKarma),
-                            new DependancyGraphNode<string>(nameof(Contacts)),
-                            new DependancyGraphNode<string>(nameof(Qualities))
+                    new DependencyGraphNode<string>(nameof(DisplayPositiveQualityKarma),
+                        new DependencyGraphNode<string>(nameof(PositiveQualityKarma),
+                            new DependencyGraphNode<string>(nameof(Contacts)),
+                            new DependencyGraphNode<string>(nameof(Qualities))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(DisplayMetagenicQualityKarma),
-                        new DependancyGraphNode<string>(nameof(MetagenicPositiveQualityKarma),
-                        new DependancyGraphNode<string>(nameof(MetagenicNegativeQualityKarma),
-                            new DependancyGraphNode<string>(nameof(IsChangeling)),
-                            new DependancyGraphNode<string>(nameof(Qualities))
+                    new DependencyGraphNode<string>(nameof(DisplayMetagenicQualityKarma),
+                        new DependencyGraphNode<string>(nameof(MetagenicPositiveQualityKarma),
+                        new DependencyGraphNode<string>(nameof(MetagenicNegativeQualityKarma),
+                            new DependencyGraphNode<string>(nameof(IsChangeling)),
+                            new DependencyGraphNode<string>(nameof(Qualities))
                         ))
                     )
                 );
@@ -15047,7 +15047,7 @@ if (!Utils.IsUnitTest){
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly DependancyGraph<string> CharacterDependencyGraph;
+        private readonly DependencyGraph<string> CharacterDependencyGraph;
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
@@ -15061,10 +15061,10 @@ if (!Utils.IsUnitTest){
             foreach(string strPropertyName in lstPropertyNames)
             {
                 if(lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = CharacterDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = CharacterDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach(string strLoopChangedProperty in CharacterDependencyGraph.GetWithAllDependants(
+                    foreach(string strLoopChangedProperty in CharacterDependencyGraph.GetWithAllDependents(
                         strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }

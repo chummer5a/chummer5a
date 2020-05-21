@@ -454,157 +454,157 @@ namespace Chummer.Backend.Skills
             CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
             Specializations.ListChanged += SpecializationsOnListChanged;
 
-            _skillDependencyGraph = new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(PoolToolTip),
-                    new DependancyGraphNode<string>(nameof(AttributeModifiers),
-                        new DependancyGraphNode<string>(nameof(AttributeObject),
-                            new DependancyGraphNode<string>(nameof(RelevantImprovements)))),
-                    new DependancyGraphNode<string>(nameof(DisplayPool),
-                        new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill),
-                        new DependancyGraphNode<string>(nameof(DisplayOtherAttribute),
-                            new DependancyGraphNode<string>(nameof(PoolOtherAttribute),
-                                new DependancyGraphNode<string>(nameof(Enabled)),
-                                new DependancyGraphNode<string>(nameof(Rating)),
-                                new DependancyGraphNode<string>(nameof(PoolModifiers),
-                                    new DependancyGraphNode<string>(nameof(Bonus),
-                                        new DependancyGraphNode<string>(nameof(RelevantImprovements))
+            _skillDependencyGraph = new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(PoolToolTip),
+                    new DependencyGraphNode<string>(nameof(AttributeModifiers),
+                        new DependencyGraphNode<string>(nameof(AttributeObject),
+                            new DependencyGraphNode<string>(nameof(RelevantImprovements)))),
+                    new DependencyGraphNode<string>(nameof(DisplayPool),
+                        new DependencyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill),
+                        new DependencyGraphNode<string>(nameof(DisplayOtherAttribute),
+                            new DependencyGraphNode<string>(nameof(PoolOtherAttribute),
+                                new DependencyGraphNode<string>(nameof(Enabled)),
+                                new DependencyGraphNode<string>(nameof(Rating)),
+                                new DependencyGraphNode<string>(nameof(PoolModifiers),
+                                    new DependencyGraphNode<string>(nameof(Bonus),
+                                        new DependencyGraphNode<string>(nameof(RelevantImprovements))
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(Default),
-                                    new DependancyGraphNode<string>(nameof(RelevantImprovements))
+                                new DependencyGraphNode<string>(nameof(Default),
+                                    new DependencyGraphNode<string>(nameof(RelevantImprovements))
                                 ),
-                                new DependancyGraphNode<string>(nameof(DefaultModifier),
-                                    new DependancyGraphNode<string>(nameof(Name))
+                                new DependencyGraphNode<string>(nameof(DefaultModifier),
+                                    new DependencyGraphNode<string>(nameof(Name))
                                 )
                             ),
-                            new DependancyGraphNode<string>(nameof(Name)),
-                            new DependancyGraphNode<string>(nameof(IsExoticSkill)),
-                            new DependancyGraphNode<string>(nameof(Specialization))
+                            new DependencyGraphNode<string>(nameof(Name)),
+                            new DependencyGraphNode<string>(nameof(IsExoticSkill)),
+                            new DependencyGraphNode<string>(nameof(Specialization))
                         ),
-                        new DependancyGraphNode<string>(nameof(Pool),
-                            new DependancyGraphNode<string>(nameof(AttributeModifiers),
-                                new DependancyGraphNode<string>(nameof(AttributeObject))
+                        new DependencyGraphNode<string>(nameof(Pool),
+                            new DependencyGraphNode<string>(nameof(AttributeModifiers),
+                                new DependencyGraphNode<string>(nameof(AttributeObject))
                             ),
-                            new DependancyGraphNode<string>(nameof(PoolOtherAttribute)),
-                            new DependancyGraphNode<string>(nameof(Attribute))
+                            new DependencyGraphNode<string>(nameof(PoolOtherAttribute)),
+                            new DependencyGraphNode<string>(nameof(Attribute))
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(CanHaveSpecs),
-                    new DependancyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill),
-                    new DependancyGraphNode<string>(nameof(IsExoticSkill)),
-                    new DependancyGraphNode<string>(nameof(KarmaUnlocked)),
-                    new DependancyGraphNode<string>(nameof(TotalBaseRating),
-                        new DependancyGraphNode<string>(nameof(RatingModifiers),
-                            new DependancyGraphNode<string>(nameof(Bonus))
+                new DependencyGraphNode<string>(nameof(CanHaveSpecs),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill),
+                    new DependencyGraphNode<string>(nameof(IsExoticSkill)),
+                    new DependencyGraphNode<string>(nameof(KarmaUnlocked)),
+                    new DependencyGraphNode<string>(nameof(TotalBaseRating),
+                        new DependencyGraphNode<string>(nameof(RatingModifiers),
+                            new DependencyGraphNode<string>(nameof(Bonus))
                         ),
-                        new DependancyGraphNode<string>(nameof(LearnedRating),
-                            new DependancyGraphNode<string>(nameof(Karma),
-                                new DependancyGraphNode<string>(nameof(FreeKarma),
-                                    new DependancyGraphNode<string>(nameof(Name))
+                        new DependencyGraphNode<string>(nameof(LearnedRating),
+                            new DependencyGraphNode<string>(nameof(Karma),
+                                new DependencyGraphNode<string>(nameof(FreeKarma),
+                                    new DependencyGraphNode<string>(nameof(Name))
                                 ),
-                                new DependancyGraphNode<string>(nameof(RatingMaximum),
-                                    new DependancyGraphNode<string>(nameof(RelevantImprovements))
+                                new DependencyGraphNode<string>(nameof(RatingMaximum),
+                                    new DependencyGraphNode<string>(nameof(RelevantImprovements))
                                 ),
-                                new DependancyGraphNode<string>(nameof(KarmaPoints))
+                                new DependencyGraphNode<string>(nameof(KarmaPoints))
                             ),
-                            new DependancyGraphNode<string>(nameof(Base),
-                                new DependancyGraphNode<string>(nameof(FreeBase),
-                                    new DependancyGraphNode<string>(nameof(Name))
+                            new DependencyGraphNode<string>(nameof(Base),
+                                new DependencyGraphNode<string>(nameof(FreeBase),
+                                    new DependencyGraphNode<string>(nameof(Name))
                                 ),
-                                new DependancyGraphNode<string>(nameof(RatingMaximum)),
-                                new DependancyGraphNode<string>(nameof(BasePoints))
+                                new DependencyGraphNode<string>(nameof(RatingMaximum)),
+                                new DependencyGraphNode<string>(nameof(BasePoints))
                             )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(Leveled),
-                        new DependancyGraphNode<string>(nameof(Rating),
-                            new DependancyGraphNode<string>(nameof(CyberwareRating),
-                                new DependancyGraphNode<string>(nameof(Name))
+                    new DependencyGraphNode<string>(nameof(Leveled),
+                        new DependencyGraphNode<string>(nameof(Rating),
+                            new DependencyGraphNode<string>(nameof(CyberwareRating),
+                                new DependencyGraphNode<string>(nameof(Name))
                             ),
-                            new DependancyGraphNode<string>(nameof(TotalBaseRating))
+                            new DependencyGraphNode<string>(nameof(TotalBaseRating))
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
-                    new DependancyGraphNode<string>(nameof(Rating)),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
-                        new DependancyGraphNode<string>(nameof(TotalBaseRating)),
-                        new DependancyGraphNode<string>(nameof(RatingMaximum))
+                new DependencyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependencyGraphNode<string>(nameof(Rating)),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependencyGraphNode<string>(nameof(TotalBaseRating)),
+                        new DependencyGraphNode<string>(nameof(RatingMaximum))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(BuyWithKarma),
-                    new DependancyGraphNode<string>(nameof(ForcedBuyWithKarma),
-                        new DependancyGraphNode<string>(nameof(Specialization)),
-                        new DependancyGraphNode<string>(nameof(KarmaPoints)),
-                        new DependancyGraphNode<string>(nameof(BasePoints)),
-                        new DependancyGraphNode<string>(nameof(FreeBase))
+                new DependencyGraphNode<string>(nameof(BuyWithKarma),
+                    new DependencyGraphNode<string>(nameof(ForcedBuyWithKarma),
+                        new DependencyGraphNode<string>(nameof(Specialization)),
+                        new DependencyGraphNode<string>(nameof(KarmaPoints)),
+                        new DependencyGraphNode<string>(nameof(BasePoints)),
+                        new DependencyGraphNode<string>(nameof(FreeBase))
                     ),
-                    new DependancyGraphNode<string>(nameof(ForcedNotBuyWithKarma),
-                        new DependancyGraphNode<string>(nameof(TotalBaseRating))
+                    new DependencyGraphNode<string>(nameof(ForcedNotBuyWithKarma),
+                        new DependencyGraphNode<string>(nameof(TotalBaseRating))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(RelevantImprovements),
-                    new DependancyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(RelevantImprovements),
+                    new DependencyGraphNode<string>(nameof(Name))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplayAttribute),
-                    new DependancyGraphNode<string>(nameof(Attribute),
-                        new DependancyGraphNode<string>(nameof(AttributeObject))
+                new DependencyGraphNode<string>(nameof(DisplayAttribute),
+                    new DependencyGraphNode<string>(nameof(Attribute),
+                        new DependencyGraphNode<string>(nameof(AttributeObject))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(DisplayName),
-                    new DependancyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(DisplayName),
+                    new DependencyGraphNode<string>(nameof(Name))
                 ),
-                new DependancyGraphNode<string>(nameof(HtmlSkillToolTip),
-                    new DependancyGraphNode<string>(nameof(SkillToolTip),
-                        new DependancyGraphNode<string>(nameof(Notes)),
-                        new DependancyGraphNode<string>(nameof(DisplayCategory),
-                            new DependancyGraphNode<string>(nameof(SkillCategory),
-                                new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill)
+                new DependencyGraphNode<string>(nameof(HtmlSkillToolTip),
+                    new DependencyGraphNode<string>(nameof(SkillToolTip),
+                        new DependencyGraphNode<string>(nameof(Notes)),
+                        new DependencyGraphNode<string>(nameof(DisplayCategory),
+                            new DependencyGraphNode<string>(nameof(SkillCategory),
+                                new DependencyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill)
                             )
                         )
                     )),
-                new DependancyGraphNode<string>(nameof(PreferredControlColor),
-                    new DependancyGraphNode<string>(nameof(Leveled))
+                new DependencyGraphNode<string>(nameof(PreferredControlColor),
+                    new DependencyGraphNode<string>(nameof(Leveled))
                 ),
-                new DependancyGraphNode<string>(nameof(PreferredColor),
-                    new DependancyGraphNode<string>(nameof(Notes))
+                new DependencyGraphNode<string>(nameof(PreferredColor),
+                    new DependencyGraphNode<string>(nameof(Notes))
                 ),
-                new DependancyGraphNode<string>(nameof(CGLSpecializations),
-                    new DependancyGraphNode<string>(nameof(SuggestedSpecializations))
+                new DependencyGraphNode<string>(nameof(CGLSpecializations),
+                    new DependencyGraphNode<string>(nameof(SuggestedSpecializations))
                 ),
-                new DependancyGraphNode<string>(nameof(CurrentSpCost),
-                    new DependancyGraphNode<string>(nameof(BasePoints)),
-                    new DependancyGraphNode<string>(nameof(Specialization)),
-                    new DependancyGraphNode<string>(nameof(BuyWithKarma))
+                new DependencyGraphNode<string>(nameof(CurrentSpCost),
+                    new DependencyGraphNode<string>(nameof(BasePoints)),
+                    new DependencyGraphNode<string>(nameof(Specialization)),
+                    new DependencyGraphNode<string>(nameof(BuyWithKarma))
                 ),
-                new DependancyGraphNode<string>(nameof(CurrentKarmaCost),
-                    new DependancyGraphNode<string>(nameof(RangeCost)),
-                    new DependancyGraphNode<string>(nameof(TotalBaseRating)),
-                    new DependancyGraphNode<string>(nameof(Base)),
-                    new DependancyGraphNode<string>(nameof(FreeKarma)),
-                    new DependancyGraphNode<string>(nameof(Specializations))
+                new DependencyGraphNode<string>(nameof(CurrentKarmaCost),
+                    new DependencyGraphNode<string>(nameof(RangeCost)),
+                    new DependencyGraphNode<string>(nameof(TotalBaseRating)),
+                    new DependencyGraphNode<string>(nameof(Base)),
+                    new DependencyGraphNode<string>(nameof(FreeKarma)),
+                    new DependencyGraphNode<string>(nameof(Specializations))
                 ),
-                new DependancyGraphNode<string>(nameof(CanUpgradeCareer),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
-                    new DependancyGraphNode<string>(nameof(RatingMaximum)),
-                    new DependancyGraphNode<string>(nameof(TotalBaseRating))
+                new DependencyGraphNode<string>(nameof(CanUpgradeCareer),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependencyGraphNode<string>(nameof(RatingMaximum)),
+                    new DependencyGraphNode<string>(nameof(TotalBaseRating))
                 ),
-                new DependancyGraphNode<string>(nameof(Enabled),
-                    new DependancyGraphNode<string>(nameof(ForceDisabled)),
-                    new DependancyGraphNode<string>(nameof(Attribute)),
-                    new DependancyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(Enabled),
+                    new DependencyGraphNode<string>(nameof(ForceDisabled)),
+                    new DependencyGraphNode<string>(nameof(Attribute)),
+                    new DependencyGraphNode<string>(nameof(Name))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySpecialization),
-                    new DependancyGraphNode<string>(nameof(Specialization),
-                        new DependancyGraphNode<string>(nameof(TotalBaseRating)),
-                        new DependancyGraphNode<string>(nameof(Specializations))
+                new DependencyGraphNode<string>(nameof(DisplaySpecialization),
+                    new DependencyGraphNode<string>(nameof(Specialization),
+                        new DependencyGraphNode<string>(nameof(TotalBaseRating)),
+                        new DependencyGraphNode<string>(nameof(Specializations))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(AllowDelete), () => IsKnowledgeSkill,
-                    new DependancyGraphNode<string>(nameof(FreeBase)),
-                    new DependancyGraphNode<string>(nameof(FreeKarma)),
-                    new DependancyGraphNode<string>(nameof(RatingModifiers))
+                new DependencyGraphNode<string>(nameof(AllowDelete), () => IsKnowledgeSkill,
+                    new DependencyGraphNode<string>(nameof(FreeBase)),
+                    new DependencyGraphNode<string>(nameof(FreeKarma)),
+                    new DependencyGraphNode<string>(nameof(RatingModifiers))
                 )
             );
         }
@@ -1478,7 +1478,7 @@ namespace Chummer.Backend.Skills
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private readonly DependancyGraph<string> _skillDependencyGraph;
+        private readonly DependencyGraph<string> _skillDependencyGraph;
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -1495,10 +1495,10 @@ namespace Chummer.Backend.Skills
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = _skillDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = _skillDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in _skillDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in _skillDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
