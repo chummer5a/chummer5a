@@ -27,9 +27,9 @@ namespace ChummerDataViewer.Model
 		public string WebFileLocation { get; set; }
 		public string StackTrace { get; set; }
 		public string Userstory { get; set; }
-		
 
-		public CrashReportProcessingProgress Progress
+
+        public CrashReportProcessingProgress Progress
 		{
 			get => _progress;
 		    private set
@@ -103,8 +103,8 @@ namespace ChummerDataViewer.Model
 				return;
 
 			_worker.StatusChanged -= WorkerOnStatusChanged;
-			
-			_database.SetZipFileLocation(Guid, args.AttachedData.destinationPath);
+
+            _database.SetZipFileLocation(Guid, args.AttachedData.destinationPath);
 
 			WebFileLocation = args.AttachedData.destinationPath;
 

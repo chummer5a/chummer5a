@@ -47,12 +47,12 @@ namespace Chummer
     /// A Contact or Enemy.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
-    public class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes
+    public class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
     {
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
-        private string _strUnique = Guid.NewGuid().ToString("D");
+        private string _strUnique = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
@@ -104,7 +104,7 @@ namespace Chummer
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties?.Count > 0 != true)
                 return;
 
             if (lstNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
@@ -197,7 +197,7 @@ namespace Chummer
         public static ContactType ConvertToContactType(string strValue)
         {
             if (string.IsNullOrEmpty(strValue))
-                return default(ContactType);
+                return default;
             switch (strValue)
             {
                 case "Contact":
@@ -214,7 +214,8 @@ namespace Chummer
         public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
             _objCharacter = objCharacter;
-            _objCharacter.PropertyChanged += CharacterObjectOnPropertyChanged;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged += CharacterObjectOnPropertyChanged;
             _blnReadOnly = blnIsReadOnly;
         }
 
@@ -230,6 +231,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("role", _strRole);
@@ -248,12 +251,12 @@ namespace Chummer
             objWriter.WriteElementString("relative", _strRelativeName);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("groupname", _strGroupName);
-            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString());
-            objWriter.WriteElementString("group", _blnIsGroup.ToString());
-            objWriter.WriteElementString("family", _blnFamily.ToString());
-            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
-            objWriter.WriteElementString("free", _blnFree.ToString());
-            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString());
+            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("family", _blnFamily.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString(GlobalOptions.InvariantCultureInfo));
 
             if (_blnReadOnly)
                 objWriter.WriteElementString("readonly", string.Empty);
@@ -268,7 +271,7 @@ namespace Chummer
             /* Disabled for now because we cannot change any properties in the linked character anyway
             if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
                 LinkedCharacter.Save();
-                */
+            */
 
             objWriter.WriteEndElement();
         }
@@ -330,6 +333,8 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
@@ -348,8 +353,8 @@ namespace Chummer
             objWriter.WriteElementString("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
             objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType.ToString(), strLanguageToPrint));
             objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
-            objWriter.WriteElementString("blackmail", Blackmail.ToString());
-            objWriter.WriteElementString("family", Family.ToString());
+            objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("family", Family.ToString(GlobalOptions.InvariantCultureInfo));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
@@ -505,7 +510,7 @@ namespace Chummer
                 strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
-                objMetatypeNode = objMetatypeNode?.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
+                objMetatypeNode = objMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
@@ -876,7 +881,7 @@ namespace Chummer
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && UniqueId == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
 
                 return _intCachedFreeFromImprovement > 0;
@@ -889,7 +894,9 @@ namespace Chummer
         /// <summary>
         /// Unique ID for this contact
         /// </summary>
-        public string GUID => _strUnique;
+        public string UniqueId => _strUnique;
+
+        public string InternalId => UniqueId;
 
         private int _intCachedGroupEnabled = -1;
 
@@ -902,7 +909,7 @@ namespace Chummer
             {
                 if (_intCachedGroupEnabled < 0)
                 {
-                    _intCachedGroupEnabled = !ReadOnly && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactForceGroup && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedGroupEnabled = !ReadOnly && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactForceGroup && UniqueId == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
 
                 return _intCachedGroupEnabled > 0;
@@ -947,7 +954,7 @@ namespace Chummer
                 int intMaxForcedLoyalty = 0;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == GUID && objImprovement.Enabled)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == UniqueId && objImprovement.Enabled)
                     {
                         intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value);
                     }
@@ -983,17 +990,17 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
             {
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                if (strFile.EndsWith(".chum5"))
+                if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false));
+                    _objLinkedCharacter = objOpenCharacter ?? await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false).ConfigureAwait(true);
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1129,7 +1136,9 @@ namespace Chummer
 
         public void SaveMugshots(XmlTextWriter objWriter)
         {
-            objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString());
+            if (objWriter == null)
+                return;
+            objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString(GlobalOptions.InvariantCultureInfo));
             // <mugshot>
             objWriter.WriteStartElement("mugshots");
             foreach (Image imgMugshot in Mugshots)
@@ -1170,6 +1179,8 @@ namespace Chummer
 
         public void PrintMugshots(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             if (LinkedCharacter != null)
                 LinkedCharacter.PrintMugshots(objWriter);
             else if (Mugshots.Count > 0)
@@ -1190,7 +1201,7 @@ namespace Chummer
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
-                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + ".img");
+                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + ".img");
                 Image imgMainMugshot = MainMugshot;
                 if (imgMainMugshot != null)
                 {
@@ -1201,7 +1212,7 @@ namespace Chummer
                     objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString());
+                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalOptions.InvariantCultureInfo));
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
@@ -1212,7 +1223,7 @@ namespace Chummer
 
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
 
-                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + i.ToString() + ".img");
+                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + i.ToString(GlobalOptions.InvariantCultureInfo) + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 

@@ -63,7 +63,7 @@ namespace Chummer.Tests
         public void LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
-            
+
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             string strTestPath = Path.Combine(strPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
             DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
@@ -84,7 +84,7 @@ namespace Chummer.Tests
         }
 
         /// <summary>
-        /// Validate that a given list of Characters can be successfully loaded. 
+        /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
         public Character LoadCharacter(FileInfo objFileInfo)
         {
@@ -145,21 +145,21 @@ namespace Chummer.Tests
             catch (AssertFailedException e)
             {
                 string strErrorMessage = "Could not load " + c.FileName + "!";
-                strErrorMessage += Environment.NewLine + e.ToString();
+                strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
             }
             catch (InvalidOperationException e)
             {
                 string strErrorMessage = "Could not save to " + path + "!";
-                strErrorMessage += Environment.NewLine + e.ToString();
+                strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
             }
             catch (Exception e)
             {
                 string strErrorMessage = "Exception while loading " + c.FileName + ":";
-                strErrorMessage += Environment.NewLine + e.ToString();
+                strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 throw;

@@ -57,7 +57,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
             _lstExistingQualities = lstExistingQualities;
-            
+
             // Load the Quality information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
             _objMetatypeDocument = XmlManager.Load("metatypes.xml");
@@ -147,7 +147,7 @@ namespace Chummer
 
             int intBP = 0;
             objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
-            lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language) : intBP.ToString();
+            lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language) : intBP.ToString(GlobalOptions.CultureInfo);
             lblBPLabel.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
             string strSource = objXmlQuality["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -638,10 +638,10 @@ namespace Chummer
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
-                                if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnOneOfMet = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -661,7 +661,7 @@ namespace Chummer
                             case "skill":
                                 // Check if the character has the required Skill.
                                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objXmlRequired["name"].InnerText);
-                                if ((objSkill?.Rating ?? 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                if ((objSkill?.Rating ?? 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                 {
                                     blnOneOfMet = true;
                                 }
@@ -673,7 +673,7 @@ namespace Chummer
                                 if (objXmlRequired["total"] != null)
                                 {
                                     // Make sure the Attribute's total value meets the requirement.
-                                    if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText))
+                                    if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText, GlobalOptions.InvariantCultureInfo))
                                         blnOneOfMet = true;
                                 }
                                 break;
@@ -682,11 +682,11 @@ namespace Chummer
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                                 {
-                                    strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                    strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString(GlobalOptions.InvariantCultureInfo));
                                 }
 
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
-                                if ((blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                if ((blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnOneOfMet = true;
                                 break;
                             case "skillgrouptotal":
@@ -706,7 +706,7 @@ namespace Chummer
                                     }
                                 }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnOneOfMet = true;
                             }
                                 break;
@@ -803,7 +803,7 @@ namespace Chummer
                                     intTotal += _objCharacter.Cyberware.Count(objCyberware => objCyberware.Category == objXmlCyberware.InnerText);
                                 }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
+                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnOneOfMet = true;
                             }
                                 break;
@@ -814,7 +814,7 @@ namespace Chummer
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
-                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnOneOfMet = true;
                                 break;
                         }
@@ -891,10 +891,10 @@ namespace Chummer
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
-                                if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -914,7 +914,7 @@ namespace Chummer
                             case "skill":
                                 // Check if the character has the required Skill.
                                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objXmlRequired["name"].InnerText);
-                                if ((objSkill?.Rating ?? 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                if ((objSkill?.Rating ?? 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                 {
                                     blnFound = true;
                                 }
@@ -926,7 +926,7 @@ namespace Chummer
                                 if (objXmlRequired["total"] != null)
                                 {
                                     // Make sure the Attribute's total value meets the requirement.
-                                    if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText))
+                                    if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText, GlobalOptions.InvariantCultureInfo))
                                         blnFound = true;
                                 }
                                 break;
@@ -935,11 +935,11 @@ namespace Chummer
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                                 {
-                                    strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                    strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString(GlobalOptions.InvariantCultureInfo));
                                 }
 
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
-                                if ((blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                if ((blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;
                                 break;
                             case "skillgrouptotal":
@@ -959,7 +959,7 @@ namespace Chummer
                                     }
                                 }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;
                             }
                                 break;
@@ -1050,7 +1050,7 @@ namespace Chummer
                                     intTotal += _objCharacter.Cyberware.Count(objCyberware => objCyberware.Category == objXmlCyberware.InnerText);
                                 }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
+                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;
                             }
                                 break;
@@ -1061,7 +1061,7 @@ namespace Chummer
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
-                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;
                                 break;
                         }

@@ -46,7 +46,7 @@ namespace Chummer
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = string.Format(LanguageManager.GetString("Label_LifestyleNuyen_ResultOf", GlobalOptions.Language), Dice.ToString(GlobalOptions.CultureInfo));
+            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf", GlobalOptions.Language), Dice.ToString(GlobalOptions.CultureInfo));
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
             nudDiceResult_ValueChanged(sender, e);

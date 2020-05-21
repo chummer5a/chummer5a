@@ -32,15 +32,18 @@ namespace Chummer.Backend
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
+            if (e == null)
+                return;
             //Notes down the line number of every first chance exception.
-            //Then counts the occurences. Should make it easier to find what throws the most exceptions
+            //Then counts the occurrences. Should make it easier to find what throws the most exceptions
             StackTrace trace = new StackTrace(e.Exception, true);
 
             StackFrame frame = trace.GetFrame(0);
             // This kind of resolves a crash due to other applications querying Chummer's frames.
             // Specifically, the NVDA screen reader. See https://github.com/chummer5a/chummer5a/issues/1888
             // In theory shouldn't mask any existing issues?
-            if (frame == null) return;
+            if (frame == null)
+                return;
             string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
 
             if (_map.TryGetValue(heat, out int intTmp))
@@ -56,7 +59,7 @@ namespace Chummer.Backend
         public string GenerateInfo()
         {
             StringBuilder builder = new StringBuilder(Environment.NewLine);
-            int lenght = -1;
+            int length = -1;
             IOrderedEnumerable<KeyValuePair<string, int>> exceptions = from i in _map
                 orderby -i.Value
                 select i;
@@ -64,8 +67,8 @@ namespace Chummer.Backend
             foreach (KeyValuePair<string, int> exception in exceptions)
             {
                 builder.Append('\t'); builder.Append('\t');
-                lenght = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), lenght);
-                builder.Append(exception.Value.ToString($"D{lenght}"));
+                length = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), length);
+                builder.Append(exception.Value.ToString($"D{length}", GlobalOptions.InvariantCultureInfo));
 
                 builder.Append(" - ").AppendLine(exception.Key);
             }

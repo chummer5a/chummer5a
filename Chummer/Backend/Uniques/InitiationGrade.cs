@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -39,17 +40,17 @@ namespace Chummer
         private int _intGrade;
         private string _strNotes = string.Empty;
 
-        private readonly CharacterOptions _objOptions;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
         public InitiationGrade(Character objCharacter)
         {
             // Create the GUID for the new InitiationGrade.
             _guiID = Guid.NewGuid();
-            _objOptions = objCharacter.Options;
+            _objCharacter = objCharacter;
         }
 
-        /// Create an Intiation Grade from an XmlNode.
+        /// Create an Initiation Grade from an XmlNode.
         /// <param name="intGrade">Grade number.</param>
         /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
         /// <param name="blnGroup">Whether or not a Group was used.</param>
@@ -70,13 +71,15 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("initiationgrade");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("res", _blnTechnomancer.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("res", _blnTechnomancer.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("group", _blnGroup.ToString());
-            objWriter.WriteElementString("ordeal", _blnOrdeal.ToString());
-            objWriter.WriteElementString("schooling", _blnSchooling.ToString());
+            objWriter.WriteElementString("group", _blnGroup.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -87,6 +90,8 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            if (objNode == null)
+                return;
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetBoolFieldQuickly("res", ref _blnTechnomancer);
@@ -101,16 +106,18 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        /// <param name="objCulture">Culture in which to print</param>
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("initiationgrade");
-            objWriter.WriteElementString("grade", Grade.ToString());
-            objWriter.WriteElementString("group", Group.ToString());
-            objWriter.WriteElementString("ordeal", Ordeal.ToString());
-            objWriter.WriteElementString("schooling", Schooling.ToString());
-            objWriter.WriteElementString("technomancer", Technomancer.ToString());
-            if (_objOptions.PrintNotes)
+            objWriter.WriteElementString("grade", Grade.ToString(objCulture));
+            objWriter.WriteElementString("group", Group.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("schooling", Schooling.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalOptions.InvariantCultureInfo));
+            if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
@@ -120,7 +127,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Initiation Grade in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Initiate Grade.
@@ -176,26 +183,27 @@ namespace Chummer
         {
             get
             {
-                decimal decCost = _objOptions.KarmaInitiationFlat + (Grade * _objOptions.KarmaInitiation);
+                CharacterOptions objOptions = _objCharacter.Options;
+                decimal decCost = objOptions.KarmaInitiationFlat + (Grade * objOptions.KarmaInitiation);
                 decimal decMultiplier = 1.0m;
 
                 // Discount for Group.
                 if (Group)
                     decMultiplier -= Technomancer
-                        ? _objOptions.KarmaRESInitiationGroupPercent
-                        : _objOptions.KarmaMAGInitiationGroupPercent;
+                        ? objOptions.KarmaRESInitiationGroupPercent
+                        : objOptions.KarmaMAGInitiationGroupPercent;
 
                 // Discount for Ordeal.
                 if (Ordeal)
                     decMultiplier -= Technomancer
-                        ? _objOptions.KarmaRESInitiationOrdealPercent
-                        : _objOptions.KarmaMAGInitiationOrdealPercent;
+                        ? objOptions.KarmaRESInitiationOrdealPercent
+                        : objOptions.KarmaMAGInitiationOrdealPercent;
 
                 // Discount for Schooling.
                 if (Schooling)
                     decMultiplier -= Technomancer
-                        ? _objOptions.KarmaRESInitiationSchoolingPercent
-                        : _objOptions.KarmaMAGInitiationSchoolingPercent;
+                        ? objOptions.KarmaRESInitiationSchoolingPercent
+                        : objOptions.KarmaMAGInitiationSchoolingPercent;
 
                 return decimal.ToInt32(decimal.Ceiling(decCost * decMultiplier));
             }
@@ -209,7 +217,7 @@ namespace Chummer
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
             strReturn.Append(strSpaceCharacter);
-            strReturn.Append(Grade.ToString());
+            strReturn.Append(Grade.ToString(GlobalOptions.CultureInfo));
             if (Group || Ordeal)
             {
                 strReturn.Append(strSpaceCharacter + '(');
@@ -278,18 +286,18 @@ namespace Chummer
             return CompareTo((InitiationGrade)obj);
         }
 
-        public int CompareTo(InitiationGrade obj)
+        public int CompareTo(InitiationGrade objGrade)
         {
-            return Grade.CompareTo(obj.Grade);
+            return objGrade == null ? 1 : Grade.CompareTo(objGrade.Grade);
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             // Stop if this isn't the highest grade
-            if (characterObject.MAGEnabled)
+            if (_objCharacter.MAGEnabled)
             {
-                if (Grade != characterObject.InitiateGrade)
+                if (Grade != _objCharacter.InitiateGrade)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -297,16 +305,16 @@ namespace Chummer
 
                 if (blnConfirmDelete)
                 {
-                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
+                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
                         GlobalOptions.Language)))
                         return false;
                 }
 
-                characterObject.InitiationGrades.Remove(this);
+                _objCharacter.InitiationGrades.Remove(this);
             }
-            else if (characterObject.RESEnabled)
+            else if (_objCharacter.RESEnabled)
             {
-                if (Grade != characterObject.SubmersionGrade)
+                if (Grade != _objCharacter.SubmersionGrade)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -314,16 +322,69 @@ namespace Chummer
 
                 if (blnConfirmDelete)
                 {
-                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
+                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
                         GlobalOptions.Language)))
                         return false;
                 }
 
-                characterObject.InitiationGrades.Remove(this);
+                _objCharacter.InitiationGrades.Remove(this);
             }
             else
                 return false;
             return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            if (obj is InitiationGrade objGrade)
+            {
+                return Grade.Equals(objGrade.Grade);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return new {InternalId, Grade, Group, Ordeal, Schooling, Technomancer, Notes}.GetHashCode();
+        }
+
+        public static bool operator ==(InitiationGrade left, InitiationGrade right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(InitiationGrade left, InitiationGrade right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(InitiationGrade left, InitiationGrade right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(InitiationGrade left, InitiationGrade right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(InitiationGrade left, InitiationGrade right)
+        {
+            return !(left is null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(InitiationGrade left, InitiationGrade right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
     }
 }

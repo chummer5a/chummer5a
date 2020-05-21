@@ -62,7 +62,7 @@ namespace Chummer
             };
             for (int i = 1; i <= 20; ++i)
             {
-                lstDVBase.Add(new ListItem(i.ToString(), i.ToString()));
+                lstDVBase.Add(new ListItem(i.ToString(GlobalOptions.InvariantCultureInfo), i.ToString(GlobalOptions.CultureInfo)));
             }
 
             List<ListItem> lstDVType = new List<ListItem>

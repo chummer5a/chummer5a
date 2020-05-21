@@ -22,7 +22,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
- using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -52,7 +51,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             chkLimited.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
             chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
-            
+
             // Load the Spells information.
             _xmlBaseSpellDataNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer");
         }
@@ -469,7 +468,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             XPathNavigator xmlSpell = null;
             string strSelectedSpellId = lstSpells.SelectedValue?.ToString();
             _blnRefresh = true;
@@ -512,7 +511,7 @@ namespace Chummer
             StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
-            if (xmlSpell.SelectSingleNode("descriptor")?.Value != string.Empty)
+            if (!string.IsNullOrEmpty(xmlSpell.SelectSingleNode("descriptor")?.Value))
             {
                 foreach (string strDescriptor in strDescriptorsIn)
                 {
@@ -707,18 +706,21 @@ namespace Chummer
             {
                 strDV += " + -2";
             }
-            if (Extended && !Name.EndsWith("Extended"))
+            if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
             {
                 strDV += " + 2";
             }
             object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
-            if (force)
+            if (blnIsSuccess)
             {
-                strDV = $"F{xprResult:+0;-0;}";
-            }
-            else if (xprResult.ToString() != "0")
-            {
-                strDV += xprResult;
+                if (force)
+                {
+                    strDV = $"F{xprResult:+0;-0;}";
+                }
+                else if (xprResult.ToString() != "0")
+                {
+                    strDV += xprResult;
+                }
             }
 
             lblDV.Text = strDV;

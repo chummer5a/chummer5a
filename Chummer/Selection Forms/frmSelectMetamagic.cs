@@ -53,7 +53,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMode = objMode;
 
             if (_objCharacter.Improvements.Any(imp =>
@@ -84,8 +84,8 @@ namespace Chummer
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strType);
-            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strType);
+            Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strType);
+            chkLimitList.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strType);
 
             _blnLoading = false;
             BuildMetamagicList();
@@ -95,7 +95,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strSelectedId = lstMetamagic.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {

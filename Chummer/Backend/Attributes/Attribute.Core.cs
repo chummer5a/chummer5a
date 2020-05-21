@@ -62,7 +62,8 @@ namespace Chummer.Backend.Attributes
 	        _strAbbrev = abbrev;
             _enumMetatypeCategory = enumCategory;
 	        _objCharacter = character;
-			_objCharacter.PropertyChanged += OnCharacterChanged;
+            if (_objCharacter != null)
+			    _objCharacter.PropertyChanged += OnCharacterChanged;
 		}
 
         public void UnbindAttribute()
@@ -76,16 +77,18 @@ namespace Chummer.Backend.Attributes
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name", _strAbbrev);
-            objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString());
-            objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString());
-            objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString());
-            objWriter.WriteElementString("base", _intBase.ToString());
-            objWriter.WriteElementString("karma", _intKarma.ToString());
+            objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("metatypecategory", _enumMetatypeCategory.ToString());
             // External reader friendly stuff.
-            objWriter.WriteElementString("totalvalue", TotalValue.ToString());
+            objWriter.WriteElementString("totalvalue", TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -150,6 +153,8 @@ namespace Chummer.Backend.Attributes
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             if (Abbrev == "MAGAdept" && (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept))
                 return;
             objWriter.WriteStartElement("attribute");
@@ -697,14 +702,18 @@ namespace Chummer.Backend.Attributes
         /// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         public void AssignLimits(string strMin, string strMax, string strAug)
         {
-            MetatypeMinimum = Convert.ToInt32(strMin);
-            MetatypeMaximum = Convert.ToInt32(strMax);
-            MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
+            MetatypeMinimum = Convert.ToInt32(strMin, GlobalOptions.InvariantCultureInfo);
+            MetatypeMaximum = Convert.ToInt32(strMax, GlobalOptions.InvariantCultureInfo);
+            MetatypeAugmentedMaximum = Convert.ToInt32(strAug, GlobalOptions.InvariantCultureInfo);
         }
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
             ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
-            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
+            : string.Format(
+                GlobalOptions.CultureInfo,
+                LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language),
+                Value + 1,
+                UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
         /// <summary>
@@ -866,7 +875,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier.ToString();
+                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier;
             }
         }
 

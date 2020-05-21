@@ -18,6 +18,10 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _frmRoller?.Dispose();
+                _frmUpdate?.Dispose();
+                _workerVersionUpdateChecker?.Dispose();
+                _mascotChummy?.Dispose();
             }
             base.Dispose(disposing);
         }

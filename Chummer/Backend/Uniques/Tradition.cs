@@ -67,8 +67,8 @@ namespace Chummer.Backend.Uniques
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
-            _objCharacter.PropertyChanged += RefreshDrainExpression;
+            if (objCharacter != null)
+                _objCharacter.PropertyChanged += RefreshDrainExpression;
         }
 
         public override string ToString()
@@ -143,7 +143,8 @@ namespace Chummer.Backend.Uniques
                 {
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
-            }*/
+            }
+			*/
             RebuildSpiritList();
             OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;
@@ -204,6 +205,8 @@ namespace Chummer.Backend.Uniques
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             if(_eTraditionType == TraditionType.None)
                 return;
             objWriter.WriteStartElement("tradition");
@@ -311,6 +314,8 @@ namespace Chummer.Backend.Uniques
 
         public void LoadFromHeroLab(XmlNode xmlHeroLabNode)
         {
+            if (xmlHeroLabNode == null)
+                return;
             _eTraditionType = TraditionType.MAG;
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
             XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName) ? XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
@@ -338,8 +343,10 @@ namespace Chummer.Backend.Uniques
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString());
+            objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -372,16 +379,15 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => Type == TraditionType.None ? string.Empty : _guiSourceID.ToString("D");
+        public string SourceIDString => Type == TraditionType.None ? string.Empty : _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Internal identifier which will be used to identify this Tradition in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -419,7 +425,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public bool IsCustomTradition => SourceIDString == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
 
-        public bool CanChooseDrainAttribute => IsCustomTradition || _strDrainExpression == string.Empty;
+        public bool CanChooseDrainAttribute => IsCustomTradition || string.IsNullOrEmpty(_strDrainExpression);
 
         /// <summary>
         /// Tradition name.
@@ -569,7 +575,7 @@ namespace Chummer.Backend.Uniques
                 foreach(string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    strbldDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    strbldDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
                 string strDrain = strbldDrain.ToString();
@@ -577,7 +583,7 @@ namespace Chummer.Backend.Uniques
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
                     if(blnIsSuccess)
-                        intDrain = Convert.ToInt32(objProcess);
+                        intDrain = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
                 }
 
                 // Add any Improvements for Drain Resistance.
@@ -629,13 +635,13 @@ namespace Chummer.Backend.Uniques
 
         public void RefreshDrainExpression(object sender, PropertyChangedEventArgs e)
         {
-            if(Type == TraditionType.MAG && (e.PropertyName == nameof(Character.AdeptEnabled) || e.PropertyName == nameof(Character.MagicianEnabled)))
+            if(Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
                 OnPropertyChanged(nameof(DrainExpression));
         }
 
         public void RefreshDrainValue(object sender, PropertyChangedEventArgs e)
         {
-            if(Type != TraditionType.None && e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            if(Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(DrainValue));
         }
 
@@ -920,7 +926,7 @@ namespace Chummer.Backend.Uniques
 
         public XmlDocument GetTraditionDocument(string strLanguage)
         {
-            switch(Type)
+            switch (Type)
             {
                 case TraditionType.MAG:
                     return XmlManager.Load("traditions.xml", strLanguage);

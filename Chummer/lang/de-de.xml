@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -3365,7 +3365,7 @@
 			<text>Zurück erhalten/Ausgeben von Edge</text>
 		</string>
 		<string>
-			<key>Tip_CMCMPenalty</key>
+			<key>Tip_CMPenalty</key>
 			<text>Abzüge für Verletzungen.</text>
 		</string>
 		<string>

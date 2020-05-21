@@ -46,7 +46,7 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
@@ -58,8 +58,8 @@ namespace Chummer
         protected CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objOptions = _objCharacter.Options;
-            string name = "Show_Form_" + this.GetType();
+            _objOptions = _objCharacter?.Options;
+            string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
 			{
 				Id = Guid.NewGuid().ToString(),
@@ -69,7 +69,7 @@ namespace Chummer
             pvt.Properties.Add("Name", objCharacter?.Name);
             pvt.Properties.Add("Path", objCharacter?.FileName);
             pvt.Timestamp = DateTimeOffset.UtcNow;
-            this.Shown += delegate(object sender, EventArgs args)
+            Shown += delegate
             {
                 pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
                 if (objCharacter != null)
@@ -89,7 +89,7 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms.
         /// </summary>
-        protected struct TransportWrapper
+        protected struct TransportWrapper : IEquatable<TransportWrapper>
         {
             public Control Control { get; }
 
@@ -132,6 +132,11 @@ namespace Chummer
             {
                 return Control.ToString();
             }
+
+            public bool Equals(TransportWrapper other)
+            {
+                return Control.Equals(other.Control);
+            }
         }
 
         protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
@@ -142,14 +147,15 @@ namespace Chummer
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            string strAutosavePath = string.Empty;
+            string strAutosavePath;
             try
             {
                 strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
             }
-            catch (System.ArgumentException e)
+            catch (ArgumentException e)
             {
                 Log.Error(e, "Path: " + Utils.GetStartupPath);
+                Cursor = objOldCursor;
                 return;
             }
 
@@ -161,7 +167,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Cursor = Cursors.Default;
+                    Cursor = objOldCursor;
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     AutosaveStopWatch.Restart();
                     return;
@@ -173,7 +179,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
-            var replaceChars = System.IO.Path.GetInvalidFileNameChars();
+            var replaceChars = Path.GetInvalidFileNameChars();
             foreach (var invalidChar in replaceChars)
             {
                 strShowFileName = strShowFileName.Replace(invalidChar, '_');
@@ -190,7 +196,7 @@ namespace Chummer
         /// <param name="treLimit"></param>
         protected void UpdateLimitModifier(TreeView treLimit)
         {
-            if (treLimit.SelectedNode.Level > 0)
+            if (treLimit?.SelectedNode.Level > 0)
             {
                 TreeNode objSelectedNode = treLimit.SelectedNode;
                 string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -232,28 +238,37 @@ namespace Chummer
         /// <param name="treNode"></param>
         protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
+            if (objNotes == null)
+                return;
             string strOldValue = objNotes.Notes;
-            frmNotes frmItemNotes = new frmNotes
+            using (frmNotes frmItemNotes = new frmNotes
             {
                 Notes = strOldValue
-            };
-            frmItemNotes.ShowDialog(this);
-
-            if (frmItemNotes.DialogResult == DialogResult.OK)
+            })
             {
-                objNotes.Notes = frmItemNotes.Notes;
-                if (objNotes.Notes != strOldValue)
-                {
-                    IsDirty = true;
+                frmItemNotes.ShowDialog(this);
 
-                    treNode.ForeColor = objNotes.PreferredColor;
-                    treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    objNotes.Notes = frmItemNotes.Notes;
+                    if (objNotes.Notes != strOldValue)
+                    {
+                        IsDirty = true;
+
+                        if (treNode != null)
+                        {
+                            treNode.ForeColor = objNotes.PreferredColor;
+                            treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                        }
+                    }
                 }
             }
         }
         #region Refresh Treeviews and Panels
         protected void RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (pnlAttributes == null)
+                return;
             if (notifyCollectionChangedEventArgs == null)
             {
                 pnlAttributes.SuspendLayout();
@@ -345,7 +360,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clears and updates the treeview for Spells. Typically called as part of AddQuality or UpdateCharacterInfo.
+        /// Clears and updates the TreeView for Spells. Typically called as part of AddQuality or UpdateCharacterInfo.
         /// </summary>
         /// <param name="treSpells">Spells tree.</param>
         /// <param name="treMetamagic">Initiations tree.</param>
@@ -354,6 +369,8 @@ namespace Chummer
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         protected void RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treSpells == null)
+                return;
             TreeNode objCombatNode = null;
             TreeNode objDetectionNode = null;
             TreeNode objHealthNode = null;
@@ -364,7 +381,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
             {
                 string strSelectedId = (treSpells.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                string strSelectedMetamagicId = (treMetamagic.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedMetamagicId = (treMetamagic?.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
                 // Clear the default nodes of entries.
                 treSpells.Nodes.Clear();
@@ -374,12 +391,13 @@ namespace Chummer
                 {
                     if (objSpell.Grade > 0)
                     {
-                        treMetamagic.FindNodeByTag(objSpell)?.Remove();
+                        treMetamagic?.FindNodeByTag(objSpell)?.Remove();
                     }
                     AddToTree(objSpell, false);
                 }
                 treSpells.SortCustomAlphabetically(strSelectedId);
-                treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
+                if (treMetamagic != null)
+                    treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
             }
             else
             {
@@ -414,7 +432,7 @@ namespace Chummer
                                 }
                                 if (objSpell.Grade > 0)
                                 {
-                                    treMetamagic.FindNode(objSpell.InternalId)?.Remove();
+                                    treMetamagic?.FindNode(objSpell.InternalId)?.Remove();
                                 }
                             }
                             break;
@@ -437,7 +455,7 @@ namespace Chummer
                                 }
                                 if (objSpell.Grade > 0)
                                 {
-                                    treMetamagic.FindNode(objSpell.InternalId)?.Remove();
+                                    treMetamagic?.FindNode(objSpell.InternalId)?.Remove();
                                 }
                             }
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
@@ -569,7 +587,7 @@ namespace Chummer
                     InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
                     if (objGrade != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
+                        TreeNode nodMetamagicParent = treMetamagic?.FindNodeByTag(objGrade);
                         if (nodMetamagicParent != null)
                         {
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -617,6 +635,8 @@ namespace Chummer
 
         protected void RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treAIPrograms == null)
+                return;
             TreeNode objParentNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
@@ -731,12 +751,14 @@ namespace Chummer
 
         protected void RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treComplexForms == null)
+                return;
             TreeNode objParentNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
                 string strSelectedId =
                     (treComplexForms.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                string strSelectedMetamagicId = (treMetamagic.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedMetamagicId = (treMetamagic?.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
                 treComplexForms.Nodes.Clear();
 
@@ -745,13 +767,14 @@ namespace Chummer
                 {
                     if (objComplexForm.Grade > 0)
                     {
-                        treMetamagic.FindNodeByTag(objComplexForm)?.Remove();
+                        treMetamagic?.FindNodeByTag(objComplexForm)?.Remove();
                     }
                     AddToTree(objComplexForm, false);
                 }
 
                 treComplexForms.SortCustomAlphabetically(strSelectedId);
-                treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
+                if (treMetamagic != null)
+                    treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
             }
             else
             {
@@ -780,7 +803,7 @@ namespace Chummer
                                 }
                                 if (objComplexForm.Grade > 0)
                                 {
-                                    treMetamagic.FindNodeByTag(objComplexForm)?.Remove();
+                                    treMetamagic?.FindNodeByTag(objComplexForm)?.Remove();
                                 }
                             }
                             break;
@@ -798,7 +821,7 @@ namespace Chummer
                                 }
                                 if (objComplexForm.Grade > 0)
                                 {
-                                    treMetamagic.FindNodeByTag(objComplexForm)?.Remove();
+                                    treMetamagic?.FindNodeByTag(objComplexForm)?.Remove();
                                 }
                             }
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
@@ -840,7 +863,7 @@ namespace Chummer
                     InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objComplexForm.Grade);
                     if (objGrade != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
+                        TreeNode nodMetamagicParent = treMetamagic?.FindNodeByTag(objGrade);
                         if (nodMetamagicParent != null)
                         {
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -884,6 +907,8 @@ namespace Chummer
 
         protected void RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treMetamagic == null)
+                return;
             if (notifyCollectionChangedEventArgs == null)
             {
                 string strSelectedId = (treMetamagic.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -1232,7 +1257,7 @@ namespace Chummer
 
         protected void RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             switch (notifyCollectionChangedEventArgs.Action)
@@ -1305,7 +1330,7 @@ namespace Chummer
 
         protected void RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             switch (notifyCollectionChangedEventArgs.Action)
@@ -1401,9 +1426,9 @@ namespace Chummer
             }
         }
 
-        protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
+        protected static void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
         {
-            if (removingOldEventArgs.OldObject is Power objPower)
+            if (removingOldEventArgs?.OldObject is Power objPower)
             {
                 objPower.Enhancements.RemoveTaggedCollectionChanged(treMetamagic);
             }
@@ -1411,7 +1436,7 @@ namespace Chummer
 
         protected void RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             switch (notifyCollectionChangedEventArgs.Action)
@@ -1506,13 +1531,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clears and updates the treeview for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
+        /// Clears and updates the TreeView for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
         /// </summary>
-        /// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
+        /// <param name="treCritterPowers">TreeNode that will be cleared and populated.</param>
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treCritterPowers == null)
+                return;
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
 
@@ -1646,11 +1673,13 @@ namespace Chummer
         /// <summary>
         /// Refreshes the list of qualities into the selected TreeNode. If the same number of
         /// </summary>
-        /// <param name="treQualities">Treeview to insert the qualities into.</param>
+        /// <param name="treQualities">TreeView to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treQualities == null)
+                return;
             TreeNode objPositiveQualityRoot = null;
             TreeNode objNegativeQualityRoot = null;
             TreeNode objLifeModuleRoot = null;
@@ -1767,7 +1796,7 @@ namespace Chummer
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality, treQualities);
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode = null;
@@ -1841,9 +1870,11 @@ namespace Chummer
         /// <summary>
         /// Refreshes all the names of qualities in the nodes
         /// </summary>
-        /// <param name="treQualities">Treeview to insert the qualities into.</param>
-        protected void RefreshQualityNames(TreeView treQualities)
+        /// <param name="treQualities">TreeView to insert the qualities into.</param>
+        protected static void RefreshQualityNames(TreeView treQualities)
         {
+            if (treQualities == null)
+                return;
             TreeNode objSelectedNode = treQualities.SelectedNode;
             foreach (TreeNode objQualityTypeNode in treQualities.Nodes)
             {
@@ -1861,7 +1892,7 @@ namespace Chummer
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
         protected void RemoveAddedQualities(XmlNodeList objNodeList)
         {
-            if (objNodeList == null || objNodeList.Count == 0)
+            if (objNodeList == null || objNodeList.Count <= 0)
                 return;
             foreach (XmlNode objNode in objNodeList)
             {
@@ -1873,10 +1904,10 @@ namespace Chummer
                 }
             }
         }
-        #region Locations        
+        #region Locations
         protected void RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -1887,7 +1918,7 @@ namespace Chummer
 
         protected void RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -1898,7 +1929,7 @@ namespace Chummer
 
         protected void RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             TreeNode nodRoot = treVehicles.FindNode("Node_SelectedVehicles", false);
@@ -1907,7 +1938,7 @@ namespace Chummer
         }
         protected void RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -1919,7 +1950,7 @@ namespace Chummer
 
         protected void RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -1930,7 +1961,7 @@ namespace Chummer
 
         protected void RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -2083,7 +2114,7 @@ namespace Chummer
                     int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                     if (funcOffset != null)
                         intNewIndex += funcOffset.Invoke();
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
+                    foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                     {
                         if (rootSibling)
                         {
@@ -2138,7 +2169,7 @@ namespace Chummer
                             if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
                             {
                                 objNode.Tag = objNewLocation;
-                                objNode.Text = objNewLocation.DisplayName(GlobalOptions.Language);
+                                objNode.Text = objNewLocation.DisplayName();
                             }
 
                             intNewItemsIndex += 1;
@@ -2155,7 +2186,7 @@ namespace Chummer
                         if (objLocation != null)
                         {
                             lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
-                            objLocation.Remove(_objCharacter, false);
+                            objLocation.Remove(false);
                         }
                     }
 
@@ -2199,7 +2230,7 @@ namespace Chummer
                             }
                         }
 
-                        objLocation?.Remove(_objCharacter);
+                        objLocation?.Remove();
                     }
                 }
                     break;
@@ -2211,6 +2242,8 @@ namespace Chummer
 
         protected void RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treWeapons == null)
+                return;
             string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = null;
@@ -2348,6 +2381,8 @@ namespace Chummer
 
         protected void RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treArmor == null)
+                return;
             string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = null;
@@ -2528,9 +2563,9 @@ namespace Chummer
             }
         }
 
-        protected void RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected static void RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treArmor == null || objArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
             TreeNode nodArmor = treArmor.FindNode(objArmor.InternalId);
             if (nodArmor == null)
@@ -2624,6 +2659,8 @@ namespace Chummer
 
         protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treGear == null)
+                return;
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = null;
@@ -2753,6 +2790,8 @@ namespace Chummer
 
         protected void RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treGear == null)
+                return;
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = null;
@@ -2857,6 +2896,8 @@ namespace Chummer
         }
         protected void RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treCyberware == null)
+                return;
             string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode objCyberwareRoot = null;
@@ -2882,8 +2923,8 @@ namespace Chummer
                 objCyberwareRoot = treCyberware.FindNode("Node_SelectedCyberware", false);
                 objBiowareRoot = treCyberware.FindNode("Node_SelectedBioware", false);
                 objModularRoot = treCyberware.FindNode("Node_UnequippedModularCyberware", false);
-                objHoleNode = treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D"), false);
-                objAntiHoleNode = treCyberware.FindNode(Cyberware.EssenceAntiHoleGUID.ToString("D"), false);
+                objHoleNode = treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo), false);
+                objAntiHoleNode = treCyberware.FindNode(Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo), false);
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
@@ -3049,9 +3090,9 @@ namespace Chummer
             }
         }
 
-        protected void RefreshVehicleMods(TreeView treVehicles, IHasInternalId objParent, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected static void RefreshVehicleMods(TreeView treVehicles, IHasInternalId objParent, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             TreeNode nodParent = treVehicles.FindNodeByTag(objParent);
@@ -3163,9 +3204,9 @@ namespace Chummer
             }
         }
 
-        protected void RefreshVehicleWeaponMounts(TreeView treVehicles, IHasInternalId objParent, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected static void RefreshVehicleWeaponMounts(TreeView treVehicles, IHasInternalId objParent, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             TreeNode nodVehicleParent = treVehicles.FindNodeByTag(objParent);
@@ -3320,6 +3361,8 @@ namespace Chummer
 
         protected void RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treVehicles == null)
+                return;
             string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = null;
@@ -3610,6 +3653,8 @@ namespace Chummer
 
         public void RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treFoci == null)
+                return;
             string strSelectedId = (treFoci.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             if (notifyCollectionChangedEventArgs == null)
@@ -3973,6 +4018,8 @@ namespace Chummer
 
         protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treMartialArts == null)
+                return;
             string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode objMartialArtsParentNode = null;
@@ -4113,9 +4160,9 @@ namespace Chummer
             }
         }
 
-        protected void RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected static void RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (treMartialArts == null || objMartialArt == null || notifyCollectionChangedEventArgs == null)
                 return;
             TreeNode nodMartialArt = treMartialArts.FindNodeByTag(objMartialArt);
             if (nodMartialArt == null)
@@ -4200,6 +4247,8 @@ namespace Chummer
         /// </summary>
         protected void RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treImprovements == null)
+                return;
             string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode objRoot;
@@ -4243,10 +4292,10 @@ namespace Chummer
                 objRoot = treImprovements.FindNode("Node_SelectedImprovements", false);
                 TreeNode[] aobjLimitNodes =
                 {
-                    treLimit.FindNode("Node_Physical", false),
-                    treLimit.FindNode("Node_Mental", false),
-                    treLimit.FindNode("Node_Social", false),
-                    treLimit.FindNode("Node_Astral", false)
+                    treLimit?.FindNode("Node_Physical", false),
+                    treLimit?.FindNode("Node_Mental", false),
+                    treLimit?.FindNode("Node_Social", false),
+                    treLimit?.FindNode("Node_Astral", false)
                 };
 
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -4279,7 +4328,7 @@ namespace Chummer
                                         if (objParent.Tag.ToString() == "Node_SelectedImprovements" && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                    objNode = treLimit.FindNodeByTag(objImprovement);
+                                    objNode = treLimit?.FindNodeByTag(objImprovement);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -4310,7 +4359,7 @@ namespace Chummer
                                         lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                    objNode = treLimit.FindNodeByTag(objImprovement);
+                                    objNode = treLimit?.FindNodeByTag(objImprovement);
                                     if (objNode != null)
                                     {
                                         lstOldParents.Add(objNode.Parent);
@@ -4338,6 +4387,8 @@ namespace Chummer
 
                 void AddToLimitTree(Improvement objImprovement)
                 {
+                    if (treLimit == null)
+                        return;
                     int intTargetLimit = -1;
                     switch (objImprovement.ImproveType)
                     {
@@ -4400,7 +4451,7 @@ namespace Chummer
                         string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
                         if (objImprovement.Value > 0)
                             strName += '+';
-                        strName += objImprovement.Value.ToString();
+                        strName += objImprovement.Value.ToString(GlobalOptions.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
                             strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
                         if (objParentNode?.Nodes.ContainsKey(strName) == false)
@@ -4494,6 +4545,8 @@ namespace Chummer
 
         protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (treLifestyles == null)
+                return;
             string strSelectedId = (treLifestyles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
             TreeNode objParentNode = null;
 
@@ -4572,7 +4625,7 @@ namespace Chummer
 
                 if (objParentNode == null)
                 {
-                    objParentNode = new TreeNode()
+                    objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedLifestyles",
                         Text = LanguageManager.GetString("Node_SelectedLifestyles", GlobalOptions.Language)
@@ -4606,13 +4659,13 @@ namespace Chummer
         /// </summary>
         public void RefreshCalendar(ListView lstCalendar, ListChangedEventArgs listChangedEventArgs = null)
         {
+            if (lstCalendar == null)
+                return;
             if (listChangedEventArgs == null)
             {
                 lstCalendar.Items.Clear();
-                for (int i = 0; i < CharacterObject.Calendar.Count; ++i)
+                foreach (CalendarWeek objWeek in CharacterObject.Calendar)
                 {
-                    CalendarWeek objWeek = CharacterObject.Calendar[i];
-
                     ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                     {
                         Text = objWeek.Notes
@@ -4726,11 +4779,13 @@ namespace Chummer
 
         public void RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (panContacts == null && panEnemies == null && panPets == null)
+                return;
             if (notifyCollectionChangedEventArgs == null)
             {
-                panContacts.Controls.Clear();
-                panEnemies.Controls.Clear();
-                panPets.Controls.Clear();
+                panContacts?.Controls.Clear();
+                panEnemies?.Controls.Clear();
+                panPets?.Controls.Clear();
                 int intContacts = -1;
                 int intEnemies = -1;
                 foreach (Contact objContact in CharacterObject.Contacts)
@@ -4739,6 +4794,8 @@ namespace Chummer
                     {
                         case ContactType.Contact:
                             {
+                                if (panContacts == null)
+                                    break;
                                 intContacts += 1;
                                 ContactControl objContactControl = new ContactControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -4753,6 +4810,8 @@ namespace Chummer
                             break;
                         case ContactType.Enemy:
                             {
+                                if (panEnemies == null)
+                                    break;
                                 intEnemies += 1;
                                 ContactControl objContactControl = new ContactControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -4770,6 +4829,8 @@ namespace Chummer
                             break;
                         case ContactType.Pet:
                             {
+                                if (panPets == null)
+                                    break;
                                 PetControl objContactControl = new PetControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -4788,14 +4849,16 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                         {
-                            int intContacts = panContacts.Controls.Count;
-                            int intEnemies = panEnemies.Controls.Count;
+                            int intContacts = panContacts?.Controls.Count ?? 0;
+                            int intEnemies = panEnemies?.Controls.Count ?? 0;
                             foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 switch (objLoopContact.EntityType)
                                 {
                                     case ContactType.Contact:
                                         {
+                                            if (panContacts == null)
+                                                break;
                                             intContacts += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -4810,6 +4873,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Enemy:
                                         {
+                                            if (panEnemies == null)
+                                                break;
                                             intEnemies += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -4827,6 +4892,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Pet:
                                         {
+                                            if (panPets == null)
+                                                break;
                                             PetControl objPetControl = new PetControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -4848,6 +4915,8 @@ namespace Chummer
                                 {
                                     case ContactType.Contact:
                                         {
+                                            if (panContacts == null)
+                                                break;
                                             for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
                                             {
                                                 if (panContacts.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
@@ -4863,6 +4932,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Enemy:
                                         {
+                                            if (panEnemies == null)
+                                                break;
                                             for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
                                             {
                                                 if (panEnemies.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
@@ -4880,6 +4951,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Pet:
                                         {
+                                            if (panPets == null)
+                                                break;
                                             for (int i = panPets.Controls.Count - 1; i >= 0; i--)
                                             {
                                                 if (panPets.Controls[i] is PetControl objPetControl && objPetControl.ContactObject == objLoopContact)
@@ -4904,6 +4977,8 @@ namespace Chummer
                                 {
                                     case ContactType.Contact:
                                         {
+                                            if (panContacts == null)
+                                                break;
                                             for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
                                             {
                                                 if (panContacts.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
@@ -4919,6 +4994,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Enemy:
                                         {
+                                            if (panEnemies == null)
+                                                break;
                                             for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
                                             {
                                                 if (panEnemies.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
@@ -4936,6 +5013,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Pet:
                                         {
+                                            if (panPets == null)
+                                                break;
                                             for (int i = panPets.Controls.Count - 1; i >= 0; i--)
                                             {
                                                 if (panPets.Controls[i] is PetControl objPetControl && objPetControl.ContactObject == objLoopContact)
@@ -4950,14 +5029,16 @@ namespace Chummer
                                         break;
                                 }
                             }
-                            int intContacts = panContacts.Controls.Count;
-                            int intEnemies = panEnemies.Controls.Count;
+                            int intContacts = panContacts?.Controls.Count ?? 0;
+                            int intEnemies = panEnemies?.Controls.Count ?? 0;
                             foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 switch (objLoopContact.EntityType)
                                 {
                                     case ContactType.Contact:
                                         {
+                                            if (panContacts == null)
+                                                break;
                                             intContacts += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -4972,6 +5053,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Enemy:
                                         {
+                                            if (panEnemies == null)
+                                                break;
                                             intEnemies += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -4989,6 +5072,8 @@ namespace Chummer
                                         break;
                                     case ContactType.Pet:
                                         {
+                                            if (panPets == null)
+                                                break;
                                             PetControl objPetControl = new PetControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5024,7 +5109,7 @@ namespace Chummer
 
             TreeView treOwningTree = objNode.TreeView;
             TreeNode objParent = objNode.Parent;
-            TreeNodeCollection lstNodes = objParent?.Nodes ?? treOwningTree.Nodes;
+            TreeNodeCollection lstNodes = objParent?.Nodes ?? treOwningTree?.Nodes;
 
             if (lstNodes != null)
             {
@@ -5060,52 +5145,55 @@ namespace Chummer
             {
                 case Armor objCopyArmor:
                     {
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
                             IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyArmor.Save(objWriter);
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
-
-                        if (!objCopyArmor.WeaponID.IsEmptyGuid())
+                        })
                         {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmor.InternalId))
+
+                            objWriter.WriteStartDocument();
+
+                            // </characters>
+                            objWriter.WriteStartElement("character");
+
+                            objCopyArmor.Save(objWriter);
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
+
+                            if (!objCopyArmor.WeaponID.IsEmptyGuid())
                             {
-                                objCopyWeapon.Save(objWriter);
+                                // <weapons>
+                                objWriter.WriteStartElement("weapons");
+                                // Copy any Weapon that comes with the Gear.
+                                foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmor.InternalId))
+                                {
+                                    objCopyWeapon.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
                             }
 
+                            // </characters>
                             objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            objStream.Position = 0;
+
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
                         }
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         break;
@@ -5113,51 +5201,53 @@ namespace Chummer
                 case ArmorMod objCopyArmorMod:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
                             IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyArmorMod.Save(objWriter);
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
-
-                        if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
+                        })
                         {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmorMod.InternalId))
+                            objWriter.WriteStartDocument();
+
+                            // </characters>
+                            objWriter.WriteStartElement("character");
+
+                            objCopyArmorMod.Save(objWriter);
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
+
+                            if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
                             {
-                                objCopyWeapon.Save(objWriter);
+                                // <weapons>
+                                objWriter.WriteStartElement("weapons");
+                                // Copy any Weapon that comes with the Gear.
+                                foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmorMod.InternalId))
+                                {
+                                    objCopyWeapon.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
                             }
 
+                            // </characters>
                             objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            objStream.Position = 0;
+
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
                         }
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         break;
@@ -5165,63 +5255,66 @@ namespace Chummer
                 case Cyberware objCopyCyberware:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
                             IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyCyberware.Save(objWriter);
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
-
-                        if (!objCopyCyberware.WeaponID.IsEmptyGuid())
+                        })
                         {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
+                            objWriter.WriteStartDocument();
+
+                            // </characters>
+                            objWriter.WriteStartElement("character");
+
+                            objCopyCyberware.Save(objWriter);
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
+
+                            if (!objCopyCyberware.WeaponID.IsEmptyGuid())
                             {
-                                objCopyWeapon.Save(objWriter);
+                                // <weapons>
+                                objWriter.WriteStartElement("weapons");
+                                // Copy any Weapon that comes with the Gear.
+                                foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
+                                {
+                                    objCopyWeapon.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
                             }
 
-                            objWriter.WriteEndElement();
-                        }
-                        if (!objCopyCyberware.VehicleID.IsEmptyGuid())
-                        {
-                            // <vehicles>
-                            objWriter.WriteStartElement("vehicles");
-                            // Copy any Vehicle that comes with the Gear.
-                            foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                            if (!objCopyCyberware.VehicleID.IsEmptyGuid())
                             {
-                                objCopyVehicle.Save(objWriter);
+                                // <vehicles>
+                                objWriter.WriteStartElement("vehicles");
+                                // Copy any Vehicle that comes with the Gear.
+                                foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                                {
+                                    objCopyVehicle.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
                             }
 
+                            // </characters>
                             objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            objStream.Position = 0;
+
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
                         }
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         //Clipboard.SetText(objCharacterXML.OuterXml);
@@ -5230,135 +5323,141 @@ namespace Chummer
                 case Gear objCopyGear:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
                             IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyGear.Save(objWriter);
-                        GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
-
-                        if (!objCopyGear.WeaponID.IsEmptyGuid())
+                        })
                         {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                            objWriter.WriteStartDocument();
+
+                            // </characters>
+                            objWriter.WriteStartElement("character");
+
+                            objCopyGear.Save(objWriter);
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+
+                            if (!objCopyGear.WeaponID.IsEmptyGuid())
                             {
-                                objCopyWeapon.Save(objWriter);
+                                // <weapons>
+                                objWriter.WriteStartElement("weapons");
+                                // Copy any Weapon that comes with the Gear.
+                                foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyGear.InternalId))
+                                {
+                                    objCopyWeapon.Save(objWriter);
+                                }
+
+                                objWriter.WriteEndElement();
                             }
 
+                            // </characters>
                             objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            objStream.Position = 0;
+
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
                         }
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         break;
                     }
                 case Lifestyle objCopyLifestyle:
                     {
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
+                        MemoryStream objStream = new MemoryStream();
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        })
+                        {
+                            objWriter.WriteStartDocument();
 
-                    objWriter.WriteStartDocument();
+                            // </characters>
+                            objWriter.WriteStartElement("character");
 
-                    // </characters>
-                    objWriter.WriteStartElement("character");
+                            objCopyLifestyle.Save(objWriter);
 
-                    objCopyLifestyle.Save(objWriter);
+                            // </characters>
+                            objWriter.WriteEndElement();
 
-                    // </characters>
-                    objWriter.WriteEndElement();
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
 
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
+                            // Read the stream.
+                            objStream.Position = 0;
 
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
+                        }
 
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
-                    //Clipboard.SetText(objCharacterXML.OuterXml);
-                    break;
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
+                        break;
                     }
                 case Vehicle objCopyVehicle:
                     {
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
+                        MemoryStream objStream = new MemoryStream();
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        })
+                        {
+                            objWriter.WriteStartDocument();
 
-                    objWriter.WriteStartDocument();
+                            // </characters>
+                            objWriter.WriteStartElement("character");
 
-                    // </characters>
-                    objWriter.WriteStartElement("character");
+                            objCopyVehicle.Save(objWriter);
 
-                    objCopyVehicle.Save(objWriter);
+                            // </characters>
+                            objWriter.WriteEndElement();
 
-                    // </characters>
-                    objWriter.WriteEndElement();
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
 
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
+                            // Read the stream.
+                            objStream.Position = 0;
 
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                // Put the stream into an XmlDocument
+                                objCharacterXML.Load(objXmlReader);
+                        }
 
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
-                    //Clipboard.SetText(objCharacterXML.OuterXml);
-                    break;
-                }
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
+                        break;
+                    }
                 case Weapon objCopyWeapon:
                     {
                         // Do not let the user copy Gear or Cyberware Weapons.
@@ -5366,37 +5465,39 @@ namespace Chummer
                             return;
 
                         MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
                             Indentation = 1,
                             IndentChar = '\t'
-                        };
+                        })
+                        {
+                            objWriter.WriteStartDocument();
 
-                        objWriter.WriteStartDocument();
+                            // </characters>
+                            objWriter.WriteStartElement("character");
 
-                        // </characters>
-                        objWriter.WriteStartElement("character");
+                            objCopyWeapon.Save(objWriter);
 
-                        objCopyWeapon.Save(objWriter);
+                            // </characters>
+                            objWriter.WriteEndElement();
 
-                        // </characters>
-                        objWriter.WriteEndElement();
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
 
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
+                            // Read the stream.
+                            objStream.Position = 0;
 
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
+                        }
 
                         GlobalOptions.Clipboard = objCharacterXML;
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
@@ -5404,54 +5505,56 @@ namespace Chummer
                     }
                 case WeaponAccessory objCopyAccessory:
                     {
-                    // Do not let the user copy accessories that are unique to its parent.
-                    if (objCopyAccessory.IncludedInWeapon)
-                        return;
+                        // Do not let the user copy accessories that are unique to its parent.
+                        if (objCopyAccessory.IncludedInWeapon)
+                            return;
 
-                    MemoryStream objStream = new MemoryStream();
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
+                        MemoryStream objStream = new MemoryStream();
+                        XmlDocument objCharacterXML = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        })
+                        {
+                            objWriter.WriteStartDocument();
 
-                    objWriter.WriteStartDocument();
+                            // </characters>
+                            objWriter.WriteStartElement("character");
 
-                    // </characters>
-                    objWriter.WriteStartElement("character");
+                            objCopyAccessory.Save(objWriter);
 
-                    objCopyAccessory.Save(objWriter);
+                            // </characters>
+                            objWriter.WriteEndElement();
 
-                    // </characters>
-                    objWriter.WriteEndElement();
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
 
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
+                            // Read the stream.
+                            objStream.Position = 0;
 
-                    // Read the stream.
-                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                    objStream.Position = 0;
-                    XmlDocument objCharacterXML = new XmlDocument();
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
+                        }
 
-                    // Put the stream into an XmlDocument.
-                    string strXML = objReader.ReadToEnd();
-                    objCharacterXML.LoadXml(strXML);
-
-                    objWriter.Close();
-
-                    GlobalOptions.Clipboard = objCharacterXML;
-                    GlobalOptions.ClipboardContentType = ClipboardContentType.WeaponAccessory;
-                    break;
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.WeaponAccessory;
+                        break;
                     }
             }
         }
         #region ContactControl Events
         protected void DragContactControl(object sender, MouseEventArgs e)
         {
-            Control source = (Control)sender;
-            source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
+            if (sender is Control source)
+                source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
         }
 
         protected void AddContact()
@@ -5532,6 +5635,8 @@ namespace Chummer
 
         protected void EnemyChanged(object sender, TextEventArgs e)
         {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
             ContactControl objSenderControl = sender as ContactControl;
 
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
@@ -5561,12 +5666,12 @@ namespace Chummer
             int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
             int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            string strEnemyPoints = intEnemyMax.ToString() + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            string strQualityPoints = intQualityMax.ToString() + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strEnemyPoints = intEnemyMax.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strQualityPoints = intQualityMax.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules && CharacterObjectOptions.EnemyKarmaQualityLimit)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
                     LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
@@ -5590,7 +5695,7 @@ namespace Chummer
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
                         LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
@@ -5634,34 +5739,37 @@ namespace Chummer
         #region Additional Relationships Tab Control Events
         protected void AddContactsFromFile()
         {
+            XmlDocument xmlDoc = new XmlDocument
+            {
+                XmlResolver = null
+            };
             // Displays an OpenFileDialog so the user can select the XML to read.
-            OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
+            using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-
-            // Show the Dialog.
-            // If the user cancels out, return early.
-            if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            XmlDocument xmlDoc = new XmlDocument();
-            try
+            })
             {
-                using (StreamReader objStreamReader = new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
+                // Show the Dialog.
+                // If the user cancels out, return early.
+                if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                try
                 {
-                    xmlDoc.Load(objStreamReader);
+                    using (StreamReader objStreamReader = new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings { XmlResolver = null }))
+                            xmlDoc.Load(objXmlReader);
                 }
-            }
-            catch (IOException ex)
-            {
-                Program.MainForm.ShowMessageBox(ex.ToString());
-                return;
-            }
-            catch (XmlException ex)
-            {
-                Program.MainForm.ShowMessageBox(ex.ToString());
-                return;
+                catch (IOException ex)
+                {
+                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    return;
+                }
+                catch (XmlException ex)
+                {
+                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    return;
+                }
             }
 
             foreach (XPathNavigator xmlContact in xmlDoc.GetFastNavigator().Select("/chummer/contacts/contact"))
@@ -5675,15 +5783,25 @@ namespace Chummer
 
         public void RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
+            if (panSpirits == null && panSprites == null)
+                return;
             if (notifyCollectionChangedEventArgs == null)
             {
-                panSpirits.Controls.Clear();
-                panSprites.Controls.Clear();
+                panSpirits?.Controls.Clear();
+                panSprites?.Controls.Clear();
                 int intSpirits = -1;
                 int intSprites = -1;
                 foreach (Spirit objSpirit in CharacterObject.Spirits)
                 {
                     bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                    if (blnIsSpirit)
+                    {
+                        if (panSpirits == null)
+                            continue;
+                    }
+                    else if (panSprites == null)
+                        continue;
+
                     SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                     // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -5712,11 +5830,18 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                         {
-                            int intSpirits = panSpirits.Controls.Count;
-                            int intSprites = panSprites.Controls.Count;
+                            int intSpirits = panSpirits?.Controls.Count ?? 0;
+                            int intSprites = panSprites?.Controls.Count ?? 0;
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                if (blnIsSpirit)
+                                {
+                                    if (panSpirits == null)
+                                        continue;
+                                }
+                                else if (panSprites == null)
+                                    continue;
                                 SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -5747,6 +5872,8 @@ namespace Chummer
                                 int intMoveUpAmount = 0;
                                 if (objSpirit.EntityType == SpiritType.Spirit)
                                 {
+                                    if (panSpirits == null)
+                                        continue;
                                     int intSpirits = panSpirits.Controls.Count;
                                     for (int i = 0; i < intSpirits; ++i)
                                     {
@@ -5767,7 +5894,7 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else
+                                else if (panSprites != null)
                                 {
                                     int intSprites = panSprites.Controls.Count;
                                     for (int i = 0; i < intSprites; ++i)
@@ -5794,13 +5921,15 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            int intSpirits = panSpirits.Controls.Count;
-                            int intSprites = panSprites.Controls.Count;
+                            int intSpirits = panSpirits?.Controls.Count ?? 0;
+                            int intSprites = panSprites?.Controls.Count ?? 0;
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 int intMoveUpAmount = 0;
                                 if (objSpirit.EntityType == SpiritType.Spirit)
                                 {
+                                    if (panSpirits == null)
+                                        continue;
                                     for (int i = 0; i < intSpirits; ++i)
                                     {
                                         Control objLoopControl = panSpirits.Controls[i];
@@ -5820,7 +5949,7 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else
+                                else if (panSprites != null)
                                 {
                                     for (int i = 0; i < intSprites; ++i)
                                     {
@@ -5845,6 +5974,13 @@ namespace Chummer
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                if (blnIsSpirit)
+                                {
+                                    if (panSpirits == null)
+                                        continue;
+                                }
+                                else if (panSprites == null)
+                                    continue;
                                 SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -5880,7 +6016,7 @@ namespace Chummer
         #region SpiritControl Events
         protected void AddSpirit()
         {
-            // The number of bound Spirits cannot exeed the character's CHA.
+            // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BoundSpiritLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BoundSpiritLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5901,7 +6037,7 @@ namespace Chummer
 
         protected void AddSprite()
         {
-            if (CharacterObject.Created && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered) > 0)
+            if (CharacterObject.Created && CharacterObject.Spirits.Any(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered))
             {
                 // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_UnregisteredSpriteLimit", GlobalOptions.Language),
@@ -5968,21 +6104,24 @@ namespace Chummer
                 // Prompt the user to select an image to associate with this character.
 
                 ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
-                dlgOpenFileDialog.Filter = string.Format("All image files ({1})|{1}|{0}|All files|*",
-                    string.Join("|", lstCodecs.Select(codec => string.Format("{0} ({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
+                dlgOpenFileDialog.Filter = string.Format(
+                    GlobalOptions.InvariantCultureInfo,
+                    LanguageManager.GetString("DialogFilter_ImagesPrefix", GlobalOptions.Language) + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
+                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space", GlobalOptions.Language) + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
                     string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
 
                 if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     blnSuccess = true;
-                    // Convert the image to a string usinb Base64.
+                    // Convert the image to a string using Base64.
                     _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
-                    Bitmap imgMugshot = (new Bitmap(dlgOpenFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-
-                    _objCharacter.Mugshots.Add(imgMugshot);
-                    if (_objCharacter.MainMugshotIndex == -1)
-                        _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                    using (Bitmap imgMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
+                    {
+                        _objCharacter.Mugshots.Add(imgMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
+                        if (_objCharacter.MainMugshotIndex == -1)
+                            _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                    }
                 }
             }
             return blnSuccess;
@@ -5995,6 +6134,8 @@ namespace Chummer
         /// <param name="intCurrentMugshotIndexInList"></param>
         protected void UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
         {
+            if (picMugshot == null)
+                return;
             if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count || _objCharacter.Mugshots[intCurrentMugshotIndexInList] == null)
             {
                 picMugshot.Image = null;
@@ -6064,7 +6205,7 @@ namespace Chummer
                         SuspendLayout();
                     else if (!IsLoading)
                         ResumeLayout();
-                        */
+                    */
                 }
             }
         }
@@ -6082,7 +6223,7 @@ namespace Chummer
                         SuspendLayout();
                     else if (!IsRefreshing)
                         ResumeLayout();
-                        */
+                    */
                 }
             }
         }
@@ -6109,6 +6250,8 @@ namespace Chummer
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {
+            if (e == null)
+                return;
             //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
             //allow wrapping back to first/last tab item based on scroll direction
             if (sender is TabControl tabControl)
@@ -6197,26 +6340,27 @@ namespace Chummer
                 }
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-
-            string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-            string strShowFileName = strFile[strFile.Length - 1];
-
-            if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.CharacterName;
-
-            saveFileDialog.FileName = strShowFileName;
-
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+            })
             {
-                _objCharacter.FileName = saveFileDialog.FileName;
-                return SaveCharacter(false, blnDoCreated);
-            }
+                string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
+                string strShowFileName = strFile[strFile.Length - 1];
 
-            return false;
+                if (string.IsNullOrEmpty(strShowFileName))
+                    strShowFileName = _objCharacter.CharacterName;
+
+                saveFileDialog.FileName = strShowFileName;
+
+                if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    _objCharacter.FileName = saveFileDialog.FileName;
+                    return SaveCharacter(false, blnDoCreated);
+                }
+
+                return false;
+            }
         }
 
         /// <summary>
@@ -6244,14 +6388,8 @@ namespace Chummer
             // If a Viewer window already exists for this character, use it instead.
             if (_frmPrintView == null)
             {
-                List<Character> lstCharacters = new List<Character>
-                {
-                    CharacterObject
-                };
-                _frmPrintView = new frmViewer
-                {
-                    Characters = lstCharacters
-                };
+                _frmPrintView = new frmViewer();
+                _frmPrintView.SetCharacters(CharacterObject);
                 _frmPrintView.Show();
             }
             else

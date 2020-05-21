@@ -207,7 +207,7 @@ namespace Chummer
 
             if (lstSkills.Count <= 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), _strSourceName));
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }
@@ -256,21 +256,20 @@ namespace Chummer
             {
                 using (XmlNodeList xmlCategoryList = value?.SelectNodes("category"))
                 {
-                    if (xmlCategoryList != null)
+                    if (xmlCategoryList == null)
+                        return;
+                    StringBuilder objLimitToCategories = new StringBuilder();
+                    foreach (XmlNode objNode in xmlCategoryList)
                     {
-                        StringBuilder objLimitToCategories = new StringBuilder();
-                        foreach (XmlNode objNode in xmlCategoryList)
-                        {
-                            objLimitToCategories.Append("category = ");
-                            objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
-                            objLimitToCategories.Append(" or ");
-                        }
-
-                        // Remove the last " or "
-                        if (objLimitToCategories.Length > 0)
-                            objLimitToCategories.Length -= 4;
-                        _strLimitToCategories = objLimitToCategories.ToString();
+                        objLimitToCategories.Append("category = ");
+                        objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
+                        objLimitToCategories.Append(" or ");
                     }
+
+                    // Remove the last " or "
+                    if (objLimitToCategories.Length > 0)
+                        objLimitToCategories.Length -= 4;
+                    _strLimitToCategories = objLimitToCategories.ToString();
                 }
             }
         }

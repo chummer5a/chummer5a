@@ -15,12 +15,9 @@ namespace ChummerHub.Client.UI
         {
             if (disposing)
             {
-                if (components != null)
-                    components.Dispose();
-                if (MySINner != null)
-                    MySINner.Dispose();
-                if (TabSINnersAdvanced != null)
-                    TabSINnersAdvanced.Dispose();
+                components?.Dispose();
+                TabSINnersBasic?.Dispose();
+                TabSINnersAdvanced?.Dispose();
             }
             base.Dispose(disposing);
         }

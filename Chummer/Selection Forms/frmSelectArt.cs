@@ -48,7 +48,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Metamagic information.
             switch (objWindowMode)
@@ -82,8 +82,8 @@ namespace Chummer
 
         private void frmSelectArt_Load(object sender, EventArgs e)
         {
-            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strLocalName);
-            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strLocalName);
+            Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strLocalName);
+            chkLimitList.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strLocalName);
 
             _blnLoading = false;
 

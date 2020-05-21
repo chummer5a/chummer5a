@@ -19,7 +19,6 @@
  using System;
 using System.Collections.Generic;
  using System.Windows.Forms;
- using System.Xml;
  using System.Xml.XPath;
 
 namespace Chummer
@@ -42,7 +41,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
 
@@ -95,6 +94,7 @@ namespace Chummer
                         lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Language);
                         break;
                 }
+
                 switch (xmlComplexForm.SelectSingleNode("target")?.Value)
                 {
                     case "Persona":

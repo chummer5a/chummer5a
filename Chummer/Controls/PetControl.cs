@@ -111,7 +111,7 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
@@ -134,7 +134,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -146,17 +146,19 @@ namespace Chummer
         private void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-            if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+            })
             {
-                openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
-                openFileDialog.FileName = Path.GetFileName(_objContact.FileName);
-            }
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
+                if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+                {
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
+                    openFileDialog.FileName = Path.GetFileName(_objContact.FileName);
+                }
+
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
                 Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
                 imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
@@ -165,7 +167,7 @@ namespace Chummer
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
                 Uri uriFile = new Uri(_objContact.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objContact.RelativeFileName = "../" + uriRelative.ToString();
+                _objContact.RelativeFileName = "../" + uriRelative;
 
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
                 Cursor = Cursors.Default;
@@ -186,14 +188,15 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmContactNotes = new frmNotes
+            using (frmNotes frmContactNotes = new frmNotes
             {
                 Notes = _objContact.Notes
-            };
-            frmContactNotes.ShowDialog(this);
-
-            if (frmContactNotes.DialogResult == DialogResult.OK && _objContact.Notes != frmContactNotes.Notes)
+            })
             {
+                frmContactNotes.ShowDialog(this);
+
+                if (frmContactNotes.DialogResult != DialogResult.OK || _objContact.Notes == frmContactNotes.Notes)
+                    return;
                 _objContact.Notes = frmContactNotes.Notes;
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);

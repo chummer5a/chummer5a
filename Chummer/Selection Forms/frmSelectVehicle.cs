@@ -49,6 +49,8 @@ namespace Chummer
         #region Control Events
         public frmSelectVehicle(Character objCharacter)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
@@ -75,7 +77,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -274,7 +276,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strSelectedId = lstVehicle.SelectedValue?.ToString();
             XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -332,12 +334,7 @@ namespace Chummer
             lblVehicleArmorLabel.Visible = !string.IsNullOrEmpty(lblVehicleArmor.Text);
             lblVehicleSeatsLabel.Visible = !string.IsNullOrEmpty(lblVehicleSeats.Text);
             lblVehicleSensorLabel.Visible = !string.IsNullOrEmpty(lblVehicleSensor.Text);
-            AvailabilityValue objTotalAvail = new AvailabilityValue(0, objXmlVehicle.SelectSingleNode("avail")?.Value);
-
-            if (chkUsedVehicle.Checked)
-            {
-                objTotalAvail.Value -= 4;
-            }
+            AvailabilityValue objTotalAvail = new AvailabilityValue(0, objXmlVehicle.SelectSingleNode("avail")?.Value, chkUsedVehicle.Checked ? -4 : 0);
             lblVehicleAvail.Text = objTotalAvail.ToString();
             lblVehicleAvailLabel.Visible = !string.IsNullOrEmpty(lblVehicleAvail.Text);
 
@@ -357,7 +354,7 @@ namespace Chummer
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
             string strCost = objXmlVehicle.SelectSingleNode("cost")?.Value ?? string.Empty;
-            if (strCost.StartsWith("Variable"))
+            if (strCost.StartsWith("Variable", StringComparison.Ordinal))
             {
                 lblVehicleCost.Text = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
@@ -384,7 +381,7 @@ namespace Chummer
                     }
                     if (_setDealerConnectionMaps != null)
                     {
-                        if (_setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set) == true))
+                        if (_setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true))
                         {
                             decCost *= 0.9m;
                         }
@@ -446,7 +443,7 @@ namespace Chummer
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set) == true) == true)
+                    if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true) == true)
                         decCostMultiplier *= 0.9m;
                     if (!SelectionShared.CheckNuyenRestriction(objXmlVehicle, _objCharacter.Nuyen, decCostMultiplier))
                         continue;

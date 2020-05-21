@@ -79,18 +79,20 @@ namespace Chummer.Backend.Skills
 
         public virtual void WriteTo(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skill");
-            objWriter.WriteElementString("guid", Id.ToString("D"));
-            objWriter.WriteElementString("suid", SkillId.ToString("D"));
+            objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isknowledge", bool.FalseString);
             objWriter.WriteElementString("skillcategory", SkillCategory);
             objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("name", _strName);
             if (!CharacterObject.Created)
             {
-                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
             if (Specializations.Count != 0)
@@ -109,6 +111,8 @@ namespace Chummer.Backend.Skills
 
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skill");
 
             int intRating = PoolOtherAttribute(AttributeModifiers, Attribute);
@@ -127,16 +131,16 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
-            objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString());
-            objWriter.WriteElementString("default", Default.ToString());
+            objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("default", Default.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
             objWriter.WriteElementString("specializedrating", intSpecRating.ToString(objCulture));
             objWriter.WriteElementString("specbonus", (intSpecRating - intRating).ToString(objCulture));
             objWriter.WriteElementString("total", PoolOtherAttribute(AttributeModifiers, Attribute).ToString(objCulture));
-            objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
-            objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
-            objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+            objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("exotic", IsExoticSkill.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", Base.ToString(objCulture));
             objWriter.WriteElementString("karma", Karma.ToString(objCulture));
             objWriter.WriteElementString("spec", DisplaySpecializationMethod(strLanguageToPrint));
@@ -149,7 +153,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
             objWriter.WriteElementString("ratingmod", (intRatingModifiers + intDicePoolModifiers).ToString(objCulture));
             objWriter.WriteElementString("poolmod", intDicePoolModifiers.ToString(objCulture));
-            objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString());
+            objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("bp", CurrentKarmaCost.ToString(objCulture));
             objWriter.WriteStartElement("skillspecializations");
             foreach (SkillSpecialization objSpec in Specializations)
@@ -180,7 +184,7 @@ namespace Chummer.Backend.Skills
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
                 if (xmlSkillNode["forced"] != null)
-                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty, !Convert.ToBoolean(xmlSkillNode["disableupgrades"]?.InnerText));
+                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty, !Convert.ToBoolean(xmlSkillNode["disableupgrades"]?.InnerText, GlobalOptions.InvariantCultureInfo));
                 else
                 {
                     KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);
@@ -224,7 +228,7 @@ namespace Chummer.Backend.Skills
             if (objLoadingSkill == null)
             {
                 if (xmlSkillNode["forced"] != null)
-                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty, !Convert.ToBoolean(xmlSkillNode["disableupgrades"]?.InnerText));
+                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty, !Convert.ToBoolean(xmlSkillNode["disableupgrades"]?.InnerText, GlobalOptions.InvariantCultureInfo));
                 else
                 {
                     KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);
@@ -243,7 +247,8 @@ namespace Chummer.Backend.Skills
 
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
             {
-                if (xmlSpecList == null) return objLoadingSkill;
+                if (xmlSpecList == null)
+                    return objLoadingSkill;
                 foreach (XmlNode xmlSpec in xmlSpecList)
                 {
                     objLoadingSkill.Specializations.Add(SkillSpecialization.Load(xmlSpec, objLoadingSkill));
@@ -265,8 +270,8 @@ namespace Chummer.Backend.Skills
                 return null;
             xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid suid, Guid.NewGuid());
 
-            int.TryParse(xmlSkillNode["base"]?.InnerText, out int intBaseRating);
-            int.TryParse(xmlSkillNode["rating"]?.InnerText, out int intFullRating);
+            int.TryParse(xmlSkillNode["base"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBaseRating);
+            int.TryParse(xmlSkillNode["rating"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intFullRating);
             int intKarmaRating = intFullRating - intBaseRating;  //Not reading karma directly as career only increases rating
 
             bool blnTemp = false;
@@ -308,16 +313,15 @@ namespace Chummer.Backend.Skills
                 xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objSkill._blnBuyWithKarma);
             }
 
-            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
+            {
                 if (xmlSpecList != null)
+                {
                     foreach (XmlNode xmlSpecializationNode in xmlSpecList)
                     {
-                        lstSpecializations.Add(SkillSpecialization.Load(xmlSpecializationNode, objSkill));
+                        objSkill.Specializations.Add(SkillSpecialization.Load(xmlSpecializationNode, objSkill));
                     }
-            if (lstSpecializations.Count != 0)
-            {
-                objSkill.Specializations.AddRange(lstSpecializations);
+                }
             }
 
             return objSkill;
@@ -325,6 +329,8 @@ namespace Chummer.Backend.Skills
 
         public static Skill LoadFromHeroLab(Character objCharacter, XmlNode xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
         {
+            if (xmlSkillNode == null)
+                throw new ArgumentNullException(nameof(xmlSkillNode));
             string strName = xmlSkillNode.Attributes?["name"]?.InnerText ?? string.Empty;
 
             XmlNode xmlSkillDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/" + (blnIsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[name = \"" + strName + "\"]");
@@ -334,7 +340,8 @@ namespace Chummer.Backend.Skills
 
             int intKarmaRating = 0;
             if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
-                int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+                if (!int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+                    intKarmaRating = 0;
 
             Skill objSkill;
             if (blnIsKnowledgeSkill)
@@ -448,7 +455,7 @@ namespace Chummer.Backend.Skills
 
         protected Skill(Character character)
         {
-            CharacterObject = character;
+            CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
             CharacterObject.PropertyChanged += OnCharacterChanged;
             CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
             CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
@@ -807,10 +814,10 @@ namespace Chummer.Backend.Skills
                     _intCachedEnabled = 0;
                     return false;
                 }
-                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess. 
+                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
                 if (CharacterObject.IsCritter && !CharacterObject.Improvements.Any(x =>
                         x.ImproveType == Improvement.ImprovementType.AllowSkillDefault &&
-                        (x.ImprovedName == Name || x.ImprovedName == string.Empty) && x.Enabled) && Rating == 0)
+                        (x.ImprovedName == Name || string.IsNullOrEmpty(x.ImprovedName)) && x.Enabled) && Rating == 0)
                 {
                     _intCachedEnabled = 0;
                     return false;
@@ -932,7 +939,7 @@ namespace Chummer.Backend.Skills
             get => _guidInternalId;
             private set => _guidInternalId = value;
         }
-        public string InternalId => _guidInternalId.ToString("D");
+        public string InternalId => _guidInternalId.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private Guid _guidSkillId = Guid.Empty;
         /// <summary>
@@ -987,7 +994,7 @@ namespace Chummer.Backend.Skills
         public string DisplaySpecialization => DisplaySpecializationMethod(GlobalOptions.Language);
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
-        //Or just ignore support for multiple specizalizations even if the rules say it is possible?
+        //Or just ignore support for multiple specializations even if the rules say it is possible?
         public BindingList<SkillSpecialization> Specializations { get; } = new BindingList<SkillSpecialization>();
 
         public string Specialization
@@ -996,7 +1003,7 @@ namespace Chummer.Backend.Skills
             {
                 if (TotalBaseRating == 0)
                 {
-                    return string.Empty; //Unleveled skills cannot have a specialization;
+                    return string.Empty; //Unlevelled skills cannot have a specialization;
                 }
 
                 if (IsExoticSkill)
@@ -1086,7 +1093,7 @@ namespace Chummer.Backend.Skills
                     {
                         first = false;
                         s.Append(strSpaceCharacter + "(Base" + strSpaceCharacter + '(');
-                        s.Append(LearnedRating.ToString());
+                        s.Append(LearnedRating.ToString(GlobalOptions.CultureInfo));
                         s.Append(')');
                     }
 
@@ -1122,7 +1129,7 @@ namespace Chummer.Backend.Skills
             {
                 s.Append(strSpaceCharacter + '+' + strSpaceCharacter);
                 s.Append(CharacterObject.GetObjectName(source, GlobalOptions.Language));
-                if (source.Condition != string.Empty)
+                if (!string.IsNullOrEmpty(source.Condition))
                 {
                     s.Append(strSpaceCharacter + '(');
                     s.Append(source.Condition.ToString(GlobalOptions.CultureInfo));
@@ -1195,7 +1202,7 @@ namespace Chummer.Backend.Skills
                     blnHaveSpec = true;
                 }
 
-                s.Append(intBasePool.ToString());
+                s.Append(intBasePool.ToString(GlobalOptions.CultureInfo));
                 if (objSwapSkillAttribute.ImprovedName != "STR" &&
                     objSwapSkillAttribute.ImprovedName != "AGI") continue;
                 foreach (Cyberware cyberware in CharacterObject.Cyberware.Where(x =>
@@ -1243,7 +1250,7 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
             ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
-            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost);
+            : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost);
 
         public string AddSpecToolTip
         {
@@ -1275,7 +1282,7 @@ namespace Chummer.Backend.Skills
                 if (decSpecCostMultiplier != 1.0m)
                     intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier));
                 intPrice += intExtraSpecCost; //Spec
-                return string.Format(LanguageManager.GetString("Tip_Skill_AddSpecialization", GlobalOptions.Language), intPrice.ToString());
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_AddSpecialization", GlobalOptions.Language), intPrice);
             }
         }
 
@@ -1374,13 +1381,13 @@ namespace Chummer.Backend.Skills
                  !CharacterObject.Improvements.Any(i =>
                      i.ImproveType == Improvement.ImprovementType.Skill && !string.IsNullOrEmpty(i.Condition)))
             {
-                return intPool.ToString();
+                return intPool.ToString(GlobalOptions.CultureInfo);
             }
             else
             {
                 int intConditionalBonus = PoolOtherAttribute(intAttributeTotalValue, strAttribute, true);
                 if (string.IsNullOrWhiteSpace(Specialization) && intPool == intConditionalBonus) return intPool
-                    .ToString();
+                    .ToString(GlobalOptions.CultureInfo);
                 if (string.IsNullOrWhiteSpace(Specialization)) return $"{intPool} ({intConditionalBonus})";
                 //Handler for the Inspired Quality.
                 if (Name == "Artisan" && !IsKnowledgeSkill &&
@@ -1394,7 +1401,7 @@ namespace Chummer.Backend.Skills
         }
 
         // ReSharper disable once InconsistentNaming
-        protected int _intCachedCyberwareRating = int.MinValue;
+        private protected int _intCachedCyberwareRating = int.MinValue;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -1408,7 +1415,7 @@ namespace Chummer.Backend.Skills
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString("D") + "\" or id = \"" + SkillId.ToString("D").ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString("D", GlobalOptions.InvariantCultureInfo) + "\" or id = \"" + SkillId.ToString("D", GlobalOptions.InvariantCultureInfo).ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1584,9 +1591,9 @@ namespace Chummer.Backend.Skills
 
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(AttributeModifiers));
-            else if (e.PropertyName == nameof(CharacterAttrib.Value) || e.PropertyName == nameof(CharacterAttrib.Abbrev))
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value) || e?.PropertyName == nameof(CharacterAttrib.Abbrev))
             {
                 OnPropertyChanged(nameof(Enabled));
             }

@@ -46,10 +46,12 @@ namespace Chummer.Backend.Skills
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("spec");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("free", _strFree.ToString());
+            objWriter.WriteElementString("free", _strFree.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -76,6 +78,8 @@ namespace Chummer.Backend.Skills
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skillspecialization");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteEndElement();
@@ -88,7 +92,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Skill Specialization's name.

@@ -514,7 +514,7 @@ namespace Chummer
                 //objNode.ContextMenuStrip = cmsQuality;
                 if (objQuality.InternalId.IsEmptyGuid())
                     continue;
-                
+
                 _objLifestyle.LifestyleQualities.Add(objQuality);
             }
             while (blnAddAgain);
@@ -574,7 +574,7 @@ namespace Chummer
 
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)) return;
             objQuality.ContributesLP = chkQualityContributesLP.Checked;
-            lblQualityLp.Text = objQuality.LP.ToString();
+            lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
         }
 
         private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
@@ -633,7 +633,7 @@ namespace Chummer
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             _objLifestyle.Name = txtLifestyleName.Text;
-            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText);
+            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = decimal.ToInt32(nudArea.Value);
@@ -645,7 +645,7 @@ namespace Chummer
             _objLifestyle.BonusLP = decimal.ToInt32(nudBonusLP.Value);
 
             // Get the starting Nuyen information.
-            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText);
+            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.StyleType = StyleType;
             SelectedLifestyle = _objLifestyle;

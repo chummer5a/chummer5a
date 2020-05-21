@@ -20,10 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using System.Text;
 
 namespace Chummer
 {
@@ -34,7 +32,6 @@ namespace Chummer
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
-        private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
 
         private Grade _objForcedGrade;
@@ -47,8 +44,6 @@ namespace Chummer
         private bool _blnOldGradeEnabled = true;
         private bool _blnIgnoreSecondHand;
         private string _strForceGrade = string.Empty;
-        private readonly object _objParentObject;
-        private readonly XPathNavigator _objParentNode;
         private readonly HashSet<string> _setBlackMarketMaps;
         private readonly XPathNavigator _xmlBaseDrugDataNode;
 
@@ -59,21 +54,18 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmSelectDrug(Character objCharacter, object objParentNode = null)
+        public frmSelectDrug(Character objCharacter)
         {
             InitializeComponent();
 
-            _objCharacter = objCharacter;
-            _objParentObject = objParentNode;
-            _objParentNode = (_objParentObject as IHasXmlNode)?.GetNode()?.CreateNavigator();
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             _xmlBaseDrugDataNode = XmlManager.Load("drugcomponents.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _strNodeXPath = "Drugs/Drug";
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
-            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D");
+            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode);
         }
 
@@ -94,7 +86,7 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -107,7 +99,7 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            PopulateGrades(false, true, _objForcedGrade?.SourceId.ToString("D") ?? string.Empty, chkHideBannedGrades.Checked);
+            PopulateGrades(false, true, _objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) ?? string.Empty);
 
             if (_objForcedGrade != null)
                 cboGrade.SelectedValue = _objForcedGrade.SourceId.ToString();
@@ -134,12 +126,11 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedGrade))
                 xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
 
-            // Update the Essence and Cost multipliers based on the Grade that has been selected.
+            // Update the Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
             {
                 _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
-                _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalOptions.InvariantCultureInfo);
-                _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value);
+                _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value, GlobalOptions.InvariantCultureInfo);
 
                 _blnLoading = false;
                 RefreshList();
@@ -188,13 +179,13 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                     {
-                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString())
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString())
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString())
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
+                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                        intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
+                        intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
                     }
                     nudRating.Minimum = intMinRating;
 
@@ -203,13 +194,13 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                     {
-                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString())
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString())
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString())
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
+                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
-                        intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
+                        intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
                     }
                     nudRating.Maximum = intMaxRating;
                     if (chkHideOverAvailLimit.Checked)
@@ -260,15 +251,15 @@ namespace Chummer
                     if (cboGrade.Enabled)
                         cboGrade.Enabled = false;
                     objForcedGrade = _lstGrades.FirstOrDefault(x => x.Name == strForceGrade);
-                    strForceGrade = objForcedGrade?.SourceId.ToString("D");
+                    strForceGrade = objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
                     cboGrade.Enabled = !_blnLockGrade;
                     if (_blnLockGrade)
                     {
-                        strForceGrade = _objForcedGrade?.SourceId.ToString("D") ?? cboGrade.SelectedValue?.ToString();
-                        objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D") == strForceGrade);
+                        strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
+                        objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strForceGrade);
                     }
                 }
 
@@ -287,7 +278,7 @@ namespace Chummer
                 }
 
                 // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
-                PopulateGrades(xmlDrug.SelectSingleNode("nosecondhand") != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);
+                PopulateGrades(xmlDrug.SelectSingleNode("nosecondhand") != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade);
                 /*
                 string strNotes = xmlDrug.SelectSingleNode("altnotes")?.Value ?? xmlDrug.SelectSingleNode("notes")?.Value;
                 if (!string.IsNullOrEmpty(strNotes))
@@ -314,10 +305,10 @@ namespace Chummer
                 Grade objForcedGrade = null;
                 if (_blnLockGrade)
                 {
-                    strForceGrade = _objForcedGrade?.SourceId.ToString("D") ?? cboGrade.SelectedValue?.ToString();
-                    objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D") == strForceGrade);
+                    strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
+                    objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strForceGrade);
                 }
-                PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
+                PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade);
                 chkBlackMarketDiscount.Checked = false;
                 lblSourceLabel.Visible = false;
                 lblSource.Text = string.Empty;
@@ -366,7 +357,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug, chkHideBannedGrades.Checked);
-            PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
+            PopulateGrades();
         }
 
         private void lstDrug_DoubleClick(object sender, EventArgs e)
@@ -480,7 +471,7 @@ namespace Chummer
         /// Whether or not the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount { get; private set; }
-        
+
         /// <summary>
         /// Parent vehicle that the cyberlimb will be attached to.
         /// </summary>
@@ -533,7 +524,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strAvail))
             {
                 string strAvailExpr = strAvail;
-                if (strAvailExpr.StartsWith("FixedValues("))
+                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
@@ -558,7 +549,7 @@ namespace Chummer
                 char chrPrefix = strAvailExpr[0];
                 if (chrPrefix == '+' || chrPrefix == '-')
                 {
-                    strPrefix = chrPrefix.ToString();
+                    strPrefix = chrPrefix.ToString(GlobalOptions.InvariantCultureInfo);
                     strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
                 }
 
@@ -568,11 +559,11 @@ namespace Chummer
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
                 if (blnIsSuccess)
                 {
-                    int intAvail = Convert.ToInt32(objProcess) + _intAvailModifier;
+                    int intAvail = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) + _intAvailModifier;
                     // Avail cannot go below 0.
                     if (intAvail < 0)
                         intAvail = 0;
-                    lblAvail.Text = strPrefix + intAvail.ToString() + strSuffix;
+                    lblAvail.Text = strPrefix + intAvail.ToString(GlobalOptions.CultureInfo) + strSuffix;
                 }
                 else
                 {
@@ -597,13 +588,13 @@ namespace Chummer
                 string strCost = objXmlDrug.SelectSingleNode("cost")?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    if (strCost.StartsWith("FixedValues("))
+                    if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
                         string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                         strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                     }
                     // Check for a Variable Cost.
-                    if (strCost.StartsWith("Variable("))
+                    if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         decimal decMin;
                         decimal decMax = decimal.MaxValue;
@@ -665,7 +656,7 @@ namespace Chummer
                 return null;
             string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D") == strCurrentGradeId);
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
                 strFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + objCurrentGrade.Name + "\")";
@@ -686,7 +677,7 @@ namespace Chummer
             List<ListItem> lstDrugs = new List<ListItem>();
 
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D") == strCurrentGradeId);
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
             {
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
@@ -703,9 +694,9 @@ namespace Chummer
                 if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)) || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
                 {
                     var objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                    intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
+                    intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
                     objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
-                    intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
+                    intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
                     if (intMaxRating < intMinRating)
                         continue;
                 }
@@ -764,7 +755,7 @@ namespace Chummer
             string strSelectedId = lstDrug.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-            if (cboGrade.Text.StartsWith("*"))
+            if (cboGrade.Text.StartsWith('*'))
             {
                 MessageBox.Show(
                     LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Language),
@@ -788,12 +779,12 @@ namespace Chummer
             {
                 strForceGrade = cboGrade.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strForceGrade))
-                    SelectedGrade = _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D") == cboGrade.SelectedValue?.ToString());
+                    SelectedGrade = _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == cboGrade.SelectedValue?.ToString());
                 else
                     return;
             }
 
-            _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D");
+            _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
             SelectedDrug = strSelectedId;
             SelectedRating = decimal.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
@@ -809,8 +800,7 @@ namespace Chummer
         /// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
         /// <param name="blnForce">Force grades to be repopulated.</param>
         /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
-        /// <param name="blnHideBannedGrades">Whether to hide grades banned by the character's gameplay options.</param>
-        private void PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true)
+        private void PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "")
         {
             if (_blnPopulatingGrades)
                 return;
@@ -822,7 +812,7 @@ namespace Chummer
                 List<ListItem> lstGrade = new List<ListItem>(5);
                 foreach (Grade objWareGrade in _lstGrades)
                 {
-                    if (objWareGrade.SourceId.ToString("D") == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
+                    if (objWareGrade.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
                         continue;
                     //if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                     //    continue;

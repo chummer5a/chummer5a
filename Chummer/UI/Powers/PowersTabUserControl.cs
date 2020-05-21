@@ -36,7 +36,7 @@ namespace Chummer.UI.Powers
     {
         // TODO: check, if this can be removed???
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
-        
+
         private TableView<Power> _table;
 
         public PowersTabUserControl()
@@ -50,11 +50,11 @@ namespace Chummer.UI.Powers
             InitializeTable();
             ResumeLayout();
         }
-        
+
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
         private bool _blnSearchMode;
-        
+
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter == null)
@@ -66,7 +66,7 @@ namespace Chummer.UI.Powers
                     ParentForm.Cursor = Cursors.Default;
             }
         }
-        
+
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
@@ -129,7 +129,7 @@ namespace Chummer.UI.Powers
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
-        
+
         private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
@@ -154,7 +154,7 @@ namespace Chummer.UI.Powers
 
             return ret;
         }
-        
+
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
@@ -227,7 +227,7 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            lblPowerPoints.Text = string.Format("{0} ({1} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1}" + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
         }
 
         private int PowerPointsTotal
@@ -409,7 +409,7 @@ namespace Chummer.UI.Powers
             };
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button() { Text = "Delete", Tag = "String_Delete", BackColor = SystemColors.Control })
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete", GlobalOptions.Language), Tag = "String_Delete", BackColor = SystemColors.Control })
             {
                 ClickHandler = p =>
                 {

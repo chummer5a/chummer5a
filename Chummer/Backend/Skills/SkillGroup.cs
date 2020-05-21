@@ -169,7 +169,7 @@ namespace Chummer.Backend.Skills
                         _intCachedKarmaUnbroken = 0;
                     else
                     {
-                        int high = SkillList.Max(x => x.BasePoints + x.FreeBase);
+                        int high = SkillList.DefaultIfEmpty().Max(x => x.BasePoints + x.FreeBase);
 
                         _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase + x.KarmaPoints + x.FreeKarma >= high) ? 1 : 0;
                     }
@@ -222,7 +222,7 @@ namespace Chummer.Backend.Skills
                                                                               (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
                                     _intCachedCareerIncrease = 0;
                                 else
-                                    _intCachedCareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
+                                    _intCachedCareerIncrease = _lstAffectedSkills.DefaultIfEmpty().Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
                             }
                         }
 
@@ -314,6 +314,8 @@ namespace Chummer.Backend.Skills
         #region All the other stuff that is required
         public static SkillGroup Get(Skill objSkill)
         {
+            if (objSkill == null)
+                return null;
             if (objSkill.SkillGroupObject != null)
                 return objSkill.SkillGroupObject;
 
@@ -347,11 +349,13 @@ namespace Chummer.Backend.Skills
 
         internal void WriteTo(XmlWriter writer)
         {
+            if (writer == null)
+                return;
             writer.WriteStartElement("group");
 
-            writer.WriteElementString("karma", _intSkillFromKarma.ToString());
-            writer.WriteElementString("base", _intSkillFromSp.ToString());
-            writer.WriteElementString("id", _guidId.ToString("D"));
+            writer.WriteElementString("karma", _intSkillFromKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            writer.WriteElementString("base", _intSkillFromSp.ToString(GlobalOptions.InvariantCultureInfo));
+            writer.WriteElementString("id", _guidId.ToString("D", GlobalOptions.InvariantCultureInfo));
             writer.WriteElementString("name", _strGroupName);
 
             writer.WriteEndElement();
@@ -359,6 +363,8 @@ namespace Chummer.Backend.Skills
 
         internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skillgroup");
 
             objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
@@ -373,6 +379,8 @@ namespace Chummer.Backend.Skills
 
         public void Load(XmlNode xmlNode)
         {
+            if (xmlNode == null)
+                return;
             if (xmlNode.TryGetField("id", Guid.TryParse, out Guid g))
                 _guidId = g;
             xmlNode.TryGetStringFieldQuickly("name", ref _strGroupName);
@@ -382,6 +390,8 @@ namespace Chummer.Backend.Skills
 
         public void LoadFromHeroLab(XmlNode xmlNode)
         {
+            if (xmlNode == null)
+                return;
             string strTemp = xmlNode.SelectSingleNode("@name")?.InnerText;
             if (!string.IsNullOrEmpty(strTemp))
                 _strGroupName = strTemp.TrimEndOnce("Group").Trim();
@@ -488,13 +498,14 @@ namespace Chummer.Backend.Skills
         {
             _objCharacter = objCharacter;
             _strGroupName = strGroupName;
-
-            _objCharacter.PropertyChanged += Character_PropertyChanged;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged += Character_PropertyChanged;
         }
 
         public void UnbindSkillGroup()
         {
-            _objCharacter.PropertyChanged -= Character_PropertyChanged;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged -= Character_PropertyChanged;
             foreach (Skill objSkill in _lstAffectedSkills)
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
@@ -532,7 +543,7 @@ namespace Chummer.Backend.Skills
                     return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
 
-                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString() : 0.ToString();
+                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString(GlobalOptions.CultureInfo) : 0.ToString(GlobalOptions.CultureInfo);
             }
         }
 
@@ -552,12 +563,12 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get { return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
         }
 
         private Guid _guidId = Guid.NewGuid();
         public Guid Id => _guidId;
-        public string InternalId => _guidId.ToString("D");
+        public string InternalId => _guidId.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         #region HasWhateverSkills
         public bool HasCombatSkills

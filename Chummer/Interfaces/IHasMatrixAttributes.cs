@@ -46,8 +46,8 @@ namespace Chummer
         int BaseMatrixBoxes { get; }
         int BonusMatrixBoxes { get; set; }
         int TotalBonusMatrixBoxes { get; }
-        int MatrixCM { get; }
-        int MatrixCMFilled { get; set; }
+        new int MatrixCM { get; }
+        new int MatrixCMFilled { get; set; }
         string ProgramLimit { get; set; }
 
         bool CanSwapAttributes { get; set; }
@@ -156,8 +156,9 @@ namespace Chummer
                     return objThis.DeviceRating;
                 case "Program Limit":
                     return objThis.ProgramLimit;
+                default:
+                    return string.Empty;
             }
-            return string.Empty;
         }
 
         /// <summary>
@@ -167,6 +168,14 @@ namespace Chummer
         {
             if (objThis == null)
                 return;
+            if (cboAttack == null)
+                throw new ArgumentNullException(nameof(cboAttack));
+            if (cboSleaze == null)
+                throw new ArgumentNullException(nameof(cboSleaze));
+            if (cboDP == null)
+                throw new ArgumentNullException(nameof(cboDP));
+            if (cboFirewall == null)
+                throw new ArgumentNullException(nameof(cboFirewall));
 
             int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
             int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
@@ -190,7 +199,7 @@ namespace Chummer
             cboAttack.BindingContext = new BindingContext();
             cboAttack.ValueMember = "Value";
             cboAttack.DisplayMember = "Name";
-            cboAttack.DataSource = new List<string> { (intBaseAttack + intBonusAttack).ToString(), (intBaseSleaze + intBonusAttack).ToString(), (intBaseDP + intBonusAttack).ToString(), (intBaseFirewall + intBonusAttack).ToString() };
+            cboAttack.DataSource = new List<string> { (intBaseAttack + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo) };
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
             cboAttack.Enabled = objThis.CanSwapAttributes;
@@ -199,7 +208,7 @@ namespace Chummer
             cboSleaze.BindingContext = new BindingContext();
             cboSleaze.ValueMember = "Value";
             cboSleaze.DisplayMember = "Name";
-            cboSleaze.DataSource = new List<string> { (intBaseAttack + intBonusSleaze).ToString(), (intBaseSleaze + intBonusSleaze).ToString(), (intBaseDP + intBonusSleaze).ToString(), (intBaseFirewall + intBonusSleaze).ToString() };
+            cboSleaze.DataSource = new List<string> { (intBaseAttack + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo) };
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
             cboSleaze.Enabled = objThis.CanSwapAttributes;
@@ -208,7 +217,7 @@ namespace Chummer
             cboDP.BindingContext = new BindingContext();
             cboDP.ValueMember = "Value";
             cboDP.DisplayMember = "Name";
-            cboDP.DataSource = new List<string> { (intBaseAttack + intBonusDP).ToString(), (intBaseSleaze + intBonusDP).ToString(), (intBaseDP + intBonusDP).ToString(), (intBaseFirewall + intBonusDP).ToString() };
+            cboDP.DataSource = new List<string> { (intBaseAttack + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo) };
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
             cboDP.Enabled = objThis.CanSwapAttributes;
@@ -217,7 +226,7 @@ namespace Chummer
             cboFirewall.BindingContext = new BindingContext();
             cboFirewall.ValueMember = "Value";
             cboFirewall.DisplayMember = "Name";
-            cboFirewall.DataSource = new List<string> { (intBaseAttack + intBonusFirewall).ToString(), (intBaseSleaze + intBonusFirewall).ToString(), (intBaseDP + intBonusFirewall).ToString(), (intBaseFirewall + intBonusFirewall).ToString() };
+            cboFirewall.DataSource = new List<string> { (intBaseAttack + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo) };
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
             cboFirewall.Enabled = objThis.CanSwapAttributes;
@@ -236,6 +245,18 @@ namespace Chummer
         {
             if (objThis == null)
                 return false;
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (cboChangedAttributeCBO == null)
+                throw new ArgumentNullException(nameof(cboChangedAttributeCBO));
+            if (cboAttack == null)
+                throw new ArgumentNullException(nameof(cboAttack));
+            if (cboSleaze == null)
+                throw new ArgumentNullException(nameof(cboSleaze));
+            if (cboDP == null)
+                throw new ArgumentNullException(nameof(cboDP));
+            if (cboFirewall == null)
+                throw new ArgumentNullException(nameof(cboFirewall));
 
             string strTemp;
             Action<string> funcAttributePropertySetter;

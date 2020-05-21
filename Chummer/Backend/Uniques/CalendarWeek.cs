@@ -25,7 +25,7 @@ using System.Xml;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged
+    public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>
     {
         private Guid _guiID;
         private int _intYear = 2072;
@@ -55,8 +55,10 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("year", _intYear.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("week", _intWeek.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
@@ -83,6 +85,8 @@ namespace Chummer
         /// <param name="blnPrintNotes">Whether to print notes attached to the CalendarWeek.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("week");
             objWriter.WriteElementString("year", Year.ToString(objCulture));
             objWriter.WriteElementString("month", Month.ToString(objCulture));
@@ -97,7 +101,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Calendar Week in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Year.
@@ -260,10 +264,10 @@ namespace Chummer
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            string strReturn = string.Format(LanguageManager.GetString("String_WeekDisplay", strLanguage)
-                , Year.ToString()
-                , Month.ToString()
-                , MonthWeek.ToString());
+            string strReturn = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_WeekDisplay", strLanguage)
+                , Year
+                , Month
+                , MonthWeek);
             return strReturn;
         }
 
@@ -276,7 +280,7 @@ namespace Chummer
                     intReturn = Week.CompareTo(objWeek.Week);
                 return intReturn;
             }
-            return DisplayName(GlobalOptions.Language).CompareTo(obj);
+            return string.Compare(DisplayName(GlobalOptions.Language), obj?.ToString() ?? string.Empty, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -310,6 +314,61 @@ namespace Chummer
                 }
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((CalendarWeek) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return new { InternalId, Year, Week}.GetHashCode();
+        }
+
+        public static bool operator ==(CalendarWeek left, CalendarWeek right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CalendarWeek left, CalendarWeek right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(CalendarWeek left, CalendarWeek right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(CalendarWeek left, CalendarWeek right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(CalendarWeek left, CalendarWeek right)
+        {
+            return !(left is null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(CalendarWeek left, CalendarWeek right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
         #endregion
+
+        public bool Equals(CalendarWeek other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Year == other.Year && Week == other.Week;
+        }
     }
 }

@@ -62,7 +62,8 @@ namespace Chummer
          */
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            new frmAddToken(this).Show();
+            using (frmAddToken frmAdd = new frmAddToken(this))
+                frmAdd.Show();
         }
 
         /*
@@ -299,15 +300,17 @@ namespace Chummer
                 if (chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
                 {
                     Character objLoopCharacter = characters[j];
-                    frmInitRoller frmHits = new frmInitRoller
+                    using (frmInitRoller frmHits = new frmInitRoller
                     {
                         Dice = objLoopCharacter.InitPasses
-                    };
-                    frmHits.ShowDialog(this);
+                    })
+                    {
+                        frmHits.ShowDialog(this);
 
-                    if (frmHits.DialogResult != DialogResult.OK)
-                        return;   // we decided not to actually change the initiative
-                    objLoopCharacter.InitRoll = frmHits.Result + objLoopCharacter.InitialInit;
+                        if (frmHits.DialogResult != DialogResult.OK)
+                            return; // we decided not to actually change the initiative
+                        objLoopCharacter.InitRoll = frmHits.Result + objLoopCharacter.InitialInit;
+                    }
                 }
             }
 
@@ -367,18 +370,20 @@ namespace Chummer
                 if (chkBoxChummer.SelectedItem == null)
                     Program.MainForm.ShowMessageBox("Please select a chummer before right-clicking");
 
-                frmInitRoller frmHits = new frmInitRoller
+                using (frmInitRoller frmHits = new frmInitRoller
                 {
                     Dice = characters[chkBoxChummer.SelectedIndex].InitPasses
-                };
-                frmHits.ShowDialog(this);
+                })
+                {
+                    frmHits.ShowDialog(this);
 
-                if (frmHits.DialogResult != DialogResult.OK)
-                    return;   // we decided not to actually change the initiative
+                    if (frmHits.DialogResult != DialogResult.OK)
+                        return; // we decided not to actually change the initiative
 
-                characters[chkBoxChummer.SelectedIndex].InitRoll = frmHits.Result;
+                    characters[chkBoxChummer.SelectedIndex].InitRoll = frmHits.Result;
 
-                chkBoxChummer.Items[chkBoxChummer.SelectedIndex] = characters[chkBoxChummer.SelectedIndex];
+                    chkBoxChummer.Items[chkBoxChummer.SelectedIndex] = characters[chkBoxChummer.SelectedIndex];
+                }
             }
         }
         #endregion
@@ -395,21 +400,25 @@ namespace Chummer
         /// <param name="character"></param>
         public void AddToken(Character character)
         {
+            if (character == null)
+                return;
             if (character.InitRoll == int.MinValue)
             {
-                frmInitRoller frmHits = new frmInitRoller
+                using (frmInitRoller frmHits = new frmInitRoller
                 {
                     Dice = character.InitPasses
-                };
-                frmHits.ShowDialog(this);
-
-                if (frmHits.DialogResult != DialogResult.OK)
+                })
                 {
-                    Program.MainForm.ShowMessageBox("ERROR");   // TODO edward show error
-                    return;
-                }
+                    frmHits.ShowDialog(this);
 
-                character.InitRoll = frmHits.Result + character.InitialInit;
+                    if (frmHits.DialogResult != DialogResult.OK)
+                    {
+                        Program.MainForm.ShowMessageBox("ERROR"); // TODO edward show error
+                        return;
+                    }
+
+                    character.InitRoll = frmHits.Result + character.InitialInit;
+                }
             }
 
             characters.Add(character);

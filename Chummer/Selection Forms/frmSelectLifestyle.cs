@@ -27,7 +27,7 @@ namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
@@ -128,7 +128,7 @@ namespace Chummer
 
                 chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
             }
-            
+
             _blnSkipRefresh = false;
             CalculateValues();
         }
@@ -255,7 +255,7 @@ namespace Chummer
                 _objLifestyle.Percentage = nudPercentage.Value;
                 _objLifestyle.LifestyleQualities.Clear();
                 _objLifestyle.StyleType = StyleType;
-                _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText);
+                _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
 
@@ -390,7 +390,7 @@ namespace Chummer
         /// <param name="objLifestyle">Lifestyle to edit.</param>
         public void SetLifestyle(Lifestyle objLifestyle)
         {
-            _objSourceLifestyle = objLifestyle;
+            _objSourceLifestyle = objLifestyle ?? throw new ArgumentNullException(nameof(objLifestyle));
             StyleType = objLifestyle.StyleType;
         }
 

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
@@ -138,7 +137,7 @@ namespace Chummer.Backend.Skills
                 {
                     _intKarma = 0;
                     Specializations.RemoveAll(x => !x.Free);
-                    return SkillGroupObject?.Karma ?? 0;
+                    return SkillGroupObject.Karma;
                 }
                 return Math.Min(KarmaPoints + FreeKarma + (SkillGroupObject?.Karma ?? 0), RatingMaximum);
             }
@@ -252,8 +251,7 @@ namespace Chummer.Backend.Skills
                 if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
                 {
                     if (CharacterObject.Cyberware.Where(x => x.SourceID == s_GuiReflexRecorderId)
-                        .Any(objReflexRecorderObject => objReflexRecorderObject != null &&
-                                                        SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
+                        .Any(objReflexRecorderObject => SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
                     {
                         return 0;
                     }

@@ -31,7 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private SourceString _objCachedSourceDetail;
@@ -74,7 +74,7 @@ namespace Chummer
             _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodBonus, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -90,7 +90,8 @@ namespace Chummer
                 {
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
-            }*/
+            }
+			*/
         }
 
         /// <summary>
@@ -99,6 +100,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("art");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
@@ -152,6 +155,8 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("art");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
@@ -169,7 +174,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
                                                 new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
@@ -190,7 +195,7 @@ namespace Chummer
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D");
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
@@ -359,18 +364,18 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character character, bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
             if (blnConfirmDelete)
             {
-                if (!character.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language)))
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language)))
                     return false;
             }
 
-            ImprovementManager.RemoveImprovements(character, _objImprovementSource, InternalId);
-            return character.Arts.Remove(this);
+            ImprovementManager.RemoveImprovements(_objCharacter, _objImprovementSource, InternalId);
+            return _objCharacter.Arts.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

@@ -40,7 +40,7 @@ namespace CrashHandler
 			{
 				Close();
 			}
-            
+
             statusCollectionProgess.Text = desc;
 		}
 
@@ -75,8 +75,8 @@ namespace CrashHandler
 				timerRefreshTextFile_Tick(null, null);
 				fs.Close();
 			}
-			
-			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+
+            _dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 			_dumper.AllowSending();
 
 		    DialogResult = DialogResult.OK;

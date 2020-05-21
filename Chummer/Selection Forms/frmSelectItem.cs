@@ -99,12 +99,16 @@ namespace Chummer
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
                     using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
+                    {
                         if (objXmlList != null)
+                        {
                             foreach (XmlNode objNode in objXmlList)
                             {
                                 string strInnerText = objNode.InnerText;
                                 lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
                             }
+                        }
+                    }
                 }
                 else
                 {
@@ -132,7 +136,7 @@ namespace Chummer
                         {
                             if (objMod.TotalAvailTuple(false).Suffix == 'R')
                             {
-                                lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
+                                lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                             }
                             foreach (Gear objGear in objMod.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
@@ -182,7 +186,7 @@ namespace Chummer
                         {
                             if (!objMod.IncludedInVehicle && objMod.TotalAvailTuple(false).Suffix == 'R')
                             {
-                                lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
+                                lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                             }
                             foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
                             {
@@ -283,66 +287,6 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// List of Gear that the user can select.
-        /// </summary>
-        public IList<Gear> Gear
-        {
-            set
-            {
-                _lstGear = value;
-                _strMode = "Gear";
-            }
-        }
-
-        /// <summary>
-        /// List of Vehicles that the user can selet.
-        /// </summary>
-        public IList<Vehicle> Vehicles
-        {
-            set
-            {
-                _lstVehicles = value;
-                _strMode = "Vehicles";
-            }
-        }
-
-        /// <summary>
-        /// List of general items that the user can select.
-        /// </summary>
-        public IList<ListItem> GeneralItems
-        {
-            set
-            {
-                _lstGeneralItems = value;
-                _strMode = "General";
-            }
-        }
-
-        /// <summary>
-        /// List of general items that the user can select.
-        /// </summary>
-        public IList<ListItem> DropdownItems
-        {
-            set
-            {
-                _lstGeneralItems = value;
-                _strMode = "Dropdown";
-            }
-        }
-
-        /// <summary>
-        /// Character object to search for Restricted items.
-        /// </summary>
-        public Character Character
-        {
-            set
-            {
-                _objCharacter = value;
-                _strMode = "Restricted";
-            }
-        }
-
-        /// <summary>
         /// Internal ID of the item that was selected.
         /// </summary>
         public string SelectedItem
@@ -377,19 +321,65 @@ namespace Chummer
         /// </summary>
         public string Description
         {
+            get => lblDescription.Text;
             set => lblDescription.Text = value;
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// List of Gear that the user can select.
+        /// </summary>
+        public void SetGearMode(IEnumerable<Gear> lstGears)
+        {
+            _lstGear = new List<Gear>(lstGears);
+            _strMode = "Gear";
+        }
+
+        /// <summary>
+        /// List of Vehicles that the user can select.
+        /// </summary>
+        public void SetVehiclesMode(IEnumerable<Vehicle> lstVehicles)
+        {
+            _lstVehicles = new List<Vehicle>(lstVehicles);
+            _strMode = "Vehicles";
+        }
+
+        /// <summary>
+        /// List of general items that the user can select.
+        /// </summary>
+        public void SetGeneralItemsMode(IEnumerable<ListItem> lstItems)
+        {
+            _lstGeneralItems = new List<ListItem>(lstItems);
+            _strMode = "General";
+        }
+
+        /// <summary>
+        /// List of general items that the user can select.
+        /// </summary>
+        public void SetDropdownItemsMode(IEnumerable<ListItem> lstItems)
+        {
+            _lstGeneralItems = new List<ListItem>(lstItems);
+            _strMode = "Dropdown";
+        }
+
+        /// <summary>
+        /// Character object to search for Restricted items.
+        /// </summary>
+        public void SetRestrictedMode(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+            _strMode = "Restricted";
         }
 
         /// <summary>
         /// Force the window to select a value.
         /// </summary>
-        public string ForceItem
+        public void ForceItem(string strForceItem)
         {
-            set => _strForceItem = value;
+            _strForceItem = strForceItem;
         }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>

@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -75,7 +76,7 @@ namespace Chummer
                 lblSumtoTen.Visible = true;
             }
             List<string> objPriorities = new List<string>(5);
-            if (_objCharacter.PriorityArray != string.Empty)
+            if (!string.IsNullOrEmpty(_objCharacter.PriorityArray))
             {
                 foreach (char c in _objCharacter.PriorityArray)
                 {
@@ -184,15 +185,15 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objCharacter.TalentPriority))
             {
                 //Attributes
-                cboAttributes.SelectedIndex = cboAttributes.FindString(_objCharacter.AttributesPriority[0].ToString());
+                cboAttributes.SelectedIndex = cboAttributes.FindString(_objCharacter.AttributesPriority[0].ToString(GlobalOptions.InvariantCultureInfo));
                 //Heritage (Metatype)
-                cboHeritage.SelectedIndex = cboHeritage.FindString(_objCharacter.MetatypePriority[0].ToString());
+                cboHeritage.SelectedIndex = cboHeritage.FindString(_objCharacter.MetatypePriority[0].ToString(GlobalOptions.InvariantCultureInfo));
                 //Resources
-                cboResources.SelectedIndex = cboResources.FindString(_objCharacter.ResourcesPriority[0].ToString());
+                cboResources.SelectedIndex = cboResources.FindString(_objCharacter.ResourcesPriority[0].ToString(GlobalOptions.InvariantCultureInfo));
                 //Skills
-                cboSkills.SelectedIndex = cboSkills.FindString(_objCharacter.SkillsPriority[0].ToString());
+                cboSkills.SelectedIndex = cboSkills.FindString(_objCharacter.SkillsPriority[0].ToString(GlobalOptions.InvariantCultureInfo));
                 //Magical/Resonance Talent
-                cboTalent.SelectedIndex = cboTalent.FindString(_objCharacter.SpecialPriority[0].ToString());
+                cboTalent.SelectedIndex = cboTalent.FindString(_objCharacter.SpecialPriority[0].ToString(GlobalOptions.InvariantCultureInfo));
 
                 LoadMetatypes();
                 PopulateMetatypes();
@@ -423,11 +424,11 @@ namespace Chummer
                                     }
                                 }
                             }
-                            string strMetamagicSkillSelection = string.Format(LanguageManager.GetString("String_MetamagicSkillBase", GlobalOptions.Language),
+                            string strMetamagicSkillSelection = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_MetamagicSkillBase", GlobalOptions.Language),
                                 LanguageManager.GetString("String_MetamagicSkills", GlobalOptions.Language));
                             // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                             // So the language file should contain each of those like String_MetamagicSkillType_magic
-                            lblMetatypeSkillSelection.Text = string.Format(strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType, GlobalOptions.Language), strSkillVal);
+                            lblMetatypeSkillSelection.Text = string.Format(GlobalOptions.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType, GlobalOptions.Language), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
 
@@ -456,7 +457,7 @@ namespace Chummer
                         if (int.TryParse(xmlTalentNode.SelectSingleNode("specialattribpoints")?.Value, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
 
-                        lblSpecialAttributes.Text = intSpecialAttribPoints.ToString();
+                        lblSpecialAttributes.Text = intSpecialAttribPoints.ToString(GlobalOptions.CultureInfo);
                     }
                 }
             }
@@ -589,7 +590,7 @@ namespace Chummer
                 int intSumToTen = SumToTen(false);
                 if (intSumToTen != _objCharacter.SumtoTen)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Language), _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo), intSumToTen.ToString(GlobalOptions.CultureInfo)));
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Language), _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo), intSumToTen.ToString(GlobalOptions.CultureInfo)));
                     return;
                 }
             }
@@ -642,7 +643,7 @@ namespace Chummer
                 // Load the Priority information.
 
                 // Set the character priority selections
-                _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text);
+                _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text, GlobalOptions.CultureInfo);
                 _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
                 _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
                 _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
@@ -716,16 +717,16 @@ namespace Chummer
                             _objCharacter.MAG.MetatypeMinimum =
                                 xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 1;
                             _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
-                            _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intForce, intMaxModifier));
+                            _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
                             // Set starting resonance
                             _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
                             _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
-                            _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intForce, intMaxModifier));
+                            _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
                             // Set starting depth
                             _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
                             _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
                             _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
-                            _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intForce, intMaxModifier));
+                            _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
 
                             // Set Free Skills/Skill Groups
                             int intFreeLevels = 0;
@@ -746,7 +747,7 @@ namespace Chummer
                 }
 
                 // Set Special Attributes
-                _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text);
+                _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text, GlobalOptions.CultureInfo);
                 _objCharacter.TotalSpecial = _objCharacter.Special;
 
                 // Set Attributes
@@ -784,7 +785,7 @@ namespace Chummer
                     _objCharacter.Weapons.Add(objWeapon);
 
                 // Sprites can never have Physical Attributes
-                if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite"))
+                if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite", StringComparison.Ordinal))
                 {
                     _objCharacter.BOD.AssignLimits("0", "0", "0");
                     _objCharacter.AGI.AssignLimits("0", "0", "0");
@@ -798,9 +799,9 @@ namespace Chummer
                 XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
                 {
-                    _objCharacter.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText);
-                    _objCharacter.MaxNuyen = Convert.ToInt32(objXmlGameplayOption["maxnuyen"].InnerText);
-                    _objCharacter.ContactMultiplier = Convert.ToInt32(objXmlGameplayOption["contactmultiplier"].InnerText);
+                    _objCharacter.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    _objCharacter.MaxNuyen = Convert.ToInt32(objXmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    _objCharacter.ContactMultiplier = Convert.ToInt32(objXmlGameplayOption["contactmultiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
                 }
 
                 // Set free contact points
@@ -874,7 +875,7 @@ namespace Chummer
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 List<string> objPriorities = new List<string>(5);
-                if (_objCharacter.PriorityArray != string.Empty)
+                if (!string.IsNullOrEmpty(_objCharacter.PriorityArray))
                 {
                     foreach (char c in _objCharacter.PriorityArray)
                     {
@@ -939,14 +940,14 @@ namespace Chummer
 
         private int SumToTen(bool blnDoUIUpdate = true)
         {
-            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().Split(',')[_intBuildMethod]);
-            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().Split(',')[_intBuildMethod]);
-            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().Split(',')[_intBuildMethod]);
-            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().Split(',')[_intBuildMethod]);
-            value += Convert.ToInt32(cboResources.SelectedValue.ToString().Split(',')[_intBuildMethod]);
+            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboResources.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
 
             if (blnDoUIUpdate)
-                lblSumtoTen.Text = value.ToString() + '/' + _objCharacter.SumtoTen.ToString();
+                lblSumtoTen.Text = value.ToString(GlobalOptions.CultureInfo) + '/' + _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo);
 
             return value;
         }
@@ -998,7 +999,9 @@ namespace Chummer
                 lblMetavariantKarma.Text = objXmlMetavariantPriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
 
                 // Set the special attributes label.
-                int.TryParse(objXmlMetavariantPriorityNode?.SelectSingleNode("value")?.Value, out int intSpecialAttribPoints);
+                if (!int.TryParse(objXmlMetavariantPriorityNode?.SelectSingleNode("value")?.Value, NumberStyles.Any,
+                    GlobalOptions.InvariantCultureInfo, out int intSpecialAttribPoints))
+                    intSpecialAttribPoints = 0;
 
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + (cboTalent.SelectedValue?.ToString() ?? string.Empty) + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
@@ -1012,7 +1015,7 @@ namespace Chummer
                     }
                 }
 
-                lblSpecialAttributes.Text = intSpecialAttribPoints.ToString();
+                lblSpecialAttributes.Text = intSpecialAttribPoints.ToString(GlobalOptions.CultureInfo);
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metavariant's Qualities.
@@ -1128,7 +1131,9 @@ namespace Chummer
 
                 lblMetavariantKarma.Text = objXmlMetatypePriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 // Set the special attributes label.
-                int.TryParse(objXmlMetatypePriorityNode.SelectSingleNode("value")?.Value, out int intSpecialAttribPoints);
+                if (!int.TryParse(objXmlMetatypePriorityNode.SelectSingleNode("value")?.Value, NumberStyles.Any,
+                    GlobalOptions.InvariantCultureInfo, out int intSpecialAttribPoints))
+                    intSpecialAttribPoints = 0;
 
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + (cboTalent.SelectedValue?.ToString() ?? string.Empty) + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
@@ -1142,7 +1147,7 @@ namespace Chummer
                     }
                 }
 
-                lblSpecialAttributes.Text = intSpecialAttribPoints.ToString();
+                lblSpecialAttributes.Text = intSpecialAttribPoints.ToString(GlobalOptions.CultureInfo);
             }
             else
             {
@@ -1169,7 +1174,7 @@ namespace Chummer
                     }
                 }
 
-                lblSpecialAttributes.Text = intSpecialAttribPoints.ToString();
+                lblSpecialAttributes.Text = intSpecialAttribPoints.ToString(GlobalOptions.CultureInfo);
 
                 lblMetavariantQualities.Text = string.Empty;
                 lblMetavariantKarma.Text = string.Empty;
@@ -1404,7 +1409,7 @@ namespace Chummer
                             {
                                 intPos -= 1;
                                 lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6", GlobalOptions.Language));
-                                nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
+                                nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1), GlobalOptions.InvariantCultureInfo) * 6;
                             }
                             else
                             {

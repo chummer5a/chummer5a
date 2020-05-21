@@ -44,13 +44,12 @@ namespace Chummer
             foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
             {
                 // Load the file so we can get the Setting name.
-                XmlDocument objXmlDocument = new XmlDocument();
+                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                    {
-                        objXmlDocument.Load(objStreamReader);
-                    }
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -87,7 +86,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-        
+
         #region Properties
         /// <summary>
         /// Settings file that was selected in the dialogue.

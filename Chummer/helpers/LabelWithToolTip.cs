@@ -60,7 +60,7 @@ namespace Chummer
         }
 
         public LabelWithToolTip() : this(ToolTipFactory.ToolTip) { }
-        
+
         // ReSharper disable once MemberCanBePrivate.Global
         public LabelWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)
         {

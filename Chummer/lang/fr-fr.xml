@@ -4437,7 +4437,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Regain ou dépense de Chance</text>
 		</string>
 		<string>
-			<key>Tip_CMCMPenalty</key>
+			<key>Tip_CMPenalty</key>
 			<text>Pénalité provenant des dégats du Moniteur de Condition et appliquées aux réserves de dés.</text>
 		</string>
 		<string>

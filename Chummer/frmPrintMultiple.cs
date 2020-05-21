@@ -152,11 +152,9 @@ namespace Chummer
             {
                 if (_frmPrintView == null)
                 {
-                    _frmPrintView = new frmViewer
-                    {
-                        Characters = _lstCharacters,
-                        SelectedSheet = "Game Master Summary"
-                    };
+                    _frmPrintView = new frmViewer();
+                    _frmPrintView.SetSelectedSheet("Game Master Summary");
+                    _frmPrintView.SetCharacters(_lstCharacters.ToArray());
                     _frmPrintView.Show();
                 }
                 else

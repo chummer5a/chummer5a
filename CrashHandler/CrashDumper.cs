@@ -208,8 +208,8 @@ namespace CrashHandler
 
             CrashLogWriter.Close();
         }
-        
-		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
+
+        private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
             bool ret;
@@ -381,7 +381,7 @@ namespace CrashHandler
 
 		private void UploadToAws()
 		{
-			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace('-', '_'), x => x.Value);
+			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-", StringComparison.Ordinal)).ToDictionary(x => x.Key.Replace("visible-","").Replace('-', '_'), x => x.Value);
 			string payload = new JavaScriptSerializer().Serialize(upload);
 
 			HttpClient client = new HttpClient();
@@ -430,9 +430,9 @@ namespace CrashHandler
 		//}
 
 		static bool Deserialize(string base64json,
-			out short processId, 
+			out short processId,
 			out List<string> filesList,
-			out Dictionary<string, string> pretendFiles, 
+			out Dictionary<string, string> pretendFiles,
 			out Dictionary<string, string> attributes,
 			out uint threadId,
 			out IntPtr exceptionPrt)
@@ -499,7 +499,7 @@ namespace CrashHandler
         // ~CrashDumper() {
         //   Dispose(false);
         // }
-        
+
         public void Dispose()
         {
             Dispose(true);

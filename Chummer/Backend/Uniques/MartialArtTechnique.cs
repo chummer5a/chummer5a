@@ -31,7 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -97,7 +97,7 @@ namespace Chummer
 
             if (xmlTechniqueDataNode["bonus"] == null) return;
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique,
-                _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], 1, DisplayName(GlobalOptions.Language)))
+                _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), xmlTechniqueDataNode["bonus"], 1, DisplayName(GlobalOptions.Language)))
             {
                 _guiID = Guid.Empty;
             }
@@ -113,6 +113,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("martialarttechnique");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
@@ -153,6 +155,8 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("martialarttechnique");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -168,7 +172,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Martial Art Technique in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -186,7 +190,7 @@ namespace Chummer
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D");
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Name.
@@ -275,19 +279,19 @@ namespace Chummer
 
         #region Methods
 
-        public bool Remove(Character objCharacter, bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (blnConfirmDelete)
             {
-                if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                     GlobalOptions.Language)))
                     return false;
             }
             // Find the selected Advantage object.
             //TODO: Advantages should know what their parent is.
-            objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
+            _objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
 
-            ImprovementManager.RemoveImprovements(objCharacter,
+            ImprovementManager.RemoveImprovements(_objCharacter,
                 Improvement.ImprovementSource.MartialArtTechnique, InternalId);
 
             objMartialArt.Techniques.Remove(this);

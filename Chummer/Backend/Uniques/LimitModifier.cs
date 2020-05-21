@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -78,8 +79,10 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("limitmodifier");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("limit", _strLimit);
             objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.InvariantCultureInfo));
@@ -111,14 +114,17 @@ namespace Chummer
         /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objWriter">XmlTextWriter to write with</param>
+        /// <param name="objCulture">Culture in which to print</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("limitmodifier");
-            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name", GetDisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("condition", Condition);
+            objWriter.WriteElementString("condition", LanguageManager.TranslateExtra(Condition, strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -129,7 +135,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Name.
@@ -159,6 +165,8 @@ namespace Chummer
         }
 
         private string _strCachedCondition = string.Empty;
+        private string _strCachedDisplayCondition = string.Empty;
+        private string _strCachedDisplayConditionLanguage = string.Empty;
 
         /// <summary>
         /// Condition.
@@ -176,7 +184,7 @@ namespace Chummer
                 }
 
                 // Assume that if the original string contains spaces it's not a
-                // valid language key. Spare checking it against the dictionary. 
+                // valid language key. Spare checking it against the dictionary.
                 _strCachedCondition = _strCondition.Contains(' ')
                     ? _strCondition
                     : LanguageManager.GetString(_strCondition, false);
@@ -192,7 +200,32 @@ namespace Chummer
                 if (value == _strCondition) return;
                 _strCondition = value;
                 _strCachedCondition = string.Empty;
+                _strCachedDisplayCondition = string.Empty;
+                _strCachedDisplayConditionLanguage = string.Empty;
             }
+        }
+
+        public string DisplayCondition(string strLanguage)
+        {
+            // If we've already cached a value for this, just return it.
+            // (Ghetto fix cache culture tag and compare to current?)
+            if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
+            {
+                return _strCachedDisplayCondition;
+            }
+
+            _strCachedDisplayConditionLanguage = strLanguage;
+            // Assume that if the original string contains spaces it's not a
+            // valid language key. Spare checking it against the dictionary.
+            _strCachedDisplayCondition = _strCondition.Contains(' ')
+                ? _strCondition
+                : LanguageManager.GetString(_strCondition, strLanguage, false);
+            if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
+            {
+                _strCachedDisplayCondition = _strCondition;
+            }
+
+            return _strCachedDisplayCondition;
         }
 
         /// <summary>
@@ -224,21 +257,21 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                string strBonus;
-                if (_intBonus > 0)
-                    strBonus = '+' + _intBonus.ToString();
-                else
-                    strBonus = _intBonus.ToString();
+        public string DisplayName => GetDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
-                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
-                if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + Condition + ')';
-                return strReturn;
-            }
+        public string GetDisplayName(CultureInfo objCulture, string strLanguage)
+        {
+            string strBonus;
+            if (_intBonus > 0)
+                strBonus = '+' + _intBonus.ToString(objCulture);
+            else
+                strBonus = _intBonus.ToString(objCulture);
+
+            string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", strLanguage) + '[' + strBonus + ']';
+            string strCondition = DisplayCondition(strLanguage);
+            if (!string.IsNullOrEmpty(strCondition))
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strCondition + ')';
+            return strReturn;
         }
         #endregion
 
@@ -275,14 +308,14 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete = true)
         {
-            if (characterObject.LimitModifiers.Any(limitMod => limitMod == this))
+            if (_objCharacter.LimitModifiers.Any(limitMod => limitMod == this))
             {
                 if (blnConfirmDelete)
                 {
-                    return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
-                               GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
+                    return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
+                               GlobalOptions.Language)) && _objCharacter.LimitModifiers.Remove(this);
                 }
             }
 

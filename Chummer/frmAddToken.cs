@@ -43,13 +43,12 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                await LoadCharacter(openFileDialog.FileName);
+            })
+                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                    await LoadCharacter(openFileDialog.FileName).ConfigureAwait(true);
         }
 
         /// <summary>
@@ -58,14 +57,14 @@ namespace Chummer
         /// <param name="fileName"></param>
         private async Task<bool> LoadCharacter(string fileName)
         {
-            if (File.Exists(fileName) && fileName.EndsWith("chum5"))
+            if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
                 Cursor = Cursors.WaitCursor;
                 Character objCharacter = new Character
                 {
                     FileName = fileName
                 };
-                if (!(await objCharacter.Load()))
+                if (!await objCharacter.Load().ConfigureAwait(true))
                 {
                     Cursor = Cursors.Default;   // TODO edward setup error page
                     return false; // we obviously cannot init

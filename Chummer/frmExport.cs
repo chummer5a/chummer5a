@@ -51,7 +51,7 @@ namespace Chummer
             foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
             {
                 // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+                if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase) && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
                 {
                     string strFileName = Path.GetFileNameWithoutExtension(strFile);
                     cboXSLT.Items.Add(strFileName);
@@ -130,15 +130,23 @@ namespace Chummer
             string strLine;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
-            StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true);
-            while ((strLine = objFile.ReadLine()) != null)
+            using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
             {
-                if (strLine.StartsWith("<!-- ext:"))
-                    strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                while ((strLine = objFile.ReadLine()) != null)
+                {
+                    if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
+                        strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                }
             }
-            objFile.Close();
 
-            SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
+            if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language);
+            else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language);
+            else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html", GlobalOptions.Language);
+            else
+                SaveFileDialog1.Filter = strExtension.ToUpper(GlobalOptions.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
             SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
@@ -163,14 +171,13 @@ namespace Chummer
             objSettings.ConformanceLevel = ConformanceLevel.Fragment;
 
             MemoryStream objStream = new MemoryStream();
-            XmlWriter objWriter = XmlWriter.Create(objStream, objSettings);
-
-            objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+            using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
+                objXSLTransform.Transform(_objCharacterXML, null, objWriter);
             objStream.Position = 0;
 
             // Read in the resulting code and pass it to the browser.
-            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-            rtbText.Text = objReader.ReadToEnd();
+            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                rtbText.Text = objReader.ReadToEnd();
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
             {

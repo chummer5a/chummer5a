@@ -22,7 +22,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersOptions : UserControl
     {
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private bool? LoginStatus = null;
 
         private static SINnerVisibility _SINnerVisibility = null;

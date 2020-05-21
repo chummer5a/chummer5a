@@ -66,9 +66,9 @@ namespace Chummer
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
-            if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith('_' + _strType + ".xml"))
+            if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName", GlobalOptions.Language), _strType),
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName", GlobalOptions.Language), _strType),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -78,7 +78,7 @@ namespace Chummer
             string strName = txtName.Text;
             if (XmlManager.Load(_strType + ".xml", GlobalOptions.Language).SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language), strName),
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language), strName),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -88,15 +88,17 @@ namespace Chummer
             bool blnNewFile = !File.Exists(strPath);
 
             // If this is not a new file, read in the existing contents.
-            XmlDocument objXmlCurrentDocument = new XmlDocument();
+            XmlDocument objXmlCurrentDocument = new XmlDocument
+            {
+                XmlResolver = null
+            };
             if (!blnNewFile)
             {
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
-                    {
-                        objXmlCurrentDocument.Load(objStreamReader);
-                    }
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlCurrentDocument.Load(objXmlReader);
                 }
                 catch (IOException ex)
                 {
@@ -176,7 +178,7 @@ namespace Chummer
                     objWriter.WriteStartElement(_strType);
                     objWriter.WriteElementString("name", objCyberware.Name);
                     if (objCyberware.Rating > 0)
-                        objWriter.WriteElementString("rating", objCyberware.Rating.ToString());
+                        objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                     // Write out child items.
                     if (objCyberware.Children.Count > 0)
                     {
@@ -190,7 +192,7 @@ namespace Chummer
                                 objWriter.WriteStartElement(_strType);
                                 objWriter.WriteElementString("name", objChild.Name);
                                 if (objChild.Rating > 0)
-                                    objWriter.WriteElementString("rating", objChild.Rating.ToString());
+                                    objWriter.WriteElementString("rating", objChild.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                                 // </cyberware>
                                 objWriter.WriteEndElement();
                             }
@@ -213,7 +215,7 @@ namespace Chummer
             objWriter.WriteEndDocument();
             objWriter.Close();
 
-            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated", GlobalOptions.Language), txtName.Text),
+            Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated", GlobalOptions.Language), txtName.Text),
                 LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }

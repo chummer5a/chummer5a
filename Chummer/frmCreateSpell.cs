@@ -43,7 +43,7 @@ namespace Chummer
         private void frmCreateSpell_Load(object sender, EventArgs e)
         {
             _blnLoading = true;
-            lblDV.Text = "0";
+            lblDV.Text = 0.ToString(GlobalOptions.CultureInfo);
 
             List<ListItem> lstCategory = new List<ListItem>();
 
@@ -613,11 +613,11 @@ namespace Chummer
                 if (chkModifier.Visible && chkModifier.Checked)
                 {
                     if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
-                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
                     else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
-                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
                     else
-                        intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                        intDV += Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo);
                 }
             }
             foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
@@ -627,11 +627,11 @@ namespace Chummer
                     if (chkModifier.Visible && chkModifier.Checked)
                     {
                         if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
-                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
                         else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
-                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
                         else
-                            intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                            intDV += Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -648,7 +648,7 @@ namespace Chummer
                 strBase = "(F/2)";
             }
 
-            string strDV = intDV.ToString();
+            string strDV = intDV.ToString(GlobalOptions.InvariantCultureInfo);
             if (intDV > 0)
                 strDV = '+' + strDV;
             if (intDV == 0)

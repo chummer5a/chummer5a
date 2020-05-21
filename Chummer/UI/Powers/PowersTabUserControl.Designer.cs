@@ -16,6 +16,7 @@ namespace Chummer.UI.Powers
             if (disposing)
             {
                 components?.Dispose();
+                _table?.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -27,7 +27,7 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private string _strForceMentor = string.Empty;
-        
+
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
         private readonly bool _blnEverShowMentorMask;
@@ -43,7 +43,7 @@ namespace Chummer
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
@@ -77,7 +77,7 @@ namespace Chummer
                 cboChoice2.BeginUpdate();
                 cboChoice1.DataSource = null;
                 cboChoice2.DataSource = null;
-                
+
                 // If the Mentor offers a choice of bonuses, build the list and let the user select one.
                 XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
                 if (xmlChoices != null)
@@ -88,7 +88,7 @@ namespace Chummer
                     foreach (XPathNavigator objChoice in xmlChoices.Select("choice"))
                     {
                         string strName = objChoice.SelectSingleNode("name")?.Value ?? string.Empty;
-                        if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
+                        if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:", StringComparison.Ordinal)) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:", StringComparison.Ordinal)))
                         {
                             if (objChoice.SelectSingleNode("@set")?.Value == "2")
                                 lstChoice2.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
@@ -96,7 +96,7 @@ namespace Chummer
                                 lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
                         }
                     }
-                    
+
                     cboChoice1.Visible = true;
                     cboChoice1.ValueMember = "Value";
                     cboChoice1.DisplayMember = "Name";

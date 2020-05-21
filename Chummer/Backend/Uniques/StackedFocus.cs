@@ -54,10 +54,12 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("stackedfocus");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("gearid", _guiGearId.ToString("D"));
-            objWriter.WriteElementString("bonded", _blnBonded.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("gearid", _guiGearId.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("bonded", _blnBonded.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
                 objGear.Save(objWriter);
@@ -75,13 +77,16 @@ namespace Chummer
             objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
             _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
             using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
-                if (nodGearList != null)
-                    foreach (XmlNode nodGear in nodGearList)
-                    {
-                        Gear objGear = new Gear(_objCharacter);
-                        objGear.Load(nodGear);
-                        _lstGear.Add(objGear);
-                    }
+            {
+                if (nodGearList == null)
+                    return;
+                foreach (XmlNode nodGear in nodGearList)
+                {
+                    Gear objGear = new Gear(_objCharacter);
+                    objGear.Load(nodGear);
+                    _lstGear.Add(objGear);
+                }
+            }
         }
         #endregion
 
@@ -89,14 +94,14 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Stacked Focus in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// GUID of the linked Gear.
         /// </summary>
         public string GearId
         {
-            get => _guiGearId.ToString("D");
+            get => _guiGearId.ToString("D", GlobalOptions.InvariantCultureInfo);
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
@@ -138,7 +143,7 @@ namespace Chummer
                 int intCost = 0;
                 foreach (Gear objFocus in Gear)
                 {
-                    // Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
+                    // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
                     string strFocusName = objFocus.Name;
                     string strFocusExtra = objFocus.Extra;
                     int intPosition = strFocusName.IndexOf('(');
@@ -147,18 +152,19 @@ namespace Chummer
                     intPosition = strFocusName.IndexOf(',');
                     if (intPosition > -1)
                         strFocusName = strFocusName.Substring(0, intPosition);
-                    int intKarmaMultiplier;
                     int intExtraKarmaCost = 0;
-                    if (strFocusName.EndsWith(", Individualized, Complete"))
+                    if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
                     {
                         intExtraKarmaCost = -2;
                         strFocusName = strFocusName.Replace(", Individualized, Complete", "");
                     }
-                    else if (strFocusName.EndsWith(", Individualized, Partial"))
+                    else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
                     {
                         intExtraKarmaCost = -1;
                         strFocusName = strFocusName.Replace(", Individualized, Partial", "");
                     }
+
+                    int intKarmaMultiplier;
                     switch (strFocusName)
                     {
                         case "Qi Focus":
@@ -213,6 +219,7 @@ namespace Chummer
                             intKarmaMultiplier = 1;
                             break;
                     }
+
                     foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
@@ -255,6 +262,8 @@ namespace Chummer
         #region Methods
         public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
         {
+            if (objGear == null)
+                throw new ArgumentNullException(nameof(objGear));
             TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
 
             objNode.Name = InternalId;

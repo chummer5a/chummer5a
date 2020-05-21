@@ -19,9 +19,7 @@
  using System;
 using System.Collections.Generic;
  using System.Linq;
- using System.Text;
  using System.Windows.Forms;
- using System.Xml;
  using System.Xml.XPath;
 
 namespace Chummer
@@ -41,7 +39,7 @@ namespace Chummer
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -225,7 +223,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     break;
                 }
                 case "LifeModule":
@@ -236,7 +234,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     break;
                 }
                 case "SumtoTen":

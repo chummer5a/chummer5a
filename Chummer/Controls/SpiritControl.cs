@@ -165,7 +165,7 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(true);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
@@ -188,7 +188,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -210,7 +210,7 @@ namespace Chummer
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
                 Uri uriFile = new Uri(_objSpirit.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objSpirit.RelativeFileName = "../" + uriRelative.ToString();
+                _objSpirit.RelativeFileName = "../" + uriRelative;
 
                 ContactDetailChanged?.Invoke(this, e);
             }
@@ -219,20 +219,23 @@ namespace Chummer
         private void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-            if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+            })
             {
-                openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
-                openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
-            }
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                _objSpirit.FileName = openFileDialog.FileName;
-                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
-                ContactDetailChanged?.Invoke(this, e);
+                if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                {
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
+                    openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
+                }
+
+                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    _objSpirit.FileName = openFileDialog.FileName;
+                    imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
+                    ContactDetailChanged?.Invoke(this, e);
+                }
             }
         }
 
@@ -270,23 +273,25 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmSpritNotes = new frmNotes
+            using (frmNotes frmSpritNotes = new frmNotes
             {
                 Notes = _objSpirit.Notes
-            };
-            frmSpritNotes.ShowDialog(this);
-
-            if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
+            })
             {
-                _objSpirit.Notes = frmSpritNotes.Notes;
+                frmSpritNotes.ShowDialog(this);
 
-                string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
+                if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
+                {
+                    _objSpirit.Notes = frmSpritNotes.Notes;
 
-                if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                    string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
 
-                ContactDetailChanged?.Invoke(this, e);
+                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                    imgNotes.SetToolTip(strTooltip.WordWrap(100));
+
+                    ContactDetailChanged?.Invoke(this, e);
+                }
             }
         }
         #endregion
@@ -303,7 +308,7 @@ namespace Chummer
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
         public void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.MagicTradition))
+            if (e?.PropertyName == nameof(Character.MagicTradition))
             {
                 RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition);
             }
@@ -319,7 +324,6 @@ namespace Chummer
             string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
             XmlDocument objXmlDocument = _objSpirit.EntityType == SpiritType.Spirit ? XmlManager.Load("traditions.xml") : XmlManager.Load("streams.xml");
-            XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
             foreach (Improvement improvement in _objSpirit.CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
@@ -447,7 +451,7 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -657,7 +661,7 @@ namespace Chummer
             imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
             ContactDetailChanged?.Invoke(this, null);
 
-            Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
+            Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
             Cursor = Cursors.Default;
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }
@@ -671,8 +675,10 @@ namespace Chummer
         /// <returns></returns>
         public static int ExpressionToInt(string strIn, int intForce, int intOffset)
         {
+            if (string.IsNullOrEmpty(strIn))
+                return 0;
             int intValue = 0;
-            string strForce = intForce.ToString();
+            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
@@ -702,7 +708,7 @@ namespace Chummer
         /// <returns></returns>
         public static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString();
+            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
         #endregion
     }

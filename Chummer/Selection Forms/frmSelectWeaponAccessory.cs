@@ -48,6 +48,8 @@ namespace Chummer
         #region Control Events
         public frmSelectWeaponAccessory(Character objCharacter)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
@@ -69,7 +71,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -95,7 +97,7 @@ namespace Chummer
 
             strMount.Append(")");
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            
+
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
@@ -117,7 +119,7 @@ namespace Chummer
                         LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                 }
             }
-            
+
             lstAccessories.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
             _blnLoading = true;
@@ -238,19 +240,22 @@ namespace Chummer
             {
                 _objParentWeapon = value;
                 _lstAllowedMounts.Clear();
-                foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceIDString + "\"]/accessorymounts/mount"))
+                if (value != null)
                 {
-                    string strLoopMount = objXmlMount.Value;
-                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
-                    if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
-                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceIDString + "\"]/accessorymounts/mount"))
                     {
-                        _lstAllowedMounts.Add(strLoopMount);
+                        string strLoopMount = objXmlMount.Value;
+                        // Run through the Weapon's current Accessories and filter out any used up Mount points.
+                        if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
+                            objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                        {
+                            _lstAllowedMounts.Add(strLoopMount);
+                        }
                     }
                 }
 
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
-                if (_objCharacter.BlackMarketDiscount)
+                if (_objCharacter.BlackMarketDiscount && value != null)
                 {
                     string strCategory = value.GetNode()?.SelectSingleNode("category")?.InnerText ?? string.Empty;
                     _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
@@ -465,7 +470,7 @@ namespace Chummer
                     strCost = strCost.CheapReplace("Weapon Cost", () => _objParentWeapon.OwnCost.ToString(GlobalOptions.InvariantCultureInfo))
                         .CheapReplace("Weapon Total Cost", () => _objParentWeapon.MultipliableCost(null).ToString(GlobalOptions.InvariantCultureInfo))
                         .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
-                if (strCost.StartsWith("Variable("))
+                if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;

@@ -85,35 +85,37 @@ namespace ChummerHub.Client.UI
                         Log.Error("Cloud not create an instance of SINnersclient!");
                         return;
                     }
-                    var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true);
-                    if (user.Body?.CallSuccess == true)
+
+                    using (var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true))
                     {
-                        if (user.Body != null)
+                        if (user.Body?.CallSuccess == true)
                         {
-                            login = true;
-                            SINnerVisibility tempvis;
-                            if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+                            if (user.Body != null)
                             {
-                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
+                                login = true;
+                                SINnerVisibility tempvis;
+                                if (!string.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+                                {
+                                    tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
+                                }
+                                else
+                                {
+                                    tempvis = new SINnerVisibility()
+                                    {
+                                        IsGroupVisible = true,
+                                        IsPublic = true
+                                    };
+                                }
+
+                                tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
+                                this.Close();
                             }
                             else
                             {
-                                tempvis = new SINnerVisibility()
-                                {
-                                    IsGroupVisible = true,
-                                    IsPublic = true
-                                };
+                                login = false;
                             }
-
-                            tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
-                            this.Close();
-                        }
-                        else
-                        {
-                            login = false;
                         }
                     }
-
                 }
                 catch (Exception exception)
                 {

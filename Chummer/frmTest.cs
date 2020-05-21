@@ -1047,7 +1047,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset;
             int intValue = 1;
-            string strForce = intForce.ToString();
+            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
             if (blnIsSuccess)
@@ -1072,7 +1072,7 @@ namespace Chummer
         /// <returns></returns>
         public static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString();
+            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
     }
 }

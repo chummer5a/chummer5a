@@ -31,6 +31,8 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _skill;
         public KnowledgeSkillControl(KnowledgeSkill skill)
         {
+            if (skill == null)
+                return;
             _skill = skill;
             InitializeComponent();
 
@@ -86,7 +88,7 @@ namespace Chummer.UI.Skills
                 cboSpec.Visible = false;
 
                 lblModifiedRating.Location = new Point(294 - 30, 4);
-                
+
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -164,7 +166,7 @@ namespace Chummer.UI.Skills
         public void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             bool all = false;
-            switch (e.PropertyName)
+            switch (e?.PropertyName)
             {
                 case null:
                     all = true;
@@ -216,7 +218,7 @@ namespace Chummer.UI.Skills
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                 _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
@@ -252,20 +254,23 @@ namespace Chummer.UI.Skills
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            frmSelectSpec selectForm = new frmSelectSpec(_skill)
+            using (frmSelectSpec selectForm = new frmSelectSpec(_skill)
             {
                 Mode = "Knowledge"
-            };
-            selectForm.ShowDialog();
+            })
+            {
+                selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+                if (selectForm.DialogResult != DialogResult.OK)
+                    return;
 
-            _skill.AddSpecialization(selectForm.SelectedItem);
+                _skill.AddSpecialization(selectForm.SelectedItem);
+            }
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;

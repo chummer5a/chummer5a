@@ -397,9 +397,9 @@ public class SplitButton : Button
 
         // If we dont' use mnemonic, set formatFlag to NoPrefix as this will show ampersand.
         if (!UseMnemonic)
-            _textFormatFlags = _textFormatFlags | TextFormatFlags.NoPrefix;
+            _textFormatFlags |= TextFormatFlags.NoPrefix;
         else if (!ShowKeyboardCues)
-            _textFormatFlags = _textFormatFlags | TextFormatFlags.HidePrefix;
+            _textFormatFlags |= TextFormatFlags.HidePrefix;
 
         //draw the text
         if (!string.IsNullOrEmpty(Text))
@@ -584,10 +584,9 @@ public class SplitButton : Button
     private void LayoutTextBeforeOrAfterImage(Rectangle totalArea, bool textFirst, Size textSize, Size imageSize, out Rectangle textRect, out Rectangle imageRect)
     {
         int element_spacing = 0;    // Spacing between the Text and the Image
-        int total_width = textSize.Width + element_spacing + imageSize.Width;
-
         if (!textFirst)
             element_spacing += 2;
+        int total_width = textSize.Width + element_spacing + imageSize.Width;
 
         // If the text is too big, chop it down to the size we have available to it
         if (total_width > totalArea.Width)
@@ -632,10 +631,9 @@ public class SplitButton : Button
     private void LayoutTextAboveOrBelowImage(Rectangle totalArea, bool textFirst, Size textSize, Size imageSize, out Rectangle textRect, out Rectangle imageRect)
     {
         int element_spacing = 0;    // Spacing between the Text and the Image
-        int total_height = textSize.Height + element_spacing + imageSize.Height;
-
         if (textFirst)
             element_spacing += 2;
+        int total_height = textSize.Height + element_spacing + imageSize.Height;
 
         if (textSize.Width > totalArea.Width)
             textSize.Width = totalArea.Width;

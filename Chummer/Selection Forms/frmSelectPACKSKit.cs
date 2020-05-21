@@ -179,10 +179,10 @@ namespace Chummer
                         {
                             if (objXmlAttribute.SelectSingleNode("hide") != null)
                                 continue;
-                            string strNameUpper = objXmlAttribute.Name.ToUpper();
+                            string strNameUpper = objXmlAttribute.Name.ToUpperInvariant();
                             TreeNode objChild = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short", GlobalOptions.Language) + strSpaceCharacter + (Convert.ToInt32(objXmlAttribute.Value) - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
+                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short", GlobalOptions.Language) + strSpaceCharacter + (Convert.ToInt32(objXmlAttribute.Value, GlobalOptions.InvariantCultureInfo) - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
                             };
 
                             objParent.Nodes.Add(objChild);
@@ -207,7 +207,7 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
+                                objChild.Text += strSpaceCharacter + '('+ LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)+ ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -227,7 +227,7 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
+                                objChild.Text += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -277,7 +277,7 @@ namespace Chummer
                             {
                                 Text = objNode.SelectSingleNode("@translate")?.Value ?? strName
                             };
-                            objChild.Text += $"{strSpaceCharacter}{LanguageManager.GetString("String_SelectPACKSKit_Group", GlobalOptions.Language)}{strSpaceCharacter}{objXmlSkill.SelectSingleNode("rating")?.Value}";
+                            objChild.Text += strSpaceCharacter + LanguageManager.GetString("String_SelectPACKSKit_Group", GlobalOptions.Language)+ strSpaceCharacter + objXmlSkill.SelectSingleNode("rating")?.Value;
 
                             string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
@@ -316,7 +316,7 @@ namespace Chummer
                             objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt", GlobalOptions.Language);
                             treContents.Nodes.Add(objParent);
 
-                            int intRating = Convert.ToInt32(objXmlItem.SelectSingleNode("@rating")?.Value ?? "1");
+                            int intRating = Convert.ToInt32(objXmlItem.SelectSingleNode("@rating")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
                             string strSelect = objXmlItem.SelectSingleNode("@select")?.Value ?? LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt", GlobalOptions.Language);
 
                             TreeNode objMartialArt = new TreeNode
@@ -505,7 +505,7 @@ namespace Chummer
                                 continue;
 
                             string strIncrement = objXmlLifestyle.SelectSingleNode("increment")?.Value;
-                            if (objXmlLifestyle.SelectSingleNode("type")?.Value.ToLower() == "safehouse")
+                            if (objXmlLifestyle.SelectSingleNode("type")?.Value.ToUpperInvariant() == "SAFEHOUSE")
                                 strIncrement = "week";
                             string strIncrementString;
                             int intPermanentAmount;
@@ -531,7 +531,7 @@ namespace Chummer
                             {
                                 Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("baselifestyle")).Value
                                        + strSpaceCharacter + objXmlLifestyle.SelectSingleNode("months").Value
-                                       + strSpaceCharacter + strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
+                                       + strSpaceCharacter + strIncrementString + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
                             };
 
                             // Check for Qualities.
@@ -887,22 +887,21 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_DeletePACKSKit", GlobalOptions.Language), strSelectedKit),
+            if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit", GlobalOptions.Language), strSelectedKit),
                     LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
-            // Delete the selectec custom PACKS Kit.
+            // Delete the selected custom PACKS Kit.
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
             string strCustomPath = Path.Combine(Utils.GetStartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
             {
-                XmlDocument objXmlDocument = new XmlDocument();
+                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                    {
-                        objXmlDocument.Load(objStreamReader);
-                    }
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
                 {

@@ -17,11 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class SourceString : IComparable
+    public class SourceString : IComparable, IEquatable<SourceString>
     {
         private readonly int _intPage;
         private readonly string _strCachedSpace;
@@ -29,13 +30,13 @@ namespace Chummer
         public SourceString(string strSourceString, string strLanguage)
         {
             Language = strLanguage;
-            string strCode = strSourceString;
-            int intWhitespaceIndex = strSourceString.IndexOf(' ');
+            string strCode = strSourceString ?? string.Empty;
+            int intWhitespaceIndex = strCode.IndexOf(' ');
             if (intWhitespaceIndex != -1)
             {
-                strCode = strSourceString.Substring(0, intWhitespaceIndex);
-                if (intWhitespaceIndex + 1 < strSourceString.Length)
-                    int.TryParse(strSourceString.Substring(intWhitespaceIndex + 1), out _intPage);
+                strCode = strCode.Substring(0, intWhitespaceIndex);
+                if (intWhitespaceIndex + 1 < strCode.Length)
+                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
             }
 
             Code = CommonFunctions.LanguageBookShort(strCode, Language);
@@ -47,7 +48,7 @@ namespace Chummer
         public SourceString(string strSource, string strPage, string strLanguage)
         {
             Language = strLanguage;
-            int.TryParse(strPage, out _intPage);
+            int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
@@ -65,7 +66,7 @@ namespace Chummer
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
-        
+
         public override string ToString()
         {
             return Code + _strCachedSpace + Page;
@@ -87,7 +88,7 @@ namespace Chummer
         public int Page => _intPage;
 
         /// <summary>
-        /// Provides the long-form name of the object's sourcebook and page reference. 
+        /// Provides the long-form name of the object's sourcebook and page reference.
         /// </summary>
         public string LanguageBookTooltip { get; }
 
@@ -98,6 +99,8 @@ namespace Chummer
 
         public int CompareTo(SourceString strOther)
         {
+            if (strOther == null)
+                return 1;
             int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.CultureInfo);
             if (intCompareResult == 0)
             {
@@ -111,13 +114,69 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Set the Text and ToolTips for the selected control. 
+        /// Set the Text and ToolTips for the selected control.
         /// </summary>
         /// <param name="source"></param>
         public void SetControl(Control source)
         {
+            if (source == null)
+                return;
             source.Text = ToString();
             source.SetToolTip(LanguageBookTooltip);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj is SourceString objOther)
+                return Equals(objOther);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return new {Language, Code, Page}.GetHashCode();
+        }
+
+        public bool Equals(SourceString other)
+        {
+            return other != null && Language == other.Language && Code == other.Code && Page == other.Page;
+        }
+
+        public static bool operator ==(SourceString left, SourceString right)
+        {
+            if (ReferenceEquals(left, null))
+            {
+                return ReferenceEquals(right, null);
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(SourceString left, SourceString right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(SourceString left, SourceString right)
+        {
+            return ReferenceEquals(left, null) ? !ReferenceEquals(right, null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(SourceString left, SourceString right)
+        {
+            return ReferenceEquals(left, null) || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(SourceString left, SourceString right)
+        {
+            return !ReferenceEquals(left, null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(SourceString left, SourceString right)
+        {
+            return ReferenceEquals(left, null) ? ReferenceEquals(right, null) : left.CompareTo(right) >= 0;
         }
     }
 }

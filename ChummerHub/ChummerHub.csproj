@@ -9,6 +9,7 @@
     <ApplicationInsightsResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsAnnotationResourceId>
     <PackageProjectUrl>https://sinners.azurewebsites.net/</PackageProjectUrl>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
