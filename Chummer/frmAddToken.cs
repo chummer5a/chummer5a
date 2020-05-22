@@ -27,6 +27,7 @@ namespace Chummer
     {
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
+        private bool _blnCharacterAdded;
         private Character _character;
 
         public frmAddToken(InitiativeUserControl init)
@@ -67,6 +68,7 @@ namespace Chummer
                 if (!await objCharacter.Load().ConfigureAwait(true))
                 {
                     Cursor = Cursors.Default;   // TODO edward setup error page
+                    objCharacter.Dispose();
                     return false; // we obviously cannot init
                 }
 
@@ -74,6 +76,11 @@ namespace Chummer
                 txtName.Text = objCharacter.Name;
                 if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
                     nudInitStart.Value = intTemp;
+                if (_character != null)
+                {
+                    _character.Dispose();
+                    _blnCharacterAdded = false;
+                }
                 _character = objCharacter;
                 Cursor = Cursors.Default;
                 return true;
@@ -128,6 +135,7 @@ namespace Chummer
             else
                 _character.InitRoll = int.MinValue;
 
+            _blnCharacterAdded = true;
             parentControl.AddToken(_character);
             Close();
         }

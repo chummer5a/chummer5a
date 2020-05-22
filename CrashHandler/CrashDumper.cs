@@ -205,8 +205,6 @@ namespace CrashHandler
 
                 Process?.Kill();
             }
-
-            CrashLogWriter.Close();
         }
 
         private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
@@ -312,11 +310,8 @@ namespace CrashHandler
 		{
 			byte[] encrypted;
             // Create the streams used for encryption.
-            AesManaged managed = null;
-            try
-			{
-                managed = new AesManaged();
-
+            using (AesManaged managed = new AesManaged())
+            {
                 Iv = managed.IV;
 				Key = managed.Key;
 
@@ -331,10 +326,6 @@ namespace CrashHandler
                     encrypted = msEncrypt.ToArray();
                 }
 			}
-            finally
-            {
-                managed?.Dispose();
-            }
 
 			return encrypted;
 		}
@@ -488,7 +479,7 @@ namespace CrashHandler
                 if (disposing)
                 {
                     _startSendEvent.Dispose();
-                    CrashLogWriter?.Dispose();
+                    CrashLogWriter?.Close();
                 }
 
                 disposedValue = true;

@@ -493,29 +493,27 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities);
-                frmSelectLifestyleQuality.ShowDialog(this);
-
-                // Don't do anything else if the form was canceled.
-                if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                using (frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
                 {
-                    frmSelectLifestyleQuality.Close();
-                    return;
+                    frmSelectLifestyleQuality.ShowDialog(this);
+
+                    // Don't do anything else if the form was canceled.
+                    if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                        return;
+                    blnAddAgain = frmSelectLifestyleQuality.AddAgain;
+
+                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
+
+                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+
+                    objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    objQuality.Free = frmSelectLifestyleQuality.FreeCost;
+                    //objNode.ContextMenuStrip = cmsQuality;
+                    if (objQuality.InternalId.IsEmptyGuid())
+                        continue;
+
+                    _objLifestyle.LifestyleQualities.Add(objQuality);
                 }
-                blnAddAgain = frmSelectLifestyleQuality.AddAgain;
-
-                XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
-
-                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-                objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                objQuality.Free = frmSelectLifestyleQuality.FreeCost;
-                frmSelectLifestyleQuality.Close();
-                //objNode.ContextMenuStrip = cmsQuality;
-                if (objQuality.InternalId.IsEmptyGuid())
-                    continue;
-
-                _objLifestyle.LifestyleQualities.Add(objQuality);
             }
             while (blnAddAgain);
         }

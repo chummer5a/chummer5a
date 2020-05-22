@@ -79,27 +79,30 @@ namespace Chummer.Plugins
         public static bool RegisterChummerProtocol()
         {
             string startupExe = Assembly.GetEntryAssembly()?.Location;
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
             bool reregisterKey = false;
-            if (key != null)
+            using (RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer")) //open myApp protocol's subkey
             {
-                if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
-                    reregisterKey = true;
-                else if (!string.IsNullOrEmpty(key.GetValue("URL Protocol")?.ToString()))
-                    reregisterKey = true;
-                key = key.OpenSubKey(@"shell\open\command");
-                if (key == null)
-                    reregisterKey = true;
+                if (key != null)
+                {
+                    if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
+                        reregisterKey = true;
+                    else if (!string.IsNullOrEmpty(key.GetValue("URL Protocol")?.ToString()))
+                        reregisterKey = true;
+                    else
+                    {
+                        using (RegistryKey subkey = key.OpenSubKey(@"shell\open\command"))
+                        {
+                            if (subkey == null)
+                                reregisterKey = true;
+                            else if (subkey.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
+                                reregisterKey = true;
+                        }
+                    }
+                }
                 else
                 {
-                    if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
-                        reregisterKey = true;
-                    key.Close();
+                    reregisterKey = true;
                 }
-            }
-            else
-            {
-                reregisterKey = true;
             }
 
             if (reregisterKey == false)
@@ -239,32 +242,33 @@ namespace Chummer.Plugins
                     {
                         Log.Trace(infofile +  " found: parsing it!");
 
-                        StreamReader file = new StreamReader(infofile);
-                        string line;
-                        while ((line = file.ReadLine()) != null)
+                        using (StreamReader file = new StreamReader(infofile))
                         {
-                            string plugindll = Path.Combine(plugindir, line);
-                            Log.Trace(infofile + " containes line: " + plugindll + " - trying to find it...");
-                            if (File.Exists(plugindll))
+                            string line;
+                            while ((line = file.ReadLine()) != null)
                             {
-                                FileInfo fi = new FileInfo(plugindll);
-                                myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: fi.Name);
-                                Log.Info("Searching for plugin-interface in dll: " + plugindll);
-                                catalog.Catalogs.Add(myDirectoryCatalog);
-                            }
-                            else
-                            {
-                                Log.Warn("Could not find dll from " + infofile + ": " + plugindll); myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
-                                myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
-                                Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
-                                catalog.Catalogs.Add(myDirectoryCatalog);
+                                string plugindll = Path.Combine(plugindir, line);
+                                Log.Trace(infofile + " containes line: " + plugindll + " - trying to find it...");
+                                if (File.Exists(plugindll))
+                                {
+                                    FileInfo fi = new FileInfo(plugindll);
+                                    myDirectoryCatalog = new DirectoryCatalog(plugindir, fi.Name);
+                                    Log.Info("Searching for plugin-interface in dll: " + plugindll);
+                                    catalog.Catalogs.Add(myDirectoryCatalog);
+                                }
+                                else
+                                {
+                                    Log.Warn("Could not find dll from " + infofile + ": " + plugindll);
+                                    myDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
+                                    Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
+                                    catalog.Catalogs.Add(myDirectoryCatalog);
+                                }
                             }
                         }
-                        file.Close();
                     }
                     else
                     {
-                        myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
+                        myDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
                         Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
                         catalog.Catalogs.Add(myDirectoryCatalog);
                     }

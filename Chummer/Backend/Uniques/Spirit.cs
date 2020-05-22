@@ -47,7 +47,7 @@ namespace Chummer
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
     [DebuggerDisplay("{Name}, \"{CritterName}\"")]
-    public class Spirit : IHasInternalId, IHasName, IHasXmlNode, IHasMugshots, INotifyPropertyChanged, IHasNotes
+    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlNode, IHasMugshots, INotifyPropertyChanged, IHasNotes
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -791,11 +791,14 @@ namespace Chummer
                 if (objOldLinkedCharacter != null)
                 {
                     objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
-                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objOldLinkedCharacter) && x != objOldLinkedCharacter))
+                    if (Program.MainForm.OpenCharacters.Contains(objOldLinkedCharacter))
                     {
-                        Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
-                        objOldLinkedCharacter.DeleteCharacter();
+                        if (Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != objOldLinkedCharacter))
+                            Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
+                    else
+                        objOldLinkedCharacter.Dispose();
                 }
                 if (_objLinkedCharacter != null)
                 {
@@ -828,9 +831,9 @@ namespace Chummer
 
         #region IHasMugshots
         /// <summary>
-		/// Character's portraits encoded using Base64.
-		/// </summary>
-		public IList<Image> Mugshots
+        /// Character's portraits encoded using Base64.
+        /// </summary>
+        public IList<Image> Mugshots
         {
             get
             {
@@ -1004,6 +1007,14 @@ namespace Chummer
                 // </mugshots>
                 objWriter.WriteEndElement();
             }
+        }
+
+        public void Dispose()
+        {
+            if (_objLinkedCharacter != null && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
+                                            && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
+                Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
         }
         #endregion
     }

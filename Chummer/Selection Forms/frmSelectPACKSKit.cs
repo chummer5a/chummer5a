@@ -915,42 +915,45 @@ namespace Chummer
                 XmlNode xmlDocumentBasePacksNode = objXmlDocument.SelectSingleNode("/chummer/packs");
                 if (xmlDocumentBasePacksNode?.SelectSingleNode("pack[name = " + strSelectedKit.CleanXPath() + " and category = \"Custom\"]") != null)
                 {
-                    FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                    using (FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
-                        Formatting = Formatting.Indented,
-                        Indentation = 1,
-                        IndentChar = '\t'
-                    };
-                    objWriter.WriteStartDocument();
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        })
+                        {
+                            objWriter.WriteStartDocument();
 
-                    // <chummer>
-                    objWriter.WriteStartElement("chummer");
-                    // <packs>
-                    objWriter.WriteStartElement("packs");
+                            // <chummer>
+                            objWriter.WriteStartElement("chummer");
+                            // <packs>
+                            objWriter.WriteStartElement("packs");
 
-                    // If this is not a new file, write out the current contents.
-                    using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
-                        if (objXmlNodeList?.Count > 0)
-                            foreach (XmlNode objXmlNode in objXmlNodeList)
-                            {
-                                if (objXmlNode["name"]?.InnerText != strSelectedKit)
-                                {
-                                    // <pack>
-                                    objWriter.WriteStartElement("pack");
-                                    objXmlNode.WriteContentTo(objWriter);
-                                    // </pack>
-                                    objWriter.WriteEndElement();
-                                }
-                            }
+                            // If this is not a new file, write out the current contents.
+                            using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
+                                if (objXmlNodeList?.Count > 0)
+                                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                                    {
+                                        if (objXmlNode["name"]?.InnerText != strSelectedKit)
+                                        {
+                                            // <pack>
+                                            objWriter.WriteStartElement("pack");
+                                            objXmlNode.WriteContentTo(objWriter);
+                                            // </pack>
+                                            objWriter.WriteEndElement();
+                                        }
+                                    }
 
-                    // </packs>
-                    objWriter.WriteEndElement();
-                    // </chummer>
-                    objWriter.WriteEndElement();
+                            // </packs>
+                            objWriter.WriteEndElement();
+                            // </chummer>
+                            objWriter.WriteEndElement();
 
-                    objWriter.WriteEndDocument();
-                    objWriter.Close();
+                            objWriter.WriteEndDocument();
+                        }
+                    }
                 }
             }
 

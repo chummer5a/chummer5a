@@ -1025,11 +1025,9 @@ namespace Chummer
                 }
 
                 // Trash the global variables and dispose of the Form.
-                if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(CharacterObject) && x != CharacterObject))
-                {
+                if (Program.MainForm.OpenCharacters.All(x => x != CharacterObject && !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
-                    CharacterObject.DeleteCharacter();
-                }
+
                 Dispose(true);
             }
         }
@@ -9306,32 +9304,35 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             Cursor = Cursors.WaitCursor;
 
-            frmLoading frmLoadingForm = new frmLoading {CharacterFile = CharacterObject.FileName};
-            frmLoadingForm.Reset(36);
-            frmLoadingForm.Show();
-            await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true);
-            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+            using (frmLoading frmLoadingForm = new frmLoading
+            {
+                CharacterFile = CharacterObject.FileName
+            })
+            {
+                frmLoadingForm.Reset(36);
+                frmLoadingForm.Show();
+                await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true);
+                frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
-            // Select the Magician's Tradition.
-            if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
-            else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                cboTradition.SelectedIndex = 0;
+                // Select the Magician's Tradition.
+                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                    cboTradition.SelectedIndex = 0;
 
-            // Select the Technomancer's Stream.
-            if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
-            else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                cboStream.SelectedIndex = 0;
+                // Select the Technomancer's Stream.
+                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                    cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                    cboStream.SelectedIndex = 0;
 
-            IsCharacterUpdateRequested = true;
-            _blnSkipUpdate = false;
-            // Immediately call character update because we know it's necessary
-            UpdateCharacterInfo();
+                IsCharacterUpdateRequested = true;
+                _blnSkipUpdate = false;
+                // Immediately call character update because we know it's necessary
+                UpdateCharacterInfo();
 
-            IsDirty = false;
-
-            frmLoadingForm.Close();
+                IsDirty = false;
+            }
 
             Cursor = Cursors.Default;
 

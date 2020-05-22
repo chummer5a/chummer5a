@@ -47,7 +47,7 @@ namespace Chummer
     /// A Contact or Enemy.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
-    public class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
+    public sealed class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
     {
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
@@ -852,7 +852,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Contact Colour.
+        /// Contact Color.
         /// </summary>
         public Color PreferredColor
         {
@@ -1010,11 +1010,14 @@ namespace Chummer
                 if (objOldLinkedCharacter != null)
                 {
                     objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
-                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objOldLinkedCharacter) && x != objOldLinkedCharacter))
+                    if (Program.MainForm.OpenCharacters.Contains(objOldLinkedCharacter))
                     {
-                        Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
-                        objOldLinkedCharacter.DeleteCharacter();
+                        if (Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != objOldLinkedCharacter))
+                            Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
+                    else
+                        objOldLinkedCharacter.Dispose();
                 }
                 if (_objLinkedCharacter != null)
                 {
@@ -1232,6 +1235,14 @@ namespace Chummer
                 // </mugshots>
                 objWriter.WriteEndElement();
             }
+        }
+
+        public void Dispose()
+        {
+            if (_objLinkedCharacter != null && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
+                                            && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
+                Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
         }
         #endregion
     }

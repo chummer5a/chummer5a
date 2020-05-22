@@ -230,323 +230,327 @@ namespace Chummer
         public void Save()
         {
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
-            FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+            using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                Formatting = Formatting.Indented,
-                Indentation = 1,
-                IndentChar = '\t'
-            };
-            objWriter.WriteStartDocument();
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                {
+                    Formatting = Formatting.Indented,
+                    Indentation = 1,
+                    IndentChar = '\t'
+                })
+                {
+                    objWriter.WriteStartDocument();
 
-            // <settings>
-            objWriter.WriteStartElement("settings");
+                    // <settings>
+                    objWriter.WriteStartElement("settings");
 
-            // <name />
-            objWriter.WriteElementString("name", _strName);
-            // <recentimagefolder />
-            if (!string.IsNullOrEmpty(_strImageFolder))
-            {
-                objWriter.WriteElementString("recentimagefolder", _strImageFolder);
+                    // <name />
+                    objWriter.WriteElementString("name", _strName);
+                    // <recentimagefolder />
+                    if (!string.IsNullOrEmpty(_strImageFolder))
+                    {
+                        objWriter.WriteElementString("recentimagefolder", _strImageFolder);
+                    }
+
+                    // <confirmdelete />
+                    objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <licenserestricted />
+                    objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <confirmkarmaexpense />
+                    objWriter.WriteElementString("confirmkarmaexpense", _blnConfirmKarmaExpense.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printzeroratingskills />
+                    objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <morelethalgameplay />
+                    objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <spiritforcebasedontotalmag />
+                    objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printexpenses />
+                    objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printfreeexpenses />
+                    objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenperbp />
+                    objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <hideitemsoveravaillimit />
+                    objWriter.WriteElementString("hideitemsoveravaillimit", _blnHideItemsOverAvailLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <UnarmedImprovementsApplyToWeapons />
+                    objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowinitiationincreatemode />
+                    objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usepointsonbrokengroups />
+                    objWriter.WriteElementString("usepointsonbrokengroups", _blnUsePointsOnBrokenGroups.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dontdoublequalities />
+                    objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityPurchaseCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dontdoublequalities />
+                    objWriter.WriteElementString("dontdoublequalityrefunds", _blnDontDoubleQualityRefundCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <ignoreart />
+                    objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cyberlegmovement />
+                    objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allow2ndmaxattribute />
+                    objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freekarmacontactsmultiplier />
+                    objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freekarmaknowledgemultiplier />
+                    objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freekarmaknowledgemultiplierenabled />
+                    objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freecontactsmultiplierenabled />
+                    objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freecontactsflatnumber />
+                    objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dronearmormultiplierenabled />
+                    objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dronearmorflatnumber />
+                    objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usetotalvalueforknowledge />
+                    objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usetotalvalueforcontacts />
+                    objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nosinglearmorencumbrance />
+                    objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <ignorecomplexformlimit />
+                    objWriter.WriteElementString("ignorecomplexformlimit", _blnIgnoreComplexFormLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <NoArmorEncumbrance />
+                    objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <esslossreducesmaximumonly />
+                    objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowskillregrouping />
+                    objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <metatypecostskarma />
+                    objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <metatypecostskarmamultiplier />
+                    objWriter.WriteElementString("metatypecostskarmamultiplier", _intMetatypeCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <limbcount />
+                    objWriter.WriteElementString("limbcount", _intLimbCount.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <excludelimbslot />
+                    objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
+                    // <allowcyberwareessdiscounts />
+                    objWriter.WriteElementString("allowcyberwareessdiscounts", _blnAllowCyberwareESSDiscounts.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <maximumarmormodifications />
+                    objWriter.WriteElementString("maximumarmormodifications", _blnMaximumArmorModifications.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <armordegredation />
+                    objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <specialkarmacostbasedonshownvalue />
+                    objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <exceedpositivequalities />
+                    objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <exceedpositivequalitiescostdoubled />
+                    objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPPCareer.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <mysadeptsecondmagattribute />
+                    objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <exceednegativequalities />
+                    objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <exceednegativequalitieslimit />
+                    objWriter.WriteElementString("exceednegativequalitieslimit", _blnExceedNegativeQualitiesLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <multiplyrestrictedcost />
+                    objWriter.WriteElementString("multiplyrestrictedcost", _blnMultiplyRestrictedCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <multiplyforbiddencost />
+                    objWriter.WriteElementString("multiplyforbiddencost", _blnMultiplyForbiddenCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <restrictedcostmultiplier />
+                    objWriter.WriteElementString("restrictedcostmultiplier", _intRestrictedCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <forbiddencostmultiplier />
+                    objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <donotroundessenceinternally />
+                    objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <donotroundessenceinternally />
+                    objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenformat />
+                    objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
+                    // <essencedecimals />
+                    objWriter.WriteElementString("essenceformat", _strEssenceFormat);
+                    // <enforcecapacity />
+                    objWriter.WriteElementString("enforcecapacity", _blnEnforceCapacity.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <restrictrecoil />
+                    objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <unrestrictednuyen />
+                    objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <calculatecommlinkresponse />
+                    objWriter.WriteElementString("calculatecommlinkresponse", _blnCalculateCommlinkResponse.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowhigherstackedfoci />
+                    objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <alloweditpartofbaseweapon />
+                    objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <breakskillgroupsincreatemode />
+                    objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowpointbuyspecializationsonkarmaskills />
+                    objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <extendanydetectionspell />
+                    objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowskilldicerolling />
+                    objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString(GlobalOptions.InvariantCultureInfo));
+                    //<dontusecyberlimbcalculation />
+                    objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <alternatemetatypeattributekarma />
+                    objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <reversekarmapriorityorder />
+                    objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printnotes />
+                    objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowobsolescentupgrade />
+                    objWriter.WriteElementString("allowobsolescentupgrade", _blnAllowObsolescentUpgrade.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowbiowaresuites />
+                    objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freespiritpowerpointsmag />
+                    objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowhoverincrement />
+                    objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <searchincategoryonly />
+                    objWriter.WriteElementString("searchincategoryonly", SearchInCategoryOnly.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <compensateskillgroupkarmadifference />
+                    objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <autobackstory />
+                    objWriter.WriteElementString("autobackstory", _blnAutomaticBackstory.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freemartialartspecialization />
+                    objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <priorityspellsasadeptpowers />
+                    objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usecalculatedpublicawareness />
+                    objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <increasedimprovedabilitymodifier />
+                    objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowfreegrids />
+                    objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowtechnomancerschooling />
+                    objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cyberlimbattributebonuscap />
+                    objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <clampattributeminimum />
+                    objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <karmacost>
+                    objWriter.WriteStartElement("karmacost");
+                    // <karmaattribute />
+                    objWriter.WriteElementString("karmaattribute", _intKarmaAttribute.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaquality />
+                    objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspecialization />
+                    objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaknospecialization />
+                    objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewknowledgeskill />
+                    objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewactiveskill />
+                    objWriter.WriteElementString("karmanewactiveskill", _intKarmaNewActiveSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewskillgroup />
+                    objWriter.WriteElementString("karmanewskillgroup", _intKarmaNewSkillGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimproveknowledgeskill />
+                    objWriter.WriteElementString("karmaimproveknowledgeskill", _intKarmaImproveKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimproveactiveskill />
+                    objWriter.WriteElementString("karmaimproveactiveskill", _intKarmaImproveActiveSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimproveskillgroup />
+                    objWriter.WriteElementString("karmaimproveskillgroup", _intKarmaImproveSkillGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspell />
+                    objWriter.WriteElementString("karmaspell", _intKarmaSpell.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaenhancement />
+                    objWriter.WriteElementString("karmaenhancement", _intKarmaEnhancement.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewcomplexform />
+                    objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimprovecomplexform />
+                    objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewaiprogram />
+                    objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewaiadvancedprogram />
+                    objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanuyenper />
+                    objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacontact />
+                    objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaenemy />
+                    objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacarryover />
+                    objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspirit />
+                    objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmamaneuver />
+                    objWriter.WriteElementString("karmamaneuver", _intKarmaManeuver.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmainitiation />
+                    objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmainitiationflat />
+                    objWriter.WriteElementString("karmainitiationflat", _intKarmaInitiationFlat.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmametamagic />
+                    objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacomplexformoption />
+                    objWriter.WriteElementString("karmacomplexformoption", _intKarmaComplexFormOption.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacomplexformskillsoft />
+                    objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillfot.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmajoingroup />
+                    objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaleavegroup />
+                    objWriter.WriteElementString("karmaleavegroup", _intKarmaLeaveGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaalchemicalfocus />
+                    objWriter.WriteElementString("karmaalchemicalfocus", _intKarmaAlchemicalFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmabanishingfocus />
+                    objWriter.WriteElementString("karmabanishingfocus", _intKarmaBanishingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmabindingfocus />
+                    objWriter.WriteElementString("karmabindingfocus", _intKarmaBindingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacenteringfocus />
+                    objWriter.WriteElementString("karmacenteringfocus", _intKarmaCenteringFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacounterspellingfocus />
+                    objWriter.WriteElementString("karmacounterspellingfocus", _intKarmaCounterspellingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmadisenchantingfocus />
+                    objWriter.WriteElementString("karmadisenchantingfocus", _intKarmaDisenchantingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaflexiblesignaturefocus />
+                    objWriter.WriteElementString("karmaflexiblesignaturefocus", _intKarmaFlexibleSignatureFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmamaskingfocus />
+                    objWriter.WriteElementString("karmamaskingfocus", _intKarmaMaskingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmapowerfocus />
+                    objWriter.WriteElementString("karmapowerfocus", _intKarmaPowerFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaqifocus />
+                    objWriter.WriteElementString("karmaqifocus", _intKarmaQiFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaritualspellcastingfocus />
+                    objWriter.WriteElementString("karmaritualspellcastingfocus", _intKarmaRitualSpellcastingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspellcastingfocus />
+                    objWriter.WriteElementString("karmaspellcastingfocus", _intKarmaSpellcastingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspellshapingfocus />
+                    objWriter.WriteElementString("karmaspellshapingfocus", _intKarmaSpellShapingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmasummoningfocus />
+                    objWriter.WriteElementString("karmasummoningfocus", _intKarmaSummoningFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmasustainingfocus />
+                    objWriter.WriteElementString("karmasustainingfocus", _intKarmaSustainingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaweaponfocus />
+                    objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaweaponfocus />
+                    objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalOptions.InvariantCultureInfo));
+                    // </karmacost>
+                    objWriter.WriteEndElement();
+
+                    // <books>
+                    objWriter.WriteStartElement("books");
+                    foreach (string strBook in _lstBooks)
+                        objWriter.WriteElementString("book", strBook);
+                    // </books>
+                    objWriter.WriteEndElement();
+
+
+                    // <customdatadirectorynames>
+                    objWriter.WriteStartElement("customdatadirectorynames");
+                    foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
+                        objWriter.WriteElementString("directoryname", strDirectoryName);
+                    // </customdatadirectorynames>
+                    objWriter.WriteEndElement();
+                    // <hascustomdirectories>
+
+                    // <defaultbuild>
+                    objWriter.WriteStartElement("defaultbuild");
+                    // <buildmethod />
+                    objWriter.WriteElementString("buildmethod", _strBuildMethod);
+                    // <buildpoints />
+                    objWriter.WriteElementString("buildpoints", _intBuildPoints.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <availability />
+                    objWriter.WriteElementString("availability", _intAvailability.ToString(GlobalOptions.InvariantCultureInfo));
+                    // </defaultbuild>
+                    objWriter.WriteEndElement();
+
+                    // </settings>
+                    objWriter.WriteEndElement();
+
+                    objWriter.WriteEndDocument();
+                }
             }
-            // <confirmdelete />
-            objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString(GlobalOptions.InvariantCultureInfo));
-            // <licenserestricted />
-            objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalOptions.InvariantCultureInfo));
-            // <confirmkarmaexpense />
-            objWriter.WriteElementString("confirmkarmaexpense", _blnConfirmKarmaExpense.ToString(GlobalOptions.InvariantCultureInfo));
-            // <printzeroratingskills />
-            objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString(GlobalOptions.InvariantCultureInfo));
-            // <morelethalgameplay />
-            objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalOptions.InvariantCultureInfo));
-            // <spiritforcebasedontotalmag />
-            objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalOptions.InvariantCultureInfo));
-            // <printexpenses />
-            objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString(GlobalOptions.InvariantCultureInfo));
-            // <printfreeexpenses />
-            objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString(GlobalOptions.InvariantCultureInfo));
-            // <nuyenperbp />
-            objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
-            // <hideitemsoveravaillimit />
-            objWriter.WriteElementString("hideitemsoveravaillimit", _blnHideItemsOverAvailLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <UnarmedImprovementsApplyToWeapons />
-            objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowinitiationincreatemode />
-            objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString(GlobalOptions.InvariantCultureInfo));
-            // <usepointsonbrokengroups />
-            objWriter.WriteElementString("usepointsonbrokengroups", _blnUsePointsOnBrokenGroups.ToString(GlobalOptions.InvariantCultureInfo));
-            // <dontdoublequalities />
-            objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityPurchaseCost.ToString(GlobalOptions.InvariantCultureInfo));
-            // <dontdoublequalities />
-            objWriter.WriteElementString("dontdoublequalityrefunds", _blnDontDoubleQualityRefundCost.ToString(GlobalOptions.InvariantCultureInfo));
-            // <ignoreart />
-            objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString(GlobalOptions.InvariantCultureInfo));
-            // <cyberlegmovement />
-            objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allow2ndmaxattribute />
-            objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freekarmacontactsmultiplier />
-            objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freekarmaknowledgemultiplier />
-            objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freekarmaknowledgemultiplierenabled />
-            objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freecontactsmultiplierenabled />
-            objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freecontactsflatnumber />
-            objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString(GlobalOptions.InvariantCultureInfo));
-            // <dronearmormultiplierenabled />
-            objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <dronearmorflatnumber />
-            objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <usetotalvalueforknowledge />
-            objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString(GlobalOptions.InvariantCultureInfo));
-            // <usetotalvalueforcontacts />
-            objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString(GlobalOptions.InvariantCultureInfo));
-            // <nosinglearmorencumbrance />
-            objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
-            // <ignorecomplexformlimit />
-            objWriter.WriteElementString("ignorecomplexformlimit", _blnIgnoreComplexFormLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <NoArmorEncumbrance />
-            objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
-            // <esslossreducesmaximumonly />
-            objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowskillregrouping />
-            objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString(GlobalOptions.InvariantCultureInfo));
-            // <metatypecostskarma />
-            objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            // <metatypecostskarmamultiplier />
-            objWriter.WriteElementString("metatypecostskarmamultiplier", _intMetatypeCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <limbcount />
-            objWriter.WriteElementString("limbcount", _intLimbCount.ToString(GlobalOptions.InvariantCultureInfo));
-            // <excludelimbslot />
-            objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
-            // <allowcyberwareessdiscounts />
-            objWriter.WriteElementString("allowcyberwareessdiscounts", _blnAllowCyberwareESSDiscounts.ToString(GlobalOptions.InvariantCultureInfo));
-            // <maximumarmormodifications />
-            objWriter.WriteElementString("maximumarmormodifications", _blnMaximumArmorModifications.ToString(GlobalOptions.InvariantCultureInfo));
-            // <armordegredation />
-            objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString(GlobalOptions.InvariantCultureInfo));
-            // <specialkarmacostbasedonshownvalue />
-            objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString(GlobalOptions.InvariantCultureInfo));
-            // <exceedpositivequalities />
-            objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString(GlobalOptions.InvariantCultureInfo));
-            // <exceedpositivequalitiescostdoubled />
-            objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString(GlobalOptions.InvariantCultureInfo));
-
-            objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPPCareer.ToString(GlobalOptions.InvariantCultureInfo));
-
-            // <mysadeptsecondmagattribute />
-            objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString(GlobalOptions.InvariantCultureInfo));
-
-            // <exceednegativequalities />
-            objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString(GlobalOptions.InvariantCultureInfo));
-            // <exceednegativequalitieslimit />
-            objWriter.WriteElementString("exceednegativequalitieslimit", _blnExceedNegativeQualitiesLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <multiplyrestrictedcost />
-            objWriter.WriteElementString("multiplyrestrictedcost", _blnMultiplyRestrictedCost.ToString(GlobalOptions.InvariantCultureInfo));
-            // <multiplyforbiddencost />
-            objWriter.WriteElementString("multiplyforbiddencost", _blnMultiplyForbiddenCost.ToString(GlobalOptions.InvariantCultureInfo));
-            // <restrictedcostmultiplier />
-            objWriter.WriteElementString("restrictedcostmultiplier", _intRestrictedCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <forbiddencostmultiplier />
-            objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <donotroundessenceinternally />
-            objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString(GlobalOptions.InvariantCultureInfo));
-            // <donotroundessenceinternally />
-            objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <nuyenformat />
-            objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
-            // <essencedecimals />
-            objWriter.WriteElementString("essenceformat", _strEssenceFormat);
-            // <enforcecapacity />
-            objWriter.WriteElementString("enforcecapacity", _blnEnforceCapacity.ToString(GlobalOptions.InvariantCultureInfo));
-            // <restrictrecoil />
-            objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString(GlobalOptions.InvariantCultureInfo));
-            // <unrestrictednuyen />
-            objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-            // <calculatecommlinkresponse />
-            objWriter.WriteElementString("calculatecommlinkresponse", _blnCalculateCommlinkResponse.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowhigherstackedfoci />
-            objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString(GlobalOptions.InvariantCultureInfo));
-            // <alloweditpartofbaseweapon />
-            objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString(GlobalOptions.InvariantCultureInfo));
-            // <breakskillgroupsincreatemode />
-            objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowpointbuyspecializationsonkarmaskills />
-            objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(GlobalOptions.InvariantCultureInfo));
-            // <extendanydetectionspell />
-            objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowskilldicerolling />
-            objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString(GlobalOptions.InvariantCultureInfo));
-            //<dontusecyberlimbcalculation />
-            objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString(GlobalOptions.InvariantCultureInfo));
-            // <alternatemetatypeattributekarma />
-            objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            // <reversekarmapriorityorder />
-            objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString(GlobalOptions.InvariantCultureInfo));
-            // <printnotes />
-            objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowobsolescentupgrade />
-            objWriter.WriteElementString("allowobsolescentupgrade", _blnAllowObsolescentUpgrade.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowbiowaresuites />
-            objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freespiritpowerpointsmag />
-            objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowhoverincrement />
-            objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString(GlobalOptions.InvariantCultureInfo));
-            // <searchincategoryonly />
-            objWriter.WriteElementString("searchincategoryonly", SearchInCategoryOnly.ToString(GlobalOptions.InvariantCultureInfo));
-            // <compensateskillgroupkarmadifference />
-            objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString(GlobalOptions.InvariantCultureInfo));
-            // <autobackstory />
-            objWriter.WriteElementString("autobackstory", _blnAutomaticBackstory.ToString(GlobalOptions.InvariantCultureInfo));
-            // <freemartialartspecialization />
-            objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
-            // <priorityspellsasadeptpowers />
-            objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString(GlobalOptions.InvariantCultureInfo));
-            // <usecalculatedpublicawareness />
-            objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
-            // <increasedimprovedabilitymodifier />
-            objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowfreegrids />
-            objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString(GlobalOptions.InvariantCultureInfo));
-            // <allowtechnomancerschooling />
-            objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString(GlobalOptions.InvariantCultureInfo));
-            // <cyberlimbattributebonuscap />
-            objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalOptions.InvariantCultureInfo));
-            // <clampattributeminimum />
-            objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalOptions.InvariantCultureInfo));
-
-            // <karmacost>
-            objWriter.WriteStartElement("karmacost");
-            // <karmaattribute />
-            objWriter.WriteElementString("karmaattribute", _intKarmaAttribute.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaquality />
-            objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaspecialization />
-            objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaknospecialization />
-            objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanewknowledgeskill />
-            objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanewactiveskill />
-            objWriter.WriteElementString("karmanewactiveskill", _intKarmaNewActiveSkill.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanewskillgroup />
-            objWriter.WriteElementString("karmanewskillgroup", _intKarmaNewSkillGroup.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaimproveknowledgeskill />
-            objWriter.WriteElementString("karmaimproveknowledgeskill", _intKarmaImproveKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaimproveactiveskill />
-            objWriter.WriteElementString("karmaimproveactiveskill", _intKarmaImproveActiveSkill.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaimproveskillgroup />
-            objWriter.WriteElementString("karmaimproveskillgroup", _intKarmaImproveSkillGroup.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaspell />
-            objWriter.WriteElementString("karmaspell", _intKarmaSpell.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaenhancement />
-            objWriter.WriteElementString("karmaenhancement", _intKarmaEnhancement.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanewcomplexform />
-            objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaimprovecomplexform />
-            objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanewaiprogram />
-            objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanewaiadvancedprogram />
-            objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmanuyenper />
-            objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmacontact />
-            objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaenemy />
-            objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmacarryover />
-            objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaspirit />
-            objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmamaneuver />
-            objWriter.WriteElementString("karmamaneuver", _intKarmaManeuver.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmainitiation />
-            objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmainitiationflat />
-            objWriter.WriteElementString("karmainitiationflat", _intKarmaInitiationFlat.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmametamagic />
-            objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmacomplexformoption />
-            objWriter.WriteElementString("karmacomplexformoption", _intKarmaComplexFormOption.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmacomplexformskillsoft />
-            objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillfot.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmajoingroup />
-            objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaleavegroup />
-            objWriter.WriteElementString("karmaleavegroup", _intKarmaLeaveGroup.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaalchemicalfocus />
-            objWriter.WriteElementString("karmaalchemicalfocus", _intKarmaAlchemicalFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmabanishingfocus />
-            objWriter.WriteElementString("karmabanishingfocus", _intKarmaBanishingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmabindingfocus />
-            objWriter.WriteElementString("karmabindingfocus", _intKarmaBindingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmacenteringfocus />
-            objWriter.WriteElementString("karmacenteringfocus", _intKarmaCenteringFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmacounterspellingfocus />
-            objWriter.WriteElementString("karmacounterspellingfocus", _intKarmaCounterspellingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmadisenchantingfocus />
-            objWriter.WriteElementString("karmadisenchantingfocus", _intKarmaDisenchantingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaflexiblesignaturefocus />
-            objWriter.WriteElementString("karmaflexiblesignaturefocus", _intKarmaFlexibleSignatureFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmamaskingfocus />
-            objWriter.WriteElementString("karmamaskingfocus", _intKarmaMaskingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmapowerfocus />
-            objWriter.WriteElementString("karmapowerfocus", _intKarmaPowerFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaqifocus />
-            objWriter.WriteElementString("karmaqifocus", _intKarmaQiFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaritualspellcastingfocus />
-            objWriter.WriteElementString("karmaritualspellcastingfocus", _intKarmaRitualSpellcastingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaspellcastingfocus />
-            objWriter.WriteElementString("karmaspellcastingfocus", _intKarmaSpellcastingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaspellshapingfocus />
-            objWriter.WriteElementString("karmaspellshapingfocus", _intKarmaSpellShapingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmasummoningfocus />
-            objWriter.WriteElementString("karmasummoningfocus", _intKarmaSummoningFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmasustainingfocus />
-            objWriter.WriteElementString("karmasustainingfocus", _intKarmaSustainingFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaweaponfocus />
-            objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karmaweaponfocus />
-            objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalOptions.InvariantCultureInfo));
-            // </karmacost>
-            objWriter.WriteEndElement();
-
-            // <books>
-            objWriter.WriteStartElement("books");
-            foreach (string strBook in _lstBooks)
-                objWriter.WriteElementString("book", strBook);
-            // </books>
-            objWriter.WriteEndElement();
-
-
-            // <customdatadirectorynames>
-            objWriter.WriteStartElement("customdatadirectorynames");
-            foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
-                objWriter.WriteElementString("directoryname", strDirectoryName);
-            // </customdatadirectorynames>
-            objWriter.WriteEndElement();
-            // <hascustomdirectories>
-
-            // <defaultbuild>
-            objWriter.WriteStartElement("defaultbuild");
-            // <buildmethod />
-            objWriter.WriteElementString("buildmethod", _strBuildMethod);
-            // <buildpoints />
-            objWriter.WriteElementString("buildpoints", _intBuildPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            // <availability />
-            objWriter.WriteElementString("availability", _intAvailability.ToString(GlobalOptions.InvariantCultureInfo));
-            // </defaultbuild>
-            objWriter.WriteEndElement();
-
-            // </settings>
-            objWriter.WriteEndElement();
-
-            objWriter.WriteEndDocument();
-            objWriter.Close();
         }
 
         /// <summary>

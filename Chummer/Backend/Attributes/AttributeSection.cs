@@ -31,7 +31,7 @@ using Chummer.Annotations;
 namespace Chummer.Backend.Attributes
 {
 
-	public class AttributeSection : INotifyMultiplePropertyChanged
+	public sealed class AttributeSection : INotifyMultiplePropertyChanged, IDisposable
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -186,6 +186,12 @@ namespace Chummer.Backend.Attributes
 	        AttributeList.Clear();
 	        SpecialAttributeList.Clear();
 	    }
+
+        public void Dispose()
+        {
+            foreach (BindingSource objSource in _dicBindings.Values)
+                objSource.Dispose();
+        }
 
         internal void Save(XmlTextWriter objWriter)
 		{

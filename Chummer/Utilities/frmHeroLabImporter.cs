@@ -484,7 +484,6 @@ namespace Chummer
                         if (!blnLoaded)
                         {
                             Program.MainForm.OpenCharacters.Remove(objCharacter);
-                            objCharacter.DeleteCharacter();
                             Cursor = objOldCursor;
                             cmdImport.Enabled = true;
                             cmdSelectFile.Enabled = true;

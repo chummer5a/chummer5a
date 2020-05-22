@@ -1215,11 +1215,9 @@ namespace Chummer
                 }
 
                 // Trash the global variables and dispose of the Form.
-                if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(CharacterObject) && x != CharacterObject))
-                {
+                if (Program.MainForm.OpenCharacters.All(x => x != CharacterObject && !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
-                    CharacterObject.DeleteCharacter();
-                }
+
                 Dispose(true);
             }
         }
@@ -2580,179 +2578,178 @@ namespace Chummer
                     return;
             }
 
+            string strFileName;
             // Prompt the user to select a save file to possess.
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
-            };
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            })
             {
-                Cursor = Cursors.WaitCursor;
-                frmLoading frmLoadingForm = new frmLoading();
-                frmLoadingForm.Reset(77);
-                Character objVessel = new Character
-                {
-                    FileName = openFileDialog.FileName
-                };
-                frmLoadingForm.CharacterFile = objVessel.FileName;
-                frmLoadingForm.Show();
-                await objVessel.Load(frmLoadingForm);
-                // Make sure the Vessel is in Career Mode.
-                if (!objVessel.Created)
-                {
-                    Cursor = Cursors.Default;
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    objVessel.DeleteCharacter();
-                    frmLoadingForm.Close();
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                }
+                strFileName = openFileDialog.FileName;
+            }
 
-                // Load the Spirit's save file into a new Merge character.
-                Character objMerge = new Character
-                {
-                    FileName = CharacterObject.FileName
-                };
-                frmLoadingForm.CharacterFile = objMerge.FileName;
-                await objMerge.Load(frmLoadingForm);
-                objMerge.Possessed = true;
-                objMerge.Alias = objVessel.CharacterName + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+            string strOpenFile = string.Empty;
+            System.Windows.Forms.Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
 
-                // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                bool blnHasImmunity = false;
-                foreach (CritterPower objCritterPower in objMerge.CritterPowers)
+            using (Character objMerge = new Character
+            {
+                FileName = CharacterObject.FileName
+            })
+            {
+                using (Character objVessel = new Character
                 {
-                    if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                    FileName = strFileName
+                })
+                {
+                    using (frmLoading frmLoadingForm = new frmLoading
                     {
-                        blnHasImmunity = true;
-                        break;
+                        CharacterFile = objVessel.FileName
+                    })
+                    {
+                        frmLoadingForm.Reset(77);
+                        frmLoadingForm.Show();
+                        await objVessel.Load(frmLoadingForm).ConfigureAwait(true);
+                        // Make sure the Vessel is in Career Mode.
+                        if (!objVessel.Created)
+                        {
+                            Cursor = Cursors.Default;
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        // Load the Spirit's save file into a new Merge character.
+                        frmLoadingForm.CharacterFile = objMerge.FileName;
+                        await objMerge.Load(frmLoadingForm).ConfigureAwait(true);
+                        objMerge.Possessed = true;
+                        objMerge.Alias = objVessel.CharacterName + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+
+                        // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                        bool blnHasImmunity = false;
+                        foreach (CritterPower objCritterPower in objMerge.CritterPowers)
+                        {
+                            if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                            {
+                                blnHasImmunity = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnHasImmunity)
+                        {
+                            XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
+                            XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                            CritterPower objCritterPower = new CritterPower(objMerge);
+                            objCritterPower.Create(objPower, 0, "Normal Weapons");
+                            objMerge.CritterPowers.Add(objCritterPower);
+                        }
+
+                        //TOD: Implement Possession attribute bonuses.
+                        /*
+                        // Add the Vessel's Physical Attributes to the Spirit's Force.
+                        objMerge.BOD.MetatypeMaximum = objVessel.BOD.Value + objMerge.MAG.TotalValue;
+                        objMerge.BOD.Value = objVessel.BOD.Value + objMerge.MAG.TotalValue;
+                        objMerge.AGI.MetatypeMaximum = objVessel.AGI.Value + objMerge.MAG.TotalValue;
+                        objMerge.AGI.Value = objVessel.AGI.Value + objMerge.MAG.TotalValue;
+                        objMerge.REA.MetatypeMaximum = objVessel.REA.Value + objMerge.MAG.TotalValue;
+                        objMerge.REA.Value = objVessel.REA.Value + objMerge.MAG.TotalValue;
+                        objMerge.STR.MetatypeMaximum = objVessel.STR.Value + objMerge.MAG.TotalValue;
+                        objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
+                        */
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                        // Copy any Lifestyles the Vessel has.
+                        foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
+                            objMerge.Lifestyles.Add(objLifestyle);
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                        // Copy any Armor the Vessel has.
+                        foreach (Armor objArmor in objVessel.Armor)
+                        {
+                            objMerge.Armor.Add(objArmor);
+                            CopyArmorImprovements(objVessel, objMerge, objArmor);
+                        }
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                        // Copy any Gear the Vessel has.
+                        foreach (Gear objGear in objVessel.Gear)
+                        {
+                            objMerge.Gear.Add(objGear);
+                            CopyGearImprovements(objVessel, objMerge, objGear);
+                        }
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                        // Copy any Cyberware/Bioware the Vessel has.
+                        foreach (Cyberware objCyberware in objVessel.Cyberware)
+                        {
+                            objMerge.Cyberware.Add(objCyberware);
+                            CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
+                        }
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                        // Copy any Weapons the Vessel has.
+                        foreach (Weapon objWeapon in objVessel.Weapons)
+                            objMerge.Weapons.Add(objWeapon);
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Vehicles"));
+                        // Copy and Vehicles the Vessel has.
+                        foreach (Vehicle objVehicle in objVessel.Vehicles)
+                            objMerge.Vehicles.Add(objVehicle);
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
+                        // Copy the character info.
+                        objMerge.Sex = objVessel.Sex;
+                        objMerge.Age = objVessel.Age;
+                        objMerge.Eyes = objVessel.Eyes;
+                        objMerge.Hair = objVessel.Hair;
+                        objMerge.Height = objVessel.Height;
+                        objMerge.Weight = objVessel.Weight;
+                        objMerge.Skin = objVessel.Skin;
+                        objMerge.Name = objVessel.Name;
+                        objMerge.StreetCred = objVessel.StreetCred;
+                        objMerge.BurntStreetCred = objVessel.BurntStreetCred;
+                        objMerge.Notoriety = objVessel.Notoriety;
+                        objMerge.PublicAwareness = objVessel.PublicAwareness;
+                        foreach (Image objMugshot in objVessel.Mugshots)
+                            objMerge.Mugshots.Add(objMugshot);
                     }
                 }
-                if (!blnHasImmunity)
-                {
-                    XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
-                    XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
-                    CritterPower objCritterPower = new CritterPower(objMerge);
-                    objCritterPower.Create(objPower, 0, "Normal Weapons");
-                    objMerge.CritterPowers.Add(objCritterPower);
-                }
-
-                //TOD: Implement Possession attribute bonuses.
-                /* Add the Vessel's Physical Attributes to the Spirit's Force.
-                objMerge.BOD.MetatypeMaximum = objVessel.BOD.Value + objMerge.MAG.TotalValue;
-                objMerge.BOD.Value = objVessel.BOD.Value + objMerge.MAG.TotalValue;
-                objMerge.AGI.MetatypeMaximum = objVessel.AGI.Value + objMerge.MAG.TotalValue;
-                objMerge.AGI.Value = objVessel.AGI.Value + objMerge.MAG.TotalValue;
-                objMerge.REA.MetatypeMaximum = objVessel.REA.Value + objMerge.MAG.TotalValue;
-                objMerge.REA.Value = objVessel.REA.Value + objMerge.MAG.TotalValue;
-                objMerge.STR.MetatypeMaximum = objVessel.STR.Value + objMerge.MAG.TotalValue;
-                objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;*/
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
-                // Copy any Lifestyles the Vessel has.
-                foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
-                    objMerge.Lifestyles.Add(objLifestyle);
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
-                // Copy any Armor the Vessel has.
-                foreach (Armor objArmor in objVessel.Armor)
-                {
-                    objMerge.Armor.Add(objArmor);
-                    CopyArmorImprovements(objVessel, objMerge, objArmor);
-                }
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
-                // Copy any Gear the Vessel has.
-                foreach (Gear objGear in objVessel.Gear)
-                {
-                    objMerge.Gear.Add(objGear);
-                    CopyGearImprovements(objVessel, objMerge, objGear);
-                }
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
-                // Copy any Cyberware/Bioware the Vessel has.
-                foreach (Cyberware objCyberware in objVessel.Cyberware)
-                {
-                    objMerge.Cyberware.Add(objCyberware);
-                    CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
-                }
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
-                // Copy any Weapons the Vessel has.
-                foreach (Weapon objWeapon in objVessel.Weapons)
-                    objMerge.Weapons.Add(objWeapon);
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Vehicles"));
-                // Copy and Vehicles the Vessel has.
-                foreach (Vehicle objVehicle in objVessel.Vehicles)
-                    objMerge.Vehicles.Add(objVehicle);
-
-                frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
-                // Copy the character info.
-                objMerge.Sex = objVessel.Sex;
-                objMerge.Age = objVessel.Age;
-                objMerge.Eyes = objVessel.Eyes;
-                objMerge.Hair = objVessel.Hair;
-                objMerge.Height = objVessel.Height;
-                objMerge.Weight = objVessel.Weight;
-                objMerge.Skin = objVessel.Skin;
-                objMerge.Name = objVessel.Name;
-                objMerge.StreetCred = objVessel.StreetCred;
-                objMerge.BurntStreetCred = objVessel.BurntStreetCred;
-                objMerge.Notoriety = objVessel.Notoriety;
-                objMerge.PublicAwareness = objVessel.PublicAwareness;
-                foreach (Image objMugshot in objVessel.Mugshots)
-                    objMerge.Mugshots.Add(objMugshot);
-
-                string strShowFileName = Path.GetFileName(CharacterObject.FileName);
-
+                string strShowFileName = Path.GetFileName(objMerge.FileName);
                 if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = CharacterObject.CharacterName;
-                strShowFileName = strShowFileName.TrimEndOnce(".chum5");
-
-                strShowFileName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-
-                frmLoadingForm.Close();
+                    strShowFileName = objMerge.CharacterName;
+                strShowFileName = strShowFileName.TrimEndOnce(".chum5") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
 
                 // Now that everything is done, save the merged character and open them.
-                SaveFileDialog saveFileDialog = new SaveFileDialog
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
                     FileName = strShowFileName
-                };
-
-                Cursor = Cursors.Default;
-
-                if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+                })
                 {
+                    Cursor = objOldCursor;
+
+                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
                     Cursor = Cursors.WaitCursor;
                     objMerge.FileName = saveFileDialog.FileName;
                     if (objMerge.Save())
                     {
                         // Get the name of the file and destroy the references to the Vessel and the merged character.
-                        string strOpenFile = objMerge.FileName;
-                        objMerge.DeleteCharacter();
-                        objVessel.DeleteCharacter();
-
-                        Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
-                        Cursor = Cursors.Default;
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        strOpenFile = objMerge.FileName;
                     }
-                    else
-                    {
-                        // The save process was canceled, so drop everything.
-                        objMerge.DeleteCharacter();
-                        objVessel.DeleteCharacter();
-                        Cursor = Cursors.Default;
-                    }
+                    Cursor = objOldCursor;
                 }
-                else
-                {
-                    // The save process was canceled, so drop everything.
-                    objMerge.DeleteCharacter();
-                    objVessel.DeleteCharacter();
-                }
+            }
+            if (!string.IsNullOrEmpty(strOpenFile))
+            {
+                Cursor = Cursors.WaitCursor;
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                Cursor = objOldCursor;
+                Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
 
@@ -2784,140 +2781,154 @@ namespace Chummer
                 }
             }
 
-            frmSelectItem frmSelectVessel = new frmSelectItem();
-            frmSelectVessel.SetGeneralItemsMode(lstMetatype);
-            frmSelectVessel.ShowDialog(this);
+            string strSelectedVessel;
+            using (frmSelectItem frmSelectVessel = new frmSelectItem())
+            {
+                frmSelectVessel.SetGeneralItemsMode(lstMetatype);
+                frmSelectVessel.ShowDialog(this);
 
-            if (frmSelectVessel.DialogResult == DialogResult.Cancel)
-                return;
+                if (frmSelectVessel.DialogResult == DialogResult.Cancel)
+                    return;
+
+                strSelectedVessel = frmSelectVessel.SelectedItem;
+            }
 
             // Get the Node for the selected Vessel.
-            XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
-
+            XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedVessel + "\"]");
             if (objSelected == null)
                 return;
 
+            string strOpenFile = string.Empty;
+            System.Windows.Forms.Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
-            frmLoading frmLoadingForm = new frmLoading();
-            frmLoadingForm.Reset(36);
-
             // Load the Spirit's save file into a new Merge character.
-            Character objMerge = new Character
+            using (Character objMerge = new Character
             {
                 FileName = CharacterObject.FileName
-            };
-            frmLoadingForm.CharacterFile = objMerge.FileName;
-            frmLoadingForm.Show();
-            await objMerge.Load();
-            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-            objMerge.Possessed = true;
-            objMerge.Alias = frmSelectVessel.SelectedItem + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-
-            ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-            ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-            ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-            ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0, CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-            ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.INT.MetatypeMinimum, CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
-            ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.WIL.MetatypeMinimum, CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
-            ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.LOG.MetatypeMinimum, CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
-            ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.CHA.MetatypeMinimum, CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
-            XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
-
-            // Update the Movement if the Vessel has one.
-            string strMovement = objSelected["movement"]?.InnerText;
-            if (!string.IsNullOrEmpty(strMovement))
-                objMerge.Movement = strMovement;
-
-            // Add any additional Critter Powers the Vessel grants.
-            XmlNode xmlPowersNode = objSelected["powers"];
-            if (xmlPowersNode != null)
+            })
             {
-                using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
-                    if (xmlPowerList?.Count > 0)
-                        foreach (XmlNode objXmlPower in xmlPowerList)
-                        {
-                            XmlNode objXmlCritterPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-                            CritterPower objPower = new CritterPower(objMerge);
-                            string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                            int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText);
-
-                            objPower.Create(objXmlCritterPower, intRating, strSelect);
-
-                            objMerge.CritterPowers.Add(objPower);
-                        }
-            }
-
-            // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-            bool blnHasImmunity = false;
-            foreach (CritterPower objCritterPower in objMerge.CritterPowers)
-            {
-                if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                using (frmLoading frmLoadingForm = new frmLoading
                 {
-                    blnHasImmunity = true;
-                    break;
+                    CharacterFile = objMerge.FileName
+                })
+                {
+                    frmLoadingForm.Reset(36);
+                    frmLoadingForm.Show();
+                    await objMerge.Load().ConfigureAwait(true);
+                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                    objMerge.Possessed = true;
+                    objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+
+                    ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                    ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                    ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                    ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                    ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.INT.MetatypeMinimum,
+                        CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
+                    ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.WIL.MetatypeMinimum,
+                        CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
+                    ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.LOG.MetatypeMinimum,
+                        CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
+                    ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.CHA.MetatypeMinimum,
+                        CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
+                    XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
+
+                    // Update the Movement if the Vessel has one.
+                    string strMovement = objSelected["movement"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strMovement))
+                        objMerge.Movement = strMovement;
+
+                    // Add any additional Critter Powers the Vessel grants.
+                    XmlNode xmlPowersNode = objSelected["powers"];
+                    if (xmlPowersNode != null)
+                    {
+                        using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
+                        {
+                            if (xmlPowerList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlPower in xmlPowerList)
+                                {
+                                    XmlNode objXmlCritterPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                                    CritterPower objPower = new CritterPower(objMerge);
+                                    string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+
+                                    objPower.Create(objXmlCritterPower, intRating, strSelect);
+
+                                    objMerge.CritterPowers.Add(objPower);
+                                }
+                            }
+                        }
+                    }
+
+                    // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                    bool blnHasImmunity = false;
+                    foreach (CritterPower objCritterPower in objMerge.CritterPowers)
+                    {
+                        if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                        {
+                            blnHasImmunity = true;
+                            break;
+                        }
+                    }
+
+                    if (!blnHasImmunity)
+                    {
+                        XmlNode objPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                        CritterPower objCritterPower = new CritterPower(objMerge);
+                        objCritterPower.Create(objPower, 0, "Normal Weapons");
+                        objMerge.CritterPowers.Add(objCritterPower);
+                    }
+
+                    // Add any Improvements the Vessel grants.
+                    if (objSelected["bonus"] != null)
+                    {
+                        ImprovementManager.CreateImprovements(objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel, objSelected["bonus"], 1, strSelectedVessel);
+                    }
+                }
+
+                // Now that everything is done, save the merged character and open them.
+                string[] strFile = objMerge.FileName.Split(Path.DirectorySeparatorChar);
+                string strShowFileName = strFile[strFile.Length - 1];
+
+                if (string.IsNullOrEmpty(strShowFileName))
+                    strShowFileName = objMerge.CharacterName;
+                strShowFileName = strShowFileName.TrimEndOnce(".chum5");
+
+                strShowFileName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
+                    FileName = strShowFileName
+                })
+                {
+                    Cursor = objOldCursor;
+
+                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    Cursor = Cursors.WaitCursor;
+                    objMerge.FileName = saveFileDialog.FileName;
+                    if (objMerge.Save())
+                    {
+                        // Get the name of the file and destroy the references to the Vessel and the merged character.
+                        strOpenFile = objMerge.FileName;
+                    }
+                    Cursor = objOldCursor;
                 }
             }
-            if (!blnHasImmunity)
-            {
-                XmlNode objPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
-                CritterPower objCritterPower = new CritterPower(objMerge);
-                objCritterPower.Create(objPower, 0, "Normal Weapons");
-                objMerge.CritterPowers.Add(objCritterPower);
-            }
-
-            // Add any Improvements the Vessel grants.
-            if (objSelected["bonus"] != null)
-            {
-                ImprovementManager.CreateImprovements(objMerge, Improvement.ImprovementSource.Metatype, frmSelectVessel.SelectedItem, objSelected["bonus"], 1, frmSelectVessel.SelectedItem);
-            }
-
-            // Now that everything is done, save the merged character and open them.
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
-            };
-
-            string[] strFile = CharacterObject.FileName.Split(Path.DirectorySeparatorChar);
-            string strShowFileName = strFile[strFile.Length - 1];
-
-            if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = CharacterObject.CharacterName;
-            strShowFileName = strShowFileName.TrimEndOnce(".chum5");
-
-            strShowFileName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-
-            saveFileDialog.FileName = strShowFileName;
-
-            frmLoadingForm.Close();
-            Cursor = Cursors.Default;
-
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+            if (!string.IsNullOrEmpty(strOpenFile))
             {
                 Cursor = Cursors.WaitCursor;
-                objMerge.FileName = saveFileDialog.FileName;
-                if (objMerge.Save())
-                {
-                    // Get the name of the file and destroy the references to the Vessel and the merged character.
-                    string strOpenFile = objMerge.FileName;
-                    objMerge.DeleteCharacter();
-
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
-                    Cursor = Cursors.Default;
-                    Program.MainForm.OpenCharacter(objOpenCharacter);
-                }
-                else
-                {
-                    // The save process was canceled, so drop everything.
-                    objMerge.DeleteCharacter();
-                    Cursor = Cursors.Default;
-                }
-            }
-            else
-            {
-                // The save process was canceled, so drop everything.
-                objMerge.DeleteCharacter();
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                Cursor = objOldCursor;
+                Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
 

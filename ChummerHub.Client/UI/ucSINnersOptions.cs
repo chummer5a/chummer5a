@@ -471,25 +471,25 @@ namespace ChummerHub.Client.UI
 
         private async void bMultiUpload_Click(object sender, EventArgs e)
         {
-            OpenFileDialog thisDialog = new OpenFileDialog
+            using (OpenFileDialog thisDialog = new OpenFileDialog
             {
                 Filter = "Chummer files (*.chum5)|*.chum5|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true,
                 Multiselect = true,
                 Title = "Please Select Chummer File(s) for Batch-Upload"
-            };
-
-            if (thisDialog.ShowDialog() == DialogResult.OK)
+            })
             {
-                foreach (var file in thisDialog.FileNames)
+                if (thisDialog.ShowDialog() == DialogResult.OK)
                 {
-                    await Utils.UploadCharacterFromFile(file).ConfigureAwait(true);
-                }
+                    foreach (var file in thisDialog.FileNames)
+                    {
+                        await Utils.UploadCharacterFromFile(file).ConfigureAwait(true);
+                    }
 
-                Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+                    Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+                }
             }
-            thisDialog.Dispose();
         }
 
         private void cbUploadOnSave_CheckedChanged(object sender, EventArgs e)
@@ -500,18 +500,18 @@ namespace ChummerHub.Client.UI
 
         private void bBackup_Click(object sender, EventArgs e)
         {
-            var folderBrowserDialog1 = new FolderBrowserDialog();
-
-            // Show the FolderBrowserDialog.
-            DialogResult result = folderBrowserDialog1.ShowDialog();
-            if(result == DialogResult.OK)
+            using (FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog())
             {
-                BackupTask(folderBrowserDialog1).ContinueWith(a =>
+                // Show the FolderBrowserDialog.
+                DialogResult result = folderBrowserDialog1.ShowDialog();
+                if (result == DialogResult.OK)
                 {
-                    Program.MainForm.ShowMessageBox(a.Status.ToString());
-                });
+                    BackupTask(folderBrowserDialog1).ContinueWith(a =>
+                    {
+                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                    });
+                }
             }
-            folderBrowserDialog1.Dispose();
         }
 
         private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1)
@@ -557,18 +557,18 @@ namespace ChummerHub.Client.UI
 
         private void bRestore_Click(object sender, EventArgs e)
         {
-            var folderBrowserDialog1 = new FolderBrowserDialog();
-
-            // Show the FolderBrowserDialog.
-            DialogResult result = folderBrowserDialog1.ShowDialog();
-            if(result == DialogResult.OK)
+            using (var folderBrowserDialog1 = new FolderBrowserDialog())
             {
-                RestoreTask(folderBrowserDialog1).ContinueWith(a =>
+                // Show the FolderBrowserDialog.
+                DialogResult result = folderBrowserDialog1.ShowDialog();
+                if (result == DialogResult.OK)
                 {
-                    Program.MainForm.ShowMessageBox(a.Status.ToString());
-                });
+                    RestoreTask(folderBrowserDialog1).ContinueWith(a =>
+                    {
+                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                    });
+                }
             }
-            folderBrowserDialog1.Dispose();
         }
 
         private async Task RestoreTask(FolderBrowserDialog folderBrowserDialog1)
@@ -645,18 +645,19 @@ namespace ChummerHub.Client.UI
 
         private void BEditDefaultVisibility_Click(object sender, EventArgs e)
         {
-            var visfrm = new frmSINnerVisibility
+            using (frmSINnerVisibility visfrm = new frmSINnerVisibility
             {
                 MyVisibility = SINnerVisibility
-            };
-            var result = visfrm.ShowDialog(this);
-            if (result == DialogResult.OK)
+            })
             {
-                SINnerVisibility = visfrm.MyVisibility;
-                Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(SINnerVisibility);
-                Properties.Settings.Default.Save();
+                var result = visfrm.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    SINnerVisibility = visfrm.MyVisibility;
+                    Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(SINnerVisibility);
+                    Properties.Settings.Default.Save();
+                }
             }
-            visfrm.Close();
         }
 
         private void RbListUserMode_SelectedIndexChanged(object sender, EventArgs e)

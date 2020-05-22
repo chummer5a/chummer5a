@@ -51,7 +51,7 @@ namespace Chummer
         public static bool IsUnitTest { get; set; }
 
         /// <summary>
-        /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
+        /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
 
         public static string GetStartupPath => !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
@@ -70,7 +70,7 @@ namespace Chummer
             try
             {
                 WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath) ?? throw new ArgumentException(nameof(strPath)));
+                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath) ?? throw new ArgumentOutOfRangeException(nameof(strPath)));
                 AuthorizationRuleCollection authRules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
 
                 foreach (FileSystemAccessRule accessRule in authRules)
@@ -111,7 +111,7 @@ namespace Chummer
                 if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
-            // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
+            // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
             for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
             {

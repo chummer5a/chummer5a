@@ -141,6 +141,16 @@ Changed/new strings:
 - LimitCondition_CyberwareSnakeFingers
 - LimitCondition_SportsRivals
 - Label_Sprite_TasksOwed
+- DialogFilter_HeroLab
+- DialogFilter_ImagesPrefix
+- String_MetatypeLoadError
+- Message_Options_ConfirmTelemetry
+- MessageTitle_Options_ConfirmTelemetry
+- Message_Options_ConfirmDetailedTelemetry
+- MessageTitle_Options_ConfirmDetailedTelemetry
+- Tip_Options_TelemetryId
+- Tip_CMPenalty
+- String_CMDown
 
 Build 211
 Application Changes:

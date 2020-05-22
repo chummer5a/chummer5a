@@ -22,6 +22,8 @@ namespace Chummer.UI.Skills
                 _lstSkillGroups?.Dispose();
                 _lstKnowledgeSkills?.Dispose();
                 UnbindSkillsTabUserControl();
+                if (!(ParentForm is CharacterShared frmParent) || frmParent.CharacterObject != _objCharacter)
+                    _objCharacter?.Dispose();
             }
 
             base.Dispose(disposing);

@@ -1707,357 +1707,360 @@ namespace Chummer
                 }
             }
 
+            bool blnErrorFree = true;
             IsSaving = true;
-            MemoryStream objStream = new MemoryStream();
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+            using (MemoryStream objStream = new MemoryStream())
             {
-                Formatting = Formatting.Indented,
-                Indentation = 1,
-                IndentChar = '\t'
-            };
-            _lstSources.Clear();
-            objWriter.WriteStartDocument();
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                {
+                    Formatting = Formatting.Indented,
+                    Indentation = 1,
+                    IndentChar = '\t'
+                })
+                {
+                    _lstSources.Clear();
+                    objWriter.WriteStartDocument();
 
-            // <character>
-            objWriter.WriteStartElement("character");
+                    // <character>
+                    objWriter.WriteStartElement("character");
 
-            // <createdversion />
-            objWriter.WriteElementString("createdversion", _strVersionCreated);
-            // <appversion />
-            objWriter.WriteElementString("appversion", Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
-            // <gameedition />
-            objWriter.WriteElementString("gameedition", "SR5");
+                    // <createdversion />
+                    objWriter.WriteElementString("createdversion", _strVersionCreated);
+                    // <appversion />
+                    objWriter.WriteElementString("appversion", Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
+                    // <gameedition />
+                    objWriter.WriteElementString("gameedition", "SR5");
 
-            // <settings />
-            objWriter.WriteElementString("settings", _strSettingsFileName);
+                    // <settings />
+                    objWriter.WriteElementString("settings", _strSettingsFileName);
 
-            // <metatype />
-            objWriter.WriteElementString("metatype", _strMetatype);
-            // <metatypeid />
-            objWriter.WriteElementString("metatypeid", _guiMetatype.ToString("D", GlobalOptions.InvariantCultureInfo));
-            // <metatypebp />
-            objWriter.WriteElementString("metatypebp", _intMetatypeBP.ToString(GlobalOptions.InvariantCultureInfo));
-            // <metavariant />
-            objWriter.WriteElementString("metavariant", _strMetavariant);
-            // <metavariantid />
-            objWriter.WriteElementString("metavariantid", _guiMetavariant.ToString("D", GlobalOptions.InvariantCultureInfo));
-            // <metatypecategory />
-            objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
-            // <movement />
-            objWriter.WriteElementString("movement", _strMovement);
-            // <walk />
-            objWriter.WriteElementString("walk", _strWalk);
-            // <run />
-            objWriter.WriteElementString("run", _strRun);
-            // <sprint />
-            objWriter.WriteElementString("sprint", _strSprint);
-            // <walk />
-            objWriter.WriteElementString("walkalt", _strWalk);
-            // <run />
-            objWriter.WriteElementString("runalt", _strRun);
-            // <sprint />
-            objWriter.WriteElementString("sprintalt", _strSprint);
-            // <initiativedice />
-            objWriter.WriteElementString("initiativedice", _intInitiativeDice.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <metatype />
+                    objWriter.WriteElementString("metatype", _strMetatype);
+                    // <metatypeid />
+                    objWriter.WriteElementString("metatypeid", _guiMetatype.ToString("D", GlobalOptions.InvariantCultureInfo));
+                    // <metatypebp />
+                    objWriter.WriteElementString("metatypebp", _intMetatypeBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <metavariant />
+                    objWriter.WriteElementString("metavariant", _strMetavariant);
+                    // <metavariantid />
+                    objWriter.WriteElementString("metavariantid", _guiMetavariant.ToString("D", GlobalOptions.InvariantCultureInfo));
+                    // <metatypecategory />
+                    objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
+                    // <movement />
+                    objWriter.WriteElementString("movement", _strMovement);
+                    // <walk />
+                    objWriter.WriteElementString("walk", _strWalk);
+                    // <run />
+                    objWriter.WriteElementString("run", _strRun);
+                    // <sprint />
+                    objWriter.WriteElementString("sprint", _strSprint);
+                    // <walk />
+                    objWriter.WriteElementString("walkalt", _strWalk);
+                    // <run />
+                    objWriter.WriteElementString("runalt", _strRun);
+                    // <sprint />
+                    objWriter.WriteElementString("sprintalt", _strSprint);
+                    // <initiativedice />
+                    objWriter.WriteElementString("initiativedice", _intInitiativeDice.ToString(GlobalOptions.InvariantCultureInfo));
 
-            // <prioritymetatype />
-            objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
-            // <priorityattributes />
-            objWriter.WriteElementString("priorityattributes", _strPriorityAttributes);
-            // <priorityspecial />
-            objWriter.WriteElementString("priorityspecial", _strPrioritySpecial);
-            // <priorityskills />
-            objWriter.WriteElementString("priorityskills", _strPrioritySkills);
-            // <priorityresources />
-            objWriter.WriteElementString("priorityresources", _strPriorityResources);
-            // <priorityresources />
-            objWriter.WriteElementString("prioritytalent", _strPriorityTalent);
-            // <priorityskills >
-            objWriter.WriteStartElement("priorityskills");
-            foreach(string strSkill in _lstPrioritySkills)
-            {
-                objWriter.WriteElementString("priorityskill", strSkill);
-            }
+                    // <prioritymetatype />
+                    objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
+                    // <priorityattributes />
+                    objWriter.WriteElementString("priorityattributes", _strPriorityAttributes);
+                    // <priorityspecial />
+                    objWriter.WriteElementString("priorityspecial", _strPrioritySpecial);
+                    // <priorityskills />
+                    objWriter.WriteElementString("priorityskills", _strPrioritySkills);
+                    // <priorityresources />
+                    objWriter.WriteElementString("priorityresources", _strPriorityResources);
+                    // <priorityresources />
+                    objWriter.WriteElementString("prioritytalent", _strPriorityTalent);
+                    // <priorityskills >
+                    objWriter.WriteStartElement("priorityskills");
+                    foreach (string strSkill in _lstPrioritySkills)
+                    {
+                        objWriter.WriteElementString("priorityskill", strSkill);
+                    }
 
-            // </priorityskills>
-            objWriter.WriteEndElement();
+                    // </priorityskills>
+                    objWriter.WriteEndElement();
 
-            // <essenceatspecialstart />
-            objWriter.WriteElementString("essenceatspecialstart",
-                _decEssenceAtSpecialStart.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <essenceatspecialstart />
+                    objWriter.WriteElementString("essenceatspecialstart",
+                        _decEssenceAtSpecialStart.ToString(GlobalOptions.InvariantCultureInfo));
 
-            // <name />
-            objWriter.WriteElementString("name", _strName);
-            SaveMugshots(objWriter);
+                    // <name />
+                    objWriter.WriteElementString("name", _strName);
+                    SaveMugshots(objWriter);
 
-            // <sex />
-            objWriter.WriteElementString("sex", _strSex);
-            // <age />
-            objWriter.WriteElementString("age", _strAge);
-            // <eyes />
-            objWriter.WriteElementString("eyes", _strEyes);
-            // <height />
-            objWriter.WriteElementString("height", _strHeight);
-            // <weight />
-            objWriter.WriteElementString("weight", _strWeight);
-            // <skin />
-            objWriter.WriteElementString("skin", _strSkin);
-            // <hair />
-            objWriter.WriteElementString("hair", _strHair);
-            // <description />
-            objWriter.WriteElementString("description", _strDescription);
-            // <background />
-            objWriter.WriteElementString("background", _strBackground);
-            // <concept />
-            objWriter.WriteElementString("concept", _strConcept);
-            // <notes />
-            objWriter.WriteElementString("notes", _strNotes);
-            // <alias />
-            objWriter.WriteElementString("alias", _strAlias);
-            // <playername />
-            objWriter.WriteElementString("playername", _strPlayerName);
-            // <gamenotes />
-            objWriter.WriteElementString("gamenotes", _strGameNotes);
-            objWriter.WriteElementString("primaryarm", _strPrimaryArm);
+                    // <sex />
+                    objWriter.WriteElementString("sex", _strSex);
+                    // <age />
+                    objWriter.WriteElementString("age", _strAge);
+                    // <eyes />
+                    objWriter.WriteElementString("eyes", _strEyes);
+                    // <height />
+                    objWriter.WriteElementString("height", _strHeight);
+                    // <weight />
+                    objWriter.WriteElementString("weight", _strWeight);
+                    // <skin />
+                    objWriter.WriteElementString("skin", _strSkin);
+                    // <hair />
+                    objWriter.WriteElementString("hair", _strHair);
+                    // <description />
+                    objWriter.WriteElementString("description", _strDescription);
+                    // <background />
+                    objWriter.WriteElementString("background", _strBackground);
+                    // <concept />
+                    objWriter.WriteElementString("concept", _strConcept);
+                    // <notes />
+                    objWriter.WriteElementString("notes", _strNotes);
+                    // <alias />
+                    objWriter.WriteElementString("alias", _strAlias);
+                    // <playername />
+                    objWriter.WriteElementString("playername", _strPlayerName);
+                    // <gamenotes />
+                    objWriter.WriteElementString("gamenotes", _strGameNotes);
+                    objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
-            // <ignorerules />
-            if(_blnIgnoreRules)
-                objWriter.WriteElementString("ignorerules", _blnIgnoreRules.ToString(GlobalOptions.InvariantCultureInfo));
-            // <iscritter />
-            if(_blnIsCritter)
-                objWriter.WriteElementString("iscritter", _blnIsCritter.ToString(GlobalOptions.InvariantCultureInfo));
-            if(_blnPossessed)
-                objWriter.WriteElementString("possessed", _blnPossessed.ToString(GlobalOptions.InvariantCultureInfo));
-            // <karma />
-            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            // <special />
-            objWriter.WriteElementString("special", _intSpecial.ToString(GlobalOptions.InvariantCultureInfo));
-            // <totalspecial />
-            objWriter.WriteElementString("totalspecial", _intTotalSpecial.ToString(GlobalOptions.InvariantCultureInfo));
-            // <totalattributes />
-            objWriter.WriteElementString("totalattributes", _intTotalAttributes.ToString(GlobalOptions.InvariantCultureInfo));
-            // <contactpoints />
-            objWriter.WriteElementString("contactpoints", _intCachedContactPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            // <contactpoints />
-            objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString(GlobalOptions.InvariantCultureInfo));
-            // <spelllimit />
-            objWriter.WriteElementString("spelllimit", _intFreeSpells.ToString(GlobalOptions.InvariantCultureInfo));
-            // <cfplimit />
-            objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <totalaiprogramlimit />
-            objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <aiadvancedprogramlimit />
-            objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <currentcounterspellingdice />
-            objWriter.WriteElementString("currentcounterspellingdice", _intCurrentCounterspellingDice.ToString(GlobalOptions.InvariantCultureInfo));
-            // <streetcred />
-            objWriter.WriteElementString("streetcred", _intStreetCred.ToString(GlobalOptions.InvariantCultureInfo));
-            // <notoriety />
-            objWriter.WriteElementString("notoriety", _intNotoriety.ToString(GlobalOptions.InvariantCultureInfo));
-            // <publicaware />
-            objWriter.WriteElementString("publicawareness", _intPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
-            // <burntstreetcred />
-            objWriter.WriteElementString("burntstreetcred", _intBurntStreetCred.ToString(GlobalOptions.InvariantCultureInfo));
-            // <created />
-            objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
-            // <maxavail />
-            objWriter.WriteElementString("maxavail", _intMaxAvail.ToString(GlobalOptions.InvariantCultureInfo));
-            // <nuyen />
-            objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-            // <nuyen />
-            objWriter.WriteElementString("startingnuyen",
-                _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-            // <sumtoten />
-            objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalOptions.InvariantCultureInfo));
-            // <buildkarma />
-            objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            // <buildmethod />
-            objWriter.WriteElementString("buildmethod", _objBuildMethod.ToString());
-            // <gameplayoption />
-            objWriter.WriteElementString("gameplayoption", _strGameplayOption);
-            // <gameplayoptionqualitylimit />
-            objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
-            // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-            // <maxkarma />
-            objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            // <contactmultiplier />
-            objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <ignorerules />
+                    if (_blnIgnoreRules)
+                        objWriter.WriteElementString("ignorerules", _blnIgnoreRules.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <iscritter />
+                    if (_blnIsCritter)
+                        objWriter.WriteElementString("iscritter", _blnIsCritter.ToString(GlobalOptions.InvariantCultureInfo));
+                    if (_blnPossessed)
+                        objWriter.WriteElementString("possessed", _blnPossessed.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karma />
+                    objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <special />
+                    objWriter.WriteElementString("special", _intSpecial.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <totalspecial />
+                    objWriter.WriteElementString("totalspecial", _intTotalSpecial.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <totalattributes />
+                    objWriter.WriteElementString("totalattributes", _intTotalAttributes.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <contactpoints />
+                    objWriter.WriteElementString("contactpoints", _intCachedContactPoints.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <contactpoints />
+                    objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <spelllimit />
+                    objWriter.WriteElementString("spelllimit", _intFreeSpells.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cfplimit />
+                    objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <totalaiprogramlimit />
+                    objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <aiadvancedprogramlimit />
+                    objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <currentcounterspellingdice />
+                    objWriter.WriteElementString("currentcounterspellingdice", _intCurrentCounterspellingDice.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <streetcred />
+                    objWriter.WriteElementString("streetcred", _intStreetCred.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <notoriety />
+                    objWriter.WriteElementString("notoriety", _intNotoriety.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <publicaware />
+                    objWriter.WriteElementString("publicawareness", _intPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <burntstreetcred />
+                    objWriter.WriteElementString("burntstreetcred", _intBurntStreetCred.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <created />
+                    objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <maxavail />
+                    objWriter.WriteElementString("maxavail", _intMaxAvail.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyen />
+                    objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyen />
+                    objWriter.WriteElementString("startingnuyen",
+                        _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <sumtoten />
+                    objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <buildkarma />
+                    objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <buildmethod />
+                    objWriter.WriteElementString("buildmethod", _objBuildMethod.ToString());
+                    // <gameplayoption />
+                    objWriter.WriteElementString("gameplayoption", _strGameplayOption);
+                    // <gameplayoptionqualitylimit />
+                    objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <maxnuyen />
+                    objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <maxkarma />
+                    objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <contactmultiplier />
+                    objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
 
-            // <bannedwaregrades >
-            objWriter.WriteStartElement("bannedwaregrades");
-            foreach(string g in BannedWareGrades)
-            {
-                objWriter.WriteElementString("grade", g);
-            }
+                    // <bannedwaregrades >
+                    objWriter.WriteStartElement("bannedwaregrades");
+                    foreach (string g in BannedWareGrades)
+                    {
+                        objWriter.WriteElementString("grade", g);
+                    }
 
-            // </bannedwaregrades>
-            objWriter.WriteEndElement();
+                    // </bannedwaregrades>
+                    objWriter.WriteEndElement();
 
-            // <nuyenbp />
-            objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
-            // <nuyenmaxbp />
-            objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenbp />
+                    objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenmaxbp />
+                    objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
 
-            // <adept />
-            objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <magician />
-            objWriter.WriteElementString("magician", _blnMagicianEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <technomancer />
-            objWriter.WriteElementString("technomancer", _blnTechnomancerEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <ai />
-            objWriter.WriteElementString("ai", _blnAdvancedProgramsEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <cyberwaredisabled />
-            objWriter.WriteElementString("cyberwaredisabled", _blnCyberwareDisabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <initiationdisabled />
-            objWriter.WriteElementString("initiationdisabled", _blnInitiationDisabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <critter />
-            objWriter.WriteElementString("critter", _blnCritterEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <adept />
+                    objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <magician />
+                    objWriter.WriteElementString("magician", _blnMagicianEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <technomancer />
+                    objWriter.WriteElementString("technomancer", _blnTechnomancerEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <ai />
+                    objWriter.WriteElementString("ai", _blnAdvancedProgramsEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cyberwaredisabled />
+                    objWriter.WriteElementString("cyberwaredisabled", _blnCyberwareDisabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <initiationdisabled />
+                    objWriter.WriteElementString("initiationdisabled", _blnInitiationDisabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <critter />
+                    objWriter.WriteElementString("critter", _blnCritterEnabled.ToString(GlobalOptions.InvariantCultureInfo));
 
-            // <prototypetranshuman />
-            objWriter.WriteElementString("prototypetranshuman",
-                _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <prototypetranshuman />
+                    objWriter.WriteElementString("prototypetranshuman",
+                        _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
 
-            // <attributes>
-            objWriter.WriteStartElement("attributes");
-            AttributeSection.Save(objWriter);
-            // </attributes>
-            objWriter.WriteEndElement();
+                    // <attributes>
+                    objWriter.WriteStartElement("attributes");
+                    AttributeSection.Save(objWriter);
+                    // </attributes>
+                    objWriter.WriteEndElement();
 
-            // <magenabled />
-            objWriter.WriteElementString("magenabled", _blnMAGEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <initiategrade />
-            objWriter.WriteElementString("initiategrade", _intInitiateGrade.ToString(GlobalOptions.InvariantCultureInfo));
-            // <resenabled />
-            objWriter.WriteElementString("resenabled", _blnRESEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <submersiongrade />
-            objWriter.WriteElementString("submersiongrade", _intSubmersionGrade.ToString(GlobalOptions.InvariantCultureInfo));
-            // <depenabled />
-            objWriter.WriteElementString("depenabled", _blnDEPEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <groupmember />
-            objWriter.WriteElementString("groupmember", _blnGroupMember.ToString(GlobalOptions.InvariantCultureInfo));
-            // <groupname />
-            objWriter.WriteElementString("groupname", _strGroupName);
-            // <groupnotes />
-            objWriter.WriteElementString("groupnotes", _strGroupNotes);
+                    // <magenabled />
+                    objWriter.WriteElementString("magenabled", _blnMAGEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <initiategrade />
+                    objWriter.WriteElementString("initiategrade", _intInitiateGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <resenabled />
+                    objWriter.WriteElementString("resenabled", _blnRESEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <submersiongrade />
+                    objWriter.WriteElementString("submersiongrade", _intSubmersionGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <depenabled />
+                    objWriter.WriteElementString("depenabled", _blnDEPEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <groupmember />
+                    objWriter.WriteElementString("groupmember", _blnGroupMember.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <groupname />
+                    objWriter.WriteElementString("groupname", _strGroupName);
+                    // <groupnotes />
+                    objWriter.WriteElementString("groupnotes", _strGroupNotes);
 
-            // External reader friendly stuff.
-            objWriter.WriteElementString("totaless", Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                    // External reader friendly stuff.
+                    objWriter.WriteElementString("totaless", Essence().ToString(GlobalOptions.InvariantCultureInfo));
 
-            // Write out the Mystic Adept MAG split info.
-            if(_blnAdeptEnabled && _blnMagicianEnabled)
-            {
-                objWriter.WriteElementString("magsplitadept", _intMAGAdept.ToString(GlobalOptions.InvariantCultureInfo));
-                objWriter.WriteElementString("magsplitmagician", _intMAGMagician.ToString(GlobalOptions.InvariantCultureInfo));
-            }
+                    // Write out the Mystic Adept MAG split info.
+                    if (_blnAdeptEnabled && _blnMagicianEnabled)
+                    {
+                        objWriter.WriteElementString("magsplitadept", _intMAGAdept.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteElementString("magsplitmagician", _intMAGMagician.ToString(GlobalOptions.InvariantCultureInfo));
+                    }
 
-            _objTradition?.Save(objWriter);
+                    _objTradition?.Save(objWriter);
 
-            // Condition Monitor Progress.
-            // <physicalcmfilled />
-            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
-            // <stuncmfilled />
-            objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // Condition Monitor Progress.
+                    // <physicalcmfilled />
+                    objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <stuncmfilled />
+                    objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
 
-            ///////////////////////////////////////////SKILLS
+                    ///////////////////////////////////////////SKILLS
 
-            SkillsSection.Save(objWriter);
+                    SkillsSection.Save(objWriter);
 
-            //Write copy of old skill groups, to not totally fuck a file if error
-            _oldSkillGroupBackup?.WriteTo(objWriter);
-            _oldSkillsBackup?.WriteTo(objWriter);
+                    //Write copy of old skill groups, to not totally fuck a file if error
+                    _oldSkillGroupBackup?.WriteTo(objWriter);
+                    _oldSkillsBackup?.WriteTo(objWriter);
 
-            ///////////////////////////////////////////SKILLS
+                    ///////////////////////////////////////////SKILLS
 
-            // <contacts>
-            objWriter.WriteStartElement("contacts");
-            foreach(Contact objContact in _lstContacts)
-            {
-                objContact.Save(objWriter);
-            }
+                    // <contacts>
+                    objWriter.WriteStartElement("contacts");
+                    foreach (Contact objContact in _lstContacts)
+                    {
+                        objContact.Save(objWriter);
+                    }
 
-            // </contacts>
-            objWriter.WriteEndElement();
+                    // </contacts>
+                    objWriter.WriteEndElement();
 
-            // <spells>
-            objWriter.WriteStartElement("spells");
-            foreach(Spell objSpell in _lstSpells)
-            {
-                objSpell.Save(objWriter);
-            }
+                    // <spells>
+                    objWriter.WriteStartElement("spells");
+                    foreach (Spell objSpell in _lstSpells)
+                    {
+                        objSpell.Save(objWriter);
+                    }
 
-            // </spells>
-            objWriter.WriteEndElement();
+                    // </spells>
+                    objWriter.WriteEndElement();
 
-            // <foci>
-            objWriter.WriteStartElement("foci");
-            foreach(Focus objFocus in _lstFoci)
-            {
-                objFocus.Save(objWriter);
-            }
+                    // <foci>
+                    objWriter.WriteStartElement("foci");
+                    foreach (Focus objFocus in _lstFoci)
+                    {
+                        objFocus.Save(objWriter);
+                    }
 
-            // </foci>
-            objWriter.WriteEndElement();
+                    // </foci>
+                    objWriter.WriteEndElement();
 
-            // <stackedfoci>
-            objWriter.WriteStartElement("stackedfoci");
-            foreach(StackedFocus objStack in _lstStackedFoci)
-            {
-                objStack.Save(objWriter);
-            }
+                    // <stackedfoci>
+                    objWriter.WriteStartElement("stackedfoci");
+                    foreach (StackedFocus objStack in _lstStackedFoci)
+                    {
+                        objStack.Save(objWriter);
+                    }
 
-            // </stackedfoci>
-            objWriter.WriteEndElement();
+                    // </stackedfoci>
+                    objWriter.WriteEndElement();
 
-            // <powers>
-            objWriter.WriteStartElement("powers");
-            foreach(Power objPower in _lstPowers)
-            {
-                objPower.Save(objWriter);
-            }
+                    // <powers>
+                    objWriter.WriteStartElement("powers");
+                    foreach (Power objPower in _lstPowers)
+                    {
+                        objPower.Save(objWriter);
+                    }
 
-            // </powers>
-            objWriter.WriteEndElement();
+                    // </powers>
+                    objWriter.WriteEndElement();
 
-            // <spirits>
-            objWriter.WriteStartElement("spirits");
-            foreach(Spirit objSpirit in _lstSpirits)
-            {
-                objSpirit.Save(objWriter);
-            }
+                    // <spirits>
+                    objWriter.WriteStartElement("spirits");
+                    foreach (Spirit objSpirit in _lstSpirits)
+                    {
+                        objSpirit.Save(objWriter);
+                    }
 
-            // </spirits>
-            objWriter.WriteEndElement();
+                    // </spirits>
+                    objWriter.WriteEndElement();
 
-            // <complexforms>
-            objWriter.WriteStartElement("complexforms");
-            foreach(ComplexForm objComplexForm in _lstComplexForms)
-            {
-                objComplexForm.Save(objWriter);
-            }
+                    // <complexforms>
+                    objWriter.WriteStartElement("complexforms");
+                    foreach (ComplexForm objComplexForm in _lstComplexForms)
+                    {
+                        objComplexForm.Save(objWriter);
+                    }
 
-            // </complexforms>
-            objWriter.WriteEndElement();
+                    // </complexforms>
+                    objWriter.WriteEndElement();
 
-            // <aiprograms>
-            objWriter.WriteStartElement("aiprograms");
-            foreach(AIProgram objProgram in _lstAIPrograms)
-            {
-                objProgram.Save(objWriter);
-            }
+                    // <aiprograms>
+                    objWriter.WriteStartElement("aiprograms");
+                    foreach (AIProgram objProgram in _lstAIPrograms)
+                    {
+                        objProgram.Save(objWriter);
+                    }
 
-            // </aiprograms>
-            objWriter.WriteEndElement();
+                    // </aiprograms>
+                    objWriter.WriteEndElement();
 
-            // <martialarts>
-            objWriter.WriteStartElement("martialarts");
-            foreach(MartialArt objMartialArt in _lstMartialArts)
-            {
-                objMartialArt.Save(objWriter);
-            }
+                    // <martialarts>
+                    objWriter.WriteStartElement("martialarts");
+                    foreach (MartialArt objMartialArt in _lstMartialArts)
+                    {
+                        objMartialArt.Save(objWriter);
+                    }
 
-            // </martialarts>
-            objWriter.WriteEndElement();
+                    // </martialarts>
+                    objWriter.WriteEndElement();
 
 #if LEGACY
 // <martialartmaneuvers>
@@ -2070,330 +2073,331 @@ namespace Chummer
             objWriter.WriteEndElement();
 #endif
 
-            // <limitmodifiers>
-            objWriter.WriteStartElement("limitmodifiers");
-            foreach(LimitModifier objLimitModifier in _lstLimitModifiers)
-            {
-                objLimitModifier.Save(objWriter);
-            }
-
-            // </limitmodifiers>
-            objWriter.WriteEndElement();
-
-            // <armors>
-            objWriter.WriteStartElement("armors");
-            foreach(Armor objArmor in _lstArmor)
-            {
-                objArmor.Save(objWriter);
-            }
-
-            // </armors>
-            objWriter.WriteEndElement();
-
-            // <weapons>
-            objWriter.WriteStartElement("weapons");
-            foreach(Weapon objWeapon in _lstWeapons)
-            {
-                objWeapon.Save(objWriter);
-            }
-
-            // </weapons>
-            objWriter.WriteEndElement();
-
-            // <cyberwares>
-            objWriter.WriteStartElement("cyberwares");
-            foreach(Cyberware objCyberware in _lstCyberware)
-            {
-                objCyberware.Save(objWriter);
-            }
-
-            // </cyberwares>
-            objWriter.WriteEndElement();
-
-            // <qualities>
-            objWriter.WriteStartElement("qualities");
-            foreach(Quality objQuality in _lstQualities)
-            {
-                objQuality.Save(objWriter);
-            }
-
-            // </qualities>
-            objWriter.WriteEndElement();
-
-            // <lifestyles>
-            objWriter.WriteStartElement("lifestyles");
-            foreach(Lifestyle objLifestyle in _lstLifestyles)
-            {
-                objLifestyle.Save(objWriter);
-            }
-
-            // </lifestyles>
-            objWriter.WriteEndElement();
-
-            // <gears>
-            objWriter.WriteStartElement("gears");
-            foreach(Gear objGear in _lstGear)
-            {
-                objGear.Save(objWriter);
-            }
-
-            // </gears>
-            objWriter.WriteEndElement();
-
-            // <vehicles>
-            objWriter.WriteStartElement("vehicles");
-            foreach(Vehicle objVehicle in _lstVehicles)
-            {
-                objVehicle.Save(objWriter);
-            }
-
-            // </vehicles>
-            objWriter.WriteEndElement();
-
-            // <metamagics>
-            objWriter.WriteStartElement("metamagics");
-            foreach(Metamagic objMetamagic in _lstMetamagics)
-            {
-                objMetamagic.Save(objWriter);
-            }
-
-            // </metamagics>
-            objWriter.WriteEndElement();
-
-            // <arts>
-            objWriter.WriteStartElement("arts");
-            foreach(Art objArt in _lstArts)
-            {
-                objArt.Save(objWriter);
-            }
-
-            // </arts>
-            objWriter.WriteEndElement();
-
-            // <enhancements>
-            objWriter.WriteStartElement("enhancements");
-            foreach(Enhancement objEnhancement in _lstEnhancements)
-            {
-                objEnhancement.Save(objWriter);
-            }
-
-            // </enhancements>
-            objWriter.WriteEndElement();
-
-            // <critterpowers>
-            objWriter.WriteStartElement("critterpowers");
-            foreach(CritterPower objPower in _lstCritterPowers)
-            {
-                objPower.Save(objWriter);
-            }
-
-            // </critterpowers>
-            objWriter.WriteEndElement();
-
-            // <initiationgrades>
-            objWriter.WriteStartElement("initiationgrades");
-            foreach(InitiationGrade objGrade in _lstInitiationGrades)
-            {
-                objGrade.Save(objWriter);
-            }
-
-            // </initiationgrades>
-            objWriter.WriteEndElement();
-
-            // <improvements>
-            objWriter.WriteStartElement("improvements");
-            foreach(Improvement objImprovement in _lstImprovements)
-            {
-                objImprovement.Save(objWriter);
-            }
-
-            // </improvements>
-            objWriter.WriteEndElement();
-
-            // <drugs>
-            objWriter.WriteStartElement("drugs");
-            foreach(Drug objDrug in _lstDrugs)
-            {
-                objDrug.Save(objWriter);
-            }
-
-            // </drugs>
-            objWriter.WriteEndElement();
-
-            // <mentorspirits>
-            objWriter.WriteStartElement("mentorspirits");
-            foreach(MentorSpirit objMentor in _lstMentorSpirits)
-            {
-                objMentor.Save(objWriter);
-            }
-
-            // </mentorspirits>
-            objWriter.WriteEndElement();
-
-            // <expenses>
-            objWriter.WriteStartElement("expenses");
-            foreach(ExpenseLogEntry objExpenseLogEntry in _lstExpenseLog)
-            {
-                objExpenseLogEntry.Save(objWriter);
-            }
-
-            // </expenses>
-            objWriter.WriteEndElement();
-
-            // <locations>
-            objWriter.WriteStartElement("gearlocations");
-            foreach(Location objLocation in _lstGearLocations)
-            {
-                objLocation.Save(objWriter);
-            }
-
-            // </locations>
-            objWriter.WriteEndElement();
-
-            // <armorbundles>
-            objWriter.WriteStartElement("armorlocations");
-            foreach(Location objLocation in _lstArmorLocations)
-            {
-                objLocation.Save(objWriter);
-            }
-
-            // </armorbundles>
-            objWriter.WriteEndElement();
-
-            // <vehiclelocations>
-            objWriter.WriteStartElement("vehiclelocations");
-            foreach(Location objLocation in _lstVehicleLocations)
-            {
-                objLocation.Save(objWriter);
-            }
-
-            // </vehiclelocations>
-            objWriter.WriteEndElement();
-
-            // <weaponlocations>
-            objWriter.WriteStartElement("weaponlocations");
-            foreach(Location objLocation in _lstWeaponLocations)
-            {
-                objLocation.Save(objWriter);
-            }
-
-            // </weaponlocations>
-            objWriter.WriteEndElement();
-
-            // <improvementgroups>
-            objWriter.WriteStartElement("improvementgroups");
-            foreach(string strGroup in _lstImprovementGroups)
-            {
-                objWriter.WriteElementString("improvementgroup", strGroup);
-            }
-
-            // </improvementgroups>
-            objWriter.WriteEndElement();
-
-            // <calendar>
-            objWriter.WriteStartElement("calendar");
-            foreach(CalendarWeek objWeek in _lstCalendar)
-            {
-                objWeek.Save(objWriter);
-            }
-
-            objWriter.WriteEndElement();
-            // </calendar>
-
-            // <sources>
-            objWriter.WriteStartElement("sources");
-            foreach(string strItem in _lstSources)
-            {
-                objWriter.WriteElementString("source", strItem);
-            }
-
-            objWriter.WriteEndElement();
-            // </sources>
-
-            // <sources>
-            objWriter.WriteStartElement("customdatadirectorynames");
-            foreach(string strItem in Options.CustomDataDirectoryNames)
-            {
-                objWriter.WriteElementString("directoryname", strItem);
-            }
-
-            objWriter.WriteEndElement();
-            // </sources>
-
-
-
-            //Plugins
-            if(Program.PluginLoader?.MyActivePlugins?.Any() == true)
-            {
-                // <plugins>
-                objWriter.WriteStartElement("plugins");
-                foreach(var plugin in Program.PluginLoader.MyActivePlugins)
-                {
-                    try
+                    // <limitmodifiers>
+                    objWriter.WriteStartElement("limitmodifiers");
+                    foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
                     {
-                        System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
-                        objWriter.WriteStartElement(pluginAssm.GetName().Name);
-                        objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
-                        objWriter.WriteString(plugin.GetSaveToFileElement(this));
+                        objLimitModifier.Save(objWriter);
+                    }
+
+                    // </limitmodifiers>
+                    objWriter.WriteEndElement();
+
+                    // <armors>
+                    objWriter.WriteStartElement("armors");
+                    foreach (Armor objArmor in _lstArmor)
+                    {
+                        objArmor.Save(objWriter);
+                    }
+
+                    // </armors>
+                    objWriter.WriteEndElement();
+
+                    // <weapons>
+                    objWriter.WriteStartElement("weapons");
+                    foreach (Weapon objWeapon in _lstWeapons)
+                    {
+                        objWeapon.Save(objWriter);
+                    }
+
+                    // </weapons>
+                    objWriter.WriteEndElement();
+
+                    // <cyberwares>
+                    objWriter.WriteStartElement("cyberwares");
+                    foreach (Cyberware objCyberware in _lstCyberware)
+                    {
+                        objCyberware.Save(objWriter);
+                    }
+
+                    // </cyberwares>
+                    objWriter.WriteEndElement();
+
+                    // <qualities>
+                    objWriter.WriteStartElement("qualities");
+                    foreach (Quality objQuality in _lstQualities)
+                    {
+                        objQuality.Save(objWriter);
+                    }
+
+                    // </qualities>
+                    objWriter.WriteEndElement();
+
+                    // <lifestyles>
+                    objWriter.WriteStartElement("lifestyles");
+                    foreach (Lifestyle objLifestyle in _lstLifestyles)
+                    {
+                        objLifestyle.Save(objWriter);
+                    }
+
+                    // </lifestyles>
+                    objWriter.WriteEndElement();
+
+                    // <gears>
+                    objWriter.WriteStartElement("gears");
+                    foreach (Gear objGear in _lstGear)
+                    {
+                        objGear.Save(objWriter);
+                    }
+
+                    // </gears>
+                    objWriter.WriteEndElement();
+
+                    // <vehicles>
+                    objWriter.WriteStartElement("vehicles");
+                    foreach (Vehicle objVehicle in _lstVehicles)
+                    {
+                        objVehicle.Save(objWriter);
+                    }
+
+                    // </vehicles>
+                    objWriter.WriteEndElement();
+
+                    // <metamagics>
+                    objWriter.WriteStartElement("metamagics");
+                    foreach (Metamagic objMetamagic in _lstMetamagics)
+                    {
+                        objMetamagic.Save(objWriter);
+                    }
+
+                    // </metamagics>
+                    objWriter.WriteEndElement();
+
+                    // <arts>
+                    objWriter.WriteStartElement("arts");
+                    foreach (Art objArt in _lstArts)
+                    {
+                        objArt.Save(objWriter);
+                    }
+
+                    // </arts>
+                    objWriter.WriteEndElement();
+
+                    // <enhancements>
+                    objWriter.WriteStartElement("enhancements");
+                    foreach (Enhancement objEnhancement in _lstEnhancements)
+                    {
+                        objEnhancement.Save(objWriter);
+                    }
+
+                    // </enhancements>
+                    objWriter.WriteEndElement();
+
+                    // <critterpowers>
+                    objWriter.WriteStartElement("critterpowers");
+                    foreach (CritterPower objPower in _lstCritterPowers)
+                    {
+                        objPower.Save(objWriter);
+                    }
+
+                    // </critterpowers>
+                    objWriter.WriteEndElement();
+
+                    // <initiationgrades>
+                    objWriter.WriteStartElement("initiationgrades");
+                    foreach (InitiationGrade objGrade in _lstInitiationGrades)
+                    {
+                        objGrade.Save(objWriter);
+                    }
+
+                    // </initiationgrades>
+                    objWriter.WriteEndElement();
+
+                    // <improvements>
+                    objWriter.WriteStartElement("improvements");
+                    foreach (Improvement objImprovement in _lstImprovements)
+                    {
+                        objImprovement.Save(objWriter);
+                    }
+
+                    // </improvements>
+                    objWriter.WriteEndElement();
+
+                    // <drugs>
+                    objWriter.WriteStartElement("drugs");
+                    foreach (Drug objDrug in _lstDrugs)
+                    {
+                        objDrug.Save(objWriter);
+                    }
+
+                    // </drugs>
+                    objWriter.WriteEndElement();
+
+                    // <mentorspirits>
+                    objWriter.WriteStartElement("mentorspirits");
+                    foreach (MentorSpirit objMentor in _lstMentorSpirits)
+                    {
+                        objMentor.Save(objWriter);
+                    }
+
+                    // </mentorspirits>
+                    objWriter.WriteEndElement();
+
+                    // <expenses>
+                    objWriter.WriteStartElement("expenses");
+                    foreach (ExpenseLogEntry objExpenseLogEntry in _lstExpenseLog)
+                    {
+                        objExpenseLogEntry.Save(objWriter);
+                    }
+
+                    // </expenses>
+                    objWriter.WriteEndElement();
+
+                    // <locations>
+                    objWriter.WriteStartElement("gearlocations");
+                    foreach (Location objLocation in _lstGearLocations)
+                    {
+                        objLocation.Save(objWriter);
+                    }
+
+                    // </locations>
+                    objWriter.WriteEndElement();
+
+                    // <armorbundles>
+                    objWriter.WriteStartElement("armorlocations");
+                    foreach (Location objLocation in _lstArmorLocations)
+                    {
+                        objLocation.Save(objWriter);
+                    }
+
+                    // </armorbundles>
+                    objWriter.WriteEndElement();
+
+                    // <vehiclelocations>
+                    objWriter.WriteStartElement("vehiclelocations");
+                    foreach (Location objLocation in _lstVehicleLocations)
+                    {
+                        objLocation.Save(objWriter);
+                    }
+
+                    // </vehiclelocations>
+                    objWriter.WriteEndElement();
+
+                    // <weaponlocations>
+                    objWriter.WriteStartElement("weaponlocations");
+                    foreach (Location objLocation in _lstWeaponLocations)
+                    {
+                        objLocation.Save(objWriter);
+                    }
+
+                    // </weaponlocations>
+                    objWriter.WriteEndElement();
+
+                    // <improvementgroups>
+                    objWriter.WriteStartElement("improvementgroups");
+                    foreach (string strGroup in _lstImprovementGroups)
+                    {
+                        objWriter.WriteElementString("improvementgroup", strGroup);
+                    }
+
+                    // </improvementgroups>
+                    objWriter.WriteEndElement();
+
+                    // <calendar>
+                    objWriter.WriteStartElement("calendar");
+                    foreach (CalendarWeek objWeek in _lstCalendar)
+                    {
+                        objWeek.Save(objWriter);
+                    }
+
+                    objWriter.WriteEndElement();
+                    // </calendar>
+
+                    // <sources>
+                    objWriter.WriteStartElement("sources");
+                    foreach (string strItem in _lstSources)
+                    {
+                        objWriter.WriteElementString("source", strItem);
+                    }
+
+                    objWriter.WriteEndElement();
+                    // </sources>
+
+                    // <sources>
+                    objWriter.WriteStartElement("customdatadirectorynames");
+                    foreach (string strItem in Options.CustomDataDirectoryNames)
+                    {
+                        objWriter.WriteElementString("directoryname", strItem);
+                    }
+
+                    objWriter.WriteEndElement();
+                    // </sources>
+
+
+
+                    //Plugins
+                    if (Program.PluginLoader?.MyActivePlugins?.Any() == true)
+                    {
+                        // <plugins>
+                        objWriter.WriteStartElement("plugins");
+                        foreach (var plugin in Program.PluginLoader.MyActivePlugins)
+                        {
+                            try
+                            {
+                                System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
+                                objWriter.WriteStartElement(pluginAssm.GetName().Name);
+                                objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
+                                objWriter.WriteString(plugin.GetSaveToFileElement(this));
+                                objWriter.WriteEndElement();
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Warn(e, "Exception while writing saveFileElement for plugin " + plugin + ": ");
+                            }
+                        }
+
+                        //</plugins>
                         objWriter.WriteEndElement();
                     }
-                    catch (Exception e)
+
+                    //calculatedValues
+                    objWriter.WriteStartElement("calculatedvalues");
+                    objWriter.WriteComment("these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
+                    objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("physicalcmoverflow", CMOverflow.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("stuncm", StunCM.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteEndElement();
+                    // </calculatedValues>
+
+                    // </character>
+                    objWriter.WriteEndElement();
+
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+                    objStream.Position = 0;
+
+                    // Validate that the character can save properly. If there's no error, save the file to the listed file location.
+                    try
                     {
-                        Log.Warn(e, "Exception while writing saveFileElement for plugin " + plugin + ": ");
+                        XmlDocument objDoc = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        using (XmlReader objXmlReader = XmlReader.Create(objStream, new XmlReaderSettings {XmlResolver = null}))
+                            objDoc.Load(objXmlReader);
+                        objDoc.Save(strFileName);
+                    }
+                    catch (IOException e)
+                    {
+                        Log.Error(e);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                        blnErrorFree = false;
+                    }
+                    catch (XmlException)
+                    {
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                        blnErrorFree = false;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                        blnErrorFree = false;
                     }
                 }
-                //</plugins>
-                objWriter.WriteEndElement();
             }
 
-            //calculatedValues
-            objWriter.WriteStartElement("calculatedvalues");
-            objWriter.WriteComment("these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
-            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("physicalcmoverflow", CMOverflow.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("stuncm", StunCM.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteEndElement();
-            // </calculatedValues>
-
-            // </character>
-            objWriter.WriteEndElement();
-
-            objWriter.WriteEndDocument();
-            objWriter.Flush();
-            objStream.Position = 0;
-
-            bool blnErrorFree = true;
-            // Validate that the character can save properly. If there's no error, save the file to the listed file location.
-            try
-            {
-                XmlDocument objDoc = new XmlDocument
-                {
-                    XmlResolver = null
-                };
-                using (XmlReader objXmlReader = XmlReader.Create(objStream, new XmlReaderSettings { XmlResolver = null }))
-                    objDoc.Load(objXmlReader);
-                objDoc.Save(strFileName);
-            }
-            catch (IOException e)
-            {
-                Log.Error(e);
-                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
-                blnErrorFree = false;
-            }
-            catch(XmlException)
-            {
-                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
-                blnErrorFree = false;
-            }
-            catch(UnauthorizedAccessException)
-            {
-                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
-                blnErrorFree = false;
-            }
-
-            objWriter.Close();
             if(addToMRU)
                 GlobalOptions.MostRecentlyUsedCharacters.Insert(0, FileName);
 
@@ -5095,53 +5099,33 @@ if (!Utils.IsUnitTest){
             objWriter.WriteEndElement();
         }
         #endregion
+
+        private bool _blnDisposing;
         /// <summary>
         /// Remove stray event handlers and clear all info used by this character
         /// </summary>
-        public void DeleteCharacter()
+        public void Dispose()
         {
+            if (_blnDisposing || Program.MainForm.OpenCharacters.Contains(this) || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
+                return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
+
+            _blnDisposing = true;
+            _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
+            foreach (Image imgMugshot in _lstMugshots)
+                imgMugshot.Dispose();
+            foreach (Contact objContact in _lstContacts)
+                objContact.Dispose();
+            foreach (Spirit objSpirit in _lstSpirits)
+                objSpirit.Dispose();
             ImprovementManager.ClearCachedValues(this);
-            _lstImprovements.Clear();
-            _lstContacts.Clear();
-            _lstSpirits.Clear();
-            _lstSpells.Clear();
-            _lstFoci.Clear();
-            _lstStackedFoci.Clear();
-            _lstPowers.Clear();
-            _lstComplexForms.Clear();
-            _lstAIPrograms.Clear();
-            _lstMartialArts.Clear();
-#if LEGACY
-            _lstMartialArtManeuvers.Clear();
-#endif
-            _lstLimitModifiers.Clear();
-            _lstArmor.Clear();
-            _lstCyberware.Clear();
-            _lstMetamagics.Clear();
-            _lstArts.Clear();
-            _lstEnhancements.Clear();
-            _lstWeapons.Clear();
-            _lstLifestyles.Clear();
-            _lstGear.Clear();
-            _lstVehicles.Clear();
-            _lstExpenseLog.Clear();
-            _lstCritterPowers.Clear();
-            _lstInitiationGrades.Clear();
-            _lstQualities.Clear();
-            _lstCalendar.Clear();
-
-            _lstMugshots.Clear();
-
-            _lstLinkedCharacters.Clear();
-
-            SkillsSection.UnbindSkillsSection();
-            AttributeSection.UnbindAttributeSection();
+            AttributeSection.Dispose();
+            _blnDisposing = false;
         }
 
         /// <summary>
         /// Reset all of the Character information and start from scratch.
         /// </summary>
-        private void ResetCharacter()
+        public void ResetCharacter()
         {
             _intBuildKarma = 800;
             _intSumtoTen = 10;
@@ -5200,12 +5184,21 @@ if (!Utils.IsUnitTest){
             _intMAGMagician = 0;
             _objTradition.UnbindTradition();
 
+            _lstLinkedCharacters.Clear();
+            _intMainMugshotIndex = -1;
+            foreach (Image imgMugshot in _lstMugshots)
+                imgMugshot.Dispose();
+            _lstMugshots.Clear();
+            foreach (Contact objContact in _lstContacts)
+                objContact.Dispose();
+            _lstContacts.Clear();
+            foreach (Spirit objSpirit in _lstSpirits)
+                objSpirit.Dispose();
+            _lstSpirits.Clear();
             // Reset all of the Lists.
             // This kills the GC
             ImprovementManager.ClearCachedValues(this);
             _lstImprovements.Clear();
-            _lstContacts.Clear();
-            _lstSpirits.Clear();
             _lstSpells.Clear();
             _lstFoci.Clear();
             _lstStackedFoci.Clear();
@@ -5234,11 +5227,6 @@ if (!Utils.IsUnitTest){
             _lstDrugs.Clear();
 
             SkillsSection.Reset();
-
-            _intMainMugshotIndex = -1;
-            _lstMugshots.Clear();
-
-            _lstLinkedCharacters.Clear();
         }
 
         #endregion
@@ -15326,7 +15314,8 @@ if (!Utils.IsUnitTest){
                 }
             }
 
-            if (Program.MainForm == null) return;
+            if (Program.MainForm == null)
+                return;
             foreach(Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
             {
                 if(objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))

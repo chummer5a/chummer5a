@@ -112,108 +112,113 @@ namespace Chummer
                 }
             }
 
-            FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                Formatting = Formatting.Indented,
-                Indentation = 1,
-                IndentChar = '\t'
-            };
-            objWriter.WriteStartDocument();
-
-            // <chummer>
-            objWriter.WriteStartElement("chummer");
-            if (!blnNewFile)
-            {
-                // <cyberwares>
-                objWriter.WriteStartElement(_strType + "s");
-                using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s"))
-                    if (xmlCyberwareList?.Count > 0)
-                        foreach (XmlNode xmlCyberware in xmlCyberwareList)
-                            xmlCyberware.WriteContentTo(objWriter);
-                // </cyberwares>
-                objWriter.WriteEndElement();
-            }
-
-            // <suites>
-            objWriter.WriteStartElement("suites");
-
-            // If this is not a new file, write out the current contents.
-            if (!blnNewFile)
-            {
-                using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites"))
-                    if (xmlCyberwareList?.Count > 0)
-                        foreach (XmlNode xmlCyberware in xmlCyberwareList)
-                            xmlCyberware.WriteContentTo(objWriter);
-            }
-
-            string strGrade = string.Empty;
-            // Determine the Grade of Cyberware.
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-            {
-                if (objCyberware.SourceType == _objSource)
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                 {
-                    strGrade = objCyberware.Grade.Name;
-                    break;
-                }
-            }
-
-            // <suite>
-            objWriter.WriteStartElement("suite");
-            // <name />
-            objWriter.WriteElementString("id", Guid.NewGuid().ToString());
-            // <name />
-            objWriter.WriteElementString("name", txtName.Text);
-            // <grade />
-            objWriter.WriteElementString("grade", strGrade);
-            // <cyberwares>
-            objWriter.WriteStartElement(_strType + "s");
-
-            // Write out the Cyberware.
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-            {
-                if (objCyberware.SourceType == _objSource)
+                    Formatting = Formatting.Indented,
+                    Indentation = 1,
+                    IndentChar = '\t'
+                })
                 {
-                    // <cyberware>
-                    objWriter.WriteStartElement(_strType);
-                    objWriter.WriteElementString("name", objCyberware.Name);
-                    if (objCyberware.Rating > 0)
-                        objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    // Write out child items.
-                    if (objCyberware.Children.Count > 0)
+                    objWriter.WriteStartDocument();
+
+                    // <chummer>
+                    objWriter.WriteStartElement("chummer");
+                    if (!blnNewFile)
                     {
                         // <cyberwares>
                         objWriter.WriteStartElement(_strType + "s");
-                        foreach (Cyberware objChild in objCyberware.Children)
-                        {
-                            // Do not include items that come with the base item by default.
-                            if (objChild.Capacity != "[*]")
-                            {
-                                objWriter.WriteStartElement(_strType);
-                                objWriter.WriteElementString("name", objChild.Name);
-                                if (objChild.Rating > 0)
-                                    objWriter.WriteElementString("rating", objChild.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                                // </cyberware>
-                                objWriter.WriteEndElement();
-                            }
-                        }
+                        using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s"))
+                            if (xmlCyberwareList?.Count > 0)
+                                foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                                    xmlCyberware.WriteContentTo(objWriter);
                         // </cyberwares>
                         objWriter.WriteEndElement();
                     }
-                    // </cyberware>
+
+                    // <suites>
+                    objWriter.WriteStartElement("suites");
+
+                    // If this is not a new file, write out the current contents.
+                    if (!blnNewFile)
+                    {
+                        using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites"))
+                            if (xmlCyberwareList?.Count > 0)
+                                foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                                    xmlCyberware.WriteContentTo(objWriter);
+                    }
+
+                    string strGrade = string.Empty;
+                    // Determine the Grade of Cyberware.
+                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    {
+                        if (objCyberware.SourceType == _objSource)
+                        {
+                            strGrade = objCyberware.Grade.Name;
+                            break;
+                        }
+                    }
+
+                    // <suite>
+                    objWriter.WriteStartElement("suite");
+                    // <name />
+                    objWriter.WriteElementString("id", Guid.NewGuid().ToString());
+                    // <name />
+                    objWriter.WriteElementString("name", txtName.Text);
+                    // <grade />
+                    objWriter.WriteElementString("grade", strGrade);
+                    // <cyberwares>
+                    objWriter.WriteStartElement(_strType + "s");
+
+                    // Write out the Cyberware.
+                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    {
+                        if (objCyberware.SourceType == _objSource)
+                        {
+                            // <cyberware>
+                            objWriter.WriteStartElement(_strType);
+                            objWriter.WriteElementString("name", objCyberware.Name);
+                            if (objCyberware.Rating > 0)
+                                objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                            // Write out child items.
+                            if (objCyberware.Children.Count > 0)
+                            {
+                                // <cyberwares>
+                                objWriter.WriteStartElement(_strType + "s");
+                                foreach (Cyberware objChild in objCyberware.Children)
+                                {
+                                    // Do not include items that come with the base item by default.
+                                    if (objChild.Capacity != "[*]")
+                                    {
+                                        objWriter.WriteStartElement(_strType);
+                                        objWriter.WriteElementString("name", objChild.Name);
+                                        if (objChild.Rating > 0)
+                                            objWriter.WriteElementString("rating", objChild.Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                                        // </cyberware>
+                                        objWriter.WriteEndElement();
+                                    }
+                                }
+
+                                // </cyberwares>
+                                objWriter.WriteEndElement();
+                            }
+
+                            // </cyberware>
+                            objWriter.WriteEndElement();
+                        }
+                    }
+
+                    // </cyberwares>
                     objWriter.WriteEndElement();
+                    // </suite>
+                    objWriter.WriteEndElement();
+                    // </chummer>
+                    objWriter.WriteEndElement();
+
+                    objWriter.WriteEndDocument();
                 }
             }
-
-            // </cyberwares>
-            objWriter.WriteEndElement();
-            // </suite>
-            objWriter.WriteEndElement();
-            // </chummer>
-            objWriter.WriteEndElement();
-
-            objWriter.WriteEndDocument();
-            objWriter.Close();
 
             Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated", GlobalOptions.Language), txtName.Text),
                 LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);

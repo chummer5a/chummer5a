@@ -36,7 +36,7 @@ namespace Chummer
         }
         #endregion
 
-        private List<Character> characters;
+        private List<Character> characters = new List<Character>();
         private int _intIndex;
         private int _intRound;
         private bool _blnFinishedCombatTurn;
@@ -48,7 +48,6 @@ namespace Chummer
         public InitiativeUserControl()
         {
             InitializeComponent();
-            characters = new List<Character>();
             lblRound.Text = lblRound.Text.Split(' ')[0] + " 1";
             _intRound = 1;
 
@@ -80,8 +79,7 @@ namespace Chummer
                 chkBoxChummer.Items.RemoveAt(index);
                 if (chkBoxChummer.Items.Count > 0)
                     chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
-                characters[index].DeleteCharacter();
-                characters[index] = null;
+                characters[index].Dispose();
                 characters.RemoveAt(index);
             }
         }
