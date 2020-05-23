@@ -48,7 +48,7 @@ namespace Chummer
         public InitiativeUserControl()
         {
             InitializeComponent();
-            lblRound.Text = lblRound.Text.Split(' ')[0] + " 1";
+            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalOptions.CultureInfo);
             _intRound = 1;
 
             // setup the list of chummers to show
@@ -127,7 +127,7 @@ namespace Chummer
         }
 
         /*
-         * Add's 1 init
+         * Adds 1 init
          */
         private void btnAdd1Init_Click(object sender, EventArgs e)
         {
@@ -140,7 +140,7 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
         /*
-         * Add's 5 init
+         * Adds 5 init
          */
         private void btnAdd5Init_Click(object sender, EventArgs e)
         {
@@ -154,7 +154,7 @@ namespace Chummer
         }
 
         /*
-         * Add's 10 init
+         * Adds 10 init
          */
         private void btnAdd10Init_Click(object sender, EventArgs e)
         {
@@ -185,7 +185,7 @@ namespace Chummer
             if (_intIndex == characters.Count - totalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
-                lblRound.Text = "Round " + (_intRound++ + 1);
+                lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + (++_intRound).ToString(GlobalOptions.CultureInfo);
                 // reset the the round with a minus ten on all
                 int index = -1;
                 for (int i = 0; i < characters.Count; i++)
@@ -209,7 +209,7 @@ namespace Chummer
                 while (_intIndex < characters.Count && characters[_intIndex].InitRoll <= 0)
                     _intIndex++;
 
-                // check if there are no more chummer's which can move
+                // check if there are no more chummers which can move
                 if (_intIndex == characters.Count)
                 {
                     _blnFinishedCombatTurn = true;
@@ -250,7 +250,7 @@ namespace Chummer
                 int index = chkBoxChummer.SelectedIndex;
                 Character character = characters[index];
 
-                // update the position of the chummer to the next highest initative - 1 in regards to other delayed characters
+                // update the position of the chummer to the next highest initiative - 1 in regards to other delayed characters
                 // i.e. if the chummer delaying has 29 init and their is a chummer with 30 init, move the delayed chummer above it
                 int tempIndex = characters.Count - 1;
                 for (int i = 0; i < characters.Count; i++)
@@ -316,7 +316,7 @@ namespace Chummer
             _blnFinishedCombatTurn = false;
             _intIndex = 0;
             _intRound = 1;
-            lblRound.Text = "Round 1";
+            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalOptions.CultureInfo);
             totalChummersWithNoInit = 0;
         }
 
@@ -393,7 +393,7 @@ namespace Chummer
         public Character CurrentCharacter => characters[_intIndex];
 
         /// <summary>
-        /// Add's the token to the initiative chain
+        /// Adds the token to the initiative chain
         /// </summary>
         /// <param name="character"></param>
         public void AddToken(Character character)

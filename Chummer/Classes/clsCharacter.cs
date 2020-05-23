@@ -2533,6 +2533,8 @@ namespace Chummer
                                 objXmlDocument.InnerXml = objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
                                 xmlCharacterNavigator =
                                     objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                                if (xmlCharacterNavigator == null)
+                                    return false;
                             }
                         }
 #if !DEBUG
@@ -15916,7 +15918,25 @@ if (!Utils.IsUnitTest){
 
                     using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_quality", op_load))
                     {
-
+                        string[] astrLevelLabels =
+                        {
+                            " (0)",
+                            " (1)",
+                            " (2)",
+                            " (3)",
+                            " (4)",
+                            " (5)",
+                            " (6)",
+                            " (7)",
+                            " (8)",
+                            " (9)",
+                            " (10)",
+                            " (11)",
+                            " (12)",
+                            " (13)",
+                            " (14)",
+                            " (15)"
+                        };
                         // Qualities
                         XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
                         foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
@@ -15935,9 +15955,9 @@ if (!Utils.IsUnitTest){
                                 }
 
                                 int intQuantity = 1;
-                                for (int i = 1; i <= 15; ++i)
+                                for (int i = 0; i < astrLevelLabels.Length; ++i)
                                 {
-                                    string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
+                                    string strLoopString = astrLevelLabels[i];
                                     if (strQualityName.EndsWith(strLoopString, StringComparison.Ordinal))
                                     {
                                         strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
@@ -16027,9 +16047,9 @@ if (!Utils.IsUnitTest){
                                 }
 
                                 int intQuantity = 1;
-                                for (int i = 1; i <= 15; ++i)
+                                for (int i = 0; i < astrLevelLabels.Length; ++i)
                                 {
-                                    string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
+                                    string strLoopString = astrLevelLabels[i];
                                     if (strQualityName.EndsWith(strLoopString, StringComparison.Ordinal))
                                     {
                                         strQualityName = strQualityName.TrimEndOnce(strLoopString, true);

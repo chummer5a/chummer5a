@@ -26,7 +26,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Chummer.Backend.Equipment;
 using Application = System.Windows.Forms.Application;
 using DataFormats = System.Windows.Forms.DataFormats;
@@ -117,9 +116,7 @@ namespace Chummer
 
                     LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-                    /** Dashboard **/
                     //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
-                    /** End Dashboard **/
 
                     // If Automatic Updates are enabled, check for updates immediately.
 

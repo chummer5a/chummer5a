@@ -468,38 +468,43 @@ namespace Chummer
                     if (blnTempIsSuccess)
                         intMinRating = Convert.ToInt32(objTempProcess, GlobalOptions.InvariantCultureInfo);
                 }
+                lblRatingLabel.Visible = true;
                 string strRating = xmlVehicleMod.SelectSingleNode("rating")?.Value;
-                // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
-                if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(strRating))
                 {
-                    nudRating.Maximum = 20;
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                    nudRating.Minimum = 0;
+                    nudRating.Maximum = 0;
+                    nudRating.Visible = false;
+                    lblRatingNALabel.Visible = true;
+                }
+                // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
+                else if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
+                {
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
-                    lblRatingLabel.Visible = true;
+                    nudRating.Maximum = 20;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
                 }
                 //Used for the Armor modifications.
                 else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                 {
-                    nudRating.Maximum = _objVehicle.Body;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Body", GlobalOptions.Language);
-                    lblRatingLabel.Visible = true;
+                    nudRating.Maximum = _objVehicle.Body;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
                 }
                 //Used for Metahuman Adjustments.
                 else if (strRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                 {
-                    nudRating.Maximum = _objVehicle.TotalSeats;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Seats", GlobalOptions.Language);
-                    lblRatingLabel.Visible = true;
+                    nudRating.Maximum = _objVehicle.TotalSeats;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
                 }
                 else
                 {
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                    lblRatingLabel.Visible = true;
                     int intRating = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
                     if (intRating > 0)
                     {
