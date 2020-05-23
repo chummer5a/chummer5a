@@ -18,7 +18,6 @@ using System.Resources;
  *  https://github.com/chummer5a/chummer5a
  */
  using System.Reflection;
-using System.Reflection;
  using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
