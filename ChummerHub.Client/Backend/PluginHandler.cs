@@ -580,8 +580,8 @@ namespace Chummer.Plugins
 
         private void mnuSINnerSearchs_Click(object sender, EventArgs e)
         {
-            using (frmSINnerSearch search = new frmSINnerSearch())
-                search.Show();
+            frmSINnerSearch search = new frmSINnerSearch();
+            search.Show();
         }
 
         private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)

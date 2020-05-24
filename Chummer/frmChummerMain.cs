@@ -297,8 +297,8 @@ namespace Chummer
                         frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
                         if (blnShowTest)
                         {
-                            using (frmTest frmTestData = new frmTest())
-                                frmTestData.Show();
+                            frmTest frmTestData = new frmTest();
+                            frmTestData.Show();
                         }
 
                         OpenCharacterList(lstCharactersToLoad);
@@ -761,12 +761,12 @@ namespace Chummer
                     objCharacter.Weapons.Add(objLoopWeapon);
             }
 
-            using (frmCareer frmNewCharacter = new frmCareer(objCharacter)
+            frmCareer frmNewCharacter = new frmCareer(objCharacter)
             {
                 MdiParent = this,
                 WindowState = FormWindowState.Maximized
-            })
-                frmNewCharacter.Show();
+            };
+            frmNewCharacter.Show();
 
             Cursor = objOldCursor;
         }
@@ -939,8 +939,8 @@ namespace Chummer
             else
             {
                 // No limit on the number of Dice Roller windows, so just create a new one.
-                using (frmDiceRoller frmRoller = new frmDiceRoller(this))
-                    frmRoller.Show();
+                frmDiceRoller frmRoller = new frmDiceRoller(this);
+                frmRoller.Show();
             }
         }
 
@@ -1243,12 +1243,12 @@ namespace Chummer
             }
 
             OpenCharacters.Add(objCharacter);
-            using (frmCreate frmNewCharacter = new frmCreate(objCharacter)
+            frmCreate frmNewCharacter = new frmCreate(objCharacter)
             {
                 MdiParent = this,
                 WindowState = FormWindowState.Maximized
-            })
-                frmNewCharacter.Show();
+            };
+            frmNewCharacter.Show();
 
             Cursor = objOldCursor;
         }
@@ -1333,25 +1333,23 @@ namespace Chummer
                 // Show the character form.
                 if(!objCharacter.Created)
                 {
-                    using (frmCreate frmCharacter = new frmCreate(objCharacter)
+                    frmCreate frmCharacter = new frmCreate(objCharacter)
                     {
                         MdiParent = this,
                         WindowState = wsPreference
-                    })
-                        frmCharacter.Show();
+                    };
+                    frmCharacter.Show();
                 }
                 else
                 {
-                    using (frmCareer frmCharacter = new frmCareer(objCharacter)
+                    frmCareer frmCharacter = new frmCareer(objCharacter)
                     {
                         MdiParent = this,
                         WindowState = wsPreference
-                    })
-                    {
-                        frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
-                        frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;
-                        frmCharacter.Show();
-                    }
+                    };
+                    frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
+                    frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;
+                    frmCharacter.Show();
                 }
 
                 if(blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
@@ -1576,8 +1574,8 @@ namespace Chummer
             }
             else
             {
-                using (frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice))
-                    frmRoller.Show();
+                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice);
+                frmRoller.Show();
             }
         }
 
@@ -1650,8 +1648,8 @@ namespace Chummer
                     LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            using (frmHeroLabImporter frmImporter = new frmHeroLabImporter())
-                frmImporter.Show();
+            frmHeroLabImporter frmImporter = new frmHeroLabImporter();
+            frmImporter.Show();
         }
 
         private void tabForms_MouseClick(object sender, MouseEventArgs e)
