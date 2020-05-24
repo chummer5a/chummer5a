@@ -365,6 +365,7 @@ namespace Chummer
                     MainForm.FormMainInitialize(pvt);
                     Application.Run(MainForm);
                 }
+                _pluginLoader?.Dispose();
                 Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
