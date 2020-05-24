@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
@@ -15,7 +12,7 @@ namespace ChummerHub.Client.Backend
 {
     public class MyMessageHandler : DelegatingHandler
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public MyMessageHandler()
         {
             var httpClientHandler = new HttpClientHandler
@@ -30,13 +27,15 @@ namespace ChummerHub.Client.Backend
             };
             httpClientHandler.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-            this.InnerHandler = httpClientHandler;
+            InnerHandler = httpClientHandler;
         }
 
-        private static int requestCounter = 0;
+        private static int requestCounter;
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
             int myCounter = ++requestCounter;
             string msg = "Process request " + myCounter + ": " + request.RequestUri;
             Log.Debug<object>(msg);

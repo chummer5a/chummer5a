@@ -1,37 +1,24 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
 using ChummerHub.Client.Model;
-using System.Net;
-using Microsoft.Rest;
-using System.Net.Http;
 using SINners;
 using ChummerHub.Client.Backend;
-using System.Composition;
 using Chummer.Plugins;
-using System.IO;
-using SINners.Models;
-using System.Windows.Threading;
 using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersUserControl : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private CharacterShared _mySINner = null;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private CharacterShared _mySINner;
         private ucSINnersBasic TabSINnersBasic;
 
         public CharacterShared MySINner => _mySINner;
 
-        private ucSINnersAdvanced TabSINnersAdvanced = null;
+        private ucSINnersAdvanced TabSINnersAdvanced;
 
         public CharacterExtended MyCE { get; set; }
 
@@ -79,7 +66,8 @@ namespace ChummerHub.Client.UI
             try
             {
                 var client = StaticUtils.GetClient();
-                await client.DeleteAsync(MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
+                if (MyCE.MySINnerFile.Id != null)
+                    await client.DeleteAsync(MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
             }
             catch (Exception ex)
             {

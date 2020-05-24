@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +17,7 @@ namespace ChummerHub.Client.Backend
         public static async Task<T> CancelAfter<T>(this Task<T> task, CancellationToken cancellationToken)
         {
             if (task == null)
-                return default(T);
+                return default;
             var tcs = new TaskCompletionSource<bool>();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
                 if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(true))
@@ -59,7 +56,7 @@ namespace ChummerHub.Client.Backend
         public static async Task<T> CancelAfter<T>(this Task<T> task, int milliseconds)
         {
             if (task == null)
-                return default(T);
+                return default;
             var cts = new CancellationTokenSource();
             cts.CancelAfter(milliseconds);
             var tcs = new TaskCompletionSource<bool>();

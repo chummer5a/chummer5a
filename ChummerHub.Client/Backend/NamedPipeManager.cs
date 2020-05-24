@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using NLog;
 
 namespace ChummerHub.Client.Backend
 {
@@ -16,12 +12,12 @@ namespace ChummerHub.Client.Backend
     /// </summary>
     public class NamedPipeManager
     {
-        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public string NamedPipeName { get; }
         public event Action<string> ReceiveString;
 
         private const string EXIT_STRING = "__EXIT__";
-        private bool _isRunning = false;
+        private bool _isRunning;
         private Thread Thread;
 
         public NamedPipeManager(string name = "Chummer")

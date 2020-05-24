@@ -1,19 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Chummer;
-using ChummerHub.Client.Model;
-using System.Net.Http;
-using Microsoft.Rest;
-using SINners;
-using System.Net;
-using SINners.Models;
 using ChummerHub.Client.Backend;
 
 namespace ChummerHub.Client.UI
@@ -35,11 +21,11 @@ namespace ChummerHub.Client.UI
         private void SINnersAdvancedConstructor(ucSINnersUserControl parent)
         {
             InitializeComponent();
-            this.Name = "SINnersAdvanced";
-            this.AutoSize = true;
-            this.cbSINnerUrl.SelectedIndex = 0;
+            Name = "SINnersAdvanced";
+            AutoSize = true;
+            cbSINnerUrl.SelectedIndex = 0;
             MySINnersUsercontrol = parent;
-            
+
             //TreeNode root = null;
             //MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
             //MyTagTreeView.Nodes.Add(root);
@@ -64,12 +50,12 @@ namespace ChummerHub.Client.UI
 
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.MyCE.PrepareModel();
+            MySINnersUsercontrol.MyCE.PrepareModel().RunSynchronously();
         }
 
         private async void cmdPostSINnerMetaData_Click(object sender, EventArgs e)
         {
-            await Backend.Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
+            await Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
         }
 
         private void MyTagTreeView_VisibleChanged(object sender, EventArgs e)
@@ -84,8 +70,9 @@ namespace ChummerHub.Client.UI
 
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
-            var dummy = await Backend.Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
-            dummy.Dispose();
+            using (_ = await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true))
+            {
+            }
         }
     }
 }

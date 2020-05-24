@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SINners.Models
 {
@@ -11,19 +9,13 @@ namespace SINners.Models
     {
         public string Password
         {
-            set
-            {
-                if (!String.IsNullOrEmpty(value))
-                    this.PasswordHash = GetHashString(value);
-                else
-                {
-                    this.PasswordHash = null;
-                }
-            }
+            set => PasswordHash = !string.IsNullOrEmpty(value) ? GetHashString(value) : null;
         }
 
         public SINnerGroup(SINnerSearchGroup searchGroup)
         {
+            if (searchGroup == null)
+                throw new ArgumentNullException(nameof(searchGroup));
             Id = searchGroup.Id;
             Groupname = searchGroup.Groupname;
             IsPublic = searchGroup.IsPublic;
@@ -41,7 +33,7 @@ namespace SINners.Models
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte b in GetHash(inputString))
-                sb.Append(b.ToString("X2"));
+                sb.Append(b.ToString("X2", CultureInfo.InvariantCulture));
 
             return sb.ToString();
         }

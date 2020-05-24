@@ -1,38 +1,31 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerVisibility : Form
     {
-        public SINners.Models.SINnerVisibility MyVisibility
+        public SINnerVisibility MyVisibility
         {
-            get { return this.ucSINnerVisibility1.MyVisibility; }
-            set { this.ucSINnerVisibility1.MyVisibility = value; }
+            get => ucSINnerVisibility1.MyVisibility;
+            set => ucSINnerVisibility1.MyVisibility = value;
         }
 
         public frmSINnerVisibility()
         {
             InitializeComponent();
-            this.DialogResult = DialogResult.Ignore;
-            this.AcceptButton = bOk;
+            DialogResult = DialogResult.Ignore;
+            AcceptButton = bOk;
         }
-
-
 
         private void BOk_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.MyVisibility.IsGroupVisible = this.ucSINnerVisibility1.MyCheckBoxGroupVisible.Checked;
-            this.MyVisibility.UserRights = this.MyVisibility.UserRightsObservable.ToList();
-            this.Close();
+            DialogResult = DialogResult.OK;
+            MyVisibility.IsGroupVisible = ucSINnerVisibility1.MyCheckBoxGroupVisible.Checked;
+            MyVisibility.UserRights = MyVisibility.UserRightsObservable.ToList();
+            Close();
         }
     }
 }

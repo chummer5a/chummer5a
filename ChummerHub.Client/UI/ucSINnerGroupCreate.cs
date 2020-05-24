@@ -1,11 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SINners.Models;
 using Chummer.Plugins;
@@ -125,7 +118,6 @@ namespace ChummerHub.Client.UI
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
             bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
-
         }
 
         private void TbPassword_KeyDown(object sender, KeyEventArgs e)

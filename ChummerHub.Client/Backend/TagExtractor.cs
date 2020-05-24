@@ -41,13 +41,13 @@ namespace ChummerHub.Client.Backend
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
                                 PropertyInfo childprop = obj.GetType().GetProperties().FirstOrDefault(x => x.Name == classprop.ListInstanceNameFromProperty);
                                 if (childprop == null)
-                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + obj.GetType().ToString() + ".");
+                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + obj.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(obj);
                             }
                             if (string.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = obj.ToString();
                             tag.AddPropertyValuesToTagComment(obj, classprop);
-                            tag.Tags.AddRange(ExtractTagsFromExtraProperties(obj, classprop));
+                            tag.Tags = new List<Tag>(ExtractTagsFromExtraProperties(obj, classprop));
                             yield return tag;
                         }
                         yield break;
@@ -76,14 +76,14 @@ namespace ChummerHub.Client.Backend
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
                                 var childprop = item.GetType().GetProperties().FirstOrDefault(x => x.Name == classprop.ListInstanceNameFromProperty);
                                 if (childprop == null)
-                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + item.GetType().ToString() + ".");
+                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + item.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(item);
                             }
                             if (string.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = item.ToString();
 
                             tag.AddPropertyValuesToTagComment(item, classprop);
-                            tag.Tags.AddRange(ExtractTagsFromExtraProperties(item, classprop));
+                            tag.Tags = new List<Tag>(ExtractTagsFromExtraProperties(item, classprop));
                             yield return tag;
                         }
                     }
@@ -114,7 +114,7 @@ namespace ChummerHub.Client.Backend
                 var propfound = aPropertyInfos.FirstOrDefault(x => x.Name == includeprop);
                 if(propfound == null)
                 {
-                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType().ToString() + ".");
+                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + ".");
                 }
                 var includeInstance = propfound.GetValue(objPropertyHaver);
                 if(includeInstance != null && !string.IsNullOrEmpty(includeInstance.ToString()))
@@ -192,7 +192,7 @@ namespace ChummerHub.Client.Backend
 
             if(objProperty != null)
             {
-                tag.Tags.AddRange(ExtractTagsFromAttributes(objValue));
+                tag.Tags = new List<Tag>(ExtractTagsFromAttributes(objValue));
             }
             yield return tag;
         }

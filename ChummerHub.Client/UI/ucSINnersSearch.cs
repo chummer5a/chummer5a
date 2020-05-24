@@ -1,31 +1,27 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Chummer;
-using ChummerHub.Client.Model;
-using SINners.Models;
-using ChummerHub.Client.Backend;
-using System.Xml;
 using System.Collections;
-using GroupControls;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
+using System.Xml;
+using Chummer;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Uniques;
+using ChummerHub.Client.Backend;
+using ChummerHub.Client.Model;
+using GroupControls;
 using NLog;
+using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersSearch : UserControl
     {
-        public static CharacterExtended MySearchCharacter = null;
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        public static CharacterExtended MySearchCharacter;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public SearchTag motherTag = null;
+        public SearchTag motherTag;
         private Action<string> GetSelectedObjectCallback;
 
         public string SelectedId { get; private set; }
@@ -41,7 +37,7 @@ namespace ChummerHub.Client.UI
             UpdateDialog();
         }
 
-        private bool _loading = false;
+        private bool _loading;
 
         private Control GetCbOrOInputontrolFromMembers(SearchTag stag)
         {
@@ -95,22 +91,22 @@ namespace ChummerHub.Client.UI
         {
             string switchname = stag.TagName;
             string typename = stag.MyRuntimePropertyValue.GetType().ToString();
-            FlowLayoutPanel flp = new FlowLayoutPanel(); ;
-            TextBox tb = null;
-            Button b = null;
-            NumericUpDown nud = null;
-            ComboBox cb = null;
+            FlowLayoutPanel flp = new FlowLayoutPanel();
+            TextBox tb;
+            Button b;
+            NumericUpDown nud;
+            ComboBox cb;
             switch (typename)
             {
                 case "System.Boolean":
                     {
                         RadioButtonListItem itrue = new RadioButtonListItem
                         {
-                            Text = "true"
+                            Text = bool.TrueString
                         };
                         RadioButtonListItem ifalse = new RadioButtonListItem
                         {
-                            Text = "false"
+                            Text = bool.FalseString
                         };
                         RadioButtonList rdb = new RadioButtonList
                         {
@@ -121,7 +117,7 @@ namespace ChummerHub.Client.UI
                         rdb.SelectedIndexChanged += (sender, e) =>
                         {
                             PropertyInfo info = stag.MyPropertyInfo;
-                            info.SetValue(((SearchTag)stag.MyParentTag).MyRuntimePropertyValue, itrue.Checked);
+                            info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, itrue.Checked);
                             MySetTags.Add(stag);
                             UpdateDialog();
                         };
@@ -137,8 +133,8 @@ namespace ChummerHub.Client.UI
                         };
                         b.Click += (sender, e) =>
                         {
-                            PropertyInfo info = stag.MyPropertyInfo as PropertyInfo;
-                            info.SetValue(((SearchTag)stag.MyParentTag).MyRuntimePropertyValue, tb.Text);
+                            PropertyInfo info = stag.MyPropertyInfo;
+                            info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, tb.Text);
                             MySetTags.Add(stag);
                             UpdateDialog();
                         };
@@ -160,7 +156,7 @@ namespace ChummerHub.Client.UI
                         b.Click += (sender, e) =>
                         {
                             PropertyInfo info = stag.MyPropertyInfo;
-                            info.SetValue(((SearchTag)stag.MyParentTag).MyRuntimePropertyValue, (int)nud.Value);
+                            info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, (int)nud.Value);
                             MySetTags.Add(stag);
                             UpdateDialog();
                         };
@@ -169,7 +165,7 @@ namespace ChummerHub.Client.UI
                     }
                 case "Chummer.Backend.Uniques.Tradition":
                     {
-                        var traditions = Chummer.Backend.Uniques.Tradition.GetTraditions(ucSINnersSearch.MySearchCharacter.MyCharacter);
+                        var traditions = Tradition.GetTraditions(MySearchCharacter.MyCharacter);
                         cb = new ComboBox
                         {
                             DataSource = traditions,
@@ -182,8 +178,8 @@ namespace ChummerHub.Client.UI
                             if (_loading)
                                 return;
                             PropertyInfo info = stag.MyPropertyInfo;
-                            info.SetValue(((SearchTag)stag.MyParentTag).MyRuntimePropertyValue, cb.SelectedValue);
-                            stag.TagValue = (cb.SelectedValue as Chummer.Backend.Uniques.Tradition)?.Name ?? string.Empty;
+                            info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, cb.SelectedValue);
+                            stag.TagValue = (cb.SelectedValue as Tradition)?.Name ?? string.Empty;
                             MySetTags.Add(stag);
                             UpdateDialog();
                         };
@@ -204,7 +200,7 @@ namespace ChummerHub.Client.UI
 
             switch (switchname)
             {
-                ///these are sample implementations to get added one by one...
+                //these are sample implementations to get added one by one...
                 case "Spell":
                     {
                         Button button = new Button

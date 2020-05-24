@@ -1,18 +1,17 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Chummer;
+using Newtonsoft.Json;
 
 namespace SINners.Models
 {
-    [System.Diagnostics.DebuggerDisplay("{Display}")]
+    [DebuggerDisplay("{Display}")]
     public partial class Tag
     {
         [IgnoreDataMember]
@@ -20,27 +19,24 @@ namespace SINners.Models
         [JsonIgnore]
         public Tag MyParentTag { get; set; }
 
-        public Tag (object myRuntimeObject, Chummer.HubTagAttribute hubTag)
+        public Tag (object myRuntimeObject, HubTagAttribute hubTag)
         {
             Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubTag = hubTag;
-            Tags = new List<Tag>();
         }
 
         public Tag (bool isUserGenerated)
         {
             Id = Guid.NewGuid();
             IsUserGenerated = isUserGenerated;
-            Tags = new List<Tag>();
         }
 
-        public Tag(object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
+        public Tag(object myRuntimeObject, HubClassTagAttribute hubClassTag)
         {
             Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubClassTag = hubClassTag;
-            Tags = new List<Tag>();
         }
 
         [IgnoreDataMember]
@@ -81,18 +77,19 @@ namespace SINners.Models
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Chummer.HubTagAttribute MyRuntimeHubTag { get; set; }
+        public HubTagAttribute MyRuntimeHubTag { get; set; }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Chummer.HubClassTagAttribute MyRuntimeHubClassTag { get; set; }
+        public HubClassTagAttribute MyRuntimeHubClassTag { get; set; }
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
             SiNnerId = id;
-            foreach(var childtag in Tags)
-                childtag.SetSinnerIdRecursive(id);
+            if (Tags != null && Tags.Count > 0)
+                foreach(var childtag in Tags)
+                    childtag.SetSinnerIdRecursive(id);
         }
 
         internal void SetTagTypeEnumFromCLRType(Type typeValue)
@@ -153,7 +150,7 @@ namespace SINners.Models
             }
             if (sbdPropertyValues.Length > 0)
                 sbdPropertyValues.Remove(sbdPropertyValues.Length - 1, 1); // Remove trailing whitespace
-            TagComment = TagComment + sbdPropertyValues;
+            TagComment += sbdPropertyValues;
         }
     }
 }
