@@ -3,6 +3,7 @@ Application Fixes:
 - Fixed an incorrect tag on submersion groups in career mode. 
 - Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
 - Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
+- Fixed a regression in career mode not allowing Initiation Groups to be joined or left properly. Closes #4115
 
 Build 212
 Application Changes:
