@@ -9,6 +9,7 @@ Application Fixes:
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
+- The custom rulesets for Toxic traditions having no requirements and for Painade being available per the German version of Cutting Aces now load and work properly.
 
 Build 212
 Application Changes:
