@@ -67,8 +67,8 @@ namespace Chummer
 
             List<ListItem> lstDVType = new List<ListItem>
             {
-                new ListItem("P", LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Language)),
-                new ListItem("S", LanguageManager.GetString("String_DamageStun", GlobalOptions.Language))
+                new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
+                new ListItem("S", LanguageManager.GetString("String_DamageStun"))
             };
 
             // Bind the Lists to the ComboBoxes.
@@ -153,7 +153,7 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                    Category = LanguageManager.GetString("Tab_Critter"),
                     WeaponType = "Melee",
                     Reach = decimal.ToInt32(nudReach.Value),
                     Damage = strDamage,

@@ -122,18 +122,6 @@ namespace Chummer
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                             }
                         }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAvail. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAvail");
-                        }
                     }
                     catch (Exception e)
                     {
@@ -242,66 +230,6 @@ namespace Chummer
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                             }
                         }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAP(GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAP. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAP");
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAmmo. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedAmmo");
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.CalculatedConcealability(GlobalOptions.CultureInfo);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedConcealability. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedConcealability");
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedDamage. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed CalculatedDamage");
-                        }
                     }
                     catch (Exception e)
                     {
@@ -343,18 +271,6 @@ namespace Chummer
                                 else
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                             }
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
                     }
                     catch (Exception e)
@@ -411,18 +327,6 @@ namespace Chummer
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                             }
                         }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
-                        }
                     }
                     catch (Exception e)
                     {
@@ -465,18 +369,6 @@ namespace Chummer
                                 else
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                             }
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e);
-                            else
-                                _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                         }
                     }
                     catch (Exception e)
@@ -531,18 +423,6 @@ namespace Chummer
                                     else
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                                 }
-                            }
-
-                            try
-                            {
-                                string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            }
-                            catch (Exception e)
-                            {
-                                if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e);
-                                else
-                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
                             }
                         }
                         catch (Exception e)
@@ -609,30 +489,6 @@ namespace Chummer
                                     else
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
                                 }
-                            }
-
-                            try
-                            {
-                                string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            }
-                            catch (Exception e)
-                            {
-                                if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e);
-                                else
-                                    _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
-                            }
-
-                            try
-                            {
-                                decimal _ = objTemp.CalculatedESS();
-                            }
-                            catch (Exception e)
-                            {
-                                if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.AppendLine(strName + " failed CalculatedESS. Exception: " + e);
-                                else
-                                    _objOutputBuilder.AppendLine(strName + " failed CalculatedESS");
                             }
                         }
                         catch (Exception e)

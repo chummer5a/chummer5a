@@ -134,10 +134,10 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language), power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language), power => power.Rating == 0)
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"), power => power.Rating > 0),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"), power => power.Rating == 0)
             };
 
             /*
@@ -147,7 +147,7 @@ namespace Chummer.UI.Powers
                     {
                         string strName = xmlCategoryNode.InnerText;
                         ret.Add(new Tuple<string, Predicate<Power>>(
-                            $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
+                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
                             power => power.Category == strName));
                     }
                     */
@@ -178,7 +178,7 @@ namespace Chummer.UI.Powers
         {
             if (_blnSearchMode)
             {
-                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
+                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
             }
         }
 
@@ -227,7 +227,7 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1}" + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1}" + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining") + ')', intPowerPointsTotal, decPowerPointsRemaining);
         }
 
         private int PowerPointsTotal
@@ -264,11 +264,11 @@ namespace Chummer.UI.Powers
             TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
             {
                 Text = "Power",
-                Extractor = (power => power.DisplayName),
+                Extractor = (power => power.CurrentDisplayName),
                 Tag = "String_Power",
                 Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
             };
-            nameColumn.AddDependency(nameof(Power.DisplayName));
+            nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
             TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
             {
@@ -401,7 +401,7 @@ namespace Chummer.UI.Powers
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
                 ToolTipExtractor = (p => {
-                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
+                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
                     return strTooltip.WordWrap(100);
@@ -409,7 +409,7 @@ namespace Chummer.UI.Powers
             };
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete", GlobalOptions.Language), Tag = "String_Delete", BackColor = SystemColors.Control })
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete"), Tag = "String_Delete", BackColor = SystemColors.Control })
             {
                 ClickHandler = p =>
                 {

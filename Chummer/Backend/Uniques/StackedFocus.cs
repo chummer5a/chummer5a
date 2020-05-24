@@ -238,19 +238,21 @@ namespace Chummer
         /// </summary>
         public string Name(CultureInfo objCulture, string strLanguage)
         {
-            StringBuilder strbldReturn = new StringBuilder();
+            StringBuilder sbdReturn = new StringBuilder();
             foreach (Gear objGear in Gear)
             {
-                strbldReturn.Append(objGear.DisplayName(objCulture, strLanguage));
-                strbldReturn.Append(", ");
+                sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage));
+                sbdReturn.Append(", ");
             }
 
             // Remove the trailing comma.
-            if (strbldReturn.Length > 0)
-                strbldReturn.Length -= 2;
+            if (sbdReturn.Length > 0)
+                sbdReturn.Length -= 2;
 
-            return strbldReturn.ToString();
+            return sbdReturn.ToString();
         }
+
+        public string CurrentDisplayName => Name(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
@@ -267,7 +269,9 @@ namespace Chummer
             TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
 
             objNode.Name = InternalId;
-            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ':' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            objNode.Text = LanguageManager.GetString("String_StackedFocus")
+                           + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space")
+                           + CurrentDisplayName;
             objNode.Tag = this;
             objNode.Checked = Bonded;
 

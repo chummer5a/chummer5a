@@ -39,11 +39,11 @@ namespace Chummer.UI.Shared
 
             foreach (ToolStripMenuItem objItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
             foreach (ToolStripMenuItem objItem in cmsLimitModifierNotesOnly.Items.OfType<ToolStripMenuItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
         }
 
@@ -203,7 +203,7 @@ namespace Chummer.UI.Shared
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                     TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                    if (!objParentNode.Nodes.ContainsKey(objLimitModifier.DisplayName))
+                    if (!objParentNode.Nodes.ContainsKey(objLimitModifier.CurrentDisplayName))
                     {
                         objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly));
                     }
@@ -231,12 +231,12 @@ namespace Chummer.UI.Shared
                     if (intTargetLimit != -1)
                     {
                         TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space");
                         if (objImprovement.Value > 0)
                             strName += '+';
                         strName += objImprovement.Value.ToString(GlobalOptions.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
+                            strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
                         if (!objParentNode.Nodes.ContainsKey(strName))
                         {
                             TreeNode objNode = new TreeNode
@@ -281,7 +281,7 @@ namespace Chummer.UI.Shared
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                                 TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.DisplayName))
+                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                 {
                                     TreeNode objNode = objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
                                     int intNodesCount = lstParentNodeChildren.Count;
@@ -332,7 +332,7 @@ namespace Chummer.UI.Shared
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                                 TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.DisplayName))
+                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                 {
                                     TreeNode objNode = objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
                                     int intNodesCount = lstParentNodeChildren.Count;
@@ -375,7 +375,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Physical",
-                                Text = LanguageManager.GetString("Node_Physical", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Physical")
                             };
                             treLimit.Nodes.Insert(0, objParentNode);
                             break;
@@ -383,7 +383,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Mental",
-                                Text = LanguageManager.GetString("Node_Mental", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Mental")
                             };
                             treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
                             break;
@@ -391,7 +391,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Social",
-                                Text = LanguageManager.GetString("Node_Social", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Social")
                             };
                             treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
                             break;
@@ -399,7 +399,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Astral",
-                                Text = LanguageManager.GetString("Node_Astral", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Astral")
                             };
                             treLimit.Nodes.Add(objParentNode);
                             break;
@@ -426,7 +426,7 @@ namespace Chummer.UI.Shared
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound"));
                 return;
             }
 

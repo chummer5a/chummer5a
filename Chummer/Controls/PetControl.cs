@@ -42,7 +42,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             foreach (ToolStripItem objItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
             MoveControls();
         }
@@ -134,7 +134,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -148,7 +148,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
@@ -161,7 +161,7 @@ namespace Chummer
                     return;
                 Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
-                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
+                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile"));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -177,11 +177,11 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_LinkFile"));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
@@ -199,7 +199,7 @@ namespace Chummer
                     return;
                 _objContact.Notes = frmContactNotes.Notes;
 
-                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
@@ -223,7 +223,7 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
             using (XmlNodeList xmlMetatypesList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypesList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypesList)

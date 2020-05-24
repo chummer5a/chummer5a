@@ -184,7 +184,7 @@ namespace Chummer
                 objFavoriteNode = treCharacterList.FindNode("Favorite", false);
                 if(objFavoriteNode == null)
                 {
-                    objFavoriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavoriteCharacters", GlobalOptions.Language)) { Tag = "Favorite" };
+                    objFavoriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavoriteCharacters")) { Tag = "Favorite" };
                     blnAddFavoriteNode = true;
                 }
 
@@ -231,7 +231,7 @@ namespace Chummer
 
                 if (blnAddWatchNode)
                 {
-                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) { Tag = "Watch" };
+                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
                 }
 
                 lstWatchNodes = new TreeNode[intWatchFolderCount];
@@ -261,7 +261,7 @@ namespace Chummer
                 objRecentNode = treCharacterList.FindNode("Recent", false);
                 if(objRecentNode == null && lstRecents.Count > 0)
                 {
-                    objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters", GlobalOptions.Language)) { Tag = "Recent" };
+                    objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) { Tag = "Recent" };
                     blnAddRecentNode = true;
                 }
 
@@ -500,8 +500,8 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
-                                       + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error")
+                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
             }
             return objNode;
         }
@@ -516,8 +516,8 @@ namespace Chummer
         {
             if(objCache != null)
             {
-                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                string strUnknown = LanguageManager.GetString("String_Unknown");
+                string strNone = LanguageManager.GetString("String_None");
                 txtCharacterBio.Text = objCache.Description;
                 txtCharacterBackground.Text = objCache.Background;
                 txtCharacterNotes.Text = objCache.CharacterNotes;
@@ -540,7 +540,7 @@ namespace Chummer
                     lblEssence.Text = strUnknown;
                 lblFilePath.Text = objCache.FileName;
                 if(string.IsNullOrEmpty(lblFilePath.Text))
-                    lblFilePath.Text = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
+                    lblFilePath.Text = LanguageManager.GetString("MessageTitle_FileNotFound");
                 lblSettings.Text = objCache.SettingsFile;
                 if(string.IsNullOrEmpty(lblSettings.Text))
                     lblSettings.Text = strUnknown;
@@ -564,12 +564,12 @@ namespace Chummer
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                     }
                     lblMetatype.Text = strMetatype;
                 }
                 else
-                    lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError", GlobalOptions.Language);
+                    lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");
                 tabCharacterText.Visible = true;
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
@@ -929,9 +929,9 @@ namespace Chummer
                 tsDelete
             });
 
-            LanguageManager.TranslateToolStripItemsRecursively(tsToggleFav, GlobalOptions.Language);
-            LanguageManager.TranslateToolStripItemsRecursively(tsSort, GlobalOptions.Language);
-            LanguageManager.TranslateToolStripItemsRecursively(tsDelete, GlobalOptions.Language);
+            LanguageManager.TranslateToolStripItemsRecursively(tsToggleFav);
+            LanguageManager.TranslateToolStripItemsRecursively(tsSort);
+            LanguageManager.TranslateToolStripItemsRecursively(tsDelete);
 
             if (blnIncludeCloseOpenCharacter)
             {
@@ -947,7 +947,7 @@ namespace Chummer
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
                 cmsRoster.Items.Add(tsCloseOpenCharacter);
-                LanguageManager.TranslateToolStripItemsRecursively(tsCloseOpenCharacter, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(tsCloseOpenCharacter);
             }
 
             return cmsRoster;

@@ -21,7 +21,7 @@ using System.Globalization;
 
 namespace Chummer
 {
-    public struct AvailabilityValue : IComparable, IEquatable<AvailabilityValue>
+    public readonly struct AvailabilityValue : IComparable, IEquatable<AvailabilityValue>
     {
         public bool AddToParent { get; }
         public bool IncludedInParent { get; }

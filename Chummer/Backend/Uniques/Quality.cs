@@ -258,7 +258,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(_objCharacter);
                         if (objXmlNaturalWeapon["name"] != null)
                             objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                        objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language);
+                        objWeapon.Category = LanguageManager.GetString("Tab_Critter");
                         objWeapon.WeaponType = "Melee";
                         if (objXmlNaturalWeapon["reach"] != null)
                             objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText, GlobalOptions.InvariantCultureInfo);
@@ -327,7 +327,7 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -558,7 +558,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -707,6 +707,8 @@ namespace Chummer
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Returns how many instances of this quality there are in the character's quality list
         /// TODO: Actually implement a proper rating system for qualities that plays nice with the Improvements Manager.
@@ -845,7 +847,7 @@ namespace Chummer
                     sb.Append(LanguageManager.GetString("String_SuppressedBy").CheapReplace("{0}", () =>
                         _objCharacter.GetObjectName(_objCharacter.Improvements.First(imp =>
                         imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)), GlobalOptions.Language) ??
+                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name))) ??
                         LanguageManager.GetString("String_Unknown")));
                     sb.Append(Environment.NewLine);
                 }
@@ -923,7 +925,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsQuality,
                 ForeColor = PreferredColor,
@@ -1174,13 +1176,13 @@ namespace Chummer
                 }
                 if (intKarmaCost > objCharacter.Karma)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     blnAddItem = false;
                 }
 
                 if (blnAddItem)
                 {
-                    if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language)
+                    if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
                         , objOldQuality.DisplayNameShort(GlobalOptions.Language)
                         , DisplayNameShort(GlobalOptions.Language))))
                         blnAddItem = false;
@@ -1192,7 +1194,7 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
+                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_ExpenseSwapPositiveQuality")
                             , DisplayNameShort(GlobalOptions.Language)
                             , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
@@ -1210,13 +1212,13 @@ namespace Chummer
                 {
                     if (intKarmaCost > objCharacter.Karma)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         blnAddItem = false;
                     }
 
                     if (blnAddItem)
                     {
-                        if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
+                        if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
                 }
@@ -1232,7 +1234,7 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
+                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_ExpenseSwapNegativeQuality")
                             , DisplayNameShort(GlobalOptions.Language)
                             , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);

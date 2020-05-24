@@ -110,7 +110,7 @@ namespace Chummer
 			_lstGrade.Clear();
 			foreach (Grade objGrade in objGradeList)
 			{
-			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
+			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
 			}
             cboGrade.BeginUpdate();
 			cboGrade.DataSource = null;
@@ -144,13 +144,13 @@ namespace Chummer
 		    // Make sure the suite and file name fields are populated.
 		    if (string.IsNullOrEmpty(txtDrugName.Text))
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
 
 		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
 

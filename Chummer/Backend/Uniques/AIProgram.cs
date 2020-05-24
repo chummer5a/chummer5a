@@ -66,7 +66,7 @@ namespace Chummer
             }
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
+            _strRequiresProgram = LanguageManager.GetString("String_None");
             _boolCanDelete = boolCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -195,7 +195,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>

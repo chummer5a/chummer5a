@@ -24,7 +24,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{" + nameof(CurrentDisplayName) + "}")]
     public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>
     {
         private Guid _guiID;
@@ -259,12 +259,14 @@ namespace Chummer
             }
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Month and Week to display.
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_WeekDisplay", strLanguage)
+            string strReturn = string.Format(objCulture, LanguageManager.GetString("String_WeekDisplay", strLanguage)
                 , Year
                 , Month
                 , MonthWeek);
@@ -280,7 +282,7 @@ namespace Chummer
                     intReturn = Week.CompareTo(objWeek.Week);
                 return intReturn;
             }
-            return string.Compare(DisplayName(GlobalOptions.Language), obj?.ToString() ?? string.Empty, StringComparison.Ordinal);
+            return string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
         }
 
         /// <summary>

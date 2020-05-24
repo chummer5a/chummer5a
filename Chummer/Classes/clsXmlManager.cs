@@ -311,7 +311,7 @@ namespace Chummer
                 if (!Utils.IsUnitTest)
                 {
                     Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
-                        , LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                        , LanguageManager.GetString("Message_DuplicateGuidWarning")
                         , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
                         , strFileName
                         , strDuplicatesNames));
@@ -322,7 +322,7 @@ namespace Chummer
             {
                 string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
                 Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
-                    , LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                    , LanguageManager.GetString("Message_NonGuidIdWarning")
                     , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
                     , strFileName
                     , strMalformedIdNames));

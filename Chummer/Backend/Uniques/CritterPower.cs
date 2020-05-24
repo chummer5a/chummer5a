@@ -115,7 +115,7 @@ namespace Chummer
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
             }
 			*/
@@ -311,12 +311,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
+        /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -603,7 +608,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 ContextMenuStrip = cmsCritterPower,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)

@@ -60,7 +60,7 @@ namespace Chummer
                     continue;
                 }
 
-                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown")));
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();

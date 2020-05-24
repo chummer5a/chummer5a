@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
                         ? "bioware.xml"
                         : _eSource == Improvement.ImprovementSource.Drug
                             ? "drugcomponents.xml"
-                            : "cyberware.xml", GlobalOptions.Language)
+                            : "cyberware.xml")
                     .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
@@ -168,6 +168,8 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.

@@ -88,7 +88,7 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -274,6 +274,8 @@ namespace Chummer
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
         /// <summary>
         /// Sourcebook.
         /// </summary>
@@ -381,7 +383,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsMartialArt,
                 ForeColor = PreferredColor,
@@ -430,7 +432,7 @@ namespace Chummer
                         int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
                         if (intKarmaCost > objCharacter.Karma)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK,
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
                             ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                             return false;
@@ -438,7 +440,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma,
+                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt") + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma,
                             DateTime.Now);
                         objCharacter.ExpenseEntries.AddWithSort(objExpense);
                         objCharacter.Karma -= intKarmaCost;

@@ -424,7 +424,7 @@ namespace Chummer
         public string DisplayRole
         {
             get => DisplayRoleMethod(GlobalOptions.Language);
-            set => Role = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Role = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -525,7 +525,7 @@ namespace Chummer
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => Metatype = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Metatype = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -541,7 +541,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant) && LinkedCharacter.Metavariant != "None")
                     {
-                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LinkedCharacter.Metavariant + ')';
+                        strMetatype += LanguageManager.GetString("String_Space") + '(' + LinkedCharacter.Metavariant + ')';
                     }
                     return strMetatype;
                 }
@@ -568,7 +568,7 @@ namespace Chummer
         public string DisplaySex
         {
             get => DisplaySexMethod(GlobalOptions.Language);
-            set => Sex = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Sex = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -603,7 +603,7 @@ namespace Chummer
         public string DisplayAge
         {
             get => DisplayAgeMethod(GlobalOptions.Language);
-            set => Age = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Age = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -638,7 +638,7 @@ namespace Chummer
         public string DisplayType
         {
             get => DisplayTypeMethod(GlobalOptions.Language);
-            set => Type = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Type = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -668,7 +668,7 @@ namespace Chummer
         public string DisplayPreferredPayment
         {
             get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -698,7 +698,7 @@ namespace Chummer
         public string DisplayHobbiesVice
         {
             get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -728,7 +728,7 @@ namespace Chummer
         public string DisplayPersonalLife
         {
             get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -990,8 +990,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
-                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -1021,7 +1021,7 @@ namespace Chummer
                 }
                 if (_objLinkedCharacter != null)
                 {
-                    if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
+                    if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter"))
                         _strName = Name;
                     if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
                         _strAge = Age;
@@ -1200,7 +1200,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

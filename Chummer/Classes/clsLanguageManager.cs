@@ -285,10 +285,12 @@ namespace Chummer
         /// <param name="tssItem">Given ToolStripItem to translate.</param>
         /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
-        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage, RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
+        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage = "", RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
         {
             if (tssItem == null)
                 return;
+            if (string.IsNullOrEmpty(strIntoLanguage))
+                strIntoLanguage = GlobalOptions.Language;
             if (eIntoRightToLeft == RightToLeft.Inherit)
             {
                 if (LoadLanguage(strIntoLanguage) && DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
@@ -310,12 +312,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Overload for standard GetString method, using GlobalOptions.Language as default string.
+        /// Overload for standard GetString method, using GlobalOptions.Language as default string, but explicitly defining if an error is returned or not.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         /// <returns></returns>
-        public static string GetString(string strKey, bool blnReturnError = true)
+        public static string GetString(string strKey, bool blnReturnError)
         {
             return GetString(strKey, GlobalOptions.Language, blnReturnError);
         }
@@ -325,10 +327,12 @@ namespace Chummer
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
-        public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
+        public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true)
         {
             if (Utils.IsDesignerMode)
                 return strKey;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -354,7 +358,7 @@ namespace Chummer
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
         /// <returns></returns>
-        public static string ProcessCompoundString(string strInput, string strLanguage, bool blnUseTranslateExtra = false)
+        public static string ProcessCompoundString(string strInput, string strLanguage = "", bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -654,9 +658,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        public static string TranslateExtra(string strExtra, string strIntoLanguage)
+        public static string TranslateExtra(string strExtra, string strIntoLanguage = "")
         {
-            if (string.IsNullOrEmpty(strExtra)) return "";
+            if (string.IsNullOrEmpty(strExtra))
+                return string.Empty;
+            if (string.IsNullOrEmpty(strIntoLanguage))
+                strIntoLanguage = GlobalOptions.Language;
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
@@ -769,8 +776,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
-        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage)
+        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
         {
+            if (string.IsNullOrEmpty(strFromLanguage))
+                strFromLanguage = GlobalOptions.Language;
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
 

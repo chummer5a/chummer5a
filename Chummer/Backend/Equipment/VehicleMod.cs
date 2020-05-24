@@ -169,7 +169,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -237,7 +237,7 @@ namespace Chummer.Backend.Equipment
                     {
                         Minimum = decMin,
                         Maximum = decMax,
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language)),
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
                         AllowCancel = false
                     })
                     {
@@ -821,6 +821,11 @@ namespace Chummer.Backend.Equipment
 
         #region Complex Properties
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+        /// <summary>
         /// Total Availability of the VehicleMod.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -1240,6 +1245,8 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Vehicle arm/leg Strength.
         /// </summary>
@@ -1387,8 +1394,8 @@ namespace Chummer.Backend.Equipment
                         {
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
-                                ? DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
-                                : $"{DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({Parent})";
+                                ? CurrentDisplayName
+                                : CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
                         }
                         else
                         {
@@ -1431,7 +1438,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsVehicleMod,
                 ForeColor = PreferredColor,

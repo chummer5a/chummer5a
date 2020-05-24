@@ -183,7 +183,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -354,7 +354,7 @@ namespace Chummer.Backend.Equipment
 
                 using (frmSelectItem frmSelect = new frmSelectItem
                 {
-                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_intCannotFindLifestyleQuality", GlobalOptions.Language), _strName)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_intCannotFindLifestyleQuality"), _strName)
                 })
                 {
                     frmSelect.SetGeneralItemsMode(lstQualities);
@@ -542,6 +542,8 @@ namespace Chummer.Backend.Equipment
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
+
         /// <summary>
         ///     The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
@@ -556,19 +558,26 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
         public string FormattedDisplayName(CultureInfo objCulture, string strLanguage)
         {
-            var strReturn = DisplayName(strLanguage);
+            string strReturn = DisplayName(strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
 
             if (Multiplier > 0)
-                strReturn += $" [+{Multiplier}%]";
-            else if (Multiplier < 0) strReturn += $" [{Multiplier}%]";
+                strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
+            else if (Multiplier < 0)
+                strReturn += strSpace + "[" + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
-                strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
-            else if (Cost < 0) strReturn += " [" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
+            else if (Cost < 0)
+                strReturn += strSpace + "[" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
             return strReturn;
         }
+
+        public string CurrentFormattedDisplayName => FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         ///     Whether or not the LifestyleQuality appears on the printouts.
@@ -772,7 +781,7 @@ namespace Chummer.Backend.Equipment
             var objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Text = CurrentFormattedDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)

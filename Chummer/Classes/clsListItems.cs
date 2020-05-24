@@ -116,15 +116,14 @@ namespace Chummer
         /// </summary>
         public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
-            DateTime datY;
             if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
-                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out _))
                     return 0;
                 return -1;
             }
 
-            if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+            if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datY))
                 return 1;
 
             return DateTime.Compare(datY, datX);
@@ -225,11 +224,11 @@ namespace Chummer
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
             string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
-                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
-                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
             string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
-                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
-                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))

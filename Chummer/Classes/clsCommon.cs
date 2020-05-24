@@ -732,7 +732,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage)
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
@@ -747,7 +747,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookShort(string strCode, string strLanguage)
+        public static string LanguageBookShort(string strCode, string strLanguage = "")
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
@@ -762,7 +762,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage)
+        public static string LanguageBookLong(string strCode, string strLanguage = "")
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
@@ -884,7 +884,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpaceCharacter))
                 astrSourceParts = strSource.Split(strSpaceCharacter[0]);
@@ -918,7 +918,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
@@ -966,7 +966,7 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));

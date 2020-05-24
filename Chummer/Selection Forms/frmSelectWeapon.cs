@@ -103,7 +103,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -179,18 +179,18 @@ namespace Chummer
 
                 lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
                 lblWeaponReachLabel.Visible = !string.IsNullOrEmpty(lblWeaponReach.Text);
-                lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponDamage.Text = _objSelectedWeapon.DisplayDamage;
                 lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(lblWeaponDamage.Text);
-                lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Language);
+                lblWeaponAP.Text = _objSelectedWeapon.DisplayTotalAP;
                 lblWeaponAPLabel.Visible = !string.IsNullOrEmpty(lblWeaponAP.Text);
-                lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
+                lblWeaponMode.Text = _objSelectedWeapon.DisplayMode;
                 lblWeaponModeLabel.Visible = !string.IsNullOrEmpty(lblWeaponMode.Text);
-                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                lblWeaponRC.Text = _objSelectedWeapon.DisplayTotalRC;
                 lblWeaponRC.SetToolTip(_objSelectedWeapon.RCToolTip);
                 lblWeaponRCLabel.Visible = !string.IsNullOrEmpty(lblWeaponRC.Text);
-                lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponAmmo.Text = _objSelectedWeapon.DisplayAmmo;
                 lblWeaponAmmoLabel.Visible = !string.IsNullOrEmpty(lblWeaponAmmo.Text);
-                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy;
                 lblWeaponAccuracyLabel.Visible = !string.IsNullOrEmpty(lblWeaponAccuracy.Text);
 
                 decimal decItemCost = 0;
@@ -205,7 +205,7 @@ namespace Chummer
                 lblWeaponCostLabel.Visible = !string.IsNullOrEmpty(lblWeaponCost.Text);
 
                 AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
-                lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponAvail.Text = objTotalAvail.ToString();
                 lblWeaponAvailLabel.Visible = !string.IsNullOrEmpty(lblWeaponAvail.Text);
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
                 lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
@@ -216,12 +216,12 @@ namespace Chummer
                 StringBuilder strAccessories = new StringBuilder();
                 foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
                 {
-                    strAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
+                    strAccessories.AppendLine(objAccessory.CurrentDisplayName);
                 }
                 if (strAccessories.Length > 0)
                     strAccessories.Length -= Environment.NewLine.Length;
 
-                lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
+                lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None") : strAccessories.ToString();
                 lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
             else
@@ -283,7 +283,8 @@ namespace Chummer
                 XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon, string.Empty, string.Empty)) continue;
+                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon))
+                        continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
                     if (xmlTestNode != null)
@@ -327,29 +328,29 @@ namespace Chummer
                     objWeapon.Parent = ParentWeapon;
 
                     string strID = objWeapon.SourceIDString;
-                    string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
-                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    string strAP = objWeapon.TotalAP(GlobalOptions.Language);
+                    string strWeaponName = objWeapon.CurrentDisplayName;
+                    string strDice = objWeapon.DisplayDicePool;
+                    string strAccuracy = objWeapon.DisplayAccuracy;
+                    string strDamage = objWeapon.DisplayDamage;
+                    string strAP = objWeapon.DisplayTotalAP;
                     if (strAP == "-")
                         strAP = "0";
-                    string strRC = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                    string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    string strMode = objWeapon.CalculatedMode(GlobalOptions.Language);
+                    string strRC = objWeapon.DisplayTotalRC;
+                    string strAmmo = objWeapon.DisplayAmmo;
+                    string strMode = objWeapon.DisplayMode;
                     string strReach = objWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
-                    StringBuilder strbldAccessories = new StringBuilder();
+                    StringBuilder sbdAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        strbldAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
+                        sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
                     }
-                    if (strbldAccessories.Length > 0)
-                        strbldAccessories.Length -= Environment.NewLine.Length;
+                    if (sbdAccessories.Length > 0)
+                        sbdAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
                     SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
-                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strbldAccessories.ToString(), objAvail, strSource, strCost);
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, sbdAccessories.ToString(), objAvail, strSource, strCost);
                 }
 
                 DataSet set = new DataSet("weapons");
@@ -393,7 +394,8 @@ namespace Chummer
                 XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon, string.Empty, string.Empty)) continue;
+                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon))
+                        continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
                     if (xmlTestNode != null)

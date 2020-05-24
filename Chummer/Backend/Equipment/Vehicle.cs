@@ -226,7 +226,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -270,7 +270,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Minimum = decMin,
                             Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language)),
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
                             AllowCancel = false
                         })
                         {
@@ -1247,6 +1247,11 @@ namespace Chummer.Backend.Equipment
         public TaggedObservableCollection<WeaponMount> WeaponMounts => _lstWeaponMounts;
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+        /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -1430,6 +1435,11 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
+
+        /// <summary>
+        /// Display name.
+        /// </summary>
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// Display name.
@@ -2955,7 +2965,7 @@ namespace Chummer.Backend.Equipment
                     if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                     {
                         blnRestrictedGearUsed = true;
-                        strRestrictedItem = DisplayName(GlobalOptions.Language);
+                        strRestrictedItem = CurrentDisplayName;
                     }
                     else
                     {
@@ -3008,7 +3018,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsVehicle,
                 ForeColor = PreferredColor,
@@ -3040,7 +3050,7 @@ namespace Chummer.Backend.Equipment
                 TreeNode nodMountsNode = new TreeNode
                 {
                     Tag = "String_WeaponMounts",
-                    Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
+                    Text = LanguageManager.GetString("String_WeaponMounts")
                 };
 
                 // Weapon Mounts
@@ -3413,7 +3423,7 @@ namespace Chummer.Backend.Equipment
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }

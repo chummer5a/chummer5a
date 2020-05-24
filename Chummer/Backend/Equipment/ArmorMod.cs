@@ -117,7 +117,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -175,7 +175,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Minimum = decMin,
                             Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language)),
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
                             AllowCancel = false
                         })
                         {
@@ -532,6 +532,8 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Translated Category.
         /// </summary>
@@ -777,7 +779,7 @@ namespace Chummer.Backend.Equipment
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -811,6 +813,11 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Complex Properties
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
         /// <summary>
         /// Total Availability.
         /// </summary>
@@ -1213,8 +1220,8 @@ namespace Chummer.Backend.Equipment
                     {
                         blnRestrictedGearUsed = true;
                         strRestrictedItem = Parent == null
-                            ? DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
-                            : $"{DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({Parent})";
+                            ? CurrentDisplayName
+                            : CurrentDisplayName + LanguageManager.GetString("String_Space") + '('+ Parent.CurrentDisplayName + ')';
                     }
                     else
                     {
@@ -1244,7 +1251,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = string.IsNullOrEmpty(GearCapacity) ? cmsArmorMod : cmsArmorGear,
                 ForeColor = PreferredColor,
@@ -1303,7 +1310,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = (decOriginal - Parent.TotalCost) * percentage;
             decAmount += DeleteArmorMod() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
 

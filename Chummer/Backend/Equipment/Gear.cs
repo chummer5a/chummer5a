@@ -190,7 +190,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -227,7 +227,7 @@ namespace Chummer.Backend.Equipment
                     using (frmSelectText frmPickText = new frmSelectText
                     {
                         PreventXPathErrors = true,
-                        Description = LanguageManager.GetString("String_CustomItem_SelectText", GlobalOptions.Language)
+                        Description = LanguageManager.GetString("String_CustomItem_SelectText")
                     })
                     {
                         frmPickText.ShowDialog();
@@ -283,7 +283,7 @@ namespace Chummer.Backend.Equipment
                             Minimum = decMin,
                             Maximum = decMax,
                             Description = string.Format(GlobalOptions.CultureInfo,
-                                LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language),
+                                LanguageManager.GetString("String_SelectVariableCost"),
                                 DisplayNameShort(GlobalOptions.Language)),
                             AllowCancel = false
                         })
@@ -304,7 +304,7 @@ namespace Chummer.Backend.Equipment
             {
                 frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory
                 {
-                    Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo")
                 };
                 if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
                     frmPickWeaponCategory.OnlyCategory = _strForcedValue;
@@ -525,9 +525,9 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
-                                string strDisplayName = LanguageManager.GetString(strName, GlobalOptions.Language, false);
+                                string strDisplayName = LanguageManager.GetString(strName, false);
                                 if (string.IsNullOrEmpty(strDisplayName))
-                                    strDisplayName = LanguageManager.TranslateExtra(strName, GlobalOptions.Language);
+                                    strDisplayName = LanguageManager.TranslateExtra(strName);
                                 lstGears.Add(new ListItem(strName, strDisplayName));
                             }
 
@@ -543,12 +543,12 @@ namespace Chummer.Backend.Equipment
                             }
 
                             string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
-                            string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, GlobalOptions.Language, false);
+                            string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                             if (string.IsNullOrEmpty(strFriendlyName))
-                                strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName, GlobalOptions.Language);
+                                strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName);
                             using (frmSelectItem frmPickItem = new frmSelectItem
                             {
-                                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName)
+                                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
                             })
                             {
                                 frmPickItem.SetGeneralItemsMode(lstGears);
@@ -1251,8 +1251,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
             objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("qty", Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture));
-            objWriter.WriteElementString("avail", TotalAvail(GlobalOptions.CultureInfo, strLanguageToPrint));
-            objWriter.WriteElementString("avail_english", TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage));
+            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("avail_english", TotalAvail(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
@@ -1611,7 +1611,7 @@ namespace Chummer.Backend.Equipment
             get => _strExtra;
             set
             {
-                string strNewValue = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                string strNewValue = LanguageManager.ReverseTranslateExtra(value);
                 if (_strExtra != strNewValue)
                 {
                     _strExtra = strNewValue;
@@ -2086,6 +2086,11 @@ namespace Chummer.Backend.Equipment
 
         #region Complex Properties
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+        /// <summary>
         /// Total Availability of the Gear and its accessories.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -2538,6 +2543,8 @@ namespace Chummer.Backend.Equipment
             return xmlGearDataNode?["translate"]?.InnerText ?? Name;
         }
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
+
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
@@ -2877,7 +2884,7 @@ namespace Chummer.Backend.Equipment
                                 Extra = ImprovementManager.SelectedValue;
                                 TreeNode objGearNode = treGears.FindNode(InternalId);
                                 if (objGearNode != null)
-                                    objGearNode.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                                    objGearNode.Text = CurrentDisplayName;
                             }
                         }
                         if (WirelessOn && WirelessBonus != null)
@@ -2889,7 +2896,7 @@ namespace Chummer.Backend.Equipment
                                 Extra = ImprovementManager.SelectedValue;
                                 TreeNode objGearNode = treGears.FindNode(InternalId);
                                 if (objGearNode != null)
-                                    objGearNode.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                                    objGearNode.Text = CurrentDisplayName;
                             }
                         }
                     }
@@ -2897,7 +2904,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    sbdOutdatedItems?.AppendLine(DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
+                    sbdOutdatedItems?.AppendLine(CurrentDisplayName);
                 }
             }
             foreach (Gear objChild in Children)
@@ -2930,8 +2937,8 @@ namespace Chummer.Backend.Equipment
                         {
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
-                                ? DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
-                                : $"{DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({Parent})";
+                                ? CurrentDisplayName
+                                : $"{CurrentDisplayName} ({Parent})";
                         }
                         else
                         {
@@ -3066,7 +3073,7 @@ namespace Chummer.Backend.Equipment
 
                 if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
             }
@@ -3081,7 +3088,7 @@ namespace Chummer.Backend.Equipment
                         TreeNode nodFocus = treFoci.FindNodeByTag(this);
                         if (nodFocus != null)
                         {
-                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                            nodFocus.Text = CurrentDisplayName.Replace(LanguageManager.GetString(RatingLabel), LanguageManager.GetString("String_Force"));
                         }
                     }
                     break;
@@ -3095,9 +3102,9 @@ namespace Chummer.Backend.Equipment
                             TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
                             if (nodFocus != null)
                             {
-                                nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
-                                    .Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language),
-                                        LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                nodFocus.Text = CurrentDisplayName
+                                    .Replace(LanguageManager.GetString(RatingLabel),
+                                        LanguageManager.GetString("String_Force"));
                             }
                             break;
                         }
@@ -3390,6 +3397,9 @@ namespace Chummer.Backend.Equipment
                         new DependencyGraphNode<string>(nameof(GearName))
                     )
                 ),
+                new DependencyGraphNode<string>(nameof(CurrentDisplayNameShort),
+                    new DependencyGraphNode<string>(nameof(DisplayNameShort))
+                ),
                 new DependencyGraphNode<string>(nameof(PreferredColor),
                     new DependencyGraphNode<string>(nameof(Notes)),
                     new DependencyGraphNode<string>(nameof(ParentID))
@@ -3466,7 +3476,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = (decOriginal - decNewCost) * percentage;
             decAmount += DeleteGear() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
+            string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
             objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
                 DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);

@@ -96,7 +96,7 @@ namespace Chummer
             _lstCategory.Sort(CompareListItems.CompareNames);
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -381,7 +381,7 @@ namespace Chummer
                 if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter)) &&
                     (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
                 {
-                    lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                    lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
             }
             lstMods.Sort(CompareListItems.CompareNames);
@@ -472,7 +472,7 @@ namespace Chummer
                 string strRating = xmlVehicleMod.SelectSingleNode("rating")?.Value;
                 if (string.IsNullOrEmpty(strRating))
                 {
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                     nudRating.Minimum = 0;
                     nudRating.Maximum = 0;
                     nudRating.Visible = false;
@@ -481,7 +481,7 @@ namespace Chummer
                 // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
                 else if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                 {
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
                     nudRating.Maximum = 20;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
@@ -489,7 +489,7 @@ namespace Chummer
                 //Used for the Armor modifications.
                 else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                 {
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body", GlobalOptions.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body");
                     nudRating.Maximum = _objVehicle.Body;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
@@ -497,14 +497,14 @@ namespace Chummer
                 //Used for Metahuman Adjustments.
                 else if (strRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                 {
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Seats", GlobalOptions.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Seats");
                     nudRating.Maximum = _objVehicle.TotalSeats;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
                 }
                 else
                 {
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                     int intRating = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
                     if (intRating > 0)
                     {
@@ -634,7 +634,7 @@ namespace Chummer
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
                         lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, Convert.ToInt32(lblSlots.Text, GlobalOptions.CultureInfo));
-                        lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
+                        lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity"));
                     }
                     else
                     {
@@ -643,7 +643,7 @@ namespace Chummer
                     }
 
                     if (strCategory == "Weapon Mod")
-                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification", GlobalOptions.Language);
+                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification");
                     // Translate the Category if possible.
                     else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
@@ -668,10 +668,10 @@ namespace Chummer
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = \"" + strLimit + "\"/@translate]");
-                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objXmlLimit?.Value ?? strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space") + '(' + objXmlLimit?.Value ?? strLimit + ')';
                     }
                     else
-                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space") + '(' + strLimit + ')';
                 }
                 else
                     lblLimit.Text = string.Empty;
@@ -683,11 +683,11 @@ namespace Chummer
                             GlobalOptions.Language))
                     : LanguageManager.GetString("Label_Rating");
 
-                string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

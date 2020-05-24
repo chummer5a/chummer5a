@@ -53,14 +53,14 @@ namespace Chummer
 
             datDate.Value = DateTime.Now;
 
-            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);
+            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -142,16 +142,16 @@ namespace Chummer
             {
                 if (value == ExpenseType.Nuyen)
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount", GlobalOptions.Language);
-                    Text = LanguageManager.GetString("Title_Expense_Nuyen", GlobalOptions.Language);
-                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen", GlobalOptions.Language);
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
+                    Text = LanguageManager.GetString("Title_Expense_Nuyen");
+                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen");
                     nudPercent.Visible = true;
                     lblPercent.Visible = true;
                 }
                 else
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount", GlobalOptions.Language);
-                    Text = LanguageManager.GetString("Title_Expense_Karma", GlobalOptions.Language);
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount");
+                    Text = LanguageManager.GetString("Title_Expense_Karma");
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }

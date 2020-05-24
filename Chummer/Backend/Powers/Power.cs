@@ -39,7 +39,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{CurrentDisplayName}")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
@@ -325,7 +325,7 @@ namespace Chummer
                 return;
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName);
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
@@ -471,12 +471,12 @@ namespace Chummer
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public string DisplayNameMethod(string strLanguage)
+        public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
 
@@ -966,6 +966,14 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
                     new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
+                ),
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(Extra)),
+                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string>(nameof(Name))
+                        )
+                    )
                 )
             );
 
@@ -1089,14 +1097,14 @@ namespace Chummer
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder strbldModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                StringBuilder sbdModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    strbldModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
-                return strbldModifier.ToString();
+                return sbdModifier.ToString();
             }
         }
         #endregion

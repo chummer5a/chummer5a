@@ -63,8 +63,8 @@ namespace Chummer
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version") + strSpaceCharacter + _strCurrentVersion;
 #if DEBUG
                 title += " DEBUG BUILD";
 #endif
@@ -314,7 +314,7 @@ namespace Chummer
                     // Set the Tag for each ToolStrip item so it can be translated.
                     foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem);
                     }
                 }
                 catch (Exception e)
@@ -580,10 +580,10 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter +
-                       LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
-                       string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), Utils.CachedGitVersion);
+                       LanguageManager.GetString("String_Version") + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
+                       string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
             }
         }
 
@@ -965,7 +965,7 @@ namespace Chummer
             // Translate the items in the menu by finding their Tags in the translation file.
             foreach(ToolStripItem objItem in menuStrip.Items.OfType<ToolStripItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
         }
 
@@ -976,7 +976,7 @@ namespace Chummer
             {
                 foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem);
                 }
             }
         }
@@ -988,7 +988,7 @@ namespace Chummer
             {
                 foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem);
                 }
             }
         }
@@ -1158,7 +1158,7 @@ namespace Chummer
             Cursor objOldCursor = Cursor;
             if(!File.Exists(strFilePath))
             {
-                if(MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if(MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
                     using (frmOptions frmOptions = new frmOptions())
@@ -1260,7 +1260,7 @@ namespace Chummer
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
                 Multiselect = true
             })
             {
@@ -1412,8 +1412,8 @@ namespace Chummer
             }
             else if(blnShowErrors)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
-                    LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), strFileName),
+                    LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
         }
@@ -1646,8 +1646,8 @@ namespace Chummer
 
         private void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning", GlobalOptions.Language),
-                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if(MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning"),
+                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
             using (frmHeroLabImporter frmImporter = new frmHeroLabImporter())

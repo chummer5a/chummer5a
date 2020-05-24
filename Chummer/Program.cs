@@ -334,9 +334,8 @@ namespace Chummer
                                     {
                                         if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
                                         {
-                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!" + Environment.NewLine;
-                                            msg +=
-                                                "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!"
+                                                         + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(msg);
                                             MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }

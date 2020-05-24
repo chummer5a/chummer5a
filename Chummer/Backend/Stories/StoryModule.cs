@@ -27,7 +27,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{" + nameof(CurrentDisplayName) + "}")]
     public class StoryModule : IHasName, IHasInternalId, IHasXmlNode
     {
         private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();
@@ -124,9 +124,9 @@ namespace Chummer
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
-        public string DisplayNameMethod(string strLanguage)
+        public string DisplayName(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
@@ -261,7 +261,7 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                 {
-                    return LanguageManager.ReverseTranslateExtra(strArguments, GlobalOptions.Language);
+                    return LanguageManager.ReverseTranslateExtra(strArguments);
                 }
                 case "$XmlNameFriendly":
                 {

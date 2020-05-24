@@ -44,7 +44,7 @@ namespace Chummer
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.GetString("Title_CreateBiowareSuite", GlobalOptions.Language);
+                Text = LanguageManager.GetString("Title_CreateBiowareSuite");
             }
 
             txtFileName.Text = "custom_" + _strType + ".xml";
@@ -55,31 +55,31 @@ namespace Chummer
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberwareSuite_SuiteName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberwareSuite_SuiteName"), LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(txtFileName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberwareSuite_FileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareSuite_FileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberwareSuite_FileName"), LanguageManager.GetString("MessageTitle_CyberwareSuite_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
             if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName", GlobalOptions.Language), _strType),
-                    LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName"), _strType),
+                    LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.Load(_strType + ".xml", GlobalOptions.Language).SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
+            if (XmlManager.Load(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language), strName),
-                    LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName"), strName),
+                    LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -220,8 +220,8 @@ namespace Chummer
                 }
             }
 
-            Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated", GlobalOptions.Language), txtName.Text),
-                LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated"), txtName.Text),
+                LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 

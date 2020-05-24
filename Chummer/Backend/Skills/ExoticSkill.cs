@@ -94,7 +94,7 @@ namespace Chummer.Backend.Skills
             return LanguageManager.TranslateExtra(Specific, strLanguage);
         }
 
-        public override string DisplaySpecializationMethod(string strLanguage)
+        public override string DisplaySpecialization(string strLanguage)
         {
             return DisplaySpecific(strLanguage);
         }

@@ -237,11 +237,11 @@ namespace Chummer
                     nudRating.Visible = false;
                 }
 
-                string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -534,13 +534,13 @@ namespace Chummer
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
                 if (chrSuffix == 'R')
                 {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
+                    strSuffix = LanguageManager.GetString("String_AvailRestricted");
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
                 else if (chrSuffix == 'F')
                 {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                    strSuffix = LanguageManager.GetString("String_AvailForbidden");
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -758,8 +758,8 @@ namespace Chummer
             if (cboGrade.Text.StartsWith('*'))
             {
                 MessageBox.Show(
-                    LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Language),
-                    LanguageManager.GetString("MessageTitle_BannedGrade", GlobalOptions.Language),
+                    LanguageManager.GetString("Message_BannedGrade"),
+                    LanguageManager.GetString("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -767,7 +767,7 @@ namespace Chummer
             if (objDrugNode == null)
                 return;
 
-            if (!objDrugNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_SelectPACKSKit_Drug", GlobalOptions.Language)))
+            if (!objDrugNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_SelectPACKSKit_Drug")))
                 return;
 
             string strForceGrade = objDrugNode.SelectSingleNode("forcegrade")?.Value;
@@ -823,11 +823,11 @@ namespace Chummer
                         continue;
                     if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), $"*{objWareGrade.DisplayName(GlobalOptions.Language)}"));
+                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), '*' + objWareGrade.CurrentDisplayName));
                     }
                     else
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), objWareGrade.DisplayName(GlobalOptions.Language)));
+                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), objWareGrade.CurrentDisplayName));
                     }*/
                 }
 

@@ -51,7 +51,7 @@ namespace Chummer.UI.Skills
 
             foreach (ToolStripItem objItem in cmsSkillLabel.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
 
             this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
@@ -161,7 +161,7 @@ namespace Chummer.UI.Skills
                         return;
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.Skills.Remove(skill);
-                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name);
+                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
                 };
 
                 if (skill.CharacterObject.Created)
@@ -239,8 +239,8 @@ namespace Chummer.UI.Skills
         }
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                    _skill.CurrentDisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -273,7 +273,7 @@ namespace Chummer.UI.Skills
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -298,7 +298,7 @@ namespace Chummer.UI.Skills
 		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
                 if (strLoopAttribute != "MAGAdept")
-                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
+                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
             }
 
             cboSelectAttribute.BeginUpdate();

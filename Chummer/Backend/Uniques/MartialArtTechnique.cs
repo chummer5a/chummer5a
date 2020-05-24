@@ -77,7 +77,7 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -97,15 +97,14 @@ namespace Chummer
 
             if (xmlTechniqueDataNode["bonus"] == null) return;
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique,
-                _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), xmlTechniqueDataNode["bonus"], 1, DisplayName(GlobalOptions.Language)))
+                _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), xmlTechniqueDataNode["bonus"], 1, CurrentDisplayName))
             {
                 _guiID = Guid.Empty;
             }
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -213,6 +212,8 @@ namespace Chummer
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
         /// <summary>
         /// Notes attached to this technique.
         /// </summary>
@@ -308,7 +309,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsMartialArtTechnique,
                 ForeColor = PreferredColor,

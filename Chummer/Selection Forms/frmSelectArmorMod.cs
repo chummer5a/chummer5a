@@ -238,7 +238,7 @@ namespace Chummer
             string strRatingLabel = objXmlMod.SelectSingleNode("ratinglabel")?.Value;
             lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
                 ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
-                    LanguageManager.GetString(strRatingLabel, GlobalOptions.Language))
+                    LanguageManager.GetString(strRatingLabel))
                 : LanguageManager.GetString("Label_Rating");
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
@@ -390,11 +390,11 @@ namespace Chummer
 
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
 
-            string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
@@ -459,7 +459,7 @@ namespace Chummer
                         (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                          objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)) && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
                     {
-                        lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                        lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                     }
                 }
             }

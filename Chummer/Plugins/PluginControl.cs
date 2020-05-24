@@ -236,7 +236,7 @@ namespace Chummer.Plugins
                 foreach (var plugindir in plugindirectories)
                 {
                     Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
-                    //search for a textfile, that tells me what dll to parse
+                    //search for a text file that tells me what dll to parse
                     string infofile = Path.Combine(plugindir, "plugin.txt");
                     if (File.Exists(infofile))
                     {

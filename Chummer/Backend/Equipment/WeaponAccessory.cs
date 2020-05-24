@@ -165,7 +165,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Minimum = decMin,
                             Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language)),
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
                             AllowCancel = false
                         })
                         {
@@ -195,7 +195,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -685,6 +685,11 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed in lists in the program's current language.
+        /// </summary>
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
+        /// <summary>
         /// Mount Used.
         /// </summary>
         public string Mount
@@ -901,6 +906,11 @@ namespace Chummer.Backend.Equipment
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Total Availability.
@@ -1327,8 +1337,8 @@ namespace Chummer.Backend.Equipment
                         {
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
-                                ? DisplayName(GlobalOptions.Language)
-                                : $"{DisplayName(GlobalOptions.Language)} ({Parent})";
+                                ? CurrentDisplayName
+                                : CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
                         }
                         else
                         {
@@ -1367,7 +1377,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsWeaponAccessory,
                 ForeColor = PreferredColor,
@@ -1428,7 +1438,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteWeaponAccessory() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }

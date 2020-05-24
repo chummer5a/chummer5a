@@ -559,8 +559,8 @@ namespace Chummer.Classes
             using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             })
             {
                 Log.Info("_strForcedValue = " + ForcedValue);
@@ -797,8 +797,8 @@ namespace Chummer.Classes
             frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             };
 
             Log.Info("_strForcedValue = " + ForcedValue);
@@ -908,8 +908,8 @@ namespace Chummer.Classes
                         using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                                : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                                : LanguageManager.GetString("String_Improvement_SelectAttribute")
                         })
                         {
                             frmPickAttribute.ShowDialog();
@@ -1031,8 +1031,8 @@ namespace Chummer.Classes
             using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectAttribute")
             })
             {
                 Log.Info("selectattribute = " + bonusNode.OuterXml);
@@ -1130,8 +1130,8 @@ namespace Chummer.Classes
             using (frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectLimitNamed"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectLimit")
             })
             {
                 frmPickLimit.ShowDialog();
@@ -1265,8 +1265,8 @@ namespace Chummer.Classes
                 using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 })
                 {
                     frmPickAttribute.ShowDialog();
@@ -1292,8 +1292,8 @@ namespace Chummer.Classes
                 using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
                 {
                     frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill");
 
                     string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
@@ -1404,8 +1404,8 @@ namespace Chummer.Classes
                 using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 })
                 {
                     frmPickAttribute.ShowDialog();
@@ -1431,8 +1431,8 @@ namespace Chummer.Classes
                 using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
                 {
                     frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill");
 
                     string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
@@ -1539,7 +1539,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
                 {
                     frmPickText.ShowDialog();
@@ -1592,7 +1592,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
                 {
                     frmPickText.ShowDialog();
@@ -1861,7 +1861,7 @@ namespace Chummer.Classes
             Weapon objWeapon = new Weapon(_objCharacter)
             {
                 Name = bonusNode["name"]?.InnerText,
-                Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                Category = LanguageManager.GetString("Tab_Critter"),
                 WeaponType = "Melee",
                 Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                 Accuracy = bonusNode["accuracy"]?.InnerText,
@@ -1930,7 +1930,7 @@ namespace Chummer.Classes
                 {
                     using (frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
                     {
                         frmPickText.ShowDialog();
@@ -2008,7 +2008,7 @@ namespace Chummer.Classes
                 {
                     using (frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
                     {
                         frmPickText.ShowDialog();
@@ -2076,8 +2076,8 @@ namespace Chummer.Classes
 
                 if (lstSelectedContacts.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound", GlobalOptions.Language),
-                        LanguageManager.GetString("MessageTitle_NoContactFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
+                        LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new AbortedException();
                 }
 
@@ -2260,8 +2260,8 @@ namespace Chummer.Classes
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 };
 
                 Log.Info("attributelevel = " + bonusNode.OuterXml);
@@ -3694,15 +3694,15 @@ namespace Chummer.Classes
                             foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
                                 string strInnerText = objXmlCategory.InnerText;
-                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText, GlobalOptions.Language)));
+                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText)));
                             }
                         }
 
                         using (frmSelectItem frmPickCategory = new frmSelectItem
                         {
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                                : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language)
+                                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                                : LanguageManager.GetString("Title_SelectWeaponCategory")
                         })
                         {
                             frmPickCategory.SetGeneralItemsMode(lstGeneralItems);
@@ -3772,14 +3772,14 @@ namespace Chummer.Classes
                 foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
                     weapon.WeaponType == bonusNode.Attributes?["type"].InnerText))
                 {
-                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                 }
             }
             else
             {
                 foreach (Weapon objWeapon in _objCharacter.Weapons)
                 {
-                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                 }
             }
 
@@ -3787,8 +3787,8 @@ namespace Chummer.Classes
             using (frmSelectItem frmPickWeapon = new frmSelectItem
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("Title_SelectWeapon", GlobalOptions.Language)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                    : LanguageManager.GetString("Title_SelectWeapon")
             })
             {
                 frmPickWeapon.SetGeneralItemsMode(lstGeneralItems);
@@ -4087,7 +4087,7 @@ namespace Chummer.Classes
             Log.Info("selectside = " + bonusNode.OuterXml);
             using (frmSelectSide frmPickSide = new frmSelectSide
             {
-                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language), _strFriendlyName)
+                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectSide"), _strFriendlyName)
             })
             {
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -4238,7 +4238,7 @@ namespace Chummer.Classes
                             if (!objNewPower.Create(objXmlPower))
                                 throw new AbortedException();
 
-                            SelectedValue = objNewPower.DisplayName;
+                            SelectedValue = objNewPower.CurrentDisplayName;
 
                             List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
 
@@ -4308,7 +4308,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedArt.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                objXmlSelectedArt.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName))
             {
                 Art objAddArt = new Art(_objCharacter);
                 objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
@@ -4350,7 +4350,7 @@ namespace Chummer.Classes
 
                     if (lstArts.Count == 0)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                         throw new AbortedException();
                     }
 
@@ -4386,7 +4386,7 @@ namespace Chummer.Classes
             if (objAddArt.InternalId.IsEmptyGuid())
                 throw new AbortedException();
 
-            SelectedValue = objAddArt.DisplayName(GlobalOptions.Language);
+            SelectedValue = objAddArt.CurrentDisplayName;
 
             _objCharacter.Arts.Add(objAddArt);
             CreateImprovement(objAddArt.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Art, _strUnique);
@@ -4401,7 +4401,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue);
@@ -4444,7 +4444,7 @@ namespace Chummer.Classes
 
                     if (lstMetamagics.Count == 0)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                         throw new AbortedException();
                     }
 
@@ -4488,7 +4488,7 @@ namespace Chummer.Classes
             if (objAddMetamagic.InternalId.IsEmptyGuid())
                 throw new AbortedException();
 
-            SelectedValue = objAddMetamagic.DisplayName(GlobalOptions.Language);
+            SelectedValue = objAddMetamagic.CurrentDisplayName;
 
             _objCharacter.Metamagics.Add(objAddMetamagic);
             CreateImprovement(objAddMetamagic.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Metamagic, _strUnique);
@@ -4504,7 +4504,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
@@ -4547,7 +4547,7 @@ namespace Chummer.Classes
 
                     if (lstEchoes.Count == 0)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                         throw new AbortedException();
                     }
 
@@ -4590,7 +4590,7 @@ namespace Chummer.Classes
             if (objAddEcho.InternalId.IsEmptyGuid())
                 throw new AbortedException();
 
-            SelectedValue = objAddEcho.DisplayName(GlobalOptions.Language);
+            SelectedValue = objAddEcho.CurrentDisplayName;
 
             _objCharacter.Metamagics.Add(objAddEcho);
             CreateImprovement(objAddEcho.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Echo, _strUnique);
@@ -5496,7 +5496,7 @@ namespace Chummer.Classes
 
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
                 {
                     frmPickItem.SetGeneralItemsMode(itemList);
@@ -5571,7 +5571,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
                 {
                     frmPickItem.SetGeneralItemsMode(lstArmors);
@@ -5631,7 +5631,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             using (frmSelectItem frmPickItem = new frmSelectItem
             {
-                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
+                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
             })
             {
                 frmPickItem.SetGeneralItemsMode(list);
@@ -5677,7 +5677,7 @@ namespace Chummer.Classes
                 // Display the Select Item window and record the value that was entered.
                 using (frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
                 {
                     Log.Info("_strLimitSelection = " + LimitSelection);
@@ -5720,7 +5720,7 @@ namespace Chummer.Classes
                 {
                     using (frmSelectItem frmPickItem = new frmSelectItem
                     {
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                     })
                     {
                         frmPickItem.SetGeneralItemsMode(lstWeapons);
@@ -5918,12 +5918,12 @@ namespace Chummer.Classes
                     {
                         if (!_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection && objImprovement.UniqueName == objNode.InnerText))
                         {
-                            lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText, GlobalOptions.Language)));
+                            lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText)));
                         }
                     }
             if (lstItems.Count == 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo ,LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo ,LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                 throw new AbortedException();
             }
 
@@ -5940,7 +5940,7 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem, GlobalOptions.Language);
+                SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem);
 
                 Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
                 Log.Info("SourceName = " + SourceName);
@@ -6029,7 +6029,7 @@ namespace Chummer.Classes
                         {
                             // Makes sure we aren't over our limits for this particular quality from this overall source
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                                objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName))
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>();
                                 Quality objAddQuality = new Quality(_objCharacter);
@@ -6084,7 +6084,7 @@ namespace Chummer.Classes
 
             if (lstQualities.Count == 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                 throw new AbortedException();
             }
 
@@ -6115,7 +6115,7 @@ namespace Chummer.Classes
             if (bonusNode["discountqualities"] != null)
             {
                 lstQualities.Clear();
-                lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
+                lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
                 using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
                 {
                     if (xmlQualityNodeList?.Count > 0)
@@ -6139,7 +6139,7 @@ namespace Chummer.Classes
 
                 if (lstQualities.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                     throw new AbortedException();
                 }
 
@@ -6258,7 +6258,7 @@ namespace Chummer.Classes
                 // Display the Select Spell window.
                 using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
                     frmPickSpellCategory.ShowDialog();
@@ -6296,7 +6296,7 @@ namespace Chummer.Classes
                 // Display the Select Spell window.
                 using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
                     frmPickSpellCategory.ShowDialog();
@@ -6327,7 +6327,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
                 {
                     frmPickItem.ShowDialog();
@@ -6359,7 +6359,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
                 {
                     frmPickItem.ShowDialog();
@@ -6660,7 +6660,7 @@ namespace Chummer.Classes
                         foreach (XmlNode objXmlGroup in objXmlGroups)
                         {
                             lstSkills.Add(new ListItem(objXmlGroup.InnerText,
-                                LanguageManager.TranslateExtra(objXmlGroup.InnerText, GlobalOptions.Language)));
+                                LanguageManager.TranslateExtra(objXmlGroup.InnerText)));
                         }
                     }
                 }

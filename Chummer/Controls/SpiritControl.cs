@@ -45,7 +45,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             foreach (ToolStripItem objItem in cmsSpirit.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
         }
 
@@ -68,24 +68,24 @@ namespace Chummer
             chkFettered.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Fettered));
             if (blnIsSpirit)
             {
-                lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
-                chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
-                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
+                lblForce.Text = LanguageManager.GetString("Label_Spirit_Force");
+                chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound");
+                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit"));
 
-                string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
             }
             else
             {
-                lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
-                lblServices.Text = LanguageManager.GetString("Label_Sprite_TasksOwed", GlobalOptions.Language);
-                chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
-                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet", GlobalOptions.Language);
-                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
+                lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating");
+                lblServices.Text = LanguageManager.GetString("Label_Sprite_TasksOwed");
+                chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered");
+                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet");
+                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit"));
 
-                string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
@@ -188,7 +188,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -200,11 +200,11 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
+                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite"));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -221,7 +221,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
@@ -233,7 +233,7 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     _objSpirit.FileName = openFileDialog.FileName;
-                    imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
+                    imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
                     ContactDetailChanged?.Invoke(this, e);
                 }
             }
@@ -244,7 +244,7 @@ namespace Chummer
             string strSpiritName = cboSpiritName.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSpiritName))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectCritterType", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectCritterType"), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -284,7 +284,7 @@ namespace Chummer
                 {
                     _objSpirit.Notes = frmSpritNotes.Notes;
 
-                    string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
+                    string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
 
                     if (!string.IsNullOrEmpty(_objSpirit.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
@@ -451,7 +451,7 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType"), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -469,10 +469,10 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(txtCritterName.Text))
                     objCharacter.Name = txtCritterName.Text;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
+                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
                     FileName = strCritterName + strSpaceCharacter + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpaceCharacter + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
                 })
                 {
@@ -680,7 +680,7 @@ namespace Chummer
             }
 
             // Link the newly-created Critter to the Spirit.
-            imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
+            imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
             ContactDetailChanged?.Invoke(this, null);
 
             Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(true);

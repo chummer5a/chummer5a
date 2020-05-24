@@ -140,14 +140,14 @@ namespace Chummer
             }
 
             if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language);
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml");
             else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language);
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json");
             else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html", GlobalOptions.Language);
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html");
             else
                 SaveFileDialog1.Filter = strExtension.ToUpper(GlobalOptions.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -201,8 +201,8 @@ namespace Chummer
         {
             SaveFileDialog1.AddExtension = true;
             SaveFileDialog1.DefaultExt = "json";
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Language);
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json") + '|' + LanguageManager.GetString("DialogFilter_All");
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs");
             SaveFileDialog1.ShowDialog();
 
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))

@@ -91,7 +91,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
                 ImprovementManager.ForcedValue = strOldFocedValue;
@@ -103,7 +103,7 @@ namespace Chummer
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
             }
 			*/
@@ -275,6 +275,11 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed in lists in the program's current language.
+        /// </summary>
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
+        /// <summary>
         /// Grade to which the Metamagic is tied. Negative if the Metamagic was added by an Improvement and not by an Initiation/Submersion.
         /// </summary>
         public int Grade
@@ -370,9 +375,9 @@ namespace Chummer
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
-            string strText = DisplayName(GlobalOptions.Language);
+            string strText = CurrentDisplayName;
             if (blnAddCategory)
-                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
+                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo") + LanguageManager.GetString("String_Space") + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -412,9 +417,9 @@ namespace Chummer
             {
                 string strMessage;
                 if (_objCharacter.MAGEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
+                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic");
                 else if (_objCharacter.RESEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                    strMessage = LanguageManager.GetString("Message_DeleteEcho");
                 else
                     return false;
                 if (!_objCharacter.ConfirmDelete(strMessage))

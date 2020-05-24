@@ -81,7 +81,7 @@ namespace Chummer
                 string strPowerPointsText = objXmlPower.SelectSingleNode("points")?.Value ?? string.Empty;
                 if (objXmlPower.SelectSingleNode("levels")?.Value == bool.TrueString)
                 {
-                    strPowerPointsText += $" / {LanguageManager.GetString("Label_Power_Level", GlobalOptions.Language)}";
+                    strPowerPointsText += $" / {LanguageManager.GetString("Label_Power_Level")}";
                 }
                 string strExtrPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 if (!string.IsNullOrEmpty(strExtrPointCost))
@@ -90,11 +90,11 @@ namespace Chummer
                 }
                 lblPowerPoints.Text = strPowerPointsText;
 
-                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
             }
             else
             {
@@ -222,7 +222,7 @@ namespace Chummer
             {
                 decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
                 string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
-                string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!string.IsNullOrEmpty(strExtraPointCost))
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
@@ -265,7 +265,7 @@ namespace Chummer
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
 
-                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
                     DialogResult = DialogResult.OK;

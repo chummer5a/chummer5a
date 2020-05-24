@@ -141,7 +141,7 @@ namespace Chummer.Backend.Uniques
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
             }
 			*/
@@ -445,7 +445,7 @@ namespace Chummer.Backend.Uniques
             {
                 if(GlobalOptions.Language != strLanguage)
                 {
-                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language);
+                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : LanguageManager.ReverseTranslateExtra(Name);
                     return LanguageManager.TranslateExtra(strReturnEnglish, strLanguage);
                 }
 
@@ -472,13 +472,15 @@ namespace Chummer.Backend.Uniques
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
         /// <summary>
         /// What type of forms do spirits of these traditions come in? Defaults to Materialization.
         /// </summary>
         public string SpiritForm
         {
             get => _strSpiritForm;
-            set => _strSpiritForm = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strSpiritForm = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -495,7 +497,7 @@ namespace Chummer.Backend.Uniques
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -571,14 +573,14 @@ namespace Chummer.Backend.Uniques
                 if(Type == TraditionType.None)
                     return 0;
                 string strDrainAttributes = DrainExpression;
-                StringBuilder strbldDrain = new StringBuilder(strDrainAttributes);
+                StringBuilder sbdDrain = new StringBuilder(strDrainAttributes);
                 foreach(string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    strbldDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    sbdDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
-                string strDrain = strbldDrain.ToString();
+                string strDrain = sbdDrain.ToString();
                 if(!int.TryParse(strDrain, out int intDrain))
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
@@ -602,7 +604,7 @@ namespace Chummer.Backend.Uniques
             {
                 if(Type == TraditionType.None)
                     return string.Empty;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 StringBuilder objToolTip = new StringBuilder(DrainExpression);
 
                 // Update the Fading CharacterAttribute Value.
@@ -623,7 +625,7 @@ namespace Chummer.Backend.Uniques
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          _objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language) +
+                                          _objCharacter.GetObjectName(objLoopImprovement) +
                                           strSpaceCharacter + '(' +
                                           objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
@@ -687,7 +689,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritCombat = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritCombat = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -731,7 +733,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritDetection = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritDetection = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -775,7 +777,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritHealth = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritHealth = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -819,7 +821,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritIllusion = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritIllusion = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -863,7 +865,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritManipulation = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritManipulation = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -944,11 +946,13 @@ namespace Chummer.Backend.Uniques
         //This tree keeps track of dependencies
         private static readonly DependencyGraph<string> s_AttributeDependencyGraph =
             new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(DisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayNameShort),
-                        new DependencyGraphNode<string>(nameof(Name))
-                    ),
-                    new DependencyGraphNode<string>(nameof(Extra))
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string>(nameof(Name))
+                        ),
+                        new DependencyGraphNode<string>(nameof(Extra))
+                    )
                 ),
                 new DependencyGraphNode<string>(nameof(DrainValueToolTip),
                     new DependencyGraphNode<string>(nameof(DrainValue),

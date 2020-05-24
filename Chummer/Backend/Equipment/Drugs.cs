@@ -318,7 +318,7 @@ namespace Chummer.Backend.Equipment
         public string Name
         {
             get => _strName;
-            set => _strName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strName = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -379,6 +379,11 @@ namespace Chummer.Backend.Equipment
         /// Availability of the Drug.
         /// </summary>
         public string Availability => _strAvailability;
+
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Total Availability.
@@ -564,15 +569,15 @@ namespace Chummer.Backend.Equipment
                 if (_intCachedDuration != int.MinValue) return _intCachedDuration;
                 if (!string.IsNullOrWhiteSpace(_strDuration))
                 {
-                    StringBuilder strbldDrain = new StringBuilder(_strDuration);
+                    StringBuilder sbdDrain = new StringBuilder(_strDuration);
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strbldDrain.CheapReplace(_strDuration, objAttrib.Abbrev,
+                        sbdDrain.CheapReplace(_strDuration, objAttrib.Abbrev,
                             () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                     }
 
-                    string strDuration = strbldDrain.ToString();
+                    string strDuration = sbdDrain.ToString();
                     if (!int.TryParse(strDuration, out int intDuration))
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDuration, out bool blnIsSuccess);
@@ -745,7 +750,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -966,7 +971,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                            objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, Name))
+                            objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
                         {
                             List<Weapon> lstWeapons = new List<Weapon>();
                             Quality objAddQuality = new Quality(_objCharacter);
@@ -1374,10 +1379,15 @@ namespace Chummer.Backend.Equipment
 		    set => _strAvailability = value;
         }
 
-	    /// <summary>
-	    /// Total Availability.
-	    /// </summary>
-	    public string TotalAvail(CultureInfo objCulture, string strLanguage)
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+        /// <summary>
+        /// Total Availability.
+        /// </summary>
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
 	    {
 	        return TotalAvailTuple.ToString(objCulture, strLanguage);
 	    }
@@ -1533,9 +1543,9 @@ namespace Chummer.Backend.Equipment
                 }
 
 			    foreach (XmlNode strQuality in objDrugEffect.Qualities)
-			        sbdDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText, GlobalOptions.Language)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
+			        sbdDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
 			    foreach (string strInfo in objDrugEffect.Infos)
-			        sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, GlobalOptions.Language));
+			        sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo));
 
 				if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
 				    sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColonString).Append(strSpaceString)
@@ -1560,7 +1570,7 @@ namespace Chummer.Backend.Equipment
 			    sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
 			    sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpaceString).AppendLine((AddictionThreshold * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
 			    sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpaceString).Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).AppendLine("¥");
-			    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language));
+			    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(DisplayTotalAvail);
 			}
 			else
             {
@@ -1571,7 +1581,7 @@ namespace Chummer.Backend.Equipment
                     .Append(strSpaceString).AppendLine(strPerLevel);
 			    sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpaceString).Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo))
 			        .Append("¥").Append(strSpaceString).AppendLine(strPerLevel);
-			    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language));
+			    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(DisplayTotalAvail);
 			}
 
 			return sbdDescription.ToString();

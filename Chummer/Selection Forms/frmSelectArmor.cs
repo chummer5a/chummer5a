@@ -99,7 +99,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -198,7 +198,7 @@ namespace Chummer
                 string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
                     ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
-                        LanguageManager.GetString(strRatingLabel, GlobalOptions.Language))
+                        LanguageManager.GetString(strRatingLabel))
                     : LanguageManager.GetString("Label_Rating");
             }
             else
@@ -411,18 +411,18 @@ namespace Chummer
                             objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
                             string strArmorGuid = objArmor.SourceIDString;
-                            string strArmorName = objArmor.DisplayName(GlobalOptions.Language);
+                            string strArmorName = objArmor.CurrentDisplayName;
                             int intArmor = objArmor.TotalArmor;
                             decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo);
                             AvailabilityValue objAvail = objArmor.TotalAvailTuple();
                             StringBuilder strAccessories = new StringBuilder();
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
-                                strAccessories.AppendLine(objMod.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
+                                strAccessories.AppendLine(objMod.CurrentDisplayName);
                             }
                             foreach (Gear objGear in objArmor.Gear)
                             {
-                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
+                                strAccessories.AppendLine(objGear.CurrentDisplayName);
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= Environment.NewLine.Length;
@@ -548,7 +548,7 @@ namespace Chummer
                 AvailabilityValue objTotalAvail = _objSelectedArmor.TotalAvailTuple();
                 lblAvailLabel.Visible = true;
                 lblTestLabel.Visible = true;
-                lblAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblAvail.Text = objTotalAvail.ToString();
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
             }
             else

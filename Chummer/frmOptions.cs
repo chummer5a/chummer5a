@@ -450,7 +450,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Exe", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Exe") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
@@ -469,7 +469,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Pdf", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))

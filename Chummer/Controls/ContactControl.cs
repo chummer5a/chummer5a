@@ -56,7 +56,7 @@ namespace Chummer
 
             foreach (ToolStripItem objItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
         }
 
@@ -72,10 +72,10 @@ namespace Chummer
             if (_objContact.EntityType == ContactType.Enemy)
             {
                 imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy", GlobalOptions.Language)
-                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy", GlobalOptions.Language));
+                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
 
-                string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
@@ -83,10 +83,10 @@ namespace Chummer
             else
             {
                 imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact", GlobalOptions.Language)
-                        : LanguageManager.GetString("Tip_Contact_LinkContact", GlobalOptions.Language));
+                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
+                        : LanguageManager.GetString("Tip_Contact_LinkContact"));
 
-                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
@@ -246,7 +246,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -260,7 +260,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
@@ -273,8 +273,8 @@ namespace Chummer
                     return;
                 _objContact.FileName = openFileDialog.FileName;
                 imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
-                    ? LanguageManager.GetString("Tip_Enemy_OpenFile", GlobalOptions.Language)
-                    : LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
+                    ? LanguageManager.GetString("Tip_Enemy_OpenFile")
+                    : LanguageManager.GetString("Tip_Contact_OpenFile"));
             }
 
             // Set the relative path.
@@ -289,13 +289,13 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
                 imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
-                        ? LanguageManager.GetString("Tip_Enemy_LinkFile", GlobalOptions.Language)
-                        : LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                        ? LanguageManager.GetString("Tip_Enemy_LinkFile")
+                        : LanguageManager.GetString("Tip_Contact_LinkFile"));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
@@ -314,7 +314,7 @@ namespace Chummer
                 _objContact.Notes = frmContactNotes.Notes;
             }
 
-            string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes", GlobalOptions.Language);
+            string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
             imgNotes.SetToolTip(strTooltip.WordWrap(100));
@@ -488,7 +488,7 @@ namespace Chummer
                         }
             }
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
             using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypeList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)

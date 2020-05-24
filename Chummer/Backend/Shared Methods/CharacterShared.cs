@@ -168,7 +168,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Cursor = objOldCursor;
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     AutosaveStopWatch.Restart();
                     return;
                 }
@@ -206,7 +206,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound"));
                     return;
                 }
                 using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
@@ -486,7 +486,7 @@ namespace Chummer
                             objCombatNode = new TreeNode
                             {
                                 Tag = "Node_SelectedCombatSpells",
-                                Text = LanguageManager.GetString("Node_SelectedCombatSpells", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedCombatSpells")
                             };
                             treSpells.Nodes.Insert(0, objCombatNode);
                             objCombatNode.Expand();
@@ -499,7 +499,7 @@ namespace Chummer
                             objDetectionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedDetectionSpells",
-                                Text = LanguageManager.GetString("Node_SelectedDetectionSpells", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedDetectionSpells")
                             };
                             treSpells.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
                             objDetectionNode.Expand();
@@ -512,7 +512,7 @@ namespace Chummer
                             objHealthNode = new TreeNode
                             {
                                 Tag = "Node_SelectedHealthSpells",
-                                Text = LanguageManager.GetString("Node_SelectedHealthSpells", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedHealthSpells")
                             };
                             treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
                                 (objDetectionNode == null ? 0 : 1), objHealthNode);
@@ -526,7 +526,7 @@ namespace Chummer
                             objIllusionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedIllusionSpells",
-                                Text = LanguageManager.GetString("Node_SelectedIllusionSpells", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedIllusionSpells")
                             };
                             treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
                                 (objDetectionNode == null ? 0 : 1) +
@@ -541,7 +541,7 @@ namespace Chummer
                             objManipulationNode = new TreeNode
                             {
                                 Tag = "Node_SelectedManipulationSpells",
-                                Text = LanguageManager.GetString("Node_SelectedManipulationSpells", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedManipulationSpells")
                             };
                             treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
                                 (objDetectionNode == null ? 0 : 1) +
@@ -557,7 +557,7 @@ namespace Chummer
                             objRitualsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedGeomancyRituals",
-                                Text = LanguageManager.GetString("Node_SelectedGeomancyRituals", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedGeomancyRituals")
                             };
                             treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
                                 (objDetectionNode == null ? 0 : 1) +
@@ -574,7 +574,7 @@ namespace Chummer
                             objEnchantmentsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedEnchantments",
-                                Text = LanguageManager.GetString("Node_SelectedEnchantments", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedEnchantments")
                             };
                             treSpells.Nodes.Add(objEnchantmentsNode);
                             objEnchantmentsNode.Expand();
@@ -722,7 +722,7 @@ namespace Chummer
                     objParentNode = new TreeNode()
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = LanguageManager.GetString("Node_SelectedAIPrograms", GlobalOptions.Language)
+                        Text = LanguageManager.GetString("Node_SelectedAIPrograms")
                     };
                     treAIPrograms.Nodes.Add(objParentNode);
                     objParentNode.Expand();
@@ -853,7 +853,7 @@ namespace Chummer
                     objParentNode = new TreeNode()
                     {
                         Tag = "Node_SelectedAdvancedComplexForms",
-                        Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms", GlobalOptions.Language)
+                        Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms")
                     };
                     treComplexForms.Nodes.Add(objParentNode);
                     objParentNode.Expand();
@@ -1629,7 +1629,7 @@ namespace Chummer
                             objWeaknessesNode = new TreeNode()
                             {
                                 Tag = "Node_CritterWeaknesses",
-                                Text = LanguageManager.GetString("Node_CritterWeaknesses", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_CritterWeaknesses")
                             };
                             treCritterPowers.Nodes.Add(objWeaknessesNode);
                             objWeaknessesNode.Expand();
@@ -1642,7 +1642,7 @@ namespace Chummer
                             objPowersNode = new TreeNode()
                             {
                                 Tag = "Node_CritterPowers",
-                                Text = LanguageManager.GetString("Node_CritterPowers", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_CritterPowers")
                             };
                             treCritterPowers.Nodes.Insert(0, objPowersNode);
                             objPowersNode.Expand();
@@ -1808,7 +1808,7 @@ namespace Chummer
                             objPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedPositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities")
                             };
                             treQualities.Nodes.Insert(0, objPositiveQualityRoot);
                             objPositiveQualityRoot.Expand();
@@ -1821,7 +1821,7 @@ namespace Chummer
                             objNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedNegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities")
                             };
                             treQualities.Nodes.Insert(objLifeModuleRoot != null && objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
                             objNegativeQualityRoot.Expand();
@@ -1834,7 +1834,7 @@ namespace Chummer
                             objLifeModuleRoot = new TreeNode
                             {
                                 Tag = "String_LifeModules",
-                                Text = LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("String_LifeModules")
                             };
                             treQualities.Nodes.Add(objLifeModuleRoot);
                             objLifeModuleRoot.Expand();
@@ -1880,7 +1880,7 @@ namespace Chummer
             {
                 foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
                 {
-                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    objQualityNode.Text = ((Quality)objQualityNode.Tag).CurrentDisplayName;
                 }
             }
             treQualities.SortCustomAlphabetically(objSelectedNode?.Tag);
@@ -2001,7 +2001,7 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectedImprovements",
-                                            Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
+                                            Text = LanguageManager.GetString("Node_SelectedImprovements")
                                         };
                                         treImprovements.Nodes.Insert(0, nodRoot);
                                     }
@@ -2074,7 +2074,7 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectedImprovements",
-                                            Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
+                                            Text = LanguageManager.GetString("Node_SelectedImprovements")
                                         };
                                         treImprovements.Nodes.Insert(0, nodRoot);
                                     }
@@ -2142,7 +2142,7 @@ namespace Chummer
                                 nodRoot = new TreeNode
                                 {
                                     Tag = strNodeName,
-                                    Text = LanguageManager.GetString(strNodeName, GlobalOptions.Language)
+                                    Text = LanguageManager.GetString(strNodeName)
                                 };
                                 treSelected.Nodes.Insert(0, nodRoot);
                             }
@@ -2217,7 +2217,7 @@ namespace Chummer
                                 nodRoot = new TreeNode
                                 {
                                     Tag = strNodeName,
-                                    Text = LanguageManager.GetString(strNodeName, GlobalOptions.Language)
+                                    Text = LanguageManager.GetString(strNodeName)
                                 };
                                 treSelected.Nodes.Insert(0, nodRoot);
                             }
@@ -2362,7 +2362,7 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedWeapons",
-                            Text = LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedWeapons")
                         };
                         treWeapons.Nodes.Insert(0, nodRoot);
                     }
@@ -2546,7 +2546,7 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedArmor",
-                            Text = LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedArmor")
                         };
                         treArmor.Nodes.Insert(0, nodRoot);
                     }
@@ -2771,7 +2771,7 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedGear",
-                            Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedGear")
                         };
                         treGear.Nodes.Insert(0, nodRoot);
                     }
@@ -2880,7 +2880,7 @@ namespace Chummer
                     nodRoot = new TreeNode
                     {
                         Tag = "Node_SelectedDrugs",
-                        Text = LanguageManager.GetString("Node_SelectedDrugs", GlobalOptions.Language)
+                        Text = LanguageManager.GetString("Node_SelectedDrugs")
                     };
                     treGear.Nodes.Insert(0, nodRoot);
                 }
@@ -3028,7 +3028,7 @@ namespace Chummer
                             objCyberwareRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedCyberware",
-                                Text = LanguageManager.GetString("Node_SelectedCyberware", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectedCyberware")
                             };
                             treCyberware.Nodes.Insert(0, objCyberwareRoot);
                             objCyberwareRoot.Expand();
@@ -3042,7 +3042,7 @@ namespace Chummer
                             objModularRoot = new TreeNode
                             {
                                 Tag = "Node_UnequippedModularCyberware",
-                                Text = LanguageManager.GetString("Node_UnequippedModularCyberware", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_UnequippedModularCyberware")
                             };
                             treCyberware.Nodes.Insert(objBiowareRoot == null && objCyberwareRoot == null ? 0 :
                                 (objBiowareRoot == null) != (objCyberwareRoot == null) ? 1 : 2, objModularRoot);
@@ -3058,7 +3058,7 @@ namespace Chummer
                         objBiowareRoot = new TreeNode
                         {
                             Tag = "Node_SelectedBioware",
-                            Text = LanguageManager.GetString("Node_SelectedBioware", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedBioware")
                         };
                         treCyberware.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
                         objBiowareRoot.Expand();
@@ -3343,7 +3343,7 @@ namespace Chummer
                     nodParent = new TreeNode
                     {
                         Tag = "String_WeaponMounts",
-                        Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
+                        Text = LanguageManager.GetString("String_WeaponMounts")
                     };
                     nodVehicleParent.Nodes.Insert(funcOffset?.Invoke() ?? 0, nodParent);
                     nodParent.Expand();
@@ -3634,7 +3634,7 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedVehicles",
-                            Text = LanguageManager.GetString("Node_SelectedVehicles", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedVehicles")
                         };
                         treVehicles.Nodes.Insert(0, nodRoot);
                     }
@@ -3677,8 +3677,8 @@ namespace Chummer
                                 TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                 if (objNode == null)
                                     continue;
-                                objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
-                                            () => LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language));
+                                objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating"),
+                                            () => LanguageManager.GetString(objGear.RatingLabel));
                                 for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                 {
                                     if (i < _objCharacter.Foci.Count)
@@ -3758,8 +3758,8 @@ namespace Chummer
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
-                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
-                                                () => LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating"),
+                                                () => LanguageManager.GetString("String_Force"));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
                                                 if (i < _objCharacter.Foci.Count)
@@ -3777,7 +3777,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -3925,8 +3925,8 @@ namespace Chummer
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
-                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
-                                                () => LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating"),
+                                                () => LanguageManager.GetString("String_Force"));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
                                                 if (i < _objCharacter.Foci.Count)
@@ -3944,7 +3944,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -4116,7 +4116,7 @@ namespace Chummer
                         objQualityNode = new TreeNode()
                         {
                             Tag = "Node_SelectedQualities",
-                            Text = LanguageManager.GetString("Node_SelectedQualities", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedQualities")
                         };
                         treMartialArts.Nodes.Add(objQualityNode);
                         objQualityNode.Expand();
@@ -4130,7 +4130,7 @@ namespace Chummer
                         objMartialArtsParentNode = new TreeNode()
                         {
                             Tag = "Node_SelectedMartialArts",
-                            Text = LanguageManager.GetString("Node_SelectedMartialArts", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedMartialArts")
                         };
                         treMartialArts.Nodes.Insert(0, objMartialArtsParentNode);
                         objMartialArtsParentNode.Expand();
@@ -4260,7 +4260,7 @@ namespace Chummer
                 objRoot = new TreeNode
                 {
                     Tag = "Node_SelectedImprovements",
-                    Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
+                    Text = LanguageManager.GetString("Node_SelectedImprovements")
                 };
                 treImprovements.Nodes.Add(objRoot);
 
@@ -4416,7 +4416,7 @@ namespace Chummer
                                     objParentNode = new TreeNode()
                                     {
                                         Tag = "Node_Physical",
-                                        Text = LanguageManager.GetString("Node_Physical", GlobalOptions.Language)
+                                        Text = LanguageManager.GetString("Node_Physical")
                                     };
                                     treLimit.Nodes.Insert(0, objParentNode);
                                     break;
@@ -4424,7 +4424,7 @@ namespace Chummer
                                     objParentNode = new TreeNode()
                                     {
                                         Tag = "Node_Mental",
-                                        Text = LanguageManager.GetString("Node_Mental", GlobalOptions.Language)
+                                        Text = LanguageManager.GetString("Node_Mental")
                                     };
                                     treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
                                     break;
@@ -4432,7 +4432,7 @@ namespace Chummer
                                     objParentNode = new TreeNode()
                                     {
                                         Tag = "Node_Social",
-                                        Text = LanguageManager.GetString("Node_Social", GlobalOptions.Language)
+                                        Text = LanguageManager.GetString("Node_Social")
                                     };
                                     treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
                                     break;
@@ -4440,7 +4440,7 @@ namespace Chummer
                                     objParentNode = new TreeNode()
                                     {
                                         Tag = "Node_Astral",
-                                        Text = LanguageManager.GetString("Node_Astral", GlobalOptions.Language)
+                                        Text = LanguageManager.GetString("Node_Astral")
                                     };
                                     treLimit.Nodes.Add(objParentNode);
                                     break;
@@ -4448,12 +4448,12 @@ namespace Chummer
                             objParentNode?.Expand();
                         }
 
-                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space");
                         if (objImprovement.Value > 0)
                             strName += '+';
                         strName += objImprovement.Value.ToString(GlobalOptions.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
+                            strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
                         if (objParentNode?.Nodes.ContainsKey(strName) == false)
                         {
                             TreeNode objNode = new TreeNode
@@ -4515,7 +4515,7 @@ namespace Chummer
                         objParentNode = new TreeNode()
                         {
                             Tag = "Node_SelectedImprovements",
-                            Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
+                            Text = LanguageManager.GetString("Node_SelectedImprovements")
                         };
                         treImprovements.Nodes.Add(objParentNode);
                     }
@@ -4628,7 +4628,7 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedLifestyles",
-                        Text = LanguageManager.GetString("Node_SelectedLifestyles", GlobalOptions.Language)
+                        Text = LanguageManager.GetString("Node_SelectedLifestyles")
                     };
                     treLifestyles.Nodes.Add(objParentNode);
                     objParentNode.Expand();
@@ -4677,7 +4677,7 @@ namespace Chummer
 
                     ListViewItem objItem = new ListViewItem
                     {
-                        Text = objWeek.DisplayName(GlobalOptions.Language)
+                        Text = objWeek.CurrentDisplayName
                     };
                     objItem.SubItems.Add(objNoteItem);
                     objItem.SubItems.Add(objInternalIdItem);
@@ -4710,7 +4710,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.DisplayName(GlobalOptions.Language)
+                                Text = objWeek.CurrentDisplayName
                             };
                             objItem.SubItems.Add(objNoteItem);
                             objItem.SubItems.Add(objInternalIdItem);
@@ -4740,7 +4740,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.DisplayName(GlobalOptions.Language)
+                                Text = objWeek.CurrentDisplayName
                             };
                             objItem.SubItems.Add(objNoteItem);
                             objItem.SubItems.Add(objInternalIdItem);
@@ -4765,7 +4765,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.DisplayName(GlobalOptions.Language)
+                                Text = objWeek.CurrentDisplayName
                             };
                             objItem.SubItems.Add(objNoteItem);
                             objItem.SubItems.Add(objInternalIdItem);
@@ -5574,7 +5574,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5605,7 +5605,7 @@ namespace Chummer
         {
             if (sender is PetControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5665,14 +5665,14 @@ namespace Chummer
 
             int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
             int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            string strEnemyPoints = intEnemyMax.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            string strQualityPoints = intQualityMax.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strEnemyPoints = intEnemyMax.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + LanguageManager.GetString("String_Karma");
+            string strQualityPoints = intQualityMax.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + LanguageManager.GetString("String_Karma");
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules && CharacterObjectOptions.EnemyKarmaQualityLimit)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
-                    LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit"), strEnemyPoints),
+                    LanguageManager.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
                 {
@@ -5695,8 +5695,8 @@ namespace Chummer
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
-                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strQualityPoints),
+                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
                     {
@@ -5724,7 +5724,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5746,7 +5746,7 @@ namespace Chummer
             // Displays an OpenFileDialog so the user can select the XML to read.
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Xml") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 // Show the Dialog.
@@ -6019,7 +6019,7 @@ namespace Chummer
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BoundSpiritLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BoundSpiritLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BoundSpiritLimit"), LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6040,8 +6040,8 @@ namespace Chummer
             if (CharacterObject.Created && CharacterObject.Spirits.Any(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered))
             {
                 // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_UnregisteredSpriteLimit", GlobalOptions.Language),
-                    LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit", GlobalOptions.Language),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_UnregisteredSpriteLimit"),
+                    LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -6052,8 +6052,8 @@ namespace Chummer
                     CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
                     CharacterObject.LOG.TotalValue)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language),
-                        LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language),
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                        LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -6077,7 +6077,7 @@ namespace Chummer
             {
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
                     return;
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 CharacterObject.Spirits.Remove(objSpirit);
@@ -6106,8 +6106,8 @@ namespace Chummer
                 ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
                 dlgOpenFileDialog.Filter = string.Format(
                     GlobalOptions.InvariantCultureInfo,
-                    LanguageManager.GetString("DialogFilter_ImagesPrefix", GlobalOptions.Language) + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
-                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space", GlobalOptions.Language) + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
+                    LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All"),
+                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
                     string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
 
                 if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -6280,7 +6280,7 @@ namespace Chummer
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
             string strTitle = _objCharacter.CharacterName + strSpaceCharacter + '-' + strSpaceCharacter + FormMode + strSpaceCharacter + '(' + _objOptions.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
@@ -6342,7 +6342,7 @@ namespace Chummer
 
             using (SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
                 string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);

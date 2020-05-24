@@ -319,14 +319,14 @@ namespace Chummer
                 string strRatingLabel = xmlCyberware.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
                     ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
-                        LanguageManager.GetString(strRatingLabel, GlobalOptions.Language))
+                        LanguageManager.GetString(strRatingLabel))
                     : LanguageManager.GetString("Label_Rating");
 
-                string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -578,8 +578,8 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language)
-                                          + LanguageManager.GetString("String_Space", GlobalOptions.Language)
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed")
+                                          + LanguageManager.GetString("String_Space")
                                           + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
             }
         }
@@ -1178,8 +1178,8 @@ namespace Chummer
             if (cboGrade.Text.StartsWith('*'))
             {
                 Program.MainForm.ShowMessageBox(
-                    LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Language),
-                    LanguageManager.GetString("MessageTitle_BannedGrade", GlobalOptions.Language),
+                    LanguageManager.GetString("Message_BannedGrade"),
+                    LanguageManager.GetString("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -1215,15 +1215,15 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverCapacityLimit")
                                 , decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo)
                                 , decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
-                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LanguageManager.GetString("MessageTitle_OverCapacityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
+            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNode("forcegrade")?.Value;
@@ -1301,11 +1301,11 @@ namespace Chummer
                         continue;
                     if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, $"*{objWareGrade.DisplayName(GlobalOptions.Language)}"));
+                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + objWareGrade.CurrentDisplayName));
                     }
                     else
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.DisplayName(GlobalOptions.Language)));
+                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.CurrentDisplayName));
                     }
                 }
 
@@ -1366,7 +1366,7 @@ namespace Chummer
 
             if (lstCategory.Count > 0)
             {
-                lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             string strOldSelected = _strSelectedCategory;

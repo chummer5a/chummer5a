@@ -46,7 +46,7 @@ namespace Chummer
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                     await LoadCharacter(openFileDialog.FileName).ConfigureAwait(true);

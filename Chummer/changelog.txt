@@ -3,6 +3,7 @@ Application Fixes:
 - Fixed an incorrect tag on submersion groups in career mode. 
 - Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
 - Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
+- Fixed a myriad of cases where printing a character sheet in a language that is different from the language being used for the program would sometimes result in incorrect localization and/or number formats being used.
 
 Build 212
 Application Changes:

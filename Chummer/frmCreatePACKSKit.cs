@@ -45,30 +45,30 @@ namespace Chummer
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_KitName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(txtFileName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_FileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.Load("packs.xml", GlobalOptions.Language).SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
+            if (XmlManager.Load("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language), strName),
-                    LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
+                    LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -746,8 +746,8 @@ namespace Chummer
             }
 
 
-            Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), txtName.Text),
-                LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
+                LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 

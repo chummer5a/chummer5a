@@ -295,7 +295,9 @@ namespace Chummer.Backend.Skills
 
                 //If data file contains {4} this crashes but...
                 string strUpgradetext =
-                    $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} -> {(Rating + 1)}";
+                    string.Format(GlobalOptions.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
+                        LanguageManager.GetString("String_ExpenseSkillGroup"), CurrentDisplayName,
+                        Rating, Rating + 1, LanguageManager.GetString("String_Space"));
 
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
@@ -334,7 +336,7 @@ namespace Chummer.Backend.Skills
 
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal),
+            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.CurrentDisplayName, r.CurrentDisplayName, StringComparison.Ordinal),
                 (l, r) => { foreach (Skill x in r.SkillList.Where(y => !l.SkillList.Contains(y))) l.SkillList.Add(x); });
 
             return objNewGroup;
@@ -367,7 +369,7 @@ namespace Chummer.Backend.Skills
                 return;
             objWriter.WriteStartElement("skillgroup");
 
-            objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
@@ -454,8 +456,10 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string>(nameof(ToolTip),
                     new DependencyGraphNode<string>(nameof(SkillList))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplayName),
-                    new DependencyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(Name))
+                    )
                 ),
                 new DependencyGraphNode<string>(nameof(CurrentSpCost),
                     new DependencyGraphNode<string>(nameof(BasePoints)),
@@ -525,9 +529,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
-        public string DisplayNameMethod(string strLanguage)
+        public string DisplayName(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
@@ -540,7 +544,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_objCharacter.Created && !CareerIncrease)
                 {
-                    return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
+                    return LanguageManager.GetString("Label_SkillGroup_Broken");
                 }
 
                 return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString(GlobalOptions.CultureInfo) : 0.ToString(GlobalOptions.CultureInfo);
@@ -554,8 +558,8 @@ namespace Chummer.Backend.Skills
             {
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
                 }
                 return _strToolTip;
             }
@@ -563,7 +567,7 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get { return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
         }
 
         private Guid _guidId = Guid.NewGuid();

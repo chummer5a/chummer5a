@@ -64,7 +64,7 @@ namespace Chummer
                 tmrTip.Start();
             }
 
-            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro", GlobalOptions.Language).WordWrap(100), this, _mouthCenter);
+            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(100), this, _mouthCenter);
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)

@@ -340,7 +340,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode xmlLifestyle in xmlLifestyleList)
                             {
-                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error");
                                 lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
                             }
                         }
@@ -348,7 +348,7 @@ namespace Chummer.Backend.Equipment
 
                     using (frmSelectItem frmSelect = new frmSelectItem
                     {
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language), _strName)
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_CannotFindLifestyle"), _strName)
                     })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
@@ -641,6 +641,8 @@ namespace Chummer.Backend.Equipment
 
             return strReturn;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// Sourcebook.
@@ -1093,13 +1095,13 @@ namespace Chummer.Backend.Equipment
         public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Sum(lq => lq.Comfort)), 0);
         public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Sum(lq => lq.Security)), 0);
 
-        public string FormattedArea => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
+        public string FormattedArea => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseArea.ToString(GlobalOptions.CultureInfo),
             TotalAreaMaximum.ToString(GlobalOptions.CultureInfo));
-        public string FormattedComforts => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
+        public string FormattedComforts => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseComforts.ToString(GlobalOptions.CultureInfo),
             TotalComfortsMaximum.ToString(GlobalOptions.CultureInfo));
-        public string FormattedSecurity => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
+        public string FormattedSecurity => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseSecurity.ToString(GlobalOptions.CultureInfo),
             TotalSecurityMaximum.ToString(GlobalOptions.CultureInfo));
 
@@ -1209,12 +1211,12 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalMonthlyCost;
             if (decAmount > _objCharacter.Nuyen)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen -= decAmount;
 
@@ -1239,7 +1241,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
                 ForeColor = PreferredColor,
@@ -1301,7 +1303,12 @@ namespace Chummer.Backend.Equipment
                     new DependencyGraphNode<string>(nameof(Roommates)),
                     new DependencyGraphNode<string>(nameof(BonusLP)),
                     new DependencyGraphNode<string>(nameof(LifestyleQualities))
-                        ));
+                        ),
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(CustomName)),
+                        new DependencyGraphNode<string>(nameof(DisplayNameShort)))
+                    ));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1337,7 +1344,7 @@ namespace Chummer.Backend.Equipment
         public bool Remove(bool blnConfirmDelete = true)
         {
             if (!blnConfirmDelete) return _objCharacter.Lifestyles.Remove(this);
-            return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && _objCharacter.Lifestyles.Remove(this);
+            return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")) && _objCharacter.Lifestyles.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

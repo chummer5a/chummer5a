@@ -106,7 +106,7 @@ namespace Chummer.Backend.Skills
 
         public string WriteableName
         {
-            get => DisplayName;
+            get => CurrentDisplayName;
             set
             {
                 if (ForcedName)
@@ -114,7 +114,7 @@ namespace Chummer.Backend.Skills
                     return;
                 }
 
-                if (string.Equals(DisplayName, value, StringComparison.CurrentCulture))
+                if (string.Equals(CurrentDisplayName, value, StringComparison.CurrentCulture))
                 {
                     return;
                 }
@@ -128,7 +128,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
 
             if (xmlSkillNode == null)
             {
@@ -162,11 +162,11 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
 
             if (xmlSkillTranslationNode == null)
             {
-                return LanguageManager.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language);
+                return LanguageManager.ReverseTranslateExtra(strInputSkillName);
             }
 
             return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
@@ -200,7 +200,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                string strTranslatedName = DisplayNameMethod(GlobalOptions.Language);
+                string strTranslatedName = CurrentDisplayName;
                 int intMaxHardwire = CharacterObject.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
@@ -480,7 +480,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                XmlNode objDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }

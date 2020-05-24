@@ -225,7 +225,7 @@ namespace Chummer
         {
             if (blnConfirmDelete)
             {
-                _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language));
+                _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation"));
             }
             foreach (IHasLocation item in Children)
             {

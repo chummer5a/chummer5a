@@ -189,7 +189,7 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = CurrentDisplayName;
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -249,7 +249,7 @@ namespace Chummer.Backend.Equipment
                             Maximum = decMax,
                             Description = string.Format(
                                 GlobalOptions.CultureInfo,
-                                LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language),
+                                LanguageManager.GetString("String_SelectVariableCost"),
                                 DisplayNameShort(GlobalOptions.Language)),
                             AllowCancel = false
                         })
@@ -657,7 +657,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("armor");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
@@ -735,7 +735,7 @@ namespace Chummer.Backend.Equipment
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -978,7 +978,7 @@ namespace Chummer.Backend.Equipment
                 return decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
-            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel, GlobalOptions.Language)) + '¥';
+            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel)) + '¥';
         }
 
 
@@ -1306,6 +1306,11 @@ namespace Chummer.Backend.Equipment
 
         #region Complex Properties
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+        /// <summary>
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -1523,18 +1528,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// A custom name for the Armor assigned by the player.
@@ -1687,7 +1694,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsArmor,
                 ForeColor = PreferredColor,
@@ -1748,7 +1755,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteArmor() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }
@@ -1785,7 +1792,7 @@ namespace Chummer.Backend.Equipment
                 if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                 {
                     blnRestrictedGearUsed = true;
-                    strRestrictedItem = DisplayName(GlobalOptions.Language);
+                    strRestrictedItem = CurrentDisplayName;
                 }
                 else
                 {

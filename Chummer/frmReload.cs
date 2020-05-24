@@ -38,13 +38,13 @@ namespace Chummer
         private void frmReload_Load(object sender, EventArgs e)
         {
             List<ListItem> lstAmmo = new List<ListItem>();
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpace = LanguageManager.GetString("String_Space");
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Rating > 0)
-                    strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                    strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
 
                 if (objGear.Parent is Gear objParent)
                 {

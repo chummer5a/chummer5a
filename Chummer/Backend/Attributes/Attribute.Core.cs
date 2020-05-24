@@ -688,9 +688,9 @@ namespace Chummer.Backend.Attributes
         public string AugmentedMetatypeLimits => $"{TotalMinimum} / {TotalMaximum} ({TotalAugmentedMaximum})";
 
         public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
-            LanguageManager.GetString("String_Of", GlobalOptions.Language) +
-            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language)
-            + LanguageManager.GetString("String_Remaining", GlobalOptions.Language);
+            LanguageManager.GetString("String_Of") +
+            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space")
+            + LanguageManager.GetString("String_Remaining");
         #endregion
 
         #region Methods
@@ -708,10 +708,10 @@ namespace Chummer.Backend.Attributes
         }
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
-            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
+            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
             : string.Format(
                 GlobalOptions.CultureInfo,
-                LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language),
+                LanguageManager.GetString("Tip_ImproveItem"),
                 Value + 1,
                 UpgradeKarmaCost);
 
@@ -726,7 +726,7 @@ namespace Chummer.Backend.Attributes
                 if (!string.IsNullOrEmpty(_strCachedToolTip))
                     return _strCachedToolTip;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 StringBuilder strModifier = new StringBuilder();
 
                 HashSet<string> lstUniqueName = new HashSet<string>();
@@ -868,7 +868,7 @@ namespace Chummer.Backend.Attributes
                         if (objCyberware.Category == "Cyberlimb")
                         {
                             strModifier.Append(Environment.NewLine);
-                            strModifier.Append(objCyberware.DisplayName(GlobalOptions.Language) + strSpaceCharacter + '(');
+                            strModifier.Append(objCyberware.CurrentDisplayName + strSpaceCharacter + '(');
                             strModifier.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString(GlobalOptions.CultureInfo) : objCyberware.TotalStrength.ToString(GlobalOptions.CultureInfo));
                             strModifier.Append(')');
                         }
@@ -1213,7 +1213,7 @@ namespace Chummer.Backend.Attributes
                     int intPrice = UpgradeKarmaCost;
                     int intValue = Value;
 
-                    string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {intValue} -> {intValue + 1}";
+                    string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {Abbrev} {intValue} -> {intValue + 1}";
 
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                     objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);

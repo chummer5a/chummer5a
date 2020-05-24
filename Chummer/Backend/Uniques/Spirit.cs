@@ -207,7 +207,7 @@ namespace Chummer
                     objWriter.WriteStartElement("powers");
                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
-                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, GlobalOptions.Language);
+                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
                     }
                     objWriter.WriteEndElement();
                 }
@@ -217,7 +217,7 @@ namespace Chummer
                     objWriter.WriteStartElement("optionalpowers");
                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
-                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, GlobalOptions.Language);
+                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
                     }
                     objWriter.WriteEndElement();
                 }
@@ -253,7 +253,7 @@ namespace Chummer
                     objWriter.WriteStartElement("weaknesses");
                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
-                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, GlobalOptions.Language);
+                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
                     }
                     objWriter.WriteEndElement();
                 }
@@ -277,7 +277,7 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private static void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint)
+        private static void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
             StringBuilder strExtra = new StringBuilder();
             string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
@@ -472,8 +472,8 @@ namespace Chummer
 
                     if (value > intSkillValue)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices", GlobalOptions.Language),
-                            LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices"),
+                            LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         value = intSkillValue;
                     }
                 }
@@ -624,7 +624,7 @@ namespace Chummer
                     {
                         // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
                         int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
-                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , Name
                             , fetteringCost.ToString(GlobalOptions.CultureInfo))))
                         {
@@ -634,7 +634,7 @@ namespace Chummer
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(fetteringCost * -1,
-                            LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
+                            LanguageManager.GetString("String_ExpenseFetteredSpirit") + LanguageManager.GetString("String_Space") + Name,
                             ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Karma -= fetteringCost;
@@ -771,8 +771,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
-                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -802,7 +802,7 @@ namespace Chummer
                 }
                 if (_objLinkedCharacter != null)
                 {
-                    if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
+                    if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
                         _strCritterName = CritterName;
 
                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
@@ -972,7 +972,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

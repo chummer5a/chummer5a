@@ -122,7 +122,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("limitmodifier");
-            objWriter.WriteElementString("name", GetDisplayName(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("condition", LanguageManager.TranslateExtra(Condition, strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
@@ -257,9 +257,9 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName => GetDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
-        public string GetDisplayName(CultureInfo objCulture, string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strBonus;
             if (_intBonus > 0)
@@ -282,7 +282,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
-                Text = DisplayName,
+                Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -321,7 +321,7 @@ namespace Chummer
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

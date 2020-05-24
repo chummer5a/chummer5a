@@ -80,7 +80,7 @@ namespace Chummer
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -88,7 +88,7 @@ namespace Chummer
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
             }
 			*/
@@ -176,8 +176,7 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -249,6 +248,8 @@ namespace Chummer
 
             return strReturn;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// The initiate grade where the art was learned.
@@ -330,9 +331,9 @@ namespace Chummer
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
-            string strText = DisplayName(GlobalOptions.Language);
+            string strText = CurrentDisplayName;
             if (blnAddCategory)
-                strText = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
+                strText = LanguageManager.GetString("Label_Art") + LanguageManager.GetString("String_Space") + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -370,7 +371,7 @@ namespace Chummer
                 return false;
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language)))
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt")))
                     return false;
             }
 
