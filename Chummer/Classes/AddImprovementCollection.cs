@@ -4173,7 +4173,11 @@ namespace Chummer.Classes
                         intLevels = Convert.ToInt32(bonusNode["val"].InnerText, GlobalOptions.InvariantCultureInfo);
                     if (!objBoostedPower.LevelsEnabled)
                         intLevels = 1;
-                    CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
+                    CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName,
+                        !string.IsNullOrWhiteSpace(bonusNode["pointsperlevel"]?.InnerText)
+                            ? Improvement.ImprovementType.AdeptPowerFreePoints
+                            : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
+                        intLevels);
 
                     // fix: refund power points, if bonus would make power exceed maximum
                     if (objBoostedPower.TotalMaximumLevels < objBoostedPower.Rating + intLevels)
@@ -4207,13 +4211,14 @@ namespace Chummer.Classes
 
                             XmlNode objXmlPower;
                             int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                            string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                             // Display the Select Power window and record which Power was selected.
                             using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                             {
                                 Log.Info("selectpower = " + objNode.OuterXml);
 
                                 frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
-                                string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
+                                
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
                                     frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -4255,7 +4260,11 @@ namespace Chummer.Classes
                             }
 
                             Log.Info("Calling CreateImprovement");
-                            CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
+                            CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName,
+                                !string.IsNullOrWhiteSpace(strPointsPerLevel)
+                                    ? Improvement.ImprovementType.AdeptPowerFreePoints
+                                    : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
+                                intLevels);
                         }
                     }
                 }
