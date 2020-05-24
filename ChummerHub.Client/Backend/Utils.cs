@@ -370,7 +370,7 @@ namespace ChummerHub.Client.Backend
                 var temp = AuthorizationCookieContainer;
                 if (temp != null)
                     httpClientHandler.CookieContainer = temp;
-                client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
+                client = new SINnersClient(baseUri, httpClientHandler, delegatingHandler);
             }
             catch (Exception ex)
             {
