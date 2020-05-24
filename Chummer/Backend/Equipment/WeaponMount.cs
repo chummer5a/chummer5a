@@ -1072,6 +1072,7 @@ namespace Chummer.Backend.Equipment
         }
     }
 
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class WeaponMountOption : IHasName, IHasXmlNode
     {
         private readonly Character _objCharacter;

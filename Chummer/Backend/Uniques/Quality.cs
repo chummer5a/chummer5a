@@ -76,7 +76,7 @@ namespace Chummer
     /// A Quality.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource,INotifyMultiplePropertyChanged
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
