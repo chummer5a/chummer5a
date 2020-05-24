@@ -5112,7 +5112,9 @@ if (!Utils.IsUnitTest){
         /// </summary>
         public void Dispose()
         {
-            if (_blnDisposing || Program.MainForm.OpenCharacters.Contains(this) || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
+            if (_blnDisposing)
+                return;
+            if (!Utils.IsUnitTest && (Program.MainForm.OpenCharacters.Contains(this) || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this))))
                 return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
 
             _blnDisposing = true;

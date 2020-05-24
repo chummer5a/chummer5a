@@ -72,13 +72,13 @@ namespace Chummer.Tests
             foreach (FileInfo objFileInfo in aobjFiles)
             {
                 string destination = Path.Combine(objTestPath.FullName, objFileInfo.Name);
-                Character c = LoadCharacter(objFileInfo);
-                SaveCharacter(c, destination);
-                c = new Character
+                using (Character c = LoadCharacter(objFileInfo))
+                    SaveCharacter(c, destination);
+                using (Character c = new Character
                 {
                     FileName = destination
-                };
-                Assert.IsTrue(c.Load().Result);
+                })
+                    Assert.IsTrue(c.Load().Result);
             }
             objTestPath.Delete(true);
         }
@@ -88,32 +88,34 @@ namespace Chummer.Tests
         /// </summary>
         public Character LoadCharacter(FileInfo objFileInfo)
         {
-            Character c = new Character();
+            Character objCharacter = null;
             try
             {
                 Debug.WriteLine("Loading: " + objFileInfo.Name);
-                Character objCharacter = new Character
+                objCharacter = new Character
                 {
                     FileName = objFileInfo.FullName
                 };
                 Assert.IsTrue(objCharacter.Load().Result);
-                Debug.WriteLine("Character loaded: " + c.Name);
+                Debug.WriteLine("Character loaded: " + objCharacter.Name);
                 /*
-                if (c.Created)
+                if (objCharacter.Created)
                 {
-                    frmCareer _ = new frmCareer(c);
+                    frmCareer _ = new frmCareer(objCharacter);
                     //SINnersUsercontrol sINnersUsercontrol = new SINnersUsercontrol(career);
                     //sINnersUsercontrol.UploadSINnerAsync();
                 }
                 else
                 {
-                    frmCreate _ = new frmCreate(c);
+                    frmCreate _ = new frmCreate(objCharacter);
                 }
-                Debug.WriteLine("Test Form Created: " + c.Name);
+                Debug.WriteLine("Test Form Created: " + objCharacter.Name);
                 */
             }
             catch (AssertFailedException e)
             {
+                objCharacter?.Dispose();
+                objCharacter = null;
                 string strErrorMessage = "Could not load " + objFileInfo.FullName + "!";
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
@@ -121,6 +123,7 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
+                objCharacter?.Dispose();
                 string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ":";
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
@@ -128,7 +131,7 @@ namespace Chummer.Tests
                 throw;
             }
 
-            return c;
+            return objCharacter;
         }
 
         /// <summary>

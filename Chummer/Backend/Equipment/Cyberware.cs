@@ -3780,9 +3780,27 @@ namespace Chummer.Backend.Equipment
 
                 if (Children.Count > 0)
                 {
-                    if (Children.Any(s => s_StrengthCustomizationStrings.Contains(s.Name)))
-                        intAttribute = Children.Where(s => s_StrengthCustomizationStrings.Contains(s.Name)).Max(s => s.Rating);
-                    intBonus         = Children.Where(s => s_StrengthEnhancementStrings  .Contains(s.Name)).DefaultIfEmpty().Max(s => s.Rating);
+                    List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
+                    List<Cyberware> lstEnhancementWare = new List<Cyberware>(Children.Count);
+                    foreach (Cyberware objChild in Children)
+                    {
+                        if (s_StrengthCustomizationStrings.Contains(objChild.Name))
+                            lstCustomizationWare.Add(objChild);
+                        if (s_StrengthEnhancementStrings.Contains(objChild.Name))
+                            lstEnhancementWare.Add(objChild);
+                    }
+                    if (lstCustomizationWare.Count > 0)
+                    {
+                        intAttribute = lstCustomizationWare.Count > 1
+                            ? lstCustomizationWare.Max(s => s.Rating)
+                            : lstCustomizationWare.First().Rating;
+                    }
+                    if (lstEnhancementWare.Count > 0)
+                    {
+                        intBonus = lstEnhancementWare.Count > 1
+                            ? lstEnhancementWare.Max(s => s.Rating)
+                            : lstEnhancementWare.First().Rating;
+                    }
                 }
                 if (ParentVehicle == null)
                 {
@@ -3846,9 +3864,27 @@ namespace Chummer.Backend.Equipment
 
                 if (Children.Count > 0)
                 {
-                    if (Children.Any(s => s_AgilityCustomizationStrings.Contains(s.Name)))
-                        intAttribute = Children.Where(s => s_AgilityCustomizationStrings.Contains(s.Name)).Max(s => s.Rating);
-                    intBonus         = Children.Where(s => s_AgilityEnhancementStrings  .Contains(s.Name)).DefaultIfEmpty().Max(s => s.Rating);
+                    List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
+                    List<Cyberware> lstEnhancementWare = new List<Cyberware>(Children.Count);
+                    foreach (Cyberware objChild in Children)
+                    {
+                        if (s_AgilityCustomizationStrings.Contains(objChild.Name))
+                            lstCustomizationWare.Add(objChild);
+                        if (s_AgilityEnhancementStrings.Contains(objChild.Name))
+                            lstEnhancementWare.Add(objChild);
+                    }
+                    if (lstCustomizationWare.Count > 0)
+                    {
+                        intAttribute = lstCustomizationWare.Count > 1
+                            ? lstCustomizationWare.Max(s => s.Rating)
+                            : lstCustomizationWare.First().Rating;
+                    }
+                    if (lstEnhancementWare.Count > 0)
+                    {
+                        intBonus = lstEnhancementWare.Count > 1
+                            ? lstEnhancementWare.Max(s => s.Rating)
+                            : lstEnhancementWare.First().Rating;
+                    }
                 }
                 if (ParentVehicle == null)
                 {

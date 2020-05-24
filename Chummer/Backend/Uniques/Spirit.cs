@@ -1011,7 +1011,8 @@ namespace Chummer
 
         public void Dispose()
         {
-            if (_objLinkedCharacter != null && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
+            if (_objLinkedCharacter != null && !Utils.IsUnitTest
+                                            && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
                                             && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
                                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
                 Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
