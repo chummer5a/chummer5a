@@ -27,7 +27,7 @@ namespace ChummerHub.Client.UI
         public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
         {
             InitializeComponent();
-            _mySINner = mySINner;
+            _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
             MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
             MyCE.ZipFilePath = await MyCE.PrepareModel().ConfigureAwait(true);
 
