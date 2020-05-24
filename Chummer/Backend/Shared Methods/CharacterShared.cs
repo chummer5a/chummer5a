@@ -2250,6 +2250,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treWeapons.SuspendLayout();
                 treWeapons.Nodes.Clear();
 
                 // Start by populating Locations.
@@ -2263,9 +2264,8 @@ namespace Chummer
                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 }
 
-
-
                 treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
+                treWeapons.ResumeLayout();
             }
             else
             {
@@ -2389,6 +2389,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treArmor.SuspendLayout();
                 treArmor.Nodes.Clear();
 
                 // Start by adding Locations.
@@ -2414,6 +2415,7 @@ namespace Chummer
                 }
 
                 treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
+                treArmor.ResumeLayout();
             }
             else
             {
@@ -2667,6 +2669,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treGear.SuspendLayout();
                 treGear.Nodes.Clear();
 
                 // Start by populating Locations.
@@ -2683,6 +2686,7 @@ namespace Chummer
                 }
 
                 treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                treGear.ResumeLayout();
             }
             else
             {
@@ -2798,6 +2802,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treGear.SuspendLayout();
                 treGear.Nodes.Clear();
 
                 // Add Gear.
@@ -2807,6 +2812,7 @@ namespace Chummer
                 }
 
                 treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                treGear.ResumeLayout();
             }
             else
             {
@@ -2908,6 +2914,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treCyberware.SuspendLayout();
                 treCyberware.Nodes.Clear();
 
                 foreach (Cyberware objCyberware in CharacterObject.Cyberware)
@@ -2917,6 +2924,7 @@ namespace Chummer
                 }
 
                 treCyberware.SortCustomAlphabetically(strSelectedId);
+                treCyberware.ResumeLayout();
             }
             else
             {
@@ -3369,6 +3377,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treVehicles.SuspendLayout();
                 treVehicles.Nodes.Clear();
 
                 // Start by populating Locations.
@@ -3417,6 +3426,7 @@ namespace Chummer
                 }
 
                 treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
+                treVehicles.ResumeLayout();
             }
             else
             {
@@ -3659,6 +3669,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treFoci.SuspendLayout();
                 treFoci.Nodes.Clear();
 
                 int intFociTotal = 0;
@@ -3730,6 +3741,7 @@ namespace Chummer
                     }
                 }
                 treFoci.SortCustomAlphabetically(strSelectedId);
+                treFoci.ResumeLayout();
             }
             else
             {
@@ -4027,6 +4039,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treMartialArts.SuspendLayout();
                 treMartialArts.Nodes.Clear();
 
                 foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
@@ -4036,6 +4049,7 @@ namespace Chummer
                 }
 
                 treMartialArts.SortCustomAlphabetically(strSelectedId);
+                treMartialArts.ResumeLayout();
             }
             else
             {
@@ -4255,6 +4269,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treImprovements.SuspendLayout();
                 treImprovements.Nodes.Clear();
 
                 objRoot = new TreeNode
@@ -4286,6 +4301,7 @@ namespace Chummer
 
                 // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
                 treImprovements.SortCustomAlphabetically(strSelectedId);
+                treImprovements.ResumeLayout();
             }
             else
             {
@@ -4552,6 +4568,7 @@ namespace Chummer
 
             if (notifyCollectionChangedEventArgs == null)
             {
+                treLifestyles.SuspendLayout();
                 treLifestyles.Nodes.Clear();
 
                 if (CharacterObject.Lifestyles.Count > 0)
@@ -4563,6 +4580,8 @@ namespace Chummer
 
                     treLifestyles.SortCustomAlphabetically(strSelectedId);
                 }
+
+                treLifestyles.ResumeLayout();
             }
             else
             {
@@ -4663,6 +4682,7 @@ namespace Chummer
                 return;
             if (listChangedEventArgs == null)
             {
+                lstCalendar.SuspendLayout();
                 lstCalendar.Items.Clear();
                 foreach (CalendarWeek objWeek in CharacterObject.Calendar)
                 {
@@ -4684,6 +4704,7 @@ namespace Chummer
 
                     lstCalendar.Items.Add(objItem);
                 }
+                lstCalendar.ResumeLayout();
             }
             else
             {
@@ -4783,6 +4804,9 @@ namespace Chummer
                 return;
             if (notifyCollectionChangedEventArgs == null)
             {
+                panContacts?.SuspendLayout();
+                panEnemies?.SuspendLayout();
+                panPets?.SuspendLayout();
                 panContacts?.Controls.Clear();
                 panEnemies?.Controls.Clear();
                 panPets?.Controls.Clear();
@@ -4842,6 +4866,9 @@ namespace Chummer
                             break;
                     }
                 }
+                panContacts?.ResumeLayout();
+                panEnemies?.ResumeLayout();
+                panPets?.ResumeLayout();
             }
             else
             {
@@ -5787,6 +5814,8 @@ namespace Chummer
                 return;
             if (notifyCollectionChangedEventArgs == null)
             {
+                panSpirits?.SuspendLayout();
+                panSprites?.SuspendLayout();
                 panSpirits?.Controls.Clear();
                 panSprites?.Controls.Clear();
                 int intSpirits = -1;
@@ -5823,6 +5852,8 @@ namespace Chummer
                         panSprites.Controls.Add(objSpiritControl);
                     }
                 }
+                panSpirits?.ResumeLayout();
+                panSprites?.ResumeLayout();
             }
             else
             {
