@@ -407,7 +407,7 @@ namespace Chummer
         public static bool Purchase(Character objCharacter)
         {
             if (objCharacter == null)
-                throw new ArgumentNullException	(nameof(objCharacter));
+                throw new ArgumentNullException    (nameof(objCharacter));
             bool blnAddAgain;
             do
             {

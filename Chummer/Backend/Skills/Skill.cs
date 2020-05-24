@@ -784,13 +784,13 @@ namespace Chummer.Backend.Skills
             }
         }
 
-		public Character CharacterObject { get; }
+        public Character CharacterObject { get; }
 
-		//TODO change to the actual characterattribute object
-		/// <summary>
-		/// The Abbreviation of the linked attribute. Not the object due legacy
-		/// </summary>
-		public string Attribute => AttributeObject.Abbrev;
+        //TODO change to the actual characterattribute object
+        /// <summary>
+        /// The Abbreviation of the linked attribute. Not the object due legacy
+        /// </summary>
+        public string Attribute => AttributeObject.Abbrev;
 
         /// <summary>
         /// The translated abbreviation of the linked attribute.

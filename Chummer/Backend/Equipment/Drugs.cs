@@ -307,10 +307,10 @@ namespace Chummer.Backend.Equipment
             set => _strEffectDescription = value;
         }
 
-		/// <summary>
-		/// Components of the Drug.
-		/// </summary>
-		public ObservableCollection<DrugComponent> Components { get; } = new ObservableCollection<DrugComponent>();
+        /// <summary>
+        /// Components of the Drug.
+        /// </summary>
+        public ObservableCollection<DrugComponent> Components { get; } = new ObservableCollection<DrugComponent>();
 
         /// <summary>
         /// Name of the Drug.
@@ -357,9 +357,9 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-		/// Total cost of the Drug.
-		/// </summary>
-		public decimal TotalCost => Cost * Quantity;
+        /// Total cost of the Drug.
+        /// </summary>
+        public decimal TotalCost => Cost * Quantity;
 
         /// <summary>
         /// Total cost of the Drug.
@@ -370,10 +370,10 @@ namespace Chummer.Backend.Equipment
         /// Total amount of the Drug held by the character.
         /// </summary>
         public decimal Quantity
-		{
-			get => _decQty;
-	        set => _decQty = value;
-	    }
+        {
+            get => _decQty;
+            set => _decQty = value;
+        }
 
         /// <summary>
         /// Availability of the Drug.
@@ -418,7 +418,7 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
-				*/
+                */
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
@@ -491,37 +491,37 @@ namespace Chummer.Backend.Equipment
 
         private bool _blnCachedQualityFlag;
         public List<XmlNode> Qualities
-	    {
-	        get
-	        {
-	            if (_blnCachedQualityFlag) return _lstCachedQualities;
-	            foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
-	            {
-	                _lstCachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
+        {
+            get
+            {
+                if (_blnCachedQualityFlag) return _lstCachedQualities;
+                foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
+                {
+                    _lstCachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
                 }
 
-	            _lstCachedQualities = _lstCachedQualities.Distinct().ToList();
-	            _blnCachedQualityFlag = true;
+                _lstCachedQualities = _lstCachedQualities.Distinct().ToList();
+                _blnCachedQualityFlag = true;
                 return _lstCachedQualities;
-	        }
-	    }
+            }
+        }
 
         private bool _blnCachedInfoFlag;
         public List<string> Infos
-	    {
-	        get
-	        {
-	            if (_blnCachedInfoFlag) return _lstCachedInfos;
-	            foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
-	            {
-	                _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
+        {
+            get
+            {
+                if (_blnCachedInfoFlag) return _lstCachedInfos;
+                foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
+                {
+                    _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
                 }
 
-	            _lstCachedInfos = _lstCachedInfos.Distinct().ToList();
-	            _blnCachedInfoFlag = true;
+                _lstCachedInfos = _lstCachedInfos.Distinct().ToList();
+                _blnCachedInfoFlag = true;
                 return _lstCachedInfos;
-	        }
-	    }
+            }
+        }
 
         private int _intCachedInitiative = int.MinValue;
 
@@ -772,7 +772,7 @@ namespace Chummer.Backend.Equipment
             if (objCulture == null)
                 objCulture = GlobalOptions.CultureInfo;
             StringBuilder sbdDescription = new StringBuilder();
-			bool blnNewLineFlag = false;
+            bool blnNewLineFlag = false;
             string strSpaceString = LanguageManager.GetString("String_Space", strLanguage);
             string strColonString = LanguageManager.GetString("String_Colon", strLanguage);
             if (!blnEffectsOnly)
@@ -783,92 +783,92 @@ namespace Chummer.Backend.Equipment
             }
 
             if (intLevel != -1)
-			{
+            {
                 foreach (KeyValuePair<string, int> objAttribute in Attributes)
-				{
+                {
                     if (objAttribute.Value != 0)
-					{
-					    if (blnNewLineFlag)
-					    {
-					        sbdDescription.Append(',').Append(strSpaceString);
-					    }
+                    {
+                        if (blnNewLineFlag)
+                        {
+                            sbdDescription.Append(',').Append(strSpaceString);
+                        }
 
                         sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", strLanguage))
                             .Append(strSpaceString).Append(objAttribute.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
-						blnNewLineFlag = true;
-					}
-				}
-				if (blnNewLineFlag)
-				{
-					blnNewLineFlag = false;
-					sbdDescription.AppendLine();
-				}
-
-				foreach (KeyValuePair<string, int> objLimit in Limits)
-				{
-                    if (objLimit.Value != 0)
-					{
-					    if (blnNewLineFlag)
-					    {
-					        sbdDescription.Append(',').Append(strSpaceString);
-					    }
-
-                        sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage)).Append(strSpaceString).Append(LanguageManager.GetString("String_Limit", strLanguage)).Append(strSpaceString)
-					        .Append(objLimit.Value.ToString(" +#;-#", GlobalOptions.CultureInfo));
                         blnNewLineFlag = true;
-					}
-				}
-				if (blnNewLineFlag)
-				{
-					sbdDescription.AppendLine();
-				}
-
-				if (Initiative != 0 || InitiativeDice != 0)
-				{
-					sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong", strLanguage)).Append(strSpaceString);
-				    if (Initiative != 0)
-				    {
-				        sbdDescription.Append(Initiative.ToString("+#;-#", GlobalOptions.CultureInfo));
-				        if (InitiativeDice != 0)
-				            sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6", strLanguage));
                     }
-				    else if (InitiativeDice != 0)
-						sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6", strLanguage));
-					sbdDescription.AppendLine();
-				}
-
-				foreach (XmlNode nodQuality in Qualities)
-					sbdDescription.Append(LanguageManager.TranslateExtra(nodQuality.InnerText, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
-				foreach (string strInfo in Infos)
-					sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, strLanguage));
-
-				if (Category == "Custom Drug" || Duration != 0)
-					sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).AppendLine(DisplayDuration);
-
-				if (Category == "Custom Drug" || Speed != 0)
-				{
-				    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
-				    if (Speed <= 0)
-				        sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
-				    else if (Speed <= 60)
-				        sbdDescription.AppendLine((Speed / 3).ToString(GlobalOptions.CultureInfo) + strSpaceString + LanguageManager.GetString("String_CombatTurns"));
-				    else
-				        sbdDescription.AppendLine((Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Seconds"));
+                }
+                if (blnNewLineFlag)
+                {
+                    blnNewLineFlag = false;
+                    sbdDescription.AppendLine();
                 }
 
-			    if (CrashDamage != 0)
-			        sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect", strLanguage)).Append(strSpaceString)
-			            .Append(CrashDamage.ToString(objCulture)).Append(LanguageManager.GetString("String_DamageStun", strLanguage)).Append(strSpaceString)
-			            .AppendLine(LanguageManager.GetString("String_DamageUnresisted", strLanguage));
-			    if (!blnEffectsOnly)
-			    {
-			        sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage)).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(objCulture));
-			        sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage)).Append(strSpaceString).AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture));
-			        sbdDescription.Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpaceString).Append((Cost * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, objCulture)).AppendLine("¥");
-			        sbdDescription.Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpaceString).AppendLine(TotalAvail(objCulture, strLanguage));
-			    }
-			}
-			else if (!blnEffectsOnly)
+                foreach (KeyValuePair<string, int> objLimit in Limits)
+                {
+                    if (objLimit.Value != 0)
+                    {
+                        if (blnNewLineFlag)
+                        {
+                            sbdDescription.Append(',').Append(strSpaceString);
+                        }
+
+                        sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage)).Append(strSpaceString).Append(LanguageManager.GetString("String_Limit", strLanguage)).Append(strSpaceString)
+                            .Append(objLimit.Value.ToString(" +#;-#", GlobalOptions.CultureInfo));
+                        blnNewLineFlag = true;
+                    }
+                }
+                if (blnNewLineFlag)
+                {
+                    sbdDescription.AppendLine();
+                }
+
+                if (Initiative != 0 || InitiativeDice != 0)
+                {
+                    sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong", strLanguage)).Append(strSpaceString);
+                    if (Initiative != 0)
+                    {
+                        sbdDescription.Append(Initiative.ToString("+#;-#", GlobalOptions.CultureInfo));
+                        if (InitiativeDice != 0)
+                            sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6", strLanguage));
+                    }
+                    else if (InitiativeDice != 0)
+                        sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6", strLanguage));
+                    sbdDescription.AppendLine();
+                }
+
+                foreach (XmlNode nodQuality in Qualities)
+                    sbdDescription.Append(LanguageManager.TranslateExtra(nodQuality.InnerText, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
+                foreach (string strInfo in Infos)
+                    sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, strLanguage));
+
+                if (Category == "Custom Drug" || Duration != 0)
+                    sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).AppendLine(DisplayDuration);
+
+                if (Category == "Custom Drug" || Speed != 0)
+                {
+                    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
+                    if (Speed <= 0)
+                        sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
+                    else if (Speed <= 60)
+                        sbdDescription.AppendLine((Speed / 3).ToString(GlobalOptions.CultureInfo) + strSpaceString + LanguageManager.GetString("String_CombatTurns"));
+                    else
+                        sbdDescription.AppendLine((Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Seconds"));
+                }
+
+                if (CrashDamage != 0)
+                    sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect", strLanguage)).Append(strSpaceString)
+                        .Append(CrashDamage.ToString(objCulture)).Append(LanguageManager.GetString("String_DamageStun", strLanguage)).Append(strSpaceString)
+                        .AppendLine(LanguageManager.GetString("String_DamageUnresisted", strLanguage));
+                if (!blnEffectsOnly)
+                {
+                    sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage)).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(objCulture));
+                    sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage)).Append(strSpaceString).AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture));
+                    sbdDescription.Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpaceString).Append((Cost * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, objCulture)).AppendLine("¥");
+                    sbdDescription.Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpaceString).AppendLine(TotalAvail(objCulture, strLanguage));
+                }
+            }
+            else if (!blnEffectsOnly)
             {
                 sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage)).Append(strSpaceString).AppendLine(0.ToString(objCulture));
                 sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage)).Append(strSpaceString).AppendLine(0.ToString(objCulture));
@@ -879,8 +879,8 @@ namespace Chummer.Backend.Equipment
             string strReturn = sbdDescription.ToString();
             if (blnDoCache)
                 _strDescription = strReturn;
-			return strReturn;
-		}
+            return strReturn;
+        }
 
         /// <summary>
         /// Creates the improvements necessary to to 'activate' a given drug.
@@ -1046,54 +1046,54 @@ namespace Chummer.Backend.Equipment
         #endregion
 
     }
-	/// <summary>
-	/// Drug Component.
-	/// </summary>
-	public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
-	{
+    /// <summary>
+    /// Drug Component.
+    /// </summary>
+    public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
+    {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-	    private Guid _guidId;
-	    private Guid _guiSourceID;
+        private Guid _guidId;
+        private Guid _guiSourceID;
         private string _strName;
-		private string _strCategory;
-	    private string _strAvailability = "0";
+        private string _strCategory;
+        private string _strAvailability = "0";
         private int _intLevel;
-	    private int _intLimit = 1;
-		private string _strSource;
-		private string _strPage;
-		private string _strCost;
-		private int _intAddictionThreshold;
-		private int _intAddictionRating;
-	    private XmlNode _objCachedMyXmlNode;
-	    private string _strCachedXmlNodeLanguage;
-	    private readonly Character _objCharacter;
+        private int _intLimit = 1;
+        private string _strSource;
+        private string _strPage;
+        private string _strCost;
+        private int _intAddictionThreshold;
+        private int _intAddictionRating;
+        private XmlNode _objCachedMyXmlNode;
+        private string _strCachedXmlNodeLanguage;
+        private readonly Character _objCharacter;
 
-	    public DrugComponent(Character objCharacter)
-	    {
-	        _guidId = new Guid();
+        public DrugComponent(Character objCharacter)
+        {
+            _guidId = new Guid();
             _objCharacter = objCharacter;
-		}
+        }
 
-		#region Constructor, Create, Save, Load, and Print Methods
-		public void Load(XmlNode objXmlData)
-		{
-		    objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+        #region Constructor, Create, Save, Load, and Print Methods
+        public void Load(XmlNode objXmlData)
+        {
+            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-		    {
-		        XmlNode node = GetNode(GlobalOptions.Language);
-		        node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-		    }
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
-			objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
-		    XmlNodeList xmlEffectsList = objXmlData.SelectNodes("effects/effect");
-		    if (xmlEffectsList?.Count > 0)
-		    {
-		        foreach (XmlNode objXmlLevel in xmlEffectsList)
-		        {
-		            DrugEffect objDrugEffect = new DrugEffect();
-		            objXmlLevel.TryGetField("level", out int effectLevel);
-		            objDrugEffect.Level = effectLevel;
-		            XmlNodeList xmlEffectChildNodeList = objXmlLevel.SelectNodes("*");
+            objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
+            XmlNodeList xmlEffectsList = objXmlData.SelectNodes("effects/effect");
+            if (xmlEffectsList?.Count > 0)
+            {
+                foreach (XmlNode objXmlLevel in xmlEffectsList)
+                {
+                    DrugEffect objDrugEffect = new DrugEffect();
+                    objXmlLevel.TryGetField("level", out int effectLevel);
+                    objDrugEffect.Level = effectLevel;
+                    XmlNodeList xmlEffectChildNodeList = objXmlLevel.SelectNodes("*");
                     if (xmlEffectChildNodeList?.Count > 0)
                     {
                         foreach (XmlNode objXmlEffect in xmlEffectChildNodeList)
@@ -1159,153 +1159,153 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-		            DrugEffects.Add(objDrugEffect);
-		        }
-		    }
+                    DrugEffects.Add(objDrugEffect);
+                }
+            }
 
-		    objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
-			objXmlData.TryGetStringFieldQuickly("cost", ref _strCost);
-		    objXmlData.TryGetInt32FieldQuickly("level", ref _intLevel);
-		    objXmlData.TryGetInt32FieldQuickly("limit", ref _intLimit);
+            objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
+            objXmlData.TryGetStringFieldQuickly("cost", ref _strCost);
+            objXmlData.TryGetInt32FieldQuickly("level", ref _intLevel);
+            objXmlData.TryGetInt32FieldQuickly("limit", ref _intLimit);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
-			objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
-			objXmlData.TryGetStringFieldQuickly("source", ref _strSource);
-			objXmlData.TryGetStringFieldQuickly("page", ref _strPage);
-		}
+            objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
+            objXmlData.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlData.TryGetStringFieldQuickly("page", ref _strPage);
+        }
 
-		public void Save(XmlWriter objXmlWriter)
+        public void Save(XmlWriter objXmlWriter)
         {
             if (objXmlWriter == null)
                 return;
             objXmlWriter.WriteElementString("sourceid", SourceIDString);
             objXmlWriter.WriteElementString("guid", InternalId);
             objXmlWriter.WriteElementString("name", _strName);
-			objXmlWriter.WriteElementString("category", _strCategory);
+            objXmlWriter.WriteElementString("category", _strCategory);
 
-			objXmlWriter.WriteStartElement("effects");
-			foreach (DrugEffect objDrugEffect in DrugEffects)
-			{
-				objXmlWriter.WriteStartElement("effect");
-				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
-				{
-					objXmlWriter.WriteStartElement("attribute");
-					objXmlWriter.WriteElementString("name", objAttribute.Key);
-					objXmlWriter.WriteElementString("value", objAttribute.Value.ToString(GlobalOptions.InvariantCultureInfo));
-					objXmlWriter.WriteEndElement();
-				}
-				foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
-				{
-					objXmlWriter.WriteStartElement("limit");
-					objXmlWriter.WriteElementString("name", objLimit.Key);
-					objXmlWriter.WriteElementString("value", objLimit.Value.ToString(GlobalOptions.InvariantCultureInfo));
-					objXmlWriter.WriteEndElement();
-				}
-				foreach (XmlNode nodQuality in objDrugEffect.Qualities)
-				{
-				    objXmlWriter.WriteRaw("<quality>" + nodQuality.InnerXml + "</quality>");
+            objXmlWriter.WriteStartElement("effects");
+            foreach (DrugEffect objDrugEffect in DrugEffects)
+            {
+                objXmlWriter.WriteStartElement("effect");
+                foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
+                {
+                    objXmlWriter.WriteStartElement("attribute");
+                    objXmlWriter.WriteElementString("name", objAttribute.Key);
+                    objXmlWriter.WriteElementString("value", objAttribute.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    objXmlWriter.WriteEndElement();
                 }
-				foreach (string strInfo in objDrugEffect.Infos)
-				{
-					objXmlWriter.WriteElementString("info", strInfo);
-				}
-				if (objDrugEffect.Initiative != 0)
-					objXmlWriter.WriteElementString("initiative", objDrugEffect.Initiative.ToString(GlobalOptions.InvariantCultureInfo));
-				if (objDrugEffect.InitiativeDice != 0)
-					objXmlWriter.WriteElementString("initiativedice", objDrugEffect.InitiativeDice.ToString(GlobalOptions.InvariantCultureInfo));
-				if (objDrugEffect.Duration != 0)
-					objXmlWriter.WriteElementString("duration", objDrugEffect.Duration.ToString(GlobalOptions.InvariantCultureInfo));
-				if (objDrugEffect.Speed != 0)
-					objXmlWriter.WriteElementString("speed", objDrugEffect.Speed.ToString(GlobalOptions.InvariantCultureInfo));
-				if (objDrugEffect.CrashDamage != 0)
-					objXmlWriter.WriteElementString("crashdamage", objDrugEffect.CrashDamage.ToString(GlobalOptions.InvariantCultureInfo));
-				objXmlWriter.WriteEndElement();
-			}
-			objXmlWriter.WriteEndElement();
+                foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
+                {
+                    objXmlWriter.WriteStartElement("limit");
+                    objXmlWriter.WriteElementString("name", objLimit.Key);
+                    objXmlWriter.WriteElementString("value", objLimit.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    objXmlWriter.WriteEndElement();
+                }
+                foreach (XmlNode nodQuality in objDrugEffect.Qualities)
+                {
+                    objXmlWriter.WriteRaw("<quality>" + nodQuality.InnerXml + "</quality>");
+                }
+                foreach (string strInfo in objDrugEffect.Infos)
+                {
+                    objXmlWriter.WriteElementString("info", strInfo);
+                }
+                if (objDrugEffect.Initiative != 0)
+                    objXmlWriter.WriteElementString("initiative", objDrugEffect.Initiative.ToString(GlobalOptions.InvariantCultureInfo));
+                if (objDrugEffect.InitiativeDice != 0)
+                    objXmlWriter.WriteElementString("initiativedice", objDrugEffect.InitiativeDice.ToString(GlobalOptions.InvariantCultureInfo));
+                if (objDrugEffect.Duration != 0)
+                    objXmlWriter.WriteElementString("duration", objDrugEffect.Duration.ToString(GlobalOptions.InvariantCultureInfo));
+                if (objDrugEffect.Speed != 0)
+                    objXmlWriter.WriteElementString("speed", objDrugEffect.Speed.ToString(GlobalOptions.InvariantCultureInfo));
+                if (objDrugEffect.CrashDamage != 0)
+                    objXmlWriter.WriteElementString("crashdamage", objDrugEffect.CrashDamage.ToString(GlobalOptions.InvariantCultureInfo));
+                objXmlWriter.WriteEndElement();
+            }
+            objXmlWriter.WriteEndElement();
 
-		    objXmlWriter.WriteElementString("availability", _strAvailability);
+            objXmlWriter.WriteElementString("availability", _strAvailability);
             objXmlWriter.WriteElementString("cost", _strCost);
             objXmlWriter.WriteElementString("level", _intLevel.ToString(GlobalOptions.InvariantCultureInfo));
             objXmlWriter.WriteElementString("limit", _intLimit.ToString(GlobalOptions.InvariantCultureInfo));
             if (_intAddictionRating != 0)
-				objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString(GlobalOptions.InvariantCultureInfo));
-			if (_intAddictionThreshold != 0)
-				objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString(GlobalOptions.InvariantCultureInfo));
+                objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString(GlobalOptions.InvariantCultureInfo));
+            if (_intAddictionThreshold != 0)
+                objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString(GlobalOptions.InvariantCultureInfo));
             objXmlWriter.WriteElementString("source", _strSource);
             objXmlWriter.WriteElementString("page", _strPage);
         }
-		#endregion
-		#region Properties
-		/// <summary>
-		/// Drug Component's English Name
-		/// </summary>
-		public string Name
-		{
-			get => _strName;
-		    set => _strName = value;
-		}
+        #endregion
+        #region Properties
+        /// <summary>
+        /// Drug Component's English Name
+        /// </summary>
+        public string Name
+        {
+            get => _strName;
+            set => _strName = value;
+        }
 
-	    /// <summary>
-	    /// The name of the object as it should appear on printouts (translated name only).
-	    /// </summary>
-	    public string DisplayNameShort(string strLanguage)
-	    {
-	        if (strLanguage == GlobalOptions.DefaultLanguage)
-	            return Name;
+        /// <summary>
+        /// The name of the object as it should appear on printouts (translated name only).
+        /// </summary>
+        public string DisplayNameShort(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-	        XmlNode xmlGearDataNode = GetNode(strLanguage);
-	        if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
-	        {
-	            return LanguageManager.TranslateExtra(Name, strLanguage);
-	        }
+            XmlNode xmlGearDataNode = GetNode(strLanguage);
+            if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
+            {
+                return LanguageManager.TranslateExtra(Name, strLanguage);
+            }
 
-	        return xmlGearDataNode?["translate"]?.InnerText ?? Name;
-	    }
+            return xmlGearDataNode?["translate"]?.InnerText ?? Name;
+        }
 
-	    /// <summary>
-	    /// The name of the object as it should be displayed in lists. Name (Level X).
-	    /// </summary>
-	    public string DisplayName(CultureInfo objCulture, string strLanguage)
-	    {
-	        string strReturn = DisplayNameShort(strLanguage);
-	        if (Level != 0)
-	        {
-	            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
-	            strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpaceCharacter + Level.ToString(objCulture) + ')';
-	        }
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Level X).
+        /// </summary>
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = DisplayNameShort(strLanguage);
+            if (Level != 0)
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpaceCharacter + Level.ToString(objCulture) + ')';
+            }
 
-	        return strReturn;
-	    }
+            return strReturn;
+        }
 
-	    public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
-	    /// <summary>
-	    /// Translated Category.
-	    /// </summary>
-	    public string DisplayCategory(string strLanguage)
-	    {
-	        if (strLanguage == GlobalOptions.DefaultLanguage)
-	            return Category;
+        /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public string DisplayCategory(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Category;
 
-	        return XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
-	    }
+            return XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+        }
 
         /// <summary>
         /// Category
         /// </summary>
         public string Category
-		{
-			get => _strCategory;
-		    set => _strCategory = value;
-		}
+        {
+            get => _strCategory;
+            set => _strCategory = value;
+        }
 
-	    /// <summary>
-	    /// Sourcebook.
-	    /// </summary>
-	    public string Source
-	    {
-	        get => _strSource;
-	        set => _strSource = value;
-	    }
+        /// <summary>
+        /// Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get => _strSource;
+            set => _strSource = value;
+        }
 
 
         /// <summary>
@@ -1331,14 +1331,14 @@ namespace Chummer.Backend.Equipment
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
-		public List<DrugEffect> DrugEffects { get; } = new List<DrugEffect>();
+        public List<DrugEffect> DrugEffects { get; } = new List<DrugEffect>();
 
         public DrugEffect ActiveDrugEffect => DrugEffects.FirstOrDefault(effect => effect.Level == Level);
 
-	    public string Cost
-		{
-	        get => _strCost;
-	        set => _strCost = value;
+        public string Cost
+        {
+            get => _strCost;
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -1374,9 +1374,9 @@ namespace Chummer.Backend.Equipment
         }
 
         public string Availability
-		{
-			get => _strAvailability;
-		    set => _strAvailability = value;
+        {
+            get => _strAvailability;
+            set => _strAvailability = value;
         }
 
         /// <summary>
@@ -1388,9 +1388,9 @@ namespace Chummer.Backend.Equipment
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
-	    {
-	        return TotalAvailTuple.ToString(objCulture, strLanguage);
-	    }
+        {
+            return TotalAvailTuple.ToString(objCulture, strLanguage);
+        }
 
         /// <summary>
         /// Total Availability as a triple.
@@ -1419,7 +1419,7 @@ namespace Chummer.Backend.Equipment
                         objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                         objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
-					*/
+                    */
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                     if (blnIsSuccess)
@@ -1434,31 +1434,31 @@ namespace Chummer.Backend.Equipment
         }
 
         public int AddictionThreshold
-		{
-			get => _intAddictionThreshold;
-		    set => _intAddictionThreshold = value;
-		}
+        {
+            get => _intAddictionThreshold;
+            set => _intAddictionThreshold = value;
+        }
 
-		public int AddictionRating
-		{
-			get => _intAddictionRating;
-		    set => _intAddictionRating = value;
-		}
+        public int AddictionRating
+        {
+            get => _intAddictionRating;
+            set => _intAddictionRating = value;
+        }
 
-		public int Level
-		{
-			get => _intLevel;
-		    set => _intLevel = value;
-	    }
+        public int Level
+        {
+            get => _intLevel;
+            set => _intLevel = value;
+        }
 
         /// <summary>
         /// Amount of this drug component that is allowed to be in a complete drug recipe. If 0, assume unlimited.
         /// </summary>
-	    public int Limit
-	    {
-	        get => _intLimit;
-	        set => _intLimit = value;
-	    }
+        public int Limit
+        {
+            get => _intLimit;
+            set => _intLimit = value;
+        }
 
 
         /// <summary>
@@ -1466,178 +1466,178 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Guid SourceID => _guiSourceID;
 
-	    /// <summary>
-	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
-	    /// </summary>
-	    public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public string InternalId => _guidId.ToString("D", GlobalOptions.InvariantCultureInfo);
         #endregion
         #region Methods
         public string GenerateDescription(int intLevel = -1)
-		{
-			if (intLevel >= DrugEffects.Count)
-				return null;
+        {
+            if (intLevel >= DrugEffects.Count)
+                return null;
 
-			StringBuilder sbdDescription = new StringBuilder();
-			bool blnNewLineFlag = false;
-		    string strSpaceString = LanguageManager.GetString("String_Space");
-		    string strColonString = LanguageManager.GetString("String_Colon");
+            StringBuilder sbdDescription = new StringBuilder();
+            bool blnNewLineFlag = false;
+            string strSpaceString = LanguageManager.GetString("String_Space");
+            string strColonString = LanguageManager.GetString("String_Colon");
             sbdDescription.Append(DisplayCategory(GlobalOptions.Language)).Append(strColonString).Append(strSpaceString).Append(CurrentDisplayName).AppendLine();
 
             if (intLevel != -1)
-			{
-				DrugEffect objDrugEffect = DrugEffects[intLevel];
+            {
+                DrugEffect objDrugEffect = DrugEffects[intLevel];
 
-				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
-				{
+                foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
+                {
                     if (objAttribute.Value != 0)
-					{
-					    if (blnNewLineFlag)
-					    {
-					        sbdDescription.Append(',').Append(strSpaceString);
-					    }
+                    {
+                        if (blnNewLineFlag)
+                        {
+                            sbdDescription.Append(',').Append(strSpaceString);
+                        }
 
                         sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"))
-					        .Append(strSpaceString).Append(objAttribute.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
+                            .Append(strSpaceString).Append(objAttribute.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
                         blnNewLineFlag = true;
-					}
+                    }
                 }
-				if (blnNewLineFlag)
-				{
-					blnNewLineFlag = false;
-					sbdDescription.AppendLine();
-				}
+                if (blnNewLineFlag)
+                {
+                    blnNewLineFlag = false;
+                    sbdDescription.AppendLine();
+                }
 
-				foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
-				{
-					if (objLimit.Value != 0)
-					{
-					    if (blnNewLineFlag)
-					    {
-					        sbdDescription.Append(',').Append(strSpaceString);
-					    }
+                foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
+                {
+                    if (objLimit.Value != 0)
+                    {
+                        if (blnNewLineFlag)
+                        {
+                            sbdDescription.Append(',').Append(strSpaceString);
+                        }
 
                         sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key)).Append(strSpaceString).Append(LanguageManager.GetString("String_Limit")).Append(strSpaceString)
                             .Append(objLimit.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
                         blnNewLineFlag = true;
-					}
-				}
-				if (blnNewLineFlag)
-				{
-					sbdDescription.AppendLine();
-				}
-
-				if (objDrugEffect.Initiative != 0 || objDrugEffect.InitiativeDice != 0)
-				{
-				    sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong")).Append(strSpaceString);
-				    if (objDrugEffect.Initiative != 0)
-				    {
-				        sbdDescription.Append(objDrugEffect.Initiative.ToString("+#;-#", GlobalOptions.CultureInfo));
-				        if (objDrugEffect.InitiativeDice != 0)
-				            sbdDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6"));
-				    }
-				    else if (objDrugEffect.InitiativeDice != 0)
-				        sbdDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6"));
-				    sbdDescription.AppendLine();
+                    }
+                }
+                if (blnNewLineFlag)
+                {
+                    sbdDescription.AppendLine();
                 }
 
-			    foreach (XmlNode strQuality in objDrugEffect.Qualities)
-			        sbdDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
-			    foreach (string strInfo in objDrugEffect.Infos)
-			        sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo));
+                if (objDrugEffect.Initiative != 0 || objDrugEffect.InitiativeDice != 0)
+                {
+                    sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong")).Append(strSpaceString);
+                    if (objDrugEffect.Initiative != 0)
+                    {
+                        sbdDescription.Append(objDrugEffect.Initiative.ToString("+#;-#", GlobalOptions.CultureInfo));
+                        if (objDrugEffect.InitiativeDice != 0)
+                            sbdDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6"));
+                    }
+                    else if (objDrugEffect.InitiativeDice != 0)
+                        sbdDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6"));
+                    sbdDescription.AppendLine();
+                }
 
-				if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
-				    sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColonString).Append(strSpaceString)
-				        .Append("10 ⨯ ").Append((objDrugEffect.Duration + 1).ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6")).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Minutes"));
+                foreach (XmlNode strQuality in objDrugEffect.Qualities)
+                    sbdDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
+                foreach (string strInfo in objDrugEffect.Infos)
+                    sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo));
+
+                if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
+                    sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColonString).Append(strSpaceString)
+                        .Append("10 ⨯ ").Append((objDrugEffect.Duration + 1).ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6")).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Minutes"));
 
                 if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
-				{
-				    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
-				    if (objDrugEffect.Speed <= 0)
-				        sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
-				    else if (objDrugEffect.Speed <= 60)
-				        sbdDescription.AppendLine((objDrugEffect.Speed / 3).ToString(GlobalOptions.CultureInfo) + strSpaceString + LanguageManager.GetString("String_CombatTurns"));
+                {
+                    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
+                    if (objDrugEffect.Speed <= 0)
+                        sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
+                    else if (objDrugEffect.Speed <= 60)
+                        sbdDescription.AppendLine((objDrugEffect.Speed / 3).ToString(GlobalOptions.CultureInfo) + strSpaceString + LanguageManager.GetString("String_CombatTurns"));
                     else
-				        sbdDescription.AppendLine((objDrugEffect.Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Seconds"));
+                        sbdDescription.AppendLine((objDrugEffect.Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Seconds"));
                 }
 
-			    if (objDrugEffect.CrashDamage != 0)
-			        sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect")).Append(strSpaceString)
-			            .Append(objDrugEffect.CrashDamage.ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_DamageStun")).Append(strSpaceString)
-			            .AppendLine(LanguageManager.GetString("String_DamageUnresisted"));
+                if (objDrugEffect.CrashDamage != 0)
+                    sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect")).Append(strSpaceString)
+                        .Append(objDrugEffect.CrashDamage.ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_DamageStun")).Append(strSpaceString)
+                        .AppendLine(LanguageManager.GetString("String_DamageUnresisted"));
 
-			    sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
-			    sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpaceString).AppendLine((AddictionThreshold * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
-			    sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpaceString).Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).AppendLine("¥");
-			    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(DisplayTotalAvail);
-			}
-			else
+                sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
+                sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpaceString).AppendLine((AddictionThreshold * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
+                sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpaceString).Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).AppendLine("¥");
+                sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(DisplayTotalAvail);
+            }
+            else
             {
                 string strPerLevel = LanguageManager.GetString("String_PerLevel");
                 sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpaceString).Append(0.ToString(GlobalOptions.CultureInfo))
-			        .Append(strSpaceString).AppendLine(strPerLevel);
-			    sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpaceString).Append(0.ToString(GlobalOptions.CultureInfo))
                     .Append(strSpaceString).AppendLine(strPerLevel);
-			    sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpaceString).Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo))
-			        .Append("¥").Append(strSpaceString).AppendLine(strPerLevel);
-			    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(DisplayTotalAvail);
-			}
+                sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpaceString).Append(0.ToString(GlobalOptions.CultureInfo))
+                    .Append(strSpaceString).AppendLine(strPerLevel);
+                sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpaceString).Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo))
+                    .Append("¥").Append(strSpaceString).AppendLine(strPerLevel);
+                sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpaceString).AppendLine(DisplayTotalAvail);
+            }
 
-			return sbdDescription.ToString();
-		}
+            return sbdDescription.ToString();
+        }
 
-	    public XmlNode GetNode()
-	    {
-	        return GetNode(GlobalOptions.Language);
-	    }
+        public XmlNode GetNode()
+        {
+            return GetNode(GlobalOptions.Language);
+        }
 
-	    public XmlNode GetNode(string strLanguage)
-	    {
-	        if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-	        {
-	            _objCachedMyXmlNode = SourceID == Guid.Empty
-	                ? XmlManager.Load("drugcomponents.xml", strLanguage)
-	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
-	                : XmlManager.Load("drugcomponents.xml", strLanguage)
-	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("drugcomponents.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
+                    : XmlManager.Load("drugcomponents.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
-	        }
-	        return _objCachedMyXmlNode;
-	    }
+            }
+            return _objCachedMyXmlNode;
+        }
         #endregion
     }
-	/// <summary>
-	/// Drug Effect
-	/// </summary>
-	public class DrugEffect : object
-	{
-	    public DrugEffect()
-		{
-			Attributes = new Dictionary<string, int>();
-			Limits = new Dictionary<string, int>();
-			Qualities = new List<XmlNode>();
-			Infos = new List<string>();
-		}
+    /// <summary>
+    /// Drug Effect
+    /// </summary>
+    public class DrugEffect : object
+    {
+        public DrugEffect()
+        {
+            Attributes = new Dictionary<string, int>();
+            Limits = new Dictionary<string, int>();
+            Qualities = new List<XmlNode>();
+            Infos = new List<string>();
+        }
 
-		public Dictionary<string, int> Attributes { get; }
+        public Dictionary<string, int> Attributes { get; }
 
-	    public Dictionary<string, int> Limits { get; }
+        public Dictionary<string, int> Limits { get; }
 
-	    public List<XmlNode> Qualities { get; }
+        public List<XmlNode> Qualities { get; }
 
-	    public List<string> Infos { get; }
+        public List<string> Infos { get; }
 
-	    public int Initiative { get; set; }
+        public int Initiative { get; set; }
 
-	    public int InitiativeDice { get; set; }
+        public int InitiativeDice { get; set; }
 
-	    public int CrashDamage { get; set; }
+        public int CrashDamage { get; set; }
 
-	    public int Speed { get; set; }
+        public int Speed { get; set; }
 
-	    public int Duration { get; set; }
+        public int Duration { get; set; }
 
         public int Level { get; set; }
-	}
+    }
 }

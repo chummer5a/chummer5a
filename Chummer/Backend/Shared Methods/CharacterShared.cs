@@ -61,10 +61,10 @@ namespace Chummer
             _objOptions = _objCharacter?.Options;
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
-			{
-				Id = Guid.NewGuid().ToString(),
-				Name = name
-			};
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = name
+            };
             pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
             pvt.Properties.Add("Name", objCharacter?.Name);
             pvt.Properties.Add("Path", objCharacter?.FileName);
@@ -6246,7 +6246,7 @@ namespace Chummer
 
         protected CharacterOptions CharacterObjectOptions => _objOptions;
 
-		protected virtual string FormMode => string.Empty;
+        protected virtual string FormMode => string.Empty;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {

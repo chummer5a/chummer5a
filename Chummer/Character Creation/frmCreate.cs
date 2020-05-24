@@ -480,7 +480,7 @@ namespace Chummer
                         {
                             treCustomDrugs.Add(objDrug);
                         }
-						*/
+                        */
 
                         // Populate the Magician Custom Spirits lists - Combat.
                         List<ListItem> lstSpirit = new List<ListItem>
@@ -7080,7 +7080,7 @@ namespace Chummer
             }
         }
 
-		private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
+        private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || treArmor.SelectedNode == null)
                 return;
@@ -7553,14 +7553,14 @@ namespace Chummer
 
         #region Additional Drug Tab Control Events
         private void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			RefreshSelectedDrug();
-			RefreshPasteStatus(sender, e);
-		}
-		#endregion
+        {
+            RefreshSelectedDrug();
+            RefreshPasteStatus(sender, e);
+        }
+        #endregion
 
-		#region Additional Vehicle Tab Control Events
-		private void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
+        #region Additional Vehicle Tab Control Events
+        private void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedVehicle();
             RefreshPasteStatus(sender, e);
@@ -11963,10 +11963,10 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-		/// <summary>
-		/// Add or remove the Adapsin Cyberware Grade categories.
-		/// </summary>
-		public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
+        /// <summary>
+        /// Add or remove the Adapsin Cyberware Grade categories.
+        /// </summary>
+        public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
             IList<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             List<ListItem> lstCyberwareGrades = new List<ListItem>();
@@ -12862,19 +12862,19 @@ namespace Chummer
             }
 
             /*
-			// Update Adept Powers.
-			if (objXmlKit["powers"] != null)
-			{
-				// Open the Powers XML file and locate the selected power.
-				XmlDocument objXmlPowerDocument = XmlManager.Load("powers.xml");
+            // Update Adept Powers.
+            if (objXmlKit["powers"] != null)
+            {
+                // Open the Powers XML file and locate the selected power.
+                XmlDocument objXmlPowerDocument = XmlManager.Load("powers.xml");
 
-				foreach (XmlNode objXmlPower in objXmlKit.SelectNodes("powers/power"))
-				{
-					//TODO: Fix
-				}
-				
-			}
-			*/
+                foreach (XmlNode objXmlPower in objXmlKit.SelectNodes("powers/power"))
+                {
+                    //TODO: Fix
+                }
+                
+            }
+            */
 
             // Update Complex Forms.
             XmlNode xmlComplexForms = objXmlKit["complexforms"];
@@ -14704,7 +14704,7 @@ namespace Chummer
                 CharacterObject.Drugs.Add(objCustomDrug);
             }
         }
-		private void OpenSourceFromLabel(object sender, EventArgs e)
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
             CommonFunctions.OpenPDFFromControl(sender, e);
         }

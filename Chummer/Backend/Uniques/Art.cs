@@ -91,7 +91,7 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
             }
-			*/
+            */
         }
 
         /// <summary>

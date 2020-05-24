@@ -339,7 +339,7 @@ namespace Chummer
             ContactKarmaMinimum,
             GenetechEssMultiplier,
             AllowSpriteFettering,
-			DisableDrugGrade,
+            DisableDrugGrade,
             DrugDuration,
             DrugDurationMultiplier,
             Surprise,

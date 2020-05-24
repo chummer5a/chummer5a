@@ -144,7 +144,7 @@ namespace Chummer.Backend.Uniques
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
             }
-			*/
+            */
             RebuildSpiritList();
             OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;

@@ -40,7 +40,7 @@ namespace Chummer.Backend.Equipment
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating
-	{
+    {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -75,9 +75,9 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strWeaponName = string.Empty;
-	    private int _intSingleShot = 1;
-	    private int _intShortBurst = 3;
-	    private int _intLongBurst = 6;
+        private int _intSingleShot = 1;
+        private int _intShortBurst = 3;
+        private int _intLongBurst = 6;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
         private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories = new TaggedObservableCollection<WeaponAccessory>();
@@ -97,7 +97,7 @@ namespace Chummer.Backend.Equipment
         private string _strAccuracy = string.Empty;
         private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
-	    private string _strDoubledCostWeaponSlots = string.Empty;
+        private string _strDoubledCostWeaponSlots = string.Empty;
         private bool _blnCyberware;
         private string _strParentID = string.Empty;
         private bool _blnAllowAccessory = true;
@@ -130,7 +130,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnWirelessOn;
         private int _intMatrixCMFilled;
         private int _intSortOrder;
-	    private bool _blnStolen;
+        private bool _blnStolen;
         private readonly Character _objCharacter;
         private string _strMount;
         private string _strExtraMount;
@@ -538,7 +538,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-	    public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -1907,15 +1907,15 @@ namespace Chummer.Backend.Equipment
 
 
 
-	    /// <summary>
-	    /// Identifier of the object within data files.
-	    /// </summary>
-	    public Guid SourceID => _guiSourceID;
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
 
-	    /// <summary>
-	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
-	    /// </summary>
-	    public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public XmlNode GetNode()
         {
@@ -1960,11 +1960,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    public bool Stolen
+        public bool Stolen
         {
-	        get => _blnStolen;
-	        set => _blnStolen = value;
-	    }
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
         #endregion
 
         #region Complex Properties
@@ -3676,7 +3676,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// What modification slots have their costs doubled.
         /// </summary>
-	    public string DoubledCostModificationSlots => _strDoubledCostWeaponSlots;
+        public string DoubledCostModificationSlots => _strDoubledCostWeaponSlots;
 
         public string Range
         {
@@ -3980,65 +3980,65 @@ namespace Chummer.Backend.Equipment
             return retDictionary;
         }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Single Shot.
-	    /// </summary>
-	    public int SingleShot
-	    {
-	        get
-	        {
-	            int intReturn = _intSingleShot;
+        /// <summary>
+        /// Number of rounds consumed by Single Shot.
+        /// </summary>
+        public int SingleShot
+        {
+            get
+            {
+                int intReturn = _intSingleShot;
 
-	            // Check to see if any of the Mods replace this value.
-	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-	            {
-	                if (objAccessory.Equipped && objAccessory.SingleShot > intReturn)
-	                    intReturn = objAccessory.SingleShot;
-	            }
+                // Check to see if any of the Mods replace this value.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped && objAccessory.SingleShot > intReturn)
+                        intReturn = objAccessory.SingleShot;
+                }
 
-	            return intReturn;
-	        }
-	    }
+                return intReturn;
+            }
+        }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Short Burst.
-	    /// </summary>
-	    public int ShortBurst
-	    {
-	        get
-	        {
-	            int intReturn = _intShortBurst;
+        /// <summary>
+        /// Number of rounds consumed by Short Burst.
+        /// </summary>
+        public int ShortBurst
+        {
+            get
+            {
+                int intReturn = _intShortBurst;
 
-	            // Check to see if any of the Mods replace this value.
-	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-	            {
-	                if (objAccessory.Equipped && objAccessory.ShortBurst > intReturn)
-	                    intReturn = objAccessory.ShortBurst;
-	            }
+                // Check to see if any of the Mods replace this value.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped && objAccessory.ShortBurst > intReturn)
+                        intReturn = objAccessory.ShortBurst;
+                }
 
-	            return intReturn;
-	        }
-	    }
+                return intReturn;
+            }
+        }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Long Burst.
-	    /// </summary>
-	    public int LongBurst
-	    {
-	        get
-	        {
-	            int intReturn = _intLongBurst;
+        /// <summary>
+        /// Number of rounds consumed by Long Burst.
+        /// </summary>
+        public int LongBurst
+        {
+            get
+            {
+                int intReturn = _intLongBurst;
 
-	            // Check to see if any of the Mods replace this value.
-	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-	            {
-	                if (objAccessory.Equipped && objAccessory.LongBurst > intReturn)
-	                    intReturn = objAccessory.LongBurst;
-	            }
+                // Check to see if any of the Mods replace this value.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped && objAccessory.LongBurst > intReturn)
+                        intReturn = objAccessory.LongBurst;
+                }
 
-	            return intReturn;
-	        }
-	    }
+                return intReturn;
+            }
+        }
 
         /// <summary>
         /// Number of rounds consumed by Full Burst.
@@ -5825,25 +5825,25 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    public decimal StolenTotalCost
-	    {
-	        get
-	        {
-	            decimal decReturn = 0;
-	            if (Stolen)
-	                decReturn += OwnCost;
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decReturn = 0;
+                if (Stolen)
+                    decReturn += OwnCost;
 
-	            // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-	            decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.StolenTotalCost);
+                // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
+                decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.StolenTotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
-	            decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
+                decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
 
                 return decReturn;
-	        }
-	    }
+            }
+        }
 
-	    public int GetBaseMatrixAttribute(string strAttributeName)
+        public int GetBaseMatrixAttribute(string strAttributeName)
         {
             IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
             if (objThis != null)
