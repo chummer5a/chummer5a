@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
     public class ResetAuthenticatorModel : PageModel
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel'
     {
-        UserManager<ApplicationUser> _userManager;
+        readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         ILogger<ResetAuthenticatorModel> _logger;
 

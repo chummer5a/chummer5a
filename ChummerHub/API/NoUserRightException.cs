@@ -10,7 +10,7 @@ namespace ChummerHub
     public class NoUserRightException : HubException
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NoUserRightException'
     {
-        private string userName;
+        private readonly string userName;
         private Guid? id;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NoUserRightException.UserName'
