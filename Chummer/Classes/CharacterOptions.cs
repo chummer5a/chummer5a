@@ -1014,7 +1014,7 @@ namespace Chummer
             {
                 strPath = "not(hide)";
             }
-            if (string.IsNullOrWhiteSpace(_strBookXPath))
+            if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
             {
                 RecalculateBookXPath();
             }
@@ -1022,13 +1022,21 @@ namespace Chummer
             {
                 strPath = _strBookXPath;
             }
-            else
+            else if (!string.IsNullOrEmpty(_strBookXPath))
             {
                 strPath += $" and {_strBookXPath}";
             }
+            else
+            {
+                // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
+                Utils.BreakIfDebug();
+            }
             if (!GlobalOptions.Dronemods)
             {
-                strPath += " and not(optionaldrone)";
+                if (string.IsNullOrEmpty(strPath))
+                    strPath = "not(optionaldrone)";
+                else
+                    strPath += " and not(optionaldrone)";
             }
             return strPath;
         }
