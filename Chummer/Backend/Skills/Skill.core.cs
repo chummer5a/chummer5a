@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
@@ -69,7 +68,7 @@ namespace Chummer.Backend.Skills
         public bool BaseUnlocked => CharacterObject.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!CharacterObject.Options.StrictSkillGroupsInCreateMode && CharacterObject.Options.UsePointsOnBrokenGroups));
 
         /// <summary>
-        /// Is it possible to place points in Karma or is it prevented a stricter interprentation of the rules
+        /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
         /// </summary>
         public bool KarmaUnlocked
         {
@@ -86,7 +85,7 @@ namespace Chummer.Backend.Skills
 
         /// <summary>
         /// The amount of points this skill have from skill points and bonuses
-        /// to the skill rating that would be optained in some points of character creation
+        /// to the skill rating that would be obtained in some points of character creation
         /// </summary>
         public int Base
         {
@@ -128,7 +127,7 @@ namespace Chummer.Backend.Skills
 
 
         /// <summary>
-        /// Amount of skill points bought with karma and bonues to the skills rating
+        /// Amount of skill points bought with karma and bonuses to the skills rating
         /// </summary>
         public int Karma
         {
@@ -138,7 +137,7 @@ namespace Chummer.Backend.Skills
                 {
                     _intKarma = 0;
                     Specializations.RemoveAll(x => !x.Free);
-                    return SkillGroupObject?.Karma ?? 0;
+                    return SkillGroupObject.Karma;
                 }
                 return Math.Min(KarmaPoints + FreeKarma + (SkillGroupObject?.Karma ?? 0), RatingMaximum);
             }
@@ -172,16 +171,10 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The rating the character has paid for, plus any improvement-based bonuses to skill rating.
         /// </summary>
-        public int TotalBaseRating
-        {
-            get
-            {
-                return LearnedRating + RatingModifiers(Attribute);
-            }
-        }
+        public int TotalBaseRating => LearnedRating + RatingModifiers(Attribute);
 
         /// <summary>
-        /// The rating the character have acctually paid for, not including skillwires
+        /// The rating the character have actually paid for, not including skillwires
         /// or other overrides for skill Rating. Read only, you probably want to
         /// increase Karma instead.
         /// </summary>
@@ -219,7 +212,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// The total, general pourpose dice pool for this skill, using another
+        /// The total, general purpose dice pool for this skill, using another
         /// value for the attribute part of the test. This allows calculation of dice pools
         /// while using cyberlimbs or while rigging
         /// </summary>
@@ -252,8 +245,7 @@ namespace Chummer.Backend.Skills
                 if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
                 {
                     if (CharacterObject.Cyberware.Where(x => x.SourceID == s_GuiReflexRecorderId)
-                        .Any(objReflexRecorderObject => objReflexRecorderObject != null &&
-                                                        SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
+                        .Any(objReflexRecorderObject => SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
                     {
                         return 0;
                     }
@@ -645,7 +637,12 @@ namespace Chummer.Backend.Skills
                 int intTotalBaseRating = TotalBaseRating;
                 //If data file contains {4} this crashes but...
                 string upgradetext =
-                    $"{LanguageManager.GetString(IsKnowledgeSkill ? "String_ExpenseKnowledgeSkill" : "String_ExpenseActiveSkill", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
+                    string.Format(GlobalOptions.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
+                        LanguageManager.GetString(IsKnowledgeSkill ? "String_ExpenseKnowledgeSkill" : "String_ExpenseActiveSkill"),
+                        CurrentDisplayName,
+                        intTotalBaseRating,
+                        intTotalBaseRating + 1,
+                        LanguageManager.GetString("String_Space"));
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
                 entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -735,7 +732,11 @@ namespace Chummer.Backend.Skills
 
                 //If data file contains {4} this crashes but...
                 string upgradetext = //TODO WRONG
-                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} ({strName})";
+                    string.Format(GlobalOptions.CultureInfo, "{0}{3}{1}{3}({2})",
+                        LanguageManager.GetString("String_ExpenseLearnSpecialization"),
+                        CurrentDisplayName,
+                        strName,
+                        LanguageManager.GetString("String_Space"));
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
                 entry.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -829,18 +830,17 @@ namespace Chummer.Backend.Skills
         /// Dicepool of the skill, formatted for use in tooltips by other objects.
         /// </summary>
         /// <param name="pool">Dicepool to use. In most </param>
-        /// <param name="space">Space character to use. </param>
-        /// <param name="validSpec">A specialisation to check for. If not empty, will be checked for and added to the string.</param>
+        /// <param name="validSpec">A specialization to check for. If not empty, will be checked for and added to the string.</param>
         /// <returns></returns>
-        public string FormattedDicePool(int pool, string space, string validSpec = "")
+        public string FormattedDicePool(int pool, string validSpec = "")
         {
-            string strReturn = $"{DisplayNameMethod(GlobalOptions.Language)}{space}({pool.ToString(GlobalOptions.CultureInfo)})";
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strReturn = string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", CurrentDisplayName, strSpace, pool);
             // Add any Specialization bonus if applicable.
             if (HasSpecialization(validSpec) && !string.IsNullOrWhiteSpace(validSpec))
                 strReturn +=
-                    $"{space}{'+'}{space}{LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language)}" +
-                    $"{LanguageManager.GetString("String_Colon", GlobalOptions.Language)}{space}" +
-                    $"{DisplayCategory(GlobalOptions.Language)}{space}{'('}{2.ToString(GlobalOptions.CultureInfo)}{')'}";
+                    string.Format(GlobalOptions.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+', LanguageManager.GetString("String_ExpenseSpecialization"),
+                        LanguageManager.GetString("String_Colon"), DisplayCategory(GlobalOptions.Language), CharacterObject.Options.SpecializationBonus);
             return strReturn;
         }
     }

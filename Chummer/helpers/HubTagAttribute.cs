@@ -18,9 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -28,7 +25,7 @@ namespace Chummer
     /// How should instances of this Class be tagged?
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class HubClassTagAttribute : System.Attribute
+    public class HubClassTagAttribute : Attribute
     {
         //private string _ListName;
 
@@ -60,7 +57,7 @@ namespace Chummer
     }
 
     [AttributeUsage(AttributeTargets.Property)]
-    public class HubTagAttribute : System.Attribute
+    public class HubTagAttribute : Attribute
     {
         public HubTagAttribute()
         {

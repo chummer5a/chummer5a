@@ -18,16 +18,10 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Xml;
 using System.Xml.XPath;
 using NLog;
 
@@ -35,7 +29,7 @@ namespace Chummer
 {
     public partial class Chummy : Form
     {
-        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
@@ -56,28 +50,32 @@ namespace Chummer
         {
             InitializeComponent();
 
-            this.Paint += panel1_Paint;
+            Paint += panel1_Paint;
 
-            var tmrDraw = new Timer {Interval = 100};
-            tmrDraw.Tick += tmr_DrawTick;
-            tmrDraw.Start();
+            using (var tmrDraw = new Timer {Interval = 100})
+            {
+                tmrDraw.Tick += tmr_DrawTick;
+                tmrDraw.Start();
+            }
 
-            var tmrTip = new Timer { Interval = 300000 };
-            tmrTip.Tick += tmr_TipTick;
-            tmrTip.Start();
+            using (var tmrTip = new Timer {Interval = 300000})
+            {
+                tmrTip.Tick += tmr_TipTick;
+                tmrTip.Start();
+            }
 
-            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro", GlobalOptions.Language).WordWrap(100), this, _mouthCenter);
+            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(100), this, _mouthCenter);
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)
         {
             // See if the cursor has moved.
-            Point newPos = Control.MousePosition;
+            Point newPos = MousePosition;
             if (newPos.Equals(_oldMousePos)) return;
             _oldMousePos = newPos;
 
             // Redraw.
-            this.Invalidate();
+            Invalidate();
         }
 
         private void tmr_TipTick(object sender, EventArgs e)
@@ -99,7 +97,7 @@ namespace Chummer
                     // present on left mouse button
                     HideBalloonTip();
                     ReleaseCapture();
-                    SendMessage(this.Handle, 0xa1, 0x2, 0);
+                    SendMessage(Handle, 0xa1, 0x2, 0);
                     break;
                 case MouseButtons.Left:
                     ShowBalloonTip();
@@ -125,7 +123,7 @@ namespace Chummer
         private void DrawEyes(Graphics gr)
         {
             // Convert the cursor position into form units.
-            Point localPos = this.PointToClient(_oldMousePos);
+            Point localPos = PointToClient(_oldMousePos);
 
             // Find the positions of the eyes.
             int x1 = _eyeballCenter.X - DistanceBetweenEyes;
@@ -175,7 +173,7 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                string msg = string.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
+                string msg = string.Format(GlobalOptions.InvariantCultureInfo, "Got an " + e.GetType() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
                     y, width, height);
                 Log.Warn(e, msg);
             }

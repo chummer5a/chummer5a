@@ -153,68 +153,68 @@ namespace Codaxy.WkHtmlToPdf
             if (!File.Exists(environment.WkHtmlToPdfPath))
                 throw new PdfConvertException($"File '{environment.WkHtmlToPdfPath}' not found. Check if wkhtmltopdf application is installed.");
 
-            StringBuilder strbldParamsBuilder = new StringBuilder("--page-size A4 ");
+            StringBuilder sbdParamsBuilder = new StringBuilder("--page-size A4 ");
 
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
-                strbldParamsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
-                strbldParamsBuilder.Append("--margin-top 25 ");
-                strbldParamsBuilder.Append("--header-spacing 5 ");
+                sbdParamsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
+                sbdParamsBuilder.Append("--margin-top 25 ");
+                sbdParamsBuilder.Append("--header-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.FooterUrl))
             {
-                strbldParamsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
-                strbldParamsBuilder.Append("--margin-bottom 25 ");
-                strbldParamsBuilder.Append("--footer-spacing 5 ");
+                sbdParamsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
+                sbdParamsBuilder.Append("--margin-bottom 25 ");
+                sbdParamsBuilder.Append("--footer-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.HeaderLeft))
-                strbldParamsBuilder.AppendFormat("--header-left \"{0}\" ", document.HeaderLeft);
+                sbdParamsBuilder.AppendFormat("--header-left \"{0}\" ", document.HeaderLeft);
 
             if (!string.IsNullOrEmpty(document.HeaderCenter))
-                strbldParamsBuilder.AppendFormat("--header-center \"{0}\" ", document.HeaderCenter);
+                sbdParamsBuilder.AppendFormat("--header-center \"{0}\" ", document.HeaderCenter);
 
             if (!string.IsNullOrEmpty(document.HeaderRight))
-                strbldParamsBuilder.AppendFormat("--header-right \"{0}\" ", document.HeaderRight);
+                sbdParamsBuilder.AppendFormat("--header-right \"{0}\" ", document.HeaderRight);
 
             if (!string.IsNullOrEmpty(document.FooterLeft))
-                strbldParamsBuilder.AppendFormat("--footer-left \"{0}\" ", document.FooterLeft);
+                sbdParamsBuilder.AppendFormat("--footer-left \"{0}\" ", document.FooterLeft);
 
             if (!string.IsNullOrEmpty(document.FooterCenter))
-                strbldParamsBuilder.AppendFormat("--footer-center \"{0}\" ", document.FooterCenter);
+                sbdParamsBuilder.AppendFormat("--footer-center \"{0}\" ", document.FooterCenter);
 
             if (!string.IsNullOrEmpty(document.FooterRight))
-                strbldParamsBuilder.AppendFormat("--footer-right \"{0}\" ", document.FooterRight);
+                sbdParamsBuilder.AppendFormat("--footer-right \"{0}\" ", document.FooterRight);
 
             if (!string.IsNullOrEmpty(document.HeaderFontSize))
-                strbldParamsBuilder.AppendFormat("--header-font-size \"{0}\" ", document.HeaderFontSize);
+                sbdParamsBuilder.AppendFormat("--header-font-size \"{0}\" ", document.HeaderFontSize);
 
             if (!string.IsNullOrEmpty(document.FooterFontSize))
-                strbldParamsBuilder.AppendFormat("--footer-font-size \"{0}\" ", document.FooterFontSize);
+                sbdParamsBuilder.AppendFormat("--footer-font-size \"{0}\" ", document.FooterFontSize);
 
             if (!string.IsNullOrEmpty(document.HeaderFontName))
-                strbldParamsBuilder.AppendFormat("--header-font-name \"{0}\" ", document.HeaderFontName);
+                sbdParamsBuilder.AppendFormat("--header-font-name \"{0}\" ", document.HeaderFontName);
 
             if (!string.IsNullOrEmpty(document.FooterFontName))
-                strbldParamsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
+                sbdParamsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
 
             foreach (var extraParam in document.ExtraParams)
-                strbldParamsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
+                sbdParamsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
 
             foreach (var cookie in document.Cookies)
-                strbldParamsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
+                sbdParamsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
 
-            strbldParamsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, strOutputPdfFilePath);
+            sbdParamsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, strOutputPdfFilePath);
 
             try
             {
-                StringBuilder strbldOutput = new StringBuilder();
-                StringBuilder strbldError = new StringBuilder();
+                StringBuilder sbdOutput = new StringBuilder();
+                StringBuilder sbdError = new StringBuilder();
 
                 using (Process process = new Process())
                 {
                     process.StartInfo.FileName = environment.WkHtmlToPdfPath;
-                    process.StartInfo.Arguments = strbldParamsBuilder.ToString();
+                    process.StartInfo.Arguments = sbdParamsBuilder.ToString();
                     process.StartInfo.UseShellExecute = false;
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError = true;
@@ -232,7 +232,7 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                strbldOutput.AppendLine(e.Data);
+                                sbdOutput.AppendLine(e.Data);
                             }
                         }
 
@@ -244,7 +244,7 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                strbldError.AppendLine(e.Data);
+                                sbdError.AppendLine(e.Data);
                             }
                         }
 
@@ -272,7 +272,7 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 if (process.ExitCode != 0 && !File.Exists(strOutputPdfFilePath))
                                 {
-                                    throw new PdfConvertException($"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output:{System.Environment.NewLine}{strbldError}");
+                                    throw new PdfConvertException($"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output:{System.Environment.NewLine}{sbdError}");
                                 }
                             }
                             else

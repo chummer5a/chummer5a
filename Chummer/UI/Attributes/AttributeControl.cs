@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -40,6 +39,8 @@ namespace Chummer.UI.Attributes
 
         public AttributeControl(CharacterAttrib attribute)
         {
+            if (attribute == null)
+                return;
             _objAttribute = attribute;
             _objCharacter = attribute.CharacterObject;
 
@@ -61,7 +62,7 @@ namespace Chummer.UI.Attributes
                 cmdImproveATT.Visible = true;
                 cmdImproveATT.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 cmdBurnEdge.Visible = AttributeName == "EDG";
-                cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge", GlobalOptions.Language);
+                cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge");
             }
             else
             {
@@ -114,11 +115,11 @@ namespace Chummer.UI.Attributes
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
             if (!attrib.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
@@ -162,7 +163,7 @@ namespace Chummer.UI.Attributes
                     decimal.ToInt32(nudBase.Value) + attrib.FreeBase + attrib.RawMinimum +
                     attrib.AttributeValueModifiers, attrib.TotalMinimum) + decimal.ToInt32(d)))
             {
-                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to. 
+                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
                 if (_oldKarma > attrib.KarmaMaximum)
                 {
                     _oldKarma = attrib.KarmaMaximum - 1;
@@ -201,14 +202,14 @@ namespace Chummer.UI.Attributes
             int intTotalMaximum = attrib.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0) return true;
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
-            //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value. 
+            //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value.
             int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
             int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
                 att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 
             if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax) return true;
-            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
-                LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
+            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_AttributeMaximum"),
+                LanguageManager.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return false;
         }
@@ -220,12 +221,12 @@ namespace Chummer.UI.Attributes
             // Edge cannot go below 1.
             if (_objAttribute.Value == 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotBurnEdge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge"), LanguageManager.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             // Verify that the user wants to Burn a point of Edge.
-            if (MessageBox.Show(LanguageManager.GetString("Message_BurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BurnEdge", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
 			_objAttribute.Degrade(1);

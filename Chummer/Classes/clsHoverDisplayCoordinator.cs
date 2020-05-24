@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -68,12 +68,16 @@ namespace Chummer
         /// <param name="control">The control to add</param>
         public void AddControl(Control control)
         {
+            if (control == null)
+                throw new ArgumentNullException(nameof(control));
             _controls.Add(control);
             control.MouseLeave += control_MouseLeave;
         }
 
         public void AddControlRecursive(Control control)
         {
+            if (control == null)
+                throw new ArgumentNullException(nameof(control));
             _controls.Add(control);
             control.MouseLeave += control_MouseLeave;
             if (control.HasChildren)

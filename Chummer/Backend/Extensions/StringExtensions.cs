@@ -24,7 +24,7 @@ namespace Chummer
 {
     public static class StringExtensions
     {
-        public static string EmptyGuid { get; } = Guid.Empty.ToString("D");
+        public static string EmptyGuid { get; } = Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public static bool IsEmptyGuid(this string strInput)
         {
@@ -41,6 +41,10 @@ namespace Chummer
         /// <returns>New string with all instances of <paramref name="strOldValue"/> replaced with <paramref name="strNewValue"/>, but where the equality check was custom-defined by <paramref name="eStringComparison"/></returns>
         public static string Replace(this string strInput, string strOldValue, string strNewValue, StringComparison eStringComparison)
         {
+            if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strOldValue))
+                return strInput;
+            if (strNewValue == null)
+                throw new ArgumentNullException(nameof(strNewValue));
             // Built-in Replace method uses Ordinal comparison, so just defer to that if that is what we have defined
             if (eStringComparison == StringComparison.Ordinal)
                 return strInput.Replace(strOldValue, strNewValue);
@@ -213,13 +217,11 @@ namespace Chummer
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete, int intStartIndex = -1, StringComparison eComparison = StringComparison.Ordinal)
         {
-            if (strSubstringToDelete == null)
+            if (string.IsNullOrEmpty(strInput) || strSubstringToDelete == null)
                 return strInput;
             int intToDeleteLength = strSubstringToDelete.Length;
             if (intToDeleteLength == 0)
                 return strInput;
-            if (strInput == null)
-                return string.Empty;
             if (intStartIndex < 0)
                 intStartIndex += strInput.Length;
             if (intStartIndex < intToDeleteLength - 1)
@@ -238,6 +240,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, params char[] anyOf)
         {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
             return strHaystack.IndexOfAny(anyOf);
         }
 
@@ -251,6 +255,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
             return strInput.Split(new []{chrSeparator}, eSplitOptions);
         }
 
@@ -263,11 +269,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, char chrNeedle)
         {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
             return strHaystack.IndexOf(chrNeedle) != -1;
         }
 
         /// <summary>
-        /// Normalises whitespace for a given textblock, removing extra spaces and trimming the string in the process.
+        /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string in the process.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
         /// <param name="chrWhiteSpace">Whitespace character to use when replacing chars.</param>
@@ -416,10 +424,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
             {
                 // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                if (blnOmitCheck || strInput.StartsWith(strToTrim))
+                if (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal))
                 {
                     int intTrimLength = strToTrim.Length;
                     return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
@@ -438,10 +446,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
             {
                 // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                if (blnOmitCheck || strInput.EndsWith(strToTrim))
+                if (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal))
                 {
                     return strInput.Substring(0, strInput.Length - strToTrim.Length);
                 }
@@ -458,8 +466,6 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params string[] astrToTrim)
         {
-            if (strInput == null)
-                return string.Empty;
             if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
                 // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
@@ -470,7 +476,7 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -491,8 +497,6 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, params string[] astrToTrim)
         {
-            if (strInput == null)
-                return string.Empty;
             if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
                 // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
@@ -503,7 +507,7 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -558,7 +562,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
         {
-            if (strInput.StartsWith(achrToTrim))
+            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
                 return strInput.Substring(1, strInput.Length - 1);
             return strInput;
         }
@@ -572,7 +576,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, params char[] achrToTrim)
         {
-            if (strInput.EndsWith(achrToTrim))
+            if (!string.IsNullOrEmpty(strInput) && strInput.EndsWith(achrToTrim))
                 return strInput.Substring(0, strInput.Length - 1);
             return strInput;
         }
@@ -613,9 +617,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StartsWith(this string strInput, params char[] achrToCheck)
         {
-            if (strInput == null || achrToCheck == null)
-                return false;
-            if (strInput.Length == 0)
+            if (string.IsNullOrEmpty(strInput) || achrToCheck == null)
                 return false;
             char chrCharToCheck = strInput[0];
             int intParamsLength = achrToCheck.Length;
@@ -665,7 +667,7 @@ namespace Chummer
                 int intLength = astrToCheck.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    if (strInput.StartsWith(astrToCheck[i]))
+                    if (strInput.StartsWith(astrToCheck[i], StringComparison.Ordinal))
                     {
                         return true;
                     }
@@ -688,7 +690,7 @@ namespace Chummer
                 int intLength = astrToCheck.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    if (strInput.EndsWith(astrToCheck[i]))
+                    if (strInput.EndsWith(astrToCheck[i], StringComparison.Ordinal))
                     {
                         return true;
                     }
@@ -709,13 +711,16 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            if (eStringComparison == StringComparison.Ordinal)
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
-                if (strInput?.Contains(strOldValue) == true)
-                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                        return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison);
             }
-            else if (!string.IsNullOrEmpty(strInput) && strInput.IndexOf(strOldValue, eStringComparison) != -1)
-                return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison);
 
             return strInput;
         }
@@ -732,7 +737,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CheapReplace(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            sbdInput.CheapReplace(sbdInput.ToString(), strOldValue, funcNewValueFactory, eStringComparison);
+            sbdInput.CheapReplace(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
         }
 
         /// <summary>
@@ -748,16 +753,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CheapReplace(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            if (eStringComparison == StringComparison.Ordinal)
+            if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
             {
-                if (strOriginal?.Contains(strOldValue) == true)
-                    sbdInput.Replace(strOldValue, funcNewValueFactory.Invoke());
-            }
-            else if (!string.IsNullOrEmpty(strOriginal) && strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
-            {
-                string strOldStringBuilderValue = sbdInput.ToString();
-                sbdInput.Clear();
-                sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strOriginal.Contains(strOldValue))
+                        sbdInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                }
+                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    string strOldStringBuilderValue = sbdInput.ToString();
+                    sbdInput.Clear();
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
+                }
             }
         }
 
@@ -885,15 +893,17 @@ namespace Chummer
         /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
         public static string CleanForHTML(this string strToClean)
         {
+            if (string.IsNullOrEmpty(strToClean))
+                return string.Empty;
             return strToClean
-                .CheapReplace("&", () => "&amp;")
-                .CheapReplace("&amp;amp;", () => "&amp;")
-                .CheapReplace("<", () => "&lt;")
-                .CheapReplace(">", () => "&gt;")
-                .CheapReplace("\n\r", () => "<br />")
-                .CheapReplace("\r\n", () => "<br />")
-                .CheapReplace("\n", () => "<br />")
-                .CheapReplace("\r", () => "<br />");
+                .Replace("&", "&amp;")
+                .Replace("&amp;amp;", "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\n\r", "<br />")
+                .Replace("\r\n", "<br />")
+                .Replace("\n", "<br />")
+                .Replace("\r", "<br />");
         }
     }
 }

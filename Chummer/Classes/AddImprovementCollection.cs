@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -34,7 +35,7 @@ namespace Chummer.Classes
 {
     public class AddImprovementCollection
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
 
         public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, string strFriendlyName, int intRating)
@@ -78,7 +79,6 @@ namespace Chummer.Classes
                 SelectedValue = selectedValue;
             else
                 SelectedValue += ", " + selectedValue;
-            string sourceName = SourceName;
             Log.Info("_strSelectedValue = " + selectedValue);
             Log.Info("SourceName = " + SourceName);
 
@@ -90,6 +90,8 @@ namespace Chummer.Classes
 #pragma warning disable IDE1006 // Naming Styles
         public void qualitylevel(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             /*
             //List of qualities to work with
             Guid[] all =
@@ -116,11 +118,15 @@ namespace Chummer.Classes
         // Dummy Method for SelectText
         public void selecttext(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selecttext: " + SelectedValue);
         }
 
         public void surprise(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("surprise");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Surprise, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -128,6 +134,8 @@ namespace Chummer.Classes
 
         public void spellresistance(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -135,6 +143,8 @@ namespace Chummer.Classes
 
         public void mentalmanipulationresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("mentalmanipulationresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentalManipulationResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -142,6 +152,8 @@ namespace Chummer.Classes
 
         public void physicalmanipulationresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("physicalmanipulationresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalManipulationResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -149,6 +161,8 @@ namespace Chummer.Classes
 
         public void manaillusionresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("manaillusionresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ManaIllusionResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -156,6 +170,8 @@ namespace Chummer.Classes
 
         public void physicalillusionresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("physicalillusionresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalIllusionResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -163,6 +179,8 @@ namespace Chummer.Classes
 
         public void detectionspellresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("detectionspellresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DetectionSpellResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -170,6 +188,8 @@ namespace Chummer.Classes
 
         public void directmanaspellresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("directmanaspellresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectManaSpellResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -177,6 +197,8 @@ namespace Chummer.Classes
 
         public void directphysicalspellresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("directphysicalspellresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectPhysicalSpellResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -184,6 +206,8 @@ namespace Chummer.Classes
 
         public void decreasebodresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreasebodresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseBODResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -191,6 +215,8 @@ namespace Chummer.Classes
 
         public void decreaseagiresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreaseagiresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseAGIResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -198,6 +224,8 @@ namespace Chummer.Classes
 
         public void decreaserearesist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreaserearesist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseREAResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -205,6 +233,8 @@ namespace Chummer.Classes
 
         public void decreasestrresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreasestrresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseSTRResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -212,6 +242,8 @@ namespace Chummer.Classes
 
         public void decreasecharesist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreasecharesist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseCHAResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -219,6 +251,8 @@ namespace Chummer.Classes
 
         public void decreaseintresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreaseintresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseINTResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -226,6 +260,8 @@ namespace Chummer.Classes
 
         public void decreaselogresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreaselogresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseLOGResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -233,6 +269,8 @@ namespace Chummer.Classes
 
         public void decreasewilresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("decreasewilresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseWILResist, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -240,6 +278,8 @@ namespace Chummer.Classes
 
         public void enableattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("enableattribute");
             switch (bonusNode["name"]?.InnerText)
             {
@@ -267,8 +307,12 @@ namespace Chummer.Classes
         // Add an Attribute Replacement.
         public void replaceattributes(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             using (XmlNodeList objXmlAttributes = bonusNode.SelectNodes("replaceattribute"))
+            {
                 if (objXmlAttributes != null)
+                {
                     foreach (XmlNode objXmlAttribute in objXmlAttributes)
                     {
                         Log.Info("replaceattribute");
@@ -300,14 +344,20 @@ namespace Chummer.Classes
                                 _strUnique, 0, 1, intMin, intMax, intAug, intAugMax);
                         }
                     }
+                }
+            }
         }
 
         // Enable a special tab.
         public void enabletab(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("enabletab");
             using (XmlNodeList xmlEnableList = bonusNode.SelectNodes("name"))
+            {
                 if (xmlEnableList?.Count > 0)
+                {
                     foreach (XmlNode xmlEnable in xmlEnableList)
                     {
                         switch (xmlEnable.InnerText)
@@ -345,14 +395,20 @@ namespace Chummer.Classes
                                 break;
                         }
                     }
+                }
+            }
         }
 
         // Disable a  tab.
         public void disabletab(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("disabletab");
             using (XmlNodeList xmlDisableList = bonusNode.SelectNodes("name"))
+            {
                 if (xmlDisableList?.Count > 0)
+                {
                     foreach (XmlNode xmlDisable in xmlDisableList)
                     {
                         switch (xmlDisable.InnerText)
@@ -371,11 +427,15 @@ namespace Chummer.Classes
                                 break;
                         }
                     }
+                }
+            }
         }
 
         // Select Restricted (select Restricted items for Fake Licenses).
         public void selectrestricted(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectrestricted");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
@@ -383,23 +443,23 @@ namespace Chummer.Classes
             }
             else
             {
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
-                    Character = _objCharacter
-                };
-                if (!string.IsNullOrEmpty(ForcedValue))
-                    frmPickItem.ForceItem = ForcedValue;
+                    frmPickItem.SetRestrictedMode(_objCharacter);
+                    if (!string.IsNullOrEmpty(ForcedValue))
+                        frmPickItem.ForceItem(ForcedValue);
 
-                frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                frmPickItem.ShowDialog();
+                    frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
+                    frmPickItem.ShowDialog();
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
                 }
-
-                SelectedValue = frmPickItem.SelectedName;
             }
 
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -413,6 +473,8 @@ namespace Chummer.Classes
 
         public void selecttradition(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selecttradition");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
@@ -441,21 +503,23 @@ namespace Chummer.Classes
                     lstTraditions.Sort(CompareListItems.CompareNames);
                 }
 
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    DropdownItems = lstTraditions,
                     SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                     AllowAutoSelect = false
-                };
-                frmPickItem.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                })
                 {
-                    throw new AbortedException();
-                }
+                    frmPickItem.SetDropdownItemsMode(lstTraditions);
+                    frmPickItem.ShowDialog();
 
-                SelectedValue = frmPickItem.SelectedName;
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
+                }
             }
 
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -469,6 +533,8 @@ namespace Chummer.Classes
 
         public void cyberseeker(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             //Check if valid attrib
             string strBonusNodeText = bonusNode.InnerText;
             if (strBonusNodeText == "BOX" || AttributeSection.AttributeStrings.Any(x => x == strBonusNodeText))
@@ -483,39 +549,42 @@ namespace Chummer.Classes
 
         public void blockskillgroupdefaulting(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blockskillgroupdefaulting");
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
-            frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
+            using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language)
-            };
-
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
-            if (!string.IsNullOrEmpty(ForcedValue))
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
+            })
             {
-                frmPickSkillGroup.OnlyGroup = ForcedValue;
-                frmPickSkillGroup.Opacity = 0;
+                Log.Info("_strForcedValue = " + ForcedValue);
+                Log.Info("_strLimitSelection = " + LimitSelection);
+
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    frmPickSkillGroup.OnlyGroup = ForcedValue;
+                    frmPickSkillGroup.Opacity = 0;
+                }
+
+                if (!string.IsNullOrEmpty(strExclude))
+                    frmPickSkillGroup.ExcludeCategory = strExclude;
+
+                frmPickSkillGroup.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
             }
-
-            if (!string.IsNullOrEmpty(strExclude))
-                frmPickSkillGroup.ExcludeCategory = strExclude;
-
-            frmPickSkillGroup.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
-            }
-
-            SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -526,10 +595,12 @@ namespace Chummer.Classes
 
         public void allowskilldefaulting(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("allowskilldefaulting");
             Log.Info("allowskilldefaulting = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            // Expected values are either a Skill Name or an empty string. 
+            // Expected values are either a Skill Name or an empty string.
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AllowSkillDefault, _strUnique);
         }
@@ -537,6 +608,8 @@ namespace Chummer.Classes
         // Select a Skill.
         public void selectskill(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             //TODO this don't work
             Log.Info("selectskill");
             if (ForcedValue == "+2 to a Combat Skill")
@@ -714,6 +787,8 @@ namespace Chummer.Classes
         // Select a Skill Group.
         public void selectskillgroup(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectskillgroup");
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
@@ -722,8 +797,8 @@ namespace Chummer.Classes
             frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             };
 
             Log.Info("_strForcedValue = " + ForcedValue);
@@ -772,9 +847,13 @@ namespace Chummer.Classes
 
         public void selectattributes(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             List<string> selectedValues = new List<string>();
             using (XmlNodeList xmlSelectAttributeList = bonusNode.SelectNodes("selectattribute"))
+            {
                 if (xmlSelectAttributeList != null)
+                {
                     foreach (XmlNode objXmlAttribute in xmlSelectAttributeList)
                     {
                         Log.Info("selectattribute");
@@ -826,55 +905,60 @@ namespace Chummer.Classes
                         }
 
                         // Display the Select Attribute window and record which Skill was selected.
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                                : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
-                        };
-
-                        frmPickAttribute.ShowDialog();
-
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                                : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                        })
                         {
-                            throw new AbortedException();
+                            frmPickAttribute.ShowDialog();
+
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                            {
+                                throw new AbortedException();
+                            }
+
+                            selectedValues.Add(frmPickAttribute.SelectedAttribute);
+
+                            Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
+                            Log.Info("SourceName = " + SourceName);
+
+                            // Record the improvement.
+                            int intMin = 0;
+                            int intAug = 0;
+                            int intMax = 0;
+                            int intAugMax = 0;
+
+                            // Extract the modifiers.
+                            string strTemp = objXmlAttribute["min"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
+                                int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMin);
+                            strTemp = objXmlAttribute["val"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
+                                int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAug);
+                            strTemp = objXmlAttribute["max"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
+                                int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMax);
+                            strTemp = objXmlAttribute["aug"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
+                                int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAugMax);
+
+                            string strAttribute = frmPickAttribute.SelectedAttribute;
+
+                            if (objXmlAttribute["affectbase"] != null)
+                                strAttribute += "Base";
+
+                            Log.Info("Calling CreateImprovement");
+                            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
+                                _strUnique,
+                                0, 1, intMin, intMax, intAug, intAugMax);
                         }
-                        selectedValues.Add(frmPickAttribute.SelectedAttribute);
-
-                        Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
-                        Log.Info("SourceName = " + SourceName);
-
-                        // Record the improvement.
-                        int intMin = 0;
-                        int intAug = 0;
-                        int intMax = 0;
-                        int intAugMax = 0;
-
-                        // Extract the modifiers.
-                        string strTemp = objXmlAttribute["min"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            int.TryParse(strTemp, out intMin);
-                        strTemp = objXmlAttribute["val"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            int.TryParse(strTemp, out intAug);
-                        strTemp = objXmlAttribute["max"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            int.TryParse(strTemp, out intMax);
-                        strTemp = objXmlAttribute["aug"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            int.TryParse(strTemp, out intAugMax);
-
-                        string strAttribute = frmPickAttribute.SelectedAttribute;
-
-                        if (objXmlAttribute["affectbase"] != null)
-                            strAttribute += "Base";
-
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                            _strUnique,
-                            0, 1, intMin, intMax, intAug, intAugMax);
                     }
+                }
+            }
+
             StringBuilder sBld = new StringBuilder();
             foreach (string s in AttributeSection.AttributeStrings)
             {
@@ -895,6 +979,8 @@ namespace Chummer.Classes
         // Select an CharacterAttribute.
         public void selectattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectattribute");
 
             List<string> lstAbbrevs = new List<string>();
@@ -942,62 +1028,65 @@ namespace Chummer.Classes
             }
 
             // Display the Select Attribute window and record which Skill was selected.
-            frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+            using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
-            };
-
-            Log.Info("selectattribute = " + bonusNode.OuterXml);
-
-            frmPickAttribute.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectAttribute")
+            })
             {
-                throw new AbortedException();
+                Log.Info("selectattribute = " + bonusNode.OuterXml);
+
+                frmPickAttribute.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickAttribute.SelectedAttribute;
+
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SourceName = " + SourceName);
+
+                // Record the improvement.
+                int intMin = 0;
+                int intAug = 0;
+                int intMax = 0;
+                int intAugMax = 0;
+
+                // Extract the modifiers.
+                string strTemp = bonusNode["min"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                strTemp = bonusNode["val"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intAug = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                strTemp = bonusNode["max"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                strTemp = bonusNode["aug"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+
+                string strAttribute = frmPickAttribute.SelectedAttribute;
+
+                if (bonusNode["affectbase"] != null)
+                    strAttribute += "Base";
+
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
+                    _strUnique,
+                    0, 1, intMin, intMax, intAug, intAugMax);
             }
-
-            SelectedValue = frmPickAttribute.SelectedAttribute;
-
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
-
-            // Record the improvement.
-            int intMin = 0;
-            int intAug = 0;
-            int intMax = 0;
-            int intAugMax = 0;
-
-            // Extract the modifiers.
-            string strTemp = bonusNode["min"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            strTemp = bonusNode["val"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intAug = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            strTemp = bonusNode["max"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            strTemp = bonusNode["aug"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-
-            string strAttribute = frmPickAttribute.SelectedAttribute;
-
-            if (bonusNode["affectbase"] != null)
-                strAttribute += "Base";
-
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                _strUnique,
-                0, 1, intMin, intMax, intAug, intAugMax);
         }
 
         // Select a Limit.
         public void selectlimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectlimit");
 
             Log.Info("selectlimit = " + bonusNode.OuterXml);
@@ -1038,85 +1127,88 @@ namespace Chummer.Classes
             }
 
             // Display the Select Limit window and record which Limit was selected.
-            frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray())
+            using (frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language)
-            };
-
-            frmPickLimit.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickLimit.DialogResult == DialogResult.Cancel)
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectLimitNamed"), _strFriendlyName)
+                    : LanguageManager.GetString("String_Improvement_SelectLimit")
+            })
             {
-                throw new AbortedException();
-            }
+                frmPickLimit.ShowDialog();
 
-            // Record the improvement.
-            int intMin = 0;
-            int intAug = 0;
-            int intMax = 0;
-            int intAugMax = 0;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickLimit.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
 
-            // Extract the modifiers.
-            string strTemp = bonusNode["min"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            strTemp = bonusNode["val"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intAug = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            strTemp = bonusNode["max"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            strTemp = bonusNode["aug"]?.InnerXml;
-            if (!string.IsNullOrEmpty(strTemp))
-                intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                // Record the improvement.
+                int intMin = 0;
+                int intAug = 0;
+                int intMax = 0;
+                int intAugMax = 0;
 
-            string strLimit = frmPickLimit.SelectedLimit;
+                // Extract the modifiers.
+                string strTemp = bonusNode["min"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                strTemp = bonusNode["val"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intAug = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                strTemp = bonusNode["max"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                strTemp = bonusNode["aug"]?.InnerXml;
+                if (!string.IsNullOrEmpty(strTemp))
+                    intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
 
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
+                string strLimit = frmPickLimit.SelectedLimit;
 
-            // string strBonus = bonusNode["value"].InnerText;
-            int intBonus = intAug;
-            Improvement.ImprovementType eType;
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SourceName = " + SourceName);
 
-            switch (strLimit)
-            {
-                case "Mental":
+                // string strBonus = bonusNode["value"].InnerText;
+                int intBonus = intAug;
+                Improvement.ImprovementType eType;
+
+                switch (strLimit)
+                {
+                    case "Mental":
                     {
                         eType = Improvement.ImprovementType.MentalLimit;
                         break;
                     }
-                case "Social":
+                    case "Social":
                     {
                         eType = Improvement.ImprovementType.SocialLimit;
                         break;
                     }
-                case "Physical":
+                    case "Physical":
                     {
                         eType = Improvement.ImprovementType.SocialLimit;
                         break;
                     }
-                default:
-                    throw new AbortedException();
+                    default:
+                        throw new AbortedException();
+                }
+
+                SelectedValue = frmPickLimit.SelectedDisplayLimit;
+
+                if (bonusNode["affectbase"] != null)
+                    strLimit += "Base";
+
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(strLimit, _objImprovementSource, SourceName, eType, _strUnique, intBonus, 0, intMin,
+                    intMax,
+                    intAug, intAugMax);
             }
-
-            SelectedValue = frmPickLimit.SelectedDisplayLimit;
-
-            if (bonusNode["affectbase"] != null)
-                strLimit += "Base";
-
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(strLimit, _objImprovementSource, SourceName, eType, _strUnique, intBonus, 0, intMin,
-                intMax,
-                intAug, intAugMax);
         }
 
         // Select an CharacterAttribute to use instead of the default on a skill.
         public void swapskillattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("swapskillattribute");
 
             List<string> lstAbbrevs = new List<string>();
@@ -1170,22 +1262,23 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
-                };
-
-                frmPickAttribute.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                })
                 {
-                    throw new AbortedException();
-                }
+                    frmPickAttribute.ShowDialog();
 
-                SelectedValue = frmPickAttribute.SelectedAttribute;
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickAttribute.SelectedAttribute;
+                }
             }
 
             string strLimitToSkill = bonusNode.SelectSingleNode("limittoskill")?.InnerText;
@@ -1196,48 +1289,50 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
-
-                string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.OnlySkillGroup = strTemp;
-                else
+                using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
                 {
-                    XmlNode xmlSkillCategories = bonusNode.SelectSingleNode("skillcategories");
-                    if (xmlSkillCategories != null)
-                        frmPickSkill.LimitToCategories = xmlSkillCategories;
+                    frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill");
+
+                    string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.OnlySkillGroup = strTemp;
                     else
                     {
-                        strTemp = bonusNode.SelectSingleNode("skillcategory")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.OnlyCategory = strTemp;
+                        XmlNode xmlSkillCategories = bonusNode.SelectSingleNode("skillcategories");
+                        if (xmlSkillCategories != null)
+                            frmPickSkill.LimitToCategories = xmlSkillCategories;
                         else
                         {
-                            strTemp = bonusNode.SelectSingleNode("excludecategory")?.InnerText;
+                            strTemp = bonusNode.SelectSingleNode("skillcategory")?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                frmPickSkill.ExcludeCategory = strTemp;
+                                frmPickSkill.OnlyCategory = strTemp;
                             else
                             {
-                                strTemp = bonusNode.SelectSingleNode("limittoattribute")?.InnerText;
+                                strTemp = bonusNode.SelectSingleNode("excludecategory")?.InnerText;
                                 if (!string.IsNullOrEmpty(strTemp))
-                                    frmPickSkill.LinkedAttribute = strTemp;
+                                    frmPickSkill.ExcludeCategory = strTemp;
+                                else
+                                {
+                                    strTemp = bonusNode.SelectSingleNode("limittoattribute")?.InnerText;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        frmPickSkill.LinkedAttribute = strTemp;
+                                }
                             }
                         }
                     }
+
+                    frmPickSkill.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedTarget = frmPickSkill.SelectedSkill;
                 }
-
-                frmPickSkill.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSkill.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedTarget = frmPickSkill.SelectedSkill;
             }
 
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -1251,6 +1346,8 @@ namespace Chummer.Classes
         // Select an CharacterAttribute to use instead of the default on a skill.
         public void swapskillspecattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("swapskillspecattribute");
 
             List<string> lstAbbrevs = new List<string>();
@@ -1304,22 +1401,23 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
-                };
-
-                frmPickAttribute.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                })
                 {
-                    throw new AbortedException();
-                }
+                    frmPickAttribute.ShowDialog();
 
-                SelectedValue = frmPickAttribute.SelectedAttribute;
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickAttribute.SelectedAttribute;
+                }
             }
 
             string strLimitToSkill = bonusNode.SelectSingleNode("limittoskill")?.InnerText;
@@ -1330,48 +1428,50 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
-
-                string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.OnlySkillGroup = strTemp;
-                else
+                using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
                 {
-                    XmlNode xmlSkillCategories = bonusNode.SelectSingleNode("skillcategories");
-                    if (xmlSkillCategories != null)
-                        frmPickSkill.LimitToCategories = xmlSkillCategories;
+                    frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill");
+
+                    string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.OnlySkillGroup = strTemp;
                     else
                     {
-                        strTemp = bonusNode.SelectSingleNode("skillcategory")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.OnlyCategory = strTemp;
+                        XmlNode xmlSkillCategories = bonusNode.SelectSingleNode("skillcategories");
+                        if (xmlSkillCategories != null)
+                            frmPickSkill.LimitToCategories = xmlSkillCategories;
                         else
                         {
-                            strTemp = bonusNode.SelectSingleNode("excludecategory")?.InnerText;
+                            strTemp = bonusNode.SelectSingleNode("skillcategory")?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                frmPickSkill.ExcludeCategory = strTemp;
+                                frmPickSkill.OnlyCategory = strTemp;
                             else
                             {
-                                strTemp = bonusNode.SelectSingleNode("limittoattribute")?.InnerText;
+                                strTemp = bonusNode.SelectSingleNode("excludecategory")?.InnerText;
                                 if (!string.IsNullOrEmpty(strTemp))
-                                    frmPickSkill.LinkedAttribute = strTemp;
+                                    frmPickSkill.ExcludeCategory = strTemp;
+                                else
+                                {
+                                    strTemp = bonusNode.SelectSingleNode("limittoattribute")?.InnerText;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        frmPickSkill.LinkedAttribute = strTemp;
+                                }
                             }
                         }
                     }
+
+                    frmPickSkill.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedTarget = frmPickSkill.SelectedSkill;
                 }
-
-                frmPickSkill.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSkill.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedTarget = frmPickSkill.SelectedSkill;
             }
 
             // TODO: Allow selection of specializations through frmSelectSkillSpec
@@ -1388,38 +1488,44 @@ namespace Chummer.Classes
         // Select a Spell.
         public void selectspell(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectspell");
+            XmlNode node;
             // Display the Select Spell window.
-            frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
-
-            string strCategory = bonusNode.Attributes?["category"]?.InnerText;
-            if (!string.IsNullOrEmpty(strCategory))
-                frmPickSpell.LimitCategory = strCategory;
-
-            Log.Info("selectspell = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
-            if (!string.IsNullOrEmpty(ForcedValue))
+            using (frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter))
             {
-                frmPickSpell.ForceSpellName = ForcedValue;
-                frmPickSpell.Opacity = 0;
+                string strCategory = bonusNode.Attributes?["category"]?.InnerText;
+                if (!string.IsNullOrEmpty(strCategory))
+                    frmPickSpell.LimitCategory = strCategory;
+
+                Log.Info("selectspell = " + bonusNode.OuterXml);
+                Log.Info("_strForcedValue = " + ForcedValue);
+                Log.Info("_strLimitSelection = " + LimitSelection);
+
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    frmPickSpell.ForceSpellName = ForcedValue;
+                    frmPickSpell.Opacity = 0;
+                }
+
+                frmPickSpell.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
+
+                frmPickSpell.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSpell.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                // Open the Spells XML file and locate the selected piece.
+                XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
+
+                node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]") ??
+                       objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + frmPickSpell.SelectedSpell + "\"]");
             }
 
-            frmPickSpell.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
-
-            frmPickSpell.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickSpell.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
-            }
-            // Open the Spells XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
-
-            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]") ??
-                           objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + frmPickSpell.SelectedSpell + "\"]");
             if (node == null)
                 throw new AbortedException();
 
@@ -1431,17 +1537,20 @@ namespace Chummer.Classes
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
             if (xmlSelectText != null)
             {
-                frmSelectText frmPickText = new frmSelectText
+                using (frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
-                };
-                frmPickText.ShowDialog();
-                // Make sure the dialogue window was not canceled.
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                })
                 {
-                    throw new AbortedException();
+                    frmPickText.ShowDialog();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strExtra = frmPickText.SelectedValue;
                 }
-                strExtra = frmPickText.SelectedValue;
             }
             spell.Create(node, strExtra);
             if (spell.InternalId.IsEmptyGuid())
@@ -1458,6 +1567,8 @@ namespace Chummer.Classes
         // Add a specific Spell to the Character.
         public void addspell(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addspell");
 
             Log.Info("addspell = " + bonusNode.OuterXml);
@@ -1479,17 +1590,20 @@ namespace Chummer.Classes
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
             if (xmlSelectText != null)
             {
-                frmSelectText frmPickText = new frmSelectText
+                using (frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
-                };
-                frmPickText.ShowDialog();
-                // Make sure the dialogue window was not canceled.
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                })
                 {
-                    throw new AbortedException();
+                    frmPickText.ShowDialog();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strExtra = frmPickText.SelectedValue;
                 }
-                strExtra = frmPickText.SelectedValue;
             }
 
             Spell spell = new Spell(_objCharacter);
@@ -1508,6 +1622,8 @@ namespace Chummer.Classes
         // Select a Complex Form.
         public void selectcomplexform(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectcomplexform");
 
             Log.Info("selectcomplexform = " + bonusNode.OuterXml);
@@ -1519,16 +1635,18 @@ namespace Chummer.Classes
             if (string.IsNullOrEmpty(strSelectedComplexForm))
             {
                 // Display the Select ComplexForm window.
-                frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(_objCharacter);
-                frmPickComplexForm.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
+                using (frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(_objCharacter))
                 {
-                    throw new AbortedException();
-                }
+                    frmPickComplexForm.ShowDialog();
 
-                strSelectedComplexForm = frmPickComplexForm.SelectedComplexForm;
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelectedComplexForm = frmPickComplexForm.SelectedComplexForm;
+                }
             }
 
             // Open the ComplexForms XML file and locate the selected piece.
@@ -1558,6 +1676,8 @@ namespace Chummer.Classes
         // Add a specific ComplexForm to the Character.
         public void addcomplexform(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addcomplexform");
 
             Log.Info("addcomplexform = " + bonusNode.OuterXml);
@@ -1592,6 +1712,8 @@ namespace Chummer.Classes
         // Add a specific Gear to the Character.
         public void addgear(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addgear");
 
             Log.Info("addgear = " + bonusNode.OuterXml);
@@ -1673,6 +1795,8 @@ namespace Chummer.Classes
         // Add a specific Gear to the Character.
         public void addweapon(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addweapon");
 
             Log.Info("addweapon = " + bonusNode.OuterXml);
@@ -1721,6 +1845,8 @@ namespace Chummer.Classes
         // Add a specific Gear to the Character.
         public void naturalweapon(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("naturalweapon");
 
             Log.Info("naturalweapon = " + bonusNode.OuterXml);
@@ -1735,9 +1861,9 @@ namespace Chummer.Classes
             Weapon objWeapon = new Weapon(_objCharacter)
             {
                 Name = bonusNode["name"]?.InnerText,
-                Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                Category = LanguageManager.GetString("Tab_Critter"),
                 WeaponType = "Melee",
-                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText),
+                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                 Accuracy = bonusNode["accuracy"]?.InnerText,
                 Damage = bonusNode["damage"]?.InnerText,
                 AP = bonusNode["ap"]?.InnerText,
@@ -1764,10 +1890,10 @@ namespace Chummer.Classes
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectaiprogram");
-
             Log.Info("selectaiprogram = " + bonusNode.OuterXml);
-
             Log.Info("_strForcedValue = " + ForcedValue);
 
             XmlNode xmlProgram = null;
@@ -1781,16 +1907,18 @@ namespace Chummer.Classes
             if (xmlProgram == null)
             {
                 // Display the Select Program window.
-                frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
-                frmPickProgram.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter))
                 {
-                    throw new AbortedException();
-                }
+                    frmPickProgram.ShowDialog();
 
-                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                }
             }
 
             if (xmlProgram != null)
@@ -1800,17 +1928,20 @@ namespace Chummer.Classes
                 XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
-                    frmSelectText frmPickText = new frmSelectText
+                    using (frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
-                    };
-                    frmPickText.ShowDialog();
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                    })
                     {
-                        throw new AbortedException();
+                        frmPickText.ShowDialog();
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strExtra = frmPickText.SelectedValue;
                     }
-                    strExtra = frmPickText.SelectedValue;
                 }
 
                 AIProgram objProgram = new AIProgram(_objCharacter);
@@ -1837,12 +1968,10 @@ namespace Chummer.Classes
         // Select an AI program.
         public void selectinherentaiprogram(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectaiprogram");
-            // Display the Select Spell window.
-            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, false, true);
-
             Log.Info("selectaiprogram = " + bonusNode.OuterXml);
-
             Log.Info("_strForcedValue = " + ForcedValue);
 
             XmlNode xmlProgram = null;
@@ -1855,15 +1984,19 @@ namespace Chummer.Classes
 
             if (xmlProgram == null)
             {
-                frmPickProgram.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                // Display the Select Spell window.
+                using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, false, true))
                 {
-                    throw new AbortedException();
-                }
+                    frmPickProgram.ShowDialog();
 
-                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                }
             }
 
             if (xmlProgram != null)
@@ -1873,17 +2006,20 @@ namespace Chummer.Classes
                 XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
-                    frmSelectText frmPickText = new frmSelectText
+                    using (frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
-                    };
-                    frmPickText.ShowDialog();
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                    })
                     {
-                        throw new AbortedException();
+                        frmPickText.ShowDialog();
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strExtra = frmPickText.SelectedValue;
                     }
-                    strExtra = frmPickText.SelectedValue;
                 }
 
                 AIProgram objProgram = new AIProgram(_objCharacter);
@@ -1910,77 +2046,85 @@ namespace Chummer.Classes
         // Select a Contact
         public void selectcontact(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectcontact");
             XmlNode nodSelect = bonusNode;
 
-            frmSelectItem frmSelect = new frmSelectItem();
-
-            string strMode = nodSelect["type"]?.InnerText ?? "all";
-
-            List<Contact> lstSelectedContacts;
-            if (strMode == "all")
+            using (frmSelectItem frmSelect = new frmSelectItem())
             {
-                lstSelectedContacts = new List<Contact>(_objCharacter.Contacts);
-            }
-            else if (strMode == "group" || strMode == "nongroup")
-            {
-                bool blnGroup = strMode == "group";
+                string strMode = nodSelect["type"]?.InnerText ?? "all";
+
+                List<Contact> lstSelectedContacts;
+                if (strMode == "all")
+                {
+                    lstSelectedContacts = new List<Contact>(_objCharacter.Contacts);
+                }
+                else if (strMode == "group" || strMode == "nongroup")
+                {
+                    bool blnGroup = strMode == "group";
 
 
-                //Select any contact where IsGroup equals blnGroup
-                //and add to a list
-                lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
-            }
-            else
-            {
-                throw new AbortedException();
-            }
+                    //Select any contact where IsGroup equals blnGroup
+                    //and add to a list
+                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
+                }
+                else
+                {
+                    throw new AbortedException();
+                }
 
-            if (lstSelectedContacts.Count == 0)
-            {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound", GlobalOptions.Language),
-                    LanguageManager.GetString("MessageTitle_NoContactFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw new AbortedException();
-            }
+                if (lstSelectedContacts.Count == 0)
+                {
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
+                        LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    throw new AbortedException();
+                }
 
-            int count = 0;
-            //Black magic LINQ to cast content of list to another type
-            List<ListItem> contacts = new List<ListItem>(from x in lstSelectedContacts select new ListItem(count++.ToString(), x.Name));
+                int count = 0;
+                //Black magic LINQ to cast content of list to another type
+                List<ListItem> contacts = new List<ListItem>(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalOptions.InvariantCultureInfo), x.Name)));
 
-            frmSelect.GeneralItems = contacts;
-            frmSelect.ShowDialog();
+                frmSelect.SetGeneralItemsMode(contacts);
+                frmSelect.ShowDialog();
 
-            if (frmSelect.DialogResult == DialogResult.Cancel)
-                throw new AbortedException();
+                if (frmSelect.DialogResult == DialogResult.Cancel)
+                    throw new AbortedException();
 
-            Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex) ? lstSelectedContacts[intIndex] : throw new AbortedException();
+                Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex) ? lstSelectedContacts[intIndex] : throw new AbortedException();
 
-            string strTemp = string.Empty;
-            if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
-            {
-                int intForcedLoyalty = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, intForcedLoyalty);
-            }
-            if (nodSelect["free"] != null)
-            {
-                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
-            }
-            if (nodSelect["forcegroup"] != null)
-            {
-                CreateImprovement(objSelectedContact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
-            }
-            if (string.IsNullOrWhiteSpace(SelectedValue))
-            {
-                SelectedValue = objSelectedContact.Name;
-            }
-            else
-            {
-                SelectedValue += (", " + objSelectedContact.Name);
+                string strTemp = string.Empty;
+                if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+                {
+                    int intForcedLoyalty = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                    CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, intForcedLoyalty);
+                }
+
+                if (nodSelect["free"] != null)
+                {
+                    CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
+                }
+
+                if (nodSelect["forcegroup"] != null)
+                {
+                    CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
+                }
+
+                if (string.IsNullOrWhiteSpace(SelectedValue))
+                {
+                    SelectedValue = objSelectedContact.Name;
+                }
+                else
+                {
+                    SelectedValue += ", " + objSelectedContact.Name;
+                }
             }
         }
 
         public void addcontact(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addcontact");
 
             int intLoyalty = 1;
@@ -2001,26 +2145,28 @@ namespace Chummer.Classes
             };
             _objCharacter.Contacts.Add(contact);
 
-            CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.GUID);
+            CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId);
 
             if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
             {
                 int intForcedLoyalty = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, intForcedLoyalty);
+                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, intForcedLoyalty);
             }
             if (bonusNode["free"] != null)
             {
-                CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
+                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
             }
             if (bonusNode["forcegroup"] != null)
             {
-                CreateImprovement(contact.GUID, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
+                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
             }
         }
 
         // Affect a Specific CharacterAttribute.
         public void specificattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("specificattribute");
 
             // Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
@@ -2041,9 +2187,9 @@ namespace Chummer.Classes
             strTemp = bonusNode["max"]?.InnerXml;
             if (!string.IsNullOrEmpty(strTemp))
             {
-                if (strTemp.EndsWith("-natural"))
+                if (strTemp.EndsWith("-natural", StringComparison.Ordinal))
                 {
-                    intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true)) -
+                    intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true), GlobalOptions.InvariantCultureInfo) -
                              _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
                 }
                 else
@@ -2068,6 +2214,8 @@ namespace Chummer.Classes
         // Add a paid increase to an attribute
         public void attributelevel(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info(new object[] { "attributelevel", bonusNode.OuterXml });
             string strAttrib = string.Empty;
             int value = 1;
@@ -2112,8 +2260,8 @@ namespace Chummer.Classes
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 };
 
                 Log.Info("attributelevel = " + bonusNode.OuterXml);
@@ -2141,6 +2289,8 @@ namespace Chummer.Classes
 
         public void skilllevel(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info(new object[] { "skilllevel", bonusNode.OuterXml });
             string strSkill = string.Empty;
             int intValue = 1;
@@ -2157,6 +2307,8 @@ namespace Chummer.Classes
 
         public void pushtext(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             string strPush = bonusNode.InnerText;
             if (!string.IsNullOrWhiteSpace(strPush))
             {
@@ -2166,6 +2318,8 @@ namespace Chummer.Classes
 
         public void activesoft(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("activesoft");
             string strNodeOuterXml = bonusNode.OuterXml;
             Log.Info("activesoft = " + strNodeOuterXml);
@@ -2234,6 +2388,8 @@ namespace Chummer.Classes
 
         public void skillsoft(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             string strNodeOuterXml = bonusNode.OuterXml;
             Log.Info("skillsoft = " + strNodeOuterXml);
             string strForcedValue = ForcedValue;
@@ -2261,6 +2417,8 @@ namespace Chummer.Classes
 
         public void knowledgeskilllevel(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             //Theoretically life modules, right now we just give out free points and let people sort it out themselves.
             //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
 
@@ -2270,12 +2428,16 @@ namespace Chummer.Classes
 
         public void knowledgeskillpoints(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique,
-                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, Convert.ToInt32(bonusNode.Value)));
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, Convert.ToInt32(bonusNode.Value, GlobalOptions.InvariantCultureInfo)));
         }
 
         public void skillgrouplevel(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info(new object[] { "skillgrouplevel", bonusNode.OuterXml });
             string strSkillGroup = string.Empty;
             int value = 1;
@@ -2294,6 +2456,8 @@ namespace Chummer.Classes
         // Change the maximum number of BP that can be spent on Nuyen.
         public void nuyenmaxbp(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("nuyenmaxbp");
             Log.Info("nuyenmaxbp = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2304,6 +2468,8 @@ namespace Chummer.Classes
         // Apply a bonus/penalty to physical limit.
         public void physicallimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("physicallimit");
             Log.Info("physicallimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2315,6 +2481,8 @@ namespace Chummer.Classes
         // Apply a bonus/penalty to mental limit.
         public void mentallimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("mentallimit");
             Log.Info("mentallimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2326,6 +2494,8 @@ namespace Chummer.Classes
         // Apply a bonus/penalty to social limit.
         public void sociallimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("sociallimit");
             Log.Info("sociallimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2337,6 +2507,8 @@ namespace Chummer.Classes
         // Change the amount of Nuyen the character has at creation time (this can put the character over the amount they're normally allowed).
         public void nuyenamt(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("nuyenamt");
             Log.Info("nuyenamt = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2347,6 +2519,8 @@ namespace Chummer.Classes
         // Improve Condition Monitors.
         public void conditionmonitor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("conditionmonitor");
             Log.Info("conditionmonitor = " + bonusNode.OuterXml);
             string strTemp = bonusNode["physical"]?.InnerText;
@@ -2380,7 +2554,7 @@ namespace Chummer.Classes
                     ImprovementManager.ValueToInt(_objCharacter, objNode.InnerText, _intRating));
             }
 
-            // Condition Monitor Threshold Offset. (Additioal boxes appear before the FIRST Condition Monitor penalty)
+            // Condition Monitor Threshold Offset. (Additional boxes appear before the FIRST Condition Monitor penalty)
             objNode = bonusNode["thresholdoffset"];
             if (objNode != null)
             {
@@ -2393,7 +2567,7 @@ namespace Chummer.Classes
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
                     strUseUnique, ImprovementManager.ValueToInt(_objCharacter, objNode.InnerText, _intRating));
             }
-            // Condition Monitor Threshold Offset that must be shared between the two. (Additioal boxes appear before the FIRST Condition Monitor penalty)
+            // Condition Monitor Threshold Offset that must be shared between the two. (Additional boxes appear before the FIRST Condition Monitor penalty)
             objNode = bonusNode["sharedthresholdoffset"];
             if (objNode != null)
             {
@@ -2420,6 +2594,8 @@ namespace Chummer.Classes
         // Improve Living Personal Attributes.
         public void livingpersona(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("livingpersona");
             Log.Info("livingpersona = " + bonusNode.OuterXml);
 
@@ -2427,12 +2603,12 @@ namespace Chummer.Classes
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for device rating");
@@ -2443,12 +2619,12 @@ namespace Chummer.Classes
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for program limit");
@@ -2459,12 +2635,12 @@ namespace Chummer.Classes
             strBonus = bonusNode["attack"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for attack");
@@ -2475,12 +2651,12 @@ namespace Chummer.Classes
             strBonus = bonusNode["sleaze"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for sleaze");
@@ -2491,12 +2667,12 @@ namespace Chummer.Classes
             strBonus = bonusNode["dataprocessing"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for data processing");
@@ -2507,12 +2683,12 @@ namespace Chummer.Classes
             strBonus = bonusNode["firewall"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for firewall");
@@ -2523,12 +2699,12 @@ namespace Chummer.Classes
             strBonus = bonusNode["matrixcm"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues("))
+                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
-                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for matrixcm");
@@ -2539,6 +2715,8 @@ namespace Chummer.Classes
         // The Improvement adjusts a specific Skill.
         public void specificskill(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("specificskill");
             Log.Info("specificskill = " + bonusNode.OuterXml);
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
@@ -2588,12 +2766,16 @@ namespace Chummer.Classes
 
         public void reflexrecorderoptimization(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ReflexRecorderOptimization, _strUnique);
         }
 
         // The Improvement adds a martial art
         public void martialart(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("martialart");
             Log.Info("martialart = " + bonusNode.OuterXml);
             XmlDocument _objXmlDocument = XmlManager.Load("martialarts.xml");
@@ -2613,6 +2795,8 @@ namespace Chummer.Classes
         // The Improvement adds a limit modifier
         public void limitmodifier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("limitmodifier");
             Log.Info("limitmodifier = " + bonusNode.OuterXml);
 
@@ -2632,6 +2816,8 @@ namespace Chummer.Classes
         // The Improvement adjusts a Skill Category.
         public void skillcategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategory");
             Log.Info("skillcategory = " + bonusNode.OuterXml);
 
@@ -2662,6 +2848,8 @@ namespace Chummer.Classes
         // The Improvement adjusts a Skill Group.
         public void skillgroup(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroup");
             Log.Info("skillgroup = " + bonusNode.OuterXml);
 
@@ -2690,6 +2878,8 @@ namespace Chummer.Classes
         // The Improvement adjust Skills when used with the given CharacterAttribute.
         public void skillattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillattribute");
             Log.Info("skillattribute = " + bonusNode.OuterXml);
 
@@ -2723,6 +2913,8 @@ namespace Chummer.Classes
         // The Improvement adjust Skills whose linked attribute is the given CharacterAttribute.
         public void skilllinkedattribute(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skilllinkedattribute");
             Log.Info("skilllinkedattribute = " + bonusNode.OuterXml);
 
@@ -2756,6 +2948,8 @@ namespace Chummer.Classes
         // The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical CharacterAttribute).
         public void skillarticulation(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillarticulation");
             Log.Info("skillarticulation = " + bonusNode.OuterXml);
 
@@ -2768,6 +2962,8 @@ namespace Chummer.Classes
         // Check for Armor modifiers.
         public void armor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("armor");
             Log.Info("armor = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2792,6 +2988,8 @@ namespace Chummer.Classes
         // Check for Fire Armor modifiers.
         public void firearmor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("firearmor");
             Log.Info("firearmor = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2816,6 +3014,8 @@ namespace Chummer.Classes
         // Check for Cold Armor modifiers.
         public void coldarmor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("coldarmor");
             Log.Info("coldarmor = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2840,6 +3040,8 @@ namespace Chummer.Classes
         // Check for Electricity Armor modifiers.
         public void electricityarmor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("electricityarmor");
             Log.Info("electricityarmor = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2864,6 +3066,8 @@ namespace Chummer.Classes
         // Check for Acid Armor modifiers.
         public void acidarmor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("acidarmor");
             Log.Info("acidarmor = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2888,6 +3092,8 @@ namespace Chummer.Classes
         // Check for Falling Armor modifiers.
         public void fallingarmor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("fallingarmor");
             Log.Info("fallingarmor = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2912,6 +3118,8 @@ namespace Chummer.Classes
         // Check for Dodge modifiers.
         public void dodge(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("dodge");
             Log.Info("dodge = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2936,6 +3144,8 @@ namespace Chummer.Classes
         // Check for Reach modifiers.
         public void reach(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("reach");
             Log.Info("reach = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2947,6 +3157,8 @@ namespace Chummer.Classes
         // Check for Unarmed Damage Value modifiers.
         public void unarmeddv(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("unarmeddv");
             Log.Info("unarmeddv = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2957,6 +3169,8 @@ namespace Chummer.Classes
         // Check for Unarmed Damage Value Physical.
         public void unarmeddvphysical(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("unarmeddvphysical");
             Log.Info("unarmeddvphysical = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2966,6 +3180,8 @@ namespace Chummer.Classes
         // Check for Unarmed Armor Penetration.
         public void unarmedap(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("unarmedap");
             Log.Info("unarmedap = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2976,6 +3192,8 @@ namespace Chummer.Classes
         // Check for Unarmed Armor Penetration.
         public void unarmedreach(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("unarmedreach");
             Log.Info("unarmedreach = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2986,6 +3204,8 @@ namespace Chummer.Classes
         // Check for Initiative modifiers.
         public void initiative(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("initiative");
             Log.Info("initiative = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -2996,12 +3216,16 @@ namespace Chummer.Classes
         // Check for Initiative Pass modifiers. Only the highest one ever applies. Legacy method for old characters.
         public void initiativepass(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             initiativedice(bonusNode);
         }
 
         // Check for Initiative Pass modifiers. Only the highest one ever applies.
         public void initiativedice(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("initiativedice");
             Log.Info("initiativedice = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3018,12 +3242,16 @@ namespace Chummer.Classes
         // Check for Initiative Dice modifiers. Only the highest one ever applies. Legacy method for old characters.
         public void initiativepassadd(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             initiativediceadd(bonusNode);
         }
 
         // Check for Initiative Dice modifiers. Only the highest one ever applies.
         public void initiativediceadd(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("initiativediceadd");
             Log.Info("initiativediceadd = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3034,6 +3262,8 @@ namespace Chummer.Classes
         // Check for Matrix Initiative modifiers.
         public void matrixinitiative(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("matrixinitiative");
             Log.Info("matrixinitiative = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3044,12 +3274,16 @@ namespace Chummer.Classes
         // Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
         public void matrixinitiativepass(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             matrixinitiativedice(bonusNode);
         }
 
         // Check for Matrix Initiative Pass modifiers.
         public void matrixinitiativedice(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("matrixinitiativedice");
             Log.Info("matrixinitiativedice = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3060,12 +3294,16 @@ namespace Chummer.Classes
         // Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
         public void matrixinitiativepassadd(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             matrixinitiativediceadd(bonusNode);
         }
 
         // Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
         public void matrixinitiativediceadd(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("matrixinitiativediceadd");
             Log.Info("matrixinitiativediceadd = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3077,6 +3315,8 @@ namespace Chummer.Classes
         // Check for Lifestyle cost modifiers.
         public void lifestylecost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("lifestylecost");
             Log.Info("lifestylecost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3090,6 +3330,8 @@ namespace Chummer.Classes
         // Check for basic Lifestyle cost modifiers.
         public void basiclifestylecost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("basiclifestylecost");
             Log.Info("basiclifestylecost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3103,6 +3345,8 @@ namespace Chummer.Classes
         // Check for Genetech Cost modifiers.
         public void genetechcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("genetechcostmultiplier");
             Log.Info("genetechcostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3113,6 +3357,8 @@ namespace Chummer.Classes
         // Check for Genetech Cost modifiers.
         public void genetechessmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("genetechcostmultiplier");
             Log.Info("genetechcostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3123,6 +3369,8 @@ namespace Chummer.Classes
         // Check for Basic Bioware Essence Cost modifiers.
         public void basicbiowareessmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("basicbiowareessmultiplier");
             Log.Info("basicbiowareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3134,6 +3382,8 @@ namespace Chummer.Classes
         // Check for Bioware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void biowareessmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("biowareessmultiplier");
             Log.Info("biowareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3144,6 +3394,8 @@ namespace Chummer.Classes
         // Check for Bioware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
         public void biowaretotalessmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("biowaretotalessmultiplier");
             Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3151,9 +3403,11 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Cybeware Essence Cost modifiers that stack additively with base modifiers like grade.
+        // Check for Cyberware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void cyberwareessmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("cyberwareessmultiplier");
             Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3164,6 +3418,8 @@ namespace Chummer.Classes
         // Check for Cyberware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
         public void cyberwaretotalessmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("cyberwaretotalessmultiplier");
             Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3174,6 +3430,8 @@ namespace Chummer.Classes
         // Check for Non-Retroactive Bioware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void biowareessmultipliernonretroactive(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("biowareessmultiplier");
             Log.Info("biowareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3184,6 +3442,8 @@ namespace Chummer.Classes
         // Check for Non-Retroactive Bioware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
         public void biowaretotalessmultipliernonretroactive(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("biowaretotalessmultiplier");
             Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3194,6 +3454,8 @@ namespace Chummer.Classes
         // Check for Non-Retroactive Cybeware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void cyberwareessmultipliernonretroactive(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("cyberwareessmultiplier");
             Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3204,6 +3466,8 @@ namespace Chummer.Classes
         // Check for Non-Retroactive Cyberware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
         public void cyberwaretotalessmultipliernonretroactive(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("cyberwaretotalessmultiplier");
             Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3214,17 +3478,21 @@ namespace Chummer.Classes
         // Check for Prototype Transhuman modifiers.
         public void prototypetranshuman(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("prototypetranshuman");
             Log.Info("prototypetranshuman = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
 
-            _objCharacter.PrototypeTranshuman += Convert.ToDecimal(bonusNode.InnerText);
+            _objCharacter.PrototypeTranshuman += Convert.ToDecimal(bonusNode.InnerText, GlobalOptions.InvariantCultureInfo);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
         }
 
         // Check for Friends In High Places modifiers.
         public void friendsinhighplaces(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("friendsinhighplaces");
             Log.Info("friendsinhighplaces = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3235,6 +3503,8 @@ namespace Chummer.Classes
         // Check for ExCon modifiers.
         public void excon(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("ExCon");
             Log.Info("ExCon = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3244,6 +3514,8 @@ namespace Chummer.Classes
         // Check for TrustFund modifiers.
         public void trustfund(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("TrustFund");
             Log.Info("TrustFund = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3255,6 +3527,8 @@ namespace Chummer.Classes
         // Check for MadeMan modifiers.
         public void mademan(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("MadeMan");
             Log.Info("MadeMan = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3264,6 +3538,8 @@ namespace Chummer.Classes
         // Check for Fame modifiers.
         public void fame(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("Fame");
             Log.Info("Fame = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3273,6 +3549,8 @@ namespace Chummer.Classes
         // Check for Erased modifiers.
         public void erased(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("Erased");
             Log.Info("Erased = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3282,6 +3560,8 @@ namespace Chummer.Classes
         // Check for Erased modifiers.
         public void overclocker(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("OverClocker");
             Log.Info("Overclocker = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3291,6 +3571,8 @@ namespace Chummer.Classes
         // Check for Restricted Gear modifiers.
         public void restrictedgear(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("restrictedgear");
             Log.Info("restrictedgear = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3301,6 +3583,8 @@ namespace Chummer.Classes
         // Check for Improvements that grant bonuses to the maximum amount of Native languages a user can have.
         public void nativelanguagelimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("nativelanguagelimit");
             Log.Info("nativelanguagelimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3311,6 +3595,8 @@ namespace Chummer.Classes
         // Check for Ambidextrous modifiers.
         public void ambidextrous(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("Ambidextrous");
             Log.Info("Ambidextrous = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3320,10 +3606,12 @@ namespace Chummer.Classes
         // Check for Weapon Category DV modifiers.
         public void weaponcategorydv(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             //TODO: FIX THIS
             /*
              * I feel like talking a little bit about improvementmanager at
-             * this point. It is an intresting class. First of all, it 
+             * this point. It is an interesting class. First of all, it 
              * manages to throw out everything we ever learned about OOP
              * and create a class based on functional programming.
              * 
@@ -3387,6 +3675,8 @@ namespace Chummer.Classes
 
         public void weaponcategorydice(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("WeaponCategoryDice");
             Log.Info("WeaponCategoryDice = " + bonusNode.OuterXml);
             using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategory"))
@@ -3404,34 +3694,39 @@ namespace Chummer.Classes
                             foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
                                 string strInnerText = objXmlCategory.InnerText;
-                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText, GlobalOptions.Language)));
+                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText)));
                             }
                         }
 
-                        frmSelectItem frmPickCategory = new frmSelectItem
+                        using (frmSelectItem frmPickCategory = new frmSelectItem
                         {
-                            GeneralItems = lstGeneralItems,
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
-                                : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language)
-                        };
-
-                        Log.Info("_strForcedValue = " + ForcedValue);
-
-                        if (ForcedValue.StartsWith("Adept:") || ForcedValue.StartsWith("Magician:"))
-                            ForcedValue = string.Empty;
-
-                        if (!string.IsNullOrEmpty(ForcedValue))
+                                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                                : LanguageManager.GetString("Title_SelectWeaponCategory")
+                        })
                         {
-                            frmPickCategory.Opacity = 0;
-                            frmPickCategory.ForceItem = ForcedValue;
-                        }
-                        frmPickCategory.ShowDialog();
+                            frmPickCategory.SetGeneralItemsMode(lstGeneralItems);
 
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickCategory.DialogResult == DialogResult.Cancel)
-                        {
-                            throw new AbortedException();
+                            Log.Info("_strForcedValue = " + ForcedValue);
+
+                            if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal) || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                                ForcedValue = string.Empty;
+
+                            if (!string.IsNullOrEmpty(ForcedValue))
+                            {
+                                frmPickCategory.Opacity = 0;
+                                frmPickCategory.ForceItem(ForcedValue);
+                            }
+
+                            frmPickCategory.ShowDialog();
+
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickCategory.DialogResult == DialogResult.Cancel)
+                            {
+                                throw new AbortedException();
+                            }
+
+                            SelectedValue = frmPickCategory.SelectedItem;
                         }
 
                         Log.Info("strSelected = " + SelectedValue);
@@ -3467,6 +3762,8 @@ namespace Chummer.Classes
 
         public void weaponspecificdice(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("weaponspecificdice");
             Log.Info("weaponspecificdice = " + bonusNode.OuterXml);
             List<ListItem> lstGeneralItems = new List<ListItem>();
@@ -3475,48 +3772,49 @@ namespace Chummer.Classes
                 foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
                     weapon.WeaponType == bonusNode.Attributes?["type"].InnerText))
                 {
-                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                 }
             }
             else
             {
                 foreach (Weapon objWeapon in _objCharacter.Weapons)
                 {
-                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                 }
             }
 
-            frmSelectItem frmPickWeapon = new frmSelectItem
+            Weapon objSelectedWeapon;
+            using (frmSelectItem frmPickWeapon = new frmSelectItem
             {
-                GeneralItems = lstGeneralItems,
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(
-                        LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language),
-                        _strFriendlyName)
-                    : LanguageManager.GetString("Title_SelectWeapon", GlobalOptions.Language)
-            };
-            Log.Info("_strForcedValue = " + ForcedValue);
-            if (!string.IsNullOrEmpty(ForcedValue))
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                    : LanguageManager.GetString("Title_SelectWeapon")
+            })
             {
-                frmPickWeapon.Opacity = 0;
-                frmPickWeapon.ForceItem = ForcedValue;
+                frmPickWeapon.SetGeneralItemsMode(lstGeneralItems);
+                Log.Info("_strForcedValue = " + ForcedValue);
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    frmPickWeapon.Opacity = 0;
+                }
+
+                frmPickWeapon.ForceItem(ForcedValue);
+                frmPickWeapon.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(weapon => weapon.InternalId == frmPickWeapon.SelectedItem);
+                if (objSelectedWeapon == null)
+                {
+                    throw new AbortedException();
+                }
             }
 
-            frmPickWeapon.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickWeapon.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
-            }
-
-            Weapon objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(weapon => weapon.InternalId == frmPickWeapon.SelectedItem);
-            if (objSelectedWeapon == null)
-            {
-                throw new AbortedException();
-            }
             SelectedValue = objSelectedWeapon.Name;
-            frmPickWeapon.Dispose();
             Log.Info("Calling CreateImprovement");
             CreateImprovement(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
@@ -3526,80 +3824,90 @@ namespace Chummer.Classes
         // Check for Mentor Spirit bonuses.
         public void selectmentorspirit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectmentorspirit");
             Log.Info("selectmentorspirit = " + bonusNode.OuterXml);
-            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
+            using (frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
             {
                 ForcedMentor = ForcedValue
-            };
-            frmPickMentorSpirit.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
+            })
             {
-                throw new AbortedException();
+                frmPickMentorSpirit.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                XmlNode xmlMentor = XmlManager.Load("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+                SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
+
+                string strHoldValue = SelectedValue;
+
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SourceName = " + SourceName);
+
+                string strForce = ForcedValue;
+                MentorSpirit objMentor = new MentorSpirit(_objCharacter);
+                objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2);
+                _objCharacter.MentorSpirits.Add(objMentor);
+
+                ForcedValue = strForce;
+                SelectedValue = strHoldValue;
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("_strForcedValue = " + ForcedValue);
+                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
             }
-
-            XmlNode xmlMentor = XmlManager.Load("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
-            SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
-
-            string strHoldValue = SelectedValue;
-
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
-
-            string strForce = ForcedValue;
-            MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-            objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2);
-            _objCharacter.MentorSpirits.Add(objMentor);
-
-            ForcedValue = strForce;
-            SelectedValue = strHoldValue;
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
         }
 
         // Check for Paragon bonuses.
         public void selectparagon(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectparagon");
             Log.Info("selectparagon = " + bonusNode.OuterXml);
-            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter, "paragons.xml")
+            using (frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter, "paragons.xml")
             {
                 ForcedMentor = ForcedValue
-            };
-            frmPickMentorSpirit.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
+            })
             {
-                throw new AbortedException();
+                frmPickMentorSpirit.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                XmlNode xmlMentor = XmlManager.Load("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+                SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
+
+                string strHoldValue = SelectedValue;
+
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SourceName = " + SourceName);
+
+                string strForce = ForcedValue;
+                MentorSpirit objMentor = new MentorSpirit(_objCharacter);
+                objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2);
+                _objCharacter.MentorSpirits.Add(objMentor);
+
+                ForcedValue = strForce;
+                SelectedValue = strHoldValue;
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("_strForcedValue = " + ForcedValue);
+                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
             }
-
-            XmlNode xmlMentor = XmlManager.Load("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
-            SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
-
-            string strHoldValue = SelectedValue;
-
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
-
-            string strForce = ForcedValue;
-            MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-            objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2);
-            _objCharacter.MentorSpirits.Add(objMentor);
-
-            ForcedValue = strForce;
-            SelectedValue = strHoldValue;
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
         }
 
         // Check for Smartlink bonus.
         public void smartlink(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("smartlink");
             Log.Info("smartlink = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3610,6 +3918,8 @@ namespace Chummer.Classes
         // Check for Adapsin bonus.
         public void adapsin(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("adapsin");
             Log.Info("adapsin = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3619,6 +3929,8 @@ namespace Chummer.Classes
         // Check for SoftWeave bonus.
         public void softweave(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("softweave");
             Log.Info("softweave = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3628,6 +3940,8 @@ namespace Chummer.Classes
         // Check for bonus that removes the ability to take any bioware (e.g. Sensitive System)
         public void disablebioware(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("disablebioware");
             Log.Info("disablebioware = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3638,6 +3952,8 @@ namespace Chummer.Classes
         // Check for bonus that removes the ability to take any cyberware.
         public void disablecyberware(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("disablecyberware");
             Log.Info("disablecyberware = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3648,6 +3964,8 @@ namespace Chummer.Classes
         // Check for bonus that removes access to certain bioware grades (e.g. Cyber-Snob)
         public void disablebiowaregrade(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("disablebiowaregrade");
             Log.Info("disablebiowaregrade = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3659,6 +3977,8 @@ namespace Chummer.Classes
         // Check for bonus that removes access to certain cyberware grades (e.g. Regeneration critter power).
         public void disablecyberwaregrade(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("disablecyberwaregrade");
             Log.Info("disablecyberwaregrade = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3670,6 +3990,8 @@ namespace Chummer.Classes
         // Check for increases to walk multiplier.
         public void walkmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("walkmultiplier");
             Log.Info("walkmultiplier = " + bonusNode.OuterXml);
 
@@ -3691,6 +4013,8 @@ namespace Chummer.Classes
         // Check for increases to run multiplier.
         public void runmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("runmultiplier");
             Log.Info("runmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3711,6 +4035,8 @@ namespace Chummer.Classes
         // Check for increases to distance sprinted per hit.
         public void sprintbonus(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("sprintbonus");
             Log.Info("sprintbonus = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3731,6 +4057,8 @@ namespace Chummer.Classes
         // Check for free Positive Qualities.
         public void freepositivequalities(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("freepositivequalities");
             Log.Info("freepositivequalities = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3741,6 +4069,8 @@ namespace Chummer.Classes
         // Check for free Negative Qualities.
         public void freenegativequalities(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("freenegativequalities");
             Log.Info("freenegativequalities = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3751,30 +4081,37 @@ namespace Chummer.Classes
         // Check for Select Side.
         public void selectside(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectside");
             Log.Info("selectside = " + bonusNode.OuterXml);
-            frmSelectSide frmPickSide = new frmSelectSide
+            using (frmSelectSide frmPickSide = new frmSelectSide
             {
-                Description = string.Format(LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language), _strFriendlyName)
-            };
-            if (!string.IsNullOrEmpty(ForcedValue))
-                frmPickSide.ForceValue(ForcedValue);
-            else
-                frmPickSide.ShowDialog();
+                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectSide"), _strFriendlyName)
+            })
+            {
+                if (!string.IsNullOrEmpty(ForcedValue))
+                    frmPickSide.ForceValue(ForcedValue);
+                else
+                    frmPickSide.ShowDialog();
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickSide.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSide.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickSide.SelectedSide;
             }
 
-            SelectedValue = frmPickSide.SelectedSide;
             Log.Info("_strSelectedValue = " + SelectedValue);
         }
 
         // Check for Free Spirit Power Points.
         public void freespiritpowerpoints(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("freespiritpowerpoints");
             Log.Info("freespiritpowerpoints = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3785,6 +4122,8 @@ namespace Chummer.Classes
         // Check for Adept Power Points.
         public void adeptpowerpoints(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("adeptpowerpoints");
             Log.Info("adeptpowerpoints = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3795,6 +4134,8 @@ namespace Chummer.Classes
         // Check for Adept Powers
         public void specificpower(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("specificpower");
             Log.Info("specificpower = " + bonusNode.OuterXml);
             // If the character isn't an adept or mystic adept, skip the rest of this.
@@ -3829,12 +4170,12 @@ namespace Chummer.Classes
                     Log.Info("Calling CreateImprovement");
                     int intLevels = 0;
                     if (bonusNode["val"] != null)
-                        intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
+                        intLevels = Convert.ToInt32(bonusNode["val"].InnerText, GlobalOptions.InvariantCultureInfo);
                     if (!objBoostedPower.LevelsEnabled)
                         intLevels = 1;
                     CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
 
-                    // fix: refund power points, if bonus would make power exceede maximum
+                    // fix: refund power points, if bonus would make power exceed maximum
                     if (objBoostedPower.TotalMaximumLevels < objBoostedPower.Rating + intLevels)
                     {
                         objBoostedPower.Rating = Math.Max(objBoostedPower.TotalMaximumLevels - intLevels, 0);
@@ -3849,73 +4190,83 @@ namespace Chummer.Classes
         // Select a Power.
         public void selectpowers(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectpower");
             // If the character isn't an adept or mystic adept, skip the rest of this.
             if (_objCharacter.AdeptEnabled)
             {
                 using (XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower"))
+                {
                     if (objXmlPowerList != null)
+                    {
                         foreach (XmlNode objNode in objXmlPowerList)
                         {
                             Log.Info("_strSelectedValue = " + SelectedValue);
                             Log.Info("_strForcedValue = " + ForcedValue);
 
+                            XmlNode objXmlPower;
+                            int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
                             // Display the Select Power window and record which Power was selected.
-                            frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-                            Log.Info("selectpower = " + objNode.OuterXml);
-
-                            int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString()));
-                            frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
-                            string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strPointsPerLevel))
-                                frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
-                            string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString());
-                            if (!string.IsNullOrEmpty(strLimit))
-                                frmPickPower.LimitToRating = Convert.ToInt32(strLimit);
-                            string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strLimitToPowers))
-                                frmPickPower.LimitToPowers = strLimitToPowers;
-                            frmPickPower.ShowDialog();
-
-                            // Make sure the dialogue window was not canceled.
-                            if (frmPickPower.DialogResult == DialogResult.Cancel)
+                            using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                             {
+                                Log.Info("selectpower = " + objNode.OuterXml);
+
+                                frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
+                                string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strPointsPerLevel))
+                                    frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
+                                string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                                if (!string.IsNullOrEmpty(strLimit))
+                                    frmPickPower.LimitToRating = Convert.ToInt32(strLimit, GlobalOptions.InvariantCultureInfo);
+                                string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strLimitToPowers))
+                                    frmPickPower.LimitToPowers = strLimitToPowers;
+                                frmPickPower.ShowDialog();
+
+                                // Make sure the dialogue window was not canceled.
+                                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                                {
+                                    throw new AbortedException();
+                                }
+
+                                objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
+                            }
+
+                            // If no, add the power and mark it free or give it free levels
+                            Power objNewPower = new Power(_objCharacter);
+                            if (!objNewPower.Create(objXmlPower))
                                 throw new AbortedException();
+
+                            SelectedValue = objNewPower.CurrentDisplayName;
+
+                            List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
+
+                            Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString(GlobalOptions.InvariantCultureInfo));
+
+                            if (lstExistingPowersList.Count == 0)
+                            {
+                                _objCharacter.Powers.Add(objNewPower);
                             }
                             else
                             {
-                                XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
-
-                                // If no, add the power and mark it free or give it free levels
-                                Power objNewPower = new Power(_objCharacter);
-                                if (!objNewPower.Create(objXmlPower))
-                                    throw new AbortedException();
-
-                                SelectedValue = objNewPower.DisplayName;
-
-                                List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
-
-                                Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString());
-
-                                if (lstExistingPowersList.Count == 0)
-                                {
-                                    _objCharacter.Powers.Add(objNewPower);
-                                }
-                                else
-                                {
-                                    // Another copy of the power already exists, so we ensure that we remove any improvements created by the power because we're discarding it.
-                                    objNewPower.DeletePower();
-                                }
-                                Log.Info("Calling CreateImprovement");
-                                CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
+                                // Another copy of the power already exists, so we ensure that we remove any improvements created by the power because we're discarding it.
+                                objNewPower.DeletePower();
                             }
+
+                            Log.Info("Calling CreateImprovement");
+                            CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
                         }
+                    }
+                }
             }
         }
 
         // Check for Armor Encumbrance Penalty.
         public void armorencumbrancepenalty(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("armorencumbrancepenalty");
             Log.Info("armorencumbrancepenalty = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3926,6 +4277,8 @@ namespace Chummer.Classes
         // Check for Initiation.
         public void initiation(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("initiation");
             Log.Info("initiation = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3937,6 +4290,8 @@ namespace Chummer.Classes
         // Check for Submersion.
         public void submersion(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("submersion");
             Log.Info("submersion = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -3947,11 +4302,13 @@ namespace Chummer.Classes
 
         public void addart(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlNode objXmlSelectedArt = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/arts/art[name = \"" + bonusNode.InnerText + "\"]");
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedArt.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                objXmlSelectedArt.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName))
             {
                 Art objAddArt = new Art(_objCharacter);
                 objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
@@ -3970,35 +4327,41 @@ namespace Chummer.Classes
 
         public void selectart(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml");
             XmlNode objXmlSelectedArt;
             XmlNodeList xmlArtList = bonusNode.SelectNodes("art");
             if (xmlArtList?.Count > 0)
             {
                 List<ListItem> lstArts = new List<ListItem>();
-                frmSelectItem frmPickItem = new frmSelectItem();
-                foreach (XmlNode objXmlAddArt in xmlArtList)
+                using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
-                    string strLoopName = objXmlAddArt.InnerText;
-                    XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strLoopName + "\"]");
-                    // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                    if (objXmlArt != null && objXmlAddArt.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                    foreach (XmlNode objXmlAddArt in xmlArtList)
                     {
-                        lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText, objXmlArt["translate"]?.InnerText ?? strLoopName));
+                        string strLoopName = objXmlAddArt.InnerText;
+                        XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strLoopName + "\"]");
+                        // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                        if (objXmlArt != null && objXmlAddArt.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        {
+                            lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText, objXmlArt["translate"]?.InnerText ?? strLoopName));
+                        }
                     }
-                }
-                if (lstArts.Count == 0)
-                {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
-                    throw new AbortedException();
-                }
-                frmPickItem.GeneralItems = lstArts;
-                frmPickItem.ShowDialog();
-                // Don't do anything else if the form was canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
 
-                objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = \"" + frmPickItem.SelectedItem + "\"]");
+                    if (lstArts.Count == 0)
+                    {
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
+                        throw new AbortedException();
+                    }
+
+                    frmPickItem.SetGeneralItemsMode(lstArts);
+                    frmPickItem.ShowDialog();
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
+
+                    objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = \"" + frmPickItem.SelectedItem + "\"]");
+                }
 
                 string strSelectedName = objXmlSelectedArt?["name"]?.InnerText;
                 if (string.IsNullOrEmpty(strSelectedName))
@@ -4006,13 +4369,15 @@ namespace Chummer.Classes
             }
             else
             {
-                frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art);
-                frmPickArt.ShowDialog();
-                // Don't do anything else if the form was canceled.
-                if (frmPickArt.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
+                using (frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art))
+                {
+                    frmPickArt.ShowDialog();
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickArt.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
 
-                objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = \"" + frmPickArt.SelectedItem + "\"]");
+                    objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = \"" + frmPickArt.SelectedItem + "\"]");
+                }
             }
 
             Art objAddArt = new Art(_objCharacter);
@@ -4021,7 +4386,7 @@ namespace Chummer.Classes
             if (objAddArt.InternalId.IsEmptyGuid())
                 throw new AbortedException();
 
-            SelectedValue = objAddArt.DisplayName(GlobalOptions.Language);
+            SelectedValue = objAddArt.CurrentDisplayName;
 
             _objCharacter.Arts.Add(objAddArt);
             CreateImprovement(objAddArt.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Art, _strUnique);
@@ -4029,12 +4394,14 @@ namespace Chummer.Classes
 
         public void addmetamagic(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlNode objXmlSelectedMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + bonusNode.InnerText + "\"]");
             string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue);
@@ -4053,6 +4420,8 @@ namespace Chummer.Classes
 
         public void selectmetamagic(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml");
             string strForceValue = string.Empty;
             XmlNode objXmlSelectedMetamagic;
@@ -4060,29 +4429,33 @@ namespace Chummer.Classes
             if (xmlMetamagicList?.Count > 0)
             {
                 List<ListItem> lstMetamagics = new List<ListItem>();
-                frmSelectItem frmPickItem = new frmSelectItem();
-                foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
+                using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
-                    string strLoopName = objXmlAddMetamagic.InnerText;
-                    XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
-                    // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                    if (objXmlMetamagic != null && objXmlAddMetamagic.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                    foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
                     {
-                        lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText, objXmlMetamagic["translate"]?.InnerText ?? strLoopName));
+                        string strLoopName = objXmlAddMetamagic.InnerText;
+                        XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
+                        // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                        if (objXmlMetamagic != null && objXmlAddMetamagic.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        {
+                            lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText, objXmlMetamagic["translate"]?.InnerText ?? strLoopName));
+                        }
                     }
-                }
-                if (lstMetamagics.Count == 0)
-                {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
-                    throw new AbortedException();
-                }
-                frmPickItem.GeneralItems = lstMetamagics;
-                frmPickItem.ShowDialog();
-                // Don't do anything else if the form was canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
 
-                objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickItem.SelectedItem + "\"]");
+                    if (lstMetamagics.Count == 0)
+                    {
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
+                        throw new AbortedException();
+                    }
+
+                    frmPickItem.SetGeneralItemsMode(lstMetamagics);
+                    frmPickItem.ShowDialog();
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
+
+                    objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickItem.SelectedItem + "\"]");
+                }
 
                 string strSelectedName = objXmlSelectedMetamagic?["name"]?.InnerText;
                 if (string.IsNullOrEmpty(strSelectedName))
@@ -4098,13 +4471,15 @@ namespace Chummer.Classes
             }
             else
             {
-                frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic);
-                frmPickMetamagic.ShowDialog();
-                // Don't do anything else if the form was canceled.
-                if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
+                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic))
+                {
+                    frmPickMetamagic.ShowDialog();
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
 
-                objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                }
             }
 
             Metamagic objAddMetamagic = new Metamagic(_objCharacter);
@@ -4113,7 +4488,7 @@ namespace Chummer.Classes
             if (objAddMetamagic.InternalId.IsEmptyGuid())
                 throw new AbortedException();
 
-            SelectedValue = objAddMetamagic.DisplayName(GlobalOptions.Language);
+            SelectedValue = objAddMetamagic.CurrentDisplayName;
 
             _objCharacter.Metamagics.Add(objAddMetamagic);
             CreateImprovement(objAddMetamagic.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Metamagic, _strUnique);
@@ -4121,13 +4496,15 @@ namespace Chummer.Classes
 
         public void addecho(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("echoes.xml");
             XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + bonusNode.InnerText + "\"]");
             string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
@@ -4146,6 +4523,8 @@ namespace Chummer.Classes
 
         public void selectecho(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("echoes.xml");
             string strForceValue = string.Empty;
             XmlNode xmlSelectedEcho;
@@ -4153,50 +4532,56 @@ namespace Chummer.Classes
             if (xmlEchoList?.Count > 0)
             {
                 List<ListItem> lstEchoes = new List<ListItem>();
-                frmSelectItem frmPickItem = new frmSelectItem();
-                foreach (XmlNode objXmlAddEcho in xmlEchoList)
+                using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
-                    string strLoopName = objXmlAddEcho.InnerText;
-                    XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
-                    // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                    if (objXmlEcho != null && objXmlAddEcho.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                    foreach (XmlNode objXmlAddEcho in xmlEchoList)
                     {
-                        lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText, objXmlEcho["translate"]?.InnerText ?? strLoopName));
+                        string strLoopName = objXmlAddEcho.InnerText;
+                        XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
+                        // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                        if (objXmlEcho != null && objXmlAddEcho.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        {
+                            lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText, objXmlEcho["translate"]?.InnerText ?? strLoopName));
+                        }
                     }
-                }
-                if (lstEchoes.Count == 0)
-                {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
-                    throw new AbortedException();
-                }
-                frmPickItem.GeneralItems = lstEchoes;
-                frmPickItem.ShowDialog();
-                // Don't do anything else if the form was canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
 
-                xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickItem.SelectedItem + "\"]");
-                string strSelectedName = xmlSelectedEcho?["name"]?.InnerText;
-                if (string.IsNullOrEmpty(strSelectedName))
-                    throw new AbortedException();
-                foreach (XmlNode objXmlAddEcho in xmlEchoList)
-                {
-                    if (strSelectedName == objXmlAddEcho.InnerText)
+                    if (lstEchoes.Count == 0)
                     {
-                        strForceValue = objXmlAddEcho.Attributes?["select"]?.InnerText ?? string.Empty;
-                        break;
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
+                        throw new AbortedException();
+                    }
+
+                    frmPickItem.SetGeneralItemsMode(lstEchoes);
+                    frmPickItem.ShowDialog();
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
+
+                    xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickItem.SelectedItem + "\"]");
+                    string strSelectedName = xmlSelectedEcho?["name"]?.InnerText;
+                    if (string.IsNullOrEmpty(strSelectedName))
+                        throw new AbortedException();
+                    foreach (XmlNode objXmlAddEcho in xmlEchoList)
+                    {
+                        if (strSelectedName == objXmlAddEcho.InnerText)
+                        {
+                            strForceValue = objXmlAddEcho.Attributes?["select"]?.InnerText ?? string.Empty;
+                            break;
+                        }
                     }
                 }
             }
             else
             {
-                frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo);
-                frmPickMetamagic.ShowDialog();
-                // Don't do anything else if the form was canceled.
-                if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
+                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo))
+                {
+                    frmPickMetamagic.ShowDialog();
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
 
-                xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                }
             }
 
             Metamagic objAddEcho = new Metamagic(_objCharacter);
@@ -4205,7 +4590,7 @@ namespace Chummer.Classes
             if (objAddEcho.InternalId.IsEmptyGuid())
                 throw new AbortedException();
 
-            SelectedValue = objAddEcho.DisplayName(GlobalOptions.Language);
+            SelectedValue = objAddEcho.CurrentDisplayName;
 
             _objCharacter.Metamagics.Add(objAddEcho);
             CreateImprovement(objAddEcho.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Echo, _strUnique);
@@ -4214,6 +4599,8 @@ namespace Chummer.Classes
         // Check for Skillwires.
         public void skillwire(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillwire");
             Log.Info("skillwire = " + bonusNode.OuterXml);
             string strUseUnique = _strUnique;
@@ -4228,6 +4615,8 @@ namespace Chummer.Classes
         // Check for Hardwires.
         public void hardwires(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("hardwire");
             string strNodeOuterXml = bonusNode.OuterXml;
             Log.Info("hardwire = " + strNodeOuterXml);
@@ -4248,6 +4637,8 @@ namespace Chummer.Classes
         // Check for Damage Resistance.
         public void damageresistance(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("damageresistance");
             Log.Info("damageresistance = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4258,6 +4649,8 @@ namespace Chummer.Classes
         // Check for Restricted Item Count.
         public void restricteditemcount(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("restricteditemcount");
             Log.Info("restricteditemcount = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4268,6 +4661,8 @@ namespace Chummer.Classes
         // Check for Judge Intentions.
         public void judgeintentions(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("judgeintentions");
             Log.Info("judgeintentions = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4278,6 +4673,8 @@ namespace Chummer.Classes
         // Check for Judge Intentions (offense only, i.e. doing the judging).
         public void judgeintentionsoffense(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("judgeintentionsoffense");
             Log.Info("judgeintentionsoffense = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4288,6 +4685,8 @@ namespace Chummer.Classes
         // Check for Judge Intentions (defense only, i.e. being judged).
         public void judgeintentionsdefense(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("judgeintentionsdefense");
             Log.Info("judgeintentionsdefense = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4298,6 +4697,8 @@ namespace Chummer.Classes
         // Check for Composure.
         public void composure(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("composure");
             Log.Info("composure = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4308,6 +4709,8 @@ namespace Chummer.Classes
         // Check for Lift and Carry.
         public void liftandcarry(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("liftandcarry");
             Log.Info("liftandcarry = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4318,6 +4721,8 @@ namespace Chummer.Classes
         // Check for Memory.
         public void memory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("memory");
             Log.Info("memory = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4328,6 +4733,8 @@ namespace Chummer.Classes
         // Check for Fatigue Resist.
         public void fatigueresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("fatigueresist");
             Log.Info("fatigueresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4338,6 +4745,8 @@ namespace Chummer.Classes
         // Check for Radiation Resist.
         public void radiationresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("radiationresist");
             Log.Info("radiationresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4348,6 +4757,8 @@ namespace Chummer.Classes
         // Check for Sonic Attacks Resist.
         public void sonicresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("sonicresist");
             Log.Info("sonicresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4358,6 +4769,8 @@ namespace Chummer.Classes
         // Check for Contact-vector Toxins Resist.
         public void toxincontactresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxincontactresist");
             Log.Info("toxincontactresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4368,6 +4781,8 @@ namespace Chummer.Classes
         // Check for Ingestion-vector Toxins Resist.
         public void toxiningestionresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxiningestionresist");
             Log.Info("toxiningestionresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4378,6 +4793,8 @@ namespace Chummer.Classes
         // Check for Inhalation-vector Toxins Resist.
         public void toxininhalationresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxininhalationresist");
             Log.Info("toxininhalationresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4388,6 +4805,8 @@ namespace Chummer.Classes
         // Check for Injection-vector Toxins Resist.
         public void toxininjectionresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxininjectionresist");
             Log.Info("toxininjectionresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4398,6 +4817,8 @@ namespace Chummer.Classes
         // Check for Contact-vector Pathogens Resist.
         public void pathogencontactresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogencontactresist");
             Log.Info("pathogencontactresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4408,6 +4829,8 @@ namespace Chummer.Classes
         // Check for Ingestion-vector Pathogens Resist.
         public void pathogeningestionresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogeningestionresist");
             Log.Info("pathogeningestionresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4418,6 +4841,8 @@ namespace Chummer.Classes
         // Check for Inhalation-vector Pathogens Resist.
         public void pathogeninhalationresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogeninhalationresist");
             Log.Info("pathogeninhalationresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4428,6 +4853,8 @@ namespace Chummer.Classes
         // Check for Injection-vector Pathogens Resist.
         public void pathogeninjectionresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogeninjectionresist");
             Log.Info("pathogeninjectionresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4438,6 +4865,8 @@ namespace Chummer.Classes
         // Check for Contact-vector Toxins Immunity.
         public void toxincontactimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxincontactimmune");
             Log.Info("toxincontactimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4447,6 +4876,8 @@ namespace Chummer.Classes
         // Check for Ingestion-vector Toxins Immunity.
         public void toxiningestionimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxiningestionimmune");
             Log.Info("toxiningestionimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4456,6 +4887,8 @@ namespace Chummer.Classes
         // Check for Inhalation-vector Toxins Immunity.
         public void toxininhalationimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxininhalationimmune");
             Log.Info("toxininhalationimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4465,6 +4898,8 @@ namespace Chummer.Classes
         // Check for Injection-vector Toxins Immunity.
         public void toxininjectionimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("toxininjectionimmune");
             Log.Info("toxininjectionimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4474,6 +4909,8 @@ namespace Chummer.Classes
         // Check for Contact-vector Pathogens Immunity.
         public void pathogencontactimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogencontactimmune");
             Log.Info("pathogencontactimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4483,6 +4920,8 @@ namespace Chummer.Classes
         // Check for Ingestion-vector Pathogens Immunity.
         public void pathogeningestionimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogeningestionimmune");
             Log.Info("pathogeningestionimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4492,6 +4931,8 @@ namespace Chummer.Classes
         // Check for Inhalation-vector Pathogens Immunity.
         public void pathogeninhalationimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogeninhalationimmune");
             Log.Info("pathogeninhalationimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4501,6 +4942,8 @@ namespace Chummer.Classes
         // Check for Injection-vector Pathogens Immunity.
         public void pathogeninjectionimmune(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("pathogeninjectionimmune");
             Log.Info("pathogeninjectionimmune = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4510,6 +4953,8 @@ namespace Chummer.Classes
         // Check for Physiological Addiction Resist if you are not addicted.
         public void physiologicaladdictionfirsttime(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("physiologicaladdictionfirsttime");
             Log.Info("physiologicaladdictionfirsttime = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4520,6 +4965,8 @@ namespace Chummer.Classes
         // Check for Psychological Addiction if you are not addicted.
         public void psychologicaladdictionfirsttime(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("psychologicaladdictionfirsttime");
             Log.Info("psychologicaladdictionfirsttime = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4530,6 +4977,8 @@ namespace Chummer.Classes
         // Check for Physiological Addiction Resist if you are addicted.
         public void physiologicaladdictionalreadyaddicted(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("physiologicaladdictionalreadyaddicted");
             Log.Info("physiologicaladdictionalreadyaddicted = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4540,6 +4989,8 @@ namespace Chummer.Classes
         // Check for Psychological Addiction if you are addicted.
         public void psychologicaladdictionalreadyaddicted(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("psychologicaladdictionalreadyaddicted");
             Log.Info("psychologicaladdictionalreadyaddicted = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4550,6 +5001,8 @@ namespace Chummer.Classes
         // Check for Recovery Dice from Stun CM Damage.
         public void stuncmrecovery(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("stuncmrecovery");
             Log.Info("stuncmrecovery = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4560,6 +5013,8 @@ namespace Chummer.Classes
         // Check for Recovery Dice from Physical CM Damage.
         public void physicalcmrecovery(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("physicalcmrecovery");
             Log.Info("physicalcmrecovery = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4570,6 +5025,8 @@ namespace Chummer.Classes
         // Check for Whether Essence is added to Recovery Dice from Stun CM Damage.
         public void addesstostuncmrecovery(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addesstostuncmrecovery");
             Log.Info("addesstostuncmrecovery = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4579,6 +5036,8 @@ namespace Chummer.Classes
         // Check for Whether Essence is added to Recovery Dice from Physical CM Damage.
         public void addesstophysicalcmrecovery(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addesstophysicalcmrecovery");
             Log.Info("addesstophysicalcmrecovery = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4588,6 +5047,8 @@ namespace Chummer.Classes
         // Check for Concealability.
         public void concealability(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("concealability");
             Log.Info("concealability = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4598,6 +5059,8 @@ namespace Chummer.Classes
         // Check for Drain Resistance.
         public void drainresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("drainresist");
             Log.Info("drainresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4608,6 +5071,8 @@ namespace Chummer.Classes
         // Check for Drain Value.
         public void drainvalue(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("drainvalue");
             Log.Info("drainvalue = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4618,6 +5083,8 @@ namespace Chummer.Classes
         // Check for Fading Resistance.
         public void fadingresist(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("fadingresist");
             Log.Info("fadingresist = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4628,6 +5095,8 @@ namespace Chummer.Classes
         // Check for Fading Value.
         public void fadingvalue(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("fadingvalue");
             Log.Info("fadingvalue = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4638,6 +5107,8 @@ namespace Chummer.Classes
         // Check for Notoriety.
         public void notoriety(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("notoriety");
             Log.Info("notoriety = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4648,6 +5119,8 @@ namespace Chummer.Classes
         // Check for Street Cred bonuses.
         public void streetcred(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("streetcred");
             Log.Info("streetcred = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4658,6 +5131,8 @@ namespace Chummer.Classes
         // Check for Street Cred Multiplier bonuses.
         public void streetcredmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("streetcredmultiplier");
             Log.Info("streetcredmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4668,6 +5143,8 @@ namespace Chummer.Classes
         // Check for Complex Form Limit.
         public void complexformlimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("complexformlimit");
             Log.Info("complexformlimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4678,6 +5155,8 @@ namespace Chummer.Classes
         // Check for Spell Limit.
         public void spelllimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spelllimit");
             Log.Info("spelllimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4688,6 +5167,8 @@ namespace Chummer.Classes
         // Check for Free Spells.
         public void freespells(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("freespells");
             Log.Info("freespells = " + bonusNode.OuterXml);
             string strSpellTypeLimit = string.Empty;
@@ -4737,10 +5218,14 @@ namespace Chummer.Classes
         // Check for Spell Category bonuses.
         public void spellcategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             spellcategorydicepool(bonusNode);
         }
         public void spellcategorydicepool(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spellcategory");
             Log.Info("spellcategory = " + bonusNode.OuterXml);
 
@@ -4752,6 +5237,8 @@ namespace Chummer.Classes
         // Check for dicepool bonuses for a specific Spell.
         public void spelldicepool(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spelldicepool");
             Log.Info("spelldicepool = " + bonusNode.OuterXml);
 
@@ -4763,6 +5250,8 @@ namespace Chummer.Classes
         // Check for Spell Category Drain bonuses.
         public void spellcategorydrain(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spellcategorydrain");
             Log.Info("spellcategorydrain = " + bonusNode.OuterXml);
             string s = bonusNode["category"]?.InnerText ?? SelectedValue;
@@ -4775,6 +5264,8 @@ namespace Chummer.Classes
         // Check for Spell Category Damage bonuses.
         public void spellcategorydamage(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spellcategorydamage");
             Log.Info("spellcategorydamage = " + bonusNode.OuterXml);
 
@@ -4786,6 +5277,8 @@ namespace Chummer.Classes
         // Check for Spell descriptor Damage bonuses.
         public void spelldescriptordamage(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spelldescriptordamage");
             Log.Info("spelldescriptordamage = " + bonusNode.OuterXml);
 
@@ -4797,6 +5290,8 @@ namespace Chummer.Classes
         // Check for Spell descriptor drain bonuses.
         public void spelldescriptordrain(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spelldescriptordrain");
             Log.Info("spelldescriptordrain = " + bonusNode.OuterXml);
 
@@ -4808,6 +5303,8 @@ namespace Chummer.Classes
         // Check for Throwing Range bonuses.
         public void throwrange(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("throwrange");
             Log.Info("throwrange = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4818,6 +5315,8 @@ namespace Chummer.Classes
         // Check for Throwing Range bonuses.
         public void throwrangestr(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("throwrange");
             Log.Info("throwrange = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4828,6 +5327,8 @@ namespace Chummer.Classes
         // Check for Throwing STR bonuses.
         public void throwstr(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("throwstr");
             Log.Info("throwstr = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4838,6 +5339,8 @@ namespace Chummer.Classes
         // Check for Skillsoft access.
         public void skillsoftaccess(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillsoftaccess");
             Log.Info("skillsoftaccess = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4852,6 +5355,8 @@ namespace Chummer.Classes
         // Check for Quickening Metamagic.
         public void quickeningmetamagic(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("quickeningmetamagic");
             Log.Info("quickeningmetamagic = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4861,6 +5366,8 @@ namespace Chummer.Classes
         // Check for ignore Stun CM Penalty.
         public void ignorecmpenaltystun(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("ignorecmpenaltystun");
             Log.Info("ignorecmpenaltystun = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4870,6 +5377,8 @@ namespace Chummer.Classes
         // Check for ignore Physical CM Penalty.
         public void ignorecmpenaltyphysical(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("ignorecmpenaltyphysical");
             Log.Info("ignorecmpenaltyphysical = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4879,6 +5388,8 @@ namespace Chummer.Classes
         // Check for a Cyborg Essence which will permanently set the character's ESS to 0.1.
         public void cyborgessence(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("cyborgessence");
             Log.Info("cyborgessence = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4888,6 +5399,8 @@ namespace Chummer.Classes
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
         public void essencepenalty(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("essencepenalty");
             Log.Info("essencepenalty = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4898,6 +5411,8 @@ namespace Chummer.Classes
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
         public void essencepenaltyt100(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("essencepenaltyt100");
             Log.Info("essencepenaltyt100 = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4908,6 +5423,8 @@ namespace Chummer.Classes
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting MAG rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
         public void essencepenaltymagonlyt100(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("essencepenaltymagonlyt100");
             Log.Info("essencepenaltymagonlyt100 = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4918,6 +5435,8 @@ namespace Chummer.Classes
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
         public void essencemax(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("essencemax");
             Log.Info("essencemax = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -4928,6 +5447,8 @@ namespace Chummer.Classes
         // Check for Select Sprite.
         public void selectsprite(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectsprite");
             Log.Info("selectsprite = " + bonusNode.OuterXml);
             List<ListItem> lstCritters = new List<ListItem>();
@@ -4939,28 +5460,30 @@ namespace Chummer.Classes
                         lstCritters.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
                     }
 
-            frmSelectItem frmPickItem = new frmSelectItem
+            using (frmSelectItem frmPickItem = new frmSelectItem())
             {
-                GeneralItems = lstCritters
-            };
-            frmPickItem.ShowDialog();
+                frmPickItem.SetGeneralItemsMode(lstCritters);
+                frmPickItem.ShowDialog();
 
-            if (frmPickItem.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickItem.SelectedItem;
+
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.AddSprite,
+                    _strUnique);
             }
-
-            SelectedValue = frmPickItem.SelectedItem;
-
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.AddSprite,
-                _strUnique);
         }
 
         // Check for Black Market Discount.
         public void blackmarketdiscount(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
             XmlNodeList nodeList = XmlManager.Load("options.xml").SelectNodes("/chummer/blackmarketpipelinecategories/category");
@@ -4971,29 +5494,32 @@ namespace Chummer.Classes
                     select new ListItem(objNode.InnerText,
                         objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)).ToList();
 
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
-                    GeneralItems = itemList
-                };
-
-                Log.Info("_strLimitSelection = " + LimitSelection);
-                Log.Info("_strForcedValue = " + ForcedValue);
-
-                if (!string.IsNullOrEmpty(LimitSelection))
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+                })
                 {
-                    frmPickItem.ForceItem = LimitSelection;
-                    frmPickItem.Opacity = 0;
+                    frmPickItem.SetGeneralItemsMode(itemList);
+
+                    Log.Info("_strLimitSelection = " + LimitSelection);
+                    Log.Info("_strForcedValue = " + ForcedValue);
+
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        frmPickItem.ForceItem(LimitSelection);
+                        frmPickItem.Opacity = 0;
+                    }
+
+                    frmPickItem.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
                 }
-
-                frmPickItem.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-                SelectedValue = frmPickItem.SelectedName;
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SelectedValue = " + SelectedValue);
@@ -5007,6 +5533,8 @@ namespace Chummer.Classes
         // Select Armor (Mostly used for Custom Fit (Stack)).
         public void selectarmor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectarmor");
             Log.Info("selectarmor = " + bonusNode.OuterXml);
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -5041,41 +5569,43 @@ namespace Chummer.Classes
 
             if (lstArmors.Count > 0)
             {
-
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
-                    GeneralItems = lstArmors
-                };
-
-                Log.Info("_strLimitSelection = " + LimitSelection);
-                Log.Info("_strForcedValue = " + ForcedValue);
-
-                if (!string.IsNullOrEmpty(LimitSelection))
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+                })
                 {
-                    frmPickItem.ForceItem = LimitSelection;
-                    frmPickItem.Opacity = 0;
+                    frmPickItem.SetGeneralItemsMode(lstArmors);
+
+                    Log.Info("_strLimitSelection = " + LimitSelection);
+                    Log.Info("_strForcedValue = " + ForcedValue);
+
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        frmPickItem.ForceItem(LimitSelection);
+                        frmPickItem.Opacity = 0;
+                    }
+
+                    frmPickItem.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedItem;
+
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + frmPickItem.SelectedItem);
                 }
-
-                frmPickItem.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedValue = frmPickItem.SelectedItem;
-
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("SelectedValue = " + frmPickItem.SelectedItem);
             }
-
         }
 
         // Select a specific piece of Cyberware.
         public void selectcyberware(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectcyberware");
             Log.Info("selectcyberware = " + bonusNode.OuterXml);
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -5099,39 +5629,43 @@ namespace Chummer.Classes
 
             if (list.Count <= 0)
                 throw new AbortedException();
-            frmSelectItem frmPickItem = new frmSelectItem
+            using (frmSelectItem frmPickItem = new frmSelectItem
             {
-                Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
-                GeneralItems = list
-            };
-
-            Log.Info("_strLimitSelection = " + LimitSelection);
-            Log.Info("_strForcedValue = " + ForcedValue);
-
-            if (!string.IsNullOrEmpty(LimitSelection))
+                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+            })
             {
-                frmPickItem.ForceItem = LimitSelection;
-                frmPickItem.Opacity = 0;
+                frmPickItem.SetGeneralItemsMode(list);
+
+                Log.Info("_strLimitSelection = " + LimitSelection);
+                Log.Info("_strForcedValue = " + ForcedValue);
+
+                if (!string.IsNullOrEmpty(LimitSelection))
+                {
+                    frmPickItem.ForceItem(LimitSelection);
+                    frmPickItem.Opacity = 0;
+                }
+
+                frmPickItem.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickItem.SelectedItem;
+
+                string strSelectedValue = frmPickItem.SelectedItem;
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SelectedValue = " + strSelectedValue);
             }
-
-            frmPickItem.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickItem.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
-            }
-
-            SelectedValue = frmPickItem.SelectedItem;
-
-            string strSelectedValue = frmPickItem.SelectedItem;
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SelectedValue = " + strSelectedValue);
         }
 
         // Select Weapon (custom entry for things like Spare Clip).
         public void selectweapon(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectweapon");
             Log.Info("selectweapon = " + bonusNode.OuterXml);
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -5141,32 +5675,33 @@ namespace Chummer.Classes
             {
                 // If the character is null (this is a Vehicle), the user must enter their own string.
                 // Display the Select Item window and record the value that was entered.
-                frmSelectText frmPickText = new frmSelectText
+                using (frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
-                };
-
-                Log.Info("_strLimitSelection = " + LimitSelection);
-                Log.Info("_strForcedValue = " + ForcedValue);
-
-                if (!string.IsNullOrEmpty(LimitSelection))
+                    Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+                })
                 {
-                    frmPickText.SelectedValue = LimitSelection;
-                    frmPickText.Opacity = 0;
+                    Log.Info("_strLimitSelection = " + LimitSelection);
+                    Log.Info("_strForcedValue = " + ForcedValue);
+
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        frmPickText.SelectedValue = LimitSelection;
+                        frmPickText.Opacity = 0;
+                    }
+
+                    frmPickText.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickText.SelectedValue;
+
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + frmPickText.SelectedValue);
                 }
-
-                frmPickText.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickText.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedValue = frmPickText.SelectedValue;
-
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("SelectedValue = " + frmPickText.SelectedValue);
             }
             else
             {
@@ -5183,33 +5718,32 @@ namespace Chummer.Classes
 
                 if (string.IsNullOrWhiteSpace(LimitSelection) || lstWeapons.Any(item => item.Name == LimitSelection))
                 {
-                    frmSelectItem frmPickItem = new frmSelectItem
+                    using (frmSelectItem frmPickItem = new frmSelectItem
                     {
-                        Description =
-                            string.Format(
-                                LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language),
-                                _strFriendlyName),
-                        GeneralItems = lstWeapons
-                    };
-
-                    Log.Info("_strLimitSelection = " + LimitSelection);
-                    Log.Info("_strForcedValue = " + ForcedValue);
-
-                    if (!string.IsNullOrEmpty(LimitSelection))
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+                    })
                     {
-                        frmPickItem.ForceItem = LimitSelection;
-                        frmPickItem.Opacity = 0;
+                        frmPickItem.SetGeneralItemsMode(lstWeapons);
+
+                        Log.Info("_strLimitSelection = " + LimitSelection);
+                        Log.Info("_strForcedValue = " + ForcedValue);
+
+                        if (!string.IsNullOrEmpty(LimitSelection))
+                        {
+                            frmPickItem.ForceItem(LimitSelection);
+                            frmPickItem.Opacity = 0;
+                        }
+
+                        frmPickItem.ShowDialog();
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        SelectedValue = frmPickItem.SelectedName;
                     }
-
-                    frmPickItem.ShowDialog();
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
-                    }
-
-                    SelectedValue = frmPickItem.SelectedName;
 
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("SelectedValue = " + SelectedValue);
@@ -5231,6 +5765,8 @@ namespace Chummer.Classes
         // Select an Optional Power.
         public void optionalpowers(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectoptionalpower");
 
             // Check to see if there is only one possible selection because of _strLimitSelection.
@@ -5242,7 +5778,7 @@ namespace Chummer.Classes
 
             string strForcePower = !string.IsNullOrEmpty(LimitSelection) ? LimitSelection : string.Empty;
             int powerCount = 1;
-            if (strForcePower == string.Empty && bonusNode.Attributes?["count"] != null)
+            if (string.IsNullOrEmpty(strForcePower) && bonusNode.Attributes?["count"] != null)
             {
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
 
@@ -5250,19 +5786,21 @@ namespace Chummer.Classes
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
-                    objCountString.CheapReplace(strCount, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
-                    objCountString.CheapReplace(strCount, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
+                    objCountString.CheapReplace(strCount, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    objCountString.CheapReplace(strCount, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCountString.ToString(), out bool blnIsSuccess);
-                powerCount = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
+                powerCount = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
             }
 
             for (int i = 0; i < powerCount; i++)
             {
                 List<Tuple<string, string>> lstPowerExtraPairs = new List<Tuple<string, string>>();
                 using (XmlNodeList xmlOptionalPowerList = bonusNode.SelectNodes("optionalpower"))
+                {
                     if (xmlOptionalPowerList?.Count > 0)
+                    {
                         foreach (XmlNode objXmlOptionalPower in xmlOptionalPowerList)
                         {
                             string strPower = objXmlOptionalPower.InnerText;
@@ -5272,42 +5810,49 @@ namespace Chummer.Classes
                                     objXmlOptionalPower.Attributes?["select"]?.InnerText));
                             }
                         }
+                    }
+                }
 
                 // Display the Select Critter Power window and record which power was selected.
-                frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(lstPowerExtraPairs.ToArray())
+                using (frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(lstPowerExtraPairs.ToArray())
                 {
                     Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower",
                         GlobalOptions.Language)
-                };
-
-                frmPickPower.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                })
                 {
-                    throw new AbortedException();
+                    frmPickPower.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    // Record the improvement.
+                    XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml")
+                        .SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+                    CritterPower objPower = new CritterPower(_objCharacter);
+                    objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
+                    if (objPower.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    objPower.Grade = -1;
+                    _objCharacter.CritterPowers.Add(objPower);
+                    CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.CritterPower, _strUnique);
                 }
-
-                // Record the improvement.
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml")
-                    .SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-                CritterPower objPower = new CritterPower(_objCharacter);
-                objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
-                if (objPower.InternalId.IsEmptyGuid())
-                    throw new AbortedException();
-
-                objPower.Grade = -1;
-                _objCharacter.CritterPowers.Add(objPower);
-                CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.CritterPower, _strUnique);
             }
         }
 
         public void critterpowers(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
             using (XmlNodeList xmlPowerList = bonusNode.SelectNodes("power"))
+            {
                 if (xmlPowerList?.Count > 0)
+                {
                     foreach (XmlNode objXmlPower in xmlPowerList)
                     {
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -5327,13 +5872,19 @@ namespace Chummer.Classes
                         _objCharacter.CritterPowers.Add(objPower);
                         CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique);
                     }
+                }
+            }
         }
 
         // Check for Adept Power Points.
         public void critterpowerlevels(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             using (XmlNodeList xmlPowerList = bonusNode.SelectNodes("power"))
+            {
                 if (xmlPowerList?.Count > 0)
+                {
                     foreach (XmlNode objXmlPower in xmlPowerList)
                     {
                         Log.Info("critterpowerlevels");
@@ -5343,16 +5894,22 @@ namespace Chummer.Classes
                             _strUnique,
                             ImprovementManager.ValueToInt(_objCharacter, objXmlPower["val"]?.InnerText, _intRating));
                     }
+                }
+            }
         }
 
         public void publicawareness(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
         public void dealerconnection(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("dealerconnection");
             List<ListItem> lstItems = new List<ListItem>();
             using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
@@ -5361,38 +5918,43 @@ namespace Chummer.Classes
                     {
                         if (!_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection && objImprovement.UniqueName == objNode.InnerText))
                         {
-                            lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText, GlobalOptions.Language)));
+                            lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText)));
                         }
                     }
             if (lstItems.Count == 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo ,LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                 throw new AbortedException();
             }
-            frmSelectItem frmPickItem = new frmSelectItem
+
+            using (frmSelectItem frmPickItem = new frmSelectItem
             {
-                GeneralItems = lstItems,
                 AllowAutoSelect = false
-            };
-            frmPickItem.ShowDialog();
-            // Make sure the dialogue window was not canceled.
-            if (frmPickItem.DialogResult == DialogResult.Cancel)
+            })
             {
-                throw new AbortedException();
+                frmPickItem.SetGeneralItemsMode(lstItems);
+                frmPickItem.ShowDialog();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem);
+
+                Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
+                Log.Info("SourceName = " + SourceName);
+
+                // Create the Improvement.
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.DealerConnection, frmPickItem.SelectedItem);
             }
-
-            SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem, GlobalOptions.Language);
-
-            Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
-            Log.Info("SourceName = " + SourceName);
-
-            // Create the Improvement.
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.DealerConnection, frmPickItem.SelectedItem);
         }
 
         public void unlockskills(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             List<string> options = bonusNode.InnerText.Split(',').Select(x => x.Trim()).ToList();
             string final;
             if (options.Count == 0)
@@ -5400,33 +5962,36 @@ namespace Chummer.Classes
                 Utils.BreakIfDebug();
                 throw new AbortedException();
             }
-            else if (options.Count == 1)
+
+            if (options.Count == 1)
             {
                 final = options[0];
             }
             else
             {
-                frmSelectItem frmSelect = new frmSelectItem
+                using (frmSelectItem frmSelect = new frmSelectItem
                 {
-                    AllowAutoSelect = true,
-                    GeneralItems = options.Select(x => new ListItem(x, x)).ToList()
-                };
+                    AllowAutoSelect = true
+                })
+                {
+                    frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
 
-                if (_objCharacter.Pushtext.Count > 0)
-                {
-                    frmSelect.ForceItem = _objCharacter.Pushtext.Pop();
+                    if (_objCharacter.Pushtext.Count > 0)
+                    {
+                        frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                    }
+
+                    if (frmSelect.ShowDialog() == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    final = frmSelect.SelectedItem;
                 }
-
-                if (frmSelect.ShowDialog() == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                final = frmSelect.SelectedItem;
             }
 
             string strName = bonusNode.Attributes?["name"]?.InnerText;
-            if (Enum.TryParse(final, out SkillsSection.FilterOptions skills))
+            if (Enum.TryParse(final, out SkillsSection.FilterOption skills))
             {
                 if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName))
                 {
@@ -5443,9 +6008,13 @@ namespace Chummer.Classes
 
         public void addqualities(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("addquality"))
+            {
                 if (xmlQualityList?.Count > 0)
+                {
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
                         if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
@@ -5454,13 +6023,13 @@ namespace Chummer.Classes
 
                         string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
                         int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);
-                        bool blnDoesNotContributeToBP = objXmlAddQuality.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString.ToLower();
+                        bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
 
                         for (int i = 0; i < intCount; ++i)
                         {
                             // Makes sure we aren't over our limits for this particular quality from this overall source
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                                objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName))
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>();
                                 Quality objAddQuality = new Quality(_objCharacter);
@@ -5483,14 +6052,20 @@ namespace Chummer.Classes
                             }
                         }
                     }
+                }
+            }
         }
 
         public void selectquality(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             List<ListItem> lstQualities = new List<ListItem>();
             using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
+            {
                 if (xmlQualityList?.Count > 0)
+                {
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
@@ -5504,20 +6079,29 @@ namespace Chummer.Classes
                             }
                         }
                     }
+                }
+            }
+
             if (lstQualities.Count == 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                 throw new AbortedException();
             }
 
-            frmSelectItem frmPickItem = new frmSelectItem {GeneralItems = lstQualities};
-            frmPickItem.ShowDialog();
+            XmlNode objXmlSelectedQuality;
+            XmlNode objXmlBonusQuality;
+            using (frmSelectItem frmPickItem = new frmSelectItem())
+            {
+                frmPickItem.SetGeneralItemsMode(lstQualities);
+                frmPickItem.ShowDialog();
 
-            // Don't do anything else if the form was canceled.
-            if (frmPickItem.DialogResult == DialogResult.Cancel)
-                throw new AbortedException();
-            XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
-            XmlNode objXmlBonusQuality = bonusNode.SelectSingleNode("quality[\"" + frmPickItem.SelectedItem + "\"]");
+                // Don't do anything else if the form was canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    throw new AbortedException();
+                objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
+                objXmlBonusQuality = bonusNode.SelectSingleNode("quality[\"" + frmPickItem.SelectedItem + "\"]");
+            }
+
             Quality objAddQuality = new Quality(_objCharacter);
             List<Weapon> lstWeapons = new List<Weapon>();
 
@@ -5531,9 +6115,11 @@ namespace Chummer.Classes
             if (bonusNode["discountqualities"] != null)
             {
                 lstQualities.Clear();
-                lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
+                lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
                 using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
+                {
                     if (xmlQualityNodeList?.Count > 0)
+                    {
                         foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                         {
                             strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -5548,32 +6134,38 @@ namespace Chummer.Classes
                                 lstQualities.Add(new ListItem(strName, strDisplayName));
                             }
                         }
+                    }
+                }
+
                 if (lstQualities.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
                     throw new AbortedException();
                 }
 
-                frmPickItem = new frmSelectItem {GeneralItems = lstQualities};
-                frmPickItem.ShowDialog();
-
-                // Don't do anything else if the form was canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
-                if (frmPickItem.SelectedItem != "None")
+                using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
-                    objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
-                    objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[\"" + frmPickItem.SelectedItem + "\"]");
-                    int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.Attributes?["discount"].InnerText);
-                    Quality discountQuality = new Quality(_objCharacter)
+                    frmPickItem.SetGeneralItemsMode(lstQualities);
+                    frmPickItem.ShowDialog();
+
+                    // Don't do anything else if the form was canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        throw new AbortedException();
+                    if (frmPickItem.SelectedItem != "None")
                     {
-                        BP = 0
-                    };
-                    strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-                    discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-                    _objCharacter.Qualities.Add(discountQuality);
-                    objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
-                    CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                        objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
+                        objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[\"" + frmPickItem.SelectedItem + "\"]");
+                        int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.Attributes?["discount"].InnerText, GlobalOptions.InvariantCultureInfo);
+                        Quality discountQuality = new Quality(_objCharacter)
+                        {
+                            BP = 0
+                        };
+                        strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
+                        discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                        _objCharacter.Qualities.Add(discountQuality);
+                        objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
+                        CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                    }
                 }
             }
 
@@ -5585,6 +6177,8 @@ namespace Chummer.Classes
 
         public void addskillspecialization(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             string strSkill = bonusNode["skill"]?.InnerText ?? string.Empty;
             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
             if (objSkill != null)
@@ -5600,6 +6194,8 @@ namespace Chummer.Classes
 
         public void addskillspecializationoption(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             List<Skill> lstSkills = new List<Skill>();
             XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills/skill");
             if (xmlSkillsList?.Count > 0)
@@ -5642,68 +6238,84 @@ namespace Chummer.Classes
 
         public void allowspellrange(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("allowspellrange");
             CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.AllowSpellRange);
         }
 
         public void allowspellcategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("allowspellcategory");
-            if (bonusNode.InnerXml != string.Empty)
+            if (!string.IsNullOrEmpty(bonusNode.InnerXml))
             {
                 CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.AllowSpellCategory);
             }
             else
             {
                 // Display the Select Spell window.
-                frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
-                };
-                frmPickSpellCategory.ShowDialog();
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
+                })
+                {
+                    frmPickSpellCategory.ShowDialog();
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.AllowSpellCategory);
                 }
-                CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.AllowSpellCategory);
             }
         }
 
         public void limitspellrange(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("limitspellrange");
             CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.LimitSpellRange);
         }
 
         public void limitspellcategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("limitspellcategory");
-            if (bonusNode.InnerXml != string.Empty)
+            if (!string.IsNullOrEmpty(bonusNode.InnerXml))
             {
                 CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.LimitSpellCategory);
             }
             else
             {
                 // Display the Select Spell window.
-                frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
-                };
-                frmPickSpellCategory.ShowDialog();
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
+                })
+                {
+                    frmPickSpellCategory.ShowDialog();
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.LimitSpellCategory);
                 }
-                CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.LimitSpellCategory);
             }
         }
 
         public void limitspelldescriptor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("limitspelldescriptor");
             // Display the Select Spell window.
             string strSelected;
@@ -5713,24 +6325,29 @@ namespace Chummer.Classes
             }
             else
             {
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor", GlobalOptions.Language)
-                };
-                frmPickItem.ShowDialog();
+                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
+                })
+                {
+                    frmPickItem.ShowDialog();
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelected = frmPickItem.SelectedItem;
                 }
-                strSelected = frmPickItem.SelectedItem;
             }
             CreateImprovement(strSelected, Improvement.ImprovementType.LimitSpellDescriptor);
         }
 
         public void blockspelldescriptor(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blockspelldescriptor");
             // Display the Select Spell window.
             string strSelected;
@@ -5740,18 +6357,21 @@ namespace Chummer.Classes
             }
             else
             {
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor", GlobalOptions.Language)
-                };
-                frmPickItem.ShowDialog();
+                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
+                })
+                {
+                    frmPickItem.ShowDialog();
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelected = frmPickItem.SelectedItem;
                 }
-                strSelected = frmPickItem.SelectedItem;
             }
             CreateImprovement(strSelected, Improvement.ImprovementType.BlockSpellDescriptor);
         }
@@ -5762,12 +6382,14 @@ namespace Chummer.Classes
         /// <param name="bonusNode"></param>
         public void addsprite(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addspirit");
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool addToSelected = true;
             if (bonusNode.SelectSingleNode("addtoselected") != null)
             {
-                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value, GlobalOptions.InvariantCultureInfo);
             }
             AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected, "Sprites");
         }
@@ -5778,12 +6400,14 @@ namespace Chummer.Classes
         /// <param name="bonusNode"></param>
         public void addspirit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addspirit");
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool addToSelected = true;
             if (bonusNode.SelectSingleNode("addtoselected") != null)
             {
-                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value, GlobalOptions.InvariantCultureInfo);
             }
             AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected, "Spirits");
         }
@@ -5793,18 +6417,22 @@ namespace Chummer.Classes
         /// <param name="bonusNode"></param>
         public void limitspiritcategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("limitspiritcategory");
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool addToSelected = true;
             if (bonusNode.SelectSingleNode("addtoselected") != null)
             {
-                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value, GlobalOptions.InvariantCultureInfo);
             }
             AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
         }
 
         private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
         {
+            if (xmlAllowedSpirits == null)
+                throw new ArgumentNullException(nameof(xmlAllowedSpirits));
             Log.Info("addspiritorsprite");
             HashSet<string> setAllowed = new HashSet<string>();
             foreach (XmlNode n in xmlAllowedSpirits)
@@ -5814,48 +6442,67 @@ namespace Chummer.Classes
 
             List<ListItem> lstSpirits = new List<ListItem>();
             using (XmlNodeList xmlSpirits = XmlManager.Load(xmlDoc).SelectNodes("/chummer/spirits/spirit"))
+            {
                 if (xmlSpirits?.Count > 0)
+                {
                     foreach (XmlNode xmlSpirit in xmlSpirits)
                     {
                         string strSpiritName = xmlSpirit["name"]?.InnerText;
-                        if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
+                        if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
+                            continue;
                         lstSpirits.Add(new ListItem(strSpiritName,
                             xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                     }
+                }
+            }
 
-            if (strCritterCategory != string.Empty)
+            if (!string.IsNullOrEmpty(strCritterCategory))
             {
                 using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml").SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
+                {
                     if (xmlSpirits?.Count > 0)
+                    {
                         foreach (XmlNode xmlSpirit in xmlSpirits)
                         {
                             string strSpiritName = xmlSpirit["name"]?.InnerText;
-                            if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
+                            if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
+                                continue;
                             lstSpirits.Add(new ListItem(strSpiritName,
                                 xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                         }
+                    }
+                }
             }
 
-            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits, ForceItem = ForcedValue};
-            frmSelect.ShowDialog();
-            if (frmSelect.DialogResult == DialogResult.Cancel)
+            using (frmSelectItem frmSelect = new frmSelectItem())
             {
-                throw new AbortedException();
-            }
+                frmSelect.SetGeneralItemsMode(lstSpirits);
+                frmSelect.ForceItem(ForcedValue);
+                frmSelect.ShowDialog();
+                if (frmSelect.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
 
-            if (addToSelectedValue)
-            {
-                if (string.IsNullOrEmpty(SelectedValue)) SelectedValue = frmSelect.SelectedItem;
-                else SelectedValue += ", " + frmSelect.SelectedItem;
+                if (addToSelectedValue)
+                {
+                    if (string.IsNullOrEmpty(SelectedValue))
+                        SelectedValue = frmSelect.SelectedItem;
+                    else
+                        SelectedValue += ", " + frmSelect.SelectedItem;
+                }
+
+                Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
+                Log.Info("SourceName = " + SourceName);
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType, _strUnique);
             }
-            Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
-            Log.Info("SourceName = " + SourceName);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType, _strUnique);
         }
         #endregion
         public void movementreplace(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("movementreplace");
             Log.Info("movementreplace = " + bonusNode.OuterXml);
 
@@ -5863,12 +6510,12 @@ namespace Chummer.Classes
             string strSpeed = bonusNode["speed"]?.InnerText;
             if (!string.IsNullOrEmpty(strSpeed))
             {
-                switch (strSpeed.ToLower())
+                switch (strSpeed.ToUpperInvariant())
                 {
-                    case "run":
+                    case "RUN":
                         imp = Improvement.ImprovementType.RunSpeed;
                         break;
-                    case "sprint":
+                    case "SPRINT":
                         imp = Improvement.ImprovementType.SprintSpeed;
                         break;
                 }
@@ -5894,6 +6541,8 @@ namespace Chummer.Classes
         }
         public void addlimb(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addlimb");
             Log.Info("addlimb = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5909,6 +6558,8 @@ namespace Chummer.Classes
 
         public void attributekarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("attributekarmacost");
             Log.Info("attributekarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5920,6 +6571,8 @@ namespace Chummer.Classes
 
         public void activeskillkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("activeskillkarmacost");
             Log.Info("activeskillkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5931,6 +6584,8 @@ namespace Chummer.Classes
 
         public void skillgroupkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupkarmacost");
             Log.Info("skillgroupkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5942,6 +6597,8 @@ namespace Chummer.Classes
 
         public void knowledgeskillkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("knowledgeskillkarmacost");
             Log.Info("knowledgeskillkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5953,6 +6610,8 @@ namespace Chummer.Classes
 
         public void knowledgeskillkarmacostmin(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("knowledgeskillkarmacostmin");
             Log.Info("knowledgeskillkarmacostmin = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5964,6 +6623,8 @@ namespace Chummer.Classes
 
         public void skilldisable(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skilldisable");
             Log.Info("skilldisable = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5972,6 +6633,8 @@ namespace Chummer.Classes
 
         public void skillgroupdisable(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupdisable");
             Log.Info("skillgroupdisable = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -5980,6 +6643,8 @@ namespace Chummer.Classes
 
         public void skillgroupdisablechoice(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupdisablechoice");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
@@ -5989,34 +6654,40 @@ namespace Chummer.Classes
             {
                 List<ListItem> lstSkills = new List<ListItem>();
                 using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
+                {
                     if (objXmlGroups != null)
+                    {
                         foreach (XmlNode objXmlGroup in objXmlGroups)
                         {
                             lstSkills.Add(new ListItem(objXmlGroup.InnerText,
-                                LanguageManager.TranslateExtra(objXmlGroup.InnerText, GlobalOptions.Language)));
+                                LanguageManager.TranslateExtra(objXmlGroup.InnerText)));
                         }
+                    }
+                }
 
                 if (lstSkills.Count > 1)
                 {
                     lstSkills.Sort(CompareListItems.CompareNames);
                 }
 
-                frmSelectItem frmPickItem = new frmSelectItem
+                using (frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    GeneralItems = lstSkills,
                     SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                    AllowAutoSelect = false,
-                    Description = LanguageManager.GetString("String_DisableSkillGroupPrompt")
-                };
-                frmPickItem.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
+                    AllowAutoSelect = false
+                })
                 {
-                    throw new AbortedException();
-                }
+                    frmPickItem.SetGeneralItemsMode(lstSkills);
+                    frmPickItem.ShowDialog();
 
-                SelectedValue = frmPickItem.SelectedName;
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
+                }
             }
 
             Log.Info("skillgroupdisablechoice");
@@ -6028,6 +6699,8 @@ namespace Chummer.Classes
 
         public void skillgroupcategorydisable(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupcategorydisable");
             Log.Info("skillgroupcategorydisable = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6036,6 +6709,8 @@ namespace Chummer.Classes
 
         public void skillgroupcategorykarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupcategorykarmacost");
             Log.Info("skillgroupcategorykarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6047,6 +6722,8 @@ namespace Chummer.Classes
 
         public void skillcategorykarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategorykarmacost");
             Log.Info("skillcategorykarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6058,6 +6735,8 @@ namespace Chummer.Classes
 
         public void skillcategoryspecializationkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategoryspecializationkarmacost");
             Log.Info("skillcategoryspecializationkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6069,6 +6748,8 @@ namespace Chummer.Classes
 
         public void attributepointcost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("attributepointcost");
             Log.Info("attributepointcost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6080,6 +6761,8 @@ namespace Chummer.Classes
 
         public void activeskillpointcost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("activeskillpointcost");
             Log.Info("activeskillpointcost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6091,6 +6774,8 @@ namespace Chummer.Classes
 
         public void skillgrouppointcost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgrouppointcost");
             Log.Info("skillgrouppointcost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6102,6 +6787,8 @@ namespace Chummer.Classes
 
         public void knowledgeskillpointcost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("knowledgeskillpointcost");
             Log.Info("knowledgeskillpointcost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6113,6 +6800,8 @@ namespace Chummer.Classes
 
         public void skillgroupcategorypointcost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupcategorypointcost");
             Log.Info("skillgroupcategorypointcost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6124,6 +6813,8 @@ namespace Chummer.Classes
 
         public void skillcategorypointcost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategorypointcost");
             Log.Info("skillcategorypointcost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6135,6 +6826,8 @@ namespace Chummer.Classes
 
         public void newspellkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newspellkarmacost");
             Log.Info("newspellkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6144,6 +6837,8 @@ namespace Chummer.Classes
 
         public void newcomplexformkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newcomplexformkarmacost");
             Log.Info("newcomplexformkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6153,6 +6848,8 @@ namespace Chummer.Classes
 
         public void newaiprogramkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newaiprogramkarmacost");
             Log.Info("newaiprogramkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6162,6 +6859,8 @@ namespace Chummer.Classes
 
         public void newaiadvancedprogramkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newaiadvancedprogramkarmacost");
             Log.Info("newaiadvancedprogramkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6171,6 +6870,8 @@ namespace Chummer.Classes
 
         public void attributekarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("attributekarmacostmultiplier");
             Log.Info("attributekarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6182,6 +6883,8 @@ namespace Chummer.Classes
 
         public void activeskillkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("activeskillkarmacostmultiplier");
             Log.Info("activeskillkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6193,6 +6896,8 @@ namespace Chummer.Classes
 
         public void skillgroupkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupkarmacostmultiplier");
             Log.Info("skillgroupkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6204,6 +6909,8 @@ namespace Chummer.Classes
 
         public void knowledgeskillkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("knowledgeskillkarmacostmultiplier");
             Log.Info("knowledgeskillkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6215,6 +6922,8 @@ namespace Chummer.Classes
 
         public void skillgroupcategorykarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupcategorykarmacostmultiplier");
             Log.Info("skillgroupcategorykarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6226,6 +6935,8 @@ namespace Chummer.Classes
 
         public void skillcategorykarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategorykarmacostmultiplier");
             Log.Info("skillcategorykarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6237,6 +6948,8 @@ namespace Chummer.Classes
 
         public void skillcategoryspecializationkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategoryspecializationkarmacostmultiplier");
             Log.Info("skillcategoryspecializationkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6248,6 +6961,8 @@ namespace Chummer.Classes
 
         public void attributepointcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("attributepointcostmultiplier");
             Log.Info("attributepointcostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6259,6 +6974,8 @@ namespace Chummer.Classes
 
         public void activeskillpointcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillpointcostmultiplier");
             Log.Info("skillpointcosmultipliert = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6270,6 +6987,8 @@ namespace Chummer.Classes
 
         public void skillgrouppointcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgrouppointcostmultiplier");
             Log.Info("skillgrouppointcostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6281,6 +7000,8 @@ namespace Chummer.Classes
 
         public void knowledgeskillpointcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillpointcostmultiplier");
             Log.Info("skillpointcosmultipliert = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6292,6 +7013,8 @@ namespace Chummer.Classes
 
         public void skillgroupcategorypointcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillgroupcategorypointcostmultiplier");
             Log.Info("skillgroupcategorypointcostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6303,6 +7026,8 @@ namespace Chummer.Classes
 
         public void skillcategorypointcostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("skillcategorypointcostmultiplier");
             Log.Info("skillcategorypointcostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6314,6 +7039,8 @@ namespace Chummer.Classes
 
         public void newspellkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newspellkarmacostmultiplier");
             Log.Info("newspellkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6323,6 +7050,8 @@ namespace Chummer.Classes
 
         public void newcomplexformkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newcomplexformkarmacostmultiplier");
             Log.Info("newcomplexformkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6332,6 +7061,8 @@ namespace Chummer.Classes
 
         public void newaiprogramkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newaiprogramkarmacostmultiplier");
             Log.Info("newaiprogramkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6341,6 +7072,8 @@ namespace Chummer.Classes
 
         public void newaiadvancedprogramkarmacostmultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("newaiadvancedprogramkarmacostmultiplier");
             Log.Info("newaiadvancedprogramkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6350,6 +7083,8 @@ namespace Chummer.Classes
 
         public void blockskillspecializations(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blockskillspecializations");
             Log.Info("blockskillspecializations = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6358,6 +7093,8 @@ namespace Chummer.Classes
 
         public void blockskillcategoryspecializations(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blockskillcategoryspecializations");
             Log.Info("blockskillcategoryspecializations = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6367,6 +7104,8 @@ namespace Chummer.Classes
         // Flat modifier to cost of binding a focus
         public void focusbindingkarmacost(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("focusbindingkarmacost");
             Log.Info("focusbindingkarmacost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6377,6 +7116,8 @@ namespace Chummer.Classes
         // Flat modifier to the number that is multiplied by a focus' rating to get the focus' binding karma cost
         public void focusbindingkarmamultiplier(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("focusbindingkarmamultiplier");
             Log.Info("focusbindingkarmamultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6386,6 +7127,8 @@ namespace Chummer.Classes
 
         public void magicianswaydiscount(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("magicianswaydiscount");
             Log.Info("magicianswaydiscount = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6394,6 +7137,8 @@ namespace Chummer.Classes
 
         public void burnoutsway(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("burnoutsway");
             Log.Info("burnoutsway = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6403,6 +7148,8 @@ namespace Chummer.Classes
         // Add a specific Cyber/Bioware to the Character.
         public void addware(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("addware");
 
             Log.Info("addware = " + bonusNode.OuterXml);
@@ -6462,6 +7209,8 @@ namespace Chummer.Classes
 
         public void weaponaccuracy(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("weaponaccuracy");
             Log.Info("weaponaccuracy = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6470,6 +7219,8 @@ namespace Chummer.Classes
 
         public void weaponskillaccuracy(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("weaponskillaccuracy");
             Log.Info("weaponskillaccuracy = " + bonusNode.OuterXml);
 
@@ -6498,6 +7249,8 @@ namespace Chummer.Classes
 
         public void metageniclimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -6505,6 +7258,8 @@ namespace Chummer.Classes
 
         public void specialmodificationlimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialModificationLimit, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -6512,6 +7267,8 @@ namespace Chummer.Classes
 
         public void cyberadeptdaemon(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             //TODO: I'm not happy with this.
             //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance and cut the submersion grade in half.
@@ -6528,6 +7285,8 @@ namespace Chummer.Classes
         /// <param name="bonusNode"></param>
         public void actiondicepool(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("actiondicepool");
             CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActionDicePool,
                 _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
@@ -6535,6 +7294,8 @@ namespace Chummer.Classes
 
         public void contactkarma(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("contactkarma");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaDiscount, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -6542,6 +7303,8 @@ namespace Chummer.Classes
 
         public void contactkarmaminimum(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("contactkarmaminimum");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaMinimum, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
@@ -6550,6 +7313,8 @@ namespace Chummer.Classes
         // Enable Sprite Fettering.
         public void allowspritefettering(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("AllowSpriteFettering");
             Log.Info("AllowSpriteFettering = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6559,6 +7324,8 @@ namespace Chummer.Classes
         // Enable the Convert to Cyberzombie methods.
         public void enablecyberzombie(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("enablecyberzombie");
             Log.Info("enablecyberzombie = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6566,6 +7333,8 @@ namespace Chummer.Classes
         }
         public void allowcritterpowercategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("allowcritterpowercategory");
             Log.Info("allowcritterpowercategory = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6574,6 +7343,8 @@ namespace Chummer.Classes
 
         public void limitcritterpowercategory(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("limitcritterpowercategory");
             Log.Info("limitcritterpowercategory = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6582,6 +7353,8 @@ namespace Chummer.Classes
 
         public void attributemaxclamp(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("attributemaxclamp");
             Log.Info("attributemaxclamp = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
@@ -6590,24 +7363,33 @@ namespace Chummer.Classes
 
         public void metamagiclimit(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("metamagiclimit");
             Log.Info("metamagiclimit = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            foreach (XmlNode child in bonusNode.SelectNodes("metamagic"))
+            XmlNodeList xmlMetamagicsList = bonusNode.SelectNodes("metamagic");
+            if (xmlMetamagicsList != null)
             {
-                int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1");
-                CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
+                foreach (XmlNode child in xmlMetamagicsList)
+                {
+                    int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1", GlobalOptions.InvariantCultureInfo);
+                    CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
+                }
             }
-
         }
 
         public void disablequality(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique);
         }
 
         public void freequality(XmlNode bonusNode)
         {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique);
         }
 #pragma warning restore IDE1006 // Naming Styles

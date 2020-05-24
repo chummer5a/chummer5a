@@ -48,7 +48,6 @@ namespace ChummerHub.Client.UI
             string tip =
                 "Assigning this SINner a new Id enables you to save multiple versions of this chummer on SINnersHub." +
                 Environment.NewLine;
-            tip += "";
             bGenerateNewId.SetToolTip(tip);
             CheckSINnerStatus().ContinueWith(a =>
             {
@@ -105,13 +104,13 @@ namespace ChummerHub.Client.UI
                             myUC.MyCE.MySINnerFile.MyGroup = objMySiNnerGroup;
                             bUpload.Text = "Remove from SINners";
                             bGroupSearch.Enabled = true;
-                            lUploadStatus.Text = "online";
+                            lUploadStatus.Text = "Online";
                             bUpload.Enabled = true;
                         }
                         else if (eResponseStatus == HttpStatusCode.NotFound)
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = null;
-                            lUploadStatus.Text = "not online";
+                            lUploadStatus.Text = "Not Online";
                             bGroupSearch.Enabled = false;
                             bGroupSearch.SetToolTip(
                                 "SINner needs to be uploaded first, before he/she can join a group.");
@@ -121,12 +120,12 @@ namespace ChummerHub.Client.UI
                         else if (eResponseStatus == HttpStatusCode.NoContent)
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = null;
-                            lUploadStatus.Text = "Statuscode: " + eResponseStatus;
+                            lUploadStatus.Text = "Status Code: " + eResponseStatus;
                             bGroupSearch.Enabled = true;
                             bGroupSearch.SetToolTip(
                                 "SINner does not belong to a group.");
                             bUpload.Text = "Remove from SINners";
-                            lUploadStatus.Text = "online";
+                            lUploadStatus.Text = "Online";
                             bUpload.Enabled = true;
                         }
                         cbTagCustom.Enabled = false;
@@ -140,7 +139,7 @@ namespace ChummerHub.Client.UI
                 Log.Error(ex);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    bUpload.Text = "unknown Status";
+                    bUpload.Text = "Unknown Status";
                 });
                 return false;
             }
@@ -292,12 +291,12 @@ namespace ChummerHub.Client.UI
                 {
                     if (bUpload.Text.Contains("Upload"))
                     {
-                        lUploadStatus.Text = @"uploading";
+                        lUploadStatus.Text = "Uploading";
                         await myUC.MyCE.Upload().ConfigureAwait(true);
                     }
                     else
                     {
-                        lUploadStatus.Text = @"removing";
+                        lUploadStatus.Text = "Removing";
                         await myUC.RemoveSINnerAsync().ConfigureAwait(true);
                     }
 
@@ -312,48 +311,51 @@ namespace ChummerHub.Client.UI
 
         private void bGroupSearch_Click(object sender, EventArgs e)
         {
-            frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE, this);
-            gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
+            using (frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE, this))
             {
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
                 {
-                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                });
-            };
-            gs.ShowDialog();
-            gs.Close();
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                    });
+                };
+                gs.ShowDialog();
+            }
         }
 
         private async void BVisibility_Click(object sender, EventArgs e)
         {
-            var visfrm = new frmSINnerVisibility();
-            using (new CursorWait(true, this))
+            using (frmSINnerVisibility visfrm = new frmSINnerVisibility())
             {
-                if (!myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                using (new CursorWait(true, this))
                 {
-                    var client = StaticUtils.GetClient();
-                    if (myUC.MyCE.MySINnerFile.Id != null)
+                    if (!myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
                     {
-                        HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> res =
-                            await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
-                                myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
-                        await Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true);
-                        if (res.Body?.CallSuccess == true)
+                        var client = StaticUtils.GetClient();
+                        if (myUC.MyCE.MySINnerFile.Id != null)
                         {
-                            myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
+                            HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> res =
+                                await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
+                                    myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
+                            await Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true);
+                            if (res.Body?.CallSuccess == true)
+                            {
+                                myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
+                            }
+
+                            res.Dispose();
                         }
-                        res.Dispose();
                     }
                 }
-            }
 
-            visfrm.MyVisibility = myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
-            var result = visfrm.ShowDialog(this);
-            if (result == DialogResult.OK)
-            {
-                myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
+                visfrm.MyVisibility = myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
+                var result = visfrm.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
+                }
             }
-            visfrm.Close();
         }
 
         private void BGenerateNewId_Click(object sender, EventArgs e)

@@ -123,7 +123,7 @@
     </xs:choice>
     <xs:attribute name="name" use="optional">
       <xs:annotation>
-        <xs:documentation>Name of the logger. May include  wildcard characters ('*' or '?').</xs:documentation>
+        <xs:documentation>Filter on the name of the logger. May include wildcard characters ('*' or '?').</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="levels" type="NLogLevelList">
@@ -154,6 +154,11 @@
     <xs:attribute name="final" type="xs:boolean" default="false">
       <xs:annotation>
         <xs:documentation>Ignore further rules if this one matches.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="enabled" type="xs:boolean" default="true">
+      <xs:annotation>
+        <xs:documentation>Enable this rule. Note: disabled rules aren't available from the API.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="ruleName" type="xs:string" use="optional">
@@ -786,6 +791,7 @@
   <xs:complexType name="NLog.Targets.ConsoleWordHighlightingRule">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="compileRegex" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+      <xs:element name="condition" minOccurs="0" maxOccurs="1" type="Condition" />
       <xs:element name="ignoreCase" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="regex" minOccurs="0" maxOccurs="1" type="xs:string" />
       <xs:element name="text" minOccurs="0" maxOccurs="1" type="xs:string" />
@@ -796,6 +802,11 @@
     <xs:attribute name="compileRegex" type="xs:boolean">
       <xs:annotation>
         <xs:documentation>Compile the ? This can improve the performance, but at the costs of more memory usage. If false, the Regex Cache is used.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="condition" type="Condition">
+      <xs:annotation>
+        <xs:documentation>Condition that must be met before scanning the row for highlight of words</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="ignoreCase" type="xs:boolean">

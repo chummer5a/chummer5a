@@ -24,6 +24,8 @@ namespace Chummer
     {
         public static int FirstMatching(this BitArray array, bool value, int skip = 0, int max = int.MaxValue)
         {
+            if (array == null)
+                return -1;
             if (max > array.Count)
                 max = array.Count;
             for (; skip < max; skip++)

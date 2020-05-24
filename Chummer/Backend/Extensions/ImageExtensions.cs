@@ -27,7 +27,7 @@ namespace Chummer
 {
     public static class ImageExtensions
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Converts a Base64 String into an Image.
         /// </summary>
@@ -77,7 +77,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64String(this Image imgToConvert)
         {
-            string strReturn;
+            if (imgToConvert == null)
+                return string.Empty;
             using (MemoryStream objImageStream = new MemoryStream())
             {
                 try
@@ -88,9 +89,9 @@ namespace Chummer
                 {
                     imgToConvert.Save(objImageStream, ImageFormat.Png);
                 }
-                strReturn = Convert.ToBase64String(objImageStream.ToArray());
+
+                return Convert.ToBase64String(objImageStream.ToArray());
             }
-            return strReturn;
         }
 
         /// <summary>
@@ -102,14 +103,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Bitmap ConvertPixelFormat(this Bitmap imgToConvert, PixelFormat eNewFormat)
         {
-            if (imgToConvert.PixelFormat == eNewFormat)
+            if (imgToConvert == null || imgToConvert.PixelFormat == eNewFormat)
                 return imgToConvert;
 
             Bitmap imgReturn = new Bitmap(imgToConvert.Width, imgToConvert.Height, eNewFormat);
             using (Graphics gr = Graphics.FromImage(imgReturn))
-            {
                 gr.DrawImage(imgToConvert, new Rectangle(0, 0, imgReturn.Width, imgReturn.Height));
-            }
             return imgReturn;
         }
     }

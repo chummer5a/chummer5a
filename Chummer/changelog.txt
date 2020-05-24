@@ -4,6 +4,7 @@ Application Fixes:
 - Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
 - Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
 - Fixed a regression in career mode not allowing Initiation Groups to be joined or left properly. Closes #4115
+- Fixed a myriad of cases where printing a character sheet in a language that is different from the language being used for the program would sometimes result in incorrect localization and/or number formats being used.
 
 Build 212
 Application Changes:
@@ -142,6 +143,16 @@ Changed/new strings:
 - LimitCondition_CyberwareSnakeFingers
 - LimitCondition_SportsRivals
 - Label_Sprite_TasksOwed
+- DialogFilter_HeroLab
+- DialogFilter_ImagesPrefix
+- String_MetatypeLoadError
+- Message_Options_ConfirmTelemetry
+- MessageTitle_Options_ConfirmTelemetry
+- Message_Options_ConfirmDetailedTelemetry
+- MessageTitle_Options_ConfirmDetailedTelemetry
+- Tip_Options_TelemetryId
+- Tip_CMPenalty
+- String_CMDown
 
 Build 211
 Application Changes:

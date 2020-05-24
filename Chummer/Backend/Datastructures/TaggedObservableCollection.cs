@@ -35,7 +35,7 @@ namespace Chummer
         /// Use in place of CollectionChanged Adder
         /// </summary>
         /// <param name="objTag">Tag to associate with added delegate</param>
-        /// <param name="funcDelegateToAdd">Deletage to add to CollectionChanged</param>
+        /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
@@ -50,7 +50,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Use in place of CollectionChanged Subtracter
+        /// Use in place of CollectionChanged Subtract
         /// </summary>
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>

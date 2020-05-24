@@ -44,7 +44,7 @@ namespace Chummer
         public string ToString(string format)
         {
             if (_blnUseDecimal)
-                return _decValue.ToString(format) + '¥';
+                return _decValue.ToString(format, GlobalOptions.InvariantCultureInfo) + '¥';
             return _strBaseString + '¥';
         }
 
@@ -73,15 +73,12 @@ namespace Chummer
             {
                 if (strOther.UseDecimal)
                     return _decValue.CompareTo(strOther.Value);
-                else
-                    return -1;
+                return -1;
             }
-            else if (strOther.UseDecimal)
+
+            if (strOther.UseDecimal)
                 return 1;
-            else
-            {
-                return string.Compare(_strBaseString, strOther.BaseString, false, GlobalOptions.CultureInfo);
-            }
+            return string.Compare(_strBaseString, strOther.BaseString, false, GlobalOptions.CultureInfo);
         }
     }
 }

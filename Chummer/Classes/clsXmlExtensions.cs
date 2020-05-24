@@ -29,13 +29,13 @@ namespace Chummer
 {
     internal static class XmlExtensions
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
         public delegate bool TryParseFunction<T>(string input, out T result);
 
         /// <summary>
-        /// This method is syntaxtic sugar for atempting to read a data field
+        /// This method is syntactic sugar for attempting to read a data field
         /// from an XmlNode. This version sets the output variable to its
         /// default value in case of a failed read and can be used for
         /// initializing variables
@@ -46,7 +46,7 @@ namespace Chummer
         /// <param name="read">The variable to save the read to</param>
         /// <param name="onError">The value to return in case of failure. This parameter is optional</param>
         /// <returns>true if successful read</returns>
-        public static bool TryGetField<T>(this XmlNode node, string field, out T read, T onError = default(T)) where T : IConvertible
+        public static bool TryGetField<T>(this XmlNode node, string field, out T read, T onError = default) where T : IConvertible
         {
             /*
              * This extension method allows easier access of xml, instead of
@@ -60,7 +60,7 @@ namespace Chummer
              * try{convert();}
              * catch{noop();}
              * 
-             * We can do some acctual error checking instead of relying on exceptions
+             * We can do some actual error checking instead of relying on exceptions
              * in case anything happens. We could do that before, but typing 10
              * lines to read a single variable 100 times would be insane
              * 
@@ -71,10 +71,10 @@ namespace Chummer
              * 
              * aXmlNode.TryGetField("fieldname", out myVariable);
              * 
-             * The compiler will fill out <T> itself, unless you specificaly 
+             * The compiler will fill out <T> itself, unless you specifically 
              * tell it to be something else
              * 
-             * in case you need to act on weither the read was successfull
+             * in case you need to act on whether the read was successful
              * do it like this
              * if(aXmlNode.TryGetField("fieldname", out myVariable))
              * {
@@ -111,8 +111,8 @@ namespace Chummer
                 string errorMsg = $"Tried to read missing field \"{field}\"";
 #endif
                 Log.Error(errorMsg);
-                //Finaly, we have to assign an out parameter something, so default
-                //null or 0 most likeley
+                //Finally, we have to assign an out parameter something, so default
+                //null or 0 most likely
                 read = onError;
                 return false;
             }
@@ -120,7 +120,7 @@ namespace Chummer
 
 
         /// <summary>
-        /// This method is syntaxtic sugar for atempting to read a data field
+        /// This method is syntactic sugar for attempting to read a data field
         /// from an XmlNode. This version sets the output variable to its
         /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
@@ -133,7 +133,7 @@ namespace Chummer
         /// <param name="read"></param>
         /// <param name="onError"></param>
         /// <returns></returns>
-        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read, T onError = default(T))
+        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read, T onError = default)
         {
             if (parser != null)
             {
@@ -160,6 +160,7 @@ namespace Chummer
                     = new StackTrace().GetFrame(2).GetMethod();
                 string errorMsg = string.Format
                     (
+                        GlobalOptions.InvariantCultureInfo,
                         "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
                         field,
                         typeof (T),
@@ -178,7 +179,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// This method is syntaxtic sugar for atempting to read a data field
+        /// This method is syntactic sugar for attempting to read a data field
         /// from an XmlNode. This version preserves the output variable in case
         /// of a failed read
         /// </summary>
@@ -257,7 +258,7 @@ namespace Chummer
                         {
                             string strOperationType = xmlOperationChildNodeAttributes?["operation"]?.InnerText ?? "==";
                             XmlNodeList objXmlTargetNodeList = xmlParentNode.SelectNodes(strNodeName);
-                            // If we're just checking for existance of a node, no need for more processing
+                            // If we're just checking for existence of a node, no need for more processing
                             if (strOperationType == "exists")
                             {
                                 blnOperationChildNodeResult = (objXmlTargetNodeList.Count > 0) != blnInvert;
@@ -359,7 +360,7 @@ namespace Chummer
                                             break;
                                         }
                                     }
-                                    // default is "any", replace above with a switch() should more than two checktypes be required
+                                    // default is "any", replace above with a switch() should more than two check types be required
                                     else if (boolSubNodeResult)
                                     {
                                         blnOperationChildNodeResult = true;
@@ -393,7 +394,8 @@ namespace Chummer
                 return true;
             }
             XmlAttribute objAttribute = node?.Attributes?[field];
-            if (objAttribute == null) return false;
+            if (objAttribute == null)
+                return false;
             read = objAttribute.InnerText;
             return true;
         }
@@ -405,10 +407,12 @@ namespace Chummer
         public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp)) return false;
+            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
+                return false;
             read = intTmp;
             return true;
         }
@@ -420,8 +424,10 @@ namespace Chummer
         public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
-            if (!bool.TryParse(objField.InnerText, out bool blnTmp)) return false;
+            if (objField == null)
+                return false;
+            if (!bool.TryParse(objField.InnerText, out bool blnTmp))
+                return false;
             read = blnTmp;
             return true;
         }
@@ -433,10 +439,12 @@ namespace Chummer
         public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp)) return false;
+            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
+                return false;
             read = decTmp;
             return true;
         }
@@ -448,10 +456,12 @@ namespace Chummer
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp)) return false;
+            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
+                return false;
             read = dblTmp;
             return true;
         }
@@ -463,16 +473,18 @@ namespace Chummer
         public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp)) return false;
+            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
+                return false;
             read = fltTmp;
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty. 
+        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
         /// </summary>
         /// <param name="node">XPathNavigator node of the object.</param>
         /// <param name="field">Field name of the InnerXML element we're looking for.</param>
@@ -482,13 +494,13 @@ namespace Chummer
         public static bool TryGetGuidFieldQuickly(this XmlNode node, string field, ref Guid read, bool falseIfEmpty = true)
         {
             XmlNode objField = node.SelectSingleNode(field);
-            if (objField == null) return false;
-            if (!Guid.TryParse(objField.InnerText, out Guid fltTmp)) return false;
-            if (fltTmp == Guid.Empty && falseIfEmpty)
-            {
+            if (objField == null)
                 return false;
-            }
-            read = fltTmp;
+            if (!Guid.TryParse(objField.InnerText, out Guid guidTmp))
+                return false;
+            if (guidTmp == Guid.Empty && falseIfEmpty)
+                return false;
+            read = guidTmp;
             return true;
         }
 

@@ -43,14 +43,14 @@ namespace Chummer
         private void cmdSelectFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Hero Lab Files (*.por)|*.por|All Files (*.*)|*.*",
+                Filter = LanguageManager.GetString("DialogFilter_HeroLab") + '|' + LanguageManager.GetString("DialogFilter_All"),
                 Multiselect = false
-            };
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            })
             {
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
                 Cursor = Cursors.WaitCursor;
                 string strSelectedFile = openFileDialog.FileName;
                 TreeNode objNode = CacheCharacters(strSelectedFile);
@@ -60,6 +60,7 @@ namespace Chummer
                     treCharacterList.Nodes.Add(objNode);
                     treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                 }
+
                 Cursor = Cursors.Default;
             }
         }
@@ -68,12 +69,11 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        /// <param name="objParentNode"></param>
         private TreeNode CacheCharacters(string strFile)
         {
             if (!File.Exists(strFile))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
 
@@ -85,17 +85,19 @@ namespace Chummer
                     foreach (ZipArchiveEntry entry in zipArchive.Entries)
                     {
                         string strEntryFullName = entry.FullName;
-                        if (strEntryFullName.EndsWith(".xml") && strEntryFullName.StartsWith("statblocks_xml"))
+                        if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                         {
-                            XmlDocument xmlSourceDoc = new XmlDocument();
+                            XmlDocument xmlSourceDoc = new XmlDocument
+                            {
+                                XmlResolver = null
+                            };
                             // If we run into any problems loading the character cache, fail out early.
                             try
                             {
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                {
-                                    xmlSourceDoc.Load(sr);
-                                    lstCharacterXmlStatblocks.Add(xmlSourceDoc);
-                                }
+                                    using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings {XmlResolver = null}))
+                                        xmlSourceDoc.Load(objXmlReader);
+                                lstCharacterXmlStatblocks.Add(xmlSourceDoc);
                             }
                             // If we run into any problems loading the character cache, fail out early.
                             catch (IOException)
@@ -107,31 +109,37 @@ namespace Chummer
                                 Utils.BreakIfDebug();
                             }
                         }
-                        else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
+                        else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                         {
                             string strKey = Path.GetFileName(strEntryFullName);
-                            Bitmap imgMugshot = (new Bitmap(entry.Open(), true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                            if (_dicImages.ContainsKey(strKey))
-                                _dicImages[strKey] = imgMugshot;
-                            else
-                                _dicImages.Add(strKey, imgMugshot);
+                            using (Bitmap imgTemp = new Bitmap(entry.Open(), true))
+                            {
+                                Bitmap imgMugshot = imgTemp.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                                if (_dicImages.ContainsKey(strKey))
+                                {
+                                    _dicImages[strKey].Dispose();
+                                    _dicImages[strKey] = imgMugshot;
+                                }
+                                else
+                                    _dicImages.Add(strKey, imgMugshot);
+                            }
                         }
                     }
                 }
             }
             catch (IOException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
             catch (NotSupportedException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                 return null;
             }
 
@@ -214,7 +222,7 @@ namespace Chummer
                     objCache.BuildMethod = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.InnerText == "25" ?
                         CharacterBuildMethod.Priority.ToString() :
                         CharacterBuildMethod.Karma.ToString();
-                    
+
                     objCache.Created = objCache.Karma != "0";
                     if (!objCache.Created)
                     {
@@ -255,7 +263,7 @@ namespace Chummer
 
         #region Classes
         /// <summary>
-        /// Caches a subset of a full character's properties for loading purposes. 
+        /// Caches a subset of a full character's properties for loading purposes.
         /// </summary>
         private sealed class HeroLabCharacterCache
         {
@@ -276,7 +284,7 @@ namespace Chummer
         #endregion
 
         /// <summary>
-        /// Generates a name for the treenode based on values contained in the CharacterCache object. 
+        /// Generates a name for the treenode based on values contained in the CharacterCache object.
         /// </summary>
         /// <param name="objCache"></param>
         /// <returns></returns>
@@ -287,12 +295,12 @@ namespace Chummer
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
-                    strName = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
+                    strName = LanguageManager.GetString("String_UnnamedCharacter");
             }
-            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
+            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, false);
             if (string.IsNullOrEmpty(strBuildMethod))
                 strBuildMethod = "Unknown build method";
-            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
+            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode");
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             return strReturn;
         }
@@ -307,9 +315,9 @@ namespace Chummer
             {
                 txtCharacterBio.Text = objCache.Description;
 
-                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                
+                string strUnknown = LanguageManager.GetString("String_Unknown");
+                string strNone = LanguageManager.GetString("String_None");
+
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
                     lblCharacterName.Text = strUnknown;
@@ -327,9 +335,9 @@ namespace Chummer
                     lblPlayerName.Text = strUnknown;
                 lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
                 lblPlayerName.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
-                
+
                 lblCareerKarma.Text = objCache.Karma;
-                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == "0")
+                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalOptions.CultureInfo))
                     lblCareerKarma.Text = strNone;
                 lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
                 lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
@@ -339,7 +347,7 @@ namespace Chummer
                     lblEssence.Text = strUnknown;
                 lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
                 lblEssence.Visible = !string.IsNullOrEmpty(lblEssence.Text);
-                
+
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -399,7 +407,7 @@ namespace Chummer
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
-                int intIndex = Convert.ToInt32(objSelectedNode.Tag);
+                int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalOptions.InvariantCultureInfo);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                     objCache = _lstCharacterCache[intIndex];
             }
@@ -431,7 +439,7 @@ namespace Chummer
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
-                int intIndex = Convert.ToInt32(objSelectedNode.Tag);
+                int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalOptions.InvariantCultureInfo);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                 {
                     string strFile = _lstCharacterCache[intIndex]?.FilePath;
@@ -442,11 +450,11 @@ namespace Chummer
                         Cursor objOldCursor = Cursor;
                         if (!File.Exists(strFilePath))
                         {
-                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 Cursor = Cursors.WaitCursor;
-                                frmOptions frmOptions = new frmOptions();
-                                frmOptions.ShowDialog();
+                                using (frmOptions frmOptions = new frmOptions())
+                                    frmOptions.ShowDialog();
                                 Cursor = objOldCursor;
                             }
                         }
@@ -459,28 +467,29 @@ namespace Chummer
 
                         if (settingsFiles.Length > 1)
                         {
-                            frmSelectSetting frmPickSetting = new frmSelectSetting();
-                            frmPickSetting.ShowDialog(this);
+                            using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                            {
+                                frmPickSetting.ShowDialog(this);
 
-                            if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                                return;
+                                if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                                    return;
 
-                            objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                                objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                            }
                         }
                         else
                         {
                             string strSettingsFile = settingsFiles[0];
                             objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
                         }
-                        
+
                         Program.MainForm.OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile);
+                        bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
                         //Timekeeper.Finish("load_file");
                         if (!blnLoaded)
                         {
                             Program.MainForm.OpenCharacters.Remove(objCharacter);
-                            objCharacter.DeleteCharacter();
                             Cursor = objOldCursor;
                             cmdImport.Enabled = true;
                             cmdSelectFile.Enabled = true;

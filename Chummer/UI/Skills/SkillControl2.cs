@@ -41,6 +41,8 @@ namespace Chummer.UI.Skills
 
         public SkillControl2(Skill skill)
         {
+            if (skill == null)
+                return;
             _skill = skill;
             InitializeComponent();
             SuspendLayout();
@@ -49,17 +51,17 @@ namespace Chummer.UI.Skills
 
             foreach (ToolStripItem objItem in cmsSkillLabel.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
-            
+
             this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
 
             //Display
             _normalName = lblName.Font;
             _italicName = new Font(lblName.Font, FontStyle.Italic);
-            
+
             this.DoDatabinding("BackColor", skill, nameof(Skill.PreferredControlColor));
-            
+
             lblName.DoDatabinding("Text", skill, nameof(Skill.DisplayName));
             lblName.DoDatabinding("ForeColor", skill, nameof(Skill.PreferredColor));
             lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
@@ -69,7 +71,7 @@ namespace Chummer.UI.Skills
 
             _attributeActive = skill.AttributeObject;
             _skill.PropertyChanged += Skill_PropertyChanged;
-            
+
             nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
@@ -159,7 +161,7 @@ namespace Chummer.UI.Skills
                         return;
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.Skills.Remove(skill);
-                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name);
+                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
                 };
 
                 if (skill.CharacterObject.Created)
@@ -172,7 +174,7 @@ namespace Chummer.UI.Skills
             lblModifiedRating.Text = _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
 
             _blnLoading = false;
-            
+
             ResumeLayout();
         }
 
@@ -237,8 +239,8 @@ namespace Chummer.UI.Skills
         }
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                    _skill.CurrentDisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -271,17 +273,20 @@ namespace Chummer.UI.Skills
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            frmSelectSpec selectForm = new frmSelectSpec(_skill);
-            selectForm.ShowDialog();
+            using (frmSelectSpec selectForm = new frmSelectSpec(_skill))
+            {
+                selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+                if (selectForm.DialogResult != DialogResult.OK)
+                    return;
 
-            _skill.AddSpecialization(selectForm.SelectedItem);
+                _skill.AddSpecialization(selectForm.SelectedItem);
+            }
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
@@ -293,7 +298,7 @@ namespace Chummer.UI.Skills
 		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
                 if (strLoopAttribute != "MAGAdept")
-                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
+                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
             }
 
             cboSelectAttribute.BeginUpdate();
@@ -343,15 +348,17 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmItemNotes = new frmNotes
+            using (frmNotes frmItemNotes = new frmNotes
             {
                 Notes = _skill.Notes
-            };
-            frmItemNotes.ShowDialog(this);
-
-            if (frmItemNotes.DialogResult == DialogResult.OK)
+            })
             {
-                _skill.Notes = frmItemNotes.Notes.WordWrap(100);
+                frmItemNotes.ShowDialog(this);
+
+                if (frmItemNotes.DialogResult == DialogResult.OK)
+                {
+                    _skill.Notes = frmItemNotes.Notes.WordWrap(100);
+                }
             }
         }
 

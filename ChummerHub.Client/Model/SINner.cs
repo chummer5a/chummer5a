@@ -1,27 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Chummer;
 
 namespace SINners.Models
 {
     public partial class SINner
     {
-        public DateTime DownloadedFromSINnersTime { get;
-            set; }
-
+        public DateTime DownloadedFromSINnersTime { get; set; }
 
         public string ZipFilePath
         {
             get
             {
-                if (this.Id == null)
+                if (Id == null)
                     return null;
-                string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", this.Id.Value.ToString());
-                return path;
+                return Path.Combine(Path.GetTempPath(), "SINner", Id.Value.ToString());
             }
         }
 
@@ -29,37 +22,30 @@ namespace SINners.Models
         {
             get
             {
-                string loadFilePath = null;
-                if (Directory.Exists(this.ZipFilePath))
+                if (Directory.Exists(ZipFilePath))
                 {
-                    var files = Directory.EnumerateFiles(this.ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly);
-                    foreach (var file in files)
+                    foreach (var file in Directory.EnumerateFiles(ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly))
                     {
                         DateTime lastwrite = File.GetLastWriteTime(file);
-                        if ((lastwrite >= this.LastChange)
-                            || this.LastChange == null)
+                        if (lastwrite >= LastChange || LastChange == null)
                         {
-                            loadFilePath = file;
-                            return loadFilePath;
-                            break;
+                            return file;
                         }
                         File.Delete(file);
                     }
                 }
-                return loadFilePath;
+
+                return string.Empty;
             }
         }
 
-        public frmCharacterRoster.CharacterCache GetCharacterCache()
+        public CharacterCache GetCharacterCache()
         {
-            if (this.FilePath != null)
-            {
-                frmCharacterRoster.CharacterCache ret = new frmCharacterRoster.CharacterCache(this.FilePath);
-                return ret;
-            }
+            string strPath = FilePath;
+            if (!string.IsNullOrEmpty(strPath))
+                return new CharacterCache(strPath);
 
             return null;
         }
-
     }
 }

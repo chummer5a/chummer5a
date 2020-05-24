@@ -47,8 +47,10 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("focus");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("gearid", GearObject?.InternalId);
             objWriter.WriteEndElement();
         }
@@ -59,6 +61,8 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            if (objNode == null)
+                return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             string strGearId = string.Empty;
             if (objNode.TryGetStringFieldQuickly("gearid", ref strGearId))
@@ -75,7 +79,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Focus in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Foci's name.
@@ -94,13 +98,13 @@ namespace Chummer
             string strFocusName = objFocusGear.Name;
             string strFocusExtra = objFocusGear.Extra;
             int intExtraKarmaCost = 0;
-            //TODO: Oh god I hate putting in this kind of behaviour but we don't have anything else handy that supports altering focus cost. 
-            if (strFocusName.EndsWith(", Individualized, Complete"))
+            //TODO: Oh god I hate putting in this kind of behaviour but we don't have anything else handy that supports altering focus cost.
+            if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
             {
                 intExtraKarmaCost = -2;
                 strFocusName = strFocusName.Replace(", Individualized, Complete", "");
             }
-            else if (strFocusName.EndsWith(", Individualized, Partial"))
+            else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
             {
                 intExtraKarmaCost = -1;
                 strFocusName = strFocusName.Replace(", Individualized, Partial", "");

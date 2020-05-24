@@ -84,7 +84,8 @@ namespace ChummerHub.Client.UI
 
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
-            await Backend.Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
+            var dummy = await Backend.Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
+            dummy.Dispose();
         }
     }
 }

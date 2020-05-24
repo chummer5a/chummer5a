@@ -29,6 +29,8 @@ namespace Chummer.UI.Skills
         private readonly SkillGroup _skillGroup;
         public SkillGroupControl(SkillGroup skillGroup)
         {
+            if (skillGroup == null)
+                return;
             _skillGroup = skillGroup;
             InitializeComponent();
 
@@ -79,8 +81,8 @@ namespace Chummer.UI.Skills
         #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                    _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;

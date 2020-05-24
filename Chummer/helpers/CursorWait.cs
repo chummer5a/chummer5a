@@ -63,18 +63,37 @@ namespace Chummer
             });
         }
 
+        ~CursorWait()
+        {
+            Dispose(false);
+        }
+
+        private bool _blnDisposed;
+        protected virtual void Dispose(bool blnDisposing)
+        {
+            if (_blnDisposed) return;
+
+            if (blnDisposing)
+            {
+                Program.MainForm.DoThreadSafe(() =>
+                {
+                    // Reset
+                    Cursor.Current = Cursors.Default;
+                    Application.UseWaitCursor = false;
+                    if (_control != null)
+                        _control.Cursor = Cursors.Default;
+                    if (_form != null)
+                        _form.Cursor = Cursors.Default;
+                });
+            }
+
+            _blnDisposed = true;
+        }
+
         public void Dispose()
         {
-            Program.MainForm.DoThreadSafe(() =>
-            {
-                // Reset
-                Cursor.Current = Cursors.Default;
-                Application.UseWaitCursor = false;
-                if (_control != null)
-                    _control.Cursor = Cursors.Default;
-                if (_form != null)
-                    _form.Cursor = Cursors.Default;
-            });
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

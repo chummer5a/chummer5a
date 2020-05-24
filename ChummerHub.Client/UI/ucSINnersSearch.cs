@@ -32,7 +32,7 @@ namespace ChummerHub.Client.UI
 
         public ucSINnersSearch()
         {
-            MySearchCharacter = new CharacterExtended(new Character(), null, null, new frmCharacterRoster.CharacterCache());
+            MySearchCharacter = new CharacterExtended(new Character(), null, null, new CharacterCache());
             InitializeComponent();
         }
 

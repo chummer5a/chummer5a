@@ -18,7 +18,6 @@ using System.Windows.Forms;
 using ChummerHub.Client.UI;
 using Newtonsoft.Json;
 using NLog;
-using static Chummer.frmCharacterRoster;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights;
 using System.Globalization;
@@ -393,14 +392,16 @@ namespace ChummerHub.Client.Backend
                     var uri = new Uri(callback);
                     string baseuri = uri.GetLeftPart(System.UriPartial.Authority);
                     client.BaseAddress = new Uri(baseuri);
-                    var content = new FormUrlEncodedContent(new[]
+                    using (var content = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("Progress", progress.ToString(CultureInfo.InvariantCulture)),
                         new KeyValuePair<string, string>("Text", text)
-                    });
-                    var result = await client.PostAsync(callback, content).ConfigureAwait(true);
-                    string resultContent = await result.Content.ReadAsStringAsync().ConfigureAwait(true);
-                    Log.Trace("Result from WebCall " + callback + ": " + resultContent);
+                    }))
+                    {
+                        var result = await client.PostAsync(uri, content).ConfigureAwait(true);
+                        string resultContent = await result.Content.ReadAsStringAsync().ConfigureAwait(true);
+                        Log.Trace("Result from WebCall " + callback + ": " + resultContent);
+                    }
                 }
             }
             catch (Exception e)
@@ -549,23 +550,26 @@ namespace ChummerHub.Client.Backend
             };
             if (!string.IsNullOrEmpty(rb.ErrorText) || rb.MyException != null)
             {
-                var frmSIN = new frmSINnerResponse
+                using (var frmSIN = new frmSINnerResponse
                 {
                     TopMost = true
-                };
-                frmSIN.SINnerResponseUI.Result = rb;
-                if (rb.MyException != null)
+                })
                 {
-                    Log.Info(rb.MyException, "The SINners WebService had a problem. This was it's response: ");
-                    frmSIN.SINnerResponseUI.Result.ErrorText =
-                        "This is NOT an exception from Chummer itself, but from the SINners WebService. This error happend \"in the cloud\": " +
-                        rb.ErrorText;
+                    frmSIN.SINnerResponseUI.Result = rb;
+                    if (rb.MyException != null)
+                    {
+                        Log.Info(rb.MyException, "The SINners WebService had a problem. This was it's response: ");
+                        frmSIN.SINnerResponseUI.Result.ErrorText =
+                            "This is NOT an exception from Chummer itself, but from the SINners WebService. This error happend \"in the cloud\": " +
+                            rb.ErrorText;
+                    }
+                    else
+                    {
+                        Log.Error(e, "Response from SINners WebService: ");
+                    }
+
+                    frmSIN.ShowDialog(PluginHandler.MainForm);
                 }
-                else
-                {
-                    Log.Error(e, "Response from SINners WebService: ");
-                }
-                frmSIN.ShowDialog(PluginHandler.MainForm);
             }
             return rb;
         }
@@ -859,7 +863,7 @@ namespace ChummerHub.Client.Backend
                     Log.Trace("Character loaded: " + c.Name);
                 }
 
-                frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(fileName);
+                CharacterCache myCharacterCache = new CharacterCache(fileName);
                 ce = new CharacterExtended(c, null, null, myCharacterCache);
                 await ce.Upload(null).ConfigureAwait(true);
             }
@@ -1082,7 +1086,8 @@ namespace ChummerHub.Client.Backend
                 }
                 else
                 {
-                    client.PostSINWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
+                    var dummy = await client.PostSINWithHttpMessagesAsync(uploadInfoObject).ConfigureAwait(true);
+                    dummy?.Dispose();
                 }
                 Log.Info("Post of " + ce.MySINnerFile.Id + " finished.");
             }
