@@ -185,7 +185,7 @@ namespace Chummer
                         frmLoadingForm.Show();
 
                         // Attempt to cache all XML files that are used the most.
-                        using (var op_cache = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
+                        using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
                             Parallel.Invoke(
                                 () => XmlManager.Load("armor.xml"),

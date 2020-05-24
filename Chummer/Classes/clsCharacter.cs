@@ -2424,7 +2424,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (var AIOptionsActivity = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                     {
                         UploadObjectAsMetric.UploadObject(TelemetryClient, Options);
                     }
@@ -2438,7 +2438,7 @@ namespace Chummer
                     XmlNodeList objXmlLocationList;
                     Quality objLivingPersonaQuality = null;
                     XmlNode xmlRootQualitiesNode;
-                    using (var operation = Timekeeper.StartSyncron("load_xml", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_xml", loadActivity))
                     {
                         frmLoadingForm?.PerformStep("XML");
 
@@ -2476,7 +2476,7 @@ namespace Chummer
                         //Timekeeper.Finish("load_xml");
                     }
 
-                    using (var op_load_char_misc = Timekeeper.StartSyncron("load_char_misc", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
                         objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
@@ -2876,7 +2876,7 @@ if (!Utils.IsUnitTest){
                         //end load_char_misc
                     }
 
-                    using (var op_load_char_mentorspirit = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
                         // Improvements.
@@ -2892,7 +2892,7 @@ if (!Utils.IsUnitTest){
                     }
 
                     _lstInternalIdsNeedingReapplyImprovements.Clear();
-                    using (var op_load_char_imp = Timekeeper.StartSyncron("load_char_imp", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
                         // Improvements.
@@ -2962,7 +2962,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_imp");
                     }
 
-                    using (var op_load_char_contacts = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
                         // Contacts.
@@ -2976,7 +2976,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_contacts");
                     }
 
-                    using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_quality", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
                         // Qualities
@@ -3153,9 +3153,13 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_quality");
                     }
 
-                    frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
-                    AttributeSection.Load(objXmlCharacter);
-                    using (var op_load_char_misc2 = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
+                        AttributeSection.Load(objXmlCharacter);
+                    }
+
+                    using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
                     {
 
                         // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
@@ -3261,7 +3265,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_misc2");
                     }
 
-                    using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
+                    using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
                         _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
@@ -3280,7 +3284,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_skills");
                     }
 
-                    using (var op_load_char_loc = Timekeeper.StartSyncron("load_char_loc", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
                         // Locations.
@@ -3308,9 +3312,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_loc");
                     }
 
-                    using (var op_load_char_abundle = Timekeeper.StartSyncron("load_char_abundle", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_abundle", loadActivity))
                     {
-
                         // Armor Bundles.
                         objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
                         foreach (XmlNode objXmlLocation in objXmlLocationList)
@@ -3336,9 +3339,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_abundle");
                     }
 
-                    using (var op_load_char_vloc = Timekeeper.StartSyncron("load_char_vloc", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_vloc", loadActivity))
                     {
-
                         // Vehicle Locations.
                         XmlNodeList objXmlVehicleLocationList =
                             objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
@@ -3358,7 +3360,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_vloc");
                     }
 
-                    using (var op_load_char_xloc = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
                     {
 
                         // Weapon Locations.
@@ -3380,9 +3382,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_wloc");
                     }
 
-                    using (var op_load_char_sfoci = Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
                     {
-
                         // Stacked Foci.
                         objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
                         foreach (XmlNode objXmlStack in objXmlNodeList)
@@ -3395,7 +3396,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_sfoci");
                     }
 
-                    using (var op_load_char_armor = Timekeeper.StartSyncron("load_char_armor", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
                         // Armor.
@@ -3410,7 +3411,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_armor");
                     }
 
-                    using (var op_load_char_weapons = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
                         // Weapons.
@@ -3425,7 +3426,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_weapons");
                     }
 
-                    using (var op_load_char_drugs = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
                         // Drugs.
@@ -3440,7 +3441,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_drugs");
                     }
 
-                    using (var op_load_char_ware = Timekeeper.StartSyncron("load_char_ware", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
                         // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
@@ -3629,7 +3630,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_ware");
                     }
 
-                    using (var op_load_char_spells = Timekeeper.StartSyncron("load_char_spells", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
                         // Spells.
@@ -3644,7 +3645,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_spells");
                     }
 
-                    using (var op_load_char_powers = Timekeeper.StartSyncron("load_char_powers", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
                         // Powers.
@@ -3690,7 +3691,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_powers");
                     }
 
-                    using (var op_load_char_spirits = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                     {
 
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
@@ -3712,7 +3713,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_spirits");
                     }
 
-                    using (var op_load_char_complex = Timekeeper.StartSyncron("load_char_complex", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
                         // Compex Forms/Technomancer Programs.
@@ -3727,7 +3728,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_complex");
                     }
 
-                    using (var op_load_char_aiprogram = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
                         // Compex Forms/Technomancer Programs.
@@ -3742,7 +3743,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_aiprogram");
                     }
 
-                    using (var op_load_char_marts = Timekeeper.StartSyncron("load_char_marts", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_marts", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
                         // Martial Arts.
@@ -3772,7 +3773,7 @@ if (!Utils.IsUnitTest){
                     //Timekeeper.Finish("load_char_mam");
                 }
 #endif
-                    using (var op_load_char_mod = Timekeeper.StartSyncron("load_char_mod", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
                         // Limit Modifiers.
@@ -3787,7 +3788,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_mod");
                     }
 
-                    using (var op_load_char_lifestyle = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
                         // Lifestyles.
@@ -3802,7 +3803,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_lifestyle");
                     }
 
-                    using (var op_load_char_gear = Timekeeper.StartSyncron("load_char_gear", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
                         // <gears>
@@ -3876,7 +3877,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_gear");
                     }
 
-                    using (var op_load_char_car = Timekeeper.StartSyncron("load_char_car", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
                         // Vehicles.
@@ -3891,7 +3892,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_car");
                     }
 
-                    using (var op_load_char_mmagic = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
                         // Metamagics/Echoes.
@@ -3906,7 +3907,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_mmagic");
                     }
 
-                    using (var op_load_char_arts = Timekeeper.StartSyncron("load_char_arts", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
                         // Arts
@@ -3921,7 +3922,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_arts");
                     }
 
-                    using (var op_load_char_arts = Timekeeper.StartSyncron("load_char_ench", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_ench", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
                         // Enhancements
@@ -3936,7 +3937,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_ench");
                     }
 
-                    using (var op_load_char_cpow = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
                         // Critter Powers.
@@ -3951,7 +3952,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_cpow");
                     }
 
-                    using (var op_load_char_foci = Timekeeper.StartSyncron("load_char_foci", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
                         // Foci.
@@ -3966,7 +3967,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_foci");
                     }
 
-                    using (var op_load_char_init = Timekeeper.StartSyncron("load_char_init", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
                         // Initiation Grades.
@@ -3986,7 +3987,7 @@ if (!Utils.IsUnitTest){
                     // they shouldn't get loaded in create mode because they shouldn't be there.
                     if (Created)
                     {
-                        using (var op_load_char_elog = Timekeeper.StartSyncron("load_char_elog", loadActivity))
+                        using (_ = Timekeeper.StartSyncron("load_char_elog", loadActivity))
                         {
                             // Expense Log Entries.
                             XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
@@ -4011,7 +4012,7 @@ if (!Utils.IsUnitTest){
                         }
                     }
 #endif
-                    using (var op_load_char_igroup = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
                         // Improvement Groups.
@@ -4024,7 +4025,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_igroup");
                     }
 
-                    using (var op_load_char_calendar = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
                         // Calendar.
@@ -4039,7 +4040,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_calendar");
                     }
 
-                    using (var op_load_char_unarmed = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
                         // Look for the unarmed attack
@@ -4071,7 +4072,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_unarmed");
                     }
 
-                    using (var op_load_char_dwarffix = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
                     {
 
                         // converting from old dwarven resistance to new dwarven resistance
@@ -4104,9 +4105,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_dwarffix");
                     }
 
-                    using (var op_load_char_cfix = Timekeeper.StartSyncron("load_char_cfix", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_cfix", loadActivity))
                     {
-
                         // load issue where the contact multiplier was set to 0
                         if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
                         {
@@ -4131,7 +4131,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_cfix");
                     }
 
-                    using (var op_load_char_maxkarmafix = Timekeeper.StartSyncron("load_char_maxkarmafix", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", loadActivity))
                     {
                         //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
                         if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
@@ -4142,7 +4142,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_maxkarmafix");
                     }
 
-                    using (var op_load_char_mentorspiritfix = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
                     {
                         Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
                         if (objMentorQuality != null)
@@ -4183,7 +4183,7 @@ if (!Utils.IsUnitTest){
                     }
 
                     //Plugins
-                    using (var op_load_plugins = Timekeeper.StartSyncron("load_plugins", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_plugins", loadActivity))
                     {
                         foreach (var plugin in Program.PluginLoader.MyActivePlugins)
                         {
@@ -4199,7 +4199,7 @@ if (!Utils.IsUnitTest){
 
 
                     // Refresh certain improvements
-                    using (var op_load_char_improvementrefreshers = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
+                    using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
                         IsLoading = false;
@@ -15556,7 +15556,7 @@ if (!Utils.IsUnitTest){
                         return false;
                     }
 
-                    using (var op_load_char_misc = Timekeeper.StartSyncron("load_char_misc", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
                     {
                         IsLoading = true;
 
@@ -15931,7 +15931,7 @@ if (!Utils.IsUnitTest){
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<Vehicle> lstVehicles = new List<Vehicle>();
 
-                    using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_quality", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_quality", op_load))
                     {
                         string[] astrLevelLabels =
                         {
@@ -16123,7 +16123,7 @@ if (!Utils.IsUnitTest){
                     }
 
                     AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load);
-                    using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_misc2", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_misc2", op_load))
                     {
 
                         /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
@@ -16251,7 +16251,7 @@ if (!Utils.IsUnitTest){
 
                     Timekeeper.Finish("load_char_wloc");
                     */
-                    using (var op_load_char_contacts = Timekeeper.StartSyncron("load_char_contacts", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_contacts", op_load))
                     {
 
                         // Contacts.
@@ -16308,9 +16308,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_contacts");
                     }
 
-                    using (var op_load_char_armor = Timekeeper.StartSyncron("load_char_armor", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                     {
-
                         // Armor.
                         xmlGearDocument = XmlManager.Load("gear.xml");
                         XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml");
@@ -16508,9 +16507,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_armor");
                     }
 
-                    using (var op_load_char_weapons = Timekeeper.StartSyncron("load_char_weapons", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_weapons", op_load))
                     {
-
                         // Weapons.
                         foreach (XmlNode xmlWeaponToImport in xmlStatBlockBaseNode.SelectNodes(
                             "gear/weapons/item[@useradded != \"no\"]"))
@@ -16540,9 +16538,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_weapons");
                     }
 
-                    using (var op_load_char_ware = Timekeeper.StartSyncron("load_char_ware", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_ware", op_load))
                     {
-
                         // Cyberware/Bioware.
                         foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
                             "gear/augmentations/cyberware/item[@useradded != \"no\"]"))
@@ -16603,7 +16600,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_ware");
                     }
 
-                    using (var op_load_char_spells = Timekeeper.StartSyncron("load_char_spells", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
                     {
                         // Spells.
                         xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
@@ -16866,9 +16863,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_spells");
                     }
 
-                    using (var op_load_char_powers = Timekeeper.StartSyncron("load_char_powers", op_load))
+                    using (var _ = Timekeeper.StartSyncron("load_char_powers", op_load))
                     {
-
                         // Powers.
                         xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/adeptpowers/adeptpower");
                         XmlDocument xmlPowersDocument = XmlManager.Load("powers.xml");
@@ -16958,9 +16954,8 @@ if (!Utils.IsUnitTest){
 
                     Timekeeper.Finish("load_char_spirits");
                     */
-                    using (var op_load_char_complex = Timekeeper.StartSyncron("load_char_complex", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_complex", op_load))
                     {
-
                         // Complex Forms/Technomancer Programs.
                         string strComplexFormsLine =
                             lstTextStatBlockLines?.FirstOrDefault(x => x.StartsWith("Complex Forms:", StringComparison.Ordinal));
@@ -17077,9 +17072,8 @@ if (!Utils.IsUnitTest){
 
                     Timekeeper.Finish("load_char_marts");
                     */
-                    using (var op_load_char_lifestype = Timekeeper.StartSyncron("load_char_lifestyle", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_lifestyle", op_load))
                     {
-
                         // Lifestyles.
                         XmlNode xmlFakeSINDataNode =
                             xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
@@ -17143,9 +17137,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_lifestyle");
                     }
 
-                    using (var op_load_char_gear = Timekeeper.StartSyncron("load_char_gear", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_gear", op_load))
                     {
-
                         // <gears>
                         foreach (XmlNode xmlGearToImport in xmlStatBlockBaseNode.SelectNodes(
                             "gear/equipment/item[@useradded != \"no\"]"))
@@ -17177,9 +17170,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_gear");
                     }
 
-                    using (var op_load_char_car = Timekeeper.StartSyncron("load_char_car", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_car", op_load))
                     {
-
                         foreach (Vehicle objVehicle in lstVehicles)
                         {
                             _lstVehicles.Add(objVehicle);
@@ -17287,9 +17279,8 @@ if (!Utils.IsUnitTest){
                     */
                     _lstWeapons.AddRange(lstWeapons);
 
-                    using (var op_load_char_unarmed = Timekeeper.StartSyncron("load_char_unarmed", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_unarmed", op_load))
                     {
-
                         // Look for the unarmed attack
                         bool blnFoundUnarmed = false;
                         foreach (Weapon objWeapon in _lstWeapons)
@@ -17319,9 +17310,8 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_unarmed");
                     }
 
-                    using (var op_load_char_cfix = Timekeeper.StartSyncron("load_char_cfix", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_cfix", op_load))
                     {
-
                         // load issue where the contact multiplier was set to 0
                         if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
                         {
@@ -17346,7 +17336,7 @@ if (!Utils.IsUnitTest){
                         //Timekeeper.Finish("load_char_cfix");
                     }
 
-                    using (var op_load_char_cfix = Timekeeper.StartSyncron("load_char_maxkarmafix", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", op_load))
                     {
                         //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
                         if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
@@ -17358,7 +17348,7 @@ if (!Utils.IsUnitTest){
                     }
 
                     // Refresh certain improvements
-                    using (var op_load_char_improvementrefreshers = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
+                    using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                     {
                         IsLoading = false;
                         // Refresh permanent attribute changes due to essence loss

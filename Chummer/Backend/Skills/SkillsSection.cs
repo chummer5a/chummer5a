@@ -196,7 +196,7 @@ namespace Chummer.Backend.Skills
             {
                 if (!blnLegacy)
                 {
-                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
                     {
                         List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
                         using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
@@ -218,7 +218,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_groups");
                     }
 
-                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
                     {
                         //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
                         List<Skill> lstLoadingSkills = new List<Skill>();
@@ -265,7 +265,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_normal");
                     }
 
-                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
                     {
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
                         {
@@ -282,7 +282,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_kno");
                     }
 
-                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
                     {
                         // Knowsoft Buffer.
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
@@ -425,7 +425,7 @@ namespace Chummer.Backend.Skills
 
         internal void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
         {
-            using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
+            using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
                 List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
                 using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
@@ -447,9 +447,8 @@ namespace Chummer.Backend.Skills
                 //Timekeeper.Finish("load_char_skills_groups");
             }
 
-            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", parentActivity))
+            using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-
                 List<Skill> lstTempSkillList = new List<Skill>();
                 using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
                     if (xmlSkillsList?.Count > 0)

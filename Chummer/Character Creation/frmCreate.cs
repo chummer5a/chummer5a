@@ -194,8 +194,7 @@ namespace Chummer
                         tssBPRemainLabel.Visible = false;
                     }
 
-                    using (var op_load_frm_create_BuildMethod =
-                        Timekeeper.StartSyncron("load_frm_create_BuildMethod", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_BuildMethod", op_load_frm_create))
                     {
                         // Initialize elements if we're using Priority to build.
                         if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority ||
@@ -237,8 +236,7 @@ namespace Chummer
 
                     }
 
-                    using (var op_load_frm_create_databinding =
-                        Timekeeper.StartSyncron("load_frm_create_databinding", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_databinding", op_load_frm_create))
                     {
                         lblNuyenTotal.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplayTotalStartingNuyen));
@@ -305,8 +303,7 @@ namespace Chummer
 
                     }
 
-                    using (var op_load_frm_create_refresh =
-                        Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
                     {
                         OnCharacterPropertyChanged(CharacterObject,
                             new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
@@ -349,8 +346,7 @@ namespace Chummer
                         RefreshDrugs(treCustomDrugs);
                     }
 
-                    using (var op_load_frm_create_sortAndCallback =
-                        Timekeeper.StartSyncron("load_frm_create_sortAndCallback", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_sortAndCallback", op_load_frm_create))
                     {
 
                         treWeapons.SortCustomOrder();
@@ -391,8 +387,7 @@ namespace Chummer
                         CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
                     }
 
-                    using (var op_load_frm_create_tradition =
-                        Timekeeper.StartSyncron("load_frm_create_tradition", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_tradition", op_load_frm_create))
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
@@ -645,28 +640,24 @@ namespace Chummer
                     // Merge the ToolStrips.
                     ToolStripManager.RevertMerge("toolStrip");
                     ToolStripManager.Merge(toolStrip, "toolStrip");
-                    using (var op_load_frm_create_skills =
-                        Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_create))
                     {
                         tabSkillUc.RealLoad();
                     }
 
-                    using (var op_load_frm_create_powers =
-                        Timekeeper.StartSyncron("load_frm_create_powers", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_powers", op_load_frm_create))
                     {
                         tabPowerUc.RealLoad();
                     }
 
-                    using (var op_load_frm_create_OnCharacterPropertyChanged =
-                        Timekeeper.StartSyncron("load_frm_create_OnCharacterPropertyChanged", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_OnCharacterPropertyChanged", op_load_frm_create))
                     {
                         // Run through all appropriate property changers
                         foreach (PropertyInfo objProperty in CharacterObject.GetType().GetProperties())
                             OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
                     }
 
-                    using (var op_load_frm_create_databinding2 =
-                        Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
                     {
                         nudNuyen.DoDatabinding("Value", CharacterObject, nameof(Character.NuyenBP));
                         nudNuyen.DoDatabinding("Maximum", CharacterObject, nameof(Character.TotalNuyenMaximumBP));
@@ -833,8 +824,7 @@ namespace Chummer
                         cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
                     }
 
-                    using (var op_load_frm_create_vehicle =
-                        Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
                     {
                         // Populate vehicle weapon fire mode list.
                         List<ListItem> lstFireModes = new List<ListItem>();
@@ -852,8 +842,7 @@ namespace Chummer
                         cboVehicleWeaponFiringMode.EndUpdate();
                     }
 
-                    using (var op_load_frm_create_finish =
-                        Timekeeper.StartSyncron("load_frm_create_finish", op_load_frm_create))
+                    using (_ = Timekeeper.StartSyncron("load_frm_create_finish", op_load_frm_create))
                     {
                         RefreshAttributes(pnlAttributes);
 

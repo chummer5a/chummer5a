@@ -209,7 +209,7 @@ namespace Chummer.Backend.Attributes
         {
             if (charNode == null)
                 return;
-            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode.InnerText))
+            using (_ = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode.InnerText))
             {
                 int intOldBODBase = _objCharacter.BOD.Base;
                 int intOldBODKarma = _objCharacter.BOD.Karma;
@@ -474,7 +474,7 @@ namespace Chummer.Backend.Attributes
         {
             if (xmlStatBlockBaseNode == null)
                 return;
-            using (var op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+            using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();

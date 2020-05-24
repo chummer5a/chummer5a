@@ -368,7 +368,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
+                using (_ = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
                     CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
                     Initialize();
             }
@@ -419,7 +419,7 @@ namespace Chummer.Plugins
         {
             foreach(IPlugin plugin in MyActivePlugins)
             {
-                using (var op_plugin = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
+                using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
                     var pages = plugin.GetTabPages(frmCareer);
@@ -441,7 +441,7 @@ namespace Chummer.Plugins
         {
             foreach (var plugin in MyActivePlugins)
             {
-                using (var op_plugin = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
                     var pages = plugin.GetTabPages(frmCreate);
                     if (pages == null)
@@ -462,7 +462,7 @@ namespace Chummer.Plugins
         {
             foreach (var plugin in MyActivePlugins)
             {
-                using (var op_plugin = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
+                using (_ = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
                     var menuitems = plugin.GetMenuItems(menu);
