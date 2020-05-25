@@ -36,6 +36,10 @@
       <addmodcategory>Full Body Armor Mods</addmodcategory>
     </armor>
     <armor>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <addmodcategory>Full Body Armor Mods</addmodcategory>
+    </armor>
+    <armor>
       <name>Security Armor: Light</name>
       <addmodcategory>Full Body Armor Mods</addmodcategory>
     </armor>
@@ -53,23 +57,23 @@
     </armor>
     <armor>
       <name>Hardened Mil-Spec Battle Armor: Helmet</name>
-      <hide amendoperation="addnode" />
+      <hide />
     </armor>
     <armor>
       <name>Security Armor: Helmet</name>
-      <hide amendoperation="addnode" />
+      <hide />
     </armor>
     <armor>
       <name>SWAT Helmet</name>
-      <hide amendoperation="addnode" />
+      <hide />
     </armor>
     <armor>
       <name>Urban Explorer Daedalus: Helmet</name>
-      <hide amendoperation="addnode" />
+      <hide />
     </armor>
   </armors>
   <mods>
-    <mod>
+    <mod amendoperation="addnode">
       <id>8408b3e7-87ff-4b6e-bfdc-19433ba356da</id>
       <name>SWAT Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
@@ -85,7 +89,7 @@
       <source>RG</source>
       <page>70</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>eba04b96-c253-4fe0-8431-988d5a45d456</id>
       <name>Hardened Mil-Spec Battle Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
@@ -93,7 +97,10 @@
       <armorcapacity>[-8]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Hardened Mil-Spec Battle Armor</name>
+          <OR>
+            <name>Ares Arms Bug Stomper Custom Armor</name>
+            <name operation="contains">Hardened Mil-Spec Battle Armor</name>
+          </OR>
         </parentdetails>
       </required>
       <avail>8F</avail>
@@ -101,7 +108,7 @@
       <source>RG</source>
       <page>66</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>7270c272-fef6-4b93-ae78-aa4906d9dbd5</id>
       <name>Security Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
@@ -109,7 +116,7 @@
       <armorcapacity>[-5]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Security Armor</name>
+          <name operation="contains">Security Armor</name>
         </parentdetails>
       </required>
       <avail>8R</avail>
@@ -117,7 +124,7 @@
       <source>RG</source>
       <page>67</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>812a7926-3980-4c26-9935-5f1b66abacda</id>
       <name>Urban Explorer Jumpsuit: Helmet</name>
       <category>Urban Explorer Jumpsuit Accessories</category>
@@ -135,7 +142,7 @@
       <source>SR5</source>
       <page>437</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
       <name>Urban Explorer Daedalus: Helmet</name>
       <category>Urban Explorer Jumpsuit Accessories</category>

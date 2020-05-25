@@ -54,24 +54,20 @@ namespace Chummer
         // Example: replace with your own criteria.
         private bool OKtoSend(ITelemetry item)
         {
-            ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
-            if (exceptionTelemetry == null) return true;
-
-            return false;
+            return !(item is ExceptionTelemetry);
         }
 
         // Example: replace with your own modifiers.
         private void ModifyItem(ITelemetry item)
         {
-            ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
-            if (exceptionTelemetry == null) return;
+            if (!(item is ExceptionTelemetry exceptionTelemetry)) return;
             var translateCultureInfo = new CultureInfo("en");
             try
             {
                 string msg =
                     TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
-                    exceptionTelemetry.Properties.Add("Translated", msg); 
+                    exceptionTelemetry.Properties.Add("Translated", msg);
             }
             catch (Exception ex)
             {
@@ -85,6 +81,8 @@ namespace Chummer
 
         public static string TranslateExceptionMessage(Exception exception, CultureInfo targetCulture)
         {
+            if (exception == null)
+                return string.Empty;
             Assembly a = exception.GetType().Assembly;
             ResourceManager rm = new ResourceManager(a.GetName().Name, a);
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
@@ -103,7 +101,7 @@ namespace Chummer
                 {
                     result = result.Replace(message, translated);
                 }
-                else
+                else if (!string.IsNullOrEmpty(translated))
                 {
                     var pattern = $"{Regex.Escape(message)}";
                     pattern = Regex.Replace(pattern, @"\\{([0-9]+)\}", "(?<group$1>.*)");

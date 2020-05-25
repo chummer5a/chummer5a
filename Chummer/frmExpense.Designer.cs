@@ -42,13 +42,14 @@ namespace Chummer
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkForceCareerVisible = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblKarma
@@ -109,7 +110,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDescription.Location = new System.Drawing.Point(88, 54);
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(515, 20);
+            this.txtDescription.Size = new System.Drawing.Size(278, 20);
             this.txtDescription.TabIndex = 7;
             this.txtDescription.Text = "Mission Reward";
             // 
@@ -165,7 +166,7 @@ namespace Chummer
             this.datDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.datDate.Location = new System.Drawing.Point(88, 28);
             this.datDate.Name = "datDate";
-            this.datDate.Size = new System.Drawing.Size(515, 20);
+            this.datDate.Size = new System.Drawing.Size(278, 20);
             this.datDate.TabIndex = 5;
             // 
             // lblDateLabel
@@ -230,11 +231,10 @@ namespace Chummer
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Controls.Add(this.chkKarmaNuyenExchange, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblKarma, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblDateLabel, 0, 1);
@@ -243,32 +243,21 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.txtDescription, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.chkForceCareerVisible, 1, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 153);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(369, 180);
             this.tableLayoutPanel1.TabIndex = 12;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(447, 130);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 12;
             // 
             // flowLayoutPanel2
             // 
@@ -280,8 +269,32 @@ namespace Chummer
             this.flowLayoutPanel2.Location = new System.Drawing.Point(85, 0);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(521, 25);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(284, 25);
             this.flowLayoutPanel2.TabIndex = 13;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
+            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(210, 154);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
+            this.flowLayoutPanel1.TabIndex = 12;
+            // 
+            // chkForceCareerVisible
+            // 
+            this.chkForceCareerVisible.AutoSize = true;
+            this.chkForceCareerVisible.Location = new System.Drawing.Point(88, 130);
+            this.chkForceCareerVisible.Name = "chkForceCareerVisible";
+            this.chkForceCareerVisible.Size = new System.Drawing.Size(167, 17);
+            this.chkForceCareerVisible.TabIndex = 11;
+            this.chkForceCareerVisible.Tag = "Checkbox_Expense_ForceCareerVisible";
+            this.chkForceCareerVisible.Text = "Show in Career Karma/Nuyen";
+            this.chkForceCareerVisible.UseVisualStyleBackColor = true;
             // 
             // frmExpense
             // 
@@ -290,7 +303,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(624, 171);
+            this.ClientSize = new System.Drawing.Size(387, 198);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -307,10 +320,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -333,5 +346,6 @@ namespace Chummer
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.CheckBox chkForceCareerVisible;
     }
 }

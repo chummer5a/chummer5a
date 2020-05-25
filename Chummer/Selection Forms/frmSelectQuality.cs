@@ -19,10 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text;
-using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -36,7 +36,7 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
-        
+
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         private static string s_StrSelectCategory = string.Empty;
@@ -46,8 +46,8 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
-            
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+
             // Load the Quality information.
             _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
@@ -64,13 +64,13 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
-            //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex" 
+            //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex"
             BindingList<ListItem> templist = new BindingList<ListItem>(_lstCategory);
             cboCategory.DataSource = templist;
 
@@ -90,7 +90,7 @@ namespace Chummer
             if (_objCharacter.MetagenicLimit == 0)
                 chkNotMetagenic.Checked = true;
 
-            lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
+            lblBPLabel.Text = LanguageManager.GetString("Label_Karma");
             _blnLoading = false;
             BuildQualityList();
         }
@@ -119,7 +119,7 @@ namespace Chummer
                 else
                 {
                     string strKarma = xmlQuality.SelectSingleNode("karma")?.Value ?? string.Empty;
-                    if (strKarma.StartsWith("Variable("))
+                    if (strKarma.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         int intMin;
                         int intMax = int.MaxValue;
@@ -127,11 +127,11 @@ namespace Chummer
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
-                            int.TryParse(strValues[0], out intMin);
-                            int.TryParse(strValues[1], out intMax);
+                            int.TryParse(strValues[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMin);
+                            int.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMax);
                         }
                         else
-                            int.TryParse(strCost.FastEscape('+'), out intMin);
+                            int.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMin);
 
                         if (intMax == int.MaxValue)
                             lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
@@ -140,18 +140,18 @@ namespace Chummer
                     }
                     else
                     {
-                        int.TryParse(strKarma, out int intBP);
-                        
+                        int.TryParse(strKarma, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBP);
+
                         if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter) && !chkFree.Checked)
                         {
                             string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
                             switch (xmlQuality.SelectSingleNode("category")?.Value)
                             {
                                 case "Positive":
-                                    intBP += Convert.ToInt32(strValue);
+                                    intBP += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
                                     break;
                                 case "Negative":
-                                    intBP -= Convert.ToInt32(strValue);
+                                    intBP -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
                                     break;
                             }
                         }
@@ -163,8 +163,8 @@ namespace Chummer
                                 intBP *= 2;
                             }
                         }
-                        lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
-                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value))
+                        lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString(GlobalOptions.CultureInfo);
+                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value, GlobalOptions.InvariantCultureInfo))
                         {
                             int i = (intBP * _objCharacter.Options.KarmaQuality);
                             int spellPoints = 0;
@@ -174,7 +174,7 @@ namespace Chummer
                                 spellPoints++;
                             }
 
-                            lblBP.Text += $" / {spellPoints} {LanguageManager.GetString("String_SpellPoints")}";
+                            lblBP.Text += string.Format(GlobalOptions.CultureInfo, "{0}/{0}{1}{0}{2}", LanguageManager.GetString("String_Space"), spellPoints, LanguageManager.GetString("String_SpellPoints"));
                             lblBP.ToolTipText = LanguageManager.GetString("Tip_SelectSpell_MasteryQuality");
                         }
                         else
@@ -185,11 +185,11 @@ namespace Chummer
                 }
                 lblBPLabel.Visible = lblBP.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
-                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
@@ -377,7 +377,7 @@ namespace Chummer
                 {
                     objCategoryFilter.Length -= 4;
                     strFilter.Append(" and (");
-                    strFilter.Append(objCategoryFilter.ToString());
+                    strFilter.Append(objCategoryFilter);
                     strFilter.Append(')');
                 }
             }
@@ -414,7 +414,7 @@ namespace Chummer
                 strFilter.Append(strSearch);
             }
 
-            string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLower();
+            string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
             List <ListItem> lstQuality = new List<ListItem>();
             foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + strFilter + "]"))
             {
@@ -458,7 +458,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
 
-            if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
+            if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality))
                 return;
 
             _strSelectedQuality = strSelectedQuality;

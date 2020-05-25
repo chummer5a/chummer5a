@@ -103,6 +103,29 @@
         <limb>skull</limb>
         <limb>torso</limb>
       </redlinerexclusion>
+      <priorityarrays>
+        <priorityarray>BCDEE</priorityarray>
+        <priorityarray>CCDDE</priorityarray>
+      </priorityarrays>
+    </gameplayoption>
+    <gameplayoption>
+      <id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+      <name>High Life</name>
+      <karma>35</karma>
+      <qualitylimit>35</qualitylimit>
+      <pointbuykarma>1000</pointbuykarma>
+      <lifemoduleskarma>950</lifemoduleskarma>
+      <sumtoten>15</sumtoten>
+      <maxavailability>999</maxavailability>
+      <maxnuyen>25</maxnuyen>
+      <contactmultiplier>6</contactmultiplier>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+      <priorityarrays>
+        <priorityarray>AABCC</priorityarray>
+      </priorityarrays>
     </gameplayoption>
   </gameplayoptions>
 </chummer>

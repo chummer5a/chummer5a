@@ -21,6 +21,8 @@
  using System.Diagnostics;
 ﻿using System.IO;
 using System.Reflection;
+ using System.Security.AccessControl;
+ using System.Security.Principal;
  using System.Windows.Forms;
  using NLog;
 
@@ -28,7 +30,7 @@ namespace Chummer
 {
     public static class Utils
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public static void BreakIfDebug()
         {
 #if DEBUG
@@ -49,22 +51,49 @@ namespace Chummer
         public static bool IsUnitTest { get; set; }
 
         /// <summary>
-        /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
+        /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
 
-        public static string GetStartupPath
-        {
-            get
-            {
-                return !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            }
-        }
+        public static string GetStartupPath => !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
-        public static int GitUpdateAvailable()
+        public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
+
+        /// <summary>
+        /// Can the current user context write to a given file path?
+        /// </summary>
+        /// <param name="strPath">File path to evaluate.</param>
+        /// <returns></returns>
+        public static bool CanWriteToPath(string strPath)
         {
-            Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
-            int intResult = CachedGitVersion?.CompareTo(verCurrentversion) ?? 0;
-            return intResult;
+            if (string.IsNullOrEmpty(strPath))
+                return false;
+            try
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath) ?? throw new ArgumentOutOfRangeException(nameof(strPath)));
+                AuthorizationRuleCollection authRules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
+
+                foreach (FileSystemAccessRule accessRule in authRules)
+                {
+                    if (!(accessRule.IdentityReference is SecurityIdentifier objIdentifier) || !principal.IsInRole(objIdentifier))
+                        continue;
+                    if ((FileSystemRights.WriteData & accessRule.FileSystemRights) !=
+                        FileSystemRights.WriteData) continue;
+                    switch (accessRule.AccessControlType)
+                    {
+                        case AccessControlType.Allow:
+                            return true;
+                        case AccessControlType.Deny:
+                            //Deny usually overrides any Allow
+                            return false;
+                    }
+                }
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -82,7 +111,7 @@ namespace Chummer
                 if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
-            // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
+            // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
             for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
             {
@@ -90,7 +119,7 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (objResult == DialogResult.Yes)
                     {
                         // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.

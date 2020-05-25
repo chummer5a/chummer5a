@@ -18,11 +18,9 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-    <powers>
-        <power>
-            <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
-            <source>SG</source>
-            <page>199</page>
-        </power>
-    </powers>
+  <gears>
+    <gear  xpathfilter="category = 'Ammunition' and (starts-with(name,'Rocket:') or starts-with(name,'Missile:') or starts-with(name,'Grenade:'))">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">4+$1F</avail>
+    </gear>
+  </gears>
 </chummer>

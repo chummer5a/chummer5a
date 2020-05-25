@@ -19,9 +19,9 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+
   <improvements>
-    <improvement>
+    <!--  <improvement>
       <name>Action Dice-Pool Modifier</name>
       <id>actiondicepool</id>
       <internal>actiondicepool</internal>
@@ -30,8 +30,8 @@
         <field>val</field>
       </fields>
       <xml><![CDATA[<name>{select}</name><<val>{val}</val>]]></xml>
-      <page>Adjusts the number of boxes the character has in their Stun Condition Monitor. Positive numbers increase the number of boxes in the Condition Monitor. Negative numbers reduce the number of boxes in the Condition Monitor.</page>
-    </improvement>
+      <page>Adjusts the dicepool modifier for a given Action. Note: This is current unused</page>
+    </improvement> -->
     <improvement>
       <name>Enable Special Attribute</name>
       <id>enableattribute</id>
@@ -709,6 +709,9 @@
       <name>Street Cred Multiplier</name>
       <id>streetcredmultiplier</id>
       <internal>streetcredmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases or reduces the multiplier used to calculate Street Cred.</page>
     </improvement>
@@ -716,6 +719,9 @@
       <name>Bonus Street Cred</name>
       <id>streetcred</id>
       <internal>streetcred</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Street Cred by the listed value.</page>
     </improvement>
@@ -723,8 +729,58 @@
       <name>Dodge</name>
       <id>dodge</id>
       <internal>dodge</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Dodge pool by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Cyberzombie Conversion</name>
+      <id>enablecyberzombie</id>
+      <internal>enablecyberzombie</internal>
+      <xml />
+      <page>Allows the character to be converted into a Cyberzombie.</page>
+    </improvement>
+    <improvement>
+      <name>Free Spells</name>
+      <id>freespells</id>
+      <internal>freespells</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Allows the character to mark some spells as Free, avoiding Karma costs.</page>
+    </improvement>
+    <improvement>
+      <name>Mental Limit</name>
+      <id>mentallimit</id>
+      <internal>mentallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Mental Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Physical Limit</name>
+      <id>physicallimit</id>
+      <internal>physicallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Physical Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Social Limit</name>
+      <id>sociallimit</id>
+      <internal>sociallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Social Limit by the listed value.</page>
     </improvement>
   </improvements>
 </chummer>

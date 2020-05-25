@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema cyberware.xsd">
-  <version>0</version>
+
   <grades>
     <!-- Region Standard -->
     <grade>
@@ -555,6 +555,15 @@
       <allowsubsystems>
         <category>Eyeware</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>8ec5c9bb-aeb9-42f2-a436-a60f764adfe4</disablequality>
+        <disablequality>fd346177-3791-44c0-af8c-7cf176fc9aa3</disablequality>
+        <disablequality>02e76a38-304e-4a0e-93a3-ad2938306afc</disablequality>
+        <disablequality>7a468691-1362-439a-a096-76da6933b24c</disablequality>
+        <disablequality>2f080d13-92d7-4b16-9ee6-93b5a89206e4</disablequality>
+        <disablequality>210401d7-57fa-4260-9517-2725689a509e</disablequality>
+        <disablequality>4390735f-54fa-44a5-bce7-d23a67427f25</disablequality>
+      </bonus>
       <minrating>1</minrating>
       <rating>6</rating>
       <subsystems>
@@ -668,7 +677,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Visual).</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
@@ -725,7 +734,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Hearing)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
@@ -795,7 +804,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Perception to find the source of a sound</condition>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -946,21 +955,17 @@
       <cost>Rating * 25000</cost>
       <source>SR5</source>
       <page>455</page>
-      <bonus>
+      <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -987,7 +992,7 @@
         </specificattribute>
       </wirelesspairbonus>
       <rating>3</rating>
-      <wirelesspairinclude>
+      <wirelesspairinclude includeself="False">
         <name>Wired Reflexes</name>
       </wirelesspairinclude>
       <minrating>1</minrating>
@@ -1009,17 +1014,17 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Skillwires</condition>
+          <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Skillwires</condition>
+          <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Skillwires</condition>
+          <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
       </wirelessbonus>
       <rating>6</rating>
@@ -1062,7 +1067,7 @@
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
       </wirelesspairbonus>
-      <wirelesspairinclude>
+      <wirelesspairinclude includeself="False">
         <name>Reaction Enhancers</name>
       </wirelesspairinclude>
       <minrating>1</minrating>
@@ -1131,6 +1136,7 @@
       </allowsubsystems>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
@@ -1138,7 +1144,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1168,11 +1173,13 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <selectside />
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1277,11 +1284,13 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <selectside />
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <pairbonus>
@@ -1438,11 +1447,11 @@
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
+        <disablequality>Celerity</disablequality>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1462,6 +1471,9 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <allowsubsystems>
         <category>Bodyware</category>
         <category>Cosmetic Enhancement</category>
@@ -1476,7 +1488,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1581,11 +1592,13 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <selectside />
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1814,7 +1827,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for Gymnastics (Jumping) and Running (Sprinting)</condition>
+          <condition>LimitCondition_CyberwareHydraulicJacks</condition>
         </limitmodifier>
       </bonus>
       <limit>False</limit>
@@ -2131,7 +2144,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Perception</condition>
+          <condition>LimitCondition_SkillsActivePerception</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -2169,7 +2182,7 @@
       <name>False Face</name>
       <category>Headware</category>
       <ess>0.5</ess>
-      <capacity>0</capacity>
+      <capacity>[8]</capacity>
       <avail>12R</avail>
       <cost>20000</cost>
       <source>CF</source>
@@ -2211,7 +2224,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Scientific or Technical Knowledge Skills</condition>
+          <condition>LimitCondition_SkillsKnowledgeScientificTechnical</condition>
         </limitmodifier>
         <specificskill>
           <name>Mathematics</name>
@@ -2233,7 +2246,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Navigation</condition>
+          <condition>LimitCondition_SkillsActiveNavigation</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -2269,7 +2282,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Performance, Must use linked synthtrument</condition>
+          <condition>LimitCondition_SkillsActivePerformanceSynthtrument</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2478,7 +2491,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Performance</condition>
+          <condition>LimitCondition_SkillsActivePerformance</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2543,7 +2556,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing), Gymnastics (Jumping), Running, and knockdown resist.</condition>
+          <condition>LimitCondition_CyberwareBalanceTail</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2587,7 +2600,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
+          <condition>LimitCondition_CyberwareCyberfins</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -2632,7 +2645,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
+          <condition>LimitCondition_CyberwareCyberfins</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -2708,13 +2721,14 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>84</page>
+      <addweapon>Foot Anchor</addweapon>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for knockdown resist, Must be engaged.</condition>
+          <condition>LimitCondition_CyberwareFootAnchor</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2793,7 +2807,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing)</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2825,7 +2839,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing)</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2857,12 +2871,12 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Escape Artist and Grappling, Must be loosened</condition>
+          <condition>LimitCondition_SkillsActiveEscapeArtistGrappleLoose</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for tests involving endurance, Must be tightened</condition>
+          <condition>LimitCondition_TestsEndurance</condition>
         </limitmodifier>
       </bonus>
       <forbidden>
@@ -3117,7 +3131,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>4</value>
-          <condition>Only for Sneaking, Must be completely naked</condition>
+          <condition>LimitCondition_SkillsActiveSneakingNaked</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -3230,6 +3244,7 @@
       </allowgear>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <walkmultiplier>
           <category>Ground</category>
           <percent>-50</percent>
@@ -3243,7 +3258,6 @@
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <cyberware>Smart Articulation</cyberware>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -3264,6 +3278,7 @@
       </allowgear>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <walkmultiplier>
           <category>Ground</category>
           <percent>-50</percent>
@@ -3277,7 +3292,6 @@
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <cyberware>Smart Articulation</cyberware>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -3297,6 +3311,7 @@
       </allowgear>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <walkmultiplier>
           <category>Ground</category>
           <percent>-50</percent>
@@ -3310,7 +3325,6 @@
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <cyberware>Smart Articulation</cyberware>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -3490,7 +3504,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Stealth group.</condition>
+          <condition>LimitCondition_SkillGroupStealth</condition>
         </limitmodifier>
         <runmultiplier>
           <val>1</val>
@@ -3585,7 +3599,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only when used as hand</condition>
+          <condition>LimitCondition_CyberwareMonkeyFoot</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -3620,7 +3634,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only when attacking with the legs</condition>
+          <condition>LimitCondition_CyberwareRaptorFoot</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -3653,7 +3667,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only when in use</condition>
+          <condition>LimitCondition_InUse</condition>
         </limitmodifier>
         <walkmultiplier>
           <category>Ground</category>
@@ -3689,11 +3703,14 @@
       <source>CF</source>
       <page>88</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>-2</value>
-          <condition>Only when in use</condition>
+          <condition>LimitCondition_InUse</condition>
         </limitmodifier>
         <walkmultiplier>
           <category>Ground</category>
@@ -3733,7 +3750,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only with manual dexterity</condition>
+          <condition>LimitCondition_CyberwareSnakeFingers</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -4370,6 +4387,9 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <modularmount>ankle</modularmount>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
@@ -4385,11 +4405,6 @@
           </OR>
         </parentdetails>
       </required>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
     </cyberware>
     <cyberware>
       <id>251f792a-8887-4276-a5a9-0e01fec594ac</id>
@@ -4426,6 +4441,9 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>88</page>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <modularmount>knee</modularmount>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
@@ -4440,11 +4458,6 @@
           </OR>
         </parentdetails>
       </required>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
     </cyberware>
     <cyberware>
       <id>d4d12624-1754-4a67-8e5e-f41817cfc875</id>
@@ -4474,6 +4487,9 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <inheritattributes />
       <modularmount>hip</modularmount>
       <blocksmounts>ankle,knee,hip</blocksmounts>
@@ -4481,7 +4497,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -4526,7 +4541,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>87</page>
-      <rating>6</rating>
+      <rating>4</rating>
       <required>
         <parentdetails>
           <OR>
@@ -4563,6 +4578,7 @@
           <limbslot>leg</limbslot>
           <val>2</val>
         </addlimb>
+        <disablequality>Celerity</disablequality>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>
@@ -4571,7 +4587,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -4683,6 +4698,7 @@
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
       <bonus>
+        <disablequality>Celerity</disablequality>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>
@@ -4691,7 +4707,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -4720,10 +4735,12 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -4741,9 +4758,11 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>87</page>
-      <bonus>
-        <selecttext />
-      </bonus>
+      <pairbonus>
+        <selectskill knowledgeskills="False">
+          <val>1</val>
+        </selectskill>
+      </pairbonus>
       <required>
         <parentdetails>
           <OR>
@@ -5380,9 +5399,6 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
-      <bonus>
-        <selecttext />
-      </bonus>
       <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
@@ -5433,7 +5449,7 @@
       <source>CF</source>
       <page>149</page>
       <bonus>
-        <selecttext />
+        <selecttext xml="gear.xml" xpath="/chummer/gears/gear[category = 'Toxins']" allowedit="True" />
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>6</rating>
@@ -5463,6 +5479,16 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
+      <bonus>
+        <knowledgeskillkarmacost>
+          <name />
+          <val>-Rating</val>
+        </knowledgeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>2</val>
+        </knowledgeskillkarmacostmin>
+      </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
@@ -5481,7 +5507,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Intuition-linked skills</condition>
+          <condition>LimitCondition_AttribSkillINT</condition>
         </limitmodifier>
         <skilllinkedattribute>
           <name>INT</name>
@@ -5506,7 +5532,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Logic-linked skills</condition>
+          <condition>LimitCondition_AttribSkillINT</condition>
         </limitmodifier>
         <skilllinkedattribute>
           <name>LOG</name>
@@ -5979,6 +6005,10 @@
       <cost>650</cost>
       <source>HT</source>
       <page>186</page>
+      <allowgear>
+        <gearcategory>Drugs</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+      </allowgear>
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <required>
         <parentdetails>
@@ -7225,9 +7255,21 @@
     </cyberware>
     <cyberware>
       <id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-      <name>Cosmetic Modifcations Eye (2050)</name>
+      <name>Cosmetic Modifications Eye (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
+      <ess>0</ess>
+      <capacity>0</capacity>
+      <avail>2</avail>
+      <cost>1000</cost>
+      <source>2050</source>
+      <page>201</page>
+    </cyberware>
+    <cyberware>
+      <id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+      <name>Cosmetic Modifications Ear (2050)</name>
+      <limit>False</limit>
+      <category>Earware</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>2</avail>
@@ -7653,6 +7695,7 @@
       <source>2050</source>
       <page>203</page>
       <bonus>
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name precedence="0">AGI</name>
           <val>Rating</val>
@@ -7662,11 +7705,6 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -8318,6 +8356,7 @@
       <name>Busted Ware</name>
       <category>Bodyware</category>
       <ess>0.5</ess>
+      <limit>False</limit>
       <capacity>0</capacity>
       <avail>0</avail>
       <removalcost>16000</removalcost>

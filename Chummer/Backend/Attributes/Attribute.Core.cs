@@ -45,25 +45,26 @@ namespace Chummer.Backend.Attributes
         private int _intKarma;
         private string _strAbbrev;
         private readonly Character _objCharacter;
-		private AttributeCategory _enumMetatypeCategory;
+        private AttributeCategory _enumMetatypeCategory;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		#region Constructor, Save, Load, and Print Methods
+        #region Constructor, Save, Load, and Print Methods
 
-		/// <summary>
-		/// Character CharacterAttribute.
-		/// </summary>
-		/// <param name="character"></param>
-		/// <param name="abbrev"></param>
-		/// <param name="enumCategory"></param>
-		public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
+        /// <summary>
+        /// Character CharacterAttribute.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="abbrev"></param>
+        /// <param name="enumCategory"></param>
+        public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
         {
-	        _strAbbrev = abbrev;
+            _strAbbrev = abbrev;
             _enumMetatypeCategory = enumCategory;
-	        _objCharacter = character;
-			_objCharacter.PropertyChanged += OnCharacterChanged;
-		}
+            _objCharacter = character;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged += OnCharacterChanged;
+        }
 
         public void UnbindAttribute()
         {
@@ -76,16 +77,18 @@ namespace Chummer.Backend.Attributes
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name", _strAbbrev);
-            objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString());
-            objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString());
-            objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString());
-            objWriter.WriteElementString("base", _intBase.ToString());
-            objWriter.WriteElementString("karma", _intKarma.ToString());
-			objWriter.WriteElementString("metatypecategory", _enumMetatypeCategory.ToString());
+            objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("metatypecategory", _enumMetatypeCategory.ToString());
             // External reader friendly stuff.
-            objWriter.WriteElementString("totalvalue", TotalValue.ToString());
+            objWriter.WriteElementString("totalvalue", TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -102,24 +105,24 @@ namespace Chummer.Backend.Attributes
             objNode.TryGetInt32FieldQuickly("base", ref _intBase);
             objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
             if (!BaseUnlocked)
-			{
-				_intBase = 0;
-			}
-			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
+            {
+                _intBase = 0;
+            }
+            //Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
             int i = 0;
-			if (objNode.TryGetInt32FieldQuickly("value", ref i))
-			{
-				i -= _intMetatypeMin;
-				if (BaseUnlocked)
-				{
-					_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
-					i -= _intBase;
-				}
-				if (i > 0)
-				{
-					_intKarma = i;
-				}
-			}
+            if (objNode.TryGetInt32FieldQuickly("value", ref i))
+            {
+                i -= _intMetatypeMin;
+                if (BaseUnlocked)
+                {
+                    _intBase = Math.Max(_intBase - _intMetatypeMin, 0);
+                    i -= _intBase;
+                }
+                if (i > 0)
+                {
+                    _intKarma = i;
+                }
+            }
 
             int intCreateKarma = 0;
             // Shim for that one time karma was split into career and create values
@@ -150,6 +153,8 @@ namespace Chummer.Backend.Attributes
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             if (Abbrev == "MAGAdept" && (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept))
                 return;
             objWriter.WriteStartElement("attribute");
@@ -160,9 +165,9 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("min", TotalMinimum.ToString(objCulture));
             objWriter.WriteElementString("max", TotalMaximum.ToString(objCulture));
             objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString(objCulture));
-			objWriter.WriteElementString("bp", TotalKarmaCost.ToString(objCulture));
-			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
-			objWriter.WriteEndElement();
+            objWriter.WriteElementString("bp", TotalKarmaCost.ToString(objCulture));
+            objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
+            objWriter.WriteEndElement();
         }
         #endregion
         /// <summary>
@@ -181,10 +186,10 @@ namespace Chummer.Backend.Attributes
 
         public AttributeCategory MetatypeCategory => _enumMetatypeCategory;
 
-		/// <summary>
-		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
-		/// </summary>
-		public int MetatypeMinimum
+        /// <summary>
+        /// Minimum value for the CharacterAttribute as set by the character's Metatype.
+        /// </summary>
+        public int MetatypeMinimum
         {
             get
             {
@@ -484,9 +489,18 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
+            int intMeat = Value;
             //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
             //TODO: Should probably be in AttributeModifiers property directly?
-            int intMeat = Value + Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
+            if (_objCharacter.Improvements.Any(imp =>
+                imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
+            {
+                intMeat += Math.Min(AttributeModifiers, Math.Min(MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers, TotalMaximum - intMeat));
+            }
+            else
+            {
+                intMeat += Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
+            }
             int intReturn = intMeat;
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
@@ -568,7 +582,10 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
         /// </summary>
-        public int RawMinimum => MetatypeMinimum + MinimumModifiers;
+        public int RawMinimum =>
+            CharacterObject.Options.UnclampAttributeMinimum
+                ? MetatypeMinimum + MinimumModifiers
+                : Math.Max(MetatypeMinimum + MinimumModifiers, 0);
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
@@ -619,6 +636,11 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
+                if (_objCharacter.Improvements.Any(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
+                {
+                    return TotalMaximum;
+                }
                 return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
@@ -666,9 +688,9 @@ namespace Chummer.Backend.Attributes
         public string AugmentedMetatypeLimits => $"{TotalMinimum} / {TotalMaximum} ({TotalAugmentedMaximum})";
 
         public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
-            LanguageManager.GetString("String_Of", GlobalOptions.Language) +
-            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language)
-            + LanguageManager.GetString("String_Remaining", GlobalOptions.Language);
+            LanguageManager.GetString("String_Of") +
+            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space")
+            + LanguageManager.GetString("String_Remaining");
         #endregion
 
         #region Methods
@@ -680,14 +702,18 @@ namespace Chummer.Backend.Attributes
         /// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         public void AssignLimits(string strMin, string strMax, string strAug)
         {
-            MetatypeMinimum = Convert.ToInt32(strMin);
-            MetatypeMaximum = Convert.ToInt32(strMax);
-            MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
+            MetatypeMinimum = Convert.ToInt32(strMin, GlobalOptions.InvariantCultureInfo);
+            MetatypeMaximum = Convert.ToInt32(strMax, GlobalOptions.InvariantCultureInfo);
+            MetatypeAugmentedMaximum = Convert.ToInt32(strAug, GlobalOptions.InvariantCultureInfo);
         }
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
-            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
-            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
+            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
+            : string.Format(
+                GlobalOptions.CultureInfo,
+                LanguageManager.GetString("Tip_ImproveItem"),
+                Value + 1,
+                UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
         /// <summary>
@@ -700,7 +726,7 @@ namespace Chummer.Backend.Attributes
                 if (!string.IsNullOrEmpty(_strCachedToolTip))
                     return _strCachedToolTip;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 StringBuilder strModifier = new StringBuilder();
 
                 HashSet<string> lstUniqueName = new HashSet<string>();
@@ -842,14 +868,14 @@ namespace Chummer.Backend.Attributes
                         if (objCyberware.Category == "Cyberlimb")
                         {
                             strModifier.Append(Environment.NewLine);
-                            strModifier.Append(objCyberware.DisplayName(GlobalOptions.Language) + strSpaceCharacter + '(');
+                            strModifier.Append(objCyberware.CurrentDisplayName + strSpaceCharacter + '(');
                             strModifier.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString(GlobalOptions.CultureInfo) : objCyberware.TotalStrength.ToString(GlobalOptions.CultureInfo));
                             strModifier.Append(')');
                         }
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier.ToString();
+                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier;
             }
         }
 
@@ -1030,10 +1056,10 @@ namespace Chummer.Backend.Attributes
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = AttributeDependancyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in AttributeDependancyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -1057,108 +1083,108 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-		/// <summary>
-		/// Convert a string to an Attribute Category.
-		/// </summary>
-		/// <param name="strAbbrev">Linked attribute abbreviation.</param>
-		public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
-		{
-			switch (strAbbrev)
-			{
-				case "DEP":
-				case "EDG":
-				case "ESS":
-				case "MAG":
+        /// <summary>
+        /// Convert a string to an Attribute Category.
+        /// </summary>
+        /// <param name="strAbbrev">Linked attribute abbreviation.</param>
+        public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
+        {
+            switch (strAbbrev)
+            {
+                case "DEP":
+                case "EDG":
+                case "ESS":
+                case "MAG":
                 case "MAGAdept":
-				case "RES":
-					return AttributeCategory.Special;
-				default:
-					return AttributeCategory.Standard;
-			}
-		}
+                case "RES":
+                    return AttributeCategory.Special;
+                default:
+                    return AttributeCategory.Standard;
+            }
+        }
 
-		/// <summary>
-		/// Convert a string to an Attribute Category.
-		/// </summary>
-		/// <param name="strValue">String value to convert.</param>
-		public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
-		{
-			//If a value does exist, test whether it belongs to a shapeshifter form.
-			switch (strValue)
-			{
-				case "Shapeshifter":
-					return AttributeCategory.Shapeshifter;
-				default:
-					return AttributeCategory.Standard;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Convert a string to an Attribute Category.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
+        {
+            //If a value does exist, test whether it belongs to a shapeshifter form.
+            switch (strValue)
+            {
+                case "Shapeshifter":
+                    return AttributeCategory.Shapeshifter;
+                default:
+                    return AttributeCategory.Standard;
+            }
+        }
+        #endregion
 
         #region static
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependancyGraph<string> AttributeDependancyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(ToolTip),
-                    new DependancyGraphNode<string>(nameof(DisplayValue),
-                        new DependancyGraphNode<string>(nameof(HasModifiers)),
-                        new DependancyGraphNode<string>(nameof(TotalValue),
-                            new DependancyGraphNode<string>(nameof(AttributeModifiers)),
-                            new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
-                            new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
-                            new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum),
-                                new DependancyGraphNode<string>(nameof(AugmentedMaximumModifiers)),
-                                new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
-                                new DependancyGraphNode<string>(nameof(MaximumModifiers))
+        private static readonly DependencyGraph<string> s_AttributeDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(ToolTip),
+                    new DependencyGraphNode<string>(nameof(DisplayValue),
+                        new DependencyGraphNode<string>(nameof(HasModifiers)),
+                        new DependencyGraphNode<string>(nameof(TotalValue),
+                            new DependencyGraphNode<string>(nameof(AttributeModifiers)),
+                            new DependencyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                            new DependencyGraphNode<string>(nameof(MetatypeMaximum)),
+                            new DependencyGraphNode<string>(nameof(TotalAugmentedMaximum),
+                                new DependencyGraphNode<string>(nameof(AugmentedMaximumModifiers)),
+                                new DependencyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                                new DependencyGraphNode<string>(nameof(MaximumModifiers))
                             ),
-                            new DependancyGraphNode<string>(nameof(Value),
-                                new DependancyGraphNode<string>(nameof(Karma)),
-                                new DependancyGraphNode<string>(nameof(Base)),
-                                new DependancyGraphNode<string>(nameof(FreeBase)),
-                                new DependancyGraphNode<string>(nameof(AttributeValueModifiers)),
-                                new DependancyGraphNode<string>(nameof(TotalMinimum),
-                                    new DependancyGraphNode<string>(nameof(RawMinimum),
-                                        new DependancyGraphNode<string>(nameof(MetatypeMinimum)),
-                                        new DependancyGraphNode<string>(nameof(MinimumModifiers))
+                            new DependencyGraphNode<string>(nameof(Value),
+                                new DependencyGraphNode<string>(nameof(Karma)),
+                                new DependencyGraphNode<string>(nameof(Base)),
+                                new DependencyGraphNode<string>(nameof(FreeBase)),
+                                new DependencyGraphNode<string>(nameof(AttributeValueModifiers)),
+                                new DependencyGraphNode<string>(nameof(TotalMinimum),
+                                    new DependencyGraphNode<string>(nameof(RawMinimum),
+                                        new DependencyGraphNode<string>(nameof(MetatypeMinimum)),
+                                        new DependencyGraphNode<string>(nameof(MinimumModifiers))
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(TotalMaximum),
-                                    new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
-                                    new DependancyGraphNode<string>(nameof(MaximumModifiers))
+                                new DependencyGraphNode<string>(nameof(TotalMaximum),
+                                    new DependencyGraphNode<string>(nameof(MetatypeMaximum)),
+                                    new DependencyGraphNode<string>(nameof(MaximumModifiers))
                                 )
                             )
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(AugmentedMetatypeLimits),
-                    new DependancyGraphNode<string>(nameof(TotalMinimum)),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum)),
-                    new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum))
+                new DependencyGraphNode<string>(nameof(AugmentedMetatypeLimits),
+                    new DependencyGraphNode<string>(nameof(TotalMinimum)),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum)),
+                    new DependencyGraphNode<string>(nameof(TotalAugmentedMaximum))
                 ),
-                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
-                        new DependancyGraphNode<string>(nameof(Value))
+                new DependencyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependencyGraphNode<string>(nameof(Value))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(CanUpgradeCareer),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
-                    new DependancyGraphNode<string>(nameof(Value)),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum))
+                new DependencyGraphNode<string>(nameof(CanUpgradeCareer),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependencyGraphNode<string>(nameof(Value)),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum))
                 ),
-                new DependancyGraphNode<string>(nameof(KarmaMaximum),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum)),
-                    new DependancyGraphNode<string>(nameof(TotalBase))
+                new DependencyGraphNode<string>(nameof(KarmaMaximum),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum)),
+                    new DependencyGraphNode<string>(nameof(TotalBase))
                 ),
-                new DependancyGraphNode<string>(nameof(PriorityMaximum),
-                    new DependancyGraphNode<string>(nameof(TotalMaximum)),
-                    new DependancyGraphNode<string>(nameof(Karma)),
-                    new DependancyGraphNode<string>(nameof(FreeBase)),
-                    new DependancyGraphNode<string>(nameof(RawMinimum))
+                new DependencyGraphNode<string>(nameof(PriorityMaximum),
+                    new DependencyGraphNode<string>(nameof(TotalMaximum)),
+                    new DependencyGraphNode<string>(nameof(Karma)),
+                    new DependencyGraphNode<string>(nameof(FreeBase)),
+                    new DependencyGraphNode<string>(nameof(RawMinimum))
                 ),
-                new DependancyGraphNode<string>(nameof(CareerRemainingString),
-                    new DependancyGraphNode<string>(nameof(TotalValue)),
-                    new DependancyGraphNode<string>(nameof(Value))
+                new DependencyGraphNode<string>(nameof(CareerRemainingString),
+                    new DependencyGraphNode<string>(nameof(TotalValue)),
+                    new DependencyGraphNode<string>(nameof(Value))
                 )
             );
 
@@ -1187,7 +1213,7 @@ namespace Chummer.Backend.Attributes
                     int intPrice = UpgradeKarmaCost;
                     int intValue = Value;
 
-                    string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {intValue} -> {intValue + 1}";
+                    string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {Abbrev} {intValue} -> {intValue + 1}";
 
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                     objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);

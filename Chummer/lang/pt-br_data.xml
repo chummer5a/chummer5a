@@ -3715,8 +3715,8 @@
 			</power>
 			<power>
 				<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
-				<name>Cozenage</name>
-				<translate>Cozenage</translate>
+				<name>Cozenge</name>
+				<translate>Cozenge</translate>
 				<altpage>194</altpage>
 			</power>
 			<power>
@@ -24492,8 +24492,8 @@
 			</quality>
 			<quality>
 				<id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-				<name>Magic Sense (Changeling)</name>
-				<translate>Magic Sense (Changeling)</translate>
+				<name>Magic Sense</name>
+				<translate>Magic Sense</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
@@ -35796,8 +35796,8 @@
 			</mod>
 			<mod>
 				<id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-				<name>Missile Defence System</name>
-				<translate>Missile Defence System</translate>
+				<name>Missile Defense System</name>
+				<translate>Missile Defense System</translate>
 				<altpage>160</altpage>
 			</mod>
 			<mod>

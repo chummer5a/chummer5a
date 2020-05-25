@@ -24,11 +24,46 @@ namespace Chummer
 {
     public static class StringExtensions
     {
-        public static string EmptyGuid { get; } = Guid.Empty.ToString("D");
+        public static string EmptyGuid { get; } = Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public static bool IsEmptyGuid(this string strInput)
         {
             return strInput == EmptyGuid;
+        }
+
+        /// <summary>
+        /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strOldValue">Substring to replace</param>
+        /// <param name="strNewValue">Substring with which <paramref name="strOldValue"/> gets replaced</param>
+        /// <param name="eStringComparison">String Comparison to use when checking for identity</param>
+        /// <returns>New string with all instances of <paramref name="strOldValue"/> replaced with <paramref name="strNewValue"/>, but where the equality check was custom-defined by <paramref name="eStringComparison"/></returns>
+        public static string Replace(this string strInput, string strOldValue, string strNewValue, StringComparison eStringComparison)
+        {
+            if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strOldValue))
+                return strInput;
+            if (strNewValue == null)
+                throw new ArgumentNullException(nameof(strNewValue));
+            // Built-in Replace method uses Ordinal comparison, so just defer to that if that is what we have defined
+            if (eStringComparison == StringComparison.Ordinal)
+                return strInput.Replace(strOldValue, strNewValue);
+            // Do the check first before we do anything else so that we exit out quickly if nothing needs replacing
+            int intHead = strInput.IndexOf(strOldValue, eStringComparison);
+            if (intHead == -1)
+                return strInput;
+            // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
+            StringBuilder sbdReturn = new StringBuilder(strInput.Length + 1 + Math.Max(0, strInput.Length * (strNewValue.Length - strOldValue.Length) / strOldValue.Length));
+            int intEndPositionOfLastReplace = 0;
+            // intHead already set to the index of the first instance, for loop's initializer can be left empty
+            for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
+            {
+                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace));
+                sbdReturn.Append(strNewValue);
+                intEndPositionOfLastReplace = intHead + strOldValue.Length;
+            }
+            sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
+            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -182,13 +217,11 @@ namespace Chummer
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete, int intStartIndex = -1, StringComparison eComparison = StringComparison.Ordinal)
         {
-            if (strSubstringToDelete == null)
+            if (string.IsNullOrEmpty(strInput) || strSubstringToDelete == null)
                 return strInput;
             int intToDeleteLength = strSubstringToDelete.Length;
             if (intToDeleteLength == 0)
                 return strInput;
-            if (strInput == null)
-                return string.Empty;
             if (intStartIndex < 0)
                 intStartIndex += strInput.Length;
             if (intStartIndex < intToDeleteLength - 1)
@@ -207,6 +240,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, params char[] anyOf)
         {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
             return strHaystack.IndexOfAny(anyOf);
         }
 
@@ -220,6 +255,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
             return strInput.Split(new []{chrSeparator}, eSplitOptions);
         }
 
@@ -232,11 +269,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, char chrNeedle)
         {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
             return strHaystack.IndexOf(chrNeedle) != -1;
         }
 
         /// <summary>
-        /// Normalises whitespace for a given textblock, removing extra spaces and trimming the string in the process.
+        /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string in the process.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
         /// <param name="chrWhiteSpace">Whitespace character to use when replacing chars.</param>
@@ -385,10 +424,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
             {
                 // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                if (blnOmitCheck || strInput.StartsWith(strToTrim))
+                if (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal))
                 {
                     int intTrimLength = strToTrim.Length;
                     return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
@@ -407,10 +446,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
             {
                 // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                if (blnOmitCheck || strInput.EndsWith(strToTrim))
+                if (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal))
                 {
                     return strInput.Substring(0, strInput.Length - strToTrim.Length);
                 }
@@ -427,8 +466,6 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params string[] astrToTrim)
         {
-            if (strInput == null)
-                return string.Empty;
             if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
                 // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
@@ -439,7 +476,7 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -460,8 +497,6 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, params string[] astrToTrim)
         {
-            if (strInput == null)
-                return string.Empty;
             if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
                 // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
@@ -472,7 +507,7 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -527,7 +562,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
         {
-            if (strInput.StartsWith(achrToTrim))
+            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
                 return strInput.Substring(1, strInput.Length - 1);
             return strInput;
         }
@@ -541,7 +576,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, params char[] achrToTrim)
         {
-            if (strInput.EndsWith(achrToTrim))
+            if (!string.IsNullOrEmpty(strInput) && strInput.EndsWith(achrToTrim))
                 return strInput.Substring(0, strInput.Length - 1);
             return strInput;
         }
@@ -582,9 +617,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StartsWith(this string strInput, params char[] achrToCheck)
         {
-            if (strInput == null || achrToCheck == null)
-                return false;
-            if (strInput.Length == 0)
+            if (string.IsNullOrEmpty(strInput) || achrToCheck == null)
                 return false;
             char chrCharToCheck = strInput[0];
             int intParamsLength = achrToCheck.Length;
@@ -634,7 +667,7 @@ namespace Chummer
                 int intLength = astrToCheck.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    if (strInput.StartsWith(astrToCheck[i]))
+                    if (strInput.StartsWith(astrToCheck[i], StringComparison.Ordinal))
                     {
                         return true;
                     }
@@ -657,7 +690,7 @@ namespace Chummer
                 int intLength = astrToCheck.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    if (strInput.EndsWith(astrToCheck[i]))
+                    if (strInput.EndsWith(astrToCheck[i], StringComparison.Ordinal))
                     {
                         return true;
                     }
@@ -667,53 +700,73 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="strInput">Base string in which the replacing takes place.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
-        /// <param name="ToLowerInvariant">Should the match be caseINsensitiv?</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, bool ToLowerInvariant = false)
+        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            if (strInput?.Contains(strOldValue) == true)
-                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
-            if (ToLowerInvariant)
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
-                if (strInput?.ToLowerInvariant().Contains(strOldValue.ToLowerInvariant()) == true)
-                    return strInput.ToLowerInvariant().Replace(strOldValue.ToLowerInvariant(), funcNewValueFactory.Invoke());
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                        return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison);
             }
 
             return strInput;
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="strbldInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder strbldInput, string strOldValue, Func<string> funcNewValueFactory)
+        public static void CheapReplace(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            strbldInput.CheapReplace(strbldInput.ToString(), strOldValue, funcNewValueFactory);
+            sbdInput.CheapReplace(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="strbldInput">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
         /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder strbldInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory)
+        public static void CheapReplace(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            if (strOriginal?.Contains(strOldValue) == true)
-                strbldInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+            if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strOriginal.Contains(strOldValue))
+                        sbdInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                }
+                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    string strOldStringBuilderValue = sbdInput.ToString();
+                    sbdInput.Clear();
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
+                }
+            }
         }
 
         /// <summary>
@@ -812,7 +865,7 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
-            if(String.IsNullOrEmpty(strSearch))
+            if(string.IsNullOrEmpty(strSearch))
                 return null;
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
@@ -840,15 +893,17 @@ namespace Chummer
         /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
         public static string CleanForHTML(this string strToClean)
         {
+            if (string.IsNullOrEmpty(strToClean))
+                return string.Empty;
             return strToClean
-                .CheapReplace("<br />", () => "\n")
-                .CheapReplace("&", () => "&amp;")
-                .CheapReplace("&amp;amp;", () => "&amp;")
-                .CheapReplace("<", () => "&lt;")
-                .CheapReplace(">", () => "&gt;")
-                .CheapReplace("\n\r", () => "<br />")
-                .CheapReplace("\n", () => "<br />")
-                .CheapReplace("\r", () => "<br />");
+                .Replace("&", "&amp;")
+                .Replace("&amp;amp;", "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\n\r", "<br />")
+                .Replace("\r\n", "<br />")
+                .Replace("\n", "<br />")
+                .Replace("\r", "<br />");
         }
     }
 }

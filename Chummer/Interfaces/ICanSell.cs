@@ -20,6 +20,6 @@ namespace Chummer
 {
     interface ICanSell : ICanRemove
     {
-        void Sell(Character characterObject, decimal percentage);
+        void Sell(decimal percentage);
     }
 }

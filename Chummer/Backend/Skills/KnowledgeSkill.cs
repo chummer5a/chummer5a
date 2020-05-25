@@ -25,17 +25,21 @@ namespace Chummer.Backend.Skills
 {
     public class KnowledgeSkill : Skill
     {
-        private static readonly Dictionary<string, string> s_CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribtue
+        private static readonly Dictionary<string, string> s_CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribute
 
         public static IEnumerable<ListItem> DefaultKnowledgeSkills(string strLanguage)
         {
             using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/knowledgeskills/skill"))
+            {
                 if (xmlSkillList != null)
+                {
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
                         string strName = xmlSkill["name"]?.InnerText ?? string.Empty;
                         yield return new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName);
                     }
+                }
+            }
         }
 
         /// <summary>
@@ -46,18 +50,24 @@ namespace Chummer.Backend.Skills
         public static IEnumerable<ListItem> KnowledgeTypes(string strLanguage)
         {
             using (XmlNodeList xmlCategoryList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            {
                 if (xmlCategoryList != null)
+                {
                     foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         yield return new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText);
                     }
+                }
+            }
         }
 
         static KnowledgeSkill()
         {
             using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill"))
+            {
                 if (xmlSkillList != null)
+                {
                     foreach (XmlNode objXmlSkill in xmlSkillList)
                     {
                         string strCategory = objXmlSkill["category"]?.InnerText;
@@ -66,6 +76,8 @@ namespace Chummer.Backend.Skills
                             s_CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
                         }
                     }
+                }
+            }
         }
 
         public override bool AllowDelete => !ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0;
@@ -75,6 +87,8 @@ namespace Chummer.Backend.Skills
 
         public KnowledgeSkill(Character objCharacter) : base(objCharacter)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             AttributeObject = objCharacter.LOG;
         }
 
@@ -92,7 +106,7 @@ namespace Chummer.Backend.Skills
 
         public string WriteableName
         {
-            get => DisplayName;
+            get => CurrentDisplayName;
             set
             {
                 if (ForcedName)
@@ -100,7 +114,7 @@ namespace Chummer.Backend.Skills
                     return;
                 }
 
-                if (string.Equals(DisplayName, value))
+                if (string.Equals(CurrentDisplayName, value, StringComparison.CurrentCulture))
                 {
                     return;
                 }
@@ -114,7 +128,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
 
             if (xmlSkillNode == null)
             {
@@ -148,11 +162,11 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
 
             if (xmlSkillTranslationNode == null)
             {
-                return LanguageManager.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language);
+                return LanguageManager.ReverseTranslateExtra(strInputSkillName);
             }
 
             return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
@@ -186,7 +200,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                string strTranslatedName = DisplayNameMethod(GlobalOptions.Language);
+                string strTranslatedName = CurrentDisplayName;
                 int intMaxHardwire = CharacterObject.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
@@ -219,14 +233,16 @@ namespace Chummer.Backend.Skills
 
                 //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                 //default skills to reset to the default Type for that skill. If we want to disable
-                //that behaviour, better to disable it via the control.
-                /*if (!LoadSkill())
+                //that behavior, better to disable it via the control.
+                /*
+                if (!LoadSkill())
+                {
+                    if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                     {
-                        if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
-                        {
-                            AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
-                        }
-                    }*/
+                        AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
+                    }
+                }
+                */
                 if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                 {
                     AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
@@ -331,12 +347,13 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
+                int intMinOverride = int.MaxValue;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
                     if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
                                 intExtra += objLoopImprovement.Value;
@@ -350,12 +367,23 @@ namespace Chummer.Backend.Skills
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
+
+                        if ((objLoopImprovement.ImprovedName == Name ||
+                            string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName) ||
+                            objLoopImprovement.ImprovedName == SkillCategory) && objLoopImprovement.ImproveType ==
+                            Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum)
+                        {
+                            intMinOverride = Math.Min(intMinOverride, objLoopImprovement.Value);
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
                     intValue = decimal.ToInt32(decimal.Ceiling(intValue * decMultiplier));
                 intValue += intExtra;
-
+                if (intMinOverride != int.MaxValue)
+                {
+                    return Math.Max(intValue, intMinOverride);
+                }
                 return Math.Max(intValue, Math.Min(1, intOptionsCost));
             }
         }
@@ -403,17 +431,19 @@ namespace Chummer.Backend.Skills
 
         public override void WriteTo(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skill");
-            objWriter.WriteElementString("guid", Id.ToString("D"));
-            objWriter.WriteElementString("suid", SkillId.ToString("D"));
+            objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isknowledge", bool.TrueString);
             objWriter.WriteElementString("skillcategory", SkillCategory);
             objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
             objWriter.WriteElementString("notes", Notes);
             if (!CharacterObject.Created)
             {
-                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
             if (Specializations.Count != 0)
@@ -450,7 +480,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                XmlNode objDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }

@@ -112,7 +112,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[] {"Entering " + info}, file, method, line, LogLevel.Debug);
+            writeLog(new object[] {"Entering " + info}, file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[]{ "Exiting " + info},file, method, line, LogLevel.Debug);
+            writeLog(new object[]{ "Exiting " + info}, file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -164,11 +164,11 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info,file, method, line, LogLevel.Error);
+            writeLog(info, file ?? String.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
-        /// Log that an error occoured
+        /// Log that an error occured
         /// </summary>
         /// <param name="info">An optional array of objects providing additional data</param>
         /// <param name="file">Do not use this</param>
@@ -190,7 +190,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new[]{info},file, method, line, LogLevel.Error);
+            writeLog(new[]{info}, file ?? string.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new[] { info }, file, method, line, LogLevel.Debug);
+            writeLog(new[] { info }, file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new[] { info }, file, method, line, LogLevel.Trace);
+            writeLog(new object[] { info }, file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
@@ -270,38 +270,28 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new[] { exception, info }, file, method, line, LogLevel.Trace);
+            writeLog(new[] { exception, info }, file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
-        /// Log an exception has occoured
+        /// Log an exception has occured
         /// </summary>
         /// <param name="exception">Exception to log.</param>
-        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+        /// <param name="message">Message of Exception</param>
+        [Obsolete("Use NLog instead: private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
 
-        public static void Exception(Exception exception, string message = null)
+        public static void Exception(Exception exception, string message = "")
         {
             if(!IsLoggerEnabled)
                 return;
-
-            if (String.IsNullOrEmpty(message))
-            {
-                writeLog(
-                    new object[] {exception, exception.StackTrace},
-                    exception.Source,
-                    exception.TargetSite.Name,
-                    (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
-                    LogLevel.Fatal);
-            }
-            else
-            {
-                writeLog(
-                    new object[] {message, exception, exception.StackTrace },
-                    exception.Source,
-                    exception.TargetSite.Name,
-                    (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
-                    LogLevel.Fatal);
-            }
+            if (exception == null)
+                throw new ArgumentNullException(nameof(exception));
+            writeLog(
+                string.IsNullOrEmpty(message) ? new object[] {exception, exception.StackTrace} : new object[] {message, exception, exception.StackTrace},
+                exception.Source,
+                exception.TargetSite.Name,
+                (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
+                LogLevel.Fatal);
         }
 
         /// <summary>
@@ -327,7 +317,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info, file, method, line, LogLevel.Warn);
+            writeLog(info, file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -353,7 +343,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new[]{info},file, method, line, LogLevel.Warn);
+            writeLog(new[]{info}, file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -379,7 +369,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info,file, method, line, LogLevel.Info);
+            writeLog(info, file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         /// <summary>
@@ -405,7 +395,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, LogLevel.Info);
+            writeLog(new object[]{info}, file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         public enum LogLevel

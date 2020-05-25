@@ -47,14 +47,6 @@ namespace Chummer.UI.Table
             _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
         }
 
-        public static TableColumn<U> CreateColumn<U, V>()
-            where U : INotifyPropertyChanged
-            where V : TableCell, new()
-        {
-            TableColumn<U> column = new TableColumn<U>(() => new V());
-            return column;
-        }
-
         /// <summary>
         /// Add an additional dependency to the dependencies
         /// of this column.

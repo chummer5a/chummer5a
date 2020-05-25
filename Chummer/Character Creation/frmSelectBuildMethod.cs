@@ -18,6 +18,7 @@
  */
  using System;
 using System.Collections.Generic;
+ using System.Linq;
  using System.Windows.Forms;
  using System.Xml.XPath;
 
@@ -38,7 +39,7 @@ namespace Chummer
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -47,14 +48,14 @@ namespace Chummer
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>
             {
-                new ListItem("Karma", LanguageManager.GetString("String_Karma", GlobalOptions.Language)),
-                new ListItem("Priority", LanguageManager.GetString("String_Priority", GlobalOptions.Language)),
-                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", GlobalOptions.Language)),
+                new ListItem("Karma", LanguageManager.GetString("String_Karma")),
+                new ListItem("Priority", LanguageManager.GetString("String_Priority")),
+                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen")),
             };
 
             if (GlobalOptions.LifeModuleEnabled)
             {
-                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)));
+                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule")));
             }
 
             cboBuildMethod.BeginUpdate();
@@ -80,7 +81,19 @@ namespace Chummer
                             objXmlGameplayOption.TryGetInt32FieldQuickly("pointbuykarma", ref _intDefaultPointBuyKarma);
                             objXmlGameplayOption.TryGetInt32FieldQuickly("lifemoduleskarma", ref _intDefaultLifeModulesKarma);
                         }
-                        lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
+
+                        if (objXmlGameplayOption.SelectSingleNode("priorityarrays") != null)
+                        {
+                            XPathNodeIterator iterator = objXmlGameplayOption.Select("priorityarrays/priorityarray");
+                            lstGameplayOptions.AddRange(from XPathNavigator node in iterator
+                                select new ListItem($"{strName}|{node.Value}",
+                                    $"{objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName} ({node.Value})"));
+                        }
+                        else
+                        {
+                            lstGameplayOptions.Add(new ListItem(strName,
+                                objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
+                        }
                     }
                 }
             }
@@ -92,7 +105,7 @@ namespace Chummer
             cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();
 
-            chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
+            chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules"));
 
             if (blnUseCurrentValues)
             {
@@ -153,7 +166,16 @@ namespace Chummer
             _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
             _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
 
-            XPathNavigator xmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + strSelectedGameplayOption + "\"]");
+            string strPriorityArray = string.Empty;
+            if (strSelectedGameplayOption.IndexOf('|') != -1)
+            {
+                strPriorityArray = strSelectedGameplayOption.Split('|')[1];
+                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+            }
+
+            XPathNavigator xmlGameplayOption =
+                _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode($"gameplayoption[name = \"{strSelectedGameplayOption}\"]");
+
             if (xmlGameplayOption != null)
             {
                 _objCharacter.BannedWareGrades.Clear();
@@ -169,6 +191,8 @@ namespace Chummer
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
                     _objCharacter.MaxNuyen = decTemp;
             }
+
+            _objCharacter.PriorityArray = strPriorityArray;
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = strSelectedGameplayOption;
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;
@@ -199,7 +223,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectBP_KarmaSummary"), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     break;
                 }
                 case "LifeModule":
@@ -210,7 +234,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectBP_LifeModuleSummary"), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     break;
                 }
                 case "SumtoTen":
@@ -222,7 +246,7 @@ namespace Chummer
                     nudKarma.Enabled = false;
                     nudMaxNuyen.Value = _decNuyenBP;
                     nudMaxNuyen.Enabled = false;
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary");
                     break;
             }
 

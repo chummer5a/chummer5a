@@ -25,7 +25,7 @@ namespace Chummer.UI.Table
     public partial class TextTableCell : TableCell
     {
         private readonly Label _lblText;
-        
+
         public TextTableCell()
         {
             InitializeComponent();

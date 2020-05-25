@@ -22,9 +22,12 @@ namespace ChummerHub.Services.GoogleDrive
 
                 using (var stream = assembly.GetManifestResourceStream(namespaceAndFileName))
                 {
-                    using (var reader = new StreamReader(stream, Encoding.UTF8))
+                    if (stream != null)
                     {
-                        return reader.ReadToEnd();
+                        using (var reader = new StreamReader(stream, Encoding.UTF8))
+                        {
+                            return reader.ReadToEnd();
+                        }
                     }
                 }
             }
@@ -34,6 +37,8 @@ namespace ChummerHub.Services.GoogleDrive
                 System.Diagnostics.Trace.TraceError(exception.Message);
                 throw new Exception($"Failed to read Embedded Resource {namespaceAndFileName}");
             }
+
+            return string.Empty;
         }
     }
 }

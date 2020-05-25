@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema lifestyles.xsd">
-  <version>0</version>
+
   <categories>
     <category>Entertainment - Asset</category>
     <category>Entertainment - Service</category>
@@ -822,9 +822,10 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+      <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
-      <page>222</page>
+      <page>224</page>
     </quality>
     <quality>
       <id>03092f1a-4018-413b-a11f-144383472c18</id>
@@ -834,7 +835,7 @@
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
       <cost>100</cost>
-      <page>222</page>
+      <page>224</page>
     </quality>
     <quality>
       <id>cc3abead-ab2a-4023-8a63-d64536ccf5e5</id>

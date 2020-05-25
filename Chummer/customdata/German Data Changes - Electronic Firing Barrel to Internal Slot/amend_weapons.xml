@@ -21,7 +21,7 @@
   <accessories>
     <accessory>
       <id>2da4f104-cf0c-4e0c-a001-4a6da4c2b46b</id>
-      <mount amendoperation="replace">Internal</mount>
+      <mount>Internal</mount>
     </accessory>
   </accessories>
 </chummer>

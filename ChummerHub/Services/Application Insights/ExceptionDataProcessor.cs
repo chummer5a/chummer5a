@@ -43,7 +43,6 @@ namespace ChummerHub.Services.Application_Insights
         {
             if (item is ExceptionTelemetry exception)
             {
-
                 if (exception.Exception != null)
                 {
                     foreach (DictionaryEntry de in exception.Exception.Data)
@@ -52,7 +51,6 @@ namespace ChummerHub.Services.Application_Insights
                             exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
                     }
                 }
-                return;
             }
         }
     }

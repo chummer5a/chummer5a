@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema complexforms.xsd">
-  <version>0</version>
+
   <complexforms>
     <complexform>
       <id>373638b9-4334-4645-99f5-c3673e4f809b</id>
@@ -38,7 +38,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext />
+         <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*"/>
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -59,7 +59,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*"/>
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -275,7 +275,7 @@
       <page>133</page>
       <required>
         <oneof>
-          <quality>Dissonant Stream: Apophenians</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
         </oneof>
       </required>
     </complexform>
@@ -289,7 +289,7 @@
       <page>134</page>
       <required>
         <oneof>
-          <quality>Dissonant Stream: Erisians</quality>
+          <quality>Dissonant Stream: Erisian</quality>
         </oneof>
       </required>
     </complexform>

@@ -141,6 +141,9 @@ namespace ChummerHub.Migrations
                     b.Property<string>("Groupname")
                         .HasMaxLength(64);
 
+                    b.Property<string>("Hash")
+                        .HasMaxLength(8);
+
                     b.Property<bool>("IsPublic");
 
                     b.Property<string>("Language")
@@ -158,6 +161,8 @@ namespace ChummerHub.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Groupname");
+
+                    b.HasIndex("Hash");
 
                     b.HasIndex("Language");
 

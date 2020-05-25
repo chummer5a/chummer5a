@@ -38,8 +38,8 @@ namespace Chummer.Backend.Equipment
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-	    private int _intAddictionThreshold;
-		private readonly Improvement.ImprovementSource _eSource;
+        private int _intAddictionThreshold;
+        private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
         public Grade(Improvement.ImprovementSource eSource)
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
                         ? "bioware.xml"
                         : _eSource == Improvement.ImprovementSource.Drug
                             ? "drugcomponents.xml"
-                            : "cyberware.xml", GlobalOptions.Language)
+                            : "cyberware.xml")
                     .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
@@ -76,7 +76,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
-			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
                     _intDeviceRating = 3;
@@ -120,6 +120,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCharacter">Character from which to fetch a grade list</param>
         public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
             foreach (Grade objGrade in lstGrades)
             {
@@ -135,7 +137,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
-        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D");
+        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -143,9 +145,9 @@ namespace Chummer.Backend.Equipment
         public Guid SourceId => _guiSourceID;
 
         /// <summary>
-        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D");
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// The English name of the Grade.
@@ -166,6 +168,8 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.
@@ -215,6 +219,6 @@ namespace Chummer.Backend.Equipment
             get => _intAddictionThreshold;
             set => _intAddictionThreshold = value;
         }
-		#endregion
-	}
+        #endregion
+    }
 }

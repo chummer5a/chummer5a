@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema priorities.xsd">
-  <version>0</version>
+
   <categories>
     <category>Heritage</category>
     <category>Talent</category>
@@ -4953,53 +4953,6 @@
     </priority>
     <!-- End Region -->
     <!-- Region Skills -->
-    <!-- Region Street Scum -->
-    <priority>
-      <id>3d9194a1-ea79-46e0-b209-3acf5cb9a995</id>
-      <name>A - 36 Skills/5 Skill Groups</name>
-      <value>A,4</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>36</skills>
-      <skillgroups>5</skillgroups>
-    </priority>
-    <priority>
-      <id>eb49bdef-4127-4634-bc9f-0922915522bf</id>
-      <name>B - 28 Skills/2 Skill Groups</name>
-      <value>B,3</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>28</skills>
-      <skillgroups>2</skillgroups>
-    </priority>
-    <priority>
-      <id>830a6c2f-ec3b-4fc7-b928-de4921ccb5ea</id>
-      <name>C - 22 Skills/0 Skill Groups</name>
-      <value>C,2</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>22</skills>
-      <skillgroups>0</skillgroups>
-    </priority>
-    <priority>
-      <id>c1b74a83-4874-400a-a4d5-2c810a312944</id>
-      <name>D - 18 Skills/0 Skill Groups</name>
-      <value>D,1</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>18</skills>
-      <skillgroups>0</skillgroups>
-    </priority>
-    <priority>
-      <id>ac15704e-30bf-4840-86d8-1da4cb133809</id>
-      <name>E - 18 Skills/0 Skill Groups</name>
-      <value>E,0</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>18</skills>
-      <skillgroups>0</skillgroups>
-    </priority>
-    <!-- End Region -->
     <!-- Region Default -->
     <priority>
       <id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
@@ -5049,7 +5002,6 @@
       <id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
       <name>A - 450,000¥</name>
       <value>A,4</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>450000</resources>
     </priority>
@@ -5057,7 +5009,6 @@
       <id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
       <name>B - 275,000¥</name>
       <value>B,3</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>275000</resources>
     </priority>
@@ -5065,7 +5016,6 @@
       <id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
       <name>C - 140,000¥</name>
       <value>C,2</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>140000</resources>
     </priority>
@@ -5073,7 +5023,6 @@
       <id>b977475b-9728-45a0-9873-a77bb036fb99</id>
       <name>D - 50,000¥</name>
       <value>D,1</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>50000</resources>
     </priority>
@@ -5081,7 +5030,6 @@
       <id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
       <name>E - 6,000¥</name>
       <value>E,0</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>6000</resources>
     </priority>
@@ -5166,48 +5114,6 @@
       <name>E - 6,000¥</name>
       <value>E,0</value>
       <gameplayoption>Street Level</gameplayoption>
-      <category>Resources</category>
-      <resources>6000</resources>
-    </priority>
-    <!-- End Region    -->
-    <!-- Region Street Scum -->
-    <priority>
-      <id>242f38cb-7625-4cd2-9496-ce8895a5b485</id>
-      <name>A - 50,000¥</name>
-      <value>A,4</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>50000</resources>
-    </priority>
-    <priority>
-      <id>cae768c5-140d-43cf-8a80-f89abdd96a9a</id>
-      <name>B - 25,000¥</name>
-      <value>B,3</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>25000</resources>
-    </priority>
-    <priority>
-      <id>b80c5890-1cce-4f80-8599-bf543da818ae</id>
-      <name>C - 15,000¥</name>
-      <value>C,2</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>15000</resources>
-    </priority>
-    <priority>
-      <id>6d8d3a6f-80fd-4c5c-93fc-ee754f4a44f1</id>
-      <name>D - 15,000¥</name>
-      <value>D,1</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>15000</resources>
-    </priority>
-    <priority>
-      <id>9e0f8c4d-5020-4efe-8f65-6d729ab7138c</id>
-      <name>E - 6,000¥</name>
-      <value>E,0</value>
-      <gameplayoption>Street Scum</gameplayoption>
       <category>Resources</category>
       <resources>6000</resources>
     </priority>

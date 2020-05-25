@@ -1,11 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SINners.Models;
 using Chummer.Plugins;
@@ -17,8 +10,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerGroupCreate : UserControl
     {
-        public SINnerGroup MyGroup = null;
-        public bool EditMode = false;
+        public SINnerGroup MyGroup { get; set; }
+        public bool EditMode { get; set; }
         private string _strSelectedLanguage = GlobalOptions.Language;
 
         public ucSINnerGroupCreate(SINnerGroup group, bool editMode, bool onlyPWHash)
@@ -41,7 +34,7 @@ namespace ChummerHub.Client.UI
             {
                 EditMode = true;
             }
-            this.cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
+            cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
             if (MyGroup != null)
@@ -51,17 +44,13 @@ namespace ChummerHub.Client.UI
                 tbGroupId.Text = MyGroup.Id?.ToString();
                 tbGroupname.Text = MyGroup.Groupname;
                 tbParentGroupId.Text = MyGroup.MyParentGroupId?.ToString();
-                tbPassword.Text = "";
-                if (!String.IsNullOrEmpty(MyGroup.GroupCreatorUserName))
-                    tbGroupCreatorUsername.Text = MyGroup.GroupCreatorUserName;
-                else
-                    tbGroupCreatorUsername.Text = Properties.Settings.Default.UserEmail;
-                if (!String.IsNullOrEmpty(MyGroup.Language))
-                    this.cboLanguage1.SelectedValue = MyGroup.Language;
-                else
-                {
-                    this.cboLanguage1.SelectedValue = GlobalOptions.Language;
-                }
+                tbPassword.Text = string.Empty;
+                tbGroupCreatorUsername.Text = !string.IsNullOrEmpty(MyGroup.GroupCreatorUserName)
+                    ? MyGroup.GroupCreatorUserName
+                    : Properties.Settings.Default.UserEmail;
+                cboLanguage1.SelectedValue = !string.IsNullOrEmpty(MyGroup.Language)
+                    ? MyGroup.Language
+                    : GlobalOptions.Language;
                 if (MyGroup.IsPublic.HasValue)
                     cbIsPublic.Checked = MyGroup.IsPublic.Value;
             }
@@ -81,9 +70,6 @@ namespace ChummerHub.Client.UI
                 tbGroupCreatorUsername.ReadOnly = !EditMode;
             }
 
-           
-            
-
             if (onlyPWHash)
             {
                 tbAdminRole.ReadOnly = true;
@@ -95,11 +81,10 @@ namespace ChummerHub.Client.UI
                 tbGroupCreatorUsername.Enabled = false;
                 cbIsPublic.Enabled = false;
                 tbDescription.Enabled = false;
-                this.ActiveControl = tbPassword;
+                ActiveControl = tbPassword;
             }
-            if (this.ParentForm != null)
-                this.ParentForm.AcceptButton = bOk;
-
+            if (ParentForm != null)
+                ParentForm.AcceptButton = bOk;
         }
 
         private void BOk_Click(object sender, EventArgs e)
@@ -112,10 +97,9 @@ namespace ChummerHub.Client.UI
             if (myGroup == null)
                 myGroup = new SINnerGroup();
 
-            myGroup.Groupname = this.tbGroupname.Text;
-            Guid id = Guid.Empty;
-            myGroup.Id = Guid.TryParse(this.tbGroupId.Text, out id) ? id : Guid.NewGuid();
-            if (Guid.TryParse(this.tbParentGroupId.Text, out id))
+            myGroup.Groupname = tbGroupname.Text;
+            myGroup.Id = Guid.TryParse(tbGroupId.Text, out Guid id) ? id : Guid.NewGuid();
+            if (Guid.TryParse(tbParentGroupId.Text, out id))
                 myGroup.MyParentGroupId = id;
             myGroup.Password = tbPassword.Text;
             if (String.IsNullOrEmpty(tbPassword.Text))
@@ -126,7 +110,6 @@ namespace ChummerHub.Client.UI
             myGroup.GroupCreatorUserName = tbGroupCreatorUsername.Text;
             myGroup.Description = tbDescription.Text;
             return myGroup;
-
         }
 
         private void CboLanguage1_SelectedIndexChanged_1(object sender, EventArgs e)
@@ -135,7 +118,6 @@ namespace ChummerHub.Client.UI
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
             bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
-
         }
 
         private void TbPassword_KeyDown(object sender, KeyEventArgs e)
@@ -151,7 +133,7 @@ namespace ChummerHub.Client.UI
             var text = LanguageManager.GetString("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
             this.DoThreadSafe(() =>
             {
-                PluginHandler.MainForm.ShowMessageBox(this.Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                PluginHandler.MainForm.ShowMessageBox(Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
             });
         }
     }

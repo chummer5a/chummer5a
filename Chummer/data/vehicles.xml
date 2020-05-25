@@ -2086,7 +2086,7 @@
         <name>Amenities (Middle)</name>
         <name rating="3">Anti-Theft System</name>
         <name rating="2">Life Support</name>
-        <name>Missile Defence System</name>
+        <name>Missile Defense System</name>
         <name rating="6">Passenger Protection System</name>
       </mods>
       <seats>8</seats>
@@ -10973,7 +10973,7 @@
     </mod>
     <mod>
       <id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-      <name>Missile Defence System</name>
+      <name>Missile Defense System</name>
       <page>160</page>
       <source>R5</source>
       <avail>12R</avail>
@@ -13358,7 +13358,9 @@
       <cost>50</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <ammoreplace>Weapon * 2</ammoreplace>
+      <!--TODO: This should probably add a second ammo slot or something instead.
+      Also, needs to safeguard against underbarrel weapons picking up the extra ammo. -->
+      <ammobonuspercent>100</ammobonuspercent>
       <optionaldrone />
       <required>
         <vehicledetails>

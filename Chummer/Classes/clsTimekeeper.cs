@@ -21,18 +21,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
  using System.Diagnostics;
  using System.Text;
- using System.Threading.Tasks;
- using Microsoft.ApplicationInsights;
- using Microsoft.ApplicationInsights.Channel;
- using Microsoft.ApplicationInsights.DataContracts;
- using Microsoft.ApplicationInsights.Extensibility;
  using NLog;
 
 namespace Chummer
 {
     public static class Timekeeper
     {
-        private static Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();

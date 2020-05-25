@@ -36,7 +36,7 @@ namespace ChummerDataViewer
 		{
 			string exception = stacktrace.Split(':')[0];
 
-			string location = stacktrace.Split(new [] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer."));
+			string location = stacktrace.Split(new [] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer.", StringComparison.Ordinal));
 
 			if (location != null) return exception + " : " + location;
 

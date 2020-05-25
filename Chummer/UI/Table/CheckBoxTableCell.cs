@@ -41,6 +41,11 @@ namespace Chummer.UI.Table
             if (VisibleExtractor != null) {
                 _checkBox.Visible = VisibleExtractor(tValue);
             }
+
+            if (EnabledExtractor != null)
+            {
+                _checkBox.Enabled = EnabledExtractor(Value as T);
+            }
             if (!_blnUpdating && ValueGetter != null)
             {
                 _blnUpdating = true;
@@ -49,12 +54,20 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Func<T, bool> VisibleExtractor { get; set; }
+        /// <summary>
+        /// The extractor for getting the enabled state from the
+        /// value.
+        /// </summary>
+        public Func<T, bool> EnabledExtractor { get; set; }
+
+        public Func<T, bool> EnabledGetter { get; set; }
 
         /// <summary>
         /// The extractor for getting the checked state from the
         /// value.
         /// </summary>
+        public Func<T, bool> VisibleExtractor { get; set; }
+
         public Func<T, bool> ValueGetter { get; set; }
 
         /// <summary>

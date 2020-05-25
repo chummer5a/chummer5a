@@ -18,7 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-500</version>
   <name>Português (pt-BR)</name>
   <righttoleft>False</righttoleft>
   <strings>
@@ -37,10 +36,6 @@
     </string>
     <string>
       <key>String_LifeModule</key>
-      <text>Módulo de Vida</text>
-    </string>
-    <string>
-      <key>String_Life_Module</key>
       <text>Módulo de Vida</text>
     </string>
     <string>
@@ -404,10 +399,6 @@
       <text>Personagem sem nome</text>
     </string>
     <string>
-      <key>String_Break</key>
-      <text>Dividir</text>
-    </string>
-    <string>
       <key>Checkbox_Free</key>
       <text>Grátis!</text>
     </string>
@@ -756,7 +747,7 @@
       <text>Localização:</text>
     </string>
     <string>
-      <key>Label_Archtype</key>
+      <key>Label_Archetype</key>
       <text>Arquétipo:</text>
     </string>
     <string>
@@ -1088,7 +1079,7 @@
       <text>&amp;Ajuda</text>
     </string>
     <string>
-      <key>Menu_Main_NewCharater</key>
+      <key>Menu_Main_NewCharacter</key>
       <text>&amp;Novo Personagem</text>
     </string>
     <string>
@@ -1182,7 +1173,7 @@
       <text>Observar Pasta</text>
     </string>
     <string>
-      <key>Treenode_Roster_FavouriteCharacters</key>
+      <key>Treenode_Roster_FavoriteCharacters</key>
       <text>Personagens Favoritos</text>
     </string>
     <!-- End Region -->
@@ -1252,7 +1243,7 @@
       <text>Converte para Criatura Tóxica</text>
     </string>
     <string>
-      <key>Menu_SpecialConverToCyberzombie</key>
+      <key>Menu_SpecialConvertToCyberzombie</key>
       <text>Converter para Ciberzumbi</text>
     </string>
     <string>
@@ -1448,7 +1439,7 @@
       <text>Cibernéticos e Biônicos</text>
     </string>
     <string>
-      <key>Tab_StreeGear</key>
+      <key>Tab_StreetGear</key>
       <text>Equipamentos de Rua</text>
     </string>
     <string>
@@ -2148,7 +2139,7 @@
       <text>Esta Forma Complexa não permite Opções.</text>
     </string>
     <string>
-      <key>Message_ConntAddComplexFormOptionLimit</key>
+      <key>Message_CannotAddComplexFormOptionLimit</key>
       <text>Esta Forma Complexa não pode ter mais do que {0} Opções devido ao seu Nível.</text>
     </string>
     <string>
@@ -3008,7 +2999,7 @@
       <text>Biônico Vendido</text>
     </string>
     <string>
-      <key>String_ExpensePurchaseCyberwearGear</key>
+      <key>String_ExpensePurchaseCyberwareGear</key>
       <text>Equipamento Cibernético Comprado</text>
     </string>
     <string>
@@ -4674,7 +4665,7 @@
     <!-- End Region-->
     <!-- Region Improvements Tab -->
     <string>
-      <key>Button_AddImproevment</key>
+      <key>Button_AddImprovement</key>
       <text>&amp;Adicionar Melhoria</text>
     </string>
     <string>
@@ -4948,7 +4939,7 @@
       <text>Voo:</text>
     </string>
     <string>
-      <key>Label_OtherCmposure</key>
+      <key>Label_OtherComposure</key>
       <text>Compostura:</text>
     </string>
     <string>
@@ -5066,7 +5057,7 @@
       <text>Recuperar/Gastar Trunfo</text>
     </string>
     <string>
-      <key>Tip_CMCMPenalty</key>
+      <key>Tip_CMPenalty</key>
       <text>Penalidade na pilha de dados dos danos do Monitor de Condição.</text>
     </string>
     <string>
@@ -5082,7 +5073,7 @@
       <text>Gastar um ponto de Trunfo.</text>
     </string>
     <!-- End Region-->
-    <!-- Region Spell Defence Tab-->
+    <!-- Region Spell Defense Tab-->
     <string>
       <key>String_SpellResistanceDice</key>
       <text>Dados de Resistência a Feitiço</text>
@@ -5092,71 +5083,71 @@
       <text>Dados de Contramágica</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIndirectDodge</key>
+      <key>Label_SpellDefenseIndirectDodge</key>
       <text>Esquiva Indireta</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIndirect</key>
+      <key>Label_SpellDefenseIndirect</key>
       <text>Absorsão Indireta</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDirectSoakMana</key>
+      <key>Label_SpellDefenseDirectSoakMana</key>
       <text>Absorsão Direta - Mana</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDirectSoakPhysical</key>
+      <key>Label_SpellDefenseDirectSoakPhysical</key>
       <text>Absorsão Direta - Físico</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDetection</key>
+      <key>Label_SpellDefenseDetection</key>
       <text>Feitiços de Detecção</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttBOD</key>
+      <key>Label_SpellDefenseDecAttBOD</key>
       <text>Diminuir Atributo (COR)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttSTR</key>
+      <key>Label_SpellDefenseDecAttSTR</key>
       <text>Diminuir Atributo (FOR)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttAGI</key>
+      <key>Label_SpellDefenseDecAttAGI</key>
       <text>Diminuir Atributo (AGI)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttREA</key>
+      <key>Label_SpellDefenseDecAttREA</key>
       <text>Diminuir Atributo (REA)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttLOG</key>
+      <key>Label_SpellDefenseDecAttLOG</key>
       <text>Diminuir Atributo (LOG)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttWIL</key>
+      <key>Label_SpellDefenseDecAttWIL</key>
       <text>Diminuir Atributo (VON)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttINT</key>
+      <key>Label_SpellDefenseDecAttINT</key>
       <text>Diminuir Atributo (INT)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttCHA</key>
+      <key>Label_SpellDefenseDecAttCHA</key>
       <text>Diminuir Atributo (CAR)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIllusionMana</key>
+      <key>Label_SpellDefenseIllusionMana</key>
       <text>Ilusão - Mana</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIllusionPhysical</key>
+      <key>Label_SpellDefenseIllusionPhysical</key>
       <text>Ilusão - Física</text>
     </string>
     <string>
-      <key>Label_SpellDefenceManipMental</key>
+      <key>Label_SpellDefenseManipMental</key>
       <text>Manipulação - Mental</text>
     </string>
     <string>
-      <key>Label_SpellDefenceManipPhysical</key>
+      <key>Label_SpellDefenseManipPhysical</key>
       <text>Manipulação - Físico</text>
     </string>
     <!-- End Region -->
@@ -6219,7 +6210,7 @@
       <text>Nome do Arquivo de Dados</text>
     </string>
     <string>
-      <key>Message_OameUpload_DataDescription</key>
+      <key>Message_OmaeUpload_DataDescription</key>
       <text>Por favor, forneça uma descrição curta do que este arquivo de dados contém.</text>
     </string>
     <string>
@@ -6239,7 +6230,7 @@
       <text>Nome da Ficha de Personagem</text>
     </string>
     <string>
-      <key>Message_OameUpload_SheetDescription</key>
+      <key>Message_OmaeUpload_SheetDescription</key>
       <text>Por favor, forneça uma descrição curta do que esta ficha de personagem contém.</text>
     </string>
     <string>
@@ -6671,6 +6662,10 @@
     <string>
       <key>Checkbox_Options_IgnoreArt</key>
       <text>Ignorar requisitos de Arte do Street Grimoire</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AllowFreeGrids</key>
+      <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
     </string>
     <string>
       <key>Checkbox_Options_CyberlegMovement</key>
