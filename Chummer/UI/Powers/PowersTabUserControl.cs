@@ -190,26 +190,25 @@ namespace Chummer.UI.Powers
 
             do
             {
-                frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-                frmPickPower.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                 {
-                    frmPickPower.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickPower.AddAgain;
+                    frmPickPower.ShowDialog(this);
 
-                Power objPower = new Power(_objCharacter);
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                        break;
 
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
-                frmPickPower.Dispose();
-                if (objPower.Create(objXmlPower))
-                {
-                    _objCharacter.Powers.Add(objPower);
+                    blnAddAgain = frmPickPower.AddAgain;
 
-                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+                    Power objPower = new Power(_objCharacter);
+
+                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
+                    if (objPower.Create(objXmlPower))
+                    {
+                        _objCharacter.Powers.Add(objPower);
+
+                        MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+                    }
                 }
             }
             while (blnAddAgain);
@@ -227,7 +226,8 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1}" + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining") + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + strSpace + "({1}" + strSpace + LanguageManager.GetString("String_Remaining") + ')', intPowerPointsTotal, decPowerPointsRemaining);
         }
 
         private int PowerPointsTotal
