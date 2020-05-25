@@ -13,7 +13,7 @@ namespace ChummerHub.Models
 
         [DataMember(Name = "Message")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'HubCallResult.MyExceptionMessage'
-        public String MyExceptionMessage { get; set; }
+        public string MyExceptionMessage { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'HubCallResult.MyExceptionMessage'
     }
 }

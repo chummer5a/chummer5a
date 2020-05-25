@@ -166,6 +166,10 @@ namespace ChummerHub.Client.Backend
         /// <returns></returns>
         public static CookieContainer GetUriCookieContainer(Uri uri, string cookieData)
         {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(cookieData))
+                throw new ArgumentNullException(nameof(cookieData));
             CookieContainer cookies = null;
             try
             {
@@ -221,6 +225,8 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         public static string GetUriCookieData(Uri uri)
         {
+            if (uri == null)
+                return string.Empty;
             // Determine the size of the cookie
             int datasize = 8192 * 16;
             StringBuilder cookieData = new StringBuilder(datasize);
@@ -255,6 +261,8 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         public static bool DeleteUriCookieData(Uri uri)
         {
+            if (uri == null)
+                return true;
             Cookie temp1 = new Cookie("KEY1", "VALUE1", "/Path/To/My/App", "/");
             // Determine the size of the cookie
             int datasize = 8192 * 16;
@@ -362,7 +370,7 @@ namespace ChummerHub.Client.Backend
                 var temp = AuthorizationCookieContainer;
                 if (temp != null)
                     httpClientHandler.CookieContainer = temp;
-                client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
+                client = new SINnersClient(baseUri, httpClientHandler, delegatingHandler);
             }
             catch (Exception ex)
             {
@@ -546,7 +554,7 @@ namespace ChummerHub.Client.Backend
         {
             ResultBase rb = new ResultBase
             {
-                ErrorText = e.Message,
+                ErrorText = e?.Message,
                 MyException = e,
                 CallSuccess = false
             };
@@ -716,6 +724,8 @@ namespace ChummerHub.Client.Backend
         /// <returns></returns>
         public static string CalculateCharName(CharacterCache objCache)
         {
+            if (objCache == null)
+                return string.Empty;
             if (objCache.BuildMethod != "online")
                 return objCache.CalculatedName(false);
             string strReturn;
@@ -836,6 +846,8 @@ namespace ChummerHub.Client.Backend
 
         public static byte[] ReadFully(Stream input)
         {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
             byte[] buffer = new byte[16 * 1024];
             using (MemoryStream ms = new MemoryStream())
             {
@@ -1052,6 +1064,8 @@ namespace ChummerHub.Client.Backend
 
         public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINnerAsync(CharacterExtended ce)
         {
+            if (ce == null)
+                throw new ArgumentNullException(nameof(ce));
             HttpOperationResponse<ResultSinnerPostSIN> res = null;
             try
             {
@@ -1111,6 +1125,8 @@ namespace ChummerHub.Client.Backend
 
         public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINner(CharacterExtended ce)
         {
+            if (ce == null)
+                throw new ArgumentNullException(nameof(ce));
             HttpOperationResponse<ResultSinnerPostSIN> res = null;
             try
             {
@@ -1227,6 +1243,8 @@ namespace ChummerHub.Client.Backend
 
         public static ResultSINnerPut UploadChummer(CharacterExtended ce)
         {
+            if (ce == null)
+                throw new ArgumentNullException(nameof(ce));
             ResultSINnerPut res = null;
             try
             {

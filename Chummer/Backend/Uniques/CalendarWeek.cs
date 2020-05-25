@@ -24,7 +24,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{" + nameof(CurrentDisplayName) + "}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>
     {
         private Guid _guiID;

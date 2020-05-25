@@ -235,14 +235,14 @@ namespace Chummer.Backend.Skills
                 //default skills to reset to the default Type for that skill. If we want to disable
                 //that behavior, better to disable it via the control.
                 /*
-				if (!LoadSkill())
-				{
-					if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
-					{
-						AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
-					}
-				}
-				*/
+                if (!LoadSkill())
+                {
+                    if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
+                    {
+                        AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
+                    }
+                }
+                */
                 if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                 {
                     AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);

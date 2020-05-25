@@ -119,7 +119,7 @@ namespace Chummer
             {
                 _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
             }
-			*/
+            */
         }
 
         private SourceString _objCachedSourceDetail;

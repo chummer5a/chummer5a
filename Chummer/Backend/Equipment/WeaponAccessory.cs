@@ -37,10 +37,10 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
-	{
+    {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
-	    private Guid _guiSourceID;
+        private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
@@ -63,7 +63,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
-	    private string _strRatingLabel = "String_Rating";
+        private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;
         private int _intMaxRating;
         private int _intRating;
@@ -73,15 +73,15 @@ namespace Chummer.Backend.Equipment
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
-	    private bool _blnSpecialModification;
+        private bool _blnSpecialModification;
         private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
         private int _intRangeModifier;
-	    private int _intSingleShot;
-	    private int _intShortBurst;
-	    private int _intLongBurst;
+        private int _intSingleShot;
+        private int _intShortBurst;
+        private int _intLongBurst;
         private int _intFullBurst;
         private int _intSuppressive;
         private string _strAddMode = string.Empty;
@@ -90,7 +90,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnWirelessOn;
         private XmlNode _nodWirelessBonus;
-	    private bool _blnStolen;
+        private bool _blnStolen;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public WeaponAccessory(Character objCharacter)
@@ -295,7 +295,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-	    public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -522,24 +522,24 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-	    /// <summary>
-	    /// Identifier of the object within data files.
-	    /// </summary>
-	    public Guid SourceID
-	    {
-	        get => _guiSourceID;
-	        set
-	        {
-	            if (_guiSourceID == value) return;
-	            _guiSourceID = value;
-	            _objCachedMyXmlNode = null;
-	        }
-	    }
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
 
-	    /// <summary>
-	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
-	    /// </summary>
-	    public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// XmlNode for the wireless bonuses (if any) this accessory provides.
@@ -581,11 +581,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Is the accessory a Special Modification, limited by the character's Special Modifications property?
         /// </summary>
-	    public bool SpecialModification
-	    {
-	        get => _blnSpecialModification;
-	        set => _blnSpecialModification = value;
-	    }
+        public bool SpecialModification
+        {
+            get => _blnSpecialModification;
+            set => _blnSpecialModification = value;
+        }
         /// <summary>
         /// The accessory adds to the weapon's damage value.
         /// </summary>
@@ -795,11 +795,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    public string RatingLabel
-	    {
-	        get => _strRatingLabel;
-	        set => _strRatingLabel = value;
-	    }
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
+        }
 
         /// <summary>
         /// Avail.
@@ -1056,23 +1056,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    /// <summary>
-	    /// Total cost of the Weapon Accessory.
-	    /// </summary>
-	    public decimal StolenTotalCost
-	    {
-	        get
-	        {
-	            decimal decReturn = 0;
+        /// <summary>
+        /// Total cost of the Weapon Accessory.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decReturn = 0;
                 if (Stolen)
-	                decReturn = OwnCost;
+                    decReturn = OwnCost;
 
-	            // Add in the cost of any Gear the Weapon Accessory has attached to it.
-	            decReturn += Gear.Sum(g => g.StolenTotalCost);
+                // Add in the cost of any Gear the Weapon Accessory has attached to it.
+                decReturn += Gear.Sum(g => g.StolenTotalCost);
 
-	            return decReturn;
-	        }
-	    }
+                return decReturn;
+            }
+        }
 
         /// <summary>
         /// The cost of just the Weapon Accessory itself.
@@ -1173,20 +1173,20 @@ namespace Chummer.Backend.Equipment
             set => _strAddMode = value;
         }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Single Shot.
-	    /// </summary>
-	    public int SingleShot => _intFullBurst;
+        /// <summary>
+        /// Number of rounds consumed by Single Shot.
+        /// </summary>
+        public int SingleShot => _intFullBurst;
 
-	    /// <summary>
-	    /// Number of rounds consumed by Short Burst.
-	    /// </summary>
-	    public int ShortBurst => _intShortBurst;
+        /// <summary>
+        /// Number of rounds consumed by Short Burst.
+        /// </summary>
+        public int ShortBurst => _intShortBurst;
 
-	    /// <summary>
-	    /// Number of rounds consumed by Long Burst.
-	    /// </summary>
-	    public int LongBurst => _intLongBurst;
+        /// <summary>
+        /// Number of rounds consumed by Long Burst.
+        /// </summary>
+        public int LongBurst => _intLongBurst;
 
         /// <summary>
         /// Number of rounds consumed by Full Burst.
@@ -1266,11 +1266,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Is the object stolen via the Stolen Gear quality?
         /// </summary>
-	    public bool Stolen
-	    {
-	        get => _blnStolen;
-	        set => _blnStolen = value;
-	    }
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
         #endregion
 
         #region Methods

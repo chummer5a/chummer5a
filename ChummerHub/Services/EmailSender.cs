@@ -81,7 +81,7 @@ namespace ChummerHub.Services
             }
             catch (Exception e)
             {
-                _logger.LogError("Exception sending mail: " + Environment.NewLine + e.ToString());
+                _logger.LogError("Exception sending mail: " + Environment.NewLine + e);
                 throw;
             }
 #endif

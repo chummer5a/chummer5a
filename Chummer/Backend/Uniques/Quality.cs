@@ -76,7 +76,7 @@ namespace Chummer
     /// A Quality.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource,INotifyMultiplePropertyChanged
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -775,8 +775,8 @@ namespace Chummer
                     return false;
 
                 if (_objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && imp.ImprovedName == SourceIDString ||
-                    imp.ImprovedName == Name))
+                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
+                    imp.ImprovedName == Name) && imp.Enabled))
                     return false;
 
                 return _blnContributeToLimit;
@@ -824,8 +824,8 @@ namespace Chummer
                 if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
                 if (_objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && imp.ImprovedName == SourceIDString ||
-                    imp.ImprovedName == Name))
+                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
+                    imp.ImprovedName == Name) && imp.Enabled))
                     return false;
                 return _blnContributeToBP;
             }
@@ -847,7 +847,7 @@ namespace Chummer
                     sb.Append(LanguageManager.GetString("String_SuppressedBy").CheapReplace("{0}", () =>
                         _objCharacter.GetObjectName(_objCharacter.Improvements.First(imp =>
                         imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name))) ??
+                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled)) ??
                         LanguageManager.GetString("String_Unknown")));
                     sb.Append(Environment.NewLine);
                 }
@@ -869,10 +869,11 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedSuppressed != -1) return _intCachedSuppressed == 1;
+                if (_intCachedSuppressed != -1)
+                    return _intCachedSuppressed == 1;
                 _intCachedSuppressed = Convert.ToInt32(_objCharacter.Improvements.Count(imp =>
                     imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name)));
+                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled));
                 if (_intCachedSuppressed > 0)
                 {
                     ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>

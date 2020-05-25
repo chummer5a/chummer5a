@@ -1,14 +1,15 @@
 //using Google.Apis.Auth.OAuth2;
 //using Google.Apis.Auth.OAuth2.Flows;
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Microsoft.Extensions.Logging;
 //using Google.Apis.Auth.OAuth2.Requests;
 //using Google.Apis.Json;
 //using Google.Apis.Util.Store;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Services.GoogleDrive
 {
@@ -19,7 +20,7 @@ namespace ChummerHub.Services.GoogleDrive
     {
         private static ILogger _logger;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore._store'
-        public static Dictionary<string, TokenResponse> _store = null;
+        public static Dictionary<string, TokenResponse> _store;
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore._store'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore()'
@@ -44,12 +45,12 @@ namespace ChummerHub.Services.GoogleDrive
                 _store = new Dictionary<string, TokenResponse>();
 
                 // add new entry
-                StoreAsync<TokenResponse>(key,
-                    new TokenResponse() { RefreshToken = refreshToken, TokenType = "Bearer" }).Wait();
+                StoreAsync(key,
+                    new TokenResponse { RefreshToken = refreshToken, TokenType = "Bearer" }).Wait();
             }
             catch (Exception e)
             {
-                _logger.LogError("Could create GoogleIDataStore: " + e.ToString());
+                _logger.LogError("Could create GoogleIDataStore: " + e);
             }
 
         }
@@ -79,7 +80,7 @@ namespace ChummerHub.Services.GoogleDrive
             if (_store.ContainsKey(key))
                 return await Task.Run(() => { return (T)(object)_store[key]; });
             // key not found
-            return default(T);
+            return default;
         }
 
         /// <summary>

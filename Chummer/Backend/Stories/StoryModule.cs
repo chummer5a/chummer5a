@@ -27,7 +27,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{" + nameof(CurrentDisplayName) + "}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class StoryModule : IHasName, IHasInternalId, IHasXmlNode
     {
         private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();

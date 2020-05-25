@@ -30,7 +30,7 @@ namespace Chummer
     /// <summary>
     /// A Location.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName()}")]
     public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
     {
         private Guid _guiID;

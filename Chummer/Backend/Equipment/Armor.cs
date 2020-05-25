@@ -36,9 +36,9 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
-	{
+    {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -56,7 +56,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strArmorName = string.Empty;
         private string _strExtra = string.Empty;
-	    private string _strRatingLabel = "String_Rating";
+        private string _strRatingLabel = "String_Rating";
         private int _intDamage;
         private bool _blnEquipped = true;
         private readonly Character _objCharacter;
@@ -69,7 +69,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnWirelessOn;
         private bool _blnDiscountCost;
         private int _intSortOrder;
-	    private bool _blnStolen;
+        private bool _blnStolen;
         private bool _blnEncumbrance = true;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -552,7 +552,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
-				_blnEncumbrance = true;
+                _blnEncumbrance = true;
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -861,11 +861,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How the rating should be referred to in UI.
         /// </summary>
-	    public string RatingLabel
-	    {
-	        get => _strRatingLabel;
-	        set => _strRatingLabel = value;
-	    }
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
+        }
 
         /// <summary>
         /// Armor's Capacity string.
@@ -983,7 +983,7 @@ namespace Chummer.Backend.Equipment
 
 
         private SourceString _objCachedSourceDetail;
-	    public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Armor's Sourcebook.
@@ -1164,25 +1164,25 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    /// <summary>
-	    /// The Armor's total Cost including Modifications.
-	    /// </summary>
-	    public decimal StolenTotalCost
-	    {
-	        get
-	        {
-	            decimal decTotalCost = 0;
-	            if (Stolen) decTotalCost += OwnCost;
+        /// <summary>
+        /// The Armor's total Cost including Modifications.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decTotalCost = 0;
+                if (Stolen) decTotalCost += OwnCost;
 
-	            // Go through all of the Mods for this piece of Armor and add the Cost value.
-	            decTotalCost += ArmorMods.Where(mod => mod.Stolen).AsParallel().Sum(mod => mod.StolenTotalCost);
+                // Go through all of the Mods for this piece of Armor and add the Cost value.
+                decTotalCost += ArmorMods.Where(mod => mod.Stolen).AsParallel().Sum(mod => mod.StolenTotalCost);
 
-	            // Go through all of the Gear for this piece of Armor and add the Cost value.
-	            decTotalCost += Gear.Where(g => g.Stolen).AsParallel().Sum(g => g.StolenTotalCost);
+                // Go through all of the Gear for this piece of Armor and add the Cost value.
+                decTotalCost += Gear.Where(g => g.Stolen).AsParallel().Sum(g => g.StolenTotalCost);
 
-	            return decTotalCost;
-	        }
-	    }
+                return decTotalCost;
+            }
+        }
 
         /// <summary>
         /// The Armor's total Cost including Modifications.
@@ -1285,24 +1285,24 @@ namespace Chummer.Backend.Equipment
             set => _intSortOrder = value;
         }
 
-	    /// <summary>
-	    /// Identifier of the object within data files.
-	    /// </summary>
-	    public Guid SourceID => _guiSourceID;
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
 
-	    /// <summary>
-	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
-	    /// </summary>
-	    public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public TaggedObservableCollection<Gear> Children => Gear;
 
-	    public bool Stolen
-	    {
-	        get => _blnStolen;
-	        set => _blnStolen = value;
-	    }
-	    #endregion
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
+        #endregion
 
         #region Complex Properties
         /// <summary>

@@ -6,9 +6,11 @@ Application Fixes:
 - Fixed a regression in career mode not allowing Initiation Groups to be joined or left properly. Closes #4115
 - Fixed a myriad of cases where printing a character sheet in a language that is different from the language being used for the program would sometimes result in incorrect localization and/or number formats being used.
 - Fixed qi foci improperly providing free levels of a power rather than free points. Closes #4116
- 
+- Qualities that unlock special skills are no longer all always effectively free when purchased traditionally.
+
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
+- The custom rulesets for Toxic traditions having no requirements and for Painade being available per the German version of Cutting Aces now load and work properly.
 
 Build 212
 Application Changes:

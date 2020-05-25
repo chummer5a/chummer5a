@@ -45,26 +45,26 @@ namespace Chummer.Backend.Attributes
         private int _intKarma;
         private string _strAbbrev;
         private readonly Character _objCharacter;
-		private AttributeCategory _enumMetatypeCategory;
+        private AttributeCategory _enumMetatypeCategory;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		#region Constructor, Save, Load, and Print Methods
+        #region Constructor, Save, Load, and Print Methods
 
-		/// <summary>
-		/// Character CharacterAttribute.
-		/// </summary>
-		/// <param name="character"></param>
-		/// <param name="abbrev"></param>
-		/// <param name="enumCategory"></param>
-		public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
+        /// <summary>
+        /// Character CharacterAttribute.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="abbrev"></param>
+        /// <param name="enumCategory"></param>
+        public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
         {
-	        _strAbbrev = abbrev;
+            _strAbbrev = abbrev;
             _enumMetatypeCategory = enumCategory;
-	        _objCharacter = character;
+            _objCharacter = character;
             if (_objCharacter != null)
-			    _objCharacter.PropertyChanged += OnCharacterChanged;
-		}
+                _objCharacter.PropertyChanged += OnCharacterChanged;
+        }
 
         public void UnbindAttribute()
         {
@@ -86,7 +86,7 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
-			objWriter.WriteElementString("metatypecategory", _enumMetatypeCategory.ToString());
+            objWriter.WriteElementString("metatypecategory", _enumMetatypeCategory.ToString());
             // External reader friendly stuff.
             objWriter.WriteElementString("totalvalue", TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
@@ -105,24 +105,24 @@ namespace Chummer.Backend.Attributes
             objNode.TryGetInt32FieldQuickly("base", ref _intBase);
             objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
             if (!BaseUnlocked)
-			{
-				_intBase = 0;
-			}
-			//Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
+            {
+                _intBase = 0;
+            }
+            //Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
             int i = 0;
-			if (objNode.TryGetInt32FieldQuickly("value", ref i))
-			{
-				i -= _intMetatypeMin;
-				if (BaseUnlocked)
-				{
-					_intBase = Math.Max(_intBase - _intMetatypeMin, 0);
-					i -= _intBase;
-				}
-				if (i > 0)
-				{
-					_intKarma = i;
-				}
-			}
+            if (objNode.TryGetInt32FieldQuickly("value", ref i))
+            {
+                i -= _intMetatypeMin;
+                if (BaseUnlocked)
+                {
+                    _intBase = Math.Max(_intBase - _intMetatypeMin, 0);
+                    i -= _intBase;
+                }
+                if (i > 0)
+                {
+                    _intKarma = i;
+                }
+            }
 
             int intCreateKarma = 0;
             // Shim for that one time karma was split into career and create values
@@ -165,9 +165,9 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("min", TotalMinimum.ToString(objCulture));
             objWriter.WriteElementString("max", TotalMaximum.ToString(objCulture));
             objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString(objCulture));
-			objWriter.WriteElementString("bp", TotalKarmaCost.ToString(objCulture));
-			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
-			objWriter.WriteEndElement();
+            objWriter.WriteElementString("bp", TotalKarmaCost.ToString(objCulture));
+            objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
+            objWriter.WriteEndElement();
         }
         #endregion
         /// <summary>
@@ -186,10 +186,10 @@ namespace Chummer.Backend.Attributes
 
         public AttributeCategory MetatypeCategory => _enumMetatypeCategory;
 
-		/// <summary>
-		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
-		/// </summary>
-		public int MetatypeMinimum
+        /// <summary>
+        /// Minimum value for the CharacterAttribute as set by the character's Metatype.
+        /// </summary>
+        public int MetatypeMinimum
         {
             get
             {
@@ -1083,42 +1083,42 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-		/// <summary>
-		/// Convert a string to an Attribute Category.
-		/// </summary>
-		/// <param name="strAbbrev">Linked attribute abbreviation.</param>
-		public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
-		{
-			switch (strAbbrev)
-			{
-				case "DEP":
-				case "EDG":
-				case "ESS":
-				case "MAG":
+        /// <summary>
+        /// Convert a string to an Attribute Category.
+        /// </summary>
+        /// <param name="strAbbrev">Linked attribute abbreviation.</param>
+        public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
+        {
+            switch (strAbbrev)
+            {
+                case "DEP":
+                case "EDG":
+                case "ESS":
+                case "MAG":
                 case "MAGAdept":
-				case "RES":
-					return AttributeCategory.Special;
-				default:
-					return AttributeCategory.Standard;
-			}
-		}
+                case "RES":
+                    return AttributeCategory.Special;
+                default:
+                    return AttributeCategory.Standard;
+            }
+        }
 
-		/// <summary>
-		/// Convert a string to an Attribute Category.
-		/// </summary>
-		/// <param name="strValue">String value to convert.</param>
-		public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
-		{
-			//If a value does exist, test whether it belongs to a shapeshifter form.
-			switch (strValue)
-			{
-				case "Shapeshifter":
-					return AttributeCategory.Shapeshifter;
-				default:
-					return AttributeCategory.Standard;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Convert a string to an Attribute Category.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
+        {
+            //If a value does exist, test whether it belongs to a shapeshifter form.
+            switch (strValue)
+            {
+                case "Shapeshifter":
+                    return AttributeCategory.Shapeshifter;
+                default:
+                    return AttributeCategory.Standard;
+            }
+        }
+        #endregion
 
         #region static
         //A tree of dependencies. Once some of the properties are changed,

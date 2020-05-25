@@ -48,7 +48,6 @@ namespace ChummerHub.Client.Tests
                             await Utils.PostSINnerAsync(ce);
                             await Utils.UploadChummerFileAsync(ce);
                             career.Hide();
-                            career.Dispose();
                         }
                     }
                     else
@@ -61,7 +60,6 @@ namespace ChummerHub.Client.Tests
                             await Utils.PostSINnerAsync(ce);
                             await Utils.UploadChummerFileAsync(ce);
                             create.Hide();
-                            create.Dispose();
                         }
                     }
                 }

@@ -68,7 +68,7 @@ namespace ChummerHub
         /// <param name="username"></param>
         /// <param name="userpwd"></param>
         /// <returns></returns>
-        private static String GetSqlCommandMasterUser(string username, string userpwd)
+        private static string GetSqlCommandMasterUser(string username, string userpwd)
         {
             string sqltext = @"IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name='" + username + "') ";
             sqltext += " " + Environment.NewLine + "   BEGIN";
@@ -98,7 +98,7 @@ namespace ChummerHub
                     user.PasswordHash = userManager.PasswordHasher.HashPassword(user, userPW);
                     await userManager.CreateAsync(user);
                 }
-                return u.Id;
+                return u?.Id ?? Guid.Empty;
             }
             catch (Exception e)
             {

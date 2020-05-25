@@ -314,7 +314,7 @@ namespace ChummerHub.Client.UI
                           try
                           {
                               var client = StaticUtils.GetClient();
-                              using (var signout = await client.LogoutWithHttpMessagesAsync())
+                              using (var signout = await client.LogoutWithHttpMessagesAsync().ConfigureAwait(true))
                               {
                                   if (signout.Response.StatusCode != HttpStatusCode.OK)
                                   {

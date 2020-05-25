@@ -201,7 +201,7 @@ namespace Chummer
                 try
                 {
                     SuspendLayout();
-                    using (var op_load_frm_career_databinding = Timekeeper.StartSyncron("load_frm_career_databinding", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_databinding", op_load_frm_career))
                     {
                         cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
                         cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
@@ -271,7 +271,7 @@ namespace Chummer
                         cmdAddLifestyle.SplitMenuStrip = null;
                     }
 
-                    using (var op_load_frm_career_refresh = Timekeeper.StartSyncron("load_frm_career_refresh", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_refresh", op_load_frm_career))
                     {
                         RefreshQualities(treQualities, cmsQuality);
                         RefreshSpirits(panSpirits, panSprites);
@@ -302,8 +302,7 @@ namespace Chummer
                         RefreshDrugs(treCustomDrugs);
                     }
 
-                    using (var op_load_frm_career_sortandCallBacks =
-                        Timekeeper.StartSyncron("load_frm_career_sortAndCallbacks", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_sortAndCallbacks", op_load_frm_career))
                     {
 
                         treWeapons.SortCustomOrder();
@@ -348,8 +347,7 @@ namespace Chummer
                         CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
                     }
 
-                    using (var op_load_frm_career_magictradition =
-                        Timekeeper.StartSyncron("load_frm_career_magictradition", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_magictradition", op_load_frm_career))
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
@@ -550,8 +548,7 @@ namespace Chummer
                         lstStreams.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (var op_load_frm_career_shapeshifter =
-                        Timekeeper.StartSyncron("load_frm_career_shapeshifter", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_shapeshifter", op_load_frm_career))
                     {
                         cboAttributeCategory.Visible = CharacterObject.MetatypeCategory == "Shapeshifter";
                         if (CharacterObject.MetatypeCategory == "Shapeshifter")
@@ -589,8 +586,7 @@ namespace Chummer
 
                     }
 
-                    using (var op_load_frm_career_vehicle =
-                        Timekeeper.StartSyncron("load_frm_career_vehicle", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_vehicle", op_load_frm_career))
                     {
                         // Populate vehicle weapon fire mode list.
                         List<ListItem> lstFireModes = new List<ListItem>();
@@ -609,10 +605,8 @@ namespace Chummer
 
                     }
 
-                    using (var op_load_frm_career_selectStuff =
-                        Timekeeper.StartSyncron("load_frm_career_selectStuff", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_selectStuff", op_load_frm_career))
                     {
-
                         // Select the Magician's Tradition.
                         if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
                             cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
@@ -665,23 +659,17 @@ namespace Chummer
                         ToolStripManager.RevertMerge("toolStrip");
                         ToolStripManager.Merge(toolStrip, "toolStrip");
 
-                        using (var op_load_frm_career_databindingCallbacks2_skills =
-                            Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()",
-                                op_load_frm_career_databindingCallbacks2))
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
                         {
                             tabSkillsUc.RealLoad();
                         }
 
-                        using (var op_load_frm_career_databindingCallbacks2_powers =
-                            Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()",
-                                op_load_frm_career_databindingCallbacks2))
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
                         {
                             tabPowerUc.RealLoad();
                         }
 
-                        using (var op_load_frm_career_databindingCallbacks2_propchangers =
-                            Timekeeper.StartSyncron("load_frm_career_Run through all appropriate property changers",
-                                op_load_frm_career_databindingCallbacks2))
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_Run through all appropriate property changers", op_load_frm_career_databindingCallbacks2))
                         {
 
                             // Run through all appropriate property changers
@@ -12041,7 +12029,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now. 
+                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
                     CharacterObject.GroupMember = chkJoinGroup.Checked;
                     CharacterObject.Karma -= intKarmaExpense;
 
@@ -12087,7 +12075,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now. 
+                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
                     CharacterObject.GroupMember = chkJoinGroup.Checked;
                     CharacterObject.Karma -= intKarmaExpense;
 
