@@ -329,35 +329,35 @@ namespace Chummer
                     // Finish the document and flush the Writer and Stream.
                     objWriter.WriteEndDocument();
                     objWriter.Flush();
-                }
 
-                objStream.Position = 0;
+                    objStream.Position = 0;
 
-                // Read the stream.
-                XmlDocument objCharacterXml = new XmlDocument
-                {
-                    XmlResolver = null
-                };
-                // Read it back in as an XmlDocument.
-                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                {
-                    using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                    // Read the stream.
+                    XmlDocument objCharacterXml = new XmlDocument
                     {
-                        if (_workerRefresher.CancellationPending)
+                        XmlResolver = null
+                    };
+                    // Read it back in as an XmlDocument.
+                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                    {
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
                         {
-                            e.Cancel = true;
-                            return;
+                            if (_workerRefresher.CancellationPending)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            // Put the stream into an XmlDocument and send it off to the Viewer.
+                            objCharacterXml.Load(objXmlReader);
                         }
-
-                        // Put the stream into an XmlDocument and send it off to the Viewer.
-                        objCharacterXml.Load(objXmlReader);
                     }
-                }
 
-                if (_workerRefresher.CancellationPending)
-                    e.Cancel = true;
-                else
-                    _objCharacterXml = objCharacterXml;
+                    if (_workerRefresher.CancellationPending)
+                        e.Cancel = true;
+                    else
+                        _objCharacterXml = objCharacterXml;
+                }
             }
         }
 
@@ -411,34 +411,38 @@ namespace Chummer
 
             MemoryStream objStream = new MemoryStream();
             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+            {
                 objXslTransform.Transform(_objCharacterXml, objWriter);
-            if (_workerOutputGenerator.CancellationPending)
-            {
-                e.Cancel = true;
-                return;
-            }
-            objStream.Position = 0;
-
-            // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
-            //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
-            //webBrowser1.Navigate("D:\\temp\\output.htm");
-
-            if (!GlobalOptions.PrintToFileFirst)
-            {
-                // Populate the browser using the DocumentStream.
-                webBrowser1.DocumentStream = objStream;
-            }
-            else
-            {
-                // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-                // Read in the resulting code and pass it to the browser.
-
-                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                if (_workerOutputGenerator.CancellationPending)
                 {
-                    string strOutput = objReader.ReadToEnd();
-                    File.WriteAllText(_strFilePathName, strOutput);
+                    e.Cancel = true;
+                    return;
                 }
-                webBrowser1.Url = new Uri($"file:///{_strFilePathName}");
+
+                objStream.Position = 0;
+
+                // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
+                //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
+                //webBrowser1.Navigate("D:\\temp\\output.htm");
+
+                if (!GlobalOptions.PrintToFileFirst)
+                {
+                    // Populate the browser using the DocumentStream.
+                    webBrowser1.DocumentStream = objStream;
+                }
+                else
+                {
+                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+                    // Read in the resulting code and pass it to the browser.
+
+                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                    {
+                        string strOutput = objReader.ReadToEnd();
+                        File.WriteAllText(_strFilePathName, strOutput);
+                    }
+
+                    webBrowser1.Url = new Uri($"file:///{_strFilePathName}");
+                }
             }
         }
 
