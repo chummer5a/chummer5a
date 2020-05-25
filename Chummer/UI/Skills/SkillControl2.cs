@@ -101,7 +101,7 @@ namespace Chummer.UI.Skills
                 btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
 
@@ -135,7 +135,7 @@ namespace Chummer.UI.Skills
                 if (skill.IsExoticSkill)
                 {
                     cboSpec.Enabled = false;
-                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
                 else
                 {
@@ -161,7 +161,9 @@ namespace Chummer.UI.Skills
                         return;
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.Skills.Remove(skill);
-                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
+                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill
+                        ? $"{skill.Name} ({skill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
+                        : skill.Name);
                 };
 
                 if (skill.CharacterObject.Created)

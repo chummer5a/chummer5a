@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
                 lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
 
                 lblSpec.Visible = true;
-                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 cboSkill.Visible = false;
                 chkKarma.Visible = false;

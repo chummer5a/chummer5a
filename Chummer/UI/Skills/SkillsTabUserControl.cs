@@ -606,8 +606,7 @@ namespace Chummer.UI.Skills
             }
             objSkill.Upgrade();
             _objCharacter.SkillsSection.Skills.Add(objSkill);
-            string key = objSkill.Name + " (" + objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) +
-                         ')';
+            string key = $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})";
             if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
                 _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
