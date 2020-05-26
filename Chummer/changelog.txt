@@ -9,6 +9,7 @@ Application Fixes:
 - Qualities that unlock special skills are no longer all always effectively free when purchased traditionally.
 - Amend files now default to not adding missing nodes by default unless no amendoperation is specified and the amend node has no children (i.e. default amendoperation would be "replace"). This generally makes amends with very general filters work properly again.
 - In an Amend file, if a "recurse" node is set to not add itself if no target is found, it will still recurse into the amending nodes, just in case there is a node somewhere inside that is set to be added if no target is found.
+- The availability filter for buying new cyberware or bioware now works properly for items that do not have a fixed, forced grade.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

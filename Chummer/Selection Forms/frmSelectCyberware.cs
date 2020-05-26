@@ -997,7 +997,7 @@ namespace Chummer
             int intOverLimit = 0;
             foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
             {
-                bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") == null;
+                bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") != null;
                 if (objCurrentGrade != null && blnIsForceGrade)
                 {
                     if (_objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
