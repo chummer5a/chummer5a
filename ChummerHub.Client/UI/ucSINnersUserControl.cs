@@ -1,51 +1,35 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
 using ChummerHub.Client.Model;
-using System.Net;
-using Microsoft.Rest;
-using System.Net.Http;
 using SINners;
 using ChummerHub.Client.Backend;
-using System.Composition;
 using Chummer.Plugins;
-using System.IO;
-using SINners.Models;
-using System.Windows.Threading;
 using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersUserControl : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private CharacterShared _mySINner = null;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private CharacterShared _mySINner;
         private ucSINnersBasic TabSINnersBasic;
 
         public CharacterShared MySINner => _mySINner;
 
-        public ucSINnersAdvanced TabSINnersAdvanced = null;
+        private ucSINnersAdvanced TabSINnersAdvanced;
 
         public CharacterExtended MyCE { get; set; }
 
         public Character CharacterObject => MySINner.CharacterObject;
 
-        
-
         public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
         {
             InitializeComponent();
-            _mySINner = mySINner;
+            _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
             MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = await MyCE.PrepareModel();
-            
+            MyCE.ZipFilePath = await MyCE.PrepareModel().ConfigureAwait(true);
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {
@@ -59,10 +43,9 @@ namespace ChummerHub.Client.UI
 
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
-           
             this.AutoSize = true;
 
-            if ((ucSINnersOptions.UploadOnSave == true))
+            if (ucSINnersOptions.UploadOnSave)
             {
                 try
                 {
@@ -73,22 +56,18 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Warn(e);
                 }
-                
             }
             //MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
             return MyCE;
         }
-
-        
-
-        
 
         public async Task RemoveSINnerAsync()
         {
             try
             {
                 var client = StaticUtils.GetClient();
-                await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
+                if (MyCE.MySINnerFile.Id != null)
+                    await client.DeleteAsync(MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -96,7 +75,5 @@ namespace ChummerHub.Client.UI
                 throw;
             }
         }
-
-  
     }
 }

@@ -1,4 +1,20 @@
-Future Build 212
+Future Build 213
+Application Fixes:
+- Fixed an incorrect tag on submersion groups in career mode. 
+- Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
+- Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
+- Fixed a regression in career mode not allowing Initiation Groups to be joined or left properly. Closes #4115
+- Fixed a myriad of cases where printing a character sheet in a language that is different from the language being used for the program would sometimes result in incorrect localization and/or number formats being used.
+- Fixed qi foci improperly providing free levels of a power rather than free points. Closes #4116
+- Qualities that unlock special skills are no longer all always effectively free when purchased traditionally.
+- Amend files now default to not adding missing nodes by default unless no amendoperation is specified and the amend node has no children (i.e. default amendoperation would be "replace"). This generally makes amends with very general filters work properly again.
+- In an Amend file, if a "recurse" node is set to not add itself if no target is found, it will still recurse into the amending nodes, just in case there is a node somewhere inside that is set to be added if no target is found.
+
+Data Changes:
+- Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
+- The custom rulesets for Toxic traditions having no requirements and for Painade being available per the German version of Cutting Aces now load and work properly.
+
+Build 212
 Application Changes:
 - When entering Nuyen and Karma expenses for Working for the Man/People, it's now possible to flag the expense entry as always being present in the Expense log. This will in effect reduce the Career Karma or Career Nuyen by the selected amount. Closes #4096, closes #3613
 - Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
@@ -15,8 +31,15 @@ Application Changes:
   'xml' indicates the document to load from the data folder
   'xpath' indicates the nodes to be evaluated (Note that it's not necessary to include the final Name node
   'allowedit="True"' indicates that the user should be able to enter their own value. If not specified or 'False', the user can only choose from the filtered values.
-  As an example, the SINner (Corporate) quality uses the following node: <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
-  It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to one of the existing document files; completely new files may work, but are unsupported at this time.
+  As an example, the SINner (Corporate) quality uses the following node: <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>, while the Metaposeur bioware uses <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
+  It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to options.xml; completely new files may work, but are unsupported at this time.
+  Duplicate values will automatically be filtered.
+- Added better support for basic lifestyles and primary tenant/roommate splits bestween costs. Closes #4054
+- Altered spirit control to support width flexion due to different string lengths.
+- Fixed issues with vehicles not properly being allowed to select autosofts and such. Closes #3887
+- Fixed regression in condition monitor boxes > 24 not showing. Closes #4074
+- Right-hand panel now autoscrolls if window is below normal size. Closes #2829
+- Fixed weapons not properly clearing their weapon mount when moved between character and vehicle. Closes #4108
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
@@ -30,8 +53,11 @@ Application Fixes:
 - Fixed a regression in behaviour of weapon mount options that caused them to be included in the cost of vehicles where the weapon mount comes with the weapon. Existing vehicles with this behaviour will need to be re-purchased. 
 - Fixed a regression with Custom Traditions not being properly loaded. Closes #4077
 - Fixed a regression in behaviour of metagenetic qualities not loading their metagenic flag properly when using the old naming convention.
+- Fixed an issue with cyberware that uses FixedValues not correctly requesting Essence value recalculation when changing the Rating.
+- Fixed a crash when updating Spirit Maximum Force during create mode if the character was reduced to 0 MAG. Closes #4099
 
 Data Changes:
+- Fixed incorrect stacking behaviour for the suprathyroid gland, muscle replacement and muscle toner that caused them to fail to stack correctly. (Muscle replacement, muscle augmentation and muscle toner shouldn't stack, but suprathyroid should)
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
 - Reduced Improved Synthskin max rating to 4.
 - Removed redundant selecttext bonuses from the synthlinks.
@@ -47,6 +73,12 @@ Data Changes:
 - Added amend files to remove the requirement for the toxic tradition and toxic mentors from requiring the Twisted Way.
 - Resolved an issue with character sheets not properly showing programs connected to a piece of cyberware. 
 - Reverted shapeshifter metatypes improperly flagging metatype qualities as shapeshifter or metahuman forms only.
+- Fixed an incorrect bonus for the Mystic Guardian mentor that caused it to provide incorrect bonus types.
+- Metaposeur bioware includes metatype prompts now.
+- Removed redundant selecttext improvement for Anti-tox nanoware.
+- Fixed bonus type for Cyberlimb Optimisation to properly increase dicepools for the selected Skill.
+- Added whitelisted selecttext improvements for most current uses of the improvement type. 
+- Replaced incorrect bonus for Nephritic Screen (2050)
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum
@@ -118,6 +150,17 @@ Changed/new strings:
 - LimitCondition_CorporationVisible
 - LimitCondition_CyberwareSnakeFingers
 - LimitCondition_SportsRivals
+- Label_Sprite_TasksOwed
+- DialogFilter_HeroLab
+- DialogFilter_ImagesPrefix
+- String_MetatypeLoadError
+- Message_Options_ConfirmTelemetry
+- MessageTitle_Options_ConfirmTelemetry
+- Message_Options_ConfirmDetailedTelemetry
+- MessageTitle_Options_ConfirmDetailedTelemetry
+- Tip_Options_TelemetryId
+- Tip_CMPenalty
+- String_CMDown
 
 Build 211
 Application Changes:

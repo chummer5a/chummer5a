@@ -39,7 +39,7 @@ namespace ChummerHub.Models.V1
         public Guid? SINnerId { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.SINnerId'
 
-        private string _email = null;
+        private string _email;
 
         [MaxLength(64)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.EMail'

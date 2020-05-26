@@ -28,7 +28,7 @@ namespace Chummer
         public delegate bool TryParseFunction<T>(string input, out T result);
 
         /// <summary>
-        /// This method is syntaxtic sugar for atempting to read a data field
+        /// This method is syntactic sugar for attempting to read a data field
         /// from an XmlNode. This version sets the output variable to its
         /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
@@ -102,7 +102,7 @@ namespace Chummer
                 {
                     string strOperationType = xmlOperationChildNode.SelectSingleNode("@operation")?.Value ?? "==";
                     XPathNodeIterator objXmlTargetNodeList = xmlParentNode.Select(strNodeName);
-                    // If we're just checking for existance of a node, no need for more processing
+                    // If we're just checking for existence of a node, no need for more processing
                     if (strOperationType == "exists")
                     {
                         blnOperationChildNodeResult = (objXmlTargetNodeList.Count > 0) != blnInvert;
@@ -205,7 +205,7 @@ namespace Chummer
                                     break;
                                 }
                             }
-                            // default is "any", replace above with a switch() should more than two checktypes be required
+                            // default is "any", replace above with a switch() should more than two check types be required
                             else if (boolSubNodeResult)
                             {
                                 blnOperationChildNodeResult = true;
@@ -230,7 +230,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XPathNavigator node, string field, ref string read)
         {
-            XPathNavigator objField = node.SelectSingleNode(field) ?? node.SelectSingleNode("@" + field);
+            XPathNavigator objField = node?.SelectSingleNode(field) ?? node?.SelectSingleNode("@" + field);
             if (objField != null)
             {
                 read = objField.Value;
@@ -245,7 +245,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XPathNavigator node, string field, ref int read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node.SelectSingleNode(field);
+            XPathNavigator objField = node?.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -265,7 +265,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XPathNavigator node, string field, ref bool read)
         {
-            XPathNavigator objField = node.SelectSingleNode(field);
+            XPathNavigator objField = node?.SelectSingleNode(field);
             if (objField != null)
             {
                 if (bool.TryParse(objField.Value, out bool blnTmp))
@@ -283,7 +283,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XPathNavigator node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node.SelectSingleNode(field);
+            XPathNavigator objField = node?.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -303,7 +303,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XPathNavigator node, string field, ref double read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node.SelectSingleNode(field);
+            XPathNavigator objField = node?.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -323,7 +323,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetFloatFieldQuickly(this XPathNavigator node, string field, ref float read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node.SelectSingleNode(field);
+            XPathNavigator objField = node?.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -347,14 +347,16 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetGuidFieldQuickly(this XPathNavigator node, string field, ref Guid read, bool falseIfEmpty = true)
         {
-            XPathNavigator objField = node.SelectSingleNode(field);
-            if (objField == null) return false;
-            if (!Guid.TryParse(objField.Value, out Guid fltTmp)) return false;
-            if (fltTmp == Guid.Empty && falseIfEmpty)
+            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (objField == null)
+                return false;
+            if (!Guid.TryParse(objField.Value, out Guid guidTmp))
+                return false;
+            if (guidTmp == Guid.Empty && falseIfEmpty)
             {
                 return false;
             }
-            read = fltTmp;
+            read = guidTmp;
             return true;
         }
 

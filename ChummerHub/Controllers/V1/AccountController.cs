@@ -32,10 +32,10 @@ namespace ChummerHub.Controllers
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
-        private UserManager<ApplicationUser> _userManager = null;
-        private SignInManager<ApplicationUser> _signInManager = null;
-        private ApplicationDbContext _context;
-        private RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager = null;
+        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly ApplicationDbContext _context;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
         private TelemetryClient tc;
 
@@ -160,22 +160,22 @@ namespace ChummerHub.Controllers
             string result = "";
             try
             {
-                if (String.IsNullOrEmpty(username))
+                if (string.IsNullOrEmpty(username))
                     throw new ArgumentNullException(nameof(username));
-                if (String.IsNullOrEmpty(password))
+                if (string.IsNullOrEmpty(password))
                     throw new ArgumentNullException(nameof(password));
 
                 IPAddress startaddress = null;
-                if (!String.IsNullOrEmpty(start_ip_address))
+                if (!string.IsNullOrEmpty(start_ip_address))
                 {
                     startaddress = IPAddress.Parse(start_ip_address);
                 }
                 IPAddress endaddress = null;
-                if (!String.IsNullOrEmpty(end_ip_address))
+                if (!string.IsNullOrEmpty(end_ip_address))
                 {
                     endaddress = IPAddress.Parse(end_ip_address);
                 }
-                if (String.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
+                if (string.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
                 {
                     throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
                 }
@@ -593,7 +593,7 @@ namespace ChummerHub.Controllers
                             if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
                             {
                                 if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
-                                        String.IsNullOrEmpty(a.EMail) == false) == true)
+                                        string.IsNullOrEmpty(a.EMail) == false) == true)
                                 {
                                     if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
                                             a.EMail?.ToUpperInvariant() == user.NormalizedEmail) == false)
@@ -680,7 +680,7 @@ namespace ChummerHub.Controllers
                         if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
                         {
                             if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
-                                    String.IsNullOrEmpty(a.EMail) == false) == true)
+                                    string.IsNullOrEmpty(a.EMail) == false) == true)
                             {
                                 if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
                                         a.EMail?.ToUpperInvariant() == user.NormalizedEmail) == false)

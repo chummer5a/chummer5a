@@ -1,15 +1,17 @@
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Chummer;
+using Newtonsoft.Json;
 
 namespace SINners.Models
 {
-    [System.Diagnostics.DebuggerDisplay("{Display}")]
+    [DebuggerDisplay("{Display}")]
     public partial class Tag
     {
         [IgnoreDataMember]
@@ -17,27 +19,24 @@ namespace SINners.Models
         [JsonIgnore]
         public Tag MyParentTag { get; set; }
 
-        public Tag (Object myRuntimeObject, Chummer.HubTagAttribute hubTag)
+        public Tag (object myRuntimeObject, HubTagAttribute hubTag)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubTag = hubTag;
-            this.Tags = new List<Tag>();
         }
 
         public Tag (bool isUserGenerated)
         {
-            this.Id = Guid.NewGuid();
-            this.IsUserGenerated = isUserGenerated;
-            this.Tags = new List<Tag>();
+            Id = Guid.NewGuid();
+            IsUserGenerated = isUserGenerated;
         }
 
-        public Tag(Object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
+        public Tag(object myRuntimeObject, HubClassTagAttribute hubClassTag)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubClassTag = hubClassTag;
-            this.Tags = new List<Tag>();
         }
 
         [IgnoreDataMember]
@@ -47,23 +46,22 @@ namespace SINners.Models
         {
             get
             {
-                string str = "";
-                Tag tempParent = this;
+                StringBuilder sbdReturn = new StringBuilder(TagName);
+                if (!string.IsNullOrEmpty(TagValue))
+                    sbdReturn.Append(": " + TagValue);
+                Tag tempParent = MyParentTag;
                 while (tempParent != null)
                 {
                     string tempstr = tempParent.TagName;
-                    if (!String.IsNullOrEmpty(tempParent.TagValue))
+                    if (!string.IsNullOrEmpty(tempParent.TagValue))
                         tempstr += ": " + tempParent.TagValue;
-                    if (!String.IsNullOrEmpty(str))
-                        tempstr += " -> " + str;
-                    str = tempstr;
+                    sbdReturn.Insert(0, tempstr + " -> ");
                     tempParent = tempParent.MyParentTag;
                 }
-                if(!String.IsNullOrEmpty(this.TagComment))
-                    str += " (" + this.TagComment + ")";
-                return str;
+                if(!string.IsNullOrEmpty(TagComment))
+                    sbdReturn.Append(" (" + TagComment + ")");
+                return sbdReturn.ToString();
             }
-            
         }
 
         [IgnoreDataMember]
@@ -74,24 +72,85 @@ namespace SINners.Models
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Object MyRuntimeObject { get; set; }
+        public object MyRuntimeObject { get; set; }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Chummer.HubTagAttribute MyRuntimeHubTag { get; set; }
+        public HubTagAttribute MyRuntimeHubTag { get; set; }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Chummer.HubClassTagAttribute MyRuntimeHubClassTag { get; set; }
+        public HubClassTagAttribute MyRuntimeHubClassTag { get; set; }
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
-            this.SiNnerId = id;
-            foreach(var childtag in this.Tags)
-                childtag.SetSinnerIdRecursive(id);
+            SiNnerId = id;
+            if (Tags != null && Tags.Count > 0)
+                foreach(var childtag in Tags)
+                    childtag.SetSinnerIdRecursive(id);
         }
 
+        internal void SetTagTypeEnumFromCLRType(Type typeValue)
+        {
+            if (typeof(int).IsAssignableFrom(typeValue))
+            {
+                TagType = "int";
+            }
+            else if (typeof(double).IsAssignableFrom(typeValue))
+            {
+                TagType = "double";
+            }
+            else if (typeof(bool).IsAssignableFrom(typeValue))
+            {
+                TagType = "bool";
+            }
+            else if (typeof(string).IsAssignableFrom(typeValue))
+            {
+                TagType = "string";
+            }
+            else if (typeof(Guid).IsAssignableFrom(typeValue))
+            {
+                TagType = "Guid";
+            }
+            else
+            {
+                TagType = "other";
+            }
+
+            if (typeof(IEnumerable).IsAssignableFrom(typeValue) && !typeof(string).IsAssignableFrom(typeValue))
+            {
+                TagType = "list";
+                TagValue = string.Empty;
+                TagValueFloat = null;
+            }
+            else if (TagValue == typeValue.FullName)
+            {
+                TagValue = string.Empty;
+                TagValueFloat = null;
+            }
+        }
+
+        internal void AddPropertyValuesToTagComment(object objItem, HubClassTagAttribute objAttribute)
+        {
+            if (objItem == null || objAttribute == null)
+                return;
+            Type objItemType = objItem.GetType();
+            StringBuilder sbdPropertyValues = new StringBuilder();
+            foreach (string strProperty in objAttribute.ListCommentProperties)
+            {
+                PropertyInfo objProperty = objItemType.GetProperties().FirstOrDefault(p => p.Name == strProperty);
+                if (objProperty == null)
+                    throw new ArgumentOutOfRangeException("Could not find property " + strProperty + " on instance of type " + objItemType + ".");
+
+                string strPropertyValue = objProperty.GetValue(objItem)?.ToString();
+                if (!string.IsNullOrEmpty(strPropertyValue))
+                    sbdPropertyValues.Append(strPropertyValue + " ");
+            }
+            if (sbdPropertyValues.Length > 0)
+                sbdPropertyValues.Remove(sbdPropertyValues.Length - 1, 1); // Remove trailing whitespace
+            TagComment += sbdPropertyValues;
+        }
     }
 }

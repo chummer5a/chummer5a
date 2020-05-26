@@ -389,9 +389,9 @@ namespace Chummer
                 }
                 catch (ArgumentOutOfRangeException aor)
                 {
-                    aor.Data.Add("Name", this.Name);
-                    aor.Data.Add("Parent", this.Parent?.Name);
-                    aor.Data.Add("BeforeValueDecrement", BeforeValueDecrement?.Method?.Name);
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueDecrement", BeforeValueDecrement?.Method.Name);
                     throw;
                 }
             }
@@ -415,9 +415,9 @@ namespace Chummer
                 }
                 catch (ArgumentOutOfRangeException aor)
                 {
-                    aor.Data.Add("Name", this.Name);
-                    aor.Data.Add("Parent", this.Parent?.Name);
-                    aor.Data.Add("BeforeValueIncrement", BeforeValueIncrement?.Method?.Name);
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueIncrement", BeforeValueIncrement?.Method.Name);
                     throw;
                 }
             }
@@ -479,7 +479,6 @@ namespace Chummer
                 OnTextBoxResize(_textbox, EventArgs.Empty);
                 Invalidate();
             }
-
         }
 
 

@@ -215,22 +215,26 @@ namespace Translator
             {
                 XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
                                        _objDataDoc.SelectSingleNode(strBaseXPath + "/text[text()=\"" + strEnglish + "\"]/..");
-                XmlElement element = xmlNodeLocal["translate"];
-                if (element != null) element.InnerText = strTranslated;
+                if (xmlNodeLocal != null)
+                {
+                    XmlElement element = xmlNodeLocal["translate"];
+                    if (element != null)
+                        element.InnerText = strTranslated;
 
-                XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
-                if (objAttrib != null)
-                {
-                    if (!flag)
-                        xmlNodeLocal.Attributes.Remove(objAttrib);
-                    else
+                    XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
+                    if (objAttrib != null)
+                    {
+                        if (!flag)
+                            xmlNodeLocal.Attributes.Remove(objAttrib);
+                        else
+                            objAttrib.InnerText = bool.TrueString;
+                    }
+                    else if (flag)
+                    {
+                        objAttrib = _objDataDoc.CreateAttribute("translated");
                         objAttrib.InnerText = bool.TrueString;
-                }
-                else if (flag)
-                {
-                    objAttrib = _objDataDoc.CreateAttribute("translated");
-                    objAttrib.InnerText = bool.TrueString;
-                    xmlNodeLocal.Attributes?.Append(objAttrib);
+                        xmlNodeLocal.Attributes?.Append(objAttrib);
+                    }
                 }
             }
             else

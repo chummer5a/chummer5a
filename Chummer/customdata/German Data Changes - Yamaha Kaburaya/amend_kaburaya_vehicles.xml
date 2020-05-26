@@ -22,8 +22,8 @@
   <vehicles>
     <vehicle>
       <id>006ea45a-cc35-496c-8d01-94eb64d8febb</id>
-      <accel amendoperation="replace">4</accel>
-      <cost amendoperation="replace">8500</cost>
+      <accel>4</accel>
+      <cost>8500</cost>
     </vehicle>
   </vehicles>
 </chummer>

@@ -1,10 +1,6 @@
-using ChummerHub.Data;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -19,7 +15,7 @@ namespace ChummerHub
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
-        public static IWebHost MyHost = null;
+        public static IWebHost MyHost;
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         public static void Main(string[] args)
@@ -44,10 +40,9 @@ namespace ChummerHub
 
             MyHost = CreateWebHostBuilder(args);
             MyHost.Run();
-            return;
         }
 
-        private static bool _preventOverflow = false;
+        private static bool _preventOverflow;
 
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
@@ -56,7 +51,7 @@ namespace ChummerHub
                 if (_preventOverflow)
                     return;
                 _preventOverflow = true;
-                string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
+                string msg = e.Exception + Environment.NewLine + Environment.NewLine;
 
                 if (!e.Exception.Message.Contains("Non-static method requires a target."))
                 {
@@ -74,7 +69,7 @@ namespace ChummerHub
             }
             catch (Exception ex)
             {
-                string msg = ex.ToString() + Environment.NewLine + Environment.NewLine;
+                string msg = ex + Environment.NewLine + Environment.NewLine;
                 Console.WriteLine(msg);
                 System.Diagnostics.Debug.WriteLine(msg);
                 //AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });

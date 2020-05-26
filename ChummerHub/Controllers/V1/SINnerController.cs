@@ -38,9 +38,9 @@ namespace ChummerHub.Controllers.V1
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
-        private SignInManager<ApplicationUser> _signInManager = null;
-        private UserManager<ApplicationUser> _userManager = null;
-        private TelemetryClient tc;
+        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly UserManager<ApplicationUser> _userManager = null;
+        private readonly TelemetryClient tc;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.SINnerController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public SINnerController(ApplicationDbContext context,
@@ -106,14 +106,14 @@ namespace ChummerHub.Controllers.V1
                     throw new ArgumentException("Could not find id(1) " + sinnerid.ToString());
                 }
                 ApplicationUser user = null;
-                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                if (!string.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var chummerFile = sinnerseq.FirstOrDefault();
                 if (chummerFile == null)
                 {
                     throw new ArgumentException("Could not find id(2) " + sinnerid.ToString());
                 }
-                if (String.IsNullOrEmpty(chummerFile.DownloadUrl))
+                if (string.IsNullOrEmpty(chummerFile.DownloadUrl))
                 {
                     string msg = "Chummer " + chummerFile.Id + " does not have a valid DownloadUrl!";
                     throw new ArgumentException(msg);
@@ -243,7 +243,7 @@ namespace ChummerHub.Controllers.V1
             {
 
                 ApplicationUser user = null;
-                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                if (!string.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sin = await _context.SINners
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
@@ -315,7 +315,7 @@ namespace ChummerHub.Controllers.V1
             {
 
                 ApplicationUser user = null;
-                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                if (!string.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var list = await _context.UserRights
                     .Where(a => a.SINnerId == id)
@@ -351,7 +351,7 @@ namespace ChummerHub.Controllers.V1
             {
 
                 ApplicationUser user = null;
-                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                if (!string.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sinseq = await _context.SINners
                     //.Include(a => a.MyExtendedAttributes)
@@ -695,11 +695,11 @@ namespace ChummerHub.Controllers.V1
                         if (tag == null)
                             continue;
                         tag.TagValueFloat = null;
-                        if (Single.TryParse(tag.TagValue, out float result))
+                        if (float.TryParse(tag.TagValue, out float result))
                         {
                             tag.TagValueFloat = result;
                         }
-                        if (tag.TagValueFloat != null && Single.IsNaN(tag.TagValueFloat.Value))
+                        if (tag.TagValueFloat != null && float.IsNaN(tag.TagValueFloat.Value))
                             tag.TagValueFloat = null;
                     }
 
@@ -801,9 +801,9 @@ namespace ChummerHub.Controllers.V1
                     if (dbsinner != null)
                     {
                         oldgroup = dbsinner.MyGroup;
-                        if (String.IsNullOrEmpty(sinner.GoogleDriveFileId))
+                        if (string.IsNullOrEmpty(sinner.GoogleDriveFileId))
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
-                        if (String.IsNullOrEmpty(sinner.DownloadUrl))
+                        if (string.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
 
                         var alltags = await _context.Tags.Where(a => a.SINnerId == dbsinner.Id).Select(a => a.Id).ToListAsync();
@@ -1229,7 +1229,7 @@ namespace ChummerHub.Controllers.V1
             var dbsinnerseq = (from a in _context.UserRights
                                where a.SINnerId == id
                                      &&
-                                     ((!String.IsNullOrEmpty(a.EMail) && a.EMail.ToUpperInvariant() == normEmail)
+                                     ((!string.IsNullOrEmpty(a.EMail) && a.EMail.ToUpperInvariant() == normEmail)
                                        || (a.EMail == null))
                                      && a.CanEdit == true
                                select a).ToList();
@@ -1239,13 +1239,13 @@ namespace ChummerHub.Controllers.V1
             }
             if (dbsinner.MyGroup != null)
             {
-                if (!String.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
+                if (!string.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
                 {
                     var localadmins = await _userManager.GetUsersInRoleAsync(dbsinner.MyGroup.MyAdminIdentityRole);
                     if (localadmins.Contains(user))
                         return dbsinner;
                 }
-                if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
+                if (!string.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
                 {
                     if (dbsinner.MyGroup.GroupCreatorUserName == userName)
                         return dbsinner;

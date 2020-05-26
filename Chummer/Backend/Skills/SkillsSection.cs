@@ -24,9 +24,7 @@ using System.Linq;
 using System.Xml;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 
@@ -40,15 +38,20 @@ namespace Chummer.Backend.Skills
         public SkillsSection(Character character)
         {
             _objCharacter = character;
-            _objCharacter.LOG.PropertyChanged += UpdateKnowledgePointsFromAttributes;
-            _objCharacter.INT.PropertyChanged += UpdateKnowledgePointsFromAttributes;
-
+            if (_objCharacter != null)
+            {
+                _objCharacter.LOG.PropertyChanged += UpdateKnowledgePointsFromAttributes;
+                _objCharacter.INT.PropertyChanged += UpdateKnowledgePointsFromAttributes;
+            }
         }
 
         public void UnbindSkillsSection()
         {
-            _objCharacter.LOG.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
-            _objCharacter.INT.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
+            if (_objCharacter != null)
+            {
+                _objCharacter.LOG.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
+                _objCharacter.INT.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
+            }
             _dicSkillBackups.Clear();
         }
 
@@ -64,10 +67,10 @@ namespace Chummer.Backend.Skills
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SkillSectionDependancyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SkillSectionDependancyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -81,7 +84,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void AddSkills(FilterOptions skills, string strName = "")
+        internal void AddSkills(FilterOption skills, string strName = "")
         {
             List<Skill> lstExistingSkills = GetSkillList(skills, strName, true).ToList();
 
@@ -91,29 +94,29 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
-                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name;
+                string strKey = objSkill.IsExoticSkill ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})" : objSkill.Name;
                 if (!_dicSkills.ContainsKey(strKey))
                     _dicSkills.Add(strKey, objSkill);
             }
         }
 
-        internal void RemoveSkills(FilterOptions skills, bool createKnowledge = true)
+        internal void RemoveSkills(FilterOption skills, bool createKnowledge = true)
         {
             string strCategory;
             switch (skills)
             {
-                case FilterOptions.Magician:
-                case FilterOptions.Sorcery:
-                case FilterOptions.Conjuring:
-                case FilterOptions.Enchanting:
-                case FilterOptions.Adept:
+                case FilterOption.Magician:
+                case FilterOption.Sorcery:
+                case FilterOption.Conjuring:
+                case FilterOption.Enchanting:
+                case FilterOption.Adept:
                     strCategory = "Magical Active";
                     break;
-                case FilterOptions.Technomancer:
+                case FilterOption.Technomancer:
                     strCategory = "Resonance Active";
                     break;
                 default:
@@ -122,18 +125,18 @@ namespace Chummer.Backend.Skills
             // Check for duplicates (we'd normally want to make sure it's enabled, but SpecialSkills doesn't process the Enabled property properly)
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
             {
-                FilterOptions eLoopFilter = (FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName);
+                FilterOption eLoopFilter = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                 string strLoopCategory = string.Empty;
                 switch (eLoopFilter)
                 {
-                    case FilterOptions.Magician:
-                    case FilterOptions.Sorcery:
-                    case FilterOptions.Conjuring:
-                    case FilterOptions.Enchanting:
-                    case FilterOptions.Adept:
+                    case FilterOption.Magician:
+                    case FilterOption.Sorcery:
+                    case FilterOption.Conjuring:
+                    case FilterOption.Enchanting:
+                    case FilterOption.Adept:
                         strLoopCategory = "Magical Active";
                         break;
-                    case FilterOptions.Technomancer:
+                    case FilterOption.Technomancer:
                         strLoopCategory = "Resonance Active";
                         break;
                 }
@@ -148,7 +151,7 @@ namespace Chummer.Backend.Skills
                     Skill skill = Skills[i];
                     _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
+                    SkillsDictionary.Remove(skill.IsExoticSkill ? $"{skill.Name} ({skill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})" : skill.Name);
 
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
@@ -166,7 +169,7 @@ namespace Chummer.Backend.Skills
                                 objExistSkill.Base = objNewSkill.Base;
                             if (objNewSkill.Karma > objExistSkill.Karma)
                                 objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
                         });
                     }
                 }
@@ -191,10 +194,9 @@ namespace Chummer.Backend.Skills
                 return;
             using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
             {
-
                 if (!blnLegacy)
                 {
-                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
                     {
                         List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
                         using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
@@ -207,7 +209,7 @@ namespace Chummer.Backend.Skills
                                 }
 
                         lstLoadingSkillGroups.Sort((i1, i2) =>
-                            string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+                            string.Compare(i2.CurrentDisplayName, i1.CurrentDisplayName, false, GlobalOptions.CultureInfo));
                         foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
                         {
                             SkillGroups.Add(skillgroup);
@@ -216,7 +218,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_groups");
                     }
 
-                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
                     {
                         //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
                         List<Skill> lstLoadingSkills = new List<Skill>();
@@ -234,7 +236,7 @@ namespace Chummer.Backend.Skills
                         foreach (Skill objSkill in lstLoadingSkills)
                         {
                             string strName = objSkill.IsExoticSkill
-                                ? $"{objSkill.Name} ({objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
+                                ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
                                 : objSkill.Name;
                             bool blnDoAddToDictionary = true;
                             _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
@@ -246,8 +248,8 @@ namespace Chummer.Backend.Skills
                                     objExistSkill.Karma = objNewSkill.Karma;
                                 objExistSkill.Specializations.MergeInto(objNewSkill.Specializations,
                                     (x, y) => x.Free == y.Free
-                                        ? string.Compare(x.DisplayName(GlobalOptions.Language),
-                                            y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal)
+                                        ? string.Compare(x.CurrentDisplayName,
+                                            y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
                                         : (x.Free ? 1 : -1));
                             });
                             if (blnDoAddToDictionary)
@@ -263,30 +265,38 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_normal");
                     }
 
-                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
                     {
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
+                        {
                             if (xmlSkillsList != null)
+                            {
                                 foreach (XmlNode xmlNode in xmlSkillsList)
                                 {
                                     if (Skill.Load(_objCharacter, xmlNode) is KnowledgeSkill objSkill)
                                         KnowledgeSkills.Add(objSkill);
                                 }
+                            }
+                        }
 
                         //Timekeeper.Finish("load_char_skills_kno");
                     }
 
-                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
                     {
                         // Knowsoft Buffer.
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
+                        {
                             if (xmlSkillsList != null)
+                            {
                                 foreach (XmlNode xmlNode in xmlSkillsList)
                                 {
                                     string strName = string.Empty;
                                     if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
                                         KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName, false));
                                 }
+                            }
+                        }
 
                         //Timekeeper.Finish("load_char_knowsoft_buffer");
                     }
@@ -295,13 +305,17 @@ namespace Chummer.Backend.Skills
                 {
                     List<Skill> lstTempSkillList = new List<Skill>();
                     using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
+                    {
                         if (xmlSkillsList != null)
+                        {
                             foreach (XmlNode xmlNode in xmlSkillsList)
                             {
                                 Skill objSkill = Skill.LegacyLoad(_objCharacter, xmlNode);
                                 if (objSkill != null)
                                     lstTempSkillList.Add(objSkill);
                             }
+                        }
+                    }
 
                     if (lstTempSkillList.Count > 0)
                     {
@@ -342,8 +356,7 @@ namespace Chummer.Backend.Skills
                             _lstSkills.Add(objSkill);
                             _dicSkills.Add(
                                 objSkill.IsExoticSkill
-                                    ? objSkill.Name + " (" +
-                                      objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')'
+                                    ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
                                     : objSkill.Name, objSkill);
                         }
 
@@ -353,11 +366,16 @@ namespace Chummer.Backend.Skills
 
                 HashSet<string> hashSkillGuids = new HashSet<string>();
                 XmlDocument skillsDoc = XmlManager.Load("skills.xml");
-                foreach (XmlNode node in skillsDoc.SelectNodes(
-                    $"/chummer/skills/skill[not(exotic) and ({_objCharacter.Options.BookXPath()}) {SkillFilter(FilterOptions.NonSpecial)}]")
-                )
+                XmlNodeList xmlSkillList = skillsDoc.SelectNodes(
+                    $"/chummer/skills/skill[not(exotic) and ({_objCharacter.Options.BookXPath()}) {SkillFilter(FilterOption.NonSpecial)}]");
+                if (xmlSkillList != null)
                 {
-                    hashSkillGuids.Add(node["name"].InnerText);
+                    foreach (XmlNode node in xmlSkillList)
+                    {
+                        string strName = node["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                            hashSkillGuids.Add(strName);
+                    }
                 }
 
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
@@ -404,9 +422,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal async void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
+        internal void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
         {
-            using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
+            using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
                 List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
                 using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
@@ -419,7 +437,7 @@ namespace Chummer.Backend.Skills
                         }
 
                 lstLoadingSkillGroups.Sort((i1, i2) =>
-                    string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+                    string.Compare(i2.CurrentDisplayName, i1.CurrentDisplayName, false, GlobalOptions.CultureInfo));
                 foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
                 {
                     SkillGroups.Add(skillgroup);
@@ -428,9 +446,8 @@ namespace Chummer.Backend.Skills
                 //Timekeeper.Finish("load_char_skills_groups");
             }
 
-            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", parentActivity))
+            using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-
                 List<Skill> lstTempSkillList = new List<Skill>();
                 using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
                     if (xmlSkillsList?.Count > 0)
@@ -494,7 +511,7 @@ namespace Chummer.Backend.Skills
                 foreach (Skill objSkill in lstUnsortedSkills)
                 {
                     string strName = objSkill.IsExoticSkill
-                        ? $"{objSkill.Name} ({objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
+                        ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
                         : objSkill.Name;
                     bool blnDoAddToDictionary = true;
                     _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
@@ -506,8 +523,8 @@ namespace Chummer.Backend.Skills
                             objExistSkill.Karma = objNewSkill.Karma;
                         objExistSkill.Specializations.MergeInto(objNewSkill.Specializations,
                             (x, y) => x.Free == y.Free
-                                ? string.Compare(x.DisplayName(GlobalOptions.Language),
-                                    y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal)
+                                ? string.Compare(x.CurrentDisplayName,
+                                    y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
                                 : (x.Free ? 1 : -1));
                     });
                     if (blnDoAddToDictionary)
@@ -725,7 +742,7 @@ namespace Chummer.Backend.Skills
             {
                 for (int i = 0; i < lstNodesToChange.Count; i++)
                 {
-                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop) ? guidLoop.ToString("D") : StringExtensions.EmptyGuid;
+                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop) ? guidLoop.ToString("D", GlobalOptions.InvariantCultureInfo) : StringExtensions.EmptyGuid;
                 }
             }
         }
@@ -802,10 +819,12 @@ namespace Chummer.Backend.Skills
             {
                 if (_lstSkills.Count == 0)
                 {
-                    foreach (Skill objLoopSkill in GetSkillList(FilterOptions.NonSpecial))
+                    foreach (Skill objLoopSkill in GetSkillList(FilterOption.NonSpecial))
                     {
                         _lstSkills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objLoopSkill.Name, objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.IsExoticSkill
+                            ? $"{objLoopSkill.Name} ({objLoopSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
+                            : objLoopSkill.Name, objLoopSkill);
                     }
                 }
                 return _lstSkills;
@@ -956,24 +975,18 @@ namespace Chummer.Backend.Skills
 
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
+            if (rhs == null && lhs == null)
+                return 0;
             ExoticSkill lhsExoticSkill = lhs as ExoticSkill;
             if (rhs is ExoticSkill rhsExoticSkill)
             {
                 if (lhsExoticSkill != null)
-                {
-                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, StringComparison.Ordinal);
-                }
-                else
-                {
-                    return 1;
-                }
+                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, false, GlobalOptions.CultureInfo);
+                return 1;
             }
-            else if (lhsExoticSkill != null)
-            {
+            if (lhsExoticSkill != null)
                 return -1;
-            }
-
-            return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Language), lhs.DisplayNameMethod(GlobalOptions.Language), StringComparison.Ordinal);
+            return string.Compare(rhs?.CurrentDisplayName ?? string.Empty, lhs?.CurrentDisplayName ?? string.Empty, false, GlobalOptions.CultureInfo);
         }
 
         public static int CompareSkillGroups(SkillGroup objXGroup, SkillGroup objYGroup)
@@ -984,10 +997,10 @@ namespace Chummer.Backend.Skills
                     return 0;
                 return -1;
             }
-            return objYGroup == null ? 1 : string.Compare(objXGroup.DisplayName, objYGroup.DisplayName, StringComparison.Ordinal);
+            return objYGroup == null ? 1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalOptions.CultureInfo);
         }
 
-        public IEnumerable<Skill> GetSkillList(FilterOptions filter, string strName = "", bool blnFetchFromBackup = false)
+        public IEnumerable<Skill> GetSkillList(FilterOption filter, string strName = "", bool blnFetchFromBackup = false)
         {
             //TODO less retarded way please
             // Load the Skills information.
@@ -1034,57 +1047,57 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static string SkillFilter(FilterOptions eFilter, string strName = "")
+        private static string SkillFilter(FilterOption eFilter, string strName = "")
         {
             switch (eFilter)
             {
-                case FilterOptions.All:
+                case FilterOption.All:
                     return string.Empty;
-                case FilterOptions.NonSpecial:
+                case FilterOption.NonSpecial:
                     return " and not(category = 'Magical Active') and not(category = 'Resonance Active')";
-                case FilterOptions.Magician:
+                case FilterOption.Magician:
                     return " and category = 'Magical Active'";
-                case FilterOptions.Sorcery:
+                case FilterOption.Sorcery:
                     return " and category = 'Magical Active' and (skillgroup = 'Sorcery' or skillgroup = '' or not(skillgroup))";
-                case FilterOptions.Conjuring:
+                case FilterOption.Conjuring:
                     return " and category = 'Magical Active' and (skillgroup = 'Conjuring' or skillgroup = '' or not(skillgroup))";
-                case FilterOptions.Enchanting:
+                case FilterOption.Enchanting:
                     return " and category = 'Magical Active' and (skillgroup = 'Enchanting' or skillgroup = '' or not(skillgroup))";
-                case FilterOptions.Adept:
-                case FilterOptions.Aware:
-                case FilterOptions.Explorer:
+                case FilterOption.Adept:
+                case FilterOption.Aware:
+                case FilterOption.Explorer:
                     return " and category = 'Magical Active' and (skillgroup = '' or not(skillgroup))";
-                case FilterOptions.Spellcasting:
+                case FilterOption.Spellcasting:
                     return " and category = 'Magical Active' and name = 'Spellcasting'";
-                case FilterOptions.Technomancer:
+                case FilterOption.Technomancer:
                     return " and category = 'Resonance Active'";
-                case FilterOptions.Name:
+                case FilterOption.Name:
                     return $" and name = '{strName}'";
-                case FilterOptions.XPath:
+                case FilterOption.XPath:
                     return $" and ({strName})";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eFilter), eFilter, null);
             }
         }
 
-        private static readonly DependancyGraph<string> SkillSectionDependancyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(HasKnowledgePoints),
-                    new DependancyGraphNode<string>(nameof(KnowledgeSkillPoints))
+        private static readonly DependencyGraph<string> s_SkillSectionDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(HasKnowledgePoints),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints))
                 ),
-                new DependancyGraphNode<string>(nameof(KnowledgeSkillPointsRemain),
-                    new DependancyGraphNode<string>(nameof(KnowledgeSkillPoints)),
-                    new DependancyGraphNode<string>(nameof(KnowledgeSkillPointsUsed),
-                        new DependancyGraphNode<string>(nameof(KnowledgeSkillRanksSum)),
-                        new DependancyGraphNode<string>(nameof(SkillPointsSpentOnKnoskills),
-                            new DependancyGraphNode<string>(nameof(KnowledgeSkillPoints)),
-                            new DependancyGraphNode<string>(nameof(KnowledgeSkillRanksSum))
+                new DependencyGraphNode<string>(nameof(KnowledgeSkillPointsRemain),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints)),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPointsUsed),
+                        new DependencyGraphNode<string>(nameof(KnowledgeSkillRanksSum)),
+                        new DependencyGraphNode<string>(nameof(SkillPointsSpentOnKnoskills),
+                            new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints)),
+                            new DependencyGraphNode<string>(nameof(KnowledgeSkillRanksSum))
                         )
                     )
                 )
             );
 
-        public enum FilterOptions
+        public enum FilterOption
         {
             All = 0,
             NonSpecial,

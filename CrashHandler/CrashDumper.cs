@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -13,6 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
+using System.Windows.Forms;
 
 namespace CrashHandler
 {
@@ -97,7 +99,7 @@ namespace CrashHandler
             int intLastError = Marshal.GetLastWin32Error();
             if (sucess)
 			{
-				Attributes["debugger-attached-sucess"] = "True";
+				Attributes["debugger-attached-success"] = bool.TrueString;
 			}
 			else
 			{
@@ -138,7 +140,7 @@ namespace CrashHandler
                 AttemptDebug(Process);
 
                 SetProgress(CrashDumperProgress.CreateDmp);
-                if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-sucess")))
+                if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-success")))
                 {
                     Process.Kill();
                     SetProgress(CrashDumperProgress.Error);
@@ -191,25 +193,34 @@ namespace CrashHandler
                 SetProgress(CrashDumperProgress.FinishedSending);
                 Process.Kill();
             }
+            catch (WebException rex)
+            {
+                SetProgress(CrashDumperProgress.Error);
+
+                MessageBox.Show("Upload service had an error."
+                                + Environment.NewLine + "Reason: " + rex.Message
+                                + Environment.NewLine + Environment.NewLine + "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
+                Process?.Kill();
+            }
             catch (RemoteServiceException rex)
             {
                 SetProgress(CrashDumperProgress.Error);
 
-                System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message + "\n\nPlease manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
+                MessageBox.Show("Upload service had an error."
+                                + Environment.NewLine + "Reason: " + rex.Message
+                                + Environment.NewLine + Environment.NewLine + "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
                 Process?.Kill();
             }
             catch (Exception ex)
             {
                 SetProgress(CrashDumperProgress.Error);
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString());
 
                 Process?.Kill();
             }
-
-            CrashLogWriter.Close();
         }
-        
-		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
+
+        private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
             bool ret;
@@ -234,8 +245,8 @@ namespace CrashHandler
 
 				if (extraInfo)
 				{
-					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
-						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
+					ret = !NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
+                        dtype, ref info, IntPtr.Zero, IntPtr.Zero);
 
 				}
 				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
@@ -283,7 +294,8 @@ namespace CrashHandler
 		    {
 		        foreach (string strFilePath in _lstFilePaths)
 		        {
-		            if (!File.Exists(strFilePath)) continue;
+		            if (!File.Exists(strFilePath))
+                        continue;
 
 		            string name = Path.GetFileName(strFilePath) ?? string.Empty;
 		            string destination = Path.Combine(WorkingDirectory, name);
@@ -295,15 +307,18 @@ namespace CrashHandler
 		private byte[] GetZip()
 		{
             byte[] objReturn;
-            MemoryStream mem = new MemoryStream();
-            // archive.Dispose() should call mem.Dispose()
-            using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))
+            using (MemoryStream mem = new MemoryStream())
             {
-                foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
+                // archive.Dispose() should call mem.Dispose()
+                using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))
                 {
-                    archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                    foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
+                    {
+                        archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                    }
+
+                    objReturn = mem.ToArray();
                 }
-                objReturn = mem.ToArray();
             }
             return objReturn;
         }
@@ -312,28 +327,23 @@ namespace CrashHandler
 		{
 			byte[] encrypted;
             // Create the streams used for encryption.
-            AesManaged managed = null;
-            try
-			{
-                managed = new AesManaged();
-
+            using (AesManaged managed = new AesManaged())
+            {
                 Iv = managed.IV;
 				Key = managed.Key;
 
-				// Create a decrytor to perform the stream transform.
+				// Create a decryptor to perform the stream transform.
 				ICryptoTransform encryptor = managed.CreateEncryptor(managed.Key, managed.IV);
 
-                MemoryStream msEncrypt = new MemoryStream();
-                // csEncrypt.Dispose() should call msEncrupt.Dispose()
-                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    csEncrypt.Write(unencrypted, 0, unencrypted.Length);
-                    encrypted = msEncrypt.ToArray();
+                    // csEncrypt.Dispose() should call msEncrypt.Dispose()
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        csEncrypt.Write(unencrypted, 0, unencrypted.Length);
+                        encrypted = msEncrypt.ToArray();
+                    }
                 }
-			}
-            finally
-            {
-                managed?.Dispose();
             }
 
 			return encrypted;
@@ -341,21 +351,25 @@ namespace CrashHandler
 
 	    private string Upload(byte[] payload)
 	    {
-	        HttpClient client = new HttpClient();
+            using (HttpClient client = new HttpClient())
+            {
+                using (MemoryStream stream = new MemoryStream(payload))
+                {
+                    using (StreamContent content = new StreamContent(stream))
+                    {
+                        content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+                        using (HttpResponseMessage response = client
+                            .PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content)
+                            .Result)
+                        {
+                            string resp = response.Content.ReadAsStringAsync().Result;
 
-	        using (StreamContent content = new StreamContent(new MemoryStream(payload)))
-	        {
-	            content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-	            HttpResponseMessage responce = client
-	                .PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content)
-	                .Result;
-
-	            string resp = responce.Content.ReadAsStringAsync().Result;
-
-	            return ExtractUrl(resp);
-	        }
-
-	    }
+                            return ExtractUrl(resp);
+                        }
+                    }
+                }
+            }
+        }
 
 	    private string ExtractUrl(string input)
 		{
@@ -368,10 +382,7 @@ namespace CrashHandler
                     string ret = (string)files["url"];
                     return ret;
                 }
-                else
-                {
-                    throw new RemoteServiceException(top["reason"].ToString());
-                }
+                throw new RemoteServiceException(top["reason"].ToString());
             }
             catch (ArgumentException)
             {
@@ -381,15 +392,20 @@ namespace CrashHandler
 
 		private void UploadToAws()
 		{
-			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace('-', '_'), x => x.Value);
+			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-", StringComparison.Ordinal)).ToDictionary(x => x.Key.Replace("visible-","").Replace('-', '_'), x => x.Value);
 			string payload = new JavaScriptSerializer().Serialize(upload);
 
-			HttpClient client = new HttpClient();
-		    client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload));
-		    //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
+            using (HttpClient client = new HttpClient())
+            {
+                using (StringContent payloadString = new StringContent(payload))
+                {
+                    client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", payloadString);
+                    //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
 
-		    //string result = msg.Content.ReadAsStringAsync().Result;
-		}
+                    //string result = msg.Content.ReadAsStringAsync().Result;
+                }
+            }
+        }
 
 		private void Clean()
 		{
@@ -430,9 +446,9 @@ namespace CrashHandler
 		//}
 
 		static bool Deserialize(string base64json,
-			out short processId, 
+			out short processId,
 			out List<string> filesList,
-			out Dictionary<string, string> pretendFiles, 
+			out Dictionary<string, string> pretendFiles,
 			out Dictionary<string, string> attributes,
 			out uint threadId,
 			out IntPtr exceptionPrt)
@@ -488,7 +504,7 @@ namespace CrashHandler
                 if (disposing)
                 {
                     _startSendEvent.Dispose();
-                    CrashLogWriter?.Dispose();
+                    CrashLogWriter?.Close();
                 }
 
                 disposedValue = true;
@@ -499,7 +515,7 @@ namespace CrashHandler
         // ~CrashDumper() {
         //   Dispose(false);
         // }
-        
+
         public void Dispose()
         {
             Dispose(true);

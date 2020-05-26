@@ -28,7 +28,7 @@ namespace Chummer.UI.Table
         public ButtonTableCell(Control button) : base(button)
         {
             InitializeComponent();
-            _button = button;
+            _button = button ?? throw new ArgumentNullException(nameof(button));
             button.Click += ((sender, evt) => ClickHandler?.Invoke(Value as T));
             SuspendLayout();
             Controls.Add(button);
@@ -55,6 +55,6 @@ namespace Chummer.UI.Table
         public Action<T> ClickHandler { get; set; }
 
         public Func<T, bool> EnabledExtractor { get; set; }
-        
+
     }
 }

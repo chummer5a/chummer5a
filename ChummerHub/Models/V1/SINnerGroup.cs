@@ -1,14 +1,15 @@
-using ChummerHub.Data;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using System.Xml.Serialization;
+using ChummerHub.Data;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
@@ -54,8 +55,8 @@ namespace ChummerHub.Models.V1
         {
             get
             {
-                if (String.IsNullOrEmpty(Hash))
-                    Hash = String.Format("{0:X}", this.Id.ToString().GetHashCode());
+                if (string.IsNullOrEmpty(Hash))
+                    Hash = $"{Id.ToString().GetHashCode():X}";
                 return Hash;
             }
             set { Hash = value; }
@@ -65,7 +66,7 @@ namespace ChummerHub.Models.V1
         {
             MyGroups = new List<SINnerGroup>();
             MySettings = new SINnerGroupSetting();
-            this.HasPassword = this.PasswordHash?.Any() == true ? true : false;
+            HasPassword = PasswordHash?.Length > 0;
         }
 
         public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context, bool addTags)
@@ -73,7 +74,7 @@ namespace ChummerHub.Models.V1
             using (var t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                    IsolationLevel = IsolationLevel.ReadUncommitted
 
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -92,7 +93,7 @@ namespace ChummerHub.Models.V1
                                                       || (a.SINnerMetaData.Visibility.IsPublic == true))
                                             select a).ToListAsync();
                         */
-                        if (addTags == true)
+                        if (addTags)
                         {
                             groupmembers = await (from a in context.SINners
                                     .Include(a => a.MyGroup)
@@ -105,8 +106,8 @@ namespace ChummerHub.Models.V1
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
-                                                  where a.MyGroup.Id == this.Id
-                                                        && this.Id != null
+                                                  where a.MyGroup.Id == Id
+                                                        && Id != null
                                                   select a).ToListAsync();
                         }
                         else
@@ -117,8 +118,8 @@ namespace ChummerHub.Models.V1
                                                       //.Include(a => a.MyExtendedAttributes)
                                                       .Include(a => a.SINnerMetaData.Visibility)
                                                       .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                                  where a.MyGroup.Id == this.Id
-                                                  && this.Id != null
+                                                  where a.MyGroup.Id == Id
+                                                  && Id != null
                                                   select a).ToListAsync();
                         }
 
@@ -143,7 +144,7 @@ namespace ChummerHub.Models.V1
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Trace.TraceError(e.Message, e);
+                    Trace.TraceError(e.Message, e);
                     throw;
                 }
             }

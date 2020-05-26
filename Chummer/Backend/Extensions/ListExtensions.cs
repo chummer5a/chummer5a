@@ -59,16 +59,24 @@ namespace Chummer
 
         public static void AddRange<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd)
         {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstToAdd == null)
+                throw new ArgumentNullException(nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
                 lstCollection.Add(objItem);
         }
 
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, bool blnReverse = false)
         {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstToAdd == null)
+                throw new ArgumentNullException(nameof(lstToAdd));
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
             foreach (T objItem in lstToAdd)
-            {
                 AddWithSort(lstCollection, objItem, comparer, blnReverse);
-            }
         }
     }
 }

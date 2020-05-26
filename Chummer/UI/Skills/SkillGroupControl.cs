@@ -29,6 +29,8 @@ namespace Chummer.UI.Skills
         private readonly SkillGroup _skillGroup;
         public SkillGroupControl(SkillGroup skillGroup)
         {
+            if (skillGroup == null)
+                return;
             _skillGroup = skillGroup;
             InitializeComponent();
 
@@ -37,7 +39,7 @@ namespace Chummer.UI.Skills
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
             lblName.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
             nudSkill.Visible = !skillGroup.CharacterObject.Created && skillGroup.CharacterObject.BuildMethodHasSkillPoints;
@@ -79,8 +81,8 @@ namespace Chummer.UI.Skills
         #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                    _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;

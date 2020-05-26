@@ -584,7 +584,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -1620,7 +1620,7 @@
       <limit>False</limit>
       <bonus>
         <notoriety>1</notoriety>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -3221,7 +3221,7 @@
       <limit>False</limit>
       <bonus>
         <selectcontact />
-        <selecttext />
+        <selecttext select="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -4384,9 +4384,8 @@
       <limit>10</limit>
       <nolevels />
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
-
       <forbidden>
         <oneof>
           <quality>Erased</quality>
@@ -5878,7 +5877,7 @@
       <limit>False</limit>
       <metagenic>True</metagenic>
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype[source = 'SR5']" /> <!-- Ghetto-ass fix for referring to base metatypes -->
       </bonus>
       <required>
         <allof>
@@ -11885,7 +11884,7 @@
       <category>Positive</category>
       <chargenonly />
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
       <source>CF</source>
       <page>158</page>
@@ -12202,7 +12201,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element" allowedit="True" />
       </bonus>
       <source>HT</source>
       <page>191</page>

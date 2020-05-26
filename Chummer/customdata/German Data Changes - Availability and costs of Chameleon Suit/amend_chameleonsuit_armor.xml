@@ -21,8 +21,8 @@
   <armors>
 	<armor>
 		<id>aacafde3-ff9a-4de0-85ac-3870645a9197</id>
-		<avail amendoperation="replace">12R</avail>
-		<cost amendoperation="replace">4500</cost>		
+		<avail>12R</avail>
+		<cost>4500</cost>		
 	</armor>
   </armors>
 </chummer>

@@ -955,14 +955,14 @@
       <cost>Rating * 25000</cost>
       <source>SR5</source>
       <page>455</page>
-      <bonus>
+      <bonus unique="muscle">
         <disablequality>Celerity</disablequality>
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -4758,9 +4758,11 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>87</page>
-      <bonus>
-        <selecttext />
-      </bonus>
+      <pairbonus>
+        <selectskill knowledgeskills="False">
+          <val>1</val>
+        </selectskill>
+      </pairbonus>
       <required>
         <parentdetails>
           <OR>
@@ -5397,9 +5399,6 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
-      <bonus>
-        <selecttext />
-      </bonus>
       <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
@@ -5450,7 +5449,7 @@
       <source>CF</source>
       <page>149</page>
       <bonus>
-        <selecttext />
+        <selecttext xml="gear.xml" xpath="/chummer/gears/gear[category = 'Toxins']" allowedit="True" />
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>6</rating>

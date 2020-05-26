@@ -65,6 +65,14 @@
       <text>JSON Files (*.json)|*.json</text>
     </string>
     <string>
+      <key>DialogFilter_HeroLab</key>
+      <text>Hero Lab Files (*.por)|*.por</text>
+    </string>
+    <string>
+      <key>DialogFilter_ImagesPrefix</key>
+      <text>All Image Files </text> <!-- Prefix only, actual file extensions depend on what codecs the user's computer supports -->
+    </string>
+    <string>
       <key>DialogFilter_All</key>
       <text>All Files (*.*)|*.*</text>
     </string>
@@ -1353,6 +1361,10 @@
     <string>
       <key>Menu_Main_HeroLabImporter</key>
       <text>Hero Lab Importer</text>
+    </string>
+    <string>
+      <key>String_MetatypeLoadError</key>
+      <text>Error with Loading Metatype!</text>
     </string>
     <!-- End Region -->
     <!-- Region About -->
@@ -5556,7 +5568,7 @@
     </string>
     <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
-      <text>Allow incrementing values of numericupdown controls by hovering over the control</text>
+      <text>Allow incrementing values of NumericUpDown controls by hovering over the control</text>
     </string>
     <string>
       <key>Checkbox_Options_OmaeEnabled</key>
@@ -5648,11 +5660,31 @@
     </string>
     <string>
       <key>Tip_Omae_Warning</key>
-      <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.\nDo you want to continue?</text>
+      <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of Chummer. Proceed at your own risk.\nDo you want to continue?</text>
     </string>
     <string>
       <key>Tip_LifeModule_Warning</key>
       <text>Life Modules are currently an experimental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+    </string>
+    <string> <!-- Note: worded to be as close to a GDPR privacy notice as possible, just in case -->
+      <key>Message_Options_ConfirmTelemetry</key>
+      <text>If this option is enabled, your Chummer logs and usage metrics will be sent to the Chummer Dev-Team. These contain data that help give us insight on what needs to be improved and how things should be fixed, with more detailed levels giving us more information.\nWe also always collect information about what operating system you use and in what municipality you are located; the former helps with crashes and performance data, while the latter gives us insight into what locales we should support and/or add to the program.\nThese and all other data are anonymized before collection, will be securely stored on a Microsoft Azure server for a period of up to 2 years, and will not be shared with any parties outside of a few, core Chummer contributors. Data will be uploaded whenever you start Chummer, exit Chummer, or load in a new character.\n\nYou have full rights to any data you send to us. If you wish to request all data we have on you or have your data permanently removed, please contact the current administrator of this service, MegalonArchon (archon.megalon@gmail.com), and we will try to fulfill your request as soon as possible.\n\nDo you wish to proceed and enable telemetry?</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_ConfirmTelemetry</key>
+      <text>Confirm Enable Telemetry</text>
+    </string>
+    <string>
+      <key>Message_Options_ConfirmDetailedTelemetry</key>
+      <text>We greatly appreciate people sending us highly detailed logging information because it lets us really find places to improve the program that otherwise would have been overlooked. However, such highly detailed logging makes your data significantly less anonymous, and for those on metered internet connections who use the program a lot, it may end causing non-insignificant amounts of interent traffic.\n\nDo you wish to proceed and enable highly detailed telemetry?</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_ConfirmDetailedTelemetry</key>
+      <text>Confirm Detailed Telemetry</text>
+    </string>
+    <string>
+      <key>Tip_Options_TelemetryId</key>
+      <text>Installation: {0}</text>
     </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->
@@ -5875,7 +5907,7 @@
       <text>Regain/Spend Edge</text>
     </string>
     <string>
-      <key>Tip_CMCMPenalty</key>
+      <key>Tip_CMPenalty</key>
       <text>Dice pool penalty from Condition Monitor damage.</text>
     </string>
     <string>
@@ -5889,6 +5921,10 @@
     <string>
       <key>Tip_CMSpendEdge</key>
       <text>Spend a point of Edge</text>
+    </string>
+    <string>
+      <key>String_CMDown</key>
+      <text>D</text>
     </string>
     <!-- End Region-->
     <!-- Region Spell Defense Tab-->
@@ -6286,6 +6322,10 @@
     <string>
       <key>Label_Spirit_ServicesOwed</key>
       <text>Services Owed:</text>
+    </string>
+    <string>
+      <key>Label_Sprite_TasksOwed</key>
+      <text>Tasks Owed:</text>
     </string>
     <string>
       <key>Checkbox_Spirit_Bound</key>

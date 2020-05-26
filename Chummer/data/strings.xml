@@ -18,9 +18,30 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <gears>
-    <gear  xpathfilter="category = 'Ammunition' and (starts-with(name,'Rocket:') or starts-with(name,'Missile:') or starts-with(name,'Grenade:'))">
-      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">4+$1F</avail>
-    </gear>
-  </gears>
+  <matrixattributes>
+    <attribute>Attack</attribute>
+    <attribute>Data Processing</attribute>
+    <attribute>Firewall</attribute>
+    <attribute>Sleaze</attribute>
+  </matrixattributes>
+  <elements>
+    <element>Acid</element>
+    <element>Cold</element>
+    <element>Electricity</element>
+    <element>Fire</element>
+    <element>Pollutant</element>
+    <element>Radiation</element>
+    <element>Water</element>
+  </elements>
+  <immunities>
+    <immunity>Age</immunity>
+    <immunity>Normal Weapons</immunity>
+  </immunities>
+  <spiritcategories>
+    <category>Combat</category>
+    <category>Detection</category>
+    <category>Health</category>
+    <category>Illusion</category>
+    <category>Manipulation</category>
+  </spiritcategories>
 </chummer>

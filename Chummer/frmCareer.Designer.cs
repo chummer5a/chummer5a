@@ -3001,6 +3001,7 @@ namespace Chummer
             // 
             // tblCMTab
             // 
+            this.tblCMTab.AutoScroll = true;
             this.tblCMTab.AutoSize = true;
             this.tblCMTab.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tblCMTab.ColumnCount = 2;
@@ -3116,7 +3117,7 @@ namespace Chummer
             this.panStunCM.Controls.Add(this.chkStunCM24);
             this.panStunCM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panStunCM.Location = new System.Drawing.Point(3, 28);
-            this.panStunCM.MaximumSize = new System.Drawing.Size(80, 210);
+            this.panStunCM.MaximumSize = new System.Drawing.Size(80, 0);
             this.panStunCM.Name = "panStunCM";
             this.panStunCM.Size = new System.Drawing.Size(80, 208);
             this.panStunCM.TabIndex = 1;
@@ -3516,6 +3517,7 @@ namespace Chummer
             // grpPhysicalCM
             // 
             this.grpPhysicalCM.AutoSize = true;
+            this.grpPhysicalCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpPhysicalCM.Controls.Add(this.btlpPhysicalCMBoxes);
             this.grpPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPhysicalCM.Location = new System.Drawing.Point(3, 116);
@@ -3576,7 +3578,7 @@ namespace Chummer
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM23);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM24);
             this.panPhysicalCM.Location = new System.Drawing.Point(3, 28);
-            this.panPhysicalCM.MaximumSize = new System.Drawing.Size(80, 210);
+            this.panPhysicalCM.MaximumSize = new System.Drawing.Size(80, 0);
             this.panPhysicalCM.Name = "panPhysicalCM";
             this.panPhysicalCM.Padding = new System.Windows.Forms.Padding(1);
             this.panPhysicalCM.Size = new System.Drawing.Size(80, 210);
@@ -3994,6 +3996,7 @@ namespace Chummer
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.AutoScroll = true;
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
@@ -4357,6 +4360,7 @@ namespace Chummer
             // 
             // tlpSpellDefense
             // 
+            this.tlpSpellDefense.AutoScroll = true;
             this.tlpSpellDefense.ColumnCount = 2;
             this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));

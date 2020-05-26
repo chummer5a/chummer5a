@@ -25,7 +25,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using System.Windows.Forms;
 using Microsoft.Win32;
 using iTextSharp.text.pdf;
 using MersenneTwister;
@@ -90,7 +89,7 @@ namespace Chummer
                     Uri uriPath = new Uri(Path);
                     if(File.Exists(uriPath.LocalPath))
                     {
-                        // using the "partial" param it runs much faster and I couldnt find any downsides to it
+                        // using the "partial" param it runs much faster and I couldn't find any downsides to it
                         _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
                     }
                 }
@@ -124,17 +123,23 @@ namespace Chummer
         #endregion
     }
 
-    public class CustomDataDirectoryInfo : IComparable
+    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
     {
         #region Properties
 
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; }
 
-        public string Path { get; set; } = string.Empty;
+        public string Path { get; }
 
         public bool Enabled { get; set; }
 
         #endregion
+
+        public CustomDataDirectoryInfo(string strName, string strPath)
+        {
+            Name = strName;
+            Path = strPath;
+        }
 
         public int CompareTo(object obj)
         {
@@ -157,6 +162,63 @@ namespace Chummer
 
             return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is CustomDataDirectoryInfo objOther)
+                return Equals(objOther);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return new {Name, Path}.GetHashCode();
+        }
+
+        public bool Equals(CustomDataDirectoryInfo other)
+        {
+            return other != null && Name == other.Name && Path == other.Path && Enabled == other.Enabled;
+        }
+
+        public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
+        {
+            return !(left is null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
     }
 
     /// <summary>
@@ -164,7 +226,7 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
         public static string ErrorMessage { get; } = string.Empty;
@@ -215,8 +277,7 @@ namespace Chummer
         private static bool _blnOmaeAutoLogin;
 
         // Plugins information
-        private static Dictionary<string, bool> _pluginsEnabledDic = new Dictionary<string, bool>();
-        public static Dictionary<string, bool> PluginsEnabledDic { get { return _pluginsEnabledDic; } }
+        public static Dictionary<string, bool> PluginsEnabledDic { get; } = new Dictionary<string, bool>();
 
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
@@ -350,49 +411,25 @@ namespace Chummer
             if(Utils.IsDesignerMode)
                 return;
 
-            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            if(!Directory.Exists(settingsDirectoryPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(settingsDirectoryPath);
-                }
-                catch(UnauthorizedAccessException ex)
-                {
-                    string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning", Language, false);
-                    if(string.IsNullOrEmpty(strMessage))
-                        strMessage = ex.ToString();
-                    ErrorMessage += strMessage;
-                }
-                catch(Exception ex)
-                {
-                    ErrorMessage += ex.ToString();
-                }
-            }
-
             try
             {
                 _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if(!string.IsNullOrEmpty(ErrorMessage))
                     ErrorMessage += Environment.NewLine + Environment.NewLine;
                 ErrorMessage += ex.ToString();
             }
-            if(_objBaseChummerKey == null)
+            if (_objBaseChummerKey == null)
                 return;
             _objBaseChummerKey.CreateSubKey("Sourcebook");
 
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
-
             LoadBoolFromRegistry(ref _blnLiveCustomData, "livecustomdata");
-
             LoadBoolFromRegistry(ref _blnLiveUpdateCleanCharacterFiles, "liveupdatecleancharacterfiles");
-
             LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
-
             LoadBoolFromRegistry(ref _omaeEnabled, "omaeenabled");
 
             // Whether or not the app should use logging.
@@ -406,14 +443,10 @@ namespace Chummer
                     LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
                     switch (useAI)
                     {
-                        //legacy convert of checkbox bool
                         case "False":
                             _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
                             break;
-                        //legacy convert of checkbox bool
                         case "True":
-                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
-                            break;
                         case "Yes":
                             _enumUseLoggingApplicationInsights = UseAILogging.Info;
                             break;
@@ -427,18 +460,13 @@ namespace Chummer
                     Log.Warn(e);
                     _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
                 }
-                
             }
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
-
             LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
-
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
-
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
-
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
@@ -453,7 +481,6 @@ namespace Chummer
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
             LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
-
             LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
@@ -508,10 +535,10 @@ namespace Chummer
 
             try
             {
-                string jsonstring = "";
+                string jsonstring = string.Empty;
                 LoadStringFromRegistry(ref jsonstring, "plugins");
-                if(!String.IsNullOrEmpty(jsonstring))
-                    _pluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
+                if(!string.IsNullOrEmpty(jsonstring))
+                    PluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
 
             }
             catch (Exception e)
@@ -519,13 +546,15 @@ namespace Chummer
                 System.Diagnostics.Trace.TraceError(e.Message, e);
 #if DEBUG
                 throw;
-//#else
-                string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
-                msg += e.Message;
-                Program.MainForm.ShowMessageBox(msg);
+/*
+*#else
+*                string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
+*                msg += e.Message;
+*                Program.MainForm.ShowMessageBox(msg);
+*/
 #endif
             }
-            
+
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
@@ -566,7 +595,7 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Whether or not to create backups of characters before moving them to career mode. If true, a separate savefile is created before marking the current character as created.
+        /// Whether or not to create backups of characters before moving them to career mode. If true, a separate save file is created before marking the current character as created.
         /// </summary>
         public static bool CreateBackupOnCareer
         {
@@ -594,7 +623,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
+        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden.
         /// </summary>
         public static bool HideCharacterRoster
         {
@@ -645,15 +674,13 @@ namespace Chummer
                     _blnUseLogging = value;
                     // Sets up logging if the option is changed during runtime
                     if (value)
-                        NLog.LogManager.EnableLogging();
+                        LogManager.EnableLogging();
                     else
-                        NLog.LogManager.DisableLogging();
-                    
+                        LogManager.DisableLogging();
                 }
             }
         }
 
-        
 
         /// <summary>
         /// Whether or not the app should use logging.
@@ -791,7 +818,7 @@ namespace Chummer
         /// </summary>
         public static CultureInfo SystemCultureInfo { get; } = CultureInfo.CurrentCulture;
 
-        private static XmlDocument _xmlClipboard = new XmlDocument();
+        private static XmlDocument _xmlClipboard = new XmlDocument {XmlResolver = null};
 
         /// <summary>
         /// Clipboard.
@@ -870,42 +897,46 @@ namespace Chummer
                 {
                     _lstSourcebookInfo = new HashSet<SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
-                    using(XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book[not(hide)]"))
-                        if(xmlBookList != null)
-                            foreach(XmlNode xmlBook in xmlBookList)
+                    using (XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book[not(hide)]"))
+                    {
+                        if (xmlBookList != null)
+                        {
+                            foreach (XmlNode xmlBook in xmlBookList)
                             {
                                 string strCode = xmlBook["code"]?.InnerText;
-                                if(!string.IsNullOrEmpty(strCode))
+                                if (string.IsNullOrEmpty(strCode))
+                                    continue;
+                                SourcebookInfo objSource = new SourcebookInfo
                                 {
-                                    SourcebookInfo objSource = new SourcebookInfo
-                                    {
-                                        Code = strCode
-                                    };
+                                    Code = strCode
+                                };
 
-                                    try
+                                try
+                                {
+                                    string strTemp = string.Empty;
+                                    if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string strTemp = string.Empty;
-                                        if(LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
+                                        string[] strParts = strTemp.Split('|');
+                                        objSource.Path = strParts[0];
+                                        if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                         {
-                                            string[] strParts = strTemp.Split('|');
-                                            objSource.Path = strParts[0];
-                                            if(strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                            {
-                                                objSource.Offset = intTmp;
-                                            }
+                                            objSource.Offset = intTmp;
                                         }
                                     }
-                                    catch(System.Security.SecurityException)
-                                    {
-
-                                    }
-                                    catch(UnauthorizedAccessException)
-                                    {
-
-                                    }
-                                    _lstSourcebookInfo.Add(objSource);
                                 }
+                                catch (System.Security.SecurityException)
+                                {
+
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+
+                                }
+
+                                _lstSourcebookInfo.Add(objSource);
                             }
+                        }
+                    }
                 }
                 return _lstSourcebookInfo;
             }
@@ -920,14 +951,12 @@ namespace Chummer
             if(objCustomDataDirectoryKey != null)
             {
                 List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int>>(objCustomDataDirectoryKey.SubKeyCount);
-
-                string[] astrCustomDataDirectoryNames = objCustomDataDirectoryKey.GetSubKeyNames();
                 int intMinLoadOrderValue = int.MaxValue;
                 int intMaxLoadOrderValue = int.MinValue;
-                for(int i = 0; i < astrCustomDataDirectoryNames.Length; ++i)
+                foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
                 {
-                    RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(astrCustomDataDirectoryNames[i]);
-                    if(objLoopKey != null)
+                    RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(strDirectoryName);
+                    if (objLoopKey != null)
                     {
                         string strPath = string.Empty;
                         object objRegistryResult = objLoopKey.GetValue("Path");
@@ -935,11 +964,7 @@ namespace Chummer
                             strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
                         if(!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                         {
-                            CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
-                            {
-                                Name = astrCustomDataDirectoryNames[i],
-                                Path = strPath
-                            };
+                            CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
                             objRegistryResult = objLoopKey.GetValue("Enabled");
                             if(objRegistryResult != null)
                             {
@@ -1118,9 +1143,9 @@ namespace Chummer
                         for(int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
                             if(i <= _lstMostRecentlyUsedCharacters.Count)
-                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
 
                         MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
@@ -1131,9 +1156,9 @@ namespace Chummer
                         for(int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
                             if(i <= _lstMostRecentlyUsedCharacters.Count)
-                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
                         MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
@@ -1143,16 +1168,16 @@ namespace Chummer
                         string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
                         if(!string.IsNullOrEmpty(strNewFile))
                         {
-                            _objBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
+                            _objBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                         }
                         else
                         {
                             for(int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
                                 if(i <= _lstMostRecentlyUsedCharacters.Count)
-                                    _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                                    _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
                                 else
-                                    _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                                    _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                             }
                         }
                         MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
@@ -1180,7 +1205,7 @@ namespace Chummer
 
                         for(int i = intUpdateFrom; i <= intUpdateTo; ++i)
                         {
-                            _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(), _lstMostRecentlyUsedCharacters[i]);
+                            _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i]);
                         }
                         MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
@@ -1190,9 +1215,9 @@ namespace Chummer
                         for(int i = 1; i <= MaxMruSize; ++i)
                         {
                             if(i <= _lstMostRecentlyUsedCharacters.Count)
-                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
                         MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;

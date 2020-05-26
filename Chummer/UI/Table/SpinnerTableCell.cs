@@ -54,7 +54,7 @@ namespace Chummer.UI.Table
             {
                 _spinner.Enabled = EnabledExtractor(tValue);
             }
-            
+
             if (!_blnUpdating && ValueGetter != null)
             {
                 decimal value = Convert.ToDecimal(ValueGetter(tValue));
@@ -64,7 +64,7 @@ namespace Chummer.UI.Table
                 _blnUpdating = false;
             }
         }
-        
+
         public Func<T, bool> EnabledExtractor { get; set; }
 
         /// <summary>
