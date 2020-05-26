@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 
@@ -669,9 +670,10 @@ namespace Chummer.Backend.Equipment
                         // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
                         if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                         {
+                            XPathNavigator xpnCyberware = objXmlCyberware.CreateNavigator();
                             ObservableCollection<Cyberware> lstCyberwareToCheck =
                                 Parent == null ? _objCharacter.Cyberware : Parent.Children;
-                            if (!objXmlCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
+                            if (!xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
                                     string.Empty, "Left") ||
                                 (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x =>
                                     !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" &&
@@ -680,7 +682,7 @@ namespace Chummer.Backend.Equipment
                                     !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" &&
                                     x.BlocksMounts.Split(',').Contains(HasModularMount))))
                                 strForcedSide = "Right";
-                            else if (!objXmlCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
+                            else if (!xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
                                          string.Empty, "Right") ||
                                      (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x =>
                                          !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Right" &&

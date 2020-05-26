@@ -79,7 +79,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || xmlNode.RequirementsMet(_objCharacter))
+                if (!chkLimitList.Checked || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode

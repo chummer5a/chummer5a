@@ -4317,7 +4317,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedArt.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName))
+                objXmlSelectedArt.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName))
             {
                 Art objAddArt = new Art(_objCharacter);
                 objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
@@ -4351,7 +4351,7 @@ namespace Chummer.Classes
                         string strLoopName = objXmlAddArt.InnerText;
                         XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strLoopName + "\"]");
                         // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                        if (objXmlArt != null && objXmlAddArt.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlArt != null && objXmlAddArt.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                         {
                             lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText, objXmlArt["translate"]?.InnerText ?? strLoopName));
                         }
@@ -4410,7 +4410,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName))
+                objXmlSelectedMetamagic.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue);
@@ -4445,7 +4445,7 @@ namespace Chummer.Classes
                         string strLoopName = objXmlAddMetamagic.InnerText;
                         XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
                         // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                        if (objXmlMetamagic != null && objXmlAddMetamagic.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                         {
                             lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText, objXmlMetamagic["translate"]?.InnerText ?? strLoopName));
                         }
@@ -4513,7 +4513,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName))
+                objXmlSelectedEcho.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
@@ -4548,7 +4548,7 @@ namespace Chummer.Classes
                         string strLoopName = objXmlAddEcho.InnerText;
                         XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
                         // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                        if (objXmlEcho != null && objXmlAddEcho.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlEcho != null && objXmlAddEcho.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                         {
                             lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText, objXmlEcho["translate"]?.InnerText ?? strLoopName));
                         }
@@ -6038,7 +6038,7 @@ namespace Chummer.Classes
                         {
                             // Makes sure we aren't over our limits for this particular quality from this overall source
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName))
+                                objXmlSelectedQuality.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName))
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>();
                                 Quality objAddQuality = new Quality(_objCharacter);
@@ -6078,7 +6078,7 @@ namespace Chummer.Classes
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlAddQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlAddQuality.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                         {
                             string strName = objXmlAddQuality.InnerText;
                             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strName + "\"]");

@@ -27,6 +27,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
@@ -54,7 +55,7 @@ namespace Chummer
         private int _intMaxLevels;
         private bool _blnDiscountedAdeptWay;
         private bool _blnDiscountedGeas;
-        private XmlNode _nodAdeptWayRequirements;
+        private XPathNavigator _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
@@ -170,7 +171,7 @@ namespace Chummer
             Bonus = objNode["bonus"];
             if (objBonusNodeOverride != null)
                 Bonus = objBonusNodeOverride;
-            _nodAdeptWayRequirements = objNode["adeptwayrequires"];
+            _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator();
             XmlNode nodEnhancements = objNode["enhancements"];
             if (nodEnhancements != null)
             {
@@ -271,7 +272,7 @@ namespace Chummer
             Bonus = objNode["bonus"];
             if (objNode["adeptway"] != null)
             {
-                _nodAdeptWayRequirements = objNode["adeptwayrequires"] ?? GetNode()?["adeptwayrequires"];
+                _nodAdeptWayRequirements = (objNode["adeptwayrequires"] ?? GetNode()?["adeptwayrequires"])?.CreateNavigator();
             }
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {
@@ -910,11 +911,11 @@ namespace Chummer
                 }
                 bool blnReturn = false;
                 //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount.
-                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
+                if (_nodAdeptWayRequirements?.SelectSingleNode("magicianswayforbids") == null)
                 {
                     blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
                 }
-                if (!blnReturn && _nodAdeptWayRequirements?.ChildNodes.Count > 0)
+                if (!blnReturn && _nodAdeptWayRequirements?.HasChildren == true)
                 {
                     blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
                 }

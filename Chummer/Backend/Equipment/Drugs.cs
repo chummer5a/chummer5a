@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 using Chummer.Classes;
@@ -961,6 +962,7 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
                     string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
@@ -971,7 +973,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                            objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
+                            xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
                         {
                             List<Weapon> lstWeapons = new List<Weapon>();
                             Quality objAddQuality = new Quality(_objCharacter);

@@ -4964,7 +4964,7 @@ namespace Chummer
                 {
                     objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                     XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
-                    if (xmlDiscountNode != null && xmlDiscountNode.RequirementsMet(CharacterObject))
+                    if (xmlDiscountNode != null && xmlDiscountNode.CreateNavigator().RequirementsMet(CharacterObject))
                     {
                         int intTemp = 0;
                         xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
@@ -5373,7 +5373,8 @@ namespace Chummer
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                    if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
+                    XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
+                    if (!xpnSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
                     {
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
@@ -5393,11 +5394,11 @@ namespace Chummer
                     if (!blnFreeCost)
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XmlNode xmlDiscountNode = objXmlSelectedQuality["costdiscount"];
-                        if (xmlDiscountNode != null && xmlDiscountNode.RequirementsMet(CharacterObject))
+                        XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
+                        if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
                         {
                             int intTemp = 0;
-                            xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
+                            xpnDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
                             switch (eQualityType)
                             {
                                 case QualityType.Positive:

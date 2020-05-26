@@ -283,7 +283,7 @@ namespace Chummer
                 XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon))
+                    if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
                         continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
@@ -394,7 +394,7 @@ namespace Chummer
                 XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon))
+                    if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
                         continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");

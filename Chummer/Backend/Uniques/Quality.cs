@@ -28,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer
@@ -101,7 +102,7 @@ namespace Chummer
         private string _strSourceName = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodFirstLevelBonus;
-        private XmlNode _nodDiscounts;
+        private XPathNavigator _nodDiscounts;
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
         private string _strStage;
@@ -284,7 +285,7 @@ namespace Chummer
                     }
             }
 
-            _nodDiscounts = objXmlQuality["costdiscount"];
+            _nodDiscounts = objXmlQuality["costdiscount"]?.CreateNavigator();
             // If the item grants a bonus, pass the information to the Improvement Manager.
             _nodBonus = objXmlQuality["bonus"];
             if (_nodBonus?.ChildNodes.Count > 0)
@@ -453,7 +454,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
             _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? GetNode()?["firstlevelbonus"];
-            _nodDiscounts = objNode["costdiscount"];
+            _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
@@ -654,7 +655,7 @@ namespace Chummer
         {
             get
             {
-                string strValue = _nodDiscounts?["value"]?.InnerText;
+                string strValue = _nodDiscounts?.SelectSingleNode("value")?.Value;
                 if (string.IsNullOrEmpty(strValue))
                     return _intBP;
                 int intReturn = _intBP;

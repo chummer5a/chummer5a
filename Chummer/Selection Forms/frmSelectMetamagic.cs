@@ -193,7 +193,7 @@ namespace Chummer
                             {
                                 continue;
                             }
-                            if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
+                            if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                             {
                                 lstMetamagics.Add(new ListItem(strId,
                                     objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ??
@@ -227,7 +227,7 @@ namespace Chummer
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
 
-                if (!objXmlMetamagic.RequirementsMet(_objCharacter, _strType))
+                if (!objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter, _strType))
                     return;
 
                 _strSelectedMetamagic = strSelectedId;
