@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Net;
-using System.Net.Sockets;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
@@ -27,35 +25,29 @@ namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // Set session data:
-        private static string SessionId = Guid.NewGuid().ToString();
+        private static readonly string SessionId = Guid.NewGuid().ToString();
         //private static string Hostname =  Dns.GetHostName();
-        private static string Version = System.Reflection.Assembly
-            .GetExecutingAssembly().GetName().Version.ToString();
+        private static readonly string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private static readonly bool IsMilestone = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
-        private static bool IsMilestone = System.Reflection.Assembly
-                                            .GetExecutingAssembly().GetName().Version.Revision == 0
-            ? true
-            : false;
-        public static string Ip = null;
 
-      
         public void Initialize(ITelemetry telemetry)
         {
-            //personal data should not be submited
+            if (telemetry == null)
+                throw new ArgumentNullException(nameof(telemetry));
+            //personal data should not be submitted
             //telemetry.Context.User.Id = Environment.UserName;
             if (!telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
-                telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString());
+                telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString(GlobalOptions.InvariantCultureInfo));
             telemetry.Context.Session.Id = SessionId;
             telemetry.Context.User.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {
                 //sometimes, there are odd values stored in the UploadClientId.
-                bool isValid = Guid.TryParse(Properties.Settings.Default.UploadClientId.ToString(),
-                    out Guid guidOutput);
-                if (!isValid)
+                if (!Properties.Settings.Default.UploadClientId.ToString().IsGuid())
                 {
                     Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                     Properties.Settings.Default.Save();
@@ -70,19 +62,15 @@ namespace Chummer
                 //don't fill the "productive" log with garbage from debug sessions
                 telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
             }
-            if (Program.PluginLoader?.MyActivePlugins != null)
+            foreach (var plugin in Program.PluginLoader.MyActivePlugins)
             {
-                foreach (var plugin in Program.PluginLoader?.MyActivePlugins)
+                try
                 {
-                    try
-                    {
-                        telemetry = plugin.SetTelemetryInitialize(telemetry);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e);
-                    }
-                    
+                    telemetry = plugin.SetTelemetryInitialize(telemetry);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
                 }
             }
         }

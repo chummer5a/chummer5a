@@ -1,8 +1,5 @@
 //using Swashbuckle.AspNetCore.Filters;
-using ChummerHub.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +9,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using System.Xml.Serialization;
+using ChummerHub.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
@@ -46,8 +47,8 @@ namespace ChummerHub.Models.V1
         {
             get
             {
-                if (String.IsNullOrEmpty(Hash))
-                    Hash = String.Format("{0:X}", this.Id.ToString().GetHashCode());
+                if (string.IsNullOrEmpty(Hash))
+                    Hash = $"{Id.ToString().GetHashCode():X}";
                 return Hash;
             }
             set { Hash = value; }
@@ -80,11 +81,11 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.SINner()'
         {
             Id = Guid.NewGuid();
-            this.SINnerMetaData = new SINnerMetaData();
+            SINnerMetaData = new SINnerMetaData();
             //this.MyExtendedAttributes = new SINnerExtended(this);
-            this.DownloadUrl = "";
-            this.MyGroup = null;
-            this.Language = "";
+            DownloadUrl = string.Empty;
+            MyGroup = null;
+            Language = string.Empty;
             EditionNumber = "5e";
         }
 
@@ -93,7 +94,7 @@ namespace ChummerHub.Models.V1
             using (var t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                    IsolationLevel = IsolationLevel.ReadUncommitted
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
                 List<SINner> result = new List<SINner>();

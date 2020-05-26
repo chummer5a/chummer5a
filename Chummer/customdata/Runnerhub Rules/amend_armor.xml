@@ -125,7 +125,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for Sneaking against Thermographic Vision or thermal sensors.</condition>
+          <condition>LimitCondition_TestSneakingThermal</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>

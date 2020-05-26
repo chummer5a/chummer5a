@@ -39,8 +39,8 @@ namespace Chummer
             foreach (string strAbbrev in lstAttributeAbbrevs)
             {
                 string strAttributeDisplayName = strAbbrev == "MAGAdept"
-                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
-                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short", GlobalOptions.Language);
+                    ? LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ')'
+                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short");
                 _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
             }
 

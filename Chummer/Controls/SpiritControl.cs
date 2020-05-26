@@ -45,7 +45,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             foreach (ToolStripItem objItem in cmsSpirit.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
             }
         }
 
@@ -68,23 +68,24 @@ namespace Chummer
             chkFettered.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Fettered));
             if (blnIsSpirit)
             {
-                lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
-                chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
-                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
+                lblForce.Text = LanguageManager.GetString("Label_Spirit_Force");
+                chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound");
+                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit"));
 
-                string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
             }
             else
             {
-                lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
-                chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
-                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet", GlobalOptions.Language);
-                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
+                lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating");
+                lblServices.Text = LanguageManager.GetString("Label_Sprite_TasksOwed");
+                chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered");
+                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet");
+                imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit"));
 
-                string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
+                string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
@@ -164,7 +165,7 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(true);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
@@ -187,7 +188,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -199,17 +200,17 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
+                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite"));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
                 Uri uriFile = new Uri(_objSpirit.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objSpirit.RelativeFileName = "../" + uriRelative.ToString();
+                _objSpirit.RelativeFileName = "../" + uriRelative;
 
                 ContactDetailChanged?.Invoke(this, e);
             }
@@ -218,20 +219,23 @@ namespace Chummer
         private void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-            if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+            })
             {
-                openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
-                openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
-            }
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                _objSpirit.FileName = openFileDialog.FileName;
-                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
-                ContactDetailChanged?.Invoke(this, e);
+                if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                {
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
+                    openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
+                }
+
+                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    _objSpirit.FileName = openFileDialog.FileName;
+                    imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
+                    ContactDetailChanged?.Invoke(this, e);
+                }
             }
         }
 
@@ -240,7 +244,7 @@ namespace Chummer
             string strSpiritName = cboSpiritName.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSpiritName))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectCritterType", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectCritterType"), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -269,23 +273,25 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmSpritNotes = new frmNotes
+            using (frmNotes frmSpritNotes = new frmNotes
             {
                 Notes = _objSpirit.Notes
-            };
-            frmSpritNotes.ShowDialog(this);
-
-            if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
+            })
             {
-                _objSpirit.Notes = frmSpritNotes.Notes;
+                frmSpritNotes.ShowDialog(this);
 
-                string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
+                if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
+                {
+                    _objSpirit.Notes = frmSpritNotes.Notes;
 
-                if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                    string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
 
-                ContactDetailChanged?.Invoke(this, e);
+                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                    imgNotes.SetToolTip(strTooltip.WordWrap(100));
+
+                    ContactDetailChanged?.Invoke(this, e);
+                }
             }
         }
         #endregion
@@ -302,7 +308,7 @@ namespace Chummer
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
         public void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.MagicTradition))
+            if (e?.PropertyName == nameof(Character.MagicTradition))
             {
                 RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition);
             }
@@ -318,7 +324,6 @@ namespace Chummer
             string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
             XmlDocument objXmlDocument = _objSpirit.EntityType == SpiritType.Spirit ? XmlManager.Load("traditions.xml") : XmlManager.Load("streams.xml");
-            XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
             foreach (Improvement improvement in _objSpirit.CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
@@ -446,12 +451,12 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType"), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // The Critter should use the same settings file as the character.
-            Character objCharacter = new Character
+            using (Character objCharacter = new Character
             {
                 SettingsFile = _objSpirit.CharacterObject.SettingsFile,
 
@@ -459,204 +464,226 @@ namespace Chummer
                 IgnoreRules = true,
                 IsCritter = true,
                 BuildMethod = CharacterBuildMethod.Karma
-            };
-
-            if (!string.IsNullOrEmpty(txtCritterName.Text))
-                objCharacter.Name = txtCritterName.Text;
-            
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            })
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
-                FileName = strCritterName + strSpaceCharacter + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpaceCharacter + _objSpirit.Force.ToString() + ").chum5"
-            };
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                string strFileName = saveFileDialog.FileName;
-                objCharacter.FileName = strFileName;
-            }
-            else
-            {
-                objCharacter.DeleteCharacter();
-                return;
-            }
+                if (!string.IsNullOrEmpty(txtCritterName.Text))
+                    objCharacter.Name = txtCritterName.Text;
 
-            Cursor = Cursors.WaitCursor;
-
-            // Set Metatype information.
-            if (strCritterName == "Ally Spirit")
-            {
-                objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["bodmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["bodaug"]?.InnerText, intForce, 0));
-                objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["agimax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["agiaug"]?.InnerText, intForce, 0));
-                objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["reamax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["reaaug"]?.InnerText, intForce, 0));
-                objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["strmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["straug"]?.InnerText, intForce, 0));
-                objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["chamax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["chaaug"]?.InnerText, intForce, 0));
-                objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["intmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["intaug"]?.InnerText, intForce, 0));
-                objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["logmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["logaug"]?.InnerText, intForce, 0));
-                objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["wilmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["wilaug"]?.InnerText, intForce, 0));
-                objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["magmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["magaug"]?.InnerText, intForce, 0));
-                objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resaug"]?.InnerText, intForce, 0));
-                objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgaug"]?.InnerText, intForce, 0));
-                objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"]?.InnerText, intForce, 0));
-            }
-            else
-            {
-                int intMinModifier = -3;
-                objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 3));
-                objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 3));
-                objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 3));
-                objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 3));
-                objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 3));
-                objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 3));
-                objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 3));
-                objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 3));
-                objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 3));
-                objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 3));
-                objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 3), ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 3));
-                objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"]?.InnerText, intForce, 0));
-            }
-
-            // If we're working with a Critter, set the Attributes to their default values.
-            objCharacter.BOD.MetatypeMinimum = ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0);
-            objCharacter.AGI.MetatypeMinimum = ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0);
-            objCharacter.REA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0);
-            objCharacter.STR.MetatypeMinimum = ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0);
-            objCharacter.CHA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0);
-            objCharacter.INT.MetatypeMinimum = ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0);
-            objCharacter.LOG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0);
-            objCharacter.WIL.MetatypeMinimum = ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0);
-            objCharacter.MAG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0);
-            objCharacter.RES.MetatypeMinimum = ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0);
-            objCharacter.EDG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0);
-            objCharacter.ESS.MetatypeMinimum = ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0);
-
-            // Sprites can never have Physical Attributes.
-            if (objXmlMetatype["category"].InnerText.EndsWith("Sprite"))
-            {
-                objCharacter.BOD.AssignLimits("0", "0", "0");
-                objCharacter.AGI.AssignLimits("0", "0", "0");
-                objCharacter.REA.AssignLimits("0", "0", "0");
-                objCharacter.STR.AssignLimits("0", "0", "0");
-            }
-
-            objCharacter.Metatype = strCritterName;
-            objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerText;
-            objCharacter.Metavariant = string.Empty;
-            objCharacter.MetatypeBP = 0;
-
-            if (objXmlMetatype["movement"] != null)
-                objCharacter.Movement = objXmlMetatype["movement"].InnerText;
-            // Load the Qualities file.
-            XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
-
-            // Determine if the Metatype has any bonuses.
-            if (objXmlMetatype.InnerXml.Contains("bonus"))
-                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), 1, strCritterName);
-
-            // Create the Qualities that come with the Metatype.
-            foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
-            {
-                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                List<Weapon> lstWeapons = new List<Weapon>();
-                Quality objQuality = new Quality(objCharacter);
-                string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
-                QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
-                objCharacter.Qualities.Add(objQuality);
-
-                // Add any created Weapons to the character.
-                foreach (Weapon objWeapon in lstWeapons)
-                    objCharacter.Weapons.Add(objWeapon);
-            }
-
-            // Add any Critter Powers the Metatype/Critter should have.
-            XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCharacter.Metatype + "\"]");
-
-            objXmlDocument = XmlManager.Load("critterpowers.xml");
-            foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
-            {
-                XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-                CritterPower objPower = new CritterPower(objCharacter);
-                string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText);
-
-                objPower.Create(objXmlCritterPower, intRating, strForcedValue);
-                objCharacter.CritterPowers.Add(objPower);
-            }
-
-            if (objXmlCritter["optionalpowers"] != null)
-            {
-                //For every 3 full points of Force a spirit has, it may gain one Optional Power.
-                for (int i = intForce - 3; i >= 0; i -= 3)
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    XmlDocument objDummyDocument = new XmlDocument();
-                    XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                    objDummyDocument.AppendChild(bonusNode);
-                    XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true), true);
-                    objDummyDocument.ImportNode(powerNode, true);
-                    bonusNode.AppendChild(powerNode);
-                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
+                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
+                    FileName = strCritterName + strSpaceCharacter + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpaceCharacter + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
+                })
+                {
+                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    string strFileName = saveFileDialog.FileName;
+                    objCharacter.FileName = strFileName;
                 }
-            }
-            // Add any Complex Forms the Critter comes with (typically Sprites)
-            XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
-            foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
-            {
-                string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
-                ComplexForm objComplexForm = new ComplexForm(objCharacter);
-                objComplexForm.Create(objXmlComplexFormData, strForceValue);
-                objCharacter.ComplexForms.Add(objComplexForm);
-            }
 
-            // Add any Gear the Critter comes with (typically Programs for A.I.s)
-            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-            foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
-            {
-                int intRating = 0;
-                if (objXmlGear.Attributes["rating"] != null)
-                    intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
-                string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
-                Gear objGear = new Gear(objCharacter);
-                List<Weapon> lstWeapons = new List<Weapon>();
-                objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
-                objGear.Cost = "0";
-                objCharacter.Gear.Add(objGear);
-            }
+                Cursor = Cursors.WaitCursor;
 
-            // Add the Unarmed Attack Weapon to the character.
-            objXmlDocument = XmlManager.Load("weapons.xml");
-            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-            if (objXmlWeapon != null)
-            {
-                List<Weapon> lstWeapons = new List<Weapon>();
-                Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
-                objCharacter.Weapons.Add(objWeapon);
-                foreach (Weapon objLoopWeapon in lstWeapons)
-                    objCharacter.Weapons.Add(objLoopWeapon);
-            }
+                // Set Metatype information.
+                if (strCritterName == "Ally Spirit")
+                {
+                    objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["bodmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["bodaug"]?.InnerText, intForce, 0));
+                    objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["agimax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["agiaug"]?.InnerText, intForce, 0));
+                    objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["reamax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["reaaug"]?.InnerText, intForce, 0));
+                    objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["strmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["straug"]?.InnerText, intForce, 0));
+                    objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["chamax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["chaaug"]?.InnerText, intForce, 0));
+                    objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["intmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["intaug"]?.InnerText, intForce, 0));
+                    objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["logmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["logaug"]?.InnerText, intForce, 0));
+                    objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["wilmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["wilaug"]?.InnerText, intForce, 0));
+                    objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["magmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["magaug"]?.InnerText, intForce, 0));
+                    objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["resaug"]?.InnerText, intForce, 0));
+                    objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["edgaug"]?.InnerText, intForce, 0));
+                    objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["essaug"]?.InnerText, intForce, 0));
+                }
+                else
+                {
+                    int intMinModifier = -3;
+                    objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 3));
+                    objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 3));
+                    objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 3));
+                    objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 3));
+                    objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 3));
+                    objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 3));
+                    objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 3));
+                    objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 3));
+                    objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 3));
+                    objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 3));
+                    objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 3),
+                        ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 3));
+                    objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0),
+                        ExpressionToString(objXmlMetatype["essaug"]?.InnerText, intForce, 0));
+                }
 
-            objCharacter.Alias = strCritterName;
-            objCharacter.Created = true;
-            if (!objCharacter.Save())
-            {
-                Cursor = Cursors.Default;
-                objCharacter.DeleteCharacter();
-                return;
-            }
+                // If we're working with a Critter, set the Attributes to their default values.
+                objCharacter.BOD.MetatypeMinimum = ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0);
+                objCharacter.AGI.MetatypeMinimum = ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0);
+                objCharacter.REA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0);
+                objCharacter.STR.MetatypeMinimum = ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0);
+                objCharacter.CHA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0);
+                objCharacter.INT.MetatypeMinimum = ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0);
+                objCharacter.LOG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0);
+                objCharacter.WIL.MetatypeMinimum = ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0);
+                objCharacter.MAG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0);
+                objCharacter.RES.MetatypeMinimum = ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0);
+                objCharacter.EDG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0);
+                objCharacter.ESS.MetatypeMinimum = ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0);
 
-            string strOpenFile = objCharacter.FileName;
-            objCharacter.DeleteCharacter();
+                // Sprites can never have Physical Attributes.
+                if (objXmlMetatype["category"].InnerText.EndsWith("Sprite", StringComparison.Ordinal))
+                {
+                    objCharacter.BOD.AssignLimits("0", "0", "0");
+                    objCharacter.AGI.AssignLimits("0", "0", "0");
+                    objCharacter.REA.AssignLimits("0", "0", "0");
+                    objCharacter.STR.AssignLimits("0", "0", "0");
+                }
+
+                objCharacter.Metatype = strCritterName;
+                objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerText;
+                objCharacter.Metavariant = string.Empty;
+                objCharacter.MetatypeBP = 0;
+
+                if (objXmlMetatype["movement"] != null)
+                    objCharacter.Movement = objXmlMetatype["movement"].InnerText;
+                // Load the Qualities file.
+                XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
+
+                // Determine if the Metatype has any bonuses.
+                if (objXmlMetatype.InnerXml.Contains("bonus"))
+                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), 1, strCritterName);
+
+                // Create the Qualities that come with the Metatype.
+                foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
+                {
+                    XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    Quality objQuality = new Quality(objCharacter);
+                    string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
+                    QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
+                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
+                    objCharacter.Qualities.Add(objQuality);
+
+                    // Add any created Weapons to the character.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        objCharacter.Weapons.Add(objWeapon);
+                }
+
+                // Add any Critter Powers the Metatype/Critter should have.
+                XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCharacter.Metatype + "\"]");
+
+                objXmlDocument = XmlManager.Load("critterpowers.xml");
+                foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
+                {
+                    XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                    CritterPower objPower = new CritterPower(objCharacter);
+                    string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+
+                    objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                    objCharacter.CritterPowers.Add(objPower);
+                }
+
+                if (objXmlCritter["optionalpowers"] != null)
+                {
+                    //For every 3 full points of Force a spirit has, it may gain one Optional Power.
+                    for (int i = intForce - 3; i >= 0; i -= 3)
+                    {
+                        XmlDocument objDummyDocument = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
+                        objDummyDocument.AppendChild(bonusNode);
+                        XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true), true);
+                        objDummyDocument.ImportNode(powerNode, true);
+                        bonusNode.AppendChild(powerNode);
+                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
+                    }
+                }
+
+                // Add any Complex Forms the Critter comes with (typically Sprites)
+                XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
+                foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
+                {
+                    string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
+                    XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
+                    ComplexForm objComplexForm = new ComplexForm(objCharacter);
+                    objComplexForm.Create(objXmlComplexFormData, strForceValue);
+                    objCharacter.ComplexForms.Add(objComplexForm);
+                }
+
+                // Add any Gear the Critter comes with (typically Programs for A.I.s)
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
+                {
+                    int intRating = 0;
+                    if (objXmlGear.Attributes["rating"] != null)
+                        intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
+                    string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
+                    XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
+                    Gear objGear = new Gear(objCharacter);
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
+                    objGear.Cost = "0";
+                    objCharacter.Gear.Add(objGear);
+                }
+
+                // Add the Unarmed Attack Weapon to the character.
+                objXmlDocument = XmlManager.Load("weapons.xml");
+                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                if (objXmlWeapon != null)
+                {
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    Weapon objWeapon = new Weapon(objCharacter);
+                    objWeapon.Create(objXmlWeapon, lstWeapons);
+                    objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
+                    objCharacter.Weapons.Add(objWeapon);
+                    foreach (Weapon objLoopWeapon in lstWeapons)
+                        objCharacter.Weapons.Add(objLoopWeapon);
+                }
+
+                objCharacter.Alias = strCritterName;
+                objCharacter.Created = true;
+                if (!objCharacter.Save())
+                {
+                    Cursor = Cursors.Default;
+                    return;
+                }
+
+                _objSpirit.FileName = objCharacter.FileName;
+            }
 
             // Link the newly-created Critter to the Spirit.
-            _objSpirit.FileName = strOpenFile;
-            imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
+            imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
             ContactDetailChanged?.Invoke(this, null);
 
-            Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
+            Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(true);
             Cursor = Cursors.Default;
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }
@@ -670,8 +697,10 @@ namespace Chummer
         /// <returns></returns>
         public static int ExpressionToInt(string strIn, int intForce, int intOffset)
         {
+            if (string.IsNullOrEmpty(strIn))
+                return 0;
             int intValue = 0;
-            string strForce = intForce.ToString();
+            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
@@ -701,7 +730,7 @@ namespace Chummer
         /// <returns></returns>
         public static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString();
+            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
         #endregion
     }

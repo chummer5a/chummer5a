@@ -42,6 +42,8 @@ namespace Chummer
 
         public void AddRange(IEnumerable<Tuple<T, T>> range)
         {
+            if (range == null)
+                return;
             foreach (Tuple<T, T> tuple in range)
             {
                 Add(tuple.Item1, tuple.Item2);

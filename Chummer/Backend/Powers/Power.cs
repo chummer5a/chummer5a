@@ -27,6 +27,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
@@ -39,7 +40,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{CurrentDisplayName}")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
@@ -54,7 +55,7 @@ namespace Chummer
         private int _intMaxLevels;
         private bool _blnDiscountedAdeptWay;
         private bool _blnDiscountedGeas;
-        private XmlNode _nodAdeptWayRequirements;
+        private XPathNavigator _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
@@ -70,14 +71,17 @@ namespace Chummer
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter;
-            CharacterObject.PropertyChanged += OnCharacterChanged;
-            if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+            if (CharacterObject != null)
             {
-                MAGAttributeObject = CharacterObject.MAGAdept;
-            }
-            else
-            {
-                MAGAttributeObject = CharacterObject.MAG;
+                CharacterObject.PropertyChanged += OnCharacterChanged;
+                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                {
+                    MAGAttributeObject = CharacterObject.MAGAdept;
+                }
+                else
+                {
+                    MAGAttributeObject = CharacterObject.MAG;
+                }
             }
         }
 
@@ -101,6 +105,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
@@ -109,12 +115,12 @@ namespace Chummer
             objWriter.WriteElementString("pointsperlevel", _strPointsPerLevel);
             objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
             objWriter.WriteElementString("action", _strAction);
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
+            objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxlevels", _intMaxLevels.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
-            objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
+            objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("bonussource", _strBonusSource);
             objWriter.WriteElementString("freepoints", _decFreePoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
@@ -165,7 +171,7 @@ namespace Chummer
             Bonus = objNode["bonus"];
             if (objBonusNodeOverride != null)
                 Bonus = objBonusNodeOverride;
-            _nodAdeptWayRequirements = objNode["adeptwayrequires"];
+            _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator();
             XmlNode nodEnhancements = objNode["enhancements"];
             if (nodEnhancements != null)
             {
@@ -206,8 +212,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -267,9 +272,9 @@ namespace Chummer
             Bonus = objNode["bonus"];
             if (objNode["adeptway"] != null)
             {
-                _nodAdeptWayRequirements = objNode["adeptwayrequires"] ?? GetNode()?["adeptwayrequires"];
+                _nodAdeptWayRequirements = (objNode["adeptwayrequires"] ?? GetNode()?["adeptwayrequires"])?.CreateNavigator();
             }
-            if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes"))
+            if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {
                 XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
@@ -317,9 +322,11 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName);
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
@@ -387,7 +394,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Power in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
 
         /// <summary>
@@ -398,7 +405,7 @@ namespace Chummer
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D");
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Power's name.
@@ -465,12 +472,12 @@ namespace Chummer
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public string DisplayNameMethod(string strLanguage)
+        public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
 
@@ -560,7 +567,8 @@ namespace Chummer
             get
             {
                 //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
-                if (_intRating <= TotalMaximumLevels) return _intRating;
+                if (_intRating <= TotalMaximumLevels)
+                    return _intRating;
                 _intRating = TotalMaximumLevels;
                 return _intRating;
             }
@@ -859,7 +867,7 @@ namespace Chummer
 
         #endregion
 
-        #region Complex Properties 
+        #region Complex Properties
 
         public int TotalMaximumLevels
         {
@@ -903,11 +911,11 @@ namespace Chummer
                 }
                 bool blnReturn = false;
                 //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount.
-                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
+                if (_nodAdeptWayRequirements?.SelectSingleNode("magicianswayforbids") == null)
                 {
                     blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
                 }
-                if (!blnReturn && _nodAdeptWayRequirements?.ChildNodes.Count > 0)
+                if (!blnReturn && _nodAdeptWayRequirements?.HasChildren == true)
                 {
                     blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
                 }
@@ -922,43 +930,51 @@ namespace Chummer
                 DiscountedAdeptWay = false;
         }
 
-        private static readonly DependancyGraph<string> PowerDependencyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(DisplayPoints),
-                    new DependancyGraphNode<string>(nameof(PowerPoints),
-                        new DependancyGraphNode<string>(nameof(TotalRating),
-                            new DependancyGraphNode<string>(nameof(Rating)),
-                            new DependancyGraphNode<string>(nameof(FreeLevels),
-                                new DependancyGraphNode<string>(nameof(FreePoints)),
-                                new DependancyGraphNode<string>(nameof(ExtraPointCost)),
-                                new DependancyGraphNode<string>(nameof(PointsPerLevel))
+        private static readonly DependencyGraph<string> PowerDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(DisplayPoints),
+                    new DependencyGraphNode<string>(nameof(PowerPoints),
+                        new DependencyGraphNode<string>(nameof(TotalRating),
+                            new DependencyGraphNode<string>(nameof(Rating)),
+                            new DependencyGraphNode<string>(nameof(FreeLevels),
+                                new DependencyGraphNode<string>(nameof(FreePoints)),
+                                new DependencyGraphNode<string>(nameof(ExtraPointCost)),
+                                new DependencyGraphNode<string>(nameof(PointsPerLevel))
                             ),
-                            new DependancyGraphNode<string>(nameof(TotalMaximumLevels),
-                                new DependancyGraphNode<string>(nameof(LevelsEnabled)),
-                                new DependancyGraphNode<string>(nameof(MaxLevels))
+                            new DependencyGraphNode<string>(nameof(TotalMaximumLevels),
+                                new DependencyGraphNode<string>(nameof(LevelsEnabled)),
+                                new DependencyGraphNode<string>(nameof(MaxLevels))
                             )
                         ),
-                        new DependancyGraphNode<string>(nameof(Rating)),
-                        new DependancyGraphNode<string>(nameof(LevelsEnabled)),
-                        new DependancyGraphNode<string>(nameof(FreeLevels)),
-                        new DependancyGraphNode<string>(nameof(PointsPerLevel)),
-                        new DependancyGraphNode<string>(nameof(FreePoints)),
-                        new DependancyGraphNode<string>(nameof(ExtraPointCost)),
-                        new DependancyGraphNode<string>(nameof(Discount),
-                            new DependancyGraphNode<string>(nameof(DiscountedAdeptWay)),
-                            new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
+                        new DependencyGraphNode<string>(nameof(Rating)),
+                        new DependencyGraphNode<string>(nameof(LevelsEnabled)),
+                        new DependencyGraphNode<string>(nameof(FreeLevels)),
+                        new DependencyGraphNode<string>(nameof(PointsPerLevel)),
+                        new DependencyGraphNode<string>(nameof(FreePoints)),
+                        new DependencyGraphNode<string>(nameof(ExtraPointCost)),
+                        new DependencyGraphNode<string>(nameof(Discount),
+                            new DependencyGraphNode<string>(nameof(DiscountedAdeptWay)),
+                            new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(ToolTip),
-                    new DependancyGraphNode<string>(nameof(Rating)),
-                    new DependancyGraphNode<string>(nameof(PointsPerLevel))
+                new DependencyGraphNode<string>(nameof(ToolTip),
+                    new DependencyGraphNode<string>(nameof(Rating)),
+                    new DependencyGraphNode<string>(nameof(PointsPerLevel))
                 ),
-                new DependancyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
-                    new DependancyGraphNode<string>(nameof(FreeLevels))
+                new DependencyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
+                    new DependencyGraphNode<string>(nameof(FreeLevels))
                 ),
-                new DependancyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
-                    new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
+                new DependencyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
+                    new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
+                ),
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(Extra)),
+                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string>(nameof(Name))
+                        )
+                    )
                 )
             );
 
@@ -976,10 +992,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -1022,17 +1038,17 @@ namespace Chummer
 
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(TotalMaximumLevels));
         }
 
         protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Skill.LearnedRating))
+            if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill)
             {
                 if (BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
                 {
-                    _cachedLearnedRating = ((Skill)sender).LearnedRating;
+                    _cachedLearnedRating = objSkill.LearnedRating;
                     OnPropertyChanged(nameof(TotalMaximumLevels));
                 }
             }
@@ -1082,14 +1098,14 @@ namespace Chummer
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder strbldModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                StringBuilder sbdModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    strbldModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
-                return strbldModifier.ToString();
+                return sbdModifier.ToString();
             }
         }
         #endregion

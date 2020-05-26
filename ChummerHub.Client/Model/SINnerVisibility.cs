@@ -1,24 +1,19 @@
-using ChummerHub.Client.Backend;
-using Newtonsoft.Json;
-using SINners.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Mail;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 using Chummer;
+using Newtonsoft.Json;
 
 namespace SINners.Models
 {
     public partial class SINnerVisibility
     {
 
-        private BindingList<SINnerUserRight> _UserRightsObservable = null;
+        private BindingList<SINnerUserRight> _UserRightsObservable;
 
         [JsonIgnore]
         [XmlIgnore]
@@ -36,10 +31,7 @@ namespace SINners.Models
                 }
                 return _UserRightsObservable;
             }
-            set
-            {
-                _UserRightsObservable = value;
-            }
+            set => _UserRightsObservable = value;
         }
 
         public void AddVisibilityForEmail(string email)
@@ -49,25 +41,21 @@ namespace SINners.Models
                 Program.MainForm.ShowMessageBox("Please enter a valid email address!");
                 return;
             }
-            SINnerUserRight ur = new SINnerUserRight()
+            SINnerUserRight ur = UserRightsObservable.FirstOrDefault(a => email != null && a != null && a.EMail != null && a.EMail.Equals(email, StringComparison.OrdinalIgnoreCase)) ?? new SINnerUserRight
             {
                 EMail = email,
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail?.ToLowerInvariant() == email.ToLowerInvariant() select a;
-            if (found.Any())
-                ur = found.FirstOrDefault();
-            if (!this.UserRightsObservable.Contains(ur))
-                this.UserRightsObservable.Add(ur);
-
+            if (!UserRightsObservable.Contains(ur))
+                UserRightsObservable.Add(ur);
         }
 
         private static bool IsValidEmail(string email)
         {
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
+                var addr = new MailAddress(email);
                 return addr.Address == email;
             }
             catch
@@ -75,6 +63,5 @@ namespace SINners.Models
                 return false;
             }
         }
-
     }
 }

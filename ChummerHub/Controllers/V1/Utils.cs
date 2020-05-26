@@ -15,7 +15,7 @@ namespace ChummerHub.Controllers.V1
         {
             var proposedValues = entry.CurrentValues;
             var databaseValues = entry.GetDatabaseValues();
-            string msg = "";
+            string msg = string.Empty;
 #pragma warning disable CS0168 // The variable 'res' is declared but never used
             ResultBase res;
 #pragma warning restore CS0168 // The variable 'res' is declared but never used
@@ -24,9 +24,9 @@ namespace ChummerHub.Controllers.V1
 
                 foreach (var property in proposedValues.Properties)
                 {
-                    Object proposedValue = null;
-                    Object databaseValue = null;
-                    if (proposedValues?.Properties?.Contains(property) == true)
+                    object proposedValue = null;
+                    object databaseValue = null;
+                    if (proposedValues.Properties?.Contains(property) == true)
                         proposedValue = proposedValues[property];
                     if (databaseValues?.Properties?.Contains(property) == true)
                         databaseValue = databaseValues[property];

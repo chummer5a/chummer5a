@@ -53,7 +53,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMode = objMode;
 
             if (_objCharacter.Improvements.Any(imp =>
@@ -72,20 +72,20 @@ namespace Chummer
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
                     _objXmlDocument = XmlManager.Load("metamagic.xml");
-                    _strType = LanguageManager.GetString("String_Metamagic", GlobalOptions.Language);
+                    _strType = LanguageManager.GetString("String_Metamagic");
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
                     _objXmlDocument = XmlManager.Load("echoes.xml");
-                    _strType = LanguageManager.GetString("String_Echo", GlobalOptions.Language);
+                    _strType = LanguageManager.GetString("String_Echo");
                     break;
             }
         }
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strType);
-            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strType);
+            Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
+            chkLimitList.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);
 
             _blnLoading = false;
             BuildMetamagicList();
@@ -95,7 +95,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strSelectedId = lstMetamagic.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -106,9 +106,9 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 }
                 else
                 {
@@ -193,11 +193,11 @@ namespace Chummer
                             {
                                 continue;
                             }
-                            if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
+                            if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                             {
                                 lstMetamagics.Add(new ListItem(strId,
                                     objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ??
-                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                                    LanguageManager.GetString("String_Unknown")));
                             }
                         }
                     }
@@ -227,7 +227,7 @@ namespace Chummer
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
 
-                if (!objXmlMetamagic.RequirementsMet(_objCharacter, _strType))
+                if (!objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter, _strType))
                     return;
 
                 _strSelectedMetamagic = strSelectedId;

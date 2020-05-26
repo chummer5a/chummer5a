@@ -24,7 +24,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
-using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace Chummer
@@ -45,7 +44,8 @@ namespace Chummer
             try
             {
                 string strFile = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
-                report.AddData("chummerlog.txt", new StreamReader(strFile, Encoding.UTF8, true).BaseStream);
+                using (StreamReader objStream = new StreamReader(strFile, Encoding.UTF8, true))
+                    report.AddData("chummerlog.txt", objStream.BaseStream);
             }
             catch(Exception ex)
             {
@@ -61,7 +61,8 @@ namespace Chummer
             try
             {
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
-                report.AddData("default.xml", new StreamReader(strFilePath, Encoding.UTF8, true).BaseStream);
+                using (StreamReader objStream = new StreamReader(strFilePath, Encoding.UTF8, true))
+                    report.AddData("default.xml", objStream.BaseStream);
             }
             catch (Exception ex)
             {
@@ -86,7 +87,7 @@ namespace Chummer
             get
             {
                 if (_subject == null)
-                    return Id.ToString("D");
+                    return Id.ToString("D", GlobalOptions.InvariantCultureInfo);
 
                 return _subject;
             }
@@ -115,17 +116,18 @@ namespace Chummer
                 report.AppendLine();
                 //We want to know what crash happened on
 #if LEGACY
-                report.AppendFormat("Legacy Build");
+                report.Append("Legacy Build");
 #elif DEBUG
-                report.AppendFormat("Debug Build");
+                report.Append("Debug Build");
 #else
-                report.AppendFormat("Release Build");
+                report.Append("Release Build");
 #endif
                 report.AppendLine();
-                //Seconadary id for linux systems?
+                //Secondary id for linux systems?
                 if (Registry.LocalMachine != null)
                 {
                     RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    RegistryKey cv2 = null;
 
                     if (cv != null)
                     {
@@ -134,16 +136,18 @@ namespace Chummer
                             //on 32 bit builds?
                             //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
                             cv.Close();
-                            cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                            cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                            cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
                         if (cv != null)
                         {
                             report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
                             report.AppendLine();
-                            cv.Close();
                         }
                     }
+                    cv?.Close();
+                    cv2?.Close();
                 }
 
                 report.AppendFormat("CommandLine={0}", Environment.CommandLine);
@@ -163,12 +167,14 @@ namespace Chummer
         {
             //Convert string to stream
             MemoryStream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write(contents);
-            writer.Flush();
-            stream.Position = 0;
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                writer.Write(contents);
+                writer.Flush();
+                stream.Position = 0;
 
-            return AddData(title, stream);
+                return AddData(title, stream);
+            }
         }
 
         public CrashReportData AddData(string title, Stream contents)
@@ -186,7 +192,7 @@ namespace Chummer
                 string password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
 
                 MailAddress address = new MailAddress("chummercrashdumps@gmail.com");
-                SmtpClient client = new SmtpClient
+                using (SmtpClient client = new SmtpClient
                 {
                     Host = "smtp.gmail.com",
                     Port = 587,
@@ -194,29 +200,31 @@ namespace Chummer
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(address.Address, password)
-                };
-
-                MailMessage message = new MailMessage(address, address);
-
-                //Forwarding rule used instead?
-                message.CC.Add("chummer5isalive+chummerdump@gmail.com");
-
-                message.Subject = Subject;
-                message.Body = DefaultInfo();
-
-                //Compression?
-                foreach (KeyValuePair<string, Stream> pair in values)
+                })
                 {
-                    message.Attachments.Add(new Attachment(pair.Value, pair.Key));
-                }
+                    using (MailMessage message = new MailMessage(address, address))
+                    {
+                        //Forwarding rule used instead?
+                        message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
-                else
-                {
-                    client.Send(message);
+                        message.Subject = Subject;
+                        message.Body = DefaultInfo();
+
+                        //Compression?
+                        foreach (KeyValuePair<string, Stream> pair in values)
+                        {
+                            message.Attachments.Add(new Attachment(pair.Value, pair.Key));
+                        }
+
+                        if (Debugger.IsAttached)
+                        {
+                            Debugger.Break();
+                        }
+                        else
+                        {
+                            client.Send(message);
+                        }
+                    }
                 }
 
                 return true;

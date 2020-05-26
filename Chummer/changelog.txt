@@ -1,4 +1,20 @@
-Future Build 212
+Future Build 213
+Application Fixes:
+- Fixed an incorrect tag on submersion groups in career mode. 
+- Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
+- Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
+- Fixed a regression in career mode not allowing Initiation Groups to be joined or left properly. Closes #4115
+- Fixed a myriad of cases where printing a character sheet in a language that is different from the language being used for the program would sometimes result in incorrect localization and/or number formats being used.
+- Fixed qi foci improperly providing free levels of a power rather than free points. Closes #4116
+- Qualities that unlock special skills are no longer all always effectively free when purchased traditionally.
+- Amend files now default to not adding missing nodes by default unless no amendoperation is specified and the amend node has no children (i.e. default amendoperation would be "replace"). This generally makes amends with very general filters work properly again.
+- In an Amend file, if a "recurse" node is set to not add itself if no target is found, it will still recurse into the amending nodes, just in case there is a node somewhere inside that is set to be added if no target is found.
+
+Data Changes:
+- Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
+- The custom rulesets for Toxic traditions having no requirements and for Painade being available per the German version of Cutting Aces now load and work properly.
+
+Build 212
 Application Changes:
 - When entering Nuyen and Karma expenses for Working for the Man/People, it's now possible to flag the expense entry as always being present in the Expense log. This will in effect reduce the Career Karma or Career Nuyen by the selected amount. Closes #4096, closes #3613
 - Added InitiationGroup, InitiationOrdeal and InitiationSchooling option values for Submersion and Initiation respectively. Ensures that values are correct across multiple locations. Currently not exposed to user change. 
@@ -9,6 +25,21 @@ Application Changes:
 - Added an optional rule to preserve existing behaviour.
 - Merged karma cost checks for Foci into the Focus object instead of separate Create and Career methods.
 - Added support for individualising a focus based on the rules presented in Street Grimoire on page 230.
+- Added support for Limit Conditions fetching their condition string from the language file instead of being baked into the object. Existing characters with these string will need to use Reapply Improvements to apply the new values. 
+- Expanded functionality for the SelectText bonus type to allow providing a list of values from the XML files.
+  This is provided by three node attributes:
+  'xml' indicates the document to load from the data folder
+  'xpath' indicates the nodes to be evaluated (Note that it's not necessary to include the final Name node
+  'allowedit="True"' indicates that the user should be able to enter their own value. If not specified or 'False', the user can only choose from the filtered values.
+  As an example, the SINner (Corporate) quality uses the following node: <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>, while the Metaposeur bioware uses <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
+  It's suggested that if you want to use a custom whitelist, take advantage of the customdata system to append nodes to options.xml; completely new files may work, but are unsupported at this time.
+  Duplicate values will automatically be filtered.
+- Added better support for basic lifestyles and primary tenant/roommate splits bestween costs. Closes #4054
+- Altered spirit control to support width flexion due to different string lengths.
+- Fixed issues with vehicles not properly being allowed to select autosofts and such. Closes #3887
+- Fixed regression in condition monitor boxes > 24 not showing. Closes #4074
+- Right-hand panel now autoscrolls if window is below normal size. Closes #2829
+- Fixed weapons not properly clearing their weapon mount when moved between character and vehicle. Closes #4108
 
 Application Fixes:
 - Fixed inability to click the Character Roster Watch Folder location. Closes #4047
@@ -22,8 +53,11 @@ Application Fixes:
 - Fixed a regression in behaviour of weapon mount options that caused them to be included in the cost of vehicles where the weapon mount comes with the weapon. Existing vehicles with this behaviour will need to be re-purchased. 
 - Fixed a regression with Custom Traditions not being properly loaded. Closes #4077
 - Fixed a regression in behaviour of metagenetic qualities not loading their metagenic flag properly when using the old naming convention.
+- Fixed an issue with cyberware that uses FixedValues not correctly requesting Essence value recalculation when changing the Rating.
+- Fixed a crash when updating Spirit Maximum Force during create mode if the character was reduced to 0 MAG. Closes #4099
 
 Data Changes:
+- Fixed incorrect stacking behaviour for the suprathyroid gland, muscle replacement and muscle toner that caused them to fail to stack correctly. (Muscle replacement, muscle augmentation and muscle toner shouldn't stack, but suprathyroid should)
 - Fixed incorrect Ammo Category on the Walther Secura Superkompakt.
 - Reduced Improved Synthskin max rating to 4.
 - Removed redundant selecttext bonuses from the synthlinks.
@@ -36,6 +70,15 @@ Data Changes:
 - Fixed incorrect Karma value for the Sprite Combusion quality.
 - Yard lifestyle quality can now be taken multiple times. Fixes incorrect page references for Yard and Zen Den.
 - Added new Focus objects in gear.xml to support Individualising Focus rules from Street Grimoire. 
+- Added amend files to remove the requirement for the toxic tradition and toxic mentors from requiring the Twisted Way.
+- Resolved an issue with character sheets not properly showing programs connected to a piece of cyberware. 
+- Reverted shapeshifter metatypes improperly flagging metatype qualities as shapeshifter or metahuman forms only.
+- Fixed an incorrect bonus for the Mystic Guardian mentor that caused it to provide incorrect bonus types.
+- Metaposeur bioware includes metatype prompts now.
+- Removed redundant selecttext improvement for Anti-tox nanoware.
+- Fixed bonus type for Cyberlimb Optimisation to properly increase dicepools for the selected Skill.
+- Added whitelisted selecttext improvements for most current uses of the improvement type. 
+- Replaced incorrect bonus for Nephritic Screen (2050)
 
 Changed/new strings:
 - Checkbox_Options_UnclampAttributeMinimum
@@ -48,6 +91,76 @@ Changed/new strings:
 - Checkbox_NetworkSubmersion
 - Checkbox_SubmersionTask
 - Checkbox_Expense_ForceCareerVisible
+- LimitCondition_ExcludeIntimidation
+- LimitCondition_ExcludeFansGangers
+- LimitCondition_SportsFans
+- LimitCondition_ShieldPhysicalPenalty
+- LimitCondition_ExcludeIntimidationVisible
+- LimitCondition_ClimbingTests
+- LimitCondition_GangVisible
+- LimitCondition_PublicVisible
+- LimitCondition_Megacorp
+- LimitCondition_Sprawl
+- LimitCondition_Visible
+- LimitCondition_NationalLanguageRanks
+- LimitCondition_BunkerGearVisible
+- LimitCondition_AttribAGI
+- LimitCondition_SkillsKnowledgeAcademic 
+- LimitCondition_SkillsActiveContortion
+- LimitCondition_SkillsActiveDisguiseImpersonation
+- LimitCondition_SkillsActiveEscapeArtistGrappleLoose
+- LimitCondition_SkillsActiveEscapeArtist
+- LimitCondition_SkillsActiveFirstAidMedicine
+- LimitCondition_CyberwareBalanceTail
+- LimitCondition_SkillsActiveGymnasticsClimbing
+- LimitCondition_CyberwareHydraulicJacks
+- LimitCondition_IntimidationVisible
+- LimitCondition_Intimidation
+- LimitCondition_SkillsActiveNavigation
+- LimitCondition_SkillsActivePerceptionHearing
+- LimitCondition_SkillsActivePerceptionVisual
+- LimitCondition_SkillsActivePerceptionSpatialRecognizer
+- LimitCondition_SkillsActivePerception
+- LimitCondition_SkillsActivePerformanceSinging
+- LimitCondition_SkillsActivePerformanceSynthtrument
+- LimitCondition_SkillsActivePerformance
+- LimitCondition_SkillsKnowledgeScientificTechnical
+- LimitCondition_Skillwires
+- LimitCondition_TestSneakingThermal
+- LimitCondition_SkillsActiveSneaking
+- LimitCondition_SkillsActiveSneakingNaked
+- LimitCondition_SkillsActiveSneakingVisible
+- LimitCondition_SkillGroupStealthNaked
+- LimitCondition_SkillGroupStealth
+- LimitCondition_SkillsActiveSwimming
+- LimitCondition_KnockdownResistanceFootAnchor
+- LimitCondition_CyberwareCyberfins
+- LimitCondition_GearAutopicker
+- LimitCondition_QualityTrustworthy
+- LimitCondition_TestSpeech
+- LimitCondition_TestsEndurance 
+- LimitCondition_CyberwareRaptorFoot
+- LimitCondition_QualityChatty
+- LimitCondition_InUse
+- LimitCondition_CyberwareMonkeyFoot
+- LimitCondition_TestAttribINT
+- LimitCondition_AttribSkillINT
+- LimitCondition_TestAttribLOG
+- LimitCondition_AttribSkillLOG
+- LimitCondition_CorporationVisible
+- LimitCondition_CyberwareSnakeFingers
+- LimitCondition_SportsRivals
+- Label_Sprite_TasksOwed
+- DialogFilter_HeroLab
+- DialogFilter_ImagesPrefix
+- String_MetatypeLoadError
+- Message_Options_ConfirmTelemetry
+- MessageTitle_Options_ConfirmTelemetry
+- Message_Options_ConfirmDetailedTelemetry
+- MessageTitle_Options_ConfirmDetailedTelemetry
+- Tip_Options_TelemetryId
+- Tip_CMPenalty
+- String_CMDown
 
 Build 211
 Application Changes:
@@ -3128,7 +3241,7 @@ Application Changes:
 - Fixed an issue with priority selection that prevented magically active characters from selecting Arcana as a bonus.
 - Fixed an issue with printing skills not correctly showing translated strings.
 - Added a metatype filter for selecting cyberware that will prevent Pixies from taking Customised Strength on their cyberlimbs, as it breaks everything awfully.
-- Fixed an issue with Spell Defence Tooltips.
+- Fixed an issue with Spell Defense Tooltips.
 - Fixed behaviour of the Change Priority Selection menu to properly preserve metavariant settings.
 - Made minor performance improvements to the Select Gear screen.
 - Added a dedicated class, screen tab, character sheet boxes, option menu entries, a bunch of extra helper functions, and supplements to existing methods to handle AI programs and advanced programs.
@@ -3886,7 +3999,7 @@ Application Change:
 - Fixed some calculation issues for priority metatypes not showing the correct karma value when changing from a metavariant to a base metatype. Fixes #537.
 - Fixed a crash with metavariants in Priority/Sum to Ten. Fixes #647.
 - Fixed a crash caused by weapon accessories that have a cost based on rating. Fixes #650, fixes #656.
-- Added spell defence calculations in a tab on the right side of the career and creation windows. Closes #573.
+- Added spell Defense calculations in a tab on the right side of the career and creation windows. Closes #573.
 - Changed the Improved Potential powers to use the limit modifier bonus instead of selectlimit; makes it a bit neater.
 - Did some stuff to enable selecting multiple powers through the selectpower bonus node. This shouldn't affect any existing characters, but if you're using the Chaos Mentor Spirit I'd recommend deleting it and removing it. This miiiiight also break existing characters with Qi Foci. Probably not though. Like 70/30 at most.
 - Did various shenanigans with the karma selection form to make it show qualities and karma costs properly.
@@ -5731,7 +5844,7 @@ Build 380
 - Complex Forms now enforce the number of Program Options they can have
 
 New Strings
-- Message_ConntAddComplexFormOptionLimit
+- Message_CannotAddComplexFormOptionLimit
 
 Build 377
 - Ammo in a container such as a Spare Clip now shows its container's name and Location (if applicable) in the Reload window
@@ -5894,7 +6007,7 @@ New Strings
 - Title_CreateMode
 - Message_CyberwareGear
 - MessageTitle_CyberwareGear
-- String_ExpensePurchaseCyberwearGear
+- String_ExpensePurchaseCyberwareGear
 - String_ExpenseSoldCyberwareGear
 - Message_WeaponGear
 - String_ExpensePurchaseWeaponGear
@@ -6112,13 +6225,13 @@ New Strings
 - MessageTitle_Omae_SheetDownloaded
 - Message_OmaeUpload_DataName
 - MessageTitle_OmaeUpload_DataName
-- Message_OameUpload_DataDescription
+- Message_OmaeUpload_DataDescription
 - MessageTitle_OmaeUpload_DataDescription
 - Message_OmaeUpload_DataSelectFiles
 - Message_OmaeUpload_CannotUploadSheet
 - Message_OmaeUpload_SheetName
 - MessageTitle_OmaeUpload_SheetName
-- Message_OameUpload_SheetDescription
+- Message_OmaeUpload_SheetDescription
 - MessageTitle_OmaeUpload_SheetDescription
 - Title_OmaeUploadData
 - Title_OmaeUploadSheet
@@ -6423,7 +6536,7 @@ Build 291
 - added an Improvements tab (see below)
 
 New Strings
-- Button_AddImproevment
+- Button_AddImprovement
 - Title_SelectSkillCategory
 - Title_CreateImprovement
 - Label_ImprovementType

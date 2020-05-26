@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-
 namespace Chummer
 {
     public static class FlagImageGetter
@@ -31,759 +29,757 @@ namespace Chummer
         public static System.Drawing.Image GetFlagFromCountryCode(string strCode)
         {
             System.Drawing.Image objReturn;
-            if (String.IsNullOrEmpty(strCode))
-                strCode = "";
-            switch (strCode.ToLowerInvariant())
+            if (string.IsNullOrEmpty(strCode))
+                strCode = string.Empty;
+            switch (strCode.ToUpperInvariant())
             {
-                case "ad":
+                case "AD":
                     objReturn = Properties.Resources.ad;
                     break;
-                case "ae":
+                case "AE":
                     objReturn = Properties.Resources.ae;
                     break;
-                case "af":
+                case "AF":
                     objReturn = Properties.Resources.af;
                     break;
-                case "ag":
+                case "AG":
                     objReturn = Properties.Resources.ag;
                     break;
-                case "ai":
+                case "AI":
                     objReturn = Properties.Resources.ai;
                     break;
-                case "al":
+                case "AL":
                     objReturn = Properties.Resources.al;
                     break;
-                case "am":
+                case "AM":
                     objReturn = Properties.Resources.am;
                     break;
-                case "an":
+                case "AN":
                     objReturn = Properties.Resources.an;
                     break;
-                case "ao":
+                case "AO":
                     objReturn = Properties.Resources.ao;
                     break;
-                case "ar":
+                case "AR":
                     objReturn = Properties.Resources.ar;
                     break;
-                case "as":
+                case "AS":
                     objReturn = Properties.Resources._as;
                     break;
-                case "at":
+                case "AT":
                     objReturn = Properties.Resources.at;
                     break;
-                case "au":
+                case "AU":
                     objReturn = Properties.Resources.au;
                     break;
-                case "aw":
+                case "AW":
                     objReturn = Properties.Resources.aw;
                     break;
-                case "ax":
+                case "AX":
                     objReturn = Properties.Resources.ax;
                     break;
-                case "az":
+                case "AZ":
                     objReturn = Properties.Resources.az;
                     break;
-                case "ba":
+                case "BA":
                     objReturn = Properties.Resources.ba;
                     break;
-                case "bb":
+                case "BB":
                     objReturn = Properties.Resources.bb;
                     break;
-                case "bd":
+                case "BD":
                     objReturn = Properties.Resources.bd;
                     break;
-                case "be":
+                case "BE":
                     objReturn = Properties.Resources.be;
                     break;
-                case "bf":
+                case "BF":
                     objReturn = Properties.Resources.bf;
                     break;
-                case "bg":
+                case "BG":
                     objReturn = Properties.Resources.bg;
                     break;
-                case "bh":
+                case "BH":
                     objReturn = Properties.Resources.bh;
                     break;
-                case "bi":
+                case "BI":
                     objReturn = Properties.Resources.bi;
                     break;
-                case "bj":
+                case "BJ":
                     objReturn = Properties.Resources.bj;
                     break;
-                case "bm":
+                case "BM":
                     objReturn = Properties.Resources.bm;
                     break;
-                case "bn":
+                case "BN":
                     objReturn = Properties.Resources.bn;
                     break;
-                case "bo":
+                case "BO":
                     objReturn = Properties.Resources.bo;
                     break;
-                case "br":
+                case "BR":
                     objReturn = Properties.Resources.br;
                     break;
-                case "bs":
+                case "BS":
                     objReturn = Properties.Resources.bs;
                     break;
-                case "bt":
+                case "BT":
                     objReturn = Properties.Resources.bt;
                     break;
-                case "bv":
+                case "BV":
                     objReturn = Properties.Resources.bv;
                     break;
-                case "bw":
+                case "BW":
                     objReturn = Properties.Resources.bw;
                     break;
-                case "by":
+                case "BY":
                     objReturn = Properties.Resources.by;
                     break;
-                case "bz":
+                case "BZ":
                     objReturn = Properties.Resources.bz;
                     break;
-                case "ca":
+                case "CA":
                     objReturn = Properties.Resources.ca;
                     break;
-                case "cc":
+                case "CC":
                     objReturn = Properties.Resources.cc;
                     break;
-                case "cd":
+                case "CD":
                     objReturn = Properties.Resources.cd;
                     break;
-                case "cf":
+                case "CF":
                     objReturn = Properties.Resources.cf;
                     break;
-                case "cg":
+                case "CG":
                     objReturn = Properties.Resources.cg;
                     break;
-                case "ch":
+                case "CH":
                     objReturn = Properties.Resources.ch;
                     break;
-                case "ci":
+                case "CI":
                     objReturn = Properties.Resources.ci;
                     break;
-                case "ck":
+                case "CK":
                     objReturn = Properties.Resources.ck;
                     break;
-                case "cl":
+                case "CL":
                     objReturn = Properties.Resources.cl;
                     break;
-                case "cm":
+                case "CM":
                     objReturn = Properties.Resources.cm;
                     break;
-                case "cn":
+                case "CN":
                     objReturn = Properties.Resources.cn;
                     break;
-                case "co":
+                case "CO":
                     objReturn = Properties.Resources.co;
                     break;
-                case "cr":
+                case "CR":
                     objReturn = Properties.Resources.cr;
                     break;
-                case "cs":
+                case "CS":
                     objReturn = Properties.Resources.cs;
                     break;
-                case "ct":
+                case "CT":
                     objReturn = Properties.Resources.ct;
                     break;
-                case "cu":
+                case "CU":
                     objReturn = Properties.Resources.cu;
                     break;
-                case "cv":
+                case "CV":
                     objReturn = Properties.Resources.cv;
                     break;
-                case "cx":
+                case "CX":
                     objReturn = Properties.Resources.cx;
                     break;
-                case "cy":
+                case "CY":
                     objReturn = Properties.Resources.cy;
                     break;
-                case "cz":
+                case "CZ":
                     objReturn = Properties.Resources.cz;
                     break;
-                case "de":
+                case "DE":
                     objReturn = Properties.Resources.de;
                     break;
-                case "dj":
+                case "DJ":
                     objReturn = Properties.Resources.dj;
                     break;
-                case "dk":
+                case "DK":
                     objReturn = Properties.Resources.dk;
                     break;
-                case "dm":
+                case "DM":
                     objReturn = Properties.Resources.dm;
                     break;
-                case "do":
+                case "DO":
                     objReturn = Properties.Resources._do;
                     break;
-                case "dz":
+                case "DZ":
                     objReturn = Properties.Resources.dz;
                     break;
-                case "ec":
+                case "EC":
                     objReturn = Properties.Resources.ec;
                     break;
-                case "ee":
+                case "EE":
                     objReturn = Properties.Resources.ee;
                     break;
-                case "eg":
+                case "EG":
                     objReturn = Properties.Resources.eg;
                     break;
-                case "eh":
+                case "EH":
                     objReturn = Properties.Resources.eh;
                     break;
-                case "er":
+                case "ER":
                     objReturn = Properties.Resources.er;
                     break;
-                case "es":
+                case "ES":
                     objReturn = Properties.Resources.es;
                     break;
-                case "et":
+                case "ET":
                     objReturn = Properties.Resources.et;
                     break;
-                case "eu":
+                case "EU":
                     objReturn = Properties.Resources.eu;
                     break;
-                case "fi":
+                case "FI":
                     objReturn = Properties.Resources.fi;
                     break;
-                case "fj":
+                case "FJ":
                     objReturn = Properties.Resources.fj;
                     break;
-                case "fk":
+                case "FK":
                     objReturn = Properties.Resources.fk;
                     break;
-                case "fm":
+                case "FM":
                     objReturn = Properties.Resources.fm;
                     break;
-                case "fo":
+                case "FO":
                     objReturn = Properties.Resources.fo;
                     break;
-                case "fr":
+                case "FR":
                     objReturn = Properties.Resources.fr;
                     break;
-                case "ga":
+                case "GA":
                     objReturn = Properties.Resources.ga;
                     break;
-                case "gb":
+                case "GB":
                     objReturn = Properties.Resources.gb;
                     break;
-                case "gd":
+                case "GD":
                     objReturn = Properties.Resources.gd;
                     break;
-                case "ge":
+                case "GE":
                     objReturn = Properties.Resources.ge;
                     break;
-                case "gf":
+                case "GF":
                     objReturn = Properties.Resources.gf;
                     break;
-                case "gh":
+                case "GH":
                     objReturn = Properties.Resources.gh;
                     break;
-                case "gi":
+                case "GI":
                     objReturn = Properties.Resources.gi;
                     break;
-                case "gl":
+                case "GL":
                     objReturn = Properties.Resources.gl;
                     break;
-                case "gm":
+                case "GM":
                     objReturn = Properties.Resources.gm;
                     break;
-                case "gn":
+                case "GN":
                     objReturn = Properties.Resources.gn;
                     break;
-                case "gp":
+                case "GP":
                     objReturn = Properties.Resources.gp;
                     break;
-                case "gq":
+                case "GQ":
                     objReturn = Properties.Resources.gq;
                     break;
-                case "gr":
+                case "GR":
                     objReturn = Properties.Resources.gr;
                     break;
-                case "gs":
+                case "GS":
                     objReturn = Properties.Resources.gs;
                     break;
-                case "gt":
+                case "GT":
                     objReturn = Properties.Resources.gt;
                     break;
-                case "gu":
+                case "GU":
                     objReturn = Properties.Resources.gu;
                     break;
-                case "gw":
+                case "GW":
                     objReturn = Properties.Resources.gw;
                     break;
-                case "gy":
+                case "GY":
                     objReturn = Properties.Resources.gy;
                     break;
-                case "hk":
+                case "HK":
                     objReturn = Properties.Resources.hk;
                     break;
-                case "hm":
+                case "HM":
                     objReturn = Properties.Resources.hm;
                     break;
-                case "hn":
+                case "HN":
                     objReturn = Properties.Resources.hn;
                     break;
-                case "hr":
+                case "HR":
                     objReturn = Properties.Resources.hr;
                     break;
-                case "ht":
+                case "HT":
                     objReturn = Properties.Resources.ht;
                     break;
-                case "hu":
+                case "HU":
                     objReturn = Properties.Resources.hu;
                     break;
-                case "id":
+                case "ID":
                     objReturn = Properties.Resources.id;
                     break;
-                case "ie":
+                case "IE":
                     objReturn = Properties.Resources.ie;
                     break;
-                case "il":
+                case "IL":
                     objReturn = Properties.Resources.il;
                     break;
-                case "in":
+                case "IN":
                     objReturn = Properties.Resources._in;
                     break;
-                case "io":
+                case "IO":
                     objReturn = Properties.Resources.io;
                     break;
-                case "iq":
+                case "IQ":
                     objReturn = Properties.Resources.iq;
                     break;
-                case "ir":
+                case "IR":
                     objReturn = Properties.Resources.ir;
                     break;
-                case "is":
+                case "IS":
                     objReturn = Properties.Resources._is;
                     break;
-                case "it":
+                case "IT":
                     objReturn = Properties.Resources.it;
                     break;
-                case "jm":
+                case "JM":
                     objReturn = Properties.Resources.jm;
                     break;
-                case "jo":
+                case "JO":
                     objReturn = Properties.Resources.jo;
                     break;
-                case "jp":
+                case "JP":
                     objReturn = Properties.Resources.jp;
                     break;
-                case "ke":
+                case "KE":
                     objReturn = Properties.Resources.ke;
                     break;
-                case "kg":
+                case "KG":
                     objReturn = Properties.Resources.kg;
                     break;
-                case "kh":
+                case "KH":
                     objReturn = Properties.Resources.kh;
                     break;
-                case "ki":
+                case "KI":
                     objReturn = Properties.Resources.ki;
                     break;
-                case "km":
+                case "KM":
                     objReturn = Properties.Resources.km;
                     break;
-                case "kn":
+                case "KN":
                     objReturn = Properties.Resources.kn;
                     break;
-                case "kp":
+                case "KP":
                     objReturn = Properties.Resources.kp;
                     break;
-                case "kr":
+                case "KR":
                     objReturn = Properties.Resources.kr;
                     break;
-                case "kw":
+                case "KW":
                     objReturn = Properties.Resources.kw;
                     break;
-                case "ky":
+                case "KY":
                     objReturn = Properties.Resources.ky;
                     break;
-                case "kz":
+                case "KZ":
                     objReturn = Properties.Resources.kz;
                     break;
-                case "la":
+                case "LA":
                     objReturn = Properties.Resources.la;
                     break;
-                case "lb":
+                case "LB":
                     objReturn = Properties.Resources.lb;
                     break;
-                case "lc":
+                case "LC":
                     objReturn = Properties.Resources.lc;
                     break;
-                case "li":
+                case "LI":
                     objReturn = Properties.Resources.li;
                     break;
-                case "lk":
+                case "LK":
                     objReturn = Properties.Resources.lk;
                     break;
-                case "lr":
+                case "LR":
                     objReturn = Properties.Resources.lr;
                     break;
-                case "ls":
+                case "LS":
                     objReturn = Properties.Resources.ls;
                     break;
-                case "lt":
+                case "LT":
                     objReturn = Properties.Resources.lt;
                     break;
-                case "lu":
+                case "LU":
                     objReturn = Properties.Resources.lu;
                     break;
-                case "lv":
+                case "LV":
                     objReturn = Properties.Resources.lv;
                     break;
-                case "ly":
+                case "LY":
                     objReturn = Properties.Resources.ly;
                     break;
-                case "ma":
+                case "MA":
                     objReturn = Properties.Resources.ma;
                     break;
-                case "mc":
+                case "MC":
                     objReturn = Properties.Resources.mc;
                     break;
-                case "md":
+                case "MD":
                     objReturn = Properties.Resources.md;
                     break;
-                case "me":
+                case "ME":
                     objReturn = Properties.Resources.me;
                     break;
-                case "mg":
+                case "MG":
                     objReturn = Properties.Resources.mg;
                     break;
-                case "mh":
+                case "MH":
                     objReturn = Properties.Resources.mh;
                     break;
-                case "mk":
+                case "MK":
                     objReturn = Properties.Resources.mk;
                     break;
-                case "ml":
+                case "ML":
                     objReturn = Properties.Resources.ml;
                     break;
-                case "mm":
+                case "MM":
                     objReturn = Properties.Resources.mm;
                     break;
-                case "mn":
+                case "MN":
                     objReturn = Properties.Resources.mn;
                     break;
-                case "mo":
+                case "MO":
                     objReturn = Properties.Resources.mo;
                     break;
-                case "mp":
+                case "MP":
                     objReturn = Properties.Resources.mp;
                     break;
-                case "mq":
+                case "MQ":
                     objReturn = Properties.Resources.mq;
                     break;
-                case "mr":
+                case "MR":
                     objReturn = Properties.Resources.mr;
                     break;
-                case "ms":
+                case "MS":
                     objReturn = Properties.Resources.ms;
                     break;
-                case "mt":
+                case "MT":
                     objReturn = Properties.Resources.mt;
                     break;
-                case "mu":
+                case "MU":
                     objReturn = Properties.Resources.mu;
                     break;
-                case "mv":
+                case "MV":
                     objReturn = Properties.Resources.mv;
                     break;
-                case "mw":
+                case "MW":
                     objReturn = Properties.Resources.mw;
                     break;
-                case "mx":
+                case "MX":
                     objReturn = Properties.Resources.mx;
                     break;
-                case "my":
+                case "MY":
                     objReturn = Properties.Resources.my;
                     break;
-                case "mz":
+                case "MZ":
                     objReturn = Properties.Resources.mz;
                     break;
-                case "na":
+                case "NA":
                     objReturn = Properties.Resources.na;
                     break;
-                case "nc":
+                case "NC":
                     objReturn = Properties.Resources.nc;
                     break;
-                case "ne":
+                case "NE":
                     objReturn = Properties.Resources.ne;
                     break;
-                case "nf":
+                case "NF":
                     objReturn = Properties.Resources.nf;
                     break;
-                case "ng":
+                case "NG":
                     objReturn = Properties.Resources.ng;
                     break;
-                case "ni":
+                case "NI":
                     objReturn = Properties.Resources.ni;
                     break;
-                case "nl":
+                case "NL":
                     objReturn = Properties.Resources.nl;
                     break;
-                case "no":
+                case "NO":
                     objReturn = Properties.Resources.no;
                     break;
-                case "np":
+                case "NP":
                     objReturn = Properties.Resources.np;
                     break;
-                case "nr":
+                case "NR":
                     objReturn = Properties.Resources.nr;
                     break;
-                case "nu":
+                case "NU":
                     objReturn = Properties.Resources.nu;
                     break;
-                case "nz":
+                case "NZ":
                     objReturn = Properties.Resources.nz;
                     break;
-                case "om":
+                case "OM":
                     objReturn = Properties.Resources.om;
                     break;
-                case "pa":
+                case "PA":
                     objReturn = Properties.Resources.pa;
                     break;
-                case "pe":
+                case "PE":
                     objReturn = Properties.Resources.pe;
                     break;
-                case "pf":
+                case "PF":
                     objReturn = Properties.Resources.pf;
                     break;
-                case "pg":
+                case "PG":
                     objReturn = Properties.Resources.pg;
                     break;
-                case "ph":
+                case "PH":
                     objReturn = Properties.Resources.ph;
                     break;
-                case "pk":
+                case "PK":
                     objReturn = Properties.Resources.pk;
                     break;
-                case "pl":
+                case "PL":
                     objReturn = Properties.Resources.pl;
                     break;
-                case "pm":
+                case "PM":
                     objReturn = Properties.Resources.pm;
                     break;
-                case "pn":
+                case "PN":
                     objReturn = Properties.Resources.pn;
                     break;
-                case "pr":
+                case "PR":
                     objReturn = Properties.Resources.pr;
                     break;
-                case "ps":
+                case "PS":
                     objReturn = Properties.Resources.ps;
                     break;
-                case "pt":
+                case "PT":
                     objReturn = Properties.Resources.pt;
                     break;
-                case "pw":
+                case "PW":
                     objReturn = Properties.Resources.pw;
                     break;
-                case "py":
+                case "PY":
                     objReturn = Properties.Resources.py;
                     break;
-                case "qa":
+                case "QA":
                     objReturn = Properties.Resources.qa;
                     break;
-                case "re":
+                case "RE":
                     objReturn = Properties.Resources.re;
                     break;
-                case "ro":
+                case "RO":
                     objReturn = Properties.Resources.ro;
                     break;
-                case "rs":
+                case "RS":
                     objReturn = Properties.Resources.rs;
                     break;
-                case "ru":
+                case "RU":
                     objReturn = Properties.Resources.ru;
                     break;
-                case "rw":
+                case "RW":
                     objReturn = Properties.Resources.rw;
                     break;
-                case "sa":
+                case "SA":
                     objReturn = Properties.Resources.sa;
                     break;
-                case "sb":
+                case "SB":
                     objReturn = Properties.Resources.sb;
                     break;
-                case "sc":
+                case "SC":
                     objReturn = Properties.Resources.sc;
                     break;
-                case "sd":
+                case "SD":
                     objReturn = Properties.Resources.sd;
                     break;
-                case "se":
+                case "SE":
                     objReturn = Properties.Resources.se;
                     break;
-                case "sg":
+                case "SG":
                     objReturn = Properties.Resources.sg;
                     break;
-                case "sh":
+                case "SH":
                     objReturn = Properties.Resources.sh;
                     break;
-                case "si":
+                case "SI":
                     objReturn = Properties.Resources.si;
                     break;
-                case "sj":
+                case "SJ":
                     objReturn = Properties.Resources.sj;
                     break;
-                case "sk":
+                case "SK":
                     objReturn = Properties.Resources.sk;
                     break;
-                case "sl":
+                case "SL":
                     objReturn = Properties.Resources.sl;
                     break;
-                case "sm":
+                case "SM":
                     objReturn = Properties.Resources.sm;
                     break;
-                case "sn":
+                case "SN":
                     objReturn = Properties.Resources.sn;
                     break;
-                case "so":
+                case "SO":
                     objReturn = Properties.Resources.so;
                     break;
-                case "sr":
+                case "SR":
                     objReturn = Properties.Resources.sr;
                     break;
-                case "st":
+                case "ST":
                     objReturn = Properties.Resources.st;
                     break;
-                case "sv":
+                case "SV":
                     objReturn = Properties.Resources.sv;
                     break;
-                case "sy":
+                case "SY":
                     objReturn = Properties.Resources.sy;
                     break;
-                case "sz":
+                case "SZ":
                     objReturn = Properties.Resources.sz;
                     break;
-                case "tc":
+                case "TC":
                     objReturn = Properties.Resources.tc;
                     break;
-                case "td":
+                case "TD":
                     objReturn = Properties.Resources.td;
                     break;
-                case "tf":
+                case "TF":
                     objReturn = Properties.Resources.tf;
                     break;
-                case "tg":
+                case "TG":
                     objReturn = Properties.Resources.tg;
                     break;
-                case "th":
+                case "TH":
                     objReturn = Properties.Resources.th;
                     break;
-                case "tj":
+                case "TJ":
                     objReturn = Properties.Resources.tj;
                     break;
-                case "tk":
+                case "TK":
                     objReturn = Properties.Resources.tk;
                     break;
-                case "tl":
+                case "TL":
                     objReturn = Properties.Resources.tl;
                     break;
-                case "tm":
+                case "TM":
                     objReturn = Properties.Resources.tm;
                     break;
-                case "tn":
+                case "TN":
                     objReturn = Properties.Resources.tn;
                     break;
-                case "to":
+                case "TO":
                     objReturn = Properties.Resources.to;
                     break;
-                case "tr":
+                case "TR":
                     objReturn = Properties.Resources.tr;
                     break;
-                case "tt":
+                case "TT":
                     objReturn = Properties.Resources.tt;
                     break;
-                case "tv":
+                case "TV":
                     objReturn = Properties.Resources.tv;
                     break;
-                case "tw":
+                case "TW":
                     objReturn = Properties.Resources.tw;
                     break;
-                case "tz":
+                case "TZ":
                     objReturn = Properties.Resources.tz;
                     break;
-                case "ua":
+                case "UA":
                     objReturn = Properties.Resources.ua;
                     break;
-                case "ug":
+                case "UG":
                     objReturn = Properties.Resources.ug;
                     break;
-                case "um":
+                case "UM":
                     objReturn = Properties.Resources.um;
                     break;
-                case "us":
+                case "US":
                     objReturn = Properties.Resources.us;
                     break;
-                case "uy":
+                case "UY":
                     objReturn = Properties.Resources.uy;
                     break;
-                case "uz":
+                case "UZ":
                     objReturn = Properties.Resources.uz;
                     break;
-                case "va":
+                case "VA":
                     objReturn = Properties.Resources.va;
                     break;
-                case "vc":
+                case "VC":
                     objReturn = Properties.Resources.vc;
                     break;
-                case "ve":
+                case "VE":
                     objReturn = Properties.Resources.ve;
                     break;
-                case "vg":
+                case "VG":
                     objReturn = Properties.Resources.vg;
                     break;
-                case "vi":
+                case "VI":
                     objReturn = Properties.Resources.vi;
                     break;
-                case "vn":
+                case "VN":
                     objReturn = Properties.Resources.vn;
                     break;
-                case "vu":
+                case "VU":
                     objReturn = Properties.Resources.vu;
                     break;
-                case "wf":
+                case "WF":
                     objReturn = Properties.Resources.wf;
                     break;
-                case "ws":
+                case "WS":
                     objReturn = Properties.Resources.ws;
                     break;
-                case "xe":
+                case "XE":
                     objReturn = Properties.Resources.xe;
                     break;
-                case "xs":
+                case "XS":
                     objReturn = Properties.Resources.xs;
                     break;
-                case "xw":
+                case "XW":
                     objReturn = Properties.Resources.xw;
                     break;
-                case "ye":
+                case "YE":
                     objReturn = Properties.Resources.ye;
                     break;
-                case "yt":
+                case "YT":
                     objReturn = Properties.Resources.yt;
                     break;
-                case "za":
+                case "ZA":
                     objReturn = Properties.Resources.za;
                     break;
-                case "zm":
+                case "ZM":
                     objReturn = Properties.Resources.zm;
                     break;
-                case "zw":
+                case "ZW":
                     objReturn = Properties.Resources.zw;
                     break;
-                case "default":
+                case "DEFAULT":
                     objReturn = Properties.Resources.defaulted;
                     break;
-                case "noimagedots":
+                case "NOIMAGEDOTS":
                     objReturn = Properties.Resources.noimagedots;
                     break;
-                    
                 default:
                     Utils.BreakIfDebug();
-                    objReturn = Properties.Resources.defaulted;
-                    break;
+                    goto case "DEFAULT";
             }
             return objReturn;
         }

@@ -677,7 +677,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Visual).</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
@@ -734,7 +734,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Hearing)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
@@ -804,7 +804,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Perception to find the source of a sound</condition>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -955,14 +955,14 @@
       <cost>Rating * 25000</cost>
       <source>SR5</source>
       <page>455</page>
-      <bonus>
+      <bonus unique="muscle">
         <disablequality>Celerity</disablequality>
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -1014,17 +1014,17 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Skillwires</condition>
+          <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Skillwires</condition>
+          <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Skillwires</condition>
+          <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
       </wirelessbonus>
       <rating>6</rating>
@@ -1827,7 +1827,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for Gymnastics (Jumping) and Running (Sprinting)</condition>
+          <condition>LimitCondition_CyberwareHydraulicJacks</condition>
         </limitmodifier>
       </bonus>
       <limit>False</limit>
@@ -2144,7 +2144,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Perception</condition>
+          <condition>LimitCondition_SkillsActivePerception</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -2224,7 +2224,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Scientific or Technical Knowledge Skills</condition>
+          <condition>LimitCondition_SkillsKnowledgeScientificTechnical</condition>
         </limitmodifier>
         <specificskill>
           <name>Mathematics</name>
@@ -2246,7 +2246,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Navigation</condition>
+          <condition>LimitCondition_SkillsActiveNavigation</condition>
         </limitmodifier>
       </bonus>
       <wirelessbonus>
@@ -2282,7 +2282,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Performance, Must use linked synthtrument</condition>
+          <condition>LimitCondition_SkillsActivePerformanceSynthtrument</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2491,7 +2491,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Performance</condition>
+          <condition>LimitCondition_SkillsActivePerformance</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2556,7 +2556,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing), Gymnastics (Jumping), Running, and knockdown resist.</condition>
+          <condition>LimitCondition_CyberwareBalanceTail</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2600,7 +2600,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
+          <condition>LimitCondition_CyberwareCyberfins</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -2645,7 +2645,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
+          <condition>LimitCondition_CyberwareCyberfins</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -2728,7 +2728,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for knockdown resist, Must be engaged.</condition>
+          <condition>LimitCondition_CyberwareFootAnchor</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2807,7 +2807,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing)</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2839,7 +2839,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymnastics (Climbing)</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2871,12 +2871,12 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Escape Artist and Grappling, Must be loosened</condition>
+          <condition>LimitCondition_SkillsActiveEscapeArtistGrappleLoose</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for tests involving endurance, Must be tightened</condition>
+          <condition>LimitCondition_TestsEndurance</condition>
         </limitmodifier>
       </bonus>
       <forbidden>
@@ -3131,7 +3131,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>4</value>
-          <condition>Only for Sneaking, Must be completely naked</condition>
+          <condition>LimitCondition_SkillsActiveSneakingNaked</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -3504,7 +3504,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Stealth group.</condition>
+          <condition>LimitCondition_SkillGroupStealth</condition>
         </limitmodifier>
         <runmultiplier>
           <val>1</val>
@@ -3599,7 +3599,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only when used as hand</condition>
+          <condition>LimitCondition_CyberwareMonkeyFoot</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -3634,7 +3634,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only when attacking with the legs</condition>
+          <condition>LimitCondition_CyberwareRaptorFoot</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -3667,7 +3667,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only when in use</condition>
+          <condition>LimitCondition_InUse</condition>
         </limitmodifier>
         <walkmultiplier>
           <category>Ground</category>
@@ -3710,7 +3710,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-2</value>
-          <condition>Only when in use</condition>
+          <condition>LimitCondition_InUse</condition>
         </limitmodifier>
         <walkmultiplier>
           <category>Ground</category>
@@ -3750,7 +3750,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only with manual dexterity</condition>
+          <condition>LimitCondition_CyberwareSnakeFingers</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -4758,9 +4758,11 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>87</page>
-      <bonus>
-        <selecttext />
-      </bonus>
+      <pairbonus>
+        <selectskill knowledgeskills="False">
+          <val>1</val>
+        </selectskill>
+      </pairbonus>
       <required>
         <parentdetails>
           <OR>
@@ -5397,9 +5399,6 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
-      <bonus>
-        <selecttext />
-      </bonus>
       <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
@@ -5450,7 +5449,7 @@
       <source>CF</source>
       <page>149</page>
       <bonus>
-        <selecttext />
+        <selecttext xml="gear.xml" xpath="/chummer/gears/gear[category = 'Toxins']" allowedit="True" />
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>6</rating>
@@ -5508,7 +5507,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Intuition-linked skills</condition>
+          <condition>LimitCondition_AttribSkillINT</condition>
         </limitmodifier>
         <skilllinkedattribute>
           <name>INT</name>
@@ -5533,7 +5532,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Logic-linked skills</condition>
+          <condition>LimitCondition_AttribSkillINT</condition>
         </limitmodifier>
         <skilllinkedattribute>
           <name>LOG</name>

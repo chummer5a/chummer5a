@@ -24,53 +24,53 @@ using System.Diagnostics;
 namespace Chummer
 {
     /// <summary>
-    /// A node for use with DependancyGraph. Essentially just a directed graph node that is doubly-linked with all graph nodes to which it has edges.
+    /// A node for use with DependencyGraph. Essentially just a directed graph node that is doubly-linked with all graph nodes to which it has edges.
     /// </summary>
     [DebuggerDisplay("{" + nameof(MyObject) + "}")]
-    public sealed class DependancyGraphNode<T>
+    public sealed class DependencyGraphNode<T>
     {
         /// <summary>
-        /// Constructor used for to make a blueprint of a DependancyGraph.
-        /// Use this constructor when specifying arguments for a DependancyGraph constructor.
+        /// Constructor used for to make a blueprint of a DependencyGraph.
+        /// Use this constructor when specifying arguments for a DependencyGraph constructor.
         /// </summary>
         /// <param name="objMyObject">Object associated with the current node</param>
         /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
-        public DependancyGraphNode(T objMyObject, params DependancyGraphNode<T>[] lstDownStreamNodes)
+        public DependencyGraphNode(T objMyObject, params DependencyGraphNode<T>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
 
-            foreach (DependancyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
+            foreach (DependencyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(this, null));
-                DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objDownStreamNode, null));
+                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(this, null));
+                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(objDownStreamNode, null));
             }
         }
 
         /// <summary>
-        /// Constructor used for to make a blueprint of a DependancyGraph.
-        /// Use this constructor when specifying arguments for a DependancyGraph constructor.
+        /// Constructor used for to make a blueprint of a DependencyGraph.
+        /// Use this constructor when specifying arguments for a DependencyGraph constructor.
         /// </summary>
         /// <param name="objMyObject">Object associated with the current node</param>
-        /// <param name="funcDependancyCondition">Function that must return true at the time of collecting dependancies in order for the dependancy to register.</param>
+        /// <param name="funcDependancyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
         /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
-        public DependancyGraphNode(T objMyObject, Func<bool> funcDependancyCondition, params DependancyGraphNode<T>[] lstDownStreamNodes)
+        public DependencyGraphNode(T objMyObject, Func<bool> funcDependancyCondition, params DependencyGraphNode<T>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
 
-            foreach (DependancyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
+            foreach (DependencyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(this, funcDependancyCondition));
-                DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objDownStreamNode, funcDependancyCondition));
+                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(this, funcDependancyCondition));
+                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(objDownStreamNode, funcDependancyCondition));
             }
         }
 
         /// <summary>
-        /// Constructor used for actually constructing a DependancyGraph (to make sure any and all parents and children of a node can always be found in that same graph).
-        /// Use only inside of DependancyGraph methods!
+        /// Constructor used for actually constructing a DependencyGraph (to make sure any and all parents and children of a node can always be found in that same graph).
+        /// Use only inside of DependencyGraph methods!
         /// </summary>
         /// <param name="objMyObject">Object associated with the current node</param>
-        /// <param name="objRoot">DependancyGraph to which this node is to belong</param>
-        public DependancyGraphNode(T objMyObject, DependancyGraph<T> objRoot)
+        /// <param name="objRoot">DependencyGraph to which this node is to belong</param>
+        public DependencyGraphNode(T objMyObject, DependencyGraph<T> objRoot)
         {
             MyObject = objMyObject;
             Root = objRoot;
@@ -83,28 +83,28 @@ namespace Chummer
         public bool Initializing { get; set; }
 
         /// <summary>
-        /// Object tied to this node in the DependancyGraph
+        /// Object tied to this node in the DependencyGraph
         /// </summary>
         public T MyObject { get; }
 
         /// <summary>
-        /// Root DependancyGraph object to which this DependancyGraphNode is attached.
+        /// Root DependencyGraph object to which this DependencyGraphNode is attached.
         /// </summary>
-        public DependancyGraph<T> Root { get; }
+        public DependencyGraph<T> Root { get; }
 
         /// <summary>
         /// Collection of all items that depend on the object tied to this node.
         /// </summary>
-        public ICollection<DependancyGraphNodeWithCondition<T>> UpStreamNodes { get; } = new HashSet<DependancyGraphNodeWithCondition<T>>();
+        public ICollection<DependencyGraphNodeWithCondition<T>> UpStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T>>();
 
         /// <summary>
         /// Collection of all items on which the object tied to this node depends.
         /// </summary>
-        public ICollection<DependancyGraphNodeWithCondition<T>> DownStreamNodes { get; } = new HashSet<DependancyGraphNodeWithCondition<T>>();
+        public ICollection<DependencyGraphNodeWithCondition<T>> DownStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T>>();
 
         public override bool Equals(object obj)
         {
-            if (obj is DependancyGraphNode<T> objOtherNode)
+            if (obj is DependencyGraphNode<T> objOtherNode)
             {
                 if (Root != null)
                     return Root == objOtherNode.Root && (MyObject == null && objOtherNode.MyObject == null || MyObject?.Equals(objOtherNode.MyObject) == true);

@@ -28,7 +28,9 @@ using Chummer.Classes;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
+using System.Xml.XPath;
 using static Chummer.Backend.Skills.SkillsSection;
 using Chummer.Backend.Uniques;
 using NLog;
@@ -38,7 +40,7 @@ namespace Chummer
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
     public class Improvement: IHasNotes, IHasInternalId, ICanSort
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private string DisplayDebug()
         {
             return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
@@ -337,7 +339,7 @@ namespace Chummer
             ContactKarmaMinimum,
             GenetechEssMultiplier,
             AllowSpriteFettering,
-			DisableDrugGrade,
+            DisableDrugGrade,
             DrugDuration,
             DrugDurationMultiplier,
             Surprise,
@@ -429,6 +431,8 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public static ImprovementType ConvertToImprovementType(string strValue)
         {
+            if (string.IsNullOrEmpty(strValue))
+                return ImprovementType.None;
             if (strValue.Contains("InitiativePass"))
             {
                 strValue = strValue.Replace("InitiativePass","InitiativeDice");
@@ -462,6 +466,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             Log.Trace("Save enter");
 
             objWriter.WriteStartElement("improvement");
@@ -470,23 +476,23 @@ namespace Chummer
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("improvedname", _strImprovedName);
             objWriter.WriteElementString("sourcename", _strSourceName);
-            objWriter.WriteElementString("min", _intMin.ToString());
-            objWriter.WriteElementString("max", _intMax.ToString());
-            objWriter.WriteElementString("aug", _intAug.ToString());
-            objWriter.WriteElementString("augmax", _intAugMax.ToString());
-            objWriter.WriteElementString("val", _intVal.ToString());
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("min", _intMin.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("max", _intMax.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("aug", _intAug.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("augmax", _intAugMax.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("val", _intVal.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("exclude", _strExclude);
             objWriter.WriteElementString("condition", _strCondition);
             objWriter.WriteElementString("improvementttype", _objImprovementType.ToString());
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            objWriter.WriteElementString("custom", _blnCustom.ToString());
+            objWriter.WriteElementString("custom", _blnCustom.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("customname", _strCustomName);
             objWriter.WriteElementString("customid", _strCustomId);
             objWriter.WriteElementString("customgroup", _strCustomGroup);
-            objWriter.WriteElementString("addtorating", _blnAddToRating.ToString());
-            objWriter.WriteElementString("enabled", _blnEnabled.ToString());
-            objWriter.WriteElementString("order", _intOrder.ToString());
+            objWriter.WriteElementString("addtorating", _blnAddToRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("enabled", _blnEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("order", _intOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
 
@@ -836,13 +842,14 @@ namespace Chummer
                 case ImprovementType.Attribute:
                 {
                     string strTargetAttribute = ImprovedName;
-                    bool blnIsBase = strTargetAttribute.EndsWith("Base");
                     HashSet<string> setAttributePropertiesChanged = new HashSet<string>();
                     if (AugmentedMaximum != 0)
                         setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
-                    if (Maximum != 0) setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
-                    if (Minimum != 0) setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
-                    if (blnIsBase)
+                    if (Maximum != 0)
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
+                    if (Minimum != 0)
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                    if (strTargetAttribute.EndsWith("Base", StringComparison.Ordinal))
                     {
                         strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
                         if (Augmented != 0)
@@ -859,7 +866,8 @@ namespace Chummer
                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
                             .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                         {
-                            if (objCharacterAttrib.Abbrev != strTargetAttribute) continue;
+                            if (objCharacterAttrib.Abbrev != strTargetAttribute)
+                                continue;
                             foreach (string strPropertyName in setAttributePropertiesChanged)
                             {
                                 yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
@@ -1135,7 +1143,7 @@ namespace Chummer
                         (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>()
                              .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
                          (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                             x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
+                             x.Name == ImprovedName || x.CurrentDisplayName == ImprovedName));
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1295,7 +1303,7 @@ namespace Chummer
                     break;
                 case ImprovementType.ContactForceGroup:
                 {
-                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.UniqueId == ImprovedName);
                     if (objTargetContact != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
@@ -1341,7 +1349,7 @@ namespace Chummer
                              .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
                          (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
                              x.InternalId == ImprovedName ||
-                             x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
+                             x.CurrentDisplayName == ImprovedName));
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1353,9 +1361,9 @@ namespace Chummer
                     break;
                 case ImprovementType.AllowSkillDefault:
                 {
-                    if (ImprovedName == string.Empty)
+                    if (string.IsNullOrEmpty(ImprovedName))
                     {
-                        // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly. 
+                        // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly.
                         foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
@@ -1480,7 +1488,7 @@ namespace Chummer
                 case ImprovementType.Skillsoft:
                 {
                     KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                        x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
+                        x.InternalId == ImprovedName || x.CurrentDisplayName == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1878,7 +1886,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
                         KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                            x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
+                            x.Name == ImprovedName || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -2086,7 +2094,7 @@ namespace Chummer
                     break;
                 case ImprovementType.ContactForcedLoyalty:
                 {
-                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.UniqueId == ImprovedName);
                     if (objTargetContact != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
@@ -2096,7 +2104,7 @@ namespace Chummer
                     break;
                 case ImprovementType.ContactMakeFree:
                 {
-                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.UniqueId == ImprovedName);
                     if (objTargetContact != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
@@ -2198,7 +2206,7 @@ namespace Chummer
         public string InternalId => SourceName;
     }
 
-    public struct ImprovementDictionaryKey
+    public struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>, IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
     {
         private readonly Tuple<Character, Improvement.ImprovementType, string> _objTupleKey;
 
@@ -2215,22 +2223,36 @@ namespace Chummer
         {
             if (obj is ImprovementDictionaryKey objOtherImprovementDictionaryKey)
             {
-                return CharacterObject == objOtherImprovementDictionaryKey.CharacterObject &&
-                       ImprovementType == objOtherImprovementDictionaryKey.ImprovementType &&
-                       ImprovementName == objOtherImprovementDictionaryKey.ImprovementName;
+                return Equals(objOtherImprovementDictionaryKey);
             }
             if (obj is Tuple<Character, Improvement.ImprovementType, string> objOtherTuple)
             {
-                return CharacterObject == objOtherTuple.Item1 &&
-                       ImprovementType == objOtherTuple.Item2 &&
-                       ImprovementName == objOtherTuple.Item3;
+                return Equals(objOtherTuple);
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return CharacterObject.GetHashCode() + ImprovementType.GetHashCode() + ImprovementName.GetHashCode();
+            return new {CharacterObject, ImprovementType, ImprovementName}.GetHashCode();
+        }
+
+        public bool Equals(ImprovementDictionaryKey other)
+        {
+            if (other == null)
+                return false;
+            return CharacterObject == other.CharacterObject &&
+                   ImprovementType == other.ImprovementType &&
+                   ImprovementName == other.ImprovementName;
+        }
+
+        public bool Equals(Tuple<Character, Improvement.ImprovementType, string> other)
+        {
+            if (other == null)
+                return false;
+            return CharacterObject == other.Item1 &&
+                   ImprovementType == other.Item2 &&
+                   ImprovementName == other.Item3;
         }
 
         public override string ToString()
@@ -2273,7 +2295,7 @@ namespace Chummer
 
     public static class ImprovementManager
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // String that will be used to limit the selection in Pick forms.
         private static string s_StrLimitSelection = string.Empty;
 
@@ -2285,7 +2307,7 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
+        /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specific
         /// CharacterAttribute selection for Qualities like Metagenic Improvement.
         /// </summary>
         public static string LimitSelection
@@ -2356,7 +2378,7 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
         public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");
@@ -2932,18 +2954,18 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues("))
+            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
                 string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString());
+                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
+                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
                 //Log.Info("strValue = " + strValue);
@@ -2957,12 +2979,16 @@ namespace Chummer
                 return intValue;
             }
             //Log.Exit("ValueToInt");
-            int.TryParse(strValue, out int intReturn);
+            int.TryParse(strValue, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn);
             return intReturn;
         }
 
         public static string DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating, string strFriendlyName, ref bool blnIsKnowledgeSkill)
         {
+            if (xmlBonusNode == null)
+                throw new ArgumentNullException(nameof(xmlBonusNode));
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             string strSelectedSkill;
             blnIsKnowledgeSkill = blnIsKnowledgeSkill || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
             if (blnIsKnowledgeSkill)
@@ -3008,7 +3034,7 @@ namespace Chummer
                 HashSet<string> setAllowedNames = null;
                 if (!string.IsNullOrEmpty(ForcedValue))
                 {
-                    setAllowedNames = new HashSet<string> {ForcedValue};
+                    setAllowedNames = new HashSet<string> { ForcedValue };
                 }
                 else if (!string.IsNullOrEmpty(strPrompt))
                 {
@@ -3042,15 +3068,15 @@ namespace Chummer
                         int intSkillRating = objKnowledgeSkill.Rating;
                         if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
                         {
-                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
                         }
                     }
                     setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                 }
 
-                if (strPrompt != string.Empty && !setProcessedSkillNames.Contains(strPrompt))
+                if (!string.IsNullOrEmpty(strPrompt) && !setProcessedSkillNames.Contains(strPrompt))
                 {
-                    lstDropdownItems.Add(new ListItem(strPrompt, LanguageManager.TranslateExtra(strPrompt, GlobalOptions.Language)));
+                    lstDropdownItems.Add(new ListItem(strPrompt, LanguageManager.TranslateExtra(strPrompt)));
                     setProcessedSkillNames.Add(strPrompt);
                 }
                 if (intMinimumRating <= 0)
@@ -3120,8 +3146,8 @@ namespace Chummer
                         objFilter.Append(')');
                     }
 
-                    string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
-                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    string strFilter = objFilter.Length > 0 ? ") and (" + objFilter : string.Empty;
+                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
                         if (xmlSkillList?.Count > 0)
                         {
@@ -3137,81 +3163,85 @@ namespace Chummer
 
                 lstDropdownItems.Sort(CompareListItems.CompareNames);
 
-                frmSelectItem frmPickSkill = new frmSelectItem
+                using (frmSelectItem frmPickSkill = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language),
+                    Description = LanguageManager.GetString("Title_SelectSkill"),
                     AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                };
-                if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
-                    frmPickSkill.GeneralItems = lstDropdownItems;
-                else
-                    frmPickSkill.DropdownItems = lstDropdownItems;
-
-                frmPickSkill.ShowDialog();
-
-                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                })
                 {
-                    throw new AbortedException();
-                }
+                    if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
+                        frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
+                    else
+                        frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
 
-                strSelectedSkill = frmPickSkill.SelectedItem;
+                    frmPickSkill.ShowDialog();
+
+                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelectedSkill = frmPickSkill.SelectedItem;
+                }
             }
             else
             {
                 // Display the Select Skill window and record which Skill was selected.
-                frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
+                using (frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
                 {
                     Description = !string.IsNullOrEmpty(strFriendlyName)
-                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language)
-                };
-                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                    frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                    frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-
-                XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
-                if (xmlSkillCategories != null)
-                    frmPickSkill.LimitToCategories = xmlSkillCategories;
-                string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.OnlyCategory = strTemp;
-                strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.OnlySkillGroup = strTemp;
-                strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.ExcludeCategory = strTemp;
-                strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.ExcludeSkillGroup = strTemp;
-                strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.LimitToSkill = strTemp;
-                strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.ExcludeSkill = strTemp;
-                strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp))
-                    frmPickSkill.LinkedAttribute = strTemp;
-
-                if (!string.IsNullOrEmpty(ForcedValue))
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill")
+                })
                 {
-                    frmPickSkill.OnlySkill = ForcedValue;
-                    frmPickSkill.Opacity = 0;
+                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                        frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                        frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+
+                    XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                    if (xmlSkillCategories != null)
+                        frmPickSkill.LimitToCategories = xmlSkillCategories;
+                    string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.OnlyCategory = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.OnlySkillGroup = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.ExcludeCategory = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.ExcludeSkillGroup = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.LimitToSkill = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.ExcludeSkill = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.LinkedAttribute = strTemp;
+
+                    if (!string.IsNullOrEmpty(ForcedValue))
+                    {
+                        frmPickSkill.OnlySkill = ForcedValue;
+                        frmPickSkill.Opacity = 0;
+                    }
+
+                    frmPickSkill.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelectedSkill = frmPickSkill.SelectedSkill;
                 }
-
-                frmPickSkill.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSkill.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                strSelectedSkill = frmPickSkill.SelectedSkill;
             }
 
             return strSelectedSkill;
@@ -3226,12 +3256,12 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
         /// <param name="strSourceName">Name of the item that grants these Improvements.</param>
-        /// <param name="nodBonus">bonus XMLXode from the source data file.</param>
+        /// <param name="nodBonus">bonus XML Node from the source data file.</param>
         /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
         /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
         /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
         /// 
-        /// <returns>True if successfull</returns>
+        /// <returns>True if successful</returns>
         public static bool CreateImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName,
             XmlNode nodBonus, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
         {
@@ -3239,9 +3269,8 @@ namespace Chummer
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
             Log.Info("strSourceName = " + strSourceName);
             Log.Info("nodBonus = " + nodBonus?.OuterXml);
-            Log.Info("intRating = " + intRating.ToString());
+            Log.Info("intRating = " + intRating.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info("strFriendlyName = " + strFriendlyName);
-            Log.Info("intRating = " + intRating.ToString());
 
             /*try
             {*/
@@ -3257,14 +3286,6 @@ namespace Chummer
 
             Log.Info("_strForcedValue = " + s_StrForcedValue);
             Log.Info("_strLimitSelection = " + s_StrLimitSelection);
-
-            // If there is no character object, don't attempt to add any Improvements.
-            if (objCharacter == null && blnAddImprovementsToCharacter)
-            {
-                Log.Info("_objCharacter = Null");
-                Log.Debug("CreateImprovements exit");
-                return true;
-            }
 
             string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
             // If no friendly name was provided, use the one from SourceName.
@@ -3294,26 +3315,102 @@ namespace Chummer
                     {
                         s_StrSelectedValue = LimitSelection;
                     }
-                    else
+                    else if (nodBonus["selecttext"].Attributes.Count == 0)
                     {
                         // Display the Select Text window and record the value that was entered.
-                        frmSelectText frmPickText = new frmSelectText
+                        using (frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName)
-                        };
-                        frmPickText.ShowDialog();
+                            Description =
+                                string.Format(GlobalOptions.CultureInfo,
+                                    LanguageManager.GetString("String_Improvement_SelectText"),
+                                    strFriendlyName)
+                        })
+                        {
+                            frmPickText.ShowDialog();
 
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
-                        {
-                            Rollback(objCharacter);
-                            ForcedValue = string.Empty;
-                            LimitSelection = string.Empty;
-                            Log.Debug("CreateImprovements exit");
-                            return false;
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickText.DialogResult == DialogResult.Cancel)
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
+                                return false;
+                            }
+
+                            s_StrSelectedValue = frmPickText.SelectedValue;
                         }
+                    }
+                    else
+                    {
+                        using (frmSelectItem frmSelect = new frmSelectItem
+                        {
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
+                        })
+                        {
+                            string strXPath = nodBonus["selecttext"].Attributes["xpath"]?.InnerText;
+                            if (string.IsNullOrEmpty(strXPath))
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
+                                return false;
+                            }
+                            XPathNavigator xmlDoc = XmlManager.Load(nodBonus["selecttext"].Attributes["xml"]?.InnerText)
+                                .GetFastNavigator();
+                            List<ListItem> lstItems = new List<ListItem>();
+                            foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                            {
+                                string strName = objNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                                if (string.IsNullOrWhiteSpace(strName))
+                                {
+                                    // Assume that if we're not looking at something that has an XML node,
+                                    // we're looking at a direct xpath filter or something that has proper names
+                                    // like the lifemodule storybuilder macros.
+                                    lstItems.Add(new ListItem(objNode.Value, objNode.Value));
+                                }
+                                else
+                                {
+                                    lstItems.Add(new ListItem(strName,
+                                        objNode.SelectSingleNode("translate")?.Value ?? strName));
+                                }
+                            }
+                            //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                            //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                            lstItems = new List<ListItem>(lstItems.GroupBy(o => new { o.Value, o.Name })
+                                .Select(o => o.FirstOrDefault()));
 
-                        s_StrSelectedValue = frmPickText.SelectedValue;
+                            if (lstItems.Count == 0)
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
+                                return false;
+                            }
+
+                            if (Convert.ToBoolean(nodBonus["selecttext"].Attributes["allowedit"]?.InnerText, GlobalOptions.InvariantCultureInfo))
+                            {
+                                frmSelect.SetDropdownItemsMode(lstItems);
+                            }
+                            else
+                            {
+                                frmSelect.SetGeneralItemsMode(lstItems);
+                            }
+
+                            frmSelect.ShowDialog();
+
+                            if (frmSelect.DialogResult == DialogResult.Cancel)
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                Log.Debug("CreateImprovements exit");
+                                return false;
+                            }
+                            s_StrSelectedValue = frmSelect.SelectedItem;
+                        }
                     }
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
@@ -3324,6 +3421,14 @@ namespace Chummer
                     CreateImprovement(objCharacter, s_StrSelectedValue, objImprovementSource, strSourceName,
                         Improvement.ImprovementType.Text,
                         strUnique);
+                }
+
+                // If there is no character object, don't attempt to add any Improvements.
+                if (objCharacter == null && blnAddImprovementsToCharacter)
+                {
+                    Log.Info("_objCharacter = Null");
+                    Log.Debug("CreateImprovements exit");
+                    return true;
                 }
 
                 // Check to see what bonuses the node grants.
@@ -3337,9 +3442,17 @@ namespace Chummer
                     }
                 }
             }
+            // If there is no character object, don't attempt to add any Improvements.
+            else if (objCharacter == null && blnAddImprovementsToCharacter)
+            {
+                Log.Info("_objCharacter = Null");
+                Log.Debug("CreateImprovements exit");
+                return true;
+            }
+
 
             // If we've made it this far, everything went OK, so commit the Improvements.
-            
+
             if (blnAddImprovementsToCharacter)
             {
                 Log.Info("Calling Commit");
@@ -3353,7 +3466,7 @@ namespace Chummer
                 Log.Info("Returned from scheduled Rollback");
             }
 
-            // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty. 
+            // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
             if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
             {
                 SelectedValue = string.Empty;
@@ -3384,7 +3497,7 @@ namespace Chummer
             if (bonusNode == null)
                 return false;
             //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
-            //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+            //So far it is just a slower Dictionary<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
@@ -3422,8 +3535,12 @@ namespace Chummer
             return true;
         }
 
-        public static void EnableImprovements(Character objCharacter, IList<Improvement> objImprovementList)
+        public static void EnableImprovements(Character objCharacter, ICollection<Improvement> objImprovementList)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (objImprovementList == null)
+                throw new ArgumentNullException(nameof(objImprovementList));
             foreach (Improvement objImprovement in objImprovementList)
             {
                 // Enable the Improvement.
@@ -3538,12 +3655,12 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strImprovedName))
                             objCharacter.PrototypeTranshuman = 1;
                         else
-                            objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName);
+                            objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         break;
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
                         if (NewContact != null)
                         {
                             // TODO: Add code to enable disabled contact
@@ -3622,16 +3739,16 @@ namespace Chummer
                     case Improvement.ImprovementType.SpecialSkills:
                         {
                             string strCategory;
-                            switch ((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName))
+                            switch ((FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName))
                             {
-                                case FilterOptions.Magician:
-                                case FilterOptions.Sorcery:
-                                case FilterOptions.Conjuring:
-                                case FilterOptions.Enchanting:
-                                case FilterOptions.Adept:
+                                case FilterOption.Magician:
+                                case FilterOption.Sorcery:
+                                case FilterOption.Conjuring:
+                                case FilterOption.Enchanting:
+                                case FilterOption.Adept:
                                     strCategory = "Magical Active";
                                     break;
-                                case FilterOptions.Technomancer:
+                                case FilterOption.Technomancer:
                                     strCategory = "Resonance Active";
                                     break;
                                 default:
@@ -3657,7 +3774,7 @@ namespace Chummer
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
                             SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
                             //if (objSkillSpec != null)
-                            // TODO: Add temporarily removde skill specialization
+                            // TODO: Add temporarily remove skill specialization
                         }
                         break;
                         */
@@ -3680,8 +3797,12 @@ namespace Chummer
             objImprovementList.ProcessRelevantEvents();
         }
 
-        public static void DisableImprovements(Character objCharacter, IList<Improvement> objImprovementList)
+        public static void DisableImprovements(Character objCharacter, ICollection<Improvement> objImprovementList)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (objImprovementList == null)
+                throw new ArgumentNullException(nameof(objImprovementList));
             foreach (Improvement objImprovement in objImprovementList)
             {
                 // Disable the Improvement.
@@ -3805,12 +3926,12 @@ namespace Chummer
                                 objCharacter.PrototypeTranshuman = 0;
                         }
                         else
-                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         break;
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
                         if (NewContact != null)
                         {
                             // TODO: Add code to disable contact
@@ -3890,16 +4011,16 @@ namespace Chummer
                         if (!blnHasDuplicate)
                         {
                             string strCategory;
-                            switch ((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName))
+                            switch ((FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName))
                             {
-                                case FilterOptions.Magician:
-                                case FilterOptions.Sorcery:
-                                case FilterOptions.Conjuring:
-                                case FilterOptions.Enchanting:
-                                case FilterOptions.Adept:
+                                case FilterOption.Magician:
+                                case FilterOption.Sorcery:
+                                case FilterOption.Conjuring:
+                                case FilterOption.Enchanting:
+                                case FilterOption.Adept:
                                     strCategory = "Magical Active";
                                     break;
-                                case FilterOptions.Technomancer:
+                                case FilterOption.Technomancer:
                                     strCategory = "Resonance Active";
                                     break;
                                 default:
@@ -3909,17 +4030,17 @@ namespace Chummer
                             string strLoopCategory = string.Empty;
                             foreach (Improvement objLoopImprovement in objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills && x.Enabled))
                             {
-                                FilterOptions eLoopFilter = (FilterOptions)Enum.Parse(typeof(FilterOptions), objLoopImprovement.ImprovedName);
+                                FilterOption eLoopFilter = (FilterOption)Enum.Parse(typeof(FilterOption), objLoopImprovement.ImprovedName);
                                 switch (eLoopFilter)
                                 {
-                                    case FilterOptions.Magician:
-                                    case FilterOptions.Sorcery:
-                                    case FilterOptions.Conjuring:
-                                    case FilterOptions.Enchanting:
-                                    case FilterOptions.Adept:
+                                    case FilterOption.Magician:
+                                    case FilterOption.Sorcery:
+                                    case FilterOption.Conjuring:
+                                    case FilterOption.Enchanting:
+                                    case FilterOption.Adept:
                                         strLoopCategory = "Magical Active";
                                         break;
-                                    case FilterOptions.Technomancer:
+                                    case FilterOption.Technomancer:
                                         strLoopCategory = "Resonance Active";
                                         break;
                                 }
@@ -3992,11 +4113,11 @@ namespace Chummer
                 ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
                 : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
             // Compatibility fix for when blnConcatSelectedValue was around
-            if (Guid.TryParseExact(strSourceName, "D", out var dummyResult))
+            if (strSourceName.IsGuid())
             {
-                var space = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                var space = LanguageManager.GetString("String_Space");
                 objImprovementList.AddRange(objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource &&
-                    (objImprovement.SourceName.StartsWith(strSourceName + space) || objImprovement.SourceName.StartsWith(strSourceName + " "))));
+                    (objImprovement.SourceName.StartsWith(strSourceName + space, StringComparison.Ordinal) || objImprovement.SourceName.StartsWith(strSourceName + " ", StringComparison.Ordinal))));
             }
             return RemoveImprovements(objCharacter, objImprovementList);
         }
@@ -4008,12 +4129,12 @@ namespace Chummer
         /// <param name="objImprovementList">List of improvements to delete.</param>
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
-        public static decimal RemoveImprovements(Character objCharacter, IList<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
+        public static decimal RemoveImprovements(Character objCharacter, ICollection<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
         {
             Log.Debug("RemoveImprovements enter");
 
             // If there is no character object, don't try to remove any Improvements.
-            if (objCharacter == null)
+            if (objCharacter == null || objImprovementList == null)
             {
                 Log.Debug("RemoveImprovements exit");
                 return 0;
@@ -4158,7 +4279,7 @@ namespace Chummer
                         }
                         else
                         {
-                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
 
                             if (objCharacter.PrototypeTranshuman <= 0 && !blnReapplyImprovements)
                             {
@@ -4182,7 +4303,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
                         if (NewContact != null)
                             objCharacter.Contacts.Remove(NewContact);
                         break;
@@ -4298,7 +4419,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.RemoveSkills((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
+                            objCharacter.SkillsSection.RemoveSkills((FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName), !blnReapplyImprovements);
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
@@ -4365,11 +4486,11 @@ namespace Chummer
         /// Create a new Improvement and add it to the Character.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
-        /// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
         /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
         /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
         /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
-        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single highest value in the pool will be applied to the character.</param>
         /// <param name="intValue">Set a Value for the Improvement.</param>
         /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
         /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
@@ -4396,20 +4517,20 @@ namespace Chummer
                 "objImprovementType = " + objImprovementType.ToString());
             Log.Info( "strUnique = " + strUnique);
             Log.Info(
-                "intValue = " + intValue.ToString());
+                "intValue = " + intValue.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
-                "intRating = " + intRating.ToString());
+                "intRating = " + intRating.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
-                "intMinimum = " + intMinimum.ToString());
+                "intMinimum = " + intMinimum.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
-                "intMaximum = " + intMaximum.ToString());
+                "intMaximum = " + intMaximum.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
-                "intAugmented = " + intAugmented.ToString());
+                "intAugmented = " + intAugmented.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
-                "intAugmentedMaximum = " + intAugmentedMaximum.ToString());
+                "intAugmentedMaximum = " + intAugmentedMaximum.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info( "strExclude = " + strExclude);
             Log.Info(
-                "blnAddToRating = " + blnAddToRating.ToString());
+                "blnAddToRating = " + blnAddToRating.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info("strCondition = " + strCondition);
 
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
@@ -4499,6 +4620,8 @@ namespace Chummer
         /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
         public static void ProcessRelevantEvents(this IEnumerable<Improvement> lstImprovements)
         {
+            if (lstImprovements == null)
+                return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicPropertiesChanged = new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             foreach (Improvement objImprovement in lstImprovements)

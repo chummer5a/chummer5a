@@ -1470,7 +1470,7 @@
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
       <costfor>10</costfor>
       <weaponbonus>
@@ -1521,7 +1521,7 @@
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
       <costfor>10</costfor>
       <weaponbonus>
@@ -5810,7 +5810,7 @@
       <page>269</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5823,7 +5823,7 @@
       <page>269</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5836,7 +5836,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5849,7 +5849,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[Type = 'Ranged']" allowedit="True"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5884,7 +5884,7 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selectskill />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5910,7 +5910,7 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Melee']" allowedit="True"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6078,7 +6078,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation</condition>
+          <condition>LimitCondition_Intimidation</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -7090,7 +7090,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Visual)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -7215,7 +7215,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Hearing)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -7248,7 +7248,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Perception to find the source of a sound</condition>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
         </limitmodifier>
       </bonus>
       <capacity>[2]</capacity>
@@ -8026,7 +8026,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for picking mechanical locks</condition>
+          <condition>LimitCondition_GearAutopicker</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 500</cost>
@@ -8881,7 +8881,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for First Aid and Medicine</condition>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -9705,7 +9705,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -9718,7 +9718,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -9731,7 +9731,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -10304,7 +10304,7 @@
       <page>230</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <required>
         <oneof>
@@ -10322,7 +10322,7 @@
       <page>230</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <required>
         <oneof>
@@ -10340,7 +10340,7 @@
       <page>230</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <required>
         <oneof>
@@ -10779,7 +10779,7 @@
       <page>230</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
       <cost>Rating * 4000</cost>
     </gear>
@@ -10792,7 +10792,7 @@
       <page>230</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
       <cost>Rating * 4000</cost>
     </gear>
@@ -10805,7 +10805,7 @@
       <page>230</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
       <cost>Rating * 4000</cost>
     </gear>
@@ -11197,7 +11197,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 1000</cost>
       <allowrename>True</allowrename>
@@ -11211,7 +11211,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 1000</cost>
       <allowrename>True</allowrename>
@@ -11225,7 +11225,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 1000</cost>
       <allowrename>True</allowrename>
@@ -11253,7 +11253,7 @@
       <page>326</page>
       <avail>8R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Combat']" allowedit="True" />
       </bonus>
       <cost>2000</cost>
       <allowrename>True</allowrename>
@@ -11267,7 +11267,7 @@
       <page>326</page>
       <avail>4R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Detection']" allowedit="True" />
       </bonus>
       <cost>500</cost>
       <allowrename>True</allowrename>
@@ -11281,7 +11281,7 @@
       <page>326</page>
       <avail>4R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Health']" allowedit="True" />
       </bonus>
       <cost>500</cost>
       <allowrename>True</allowrename>
@@ -11295,7 +11295,7 @@
       <page>326</page>
       <avail>8R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Illusion']" allowedit="True" />
       </bonus>
       <cost>1000</cost>
       <allowrename>True</allowrename>
@@ -11309,7 +11309,7 @@
       <page>326</page>
       <avail>8R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Manipulation']" allowedit="True" />
       </bonus>
       <cost>1500</cost>
       <allowrename>True</allowrename>
@@ -11631,7 +11631,7 @@
       <page>212</page>
       <avail>4</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell" />
       </bonus>
       <cost>2000</cost>
     </gear>
@@ -11704,7 +11704,7 @@
       <page>213</page>
       <avail>(Rating * Rating)R</avail>
       <bonus>
-        <selecttext />
+        <selectskill skillcategory="Physical Active" />
       </bonus>
       <cost>Rating * 1500</cost>
     </gear>
@@ -11841,7 +11841,7 @@
       <page>143</page>
       <avail>9</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>1000</cost>
       <allowrename>True</allowrename>
@@ -13500,7 +13500,7 @@
       <cost>900</cost>
       <devicerating>0</devicerating>
       <bonus>
-        <selecttext />
+        <selecttext xml="programs.xml" xpath="/chummer/programs/program" />
       </bonus>
       <allowrename>True</allowrename>
     </gear>
@@ -16644,7 +16644,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Disguise and Impersonation</condition>
+          <condition>LimitCondition_SkillsActiveDisguiseImpersonation</condition>
         </limitmodifier>
       </bonus>
       <cost>+250</cost>
@@ -16693,7 +16693,7 @@
       <page>149</page>
       <avail>8F</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="gear.xml" xpath="/chummer/gears/gear[category = 'Toxins']" allowedit="True" />
       </bonus>
       <cost>Rating * 1500</cost>
       <allowrename>True</allowrename>
@@ -19063,7 +19063,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>3</value>
-          <condition>Only for First Aid and Medicine</condition>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </limitmodifier>
       </bonus>
       <cost>200</cost>

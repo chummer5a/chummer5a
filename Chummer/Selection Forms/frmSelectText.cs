@@ -36,7 +36,7 @@ namespace Chummer
         {
             if (PreventXPathErrors && txtValue.Text.Contains('"'))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidCharacters", GlobalOptions.Language), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

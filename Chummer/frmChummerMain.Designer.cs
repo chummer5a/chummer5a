@@ -18,6 +18,10 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _frmRoller?.Dispose();
+                _frmUpdate?.Dispose();
+                _workerVersionUpdateChecker?.Dispose();
+                _mascotChummy?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -168,7 +172,7 @@ namespace Chummer
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.newToolStripMenuItem.Tag = "Menu_Main_NewCharater";
+            this.newToolStripMenuItem.Tag = "Menu_Main_NewCharacter";
             this.newToolStripMenuItem.Text = "&New Character";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
             // 
@@ -660,7 +664,7 @@ namespace Chummer
             this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.newToolStripButton.Tag = "Menu_Main_NewCharater";
+            this.newToolStripButton.Tag = "Menu_Main_NewCharacter";
             this.newToolStripButton.Text = "New";
             this.newToolStripButton.Click += new System.EventHandler(this.ShowNewForm);
             // 
