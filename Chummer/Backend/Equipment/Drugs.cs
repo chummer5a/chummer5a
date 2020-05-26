@@ -538,7 +538,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiative != int.MinValue) return _intCachedInitiative;
-                _intCachedInitiative = Components.Where(d => d.ActiveDrugEffect != null).DefaultIfEmpty().Sum(d => d.ActiveDrugEffect.Initiative);
+                _intCachedInitiative = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.Initiative);
                 return _intCachedInitiative;
             }
         }
@@ -549,7 +549,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiativeDice != int.MinValue) return _intCachedInitiativeDice;
-                _intCachedInitiativeDice = Components.Where(d => d.ActiveDrugEffect != null).DefaultIfEmpty().Sum(d => d.ActiveDrugEffect.InitiativeDice);
+                _intCachedInitiativeDice = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.InitiativeDice);
                 return _intCachedInitiativeDice;
             }
         }
