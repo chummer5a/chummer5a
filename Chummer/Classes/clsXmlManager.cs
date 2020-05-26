@@ -655,7 +655,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            blnReturn = AmendNodeChildern(xmlDataDoc, objNode, "/chummer") || blnReturn;
+                            blnReturn = AmendNodeChildern(xmlDataDoc, objNode, "/chummer", new List<Tuple<XmlNode, string>>()) || blnReturn;
                         }
                     }
                 }
@@ -671,14 +671,16 @@ namespace Chummer
         /// <param name="xmlDoc">Document element in which to operate.</param>
         /// <param name="xmlAmendingNode">The amending (new) node.</param>
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
+        /// <param name="queExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
-        private static bool AmendNodeChildern(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath)
+        private static bool AmendNodeChildern(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound)
         {
             bool blnReturn = false;
             string strFilter = string.Empty;
             string strOperation = string.Empty;
             string strRegexPattern = string.Empty;
-            bool blnAddIfNotFound = true;
+            bool blnAddIfNotFoundAttributePresent = false;
+            bool blnAddIfNotFound = false;
             XmlAttributeCollection objAmendingNodeAttribs = xmlAmendingNode.Attributes;
             if (objAmendingNodeAttribs != null)
             {
@@ -733,6 +735,7 @@ namespace Chummer
                 XmlNode objAddIfNotFound = objAmendingNodeAttribs.RemoveNamedItem("addifnotfound");
                 if (objAddIfNotFound != null)
                 {
+                    blnAddIfNotFoundAttributePresent = true;
                     blnAddIfNotFound = objAddIfNotFound.InnerText == bool.TrueString;
                 }
 
@@ -826,24 +829,34 @@ namespace Chummer
                     // ..."append" if we don't have children and there's no target...
                     else if (objNodesToEdit?.Count == 0)
                         strOperation = "append";
-                    // ..."replace" if we don't have children and there are one or more targets.
+                    // ..."replace" but adding if not found if we don't have children and there are one or more targets.
                     else
+                    {
                         strOperation = "replace";
+                        if (!blnAddIfNotFoundAttributePresent)
+                            blnAddIfNotFound = true;
+                    }
+
                     break;
             }
 
             // We found nodes to target with the amend!
-            if (objNodesToEdit?.Count > 0)
+            if (objNodesToEdit?.Count > 0 || (strOperation == "recurse" && !blnAddIfNotFound))
             {
                 // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
                 if (strOperation == "recurse")
                 {
                     if (lstElementChildren?.Count > 0)
                     {
+                        Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
+                        lstExtraNodesToAddIfNotFound.Add(objMyData);
                         foreach (XmlNode objChild in lstElementChildren)
                         {
-                            blnReturn = AmendNodeChildern(xmlDoc, objChild, strNewXPath);
+                            blnReturn = AmendNodeChildern(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
                         }
+                        // Remove our info in case we weren't added.
+                        // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
+                        lstExtraNodesToAddIfNotFound.Remove(objMyData);
                     }
                 }
                 // ... otherwise loop through any nodes that satisfy the XPath filter.
@@ -994,8 +1007,29 @@ namespace Chummer
                 }
             }
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
-            else if (strOperation == "append" || (strOperation == "recurse" || strOperation == "replace") && blnAddIfNotFound)
+            else if (strOperation == "append" || blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace"))
             {
+                // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
+                if (lstExtraNodesToAddIfNotFound.Count > 0)
+                {
+                    // Because this is a list, foreach will move from oldest element to newest
+                    // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
+                    foreach (Tuple<XmlNode, string> objDataToAdd in lstExtraNodesToAddIfNotFound)
+                    {
+                        using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(objDataToAdd.Item2))
+                        {
+                            if (xmlParentNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                                {
+                                    xmlParentNode.AppendChild(xmlDoc.ImportNode(objDataToAdd.Item1, false));
+                                }
+                            }
+                        }
+                    }
+
+                    lstExtraNodesToAddIfNotFound.Clear(); // Everything in the list up to this point has been added, so now we clear the list
+                }
                 using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPath))
                 {
                     if (xmlParentNodeList?.Count > 0)
