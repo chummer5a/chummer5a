@@ -575,7 +575,7 @@
 			<text>&amp;Hilfe</text>
 		</string>
 		<string>
-			<key>Menu_Main_NewCharater</key>
+			<key>Menu_Main_NewCharacter</key>
 			<text>&amp;Neuer Charakter</text>
 		</string>
 		<string>
@@ -679,7 +679,7 @@
 			<text>In toxischen Critter konvertieren</text>
 		</string>
 		<string>
-			<key>Menu_SpecialConverToCyberzombie</key>
+			<key>Menu_SpecialConvertToCyberzombie</key>
 			<text>In Cyberzombie konvertieren</text>
 		</string>
 		<string>
@@ -819,7 +819,7 @@
 			<text>Cyberware und Bioware</text>
 		</string>
 		<string>
-			<key>Tab_StreeGear</key>
+			<key>Tab_StreetGear</key>
 			<text>Straßenausrüstung</text>
 		</string>
 		<string>
@@ -2733,20 +2733,20 @@
 			<text>Netzwerk:</text>
 		</string>
 		<string>
-			<key>Checkbox_GroupInitiation</key>
-			<text>Gruppeninitiation (-20%)</text>
+			<key>Checkbox_InitiationGroup</key>
+			<text>Gruppeninitiation (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>Initiationsprüfung (-20%)</text>
+			<text>Initiationsprüfung (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>Netzwerkwandlung (-20%)</text>
+			<text>Netzwerkwandlung (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>Wandlungsaufgabe (-20%)</text>
+			<text>Wandlungsaufgabe (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>
@@ -3365,7 +3365,7 @@
 			<text>Zurück erhalten/Ausgeben von Edge</text>
 		</string>
 		<string>
-			<key>Tip_CMCMPenalty</key>
+			<key>Tip_CMPenalty</key>
 			<text>Abzüge für Verletzungen.</text>
 		</string>
 		<string>
@@ -5265,7 +5265,7 @@
 			<text>Woche:</text>
 		</string>
 		<string>
-			<key>Button_AddImproevment</key>
+			<key>Button_AddImprovement</key>
 			<text>Verbesserung &amp;hinzufügen</text>
 		</string>
 		<string>
@@ -5947,7 +5947,7 @@
 			<text>Data-Datei Bezeichnung</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_DataDescription</key>
+			<key>Message_OmaeUpload_DataDescription</key>
 			<text>Bitte beschreiben Sie kurz, was für Daten diese Datei enthält.</text>
 		</string>
 		<string>
@@ -5971,7 +5971,7 @@
 			<text>Charakterblatt Bezeichnung</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_SheetDescription</key>
+			<key>Message_OmaeUpload_SheetDescription</key>
 			<text>Bitte geben Sie eine kurze Beschreibung für dieses Charakterblatt ein.</text>
 		</string>
 		<string>
@@ -6159,7 +6159,7 @@
 			<text>Ausrüstung kann nicht hinzugefügt werden.</text>
 		</string>
 		<string>
-			<key>String_ExpensePurchaseCyberwearGear</key>
+			<key>String_ExpensePurchaseCyberwareGear</key>
 			<text>Gekaufte Cyberwareausrüstung</text>
 		</string>
 		<string>
@@ -6287,7 +6287,7 @@
 		</string>
 		<!-- Version 380 -->
 		<string>
-			<key>Message_ConntAddComplexFormOptionLimit</key>
+			<key>Message_CannotAddComplexFormOptionLimit</key>
 			<text>Diese komplexe Form kann aufgrund ihrer Wertung nicht über mehr als {0} Optionen verfügen.</text>
 		</string>
 		<!-- Version  -->
@@ -6745,7 +6745,7 @@
 			<text>Ort:</text>
 		</string>
 		<string>
-			<key>Label_Archtype</key>
+			<key>Label_Archetype</key>
 			<text>Archetyp:</text>
 		</string>
 		<string>
@@ -7116,10 +7116,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignoriere Anforderungen für Künste aus dem Straßengrimoire</text>
 		</string>
-        <string>
-          <key>Checkbox_Options_AllowFreeGrids</key>
-          <text>Zulassen von beliebigen Gitter-Abonnements für Lebensstile, auch wenn 'Harte Ziele' nicht als Quellenbuch ausgewählt ist</text>
-        </string>
+		<string>
+			<key>Checkbox_Options_AllowFreeGrids</key>
+			<text>Zulassen von beliebigen Gitter-Abonnements für Lebensstile, auch wenn 'Harte Ziele' nicht als Quellenbuch ausgewählt ist</text>
+		</string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>Werte von Cyberbeinen für Bewegung verwenden</text>
@@ -7241,71 +7241,71 @@
 			<text>Antimagie Würfel</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirectDodge</key>
+			<key>Label_SpellDefenseIndirectDodge</key>
 			<text>Indirektes Ausweichen</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirect</key>
+			<key>Label_SpellDefenseIndirect</key>
 			<text>Indirektes Widerstehen</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakMana</key>
+			<key>Label_SpellDefenseDirectSoakMana</key>
 			<text>Direktes Widerstehen - Mana</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakPhysical</key>
+			<key>Label_SpellDefenseDirectSoakPhysical</key>
 			<text>Direktes Widerstehen - Körperlich</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDetection</key>
+			<key>Label_SpellDefenseDetection</key>
 			<text>Wahrnehmungszauber</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttBOD</key>
+			<key>Label_SpellDefenseDecAttBOD</key>
 			<text>Attribut verringern (KON)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttSTR</key>
+			<key>Label_SpellDefenseDecAttSTR</key>
 			<text>Attribut verringern (STR)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttAGI</key>
+			<key>Label_SpellDefenseDecAttAGI</key>
 			<text>Attribut verringern (GES)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttREA</key>
+			<key>Label_SpellDefenseDecAttREA</key>
 			<text>Attribut verringern (REA)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttLOG</key>
+			<key>Label_SpellDefenseDecAttLOG</key>
 			<text>Attribut verringern (LOG)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttWIL</key>
+			<key>Label_SpellDefenseDecAttWIL</key>
 			<text>Attribut verringern (WIL)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttINT</key>
+			<key>Label_SpellDefenseDecAttINT</key>
 			<text>Attribut verringern (INT)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttCHA</key>
+			<key>Label_SpellDefenseDecAttCHA</key>
 			<text>Attribut verringern (CHA)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionMana</key>
+			<key>Label_SpellDefenseIllusionMana</key>
 			<text>Illusion - Mana</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionPhysical</key>
+			<key>Label_SpellDefenseIllusionPhysical</key>
 			<text>Illusion - Körperlich</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipMental</key>
+			<key>Label_SpellDefenseManipMental</key>
 			<text>Manipulation - Geistig</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipPhysical</key>
+			<key>Label_SpellDefenseManipPhysical</key>
 			<text>Manipulation - Körperlich</text>
 		</string>
 		<!-- Advanced Programs Region -->
@@ -9586,35 +9586,34 @@
 			<key>Menu_ShareChummer</key>
 			<text>Chummer weiterempfehlen</text>
 		</string>
-        <string>
-          <key>Menu_ShowMySINners</key>
-          <text>Alle Daten anzeigen</text>
-        </string>
-        <string>
-          <key>Menu_RemovePinnedChummer</key>
-          <text>Charakter un-pinnen</text>
-        </string>
-        <string>
-          <key>Menu_AddPinnedChummer</key>
-          <text>pinne den Charakter</text>
-        </string>
-        <string>
-          <key>Menu_DeleteFromSINners</key>
-          <text>Lösche Chummer aus der SINners-Registry</text>
-        </string>
-        <string>
-          <key>Menu_RemovePinnedGroup</key>
-          <text>Gruppe un-pinnen</text>
-        </string>
-        <string>
-          <key>Menu_AddPinnedGroup</key>
-          <text>Pinne Gruppe</text>
-        </string>
-
-        <string>
-          <key>Menu_ShareChummerGroup</key>
-          <text>ganze Gruppe teilen/sharen</text>
-        </string>
+		<string>
+			<key>Menu_ShowMySINners</key>
+			<text>Alle Daten anzeigen</text>
+		</string>
+		<string>
+			<key>Menu_RemovePinnedChummer</key>
+			<text>Charakter un-pinnen</text>
+		</string>
+		<string>
+			<key>Menu_AddPinnedChummer</key>
+			<text>pinne den Charakter</text>
+		</string>
+		<string>
+			<key>Menu_DeleteFromSINners</key>
+			<text>Lösche Chummer aus der SINners-Registry</text>
+		</string>
+		<string>
+			<key>Menu_RemovePinnedGroup</key>
+			<text>Gruppe un-pinnen</text>
+		</string>
+		<string>
+			<key>Menu_AddPinnedGroup</key>
+			<text>Pinne Gruppe</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummerGroup</key>
+			<text>ganze Gruppe teilen/sharen</text>
+		</string>
 		<string>
 			<key>String_ApplicationInsights_OnlyLocal</key>
 			<text>nur lokal loggen</text>
@@ -9675,70 +9674,70 @@
 			<key>Rating_Meters</key>
 			<text>Meter</text>
 		</string>
-        <string>
-          <key>String_SINners_HowToGroupParentDescription</key>
-          <text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
-        </string>
-        <string>
-          <key>String_SINners_EnterGroupPassword</key>
-          <text>Diese Gruppe ist passwortgeschützt. Bitte gib das Passwort ein:</text>
-        </string>
-        <string>
-          <key>String_SINners_EnterGroupPasswordTitle</key>
-          <text>Passwortabfrage</text>
-        </string>
-        <string>
-          <key>Checkbox_Options_HideCharts</key>
-          <text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
-        </string>
-        <string>
-          <key>String_SuppressiveFireNA</key>
-          <text>Sperrfeuer (N/A)</text>
-        </string>
-        <string>
-          <key>String_FullBurstNA</key>
-          <text>Salvenmodus (N/A)</text>
-        </string>
-        <string>
-          <key>String_LongBurstNA</key>
-          <text>Lange Salve (N/A)</text>
-        </string>
-        <string>
-          <key>String_ShortBurstNA</key>
-          <text>Kurze Salve (N/A)</text>
-        </string>
-        <string>
-          <key>String_SingleShotNA</key>
-          <text>Einzelschussmodus (N/A)</text>
-        </string>
-        <string>
-          <key>String_DisableSkillGroupPrompt</key>
-          <text>Wählen Sie eine Fertigkeitsgruppe zum Deaktivieren aus.</text>
-        </string>
-        <string>
-          <key>Tip_OtherSurprise</key>
-          <text>Überraschung wird mit REA + INT berechnet.</text>
-        </string>
-        <string>
-          <key>Label_OtherSurprise</key>
-          <text>Überraschung:</text>
-        </string>
-        <string>
-          <key>Message_DuplicateDrugComponentWarning</key>
-          <text>Sie können die gleiche Komponente nicht mehr als {0} Mal hinzufügen.</text>
-        </string>
-        <string>
-          <key>Message_CyberzombieRequirementsImprovement</key>
-          <text>Sie müssen eine Fertigkeit haben, die es erlaubt, ein Cyberzombie zu werden.</text>
-        </string>
-        <string>
-          <key>Checkbox_Options_AllowTechnomancerSchooling</key>
-          <text>Technomancer: Zulassen von Initiationsvorteilen zur \'Ausbildung\'</text>
-        </string>
-        <string>
-          <key>Message_InvalidActiveSkillExcessSpecializations</key>
-          <text>Eine oder mehrere Aktionsfertigkeiten haben mehr als eine Spezialisierung:</text>
-        </string>
+		<string>
+			<key>String_SINners_HowToGroupParentDescription</key>
+			<text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPassword</key>
+			<text>Diese Gruppe ist passwortgeschützt. Bitte gib das Passwort ein:</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPasswordTitle</key>
+			<text>Passwortabfrage</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharts</key>
+			<text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
+		</string>
+		<string>
+			<key>String_SuppressiveFireNA</key>
+			<text>Sperrfeuer (N/A)</text>
+		</string>
+		<string>
+			<key>String_FullBurstNA</key>
+			<text>Salvenmodus (N/A)</text>
+		</string>
+		<string>
+			<key>String_LongBurstNA</key>
+			<text>Lange Salve (N/A)</text>
+		</string>
+		<string>
+			<key>String_ShortBurstNA</key>
+			<text>Kurze Salve (N/A)</text>
+		</string>
+		<string>
+			<key>String_SingleShotNA</key>
+			<text>Einzelschussmodus (N/A)</text>
+		</string>
+		<string>
+			<key>String_DisableSkillGroupPrompt</key>
+			<text>Wählen Sie eine Fertigkeitsgruppe zum Deaktivieren aus.</text>
+		</string>
+		<string>
+			<key>Tip_OtherSurprise</key>
+			<text>Überraschung wird mit REA + INT berechnet.</text>
+		</string>
+		<string>
+			<key>Label_OtherSurprise</key>
+			<text>Überraschung:</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Sie können die gleiche Komponente nicht mehr als {0} Mal hinzufügen.</text>
+		</string>
+		<string>
+			<key>Message_CyberzombieRequirementsImprovement</key>
+			<text>Sie müssen eine Fertigkeit haben, die es erlaubt, ein Cyberzombie zu werden.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowTechnomancerSchooling</key>
+			<text>Technomancer: Zulassen von Initiationsvorteilen zur \'Ausbildung\'</text>
+		</string>
+		<string>
+			<key>Message_InvalidActiveSkillExcessSpecializations</key>
+			<text>Eine oder mehrere Aktionsfertigkeiten haben mehr als eine Spezialisierung:</text>
+		</string>
 		<string>
 			<key>String_Avail</key>
 			<text>Verfügbarkeit</text>
@@ -9829,7 +9828,219 @@
 		</string>
 		<string>
 			<key>Message_NoValidModularMount</key>
-			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden.</text>
+			<text>Keinen passenden Modulanschluss gefunden, um diese Cyberware verwenden</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UnclampAttributeMinimum</key>
+			<text>Attributswerte dürfen wegen Essenzverlust unter 0 sinken</text>
+		</string>
+		<string>
+			<key>Checkbox_Expense_ForceCareerVisible</key>
+			<text>Anzeigen von Karma/Nuyen im Karrieremodus</text>
+		</string>
+		<string>
+			<key>LimitCondition_ExcludeIntimidation</key>
+			<text>Beinhaltet nicht Einschüchtern</text>
+		</string>
+		<string>
+			<key>LimitCondition_ExcludeFansGangers</key>
+			<text>Mit Ausnahme der Fans und Ganger von Urban Brawl</text>
+		</string>
+		<string>
+			<key>LimitCondition_SportsFans</key>
+			<text>Fans des Sportteams</text>
+		</string>
+		<string>
+			<key>LimitCondition_ShieldPhysicalPenalty</key>
+			<text>Für Aktionen, bei denen der Schild stören könnte.</text>
+		</string>
+		<string>
+			<key>LimitCondition_ExcludeIntimidationVisible</key>
+			<text>Für alle Proben außer Einschüchterung, muss sichtbar sein.</text>
+		</string>
+		<string>
+			<key>LimitCondition_ClimbingTests</key>
+			<text>Nur für Klettern</text>
+		</string>
+		<string>
+			<key>LimitCondition_GangVisible</key>
+			<text>Nur Gangmitglieder, muss sichtbar sein.</text>
+		</string>
+		<string>
+			<key>LimitCondition_PublicVisible</key>
+			<text>Nur in der Öffentlichkeit, muss sichtbar sein.</text>
+		</string>
+		<string>
+			<key>LimitCondition_Megacorp</key>
+			<text>Begrenzt auf einen Megakonzern</text>
+		</string>
+		<string>
+			<key>LimitCondition_Sprawl</key>
+			<text>Begrenzt auf einen Sprawl</text>
+		</string>
+		<string>
+			<key>LimitCondition_Visible</key>
+			<text>muss sichtbar sein</text>
+		</string>
+		<string>
+			<key>LimitCondition_NationalLanguageRanks</key>
+			<text>Erfordert 4+ Fertigkeitsstufen in der Landessprache</text>
+		</string>
+		<string>
+			<key>LimitCondition_BunkerGearVisible</key>
+			<text>Nur in Notfallsituationen, muss sichtbar sein</text>
+		</string>
+		<string>
+			<key>LimitCondition_Intimidation</key>
+			<text>Nur zum Einschüchtern</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveNavigation</key>
+			<text>Nur für Navigation</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActivePerceptionHearing</key>
+			<text>Nur für Wahrnehmung (Hören)</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActivePerceptionVisual</key>
+			<text>Nur für Wahrnehmung (Sehen)</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActivePerceptionSpatialRecognizer</key>
+			<text>Nur zur Wahrnehmung, um die Quelle eines Geräusches zu finden</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActivePerception</key>
+			<text>Nur für Wahrnehmung</text>
+		</string>
+		<string>
+			<key>LimitCondition_Skillwires</key>
+			<text>Nur für Talentleitungen</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActivePerformanceSinging</key>
+			<text>Nur für Vorführung (Singen)</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActivePerformance</key>
+			<text>Nur für Vorführung</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveContortion</key>
+			<text>Nur für Verrenkungen</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveSwimming</key>
+			<text>Nur für Schwimmen</text>
+		</string>
+		<string>
+			<key>LimitCondition_TestAttribLOG</key>
+			<text>Nur bei Logik-Proben</text>
+		</string>
+		<string>
+			<key>LimitCondition_CyberwareSnakeFingers</key>
+			<text>Nur mit manueller Geschicklichkeit</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsKnowledgeScientificTechnical</key>
+			<text>Nur für Wissens- und technische Fertigkeiten</text>
+		</string>
+		<string>
+			<key>Nur füfffff</key>
+			<text>Nur für Vorführung, verbundenes Synthtrument erforderlich</text>
+		</string>
+		<string>
+			<key>LimitCondition_TestAttribAGI</key>
+			<text>Nur bei geschicklichkeitsbezogenen Proben</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsKnowledgeAcademic</key>
+			<text>Nur für akademische Wissensfertigkeiten</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveEscapeArtist</key>
+			<text>Nur für Entfesseln</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveFirstAidMedicine</key>
+			<text>Nur für Erste Hilfe und Medizin</text>
+		</string>
+		<string>
+			<key>LimitCondition_CyberwareBalanceTail</key>
+			<text>Nur für Akrobatik (Klettern), Akrobatik (Springen), Laufen und Widerstand gegen Niederschlagen</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveGymnasticsClimbing</key>
+			<text>Nur für Akrobatik (Klettern)</text>
+		</string>
+		<string>
+			<key>LimitCondition_CyberwareHydraulicJacks</key>
+			<text>Nur für Akrobatik (Srpingen) und Laufen (Sprinten)</text>
+		</string>
+		<string>
+			<key>LimitCondition_IntimidationVisible</key>
+			<text>Nur zum Einschüchtern, muss sichtbar sein</text>
+		</string>
+		<string>
+			<key>LimitCondition_TestSneakingThermal</key>
+			<text>Nur für Schleichen gegen thermografische Sicht oder thermische Sensoren</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveSneaking</key>
+			<text>Nur für Schleichen gegen thermografische Sicht oder thermische Sensoren</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveSneakingNaked</key>
+			<text>Nur für Schleichen, muss vollständig unbekleidet sein</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveSneakingVisible</key>
+			<text>Nur für Schleichen, muss sichtbar sein</text>
+		</string>
+		<string>
+			<key>LimitCondition_AttribSkillLOG</key>
+			<text>Nur bei logikbezogenen Proben</text>
+		</string>
+		<string>
+			<key>LimitCondition_InUse</key>
+			<text>Nur bei Verwendung</text>
+		</string>
+		<string>
+			<key>LimitCondition_CyberwareMonkeyFoot</key>
+			<text>Nur bei Verwendung als Hand</text>
+		</string>
+		<string>
+			<key>LimitCondition_TestAttribINT</key>
+			<text>Nur bei Intuitionsproben</text>
+		</string>
+		<string>
+			<key>LimitCondition_AttribSkillINT</key>
+			<text>Nur bei intuitionsbezogenen Proben</text>
+		</string>
+		<string>
+			<key>LimitCondition_TestSpeech</key>
+			<text>Nur bei Proben im Zusammenhang mit Sprechen</text>
+		</string>
+		<string>
+			<key>LimitCondition_CyberwareRaptorFoot</key>
+			<text>Nur bei Angriff mit den Beinen</text>
+		</string>
+		<string>
+			<key>LimitCondition_KnockdownResistanceFootAnchor</key>
+			<text>Nur zum Widerstand gegen Niederschlagen, muss aktiv sein</text>
+		</string>
+		<string>
+			<key>LimitCondition_GearAutopicker</key>
+			<text>Nur zum Öffnen mechanischer Schlösser</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveDisguiseImpersonation</key>
+			<text>Nur für Verkleiden und Verkörperung</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillsActiveEscapeArtistGrappleLoose</key>
+			<text>Nur für Entfesseln und Festhalten, muss beweglich sein</text>
 		</string>
 	</strings>
 </chummer>

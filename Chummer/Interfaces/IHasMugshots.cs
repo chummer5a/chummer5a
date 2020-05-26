@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
@@ -24,7 +25,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public interface IHasMugshots
+    public interface IHasMugshots : IDisposable
     {
         IList<Image> Mugshots { get; }
         Image MainMugshot { get; set; }

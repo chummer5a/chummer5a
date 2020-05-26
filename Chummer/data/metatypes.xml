@@ -3642,7 +3642,7 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Shapeshifter Form Only">Striking Skin Pigmentation</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4206,9 +4206,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4288,9 +4288,9 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -4373,8 +4373,8 @@
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4454,8 +4454,8 @@
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -4539,8 +4539,8 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
@@ -4626,8 +4626,8 @@
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
@@ -4711,8 +4711,8 @@
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4792,9 +4792,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -4876,10 +4876,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
@@ -4962,9 +4962,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
@@ -5050,9 +5050,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -5138,9 +5138,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
@@ -5225,8 +5225,8 @@
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5306,8 +5306,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
@@ -5389,8 +5389,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
             </positive>
           </qualities>
@@ -5470,8 +5470,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -5554,8 +5554,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -5638,9 +5638,9 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5723,9 +5723,9 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
@@ -5811,9 +5811,9 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5895,10 +5895,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Ultrasonic (Shapeshifter Form Only)">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Thermographic Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5980,11 +5980,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Goring Horns</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -6118,7 +6118,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -6190,7 +6190,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
@@ -6264,7 +6264,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -6337,7 +6337,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -6488,7 +6488,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -6561,7 +6561,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
@@ -6637,7 +6637,7 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -6724,7 +6724,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -6799,7 +6799,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
@@ -6874,7 +6874,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
@@ -6942,7 +6942,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7015,7 +7015,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7162,7 +7162,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7235,7 +7235,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -7310,7 +7310,7 @@
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7384,7 +7384,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7460,7 +7460,7 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -7536,7 +7536,7 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -7612,7 +7612,7 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
@@ -7685,7 +7685,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Goring Horns</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -7817,7 +7817,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7909,7 +7909,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
@@ -8003,7 +8003,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -8097,7 +8097,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -8192,7 +8192,7 @@
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8288,7 +8288,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8380,7 +8380,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
@@ -8478,7 +8478,7 @@
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8572,7 +8572,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8666,7 +8666,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
@@ -8763,7 +8763,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -8865,7 +8865,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8958,7 +8958,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -9053,7 +9053,7 @@
             <positive>
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -9146,7 +9146,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -9239,7 +9239,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -9332,7 +9332,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -9427,7 +9427,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9524,7 +9524,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9620,7 +9620,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9715,7 +9715,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9811,7 +9811,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Goring Horns</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
+              <quality>Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9961,9 +9961,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -10055,9 +10055,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
@@ -10151,9 +10151,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -10245,9 +10245,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -10340,10 +10340,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only; Sunlight">Allergy (Common, Mild)</quality>
@@ -10438,9 +10438,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only; Pollution">Allergy (Common, Mild)</quality>
@@ -10532,11 +10532,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -10629,9 +10629,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -10726,10 +10726,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
@@ -10823,10 +10823,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
@@ -10922,9 +10922,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -11020,9 +11020,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
@@ -11118,9 +11118,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11213,9 +11213,9 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Fangs</quality>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11307,9 +11307,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11401,9 +11401,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
+              <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -11495,8 +11495,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -11591,10 +11591,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11690,10 +11690,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
@@ -11789,10 +11789,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11886,10 +11886,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11983,10 +11983,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12135,9 +12135,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12219,10 +12219,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12305,9 +12305,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12389,9 +12389,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12474,9 +12474,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
@@ -12562,9 +12562,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12646,9 +12646,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
@@ -12733,10 +12733,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
@@ -12820,10 +12820,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
@@ -12908,10 +12908,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
@@ -12998,10 +12998,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
@@ -13087,10 +13087,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
@@ -13176,8 +13176,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -13260,8 +13260,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
@@ -13345,8 +13345,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -13429,8 +13429,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -13513,8 +13513,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -13599,9 +13599,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -13688,9 +13688,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -13777,9 +13777,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -13864,9 +13864,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -13951,9 +13951,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -14093,8 +14093,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -14186,8 +14186,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
@@ -14281,7 +14281,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -14374,7 +14374,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -14468,7 +14468,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
             </positive>
@@ -14565,7 +14565,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -14658,7 +14658,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
@@ -14754,8 +14754,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -14850,8 +14850,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -14946,8 +14946,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
@@ -15044,8 +15044,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
@@ -15142,8 +15142,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
@@ -15240,7 +15240,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -15333,7 +15333,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality>Low-Light Vision</quality>
             </positive>
@@ -15428,7 +15428,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -15521,7 +15521,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -15614,7 +15614,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -15709,8 +15709,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -15807,8 +15807,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -15904,8 +15904,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -16000,8 +16000,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -16096,8 +16096,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -16247,9 +16247,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -16341,9 +16341,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
@@ -16437,8 +16437,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -16531,8 +16531,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -16626,8 +16626,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
             </positive>
@@ -16724,8 +16724,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -16818,8 +16818,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality>Low-Light Vision</quality>
@@ -16915,9 +16915,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
@@ -17012,9 +17012,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -17109,10 +17109,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
@@ -17208,9 +17208,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
@@ -17307,9 +17307,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
@@ -17405,8 +17405,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -17499,8 +17499,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
@@ -17595,8 +17595,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -17689,8 +17689,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -17783,8 +17783,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -17879,9 +17879,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -17978,13 +17978,13 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Shapeshifter Form Only">Cyclopean Eye</quality>
+              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -18076,9 +18076,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -18173,9 +18173,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -18270,9 +18270,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Balance Receptor</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -18423,10 +18423,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -18518,11 +18518,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -18615,10 +18615,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -18710,10 +18710,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -18806,10 +18806,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
@@ -18904,10 +18904,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
@@ -18999,12 +18999,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19097,12 +19097,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19195,12 +19195,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
@@ -19294,12 +19294,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
@@ -19395,13 +19395,13 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19495,14 +19495,14 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19598,10 +19598,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19693,11 +19693,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19790,10 +19790,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -19885,10 +19885,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -19980,11 +19980,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20077,11 +20077,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20177,11 +20177,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
@@ -20276,11 +20276,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20374,11 +20374,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20472,11 +20472,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20624,10 +20624,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20709,11 +20709,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -20796,10 +20796,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -20881,10 +20881,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -20967,10 +20967,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21055,10 +21055,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Pollution; Shapeshifter Form Only">Allergy (Common, Mild)</quality>
@@ -21140,10 +21140,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Celerity</quality>
@@ -21228,12 +21228,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21316,12 +21316,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
@@ -21405,14 +21405,14 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21496,13 +21496,13 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21586,14 +21586,14 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21676,10 +21676,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21761,11 +21761,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21847,10 +21847,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -21932,10 +21932,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -22017,11 +22017,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22104,11 +22104,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22194,11 +22194,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
@@ -22283,11 +22283,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22371,11 +22371,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22459,11 +22459,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22606,7 +22606,7 @@
               <!-- It is mentioned explicitly that the webbed digits and the senses of smell/hearing carry over to metahuman form-->
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -22693,7 +22693,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -23224,7 +23224,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -23333,7 +23333,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -23423,7 +23423,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -23515,7 +23515,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -23588,7 +23588,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -23940,7 +23940,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -24113,7 +24113,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -24207,7 +24207,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -24300,7 +24300,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -24392,7 +24392,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
@@ -24484,7 +24484,7 @@
             <positive>
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>

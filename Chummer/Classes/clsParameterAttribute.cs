@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
  using System.Text.RegularExpressions;
  using Chummer.Backend.Equipment;
@@ -27,7 +28,7 @@ namespace Chummer
     /// This class allows to read more advanced Values out of an XmlNode
     /// Such as "FixedValues([523],[42],[421])" or "Rating * 3"
     /// 
-    /// Provided it doesn't contain "FixedValues" the expression is evaulated
+    /// Provided it doesn't contain "FixedValues" the expression is evaluated
     /// at runtime as a mathematical expression, allowing stuff such as
     /// "Rating * Rating * 4", "Rating * 5 + 2" or "(Rating / 2) * 4000"
     /// <c>Expressions are evaluated in the order of expression NOT as defined
@@ -48,21 +49,25 @@ namespace Chummer
         /// <param name="attribute"></param>
         public ParameterAttribute(Gear gear, string attribute)
         {
+            if (gear == null)
+                throw new ArgumentNullException(nameof(gear));
+            if (attribute == null)
+                throw new ArgumentNullException(nameof(attribute));
 
             _gear = gear;
             _attribute = attribute;
 
             //If we have FixedValues use that
-            //I wan't to create array with rating as index for future, but
-            //this is keept for backwards/laziness
-            if (_attribute.StartsWith("FixedValues("))
+            //I wasn't to create array with rating as index for future, but
+            //this is kept for backwards/laziness
+            if (_attribute.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                //Regex to extracxt anything between ( ) in Param
+                //Regex to extract anything between ( ) in Param
                 Match m = FixedExtract.Match(_attribute);
                 string vals = m.Groups[1].Value;
 
-                //Regex to extract anything inbetween [ ]
-                //Not sure why i don't just split by , and remove it durring
+                //Regex to extract anything in between [ ]
+                //Not sure why i don't just split by , and remove it during
                 //next phase
                 MatchCollection m2 = Regex.Matches(vals, @"\[([^\]]*)\]");
 
@@ -77,12 +82,6 @@ namespace Chummer
                 }
                 fixedDoubles = lstValues.ToArray();
             }
-            else
-            {
-
-            }
-
-            
         }
 
         public Gear Gear => _gear;
@@ -107,7 +106,7 @@ namespace Chummer
                     }
                     else  //Structured like this to allow easy disabling of
                          //above code if IndexOutOfRangeException turns out to be
-                        //prefered. This is an elseif
+                        //preferred. This is an elseif
                         if(true)
                         {
                             return fixedDoubles[_gear.Rating];

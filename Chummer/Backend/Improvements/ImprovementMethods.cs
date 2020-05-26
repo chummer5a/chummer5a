@@ -37,6 +37,8 @@ namespace Chummer
         /// <returns>Function pointer to the named function if one is found. If none are found, returns a null pointer.</returns>
         public static Action<XmlNode> GetMethod(string strMethodName, [Annotations.NotNull] AddImprovementCollection objImprovementAdder)
         {
+            if (objImprovementAdder == null)
+                throw new ArgumentNullException(nameof(objImprovementAdder));
             // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
             switch (strMethodName)
             {

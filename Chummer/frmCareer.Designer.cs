@@ -91,23 +91,23 @@ namespace Chummer
             this.cmdEdgeGained = new System.Windows.Forms.Button();
             this.cmdEdgeSpent = new System.Windows.Forms.Button();
             this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceManipPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceManipMentalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIllusionPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttWILLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttLOGLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttINTLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttCHALabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttSTRLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttREALabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttAGILabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttBODLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDetectionLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDirectSoakPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDirectSoakManaLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIndirectSoakLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIndirectDodgeLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseManipPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseManipMentalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIllusionPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIllusionManaLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttWILLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttLOGLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttINTLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttCHALabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttSTRLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttREALabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttAGILabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttBODLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDetectionLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDirectSoakPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDirectSoakManaLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIndirectSoakLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIndirectDodgeLabel = new System.Windows.Forms.Label();
             this.lblStreetCred = new System.Windows.Forms.Label();
             this.lblNotoriety = new System.Windows.Forms.Label();
             this.cmdBurnStreetCred = new System.Windows.Forms.Button();
@@ -289,26 +289,26 @@ namespace Chummer
             this.lblSurprise = new Chummer.LabelWithToolTip();
             this.lblDodgeLabel = new Chummer.LabelWithToolTip();
             this.lblDodge = new Chummer.LabelWithToolTip();
-            this.tabDefences = new System.Windows.Forms.TabPage();
+            this.tabDefenses = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
-            this.lblSpellDefenceIndirectDodge = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIndirectSoak = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDirectSoakMana = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDirectSoakPhysical = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDetection = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttBOD = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttAGI = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttREA = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttSTR = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttCHA = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttINT = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttLOG = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttWIL = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIllusionMana = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIllusionPhysical = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceManipMental = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceManipPhysical = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIndirectDodge = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIndirectSoak = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDirectSoakMana = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDirectSoakPhysical = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDetection = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttBOD = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttAGI = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttREA = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttSTR = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttCHA = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttINT = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttLOG = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttWIL = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIllusionMana = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIllusionPhysical = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseManipMental = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseManipPhysical = new Chummer.LabelWithToolTip();
             this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -1393,7 +1393,7 @@ namespace Chummer
             this.flowLayoutPanel2.SuspendLayout();
             this.tabOtherInfo.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.tabDefences.SuspendLayout();
+            this.tabDefenses.SuspendLayout();
             this.tlpSpellDefense.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
             this.mnuCreateMenu.SuspendLayout();
@@ -1955,226 +1955,226 @@ namespace Chummer
             this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
             this.lblCounterspellingDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceManipPhysicalLabel
+            // lblSpellDefenseManipPhysicalLabel
             // 
-            this.lblSpellDefenceManipPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceManipPhysicalLabel.AutoSize = true;
-            this.lblSpellDefenceManipPhysicalLabel.Location = new System.Drawing.Point(23, 432);
-            this.lblSpellDefenceManipPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipPhysicalLabel.Name = "lblSpellDefenceManipPhysicalLabel";
-            this.lblSpellDefenceManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
-            this.lblSpellDefenceManipPhysicalLabel.TabIndex = 59;
-            this.lblSpellDefenceManipPhysicalLabel.Tag = "Label_SpellDefenceManipPhysical";
-            this.lblSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
-            this.lblSpellDefenceManipPhysicalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseManipPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseManipPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenseManipPhysicalLabel.Location = new System.Drawing.Point(23, 432);
+            this.lblSpellDefenseManipPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipPhysicalLabel.Name = "lblSpellDefenseManipPhysicalLabel";
+            this.lblSpellDefenseManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
+            this.lblSpellDefenseManipPhysicalLabel.TabIndex = 59;
+            this.lblSpellDefenseManipPhysicalLabel.Tag = "Label_SpellDefenseManipPhysical";
+            this.lblSpellDefenseManipPhysicalLabel.Text = "Manipulation - Physical";
+            this.lblSpellDefenseManipPhysicalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceManipMentalLabel
+            // lblSpellDefenseManipMentalLabel
             // 
-            this.lblSpellDefenceManipMentalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceManipMentalLabel.AutoSize = true;
-            this.lblSpellDefenceManipMentalLabel.Location = new System.Drawing.Point(30, 407);
-            this.lblSpellDefenceManipMentalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipMentalLabel.Name = "lblSpellDefenceManipMentalLabel";
-            this.lblSpellDefenceManipMentalLabel.Size = new System.Drawing.Size(108, 13);
-            this.lblSpellDefenceManipMentalLabel.TabIndex = 57;
-            this.lblSpellDefenceManipMentalLabel.Tag = "Label_SpellDefenceManipMental";
-            this.lblSpellDefenceManipMentalLabel.Text = "Manipulation - Mental";
-            this.lblSpellDefenceManipMentalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseManipMentalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseManipMentalLabel.AutoSize = true;
+            this.lblSpellDefenseManipMentalLabel.Location = new System.Drawing.Point(30, 407);
+            this.lblSpellDefenseManipMentalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipMentalLabel.Name = "lblSpellDefenseManipMentalLabel";
+            this.lblSpellDefenseManipMentalLabel.Size = new System.Drawing.Size(108, 13);
+            this.lblSpellDefenseManipMentalLabel.TabIndex = 57;
+            this.lblSpellDefenseManipMentalLabel.Tag = "Label_SpellDefenseManipMental";
+            this.lblSpellDefenseManipMentalLabel.Text = "Manipulation - Mental";
+            this.lblSpellDefenseManipMentalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceIllusionPhysicalLabel
+            // lblSpellDefenseIllusionPhysicalLabel
             // 
-            this.lblSpellDefenceIllusionPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIllusionPhysicalLabel.AutoSize = true;
-            this.lblSpellDefenceIllusionPhysicalLabel.Location = new System.Drawing.Point(51, 382);
-            this.lblSpellDefenceIllusionPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionPhysicalLabel.Name = "lblSpellDefenceIllusionPhysicalLabel";
-            this.lblSpellDefenceIllusionPhysicalLabel.Size = new System.Drawing.Size(87, 13);
-            this.lblSpellDefenceIllusionPhysicalLabel.TabIndex = 55;
-            this.lblSpellDefenceIllusionPhysicalLabel.Tag = "Label_SpellDefenceIllusionPhysical";
-            this.lblSpellDefenceIllusionPhysicalLabel.Text = "Illusion - Physical";
-            this.lblSpellDefenceIllusionPhysicalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseIllusionPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIllusionPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenseIllusionPhysicalLabel.Location = new System.Drawing.Point(51, 382);
+            this.lblSpellDefenseIllusionPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionPhysicalLabel.Name = "lblSpellDefenseIllusionPhysicalLabel";
+            this.lblSpellDefenseIllusionPhysicalLabel.Size = new System.Drawing.Size(87, 13);
+            this.lblSpellDefenseIllusionPhysicalLabel.TabIndex = 55;
+            this.lblSpellDefenseIllusionPhysicalLabel.Tag = "Label_SpellDefenseIllusionPhysical";
+            this.lblSpellDefenseIllusionPhysicalLabel.Text = "Illusion - Physical";
+            this.lblSpellDefenseIllusionPhysicalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceIllusionManaLabel
+            // lblSpellDefenseIllusionManaLabel
             // 
-            this.lblSpellDefenceIllusionManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIllusionManaLabel.AutoSize = true;
-            this.lblSpellDefenceIllusionManaLabel.Location = new System.Drawing.Point(63, 357);
-            this.lblSpellDefenceIllusionManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionManaLabel.Name = "lblSpellDefenceIllusionManaLabel";
-            this.lblSpellDefenceIllusionManaLabel.Size = new System.Drawing.Size(75, 13);
-            this.lblSpellDefenceIllusionManaLabel.TabIndex = 53;
-            this.lblSpellDefenceIllusionManaLabel.Tag = "Label_SpellDefenceIllusionMana";
-            this.lblSpellDefenceIllusionManaLabel.Text = "Illusion - Mana";
-            this.lblSpellDefenceIllusionManaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseIllusionManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIllusionManaLabel.AutoSize = true;
+            this.lblSpellDefenseIllusionManaLabel.Location = new System.Drawing.Point(63, 357);
+            this.lblSpellDefenseIllusionManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionManaLabel.Name = "lblSpellDefenseIllusionManaLabel";
+            this.lblSpellDefenseIllusionManaLabel.Size = new System.Drawing.Size(75, 13);
+            this.lblSpellDefenseIllusionManaLabel.TabIndex = 53;
+            this.lblSpellDefenseIllusionManaLabel.Tag = "Label_SpellDefenseIllusionMana";
+            this.lblSpellDefenseIllusionManaLabel.Text = "Illusion - Mana";
+            this.lblSpellDefenseIllusionManaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttWILLabel
+            // lblSpellDefenseDecAttWILLabel
             // 
-            this.lblSpellDefenceDecAttWILLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttWILLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttWILLabel.Location = new System.Drawing.Point(14, 332);
-            this.lblSpellDefenceDecAttWILLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttWILLabel.Name = "lblSpellDefenceDecAttWILLabel";
-            this.lblSpellDefenceDecAttWILLabel.Size = new System.Drawing.Size(124, 13);
-            this.lblSpellDefenceDecAttWILLabel.TabIndex = 47;
-            this.lblSpellDefenceDecAttWILLabel.Tag = "Label_SpellDefenceDecAttWIL";
-            this.lblSpellDefenceDecAttWILLabel.Text = "Decrease Attribute (WIL)";
-            this.lblSpellDefenceDecAttWILLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttWILLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttWILLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttWILLabel.Location = new System.Drawing.Point(14, 332);
+            this.lblSpellDefenseDecAttWILLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttWILLabel.Name = "lblSpellDefenseDecAttWILLabel";
+            this.lblSpellDefenseDecAttWILLabel.Size = new System.Drawing.Size(124, 13);
+            this.lblSpellDefenseDecAttWILLabel.TabIndex = 47;
+            this.lblSpellDefenseDecAttWILLabel.Tag = "Label_SpellDefenseDecAttWIL";
+            this.lblSpellDefenseDecAttWILLabel.Text = "Decrease Attribute (WIL)";
+            this.lblSpellDefenseDecAttWILLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttLOGLabel
+            // lblSpellDefenseDecAttLOGLabel
             // 
-            this.lblSpellDefenceDecAttLOGLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttLOGLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttLOGLabel.Location = new System.Drawing.Point(12, 307);
-            this.lblSpellDefenceDecAttLOGLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttLOGLabel.Name = "lblSpellDefenceDecAttLOGLabel";
-            this.lblSpellDefenceDecAttLOGLabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttLOGLabel.TabIndex = 46;
-            this.lblSpellDefenceDecAttLOGLabel.Tag = "Label_SpellDefenceDecAttLOG";
-            this.lblSpellDefenceDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
-            this.lblSpellDefenceDecAttLOGLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttLOGLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttLOGLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttLOGLabel.Location = new System.Drawing.Point(12, 307);
+            this.lblSpellDefenseDecAttLOGLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttLOGLabel.Name = "lblSpellDefenseDecAttLOGLabel";
+            this.lblSpellDefenseDecAttLOGLabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttLOGLabel.TabIndex = 46;
+            this.lblSpellDefenseDecAttLOGLabel.Tag = "Label_SpellDefenseDecAttLOG";
+            this.lblSpellDefenseDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
+            this.lblSpellDefenseDecAttLOGLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttINTLabel
+            // lblSpellDefenseDecAttINTLabel
             // 
-            this.lblSpellDefenceDecAttINTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttINTLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttINTLabel.Location = new System.Drawing.Point(16, 282);
-            this.lblSpellDefenceDecAttINTLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttINTLabel.Name = "lblSpellDefenceDecAttINTLabel";
-            this.lblSpellDefenceDecAttINTLabel.Size = new System.Drawing.Size(122, 13);
-            this.lblSpellDefenceDecAttINTLabel.TabIndex = 45;
-            this.lblSpellDefenceDecAttINTLabel.Tag = "Label_SpellDefenceDecAttINT";
-            this.lblSpellDefenceDecAttINTLabel.Text = "Decrease Attribute (INT)";
-            this.lblSpellDefenceDecAttINTLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttINTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttINTLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttINTLabel.Location = new System.Drawing.Point(16, 282);
+            this.lblSpellDefenseDecAttINTLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttINTLabel.Name = "lblSpellDefenseDecAttINTLabel";
+            this.lblSpellDefenseDecAttINTLabel.Size = new System.Drawing.Size(122, 13);
+            this.lblSpellDefenseDecAttINTLabel.TabIndex = 45;
+            this.lblSpellDefenseDecAttINTLabel.Tag = "Label_SpellDefenseDecAttINT";
+            this.lblSpellDefenseDecAttINTLabel.Text = "Decrease Attribute (INT)";
+            this.lblSpellDefenseDecAttINTLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttCHALabel
+            // lblSpellDefenseDecAttCHALabel
             // 
-            this.lblSpellDefenceDecAttCHALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttCHALabel.AutoSize = true;
-            this.lblSpellDefenceDecAttCHALabel.Location = new System.Drawing.Point(12, 257);
-            this.lblSpellDefenceDecAttCHALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttCHALabel.Name = "lblSpellDefenceDecAttCHALabel";
-            this.lblSpellDefenceDecAttCHALabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttCHALabel.TabIndex = 44;
-            this.lblSpellDefenceDecAttCHALabel.Tag = "Label_SpellDefenceDecAttCHA";
-            this.lblSpellDefenceDecAttCHALabel.Text = "Decrease Attribute (CHA)";
-            this.lblSpellDefenceDecAttCHALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttCHALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttCHALabel.AutoSize = true;
+            this.lblSpellDefenseDecAttCHALabel.Location = new System.Drawing.Point(12, 257);
+            this.lblSpellDefenseDecAttCHALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttCHALabel.Name = "lblSpellDefenseDecAttCHALabel";
+            this.lblSpellDefenseDecAttCHALabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttCHALabel.TabIndex = 44;
+            this.lblSpellDefenseDecAttCHALabel.Tag = "Label_SpellDefenseDecAttCHA";
+            this.lblSpellDefenseDecAttCHALabel.Text = "Decrease Attribute (CHA)";
+            this.lblSpellDefenseDecAttCHALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttSTRLabel
+            // lblSpellDefenseDecAttSTRLabel
             // 
-            this.lblSpellDefenceDecAttSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttSTRLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttSTRLabel.Location = new System.Drawing.Point(12, 232);
-            this.lblSpellDefenceDecAttSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttSTRLabel.Name = "lblSpellDefenceDecAttSTRLabel";
-            this.lblSpellDefenceDecAttSTRLabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttSTRLabel.TabIndex = 43;
-            this.lblSpellDefenceDecAttSTRLabel.Tag = "Label_SpellDefenceDecAttSTR";
-            this.lblSpellDefenceDecAttSTRLabel.Text = "Decrease Attribute (STR)";
-            this.lblSpellDefenceDecAttSTRLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttSTRLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttSTRLabel.Location = new System.Drawing.Point(12, 232);
+            this.lblSpellDefenseDecAttSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttSTRLabel.Name = "lblSpellDefenseDecAttSTRLabel";
+            this.lblSpellDefenseDecAttSTRLabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttSTRLabel.TabIndex = 43;
+            this.lblSpellDefenseDecAttSTRLabel.Tag = "Label_SpellDefenseDecAttSTR";
+            this.lblSpellDefenseDecAttSTRLabel.Text = "Decrease Attribute (STR)";
+            this.lblSpellDefenseDecAttSTRLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttREALabel
+            // lblSpellDefenseDecAttREALabel
             // 
-            this.lblSpellDefenceDecAttREALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttREALabel.AutoSize = true;
-            this.lblSpellDefenceDecAttREALabel.Location = new System.Drawing.Point(12, 207);
-            this.lblSpellDefenceDecAttREALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttREALabel.Name = "lblSpellDefenceDecAttREALabel";
-            this.lblSpellDefenceDecAttREALabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttREALabel.TabIndex = 42;
-            this.lblSpellDefenceDecAttREALabel.Tag = "Label_SpellDefenceDecAttREA";
-            this.lblSpellDefenceDecAttREALabel.Text = "Decrease Attribute (REA)";
-            this.lblSpellDefenceDecAttREALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttREALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttREALabel.AutoSize = true;
+            this.lblSpellDefenseDecAttREALabel.Location = new System.Drawing.Point(12, 207);
+            this.lblSpellDefenseDecAttREALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttREALabel.Name = "lblSpellDefenseDecAttREALabel";
+            this.lblSpellDefenseDecAttREALabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttREALabel.TabIndex = 42;
+            this.lblSpellDefenseDecAttREALabel.Tag = "Label_SpellDefenseDecAttREA";
+            this.lblSpellDefenseDecAttREALabel.Text = "Decrease Attribute (REA)";
+            this.lblSpellDefenseDecAttREALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttAGILabel
+            // lblSpellDefenseDecAttAGILabel
             // 
-            this.lblSpellDefenceDecAttAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttAGILabel.AutoSize = true;
-            this.lblSpellDefenceDecAttAGILabel.Location = new System.Drawing.Point(16, 182);
-            this.lblSpellDefenceDecAttAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttAGILabel.Name = "lblSpellDefenceDecAttAGILabel";
-            this.lblSpellDefenceDecAttAGILabel.Size = new System.Drawing.Size(122, 13);
-            this.lblSpellDefenceDecAttAGILabel.TabIndex = 41;
-            this.lblSpellDefenceDecAttAGILabel.Tag = "Label_SpellDefenceDecAttAGI";
-            this.lblSpellDefenceDecAttAGILabel.Text = "Decrease Attribute (AGI)";
-            this.lblSpellDefenceDecAttAGILabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttAGILabel.AutoSize = true;
+            this.lblSpellDefenseDecAttAGILabel.Location = new System.Drawing.Point(16, 182);
+            this.lblSpellDefenseDecAttAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttAGILabel.Name = "lblSpellDefenseDecAttAGILabel";
+            this.lblSpellDefenseDecAttAGILabel.Size = new System.Drawing.Size(122, 13);
+            this.lblSpellDefenseDecAttAGILabel.TabIndex = 41;
+            this.lblSpellDefenseDecAttAGILabel.Tag = "Label_SpellDefenseDecAttAGI";
+            this.lblSpellDefenseDecAttAGILabel.Text = "Decrease Attribute (AGI)";
+            this.lblSpellDefenseDecAttAGILabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDecAttBODLabel
+            // lblSpellDefenseDecAttBODLabel
             // 
-            this.lblSpellDefenceDecAttBODLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttBODLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttBODLabel.Location = new System.Drawing.Point(11, 157);
-            this.lblSpellDefenceDecAttBODLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttBODLabel.Name = "lblSpellDefenceDecAttBODLabel";
-            this.lblSpellDefenceDecAttBODLabel.Size = new System.Drawing.Size(127, 13);
-            this.lblSpellDefenceDecAttBODLabel.TabIndex = 35;
-            this.lblSpellDefenceDecAttBODLabel.Tag = "Label_SpellDefenceDecAttBOD";
-            this.lblSpellDefenceDecAttBODLabel.Text = "Decrease Attribute (BOD)";
-            this.lblSpellDefenceDecAttBODLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDecAttBODLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttBODLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttBODLabel.Location = new System.Drawing.Point(11, 157);
+            this.lblSpellDefenseDecAttBODLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttBODLabel.Name = "lblSpellDefenseDecAttBODLabel";
+            this.lblSpellDefenseDecAttBODLabel.Size = new System.Drawing.Size(127, 13);
+            this.lblSpellDefenseDecAttBODLabel.TabIndex = 35;
+            this.lblSpellDefenseDecAttBODLabel.Tag = "Label_SpellDefenseDecAttBOD";
+            this.lblSpellDefenseDecAttBODLabel.Text = "Decrease Attribute (BOD)";
+            this.lblSpellDefenseDecAttBODLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDetectionLabel
+            // lblSpellDefenseDetectionLabel
             // 
-            this.lblSpellDefenceDetectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDetectionLabel.AutoSize = true;
-            this.lblSpellDefenceDetectionLabel.Location = new System.Drawing.Point(54, 132);
-            this.lblSpellDefenceDetectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDetectionLabel.Name = "lblSpellDefenceDetectionLabel";
-            this.lblSpellDefenceDetectionLabel.Size = new System.Drawing.Size(84, 13);
-            this.lblSpellDefenceDetectionLabel.TabIndex = 33;
-            this.lblSpellDefenceDetectionLabel.Tag = "Label_SpellDefenceDetection";
-            this.lblSpellDefenceDetectionLabel.Text = "Detection Spells";
-            this.lblSpellDefenceDetectionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDetectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDetectionLabel.AutoSize = true;
+            this.lblSpellDefenseDetectionLabel.Location = new System.Drawing.Point(54, 132);
+            this.lblSpellDefenseDetectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDetectionLabel.Name = "lblSpellDefenseDetectionLabel";
+            this.lblSpellDefenseDetectionLabel.Size = new System.Drawing.Size(84, 13);
+            this.lblSpellDefenseDetectionLabel.TabIndex = 33;
+            this.lblSpellDefenseDetectionLabel.Tag = "Label_SpellDefenseDetection";
+            this.lblSpellDefenseDetectionLabel.Text = "Detection Spells";
+            this.lblSpellDefenseDetectionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDirectSoakPhysicalLabel
+            // lblSpellDefenseDirectSoakPhysicalLabel
             // 
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDirectSoakPhysicalLabel.AutoSize = true;
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Location = new System.Drawing.Point(27, 107);
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Name = "lblSpellDefenceDirectSoakPhysicalLabel";
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Size = new System.Drawing.Size(111, 13);
-            this.lblSpellDefenceDirectSoakPhysicalLabel.TabIndex = 31;
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Tag = "Label_SpellDefenceDirectSoakPhysical";
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
-            this.lblSpellDefenceDirectSoakPhysicalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDirectSoakPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Location = new System.Drawing.Point(27, 107);
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Name = "lblSpellDefenseDirectSoakPhysicalLabel";
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Size = new System.Drawing.Size(111, 13);
+            this.lblSpellDefenseDirectSoakPhysicalLabel.TabIndex = 31;
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Tag = "Label_SpellDefenseDirectSoakPhysical";
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
+            this.lblSpellDefenseDirectSoakPhysicalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceDirectSoakManaLabel
+            // lblSpellDefenseDirectSoakManaLabel
             // 
-            this.lblSpellDefenceDirectSoakManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDirectSoakManaLabel.AutoSize = true;
-            this.lblSpellDefenceDirectSoakManaLabel.Location = new System.Drawing.Point(39, 82);
-            this.lblSpellDefenceDirectSoakManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakManaLabel.Name = "lblSpellDefenceDirectSoakManaLabel";
-            this.lblSpellDefenceDirectSoakManaLabel.Size = new System.Drawing.Size(99, 13);
-            this.lblSpellDefenceDirectSoakManaLabel.TabIndex = 29;
-            this.lblSpellDefenceDirectSoakManaLabel.Tag = "Label_SpellDefenceDirectSoakMana";
-            this.lblSpellDefenceDirectSoakManaLabel.Text = "Direct Soak - Mana";
-            this.lblSpellDefenceDirectSoakManaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseDirectSoakManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDirectSoakManaLabel.AutoSize = true;
+            this.lblSpellDefenseDirectSoakManaLabel.Location = new System.Drawing.Point(39, 82);
+            this.lblSpellDefenseDirectSoakManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakManaLabel.Name = "lblSpellDefenseDirectSoakManaLabel";
+            this.lblSpellDefenseDirectSoakManaLabel.Size = new System.Drawing.Size(99, 13);
+            this.lblSpellDefenseDirectSoakManaLabel.TabIndex = 29;
+            this.lblSpellDefenseDirectSoakManaLabel.Tag = "Label_SpellDefenseDirectSoakMana";
+            this.lblSpellDefenseDirectSoakManaLabel.Text = "Direct Soak - Mana";
+            this.lblSpellDefenseDirectSoakManaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceIndirectSoakLabel
+            // lblSpellDefenseIndirectSoakLabel
             // 
-            this.lblSpellDefenceIndirectSoakLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIndirectSoakLabel.AutoSize = true;
-            this.lblSpellDefenceIndirectSoakLabel.Location = new System.Drawing.Point(68, 57);
-            this.lblSpellDefenceIndirectSoakLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectSoakLabel.Name = "lblSpellDefenceIndirectSoakLabel";
-            this.lblSpellDefenceIndirectSoakLabel.Size = new System.Drawing.Size(70, 13);
-            this.lblSpellDefenceIndirectSoakLabel.TabIndex = 27;
-            this.lblSpellDefenceIndirectSoakLabel.Tag = "Label_SpellDefenceIndirect";
-            this.lblSpellDefenceIndirectSoakLabel.Text = "Indirect Soak";
-            this.lblSpellDefenceIndirectSoakLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseIndirectSoakLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIndirectSoakLabel.AutoSize = true;
+            this.lblSpellDefenseIndirectSoakLabel.Location = new System.Drawing.Point(68, 57);
+            this.lblSpellDefenseIndirectSoakLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectSoakLabel.Name = "lblSpellDefenseIndirectSoakLabel";
+            this.lblSpellDefenseIndirectSoakLabel.Size = new System.Drawing.Size(70, 13);
+            this.lblSpellDefenseIndirectSoakLabel.TabIndex = 27;
+            this.lblSpellDefenseIndirectSoakLabel.Tag = "Label_SpellDefenseIndirect";
+            this.lblSpellDefenseIndirectSoakLabel.Text = "Indirect Soak";
+            this.lblSpellDefenseIndirectSoakLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpellDefenceIndirectDodgeLabel
+            // lblSpellDefenseIndirectDodgeLabel
             // 
-            this.lblSpellDefenceIndirectDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIndirectDodgeLabel.AutoSize = true;
-            this.lblSpellDefenceIndirectDodgeLabel.Location = new System.Drawing.Point(61, 32);
-            this.lblSpellDefenceIndirectDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectDodgeLabel.Name = "lblSpellDefenceIndirectDodgeLabel";
-            this.lblSpellDefenceIndirectDodgeLabel.Size = new System.Drawing.Size(77, 13);
-            this.lblSpellDefenceIndirectDodgeLabel.TabIndex = 25;
-            this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
-            this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
-            this.lblSpellDefenceIndirectDodgeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSpellDefenseIndirectDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIndirectDodgeLabel.AutoSize = true;
+            this.lblSpellDefenseIndirectDodgeLabel.Location = new System.Drawing.Point(61, 32);
+            this.lblSpellDefenseIndirectDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectDodgeLabel.Name = "lblSpellDefenseIndirectDodgeLabel";
+            this.lblSpellDefenseIndirectDodgeLabel.Size = new System.Drawing.Size(77, 13);
+            this.lblSpellDefenseIndirectDodgeLabel.TabIndex = 25;
+            this.lblSpellDefenseIndirectDodgeLabel.Tag = "Label_SpellDefenseIndirectDodge";
+            this.lblSpellDefenseIndirectDodgeLabel.Text = "Indirect Dodge";
+            this.lblSpellDefenseIndirectDodgeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblStreetCred
             // 
@@ -2979,7 +2979,7 @@ namespace Chummer
             // 
             this.tabInfo.Controls.Add(this.tabConditionMonitor);
             this.tabInfo.Controls.Add(this.tabOtherInfo);
-            this.tabInfo.Controls.Add(this.tabDefences);
+            this.tabInfo.Controls.Add(this.tabDefenses);
             this.tabInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabInfo.Location = new System.Drawing.Point(0, 0);
             this.tabInfo.Name = "tabInfo";
@@ -3001,6 +3001,7 @@ namespace Chummer
             // 
             // tblCMTab
             // 
+            this.tblCMTab.AutoScroll = true;
             this.tblCMTab.AutoSize = true;
             this.tblCMTab.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tblCMTab.ColumnCount = 2;
@@ -3116,7 +3117,7 @@ namespace Chummer
             this.panStunCM.Controls.Add(this.chkStunCM24);
             this.panStunCM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panStunCM.Location = new System.Drawing.Point(3, 28);
-            this.panStunCM.MaximumSize = new System.Drawing.Size(80, 210);
+            this.panStunCM.MaximumSize = new System.Drawing.Size(80, 0);
             this.panStunCM.Name = "panStunCM";
             this.panStunCM.Size = new System.Drawing.Size(80, 208);
             this.panStunCM.TabIndex = 1;
@@ -3516,6 +3517,7 @@ namespace Chummer
             // grpPhysicalCM
             // 
             this.grpPhysicalCM.AutoSize = true;
+            this.grpPhysicalCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpPhysicalCM.Controls.Add(this.btlpPhysicalCMBoxes);
             this.grpPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPhysicalCM.Location = new System.Drawing.Point(3, 116);
@@ -3576,7 +3578,7 @@ namespace Chummer
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM23);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM24);
             this.panPhysicalCM.Location = new System.Drawing.Point(3, 28);
-            this.panPhysicalCM.MaximumSize = new System.Drawing.Size(80, 210);
+            this.panPhysicalCM.MaximumSize = new System.Drawing.Size(80, 0);
             this.panPhysicalCM.Name = "panPhysicalCM";
             this.panPhysicalCM.Padding = new System.Windows.Forms.Padding(1);
             this.panPhysicalCM.Size = new System.Drawing.Size(80, 210);
@@ -3994,6 +3996,7 @@ namespace Chummer
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.AutoScroll = true;
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
@@ -4343,59 +4346,60 @@ namespace Chummer
             this.lblDodge.Text = "0";
             this.lblDodge.ToolTipText = "";
             // 
-            // tabDefences
+            // tabDefenses
             // 
-            this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
-            this.tabDefences.Controls.Add(this.tlpSpellDefense);
-            this.tabDefences.Location = new System.Drawing.Point(4, 22);
-            this.tabDefences.Name = "tabDefences";
-            this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDefences.Size = new System.Drawing.Size(224, 631);
-            this.tabDefences.TabIndex = 4;
-            this.tabDefences.Tag = "String_SpellDefense";
-            this.tabDefences.Text = "Spell Defence";
+            this.tabDefenses.BackColor = System.Drawing.SystemColors.Control;
+            this.tabDefenses.Controls.Add(this.tlpSpellDefense);
+            this.tabDefenses.Location = new System.Drawing.Point(4, 22);
+            this.tabDefenses.Name = "tabDefenses";
+            this.tabDefenses.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDefenses.Size = new System.Drawing.Size(224, 631);
+            this.tabDefenses.TabIndex = 4;
+            this.tabDefenses.Tag = "String_SpellDefense";
+            this.tabDefenses.Text = "Spell Defense";
             // 
             // tlpSpellDefense
             // 
+            this.tlpSpellDefense.AutoScroll = true;
             this.tlpSpellDefense.ColumnCount = 2;
             this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tlpSpellDefense.Controls.Add(this.lblCounterspellingDiceLabel, 0, 0);
             this.tlpSpellDefense.Controls.Add(this.nudCounterspellingDice, 1, 0);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel, 0, 1);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHALabel, 0, 10);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodge, 1, 1);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoak, 1, 2);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakMana, 1, 3);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysical, 1, 4);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetection, 1, 5);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBOD, 1, 6);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGI, 1, 7);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREA, 1, 8);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTR, 1, 9);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHA, 1, 10);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINT, 1, 11);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOG, 1, 12);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWIL, 1, 13);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionMana, 1, 14);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel, 0, 15);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionManaLabel, 0, 14);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWILLabel, 0, 13);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysical, 1, 15);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMental, 1, 16);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysicalLabel, 0, 17);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMentalLabel, 0, 16);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysical, 1, 17);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoakLabel, 0, 2);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel, 0, 3);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel, 0, 4);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetectionLabel, 0, 5);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBODLabel, 0, 6);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGILabel, 0, 7);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREALabel, 0, 8);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTRLabel, 0, 9);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOGLabel, 0, 12);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINTLabel, 0, 11);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectDodgeLabel, 0, 1);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttCHALabel, 0, 10);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectDodge, 1, 1);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectSoak, 1, 2);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakMana, 1, 3);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakPhysical, 1, 4);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDetection, 1, 5);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttBOD, 1, 6);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttAGI, 1, 7);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttREA, 1, 8);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttSTR, 1, 9);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttCHA, 1, 10);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttINT, 1, 11);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttLOG, 1, 12);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttWIL, 1, 13);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionMana, 1, 14);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionPhysicalLabel, 0, 15);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionManaLabel, 0, 14);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttWILLabel, 0, 13);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionPhysical, 1, 15);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipMental, 1, 16);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipPhysicalLabel, 0, 17);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipMentalLabel, 0, 16);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipPhysical, 1, 17);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectSoakLabel, 0, 2);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakManaLabel, 0, 3);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakPhysicalLabel, 0, 4);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDetectionLabel, 0, 5);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttBODLabel, 0, 6);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttAGILabel, 0, 7);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttREALabel, 0, 8);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttSTRLabel, 0, 9);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttLOGLabel, 0, 12);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttINTLabel, 0, 11);
             this.tlpSpellDefense.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpSpellDefense.Location = new System.Drawing.Point(3, 3);
             this.tlpSpellDefense.Name = "tlpSpellDefense";
@@ -4429,192 +4433,192 @@ namespace Chummer
             this.nudCounterspellingDice.Size = new System.Drawing.Size(71, 20);
             this.nudCounterspellingDice.TabIndex = 61;
             // 
-            // lblSpellDefenceIndirectDodge
+            // lblSpellDefenseIndirectDodge
             // 
-            this.lblSpellDefenceIndirectDodge.AutoSize = true;
-            this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(144, 32);
-            this.lblSpellDefenceIndirectDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
-            this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIndirectDodge.TabIndex = 26;
-            this.lblSpellDefenceIndirectDodge.Text = "0";
-            this.lblSpellDefenceIndirectDodge.ToolTipText = "";
+            this.lblSpellDefenseIndirectDodge.AutoSize = true;
+            this.lblSpellDefenseIndirectDodge.Location = new System.Drawing.Point(144, 32);
+            this.lblSpellDefenseIndirectDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectDodge.Name = "lblSpellDefenseIndirectDodge";
+            this.lblSpellDefenseIndirectDodge.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIndirectDodge.TabIndex = 26;
+            this.lblSpellDefenseIndirectDodge.Text = "0";
+            this.lblSpellDefenseIndirectDodge.ToolTipText = "";
             // 
-            // lblSpellDefenceIndirectSoak
+            // lblSpellDefenseIndirectSoak
             // 
-            this.lblSpellDefenceIndirectSoak.AutoSize = true;
-            this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(144, 57);
-            this.lblSpellDefenceIndirectSoak.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectSoak.Name = "lblSpellDefenceIndirectSoak";
-            this.lblSpellDefenceIndirectSoak.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIndirectSoak.TabIndex = 28;
-            this.lblSpellDefenceIndirectSoak.Text = "0";
-            this.lblSpellDefenceIndirectSoak.ToolTipText = "";
+            this.lblSpellDefenseIndirectSoak.AutoSize = true;
+            this.lblSpellDefenseIndirectSoak.Location = new System.Drawing.Point(144, 57);
+            this.lblSpellDefenseIndirectSoak.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectSoak.Name = "lblSpellDefenseIndirectSoak";
+            this.lblSpellDefenseIndirectSoak.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIndirectSoak.TabIndex = 28;
+            this.lblSpellDefenseIndirectSoak.Text = "0";
+            this.lblSpellDefenseIndirectSoak.ToolTipText = "";
             // 
-            // lblSpellDefenceDirectSoakMana
+            // lblSpellDefenseDirectSoakMana
             // 
-            this.lblSpellDefenceDirectSoakMana.AutoSize = true;
-            this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(144, 82);
-            this.lblSpellDefenceDirectSoakMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
-            this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
-            this.lblSpellDefenceDirectSoakMana.Text = "0";
-            this.lblSpellDefenceDirectSoakMana.ToolTipText = "";
+            this.lblSpellDefenseDirectSoakMana.AutoSize = true;
+            this.lblSpellDefenseDirectSoakMana.Location = new System.Drawing.Point(144, 82);
+            this.lblSpellDefenseDirectSoakMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakMana.Name = "lblSpellDefenseDirectSoakMana";
+            this.lblSpellDefenseDirectSoakMana.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDirectSoakMana.TabIndex = 30;
+            this.lblSpellDefenseDirectSoakMana.Text = "0";
+            this.lblSpellDefenseDirectSoakMana.ToolTipText = "";
             // 
-            // lblSpellDefenceDirectSoakPhysical
+            // lblSpellDefenseDirectSoakPhysical
             // 
-            this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
-            this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(144, 107);
-            this.lblSpellDefenceDirectSoakPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
-            this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
-            this.lblSpellDefenceDirectSoakPhysical.Text = "0";
-            this.lblSpellDefenceDirectSoakPhysical.ToolTipText = "";
+            this.lblSpellDefenseDirectSoakPhysical.AutoSize = true;
+            this.lblSpellDefenseDirectSoakPhysical.Location = new System.Drawing.Point(144, 107);
+            this.lblSpellDefenseDirectSoakPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakPhysical.Name = "lblSpellDefenseDirectSoakPhysical";
+            this.lblSpellDefenseDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDirectSoakPhysical.TabIndex = 32;
+            this.lblSpellDefenseDirectSoakPhysical.Text = "0";
+            this.lblSpellDefenseDirectSoakPhysical.ToolTipText = "";
             // 
-            // lblSpellDefenceDetection
+            // lblSpellDefenseDetection
             // 
-            this.lblSpellDefenceDetection.AutoSize = true;
-            this.lblSpellDefenceDetection.Location = new System.Drawing.Point(144, 132);
-            this.lblSpellDefenceDetection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
-            this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDetection.TabIndex = 34;
-            this.lblSpellDefenceDetection.Text = "0";
-            this.lblSpellDefenceDetection.ToolTipText = "";
+            this.lblSpellDefenseDetection.AutoSize = true;
+            this.lblSpellDefenseDetection.Location = new System.Drawing.Point(144, 132);
+            this.lblSpellDefenseDetection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDetection.Name = "lblSpellDefenseDetection";
+            this.lblSpellDefenseDetection.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDetection.TabIndex = 34;
+            this.lblSpellDefenseDetection.Text = "0";
+            this.lblSpellDefenseDetection.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttBOD
+            // lblSpellDefenseDecAttBOD
             // 
-            this.lblSpellDefenceDecAttBOD.AutoSize = true;
-            this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(144, 157);
-            this.lblSpellDefenceDecAttBOD.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
-            this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttBOD.TabIndex = 36;
-            this.lblSpellDefenceDecAttBOD.Text = "0";
-            this.lblSpellDefenceDecAttBOD.ToolTipText = "";
+            this.lblSpellDefenseDecAttBOD.AutoSize = true;
+            this.lblSpellDefenseDecAttBOD.Location = new System.Drawing.Point(144, 157);
+            this.lblSpellDefenseDecAttBOD.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttBOD.Name = "lblSpellDefenseDecAttBOD";
+            this.lblSpellDefenseDecAttBOD.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttBOD.TabIndex = 36;
+            this.lblSpellDefenseDecAttBOD.Text = "0";
+            this.lblSpellDefenseDecAttBOD.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttAGI
+            // lblSpellDefenseDecAttAGI
             // 
-            this.lblSpellDefenceDecAttAGI.AutoSize = true;
-            this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(144, 182);
-            this.lblSpellDefenceDecAttAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
-            this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttAGI.TabIndex = 38;
-            this.lblSpellDefenceDecAttAGI.Text = "0";
-            this.lblSpellDefenceDecAttAGI.ToolTipText = "";
+            this.lblSpellDefenseDecAttAGI.AutoSize = true;
+            this.lblSpellDefenseDecAttAGI.Location = new System.Drawing.Point(144, 182);
+            this.lblSpellDefenseDecAttAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttAGI.Name = "lblSpellDefenseDecAttAGI";
+            this.lblSpellDefenseDecAttAGI.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttAGI.TabIndex = 38;
+            this.lblSpellDefenseDecAttAGI.Text = "0";
+            this.lblSpellDefenseDecAttAGI.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttREA
+            // lblSpellDefenseDecAttREA
             // 
-            this.lblSpellDefenceDecAttREA.AutoSize = true;
-            this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(144, 207);
-            this.lblSpellDefenceDecAttREA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
-            this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttREA.TabIndex = 40;
-            this.lblSpellDefenceDecAttREA.Text = "0";
-            this.lblSpellDefenceDecAttREA.ToolTipText = "";
+            this.lblSpellDefenseDecAttREA.AutoSize = true;
+            this.lblSpellDefenseDecAttREA.Location = new System.Drawing.Point(144, 207);
+            this.lblSpellDefenseDecAttREA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttREA.Name = "lblSpellDefenseDecAttREA";
+            this.lblSpellDefenseDecAttREA.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttREA.TabIndex = 40;
+            this.lblSpellDefenseDecAttREA.Text = "0";
+            this.lblSpellDefenseDecAttREA.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttSTR
+            // lblSpellDefenseDecAttSTR
             // 
-            this.lblSpellDefenceDecAttSTR.AutoSize = true;
-            this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(144, 232);
-            this.lblSpellDefenceDecAttSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
-            this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttSTR.TabIndex = 48;
-            this.lblSpellDefenceDecAttSTR.Text = "0";
-            this.lblSpellDefenceDecAttSTR.ToolTipText = "";
+            this.lblSpellDefenseDecAttSTR.AutoSize = true;
+            this.lblSpellDefenseDecAttSTR.Location = new System.Drawing.Point(144, 232);
+            this.lblSpellDefenseDecAttSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttSTR.Name = "lblSpellDefenseDecAttSTR";
+            this.lblSpellDefenseDecAttSTR.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttSTR.TabIndex = 48;
+            this.lblSpellDefenseDecAttSTR.Text = "0";
+            this.lblSpellDefenseDecAttSTR.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttCHA
+            // lblSpellDefenseDecAttCHA
             // 
-            this.lblSpellDefenceDecAttCHA.AutoSize = true;
-            this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(144, 257);
-            this.lblSpellDefenceDecAttCHA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
-            this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttCHA.TabIndex = 49;
-            this.lblSpellDefenceDecAttCHA.Text = "0";
-            this.lblSpellDefenceDecAttCHA.ToolTipText = "";
+            this.lblSpellDefenseDecAttCHA.AutoSize = true;
+            this.lblSpellDefenseDecAttCHA.Location = new System.Drawing.Point(144, 257);
+            this.lblSpellDefenseDecAttCHA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttCHA.Name = "lblSpellDefenseDecAttCHA";
+            this.lblSpellDefenseDecAttCHA.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttCHA.TabIndex = 49;
+            this.lblSpellDefenseDecAttCHA.Text = "0";
+            this.lblSpellDefenseDecAttCHA.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttINT
+            // lblSpellDefenseDecAttINT
             // 
-            this.lblSpellDefenceDecAttINT.AutoSize = true;
-            this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(144, 282);
-            this.lblSpellDefenceDecAttINT.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
-            this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttINT.TabIndex = 50;
-            this.lblSpellDefenceDecAttINT.Text = "0";
-            this.lblSpellDefenceDecAttINT.ToolTipText = "";
+            this.lblSpellDefenseDecAttINT.AutoSize = true;
+            this.lblSpellDefenseDecAttINT.Location = new System.Drawing.Point(144, 282);
+            this.lblSpellDefenseDecAttINT.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttINT.Name = "lblSpellDefenseDecAttINT";
+            this.lblSpellDefenseDecAttINT.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttINT.TabIndex = 50;
+            this.lblSpellDefenseDecAttINT.Text = "0";
+            this.lblSpellDefenseDecAttINT.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttLOG
+            // lblSpellDefenseDecAttLOG
             // 
-            this.lblSpellDefenceDecAttLOG.AutoSize = true;
-            this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(144, 307);
-            this.lblSpellDefenceDecAttLOG.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
-            this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttLOG.TabIndex = 51;
-            this.lblSpellDefenceDecAttLOG.Text = "0";
-            this.lblSpellDefenceDecAttLOG.ToolTipText = "";
+            this.lblSpellDefenseDecAttLOG.AutoSize = true;
+            this.lblSpellDefenseDecAttLOG.Location = new System.Drawing.Point(144, 307);
+            this.lblSpellDefenseDecAttLOG.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttLOG.Name = "lblSpellDefenseDecAttLOG";
+            this.lblSpellDefenseDecAttLOG.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttLOG.TabIndex = 51;
+            this.lblSpellDefenseDecAttLOG.Text = "0";
+            this.lblSpellDefenseDecAttLOG.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttWIL
+            // lblSpellDefenseDecAttWIL
             // 
-            this.lblSpellDefenceDecAttWIL.AutoSize = true;
-            this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(144, 332);
-            this.lblSpellDefenceDecAttWIL.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
-            this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttWIL.TabIndex = 52;
-            this.lblSpellDefenceDecAttWIL.Text = "0";
-            this.lblSpellDefenceDecAttWIL.ToolTipText = "";
+            this.lblSpellDefenseDecAttWIL.AutoSize = true;
+            this.lblSpellDefenseDecAttWIL.Location = new System.Drawing.Point(144, 332);
+            this.lblSpellDefenseDecAttWIL.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttWIL.Name = "lblSpellDefenseDecAttWIL";
+            this.lblSpellDefenseDecAttWIL.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttWIL.TabIndex = 52;
+            this.lblSpellDefenseDecAttWIL.Text = "0";
+            this.lblSpellDefenseDecAttWIL.ToolTipText = "";
             // 
-            // lblSpellDefenceIllusionMana
+            // lblSpellDefenseIllusionMana
             // 
-            this.lblSpellDefenceIllusionMana.AutoSize = true;
-            this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(144, 357);
-            this.lblSpellDefenceIllusionMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
-            this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIllusionMana.TabIndex = 54;
-            this.lblSpellDefenceIllusionMana.Text = "0";
-            this.lblSpellDefenceIllusionMana.ToolTipText = "";
+            this.lblSpellDefenseIllusionMana.AutoSize = true;
+            this.lblSpellDefenseIllusionMana.Location = new System.Drawing.Point(144, 357);
+            this.lblSpellDefenseIllusionMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionMana.Name = "lblSpellDefenseIllusionMana";
+            this.lblSpellDefenseIllusionMana.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIllusionMana.TabIndex = 54;
+            this.lblSpellDefenseIllusionMana.Text = "0";
+            this.lblSpellDefenseIllusionMana.ToolTipText = "";
             // 
-            // lblSpellDefenceIllusionPhysical
+            // lblSpellDefenseIllusionPhysical
             // 
-            this.lblSpellDefenceIllusionPhysical.AutoSize = true;
-            this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(144, 382);
-            this.lblSpellDefenceIllusionPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
-            this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
-            this.lblSpellDefenceIllusionPhysical.Text = "0";
-            this.lblSpellDefenceIllusionPhysical.ToolTipText = "";
+            this.lblSpellDefenseIllusionPhysical.AutoSize = true;
+            this.lblSpellDefenseIllusionPhysical.Location = new System.Drawing.Point(144, 382);
+            this.lblSpellDefenseIllusionPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionPhysical.Name = "lblSpellDefenseIllusionPhysical";
+            this.lblSpellDefenseIllusionPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIllusionPhysical.TabIndex = 56;
+            this.lblSpellDefenseIllusionPhysical.Text = "0";
+            this.lblSpellDefenseIllusionPhysical.ToolTipText = "";
             // 
-            // lblSpellDefenceManipMental
+            // lblSpellDefenseManipMental
             // 
-            this.lblSpellDefenceManipMental.AutoSize = true;
-            this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(144, 407);
-            this.lblSpellDefenceManipMental.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
-            this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceManipMental.TabIndex = 58;
-            this.lblSpellDefenceManipMental.Text = "0";
-            this.lblSpellDefenceManipMental.ToolTipText = "";
+            this.lblSpellDefenseManipMental.AutoSize = true;
+            this.lblSpellDefenseManipMental.Location = new System.Drawing.Point(144, 407);
+            this.lblSpellDefenseManipMental.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipMental.Name = "lblSpellDefenseManipMental";
+            this.lblSpellDefenseManipMental.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseManipMental.TabIndex = 58;
+            this.lblSpellDefenseManipMental.Text = "0";
+            this.lblSpellDefenseManipMental.ToolTipText = "";
             // 
-            // lblSpellDefenceManipPhysical
+            // lblSpellDefenseManipPhysical
             // 
-            this.lblSpellDefenceManipPhysical.AutoSize = true;
-            this.lblSpellDefenceManipPhysical.Location = new System.Drawing.Point(144, 432);
-            this.lblSpellDefenceManipPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipPhysical.Name = "lblSpellDefenceManipPhysical";
-            this.lblSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceManipPhysical.TabIndex = 60;
-            this.lblSpellDefenceManipPhysical.Text = "0";
-            this.lblSpellDefenceManipPhysical.ToolTipText = "";
+            this.lblSpellDefenseManipPhysical.AutoSize = true;
+            this.lblSpellDefenseManipPhysical.Location = new System.Drawing.Point(144, 432);
+            this.lblSpellDefenseManipPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipPhysical.Name = "lblSpellDefenseManipPhysical";
+            this.lblSpellDefenseManipPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseManipPhysical.TabIndex = 60;
+            this.lblSpellDefenseManipPhysical.Text = "0";
+            this.lblSpellDefenseManipPhysical.ToolTipText = "";
             // 
             // mnuCreateMenu
             // 
@@ -4781,7 +4785,7 @@ namespace Chummer
             this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.transmit_go;
             this.mnuSpecialCyberzombie.Name = "mnuSpecialCyberzombie";
             this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(246, 22);
-            this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConverToCyberzombie";
+            this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConvertToCyberzombie";
             this.mnuSpecialCyberzombie.Text = "Convert to Cyberzombie";
             this.mnuSpecialCyberzombie.Click += new System.EventHandler(this.mnuSpecialCyberzombie_Click);
             // 
@@ -8067,7 +8071,7 @@ namespace Chummer
             this.chkInitiationGroup.Name = "chkInitiationGroup";
             this.chkInitiationGroup.Size = new System.Drawing.Size(129, 17);
             this.chkInitiationGroup.TabIndex = 126;
-            this.chkInitiationGroup.Tag = "Checkbox_GroupInitiation";
+            this.chkInitiationGroup.Tag = "Checkbox_InitiationGroup";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
             this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
@@ -9458,7 +9462,7 @@ namespace Chummer
             this.tabStreetGear.Name = "tabStreetGear";
             this.tabStreetGear.Size = new System.Drawing.Size(841, 631);
             this.tabStreetGear.TabIndex = 5;
-            this.tabStreetGear.Tag = "Tab_StreeGear";
+            this.tabStreetGear.Tag = "Tab_StreetGear";
             this.tabStreetGear.Text = "Street Gear";
             // 
             // tabStreetGearTabs
@@ -16254,7 +16258,6 @@ namespace Chummer
             this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode24});
             this.treVehicles.ShowNodeToolTips = true;
-            this.treVehicles.ShowRootLines = false;
             this.treVehicles.Size = new System.Drawing.Size(295, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
@@ -17489,7 +17492,7 @@ namespace Chummer
             this.cmdAddImprovement.Name = "cmdAddImprovement";
             this.cmdAddImprovement.Size = new System.Drawing.Size(100, 23);
             this.cmdAddImprovement.TabIndex = 4;
-            this.cmdAddImprovement.Tag = "Button_AddImproevment";
+            this.cmdAddImprovement.Tag = "Button_AddImprovement";
             this.cmdAddImprovement.Text = "&Add Improvement";
             this.cmdAddImprovement.UseVisualStyleBackColor = true;
             this.cmdAddImprovement.Click += new System.EventHandler(this.cmdAddImprovement_Click);
@@ -17610,7 +17613,7 @@ namespace Chummer
             this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
             this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
             this.lblContactArchtypeLabel.TabIndex = 44;
-            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
+            this.lblContactArchtypeLabel.Tag = "Label_Archetype";
             this.lblContactArchtypeLabel.Text = "Archtype:";
             // 
             // lblContactNameLabel
@@ -17746,7 +17749,7 @@ namespace Chummer
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(1, 13);
             this.label10.TabIndex = 49;
-            this.label10.Tag = "Label_Archtype";
+            this.label10.Tag = "Label_Archetype";
             this.label10.Text = "Archtype:";
             // 
             // flowLayoutPanel28
@@ -18348,7 +18351,7 @@ namespace Chummer
             this.tabOtherInfo.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.tabDefences.ResumeLayout(false);
+            this.tabDefenses.ResumeLayout(false);
             this.tlpSpellDefense.ResumeLayout(false);
             this.tlpSpellDefense.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
@@ -18975,43 +18978,43 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsMetamagicAddEnhancement;
         private System.Windows.Forms.ContextMenuStrip cmsTechnique;
         private System.Windows.Forms.ToolStripMenuItem tsAddTechniqueNotes;
-        private System.Windows.Forms.TabPage tabDefences;
+        private System.Windows.Forms.TabPage tabDefenses;
         private System.Windows.Forms.Label lblCounterspellingDiceLabel;
         private System.Windows.Forms.NumericUpDown nudCounterspellingDice;
-        private LabelWithToolTip lblSpellDefenceManipPhysical;
-        private System.Windows.Forms.Label lblSpellDefenceManipPhysicalLabel;
-        private LabelWithToolTip lblSpellDefenceManipMental;
-        private System.Windows.Forms.Label lblSpellDefenceManipMentalLabel;
-        private LabelWithToolTip lblSpellDefenceIllusionPhysical;
-        private System.Windows.Forms.Label lblSpellDefenceIllusionPhysicalLabel;
-        private LabelWithToolTip lblSpellDefenceIllusionMana;
-        private System.Windows.Forms.Label lblSpellDefenceIllusionManaLabel;
-        private LabelWithToolTip lblSpellDefenceDecAttWIL;
-        private LabelWithToolTip lblSpellDefenceDecAttLOG;
-        private LabelWithToolTip lblSpellDefenceDecAttINT;
-        private LabelWithToolTip lblSpellDefenceDecAttCHA;
-        private LabelWithToolTip lblSpellDefenceDecAttSTR;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttWILLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttLOGLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttINTLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttCHALabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttSTRLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttREALabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttAGILabel;
-        private LabelWithToolTip lblSpellDefenceDecAttREA;
-        private LabelWithToolTip lblSpellDefenceDecAttAGI;
-        private LabelWithToolTip lblSpellDefenceDecAttBOD;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttBODLabel;
-        private LabelWithToolTip lblSpellDefenceDetection;
-        private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
-        private LabelWithToolTip lblSpellDefenceDirectSoakPhysical;
-        private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysicalLabel;
-        private LabelWithToolTip lblSpellDefenceDirectSoakMana;
-        private System.Windows.Forms.Label lblSpellDefenceDirectSoakManaLabel;
-        private LabelWithToolTip lblSpellDefenceIndirectSoak;
-        private System.Windows.Forms.Label lblSpellDefenceIndirectSoakLabel;
-        private LabelWithToolTip lblSpellDefenceIndirectDodge;
-        private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
+        private LabelWithToolTip lblSpellDefenseManipPhysical;
+        private System.Windows.Forms.Label lblSpellDefenseManipPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenseManipMental;
+        private System.Windows.Forms.Label lblSpellDefenseManipMentalLabel;
+        private LabelWithToolTip lblSpellDefenseIllusionPhysical;
+        private System.Windows.Forms.Label lblSpellDefenseIllusionPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenseIllusionMana;
+        private System.Windows.Forms.Label lblSpellDefenseIllusionManaLabel;
+        private LabelWithToolTip lblSpellDefenseDecAttWIL;
+        private LabelWithToolTip lblSpellDefenseDecAttLOG;
+        private LabelWithToolTip lblSpellDefenseDecAttINT;
+        private LabelWithToolTip lblSpellDefenseDecAttCHA;
+        private LabelWithToolTip lblSpellDefenseDecAttSTR;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttWILLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttLOGLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttINTLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttCHALabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttSTRLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttREALabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttAGILabel;
+        private LabelWithToolTip lblSpellDefenseDecAttREA;
+        private LabelWithToolTip lblSpellDefenseDecAttAGI;
+        private LabelWithToolTip lblSpellDefenseDecAttBOD;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttBODLabel;
+        private LabelWithToolTip lblSpellDefenseDetection;
+        private System.Windows.Forms.Label lblSpellDefenseDetectionLabel;
+        private LabelWithToolTip lblSpellDefenseDirectSoakPhysical;
+        private System.Windows.Forms.Label lblSpellDefenseDirectSoakPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenseDirectSoakMana;
+        private System.Windows.Forms.Label lblSpellDefenseDirectSoakManaLabel;
+        private LabelWithToolTip lblSpellDefenseIndirectSoak;
+        private System.Windows.Forms.Label lblSpellDefenseIndirectSoakLabel;
+        private LabelWithToolTip lblSpellDefenseIndirectDodge;
+        private System.Windows.Forms.Label lblSpellDefenseIndirectDodgeLabel;
         private System.Windows.Forms.TabControl tabCharacterTabs;
         private System.Windows.Forms.TabPage tabCommon;
         private System.Windows.Forms.TabControl tabPeople;

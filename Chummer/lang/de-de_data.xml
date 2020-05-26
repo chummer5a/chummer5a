@@ -19419,6 +19419,30 @@
 				<translate>Bolzen: Schockerspitze mit Statikschaft (Schwere Armbrust)</translate>
 				<altpage>180</altpage>
 			</gear>
+			<gear translated="True">
+				<id>9b0a4676-bc13-467a-8398-f0e40b261335</id>
+				<name>Synthstrument (Cheap)</name>
+				<translate>Synthstrument (billig)</translate>
+				<altpage>84</altpage>
+			</gear>
+			<gear translated="True">
+				<id>bf1dd7ce-a966-46ad-9561-143e2ef3210e</id>
+				<name>Synthstrument (Good)</name>
+				<translate>Synthstrument (gut)</translate>
+				<altpage>84</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e3fb93d8-cad9-4982-8f43-91d52baf20b5</id>
+				<name>Synthstrument (Nice)</name>
+				<translate>Synthstrument (sehr gut)</translate>
+				<altpage>84</altpage>
+			</gear>
+			<gear translated="True">
+				<id>447827be-96a4-471f-929f-cb4bff4ccbb4</id>
+				<name>Reaper</name>
+				<translate>Reaper</translate>
+				<altpage>183</altpage>
+			</gear>
 			<!-- Begin of translation for custom rule 'Delnar Skills Remake' -->
 			<gear>
 				<id>1efc3ad3-c5d7-4534-ab97-a059f08f1b74</id>
@@ -31473,6 +31497,12 @@
 				<translate>Tätowierungsmagie</translate>
 				<altpage>153</altpage>
 			</quality>
+			<quality translated="True">
+				<id>43be9ef8-d7e9-47fe-ac79-7d15c508a2ad</id>
+				<name>The Twisted Way</name>
+				<translate>Der verzerrte Pfad</translate>
+				<altpage>88</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -38392,6 +38422,12 @@
 				<translate>Schwarze Magie [alternativ]</translate>
 				<altpage>73</altpage>
 			</tradition>
+			<tradition>
+				<id>8a0d8bc6-47ac-4043-a916-e2681a4d5bd7</id>
+				<name>Toxic</name>
+				<translate>Toxisch</translate>
+				<altpage>88</altpage>
+			</tradition>
 		</traditions>
 		<spirits>
 			<spirit>
@@ -41304,7 +41340,7 @@
 			</mod>
 			<mod>
 				<id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-				<name>Missile Defence System</name>
+				<name>Missile Defense System</name>
 				<translate>Raketen-Abwehrsystem</translate>
 				<altpage>167</altpage>
 			</mod>

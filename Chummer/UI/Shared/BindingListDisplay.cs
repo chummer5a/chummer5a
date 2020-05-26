@@ -30,7 +30,7 @@ namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         public IComparer<TType> DefaultComparer => _indexComparer;
@@ -51,7 +51,7 @@ namespace Chummer.UI.Shared
         public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadVisibleOnly = true)
         {
             InitializeComponent();
-            _contents = contents;
+            _contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _createFunc = createFunc;
             _loadVisibleOnly = loadVisibleOnly;
             pnlDisplay.SuspendLayout();
@@ -61,7 +61,7 @@ namespace Chummer.UI.Shared
                 _contentList.Add(new ControlWithMetaData(objLoopTType, this));
             }
             _indexComparer = new IndexComparer(_contents);
-            if (_comparison == null) _comparison = _indexComparer;
+            _comparison = _comparison ?? _indexComparer;
             _contents.ListChanged += ContentsChanged;
             ComptuteDisplayIndex();
             LoadScreenContent();

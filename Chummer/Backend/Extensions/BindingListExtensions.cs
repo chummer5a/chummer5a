@@ -83,6 +83,5 @@ namespace Chummer
                 list.Add(item);
             }
         }
-
     }
 }

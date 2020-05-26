@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
 	{
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
@@ -74,7 +74,7 @@ namespace Chummer
                     objNode.Tag = new clsNodeData(objItem.Value);
                     for (int i = 0; i < intLevelCount; i++)
                     {
-                        TreeNode objSubNode = objNode.Nodes.Add(strLevelString + strSpaceString + (i + 1).ToString());
+                        TreeNode objSubNode = objNode.Nodes.Add(strLevelString + strSpaceString + (i + 1).ToString(GlobalOptions.CultureInfo));
                         objSubNode.Tag = new clsNodeData(objItem.Value, i);
                     }
                 }
@@ -99,7 +99,7 @@ namespace Chummer
                 }
             }
         }
-		
+
 		/// <summary>
 		/// Populate the list of Drug Grades.
 		/// </summary>
@@ -110,7 +110,7 @@ namespace Chummer
 			_lstGrade.Clear();
 			foreach (Grade objGrade in objGradeList)
 			{
-			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
+			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
 			}
             cboGrade.BeginUpdate();
 			cboGrade.DataSource = null;
@@ -127,7 +127,7 @@ namespace Chummer
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",
             };
-            if ((_objCharacter != null) && (!String.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
+            if ((_objCharacter != null) && (!string.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
                 _objDrug.Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),
                     Improvement.ImprovementSource.Drug, _objCharacter);
 
@@ -144,13 +144,13 @@ namespace Chummer
 		    // Make sure the suite and file name fields are populated.
 		    if (string.IsNullOrEmpty(txtDrugName.Text))
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
 
 		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
 
@@ -174,13 +174,13 @@ namespace Chummer
                 return;
             }
 
-            //prevent adding same component multiple times. 
+            //prevent adding same component multiple times.
             if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
-                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString()));
+                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString(GlobalOptions.CultureInfo)));
                 return;
             }
 
@@ -213,8 +213,8 @@ namespace Chummer
                         {
                             string message = new StringBuilder(LanguageManager.GetString("String_MaximumDrugBlockLevel")).
                                 AppendLine().
-                                Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;")).AppendLine().
-                                Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;")).
+                                Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo)).AppendLine().
+                                Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;", GlobalOptions.CultureInfo)).
                                 ToString();
                             Program.MainForm.ShowMessageBox(this, message);
                             return;
@@ -310,7 +310,7 @@ namespace Chummer
 		}
 	}
 
-	class clsNodeData : Object
+	class clsNodeData : object
     {
         public DrugComponent DrugComponent { get; }
         public int Level { get; }

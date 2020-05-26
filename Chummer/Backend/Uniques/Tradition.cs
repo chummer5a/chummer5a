@@ -67,13 +67,13 @@ namespace Chummer.Backend.Uniques
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
-            _objCharacter.PropertyChanged += RefreshDrainExpression;
+            if (objCharacter != null)
+                _objCharacter.PropertyChanged += RefreshDrainExpression;
         }
 
         public override string ToString()
         {
-            if (!String.IsNullOrEmpty(_strName))
+            if (!string.IsNullOrEmpty(_strName))
                 return _strName;
             return base.ToString();
         }
@@ -119,14 +119,12 @@ namespace Chummer.Backend.Uniques
             _nodBonus = xmlTraditionNode["bonus"];
             if(_nodBonus != null)
             {
-                int intRating = _objCharacter.SubmersionGrade > 0 ? _objCharacter.SubmersionGrade : _objCharacter.InitiateGrade;
 
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if(!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if(!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: DisplayNameShort(GlobalOptions.Language)))
                 {
-                    _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;
                     return false;
                 }
@@ -143,9 +141,10 @@ namespace Chummer.Backend.Uniques
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
                 }
-            }*/
+            }
+            */
             RebuildSpiritList();
             OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;
@@ -206,6 +205,8 @@ namespace Chummer.Backend.Uniques
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             if(_eTraditionType == TraditionType.None)
                 return;
             objWriter.WriteStartElement("tradition");
@@ -313,12 +314,11 @@ namespace Chummer.Backend.Uniques
 
         public void LoadFromHeroLab(XmlNode xmlHeroLabNode)
         {
+            if (xmlHeroLabNode == null)
+                return;
             _eTraditionType = TraditionType.MAG;
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
-            XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
-                ? XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary)
-                    .SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]")
-                : null;
+            XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName) ? XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
             if(xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
@@ -343,8 +343,10 @@ namespace Chummer.Backend.Uniques
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString());
+            objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -377,16 +379,15 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => Type == TraditionType.None ? string.Empty : _guiSourceID.ToString("D");
+        public string SourceIDString => Type == TraditionType.None ? string.Empty : _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Internal identifier which will be used to identify this Tradition in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -424,6 +425,8 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public bool IsCustomTradition => SourceIDString == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
 
+        public bool CanChooseDrainAttribute => IsCustomTradition || string.IsNullOrEmpty(_strDrainExpression);
+
         /// <summary>
         /// Tradition name.
         /// </summary>
@@ -442,7 +445,7 @@ namespace Chummer.Backend.Uniques
             {
                 if(GlobalOptions.Language != strLanguage)
                 {
-                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language);
+                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : LanguageManager.ReverseTranslateExtra(Name);
                     return LanguageManager.TranslateExtra(strReturnEnglish, strLanguage);
                 }
 
@@ -469,13 +472,15 @@ namespace Chummer.Backend.Uniques
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
         /// <summary>
         /// What type of forms do spirits of these traditions come in? Defaults to Materialization.
         /// </summary>
         public string SpiritForm
         {
             get => _strSpiritForm;
-            set => _strSpiritForm = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strSpiritForm = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -492,7 +497,7 @@ namespace Chummer.Backend.Uniques
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -568,19 +573,19 @@ namespace Chummer.Backend.Uniques
                 if(Type == TraditionType.None)
                     return 0;
                 string strDrainAttributes = DrainExpression;
-                StringBuilder strbldDrain = new StringBuilder(strDrainAttributes);
+                StringBuilder sbdDrain = new StringBuilder(strDrainAttributes);
                 foreach(string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    strbldDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    sbdDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
-                string strDrain = strbldDrain.ToString();
+                string strDrain = sbdDrain.ToString();
                 if(!int.TryParse(strDrain, out int intDrain))
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
                     if(blnIsSuccess)
-                        intDrain = Convert.ToInt32(objProcess);
+                        intDrain = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
                 }
 
                 // Add any Improvements for Drain Resistance.
@@ -599,7 +604,7 @@ namespace Chummer.Backend.Uniques
             {
                 if(Type == TraditionType.None)
                     return string.Empty;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 StringBuilder objToolTip = new StringBuilder(DrainExpression);
 
                 // Update the Fading CharacterAttribute Value.
@@ -620,7 +625,7 @@ namespace Chummer.Backend.Uniques
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          _objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language) +
+                                          _objCharacter.GetObjectName(objLoopImprovement) +
                                           strSpaceCharacter + '(' +
                                           objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
@@ -632,13 +637,13 @@ namespace Chummer.Backend.Uniques
 
         public void RefreshDrainExpression(object sender, PropertyChangedEventArgs e)
         {
-            if(Type == TraditionType.MAG && (e.PropertyName == nameof(Character.AdeptEnabled) || e.PropertyName == nameof(Character.MagicianEnabled)))
+            if(Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
                 OnPropertyChanged(nameof(DrainExpression));
         }
 
         public void RefreshDrainValue(object sender, PropertyChangedEventArgs e)
         {
-            if(Type != TraditionType.None && e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            if(Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(DrainValue));
         }
 
@@ -684,7 +689,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritCombat = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritCombat = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -728,7 +733,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritDetection = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritDetection = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -772,7 +777,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritHealth = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritHealth = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -816,7 +821,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritIllusion = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritIllusion = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -860,7 +865,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritManipulation = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    SpiritManipulation = LanguageManager.ReverseTranslateExtra(value);
             }
         }
 
@@ -923,7 +928,7 @@ namespace Chummer.Backend.Uniques
 
         public XmlDocument GetTraditionDocument(string strLanguage)
         {
-            switch(Type)
+            switch (Type)
             {
                 case TraditionType.MAG:
                     return XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
@@ -939,58 +944,62 @@ namespace Chummer.Backend.Uniques
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependancyGraph<string> AttributeDependancyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(DisplayName),
-                    new DependancyGraphNode<string>(nameof(DisplayNameShort),
-                        new DependancyGraphNode<string>(nameof(Name))
-                    ),
-                    new DependancyGraphNode<string>(nameof(Extra))
-                ),
-                new DependancyGraphNode<string>(nameof(DrainValueToolTip),
-                    new DependancyGraphNode<string>(nameof(DrainValue),
-                        new DependancyGraphNode<string>(nameof(DrainExpression))
+        private static readonly DependencyGraph<string> s_AttributeDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string>(nameof(Name))
+                        ),
+                        new DependencyGraphNode<string>(nameof(Extra))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(DisplayDrainExpression),
-                    new DependancyGraphNode<string>(nameof(DrainExpression))
+                new DependencyGraphNode<string>(nameof(DrainValueToolTip),
+                    new DependencyGraphNode<string>(nameof(DrainValue),
+                        new DependencyGraphNode<string>(nameof(DrainExpression))
+                    )
                 ),
-                new DependancyGraphNode<string>(nameof(AvailableSpirits),
-                    new DependancyGraphNode<string>(nameof(SpiritCombat)),
-                    new DependancyGraphNode<string>(nameof(SpiritDetection)),
-                    new DependancyGraphNode<string>(nameof(SpiritHealth)),
-                    new DependancyGraphNode<string>(nameof(SpiritIllusion)),
-                    new DependancyGraphNode<string>(nameof(SpiritManipulation))
+                new DependencyGraphNode<string>(nameof(DisplayDrainExpression),
+                    new DependencyGraphNode<string>(nameof(DrainExpression))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySpiritCombat),
-                    new DependancyGraphNode<string>(nameof(SpiritCombat))
+                new DependencyGraphNode<string>(nameof(AvailableSpirits),
+                    new DependencyGraphNode<string>(nameof(SpiritCombat)),
+                    new DependencyGraphNode<string>(nameof(SpiritDetection)),
+                    new DependencyGraphNode<string>(nameof(SpiritHealth)),
+                    new DependencyGraphNode<string>(nameof(SpiritIllusion)),
+                    new DependencyGraphNode<string>(nameof(SpiritManipulation))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySpiritDetection),
-                    new DependancyGraphNode<string>(nameof(SpiritDetection))
+                new DependencyGraphNode<string>(nameof(DisplaySpiritCombat),
+                    new DependencyGraphNode<string>(nameof(SpiritCombat))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySpiritHealth),
-                    new DependancyGraphNode<string>(nameof(SpiritHealth))
+                new DependencyGraphNode<string>(nameof(DisplaySpiritDetection),
+                    new DependencyGraphNode<string>(nameof(SpiritDetection))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySpiritIllusion),
-                    new DependancyGraphNode<string>(nameof(SpiritIllusion))
+                new DependencyGraphNode<string>(nameof(DisplaySpiritHealth),
+                    new DependencyGraphNode<string>(nameof(SpiritHealth))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySpiritManipulation),
-                    new DependancyGraphNode<string>(nameof(SpiritManipulation))
+                new DependencyGraphNode<string>(nameof(DisplaySpiritIllusion),
+                    new DependencyGraphNode<string>(nameof(SpiritIllusion))
+                ),
+                new DependencyGraphNode<string>(nameof(DisplaySpiritManipulation),
+                    new DependencyGraphNode<string>(nameof(SpiritManipulation))
                 )
             );
 
         public static List<Tradition> GetTraditions(Character character)
         {
             List<Tradition> result = new List<Tradition>();
-            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml", new Dictionary<string,bool>()).SelectNodes("/chummer/traditions/tradition");
-            foreach(XmlNode node in xmlTraditions)
+            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml", character.Options.CustomDataDictionary).SelectNodes("/chummer/traditions/tradition");
+            if (xmlTraditions != null)
             {
-                Tradition tradition = new Tradition(character);
-                tradition.Create(node);
-                result.Add(tradition);
+                foreach (XmlNode node in xmlTraditions)
+                {
+                    Tradition tradition = new Tradition(character);
+                    tradition.Create(node);
+                    result.Add(tradition);
+                }
             }
             return result;
-
         }
 
         #endregion
@@ -1014,10 +1023,10 @@ namespace Chummer.Backend.Uniques
             foreach(string strPropertyName in lstPropertyNames)
             {
                 if(lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = AttributeDependancyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach(string strLoopChangedProperty in AttributeDependancyGraph.GetWithAllDependants(strPropertyName))
+                    foreach(string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

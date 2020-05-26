@@ -31,7 +31,7 @@ using Chummer.Annotations;
 namespace Chummer.Backend.Attributes
 {
 
-    public class AttributeSection : INotifyMultiplePropertyChanged
+    public sealed class AttributeSection : INotifyMultiplePropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -47,11 +47,10 @@ namespace Chummer.Backend.Attributes
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependants(
-                        strPropertyName))
+                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -65,14 +64,12 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static readonly DependancyGraph<string> AttributeSectionDependencyGraph =
-            new DependancyGraph<string>(
+        private static readonly DependencyGraph<string> AttributeSectionDependencyGraph =
+            new DependencyGraph<string>(
             );
 
         private ObservableCollection<CharacterAttrib> _colAttributes;
-
-        public ObservableCollection<CharacterAttrib> Attributes
-        {
+        public ObservableCollection<CharacterAttrib> Attributes {
             get
             {
                 if (_colAttributes != null)
@@ -98,12 +95,10 @@ namespace Chummer.Backend.Attributes
                     if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                         _colAttributes.Add(_objCharacter.MAGAdept);
                 }
-
                 if (_objCharacter.RESEnabled)
                 {
                     _colAttributes.Add(_objCharacter.RES);
                 }
-
                 if (_objCharacter.DEPEnabled)
                 {
                     _colAttributes.Add(_objCharacter.DEP);
@@ -114,15 +109,13 @@ namespace Chummer.Backend.Attributes
             internal set => _colAttributes = value;
         }
 
-        private static readonly string[] s_LstAttributeStrings =
-            {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP"};
-
+        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
-        private static readonly string[] s_LstPhysicalAttributes = {"BOD", "AGI", "REA", "STR"};
+        private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
         public static ReadOnlyCollection<string> PhysicalAttributes => Array.AsReadOnly(s_LstPhysicalAttributes);
 
-        private static readonly string[] s_LstMentalAttributes = {"CHA", "INT", "LOG", "WIL"};
+        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
         public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
 
         public static string GetAttributeEnglishName(string strAbbrev)
@@ -162,14 +155,11 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private readonly Dictionary<string, BindingSource> _dicBindings =
-            new Dictionary<string, BindingSource>(AttributeStrings.Count);
-
+        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
         private readonly Character _objCharacter;
         private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
         #region Constructor, Save, Load, Print Methods
-
         public AttributeSection(Character character)
         {
             _objCharacter = character;
@@ -177,21 +167,30 @@ namespace Chummer.Backend.Attributes
 
         private void BuildBindingList()
         {
+            foreach (BindingSource objSource in _dicBindings.Values)
+                objSource.Dispose();
             _dicBindings.Clear();
             foreach (string strAttributeString in AttributeStrings)
             {
-                _dicBindings.Add(strAttributeString,
-                    new BindingSource {DataSource = GetAttributeByName(strAttributeString)});
+                _dicBindings.Add(strAttributeString, new BindingSource { DataSource = GetAttributeByName(strAttributeString) });
             }
         }
 
         public void UnbindAttributeSection()
         {
+            foreach (BindingSource objSource in _dicBindings.Values)
+                objSource.Dispose();
             _dicBindings.Clear();
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
             SpecialAttributeList.Clear();
+        }
+
+        public void Dispose()
+        {
+            foreach (BindingSource objSource in _dicBindings.Values)
+                objSource.Dispose();
         }
 
         internal void Save(XmlTextWriter objWriter)
@@ -200,23 +199,21 @@ namespace Chummer.Backend.Attributes
             {
                 objAttribute.Save(objWriter);
             }
-
             foreach (CharacterAttrib objAttribute in SpecialAttributeList)
             {
                 objAttribute.Save(objWriter);
             }
         }
 
-        public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
+        public void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
         {
             if (charNode == null)
                 return;
-            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null,
-                CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
+            using (_ = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode.InnerText))
             {
                 int intOldBODBase = _objCharacter.BOD.Base;
                 int intOldBODKarma = _objCharacter.BOD.Karma;
-                int intOldAGIBase = _objCharacter.AGI.Base;
+                int intOldAGIBase= _objCharacter.AGI.Base;
                 int intOldAGIKarma = _objCharacter.AGI.Karma;
                 int intOldREABase = _objCharacter.REA.Base;
                 int intOldREAKarma = _objCharacter.REA.Karma;
@@ -368,7 +365,6 @@ namespace Chummer.Backend.Attributes
                     Attributes.Add(_objCharacter.WIL);
                     Attributes.Add(_objCharacter.EDG);
                 }
-
                 if (_objCharacter.MAGEnabled)
                 {
                     _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
@@ -376,10 +372,8 @@ namespace Chummer.Backend.Attributes
                     Attributes.Add(_objCharacter.MAG);
                     if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                     {
-                        _objCharacter.MAGAdept.Base =
-                            Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
-                        _objCharacter.MAGAdept.Karma =
-                            Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
+                        _objCharacter.MAGAdept.Base = Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
+                        _objCharacter.MAGAdept.Karma = Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
                         Attributes.Add(_objCharacter.MAGAdept);
                     }
                 }
@@ -406,6 +400,8 @@ namespace Chummer.Backend.Attributes
 
         public void Load(XmlNode xmlSavedCharacterNode)
         {
+            if (xmlSavedCharacterNode == null)
+                return;
             //Timekeeper.Start("load_char_attrib");
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                 objAttribute.UnbindAttribute();
@@ -413,38 +409,30 @@ namespace Chummer.Backend.Attributes
             SpecialAttributeList.Clear();
             XPathNavigator xmlCharNode = _objCharacter.GetNode();
             // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-            XPathNavigator xmlCharNodeAnimalForm =
-                _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                    ? _objCharacter.GetNode(true)
-                    : null;
+            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
-                XmlNodeList lstAttributeNodes =
-                    xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
-                // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch.
-                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null &&
-                    _objCharacter.LastSavedVersion < new Version("5.200.25"))
+                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
+                // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
                 {
                     CharacterAttrib objAttribute;
                     switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
-                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                CharacterAttrib.AttributeCategory.Special);
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
                             objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                             SpecialAttributeList.Add(objAttribute);
                             break;
                         case CharacterAttrib.AttributeCategory.Standard:
-                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                CharacterAttrib.AttributeCategory.Standard);
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                             objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                             AttributeList.Add(objAttribute);
                             break;
                     }
 
                     if (xmlCharNodeAnimalForm == null) continue;
-                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                        CharacterAttrib.AttributeCategory.Shapeshifter);
+                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
                     objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                     switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                     {
@@ -464,14 +452,12 @@ namespace Chummer.Backend.Attributes
                         switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                         {
                             case CharacterAttrib.AttributeCategory.Special:
-                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                    CharacterAttrib.AttributeCategory.Special);
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
                                 objAttribute.Load(xmlAttributeNode);
                                 SpecialAttributeList.Add(objAttribute);
                                 break;
                             case CharacterAttrib.AttributeCategory.Standard:
-                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                    CharacterAttrib.AttributeCategory.Standard);
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                                 objAttribute.Load(xmlAttributeNode);
                                 AttributeList.Add(objAttribute);
                                 break;
@@ -479,29 +465,25 @@ namespace Chummer.Backend.Attributes
                     }
                 }
             }
-
             ResetBindings();
             _objCharacter.RefreshAttributeBindings();
             //Timekeeper.Finish("load_char_attrib");
         }
 
-        public async void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
+        public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
         {
-            using (var op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+            if (xmlStatBlockBaseNode == null)
+                return;
+            using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();
                 AttributeList.Clear();
                 SpecialAttributeList.Clear();
-                XmlDocument objXmlDocument =
-                    XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml",
-                        _objCharacter.Options.CustomDataDictionary);
                 XPathNavigator xmlCharNode = _objCharacter.GetNode();
                 // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                 XPathNavigator xmlCharNodeAnimalForm =
-                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                        ? _objCharacter.GetNode(true)
-                        : null;
+                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
                 foreach (string strAttribute in AttributeStrings)
                 {
                     // First, remake the attribute
@@ -694,6 +676,8 @@ namespace Chummer.Backend.Attributes
 
         private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode)
         {
+            if (objNewAttribute == null)
+                return null;
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
                 strAttributeLower = "mag";
@@ -704,73 +688,38 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
-                        .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intMinValue = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                    intMinValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
-            catch (XPathException)
-            {
-                intMinValue = 1;
-            }
-            catch (OverflowException)
-            {
-                intMinValue = 1;
-            }
-            catch (InvalidCastException)
-            {
-                intMinValue = 1;
-            }
-
+            catch (XPathException) { intMinValue = 1; }
+            catch (OverflowException) { intMinValue = 1; }
+            catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
-                        .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intMaxValue = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                    intMaxValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
-            catch (XPathException)
-            {
-                intMaxValue = 1;
-            }
-            catch (OverflowException)
-            {
-                intMaxValue = 1;
-            }
-            catch (InvalidCastException)
-            {
-                intMaxValue = 1;
-            }
-
+            catch (XPathException) { intMaxValue = 1; }
+            catch (OverflowException) { intMaxValue = 1; }
+            catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
-                        .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAugValue = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                    intAugValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
             }
-            catch (XPathException)
-            {
-                intAugValue = 1;
-            }
-            catch (OverflowException)
-            {
-                intAugValue = 1;
-            }
-            catch (InvalidCastException)
-            {
-                intAugValue = 1;
-            }
+            catch (XPathException) { intAugValue = 1; }
+            catch (OverflowException) { intAugValue = 1; }
+            catch (InvalidCastException) { intAugValue = 1; }
 
-            objNewAttribute.Base = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value);
-            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value);
-            objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
+            objNewAttribute.Base = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value, GlobalOptions.InvariantCultureInfo);
+            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value, GlobalOptions.InvariantCultureInfo);
+            objNewAttribute.AssignLimits(intMinValue.ToString(GlobalOptions.InvariantCultureInfo), intMaxValue.ToString(GlobalOptions.InvariantCultureInfo), intAugValue.ToString(GlobalOptions.InvariantCultureInfo));
             return objNewAttribute;
         }
 
@@ -782,42 +731,31 @@ namespace Chummer.Backend.Attributes
 
                 if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                 {
-                    objWriter.WriteElementString("attributecategory",
-                        xmlNode?.SelectSingleNode("name/@translate")?.Value ?? _objCharacter.Metatype);
+                    objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.Value ?? _objCharacter.Metatype);
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode(
-                        $"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                    xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }
-
             objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
             foreach (CharacterAttrib att in AttributeList)
             {
                 att.Print(objWriter, objCulture, strLanguageToPrint);
             }
-
             foreach (CharacterAttrib att in SpecialAttributeList)
             {
                 att.Print(objWriter, objCulture, strLanguageToPrint);
             }
         }
-
         #endregion
 
         #region Methods
-
         public CharacterAttrib GetAttributeByName(string abbrev)
         {
-            bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created &&
-                                          _objCharacter.AttributeSection.AttributeCategory ==
-                                          CharacterAttrib.AttributeCategory.Shapeshifter;
-            CharacterAttrib objReturn =
-                AttributeList.FirstOrDefault(att =>
-                    att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) ==
-                    blnGetShifterAttribute) ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
+            bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
+            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute) ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
             return objReturn;
         }
 
@@ -836,20 +774,19 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget,
-            string strMetavariantXPath, XmlDocument xmlDoc)
+        public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
         {
-            string strSourceAbbrev = objSource.Abbrev.ToLower();
+            if (objSource == null || objTarget == null)
+                return;
+            string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
-            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath)
-                ? xmlDoc.SelectSingleNode(strMetavariantXPath)
-                : null;
+            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc?.SelectSingleNode(strMetavariantXPath) : null;
             if (node != null)
             {
-                objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
-                objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
-                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+                objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             }
 
             objTarget.Base = objSource.Base;
@@ -868,18 +805,15 @@ namespace Chummer.Backend.Attributes
                 switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                 {
                     case CharacterAttrib.AttributeCategory.Special:
-                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                            CharacterAttrib.AttributeCategory.Special);
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
                         SpecialAttributeList.Add(objAttribute);
                         break;
                     case CharacterAttrib.AttributeCategory.Standard:
-                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                            CharacterAttrib.AttributeCategory.Standard);
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                         AttributeList.Add(objAttribute);
                         break;
                 }
             }
-
             BuildBindingList();
         }
 
@@ -895,7 +829,6 @@ namespace Chummer.Backend.Attributes
                 case "Standard":
                     return CharacterAttrib.AttributeCategory.Standard;
             }
-
             return CharacterAttrib.AttributeCategory.Standard;
         }
 
@@ -910,11 +843,9 @@ namespace Chummer.Backend.Attributes
                 objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
             }
         }
-
         #endregion
 
         #region Properties
-
         /// <summary>
         /// Character's Attributes.
         /// </summary>
@@ -936,7 +867,6 @@ namespace Chummer.Backend.Attributes
                 OnPropertyChanged();
             }
         }
-
         #endregion
     }
 }

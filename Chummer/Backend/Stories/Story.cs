@@ -20,6 +20,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
@@ -39,7 +40,7 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _xmlStoryDocumentBaseNode = XmlManager.Load("stories.xml", _objCharacter.Options.CustomDataDictionary, GlobalOptions.Language).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlStoryDocumentBaseNode = XmlManager.Load("stories.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             _lstStoryModules.CollectionChanged += LstStoryModulesOnCollectionChanged;
         }
 
@@ -137,7 +138,7 @@ namespace Chummer
             return null;
         }
 
-        public void GeneratePersistents(string strLanguage)
+        public void GeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
             List<string> lstPersistentKeysToRemove = new List<string>();
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -151,21 +152,21 @@ namespace Chummer
 
             Parallel.ForEach(Modules, x =>
             {
-                x.TestRunToGeneratePersistents(strLanguage);
+                x.TestRunToGeneratePersistents(objCulture, strLanguage);
             });
             _blnNeedToRegeneratePersistents = false;
         }
 
-        public string PrintStory(string strLanguage)
+        public string PrintStory(CultureInfo objCulture, string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
-                GeneratePersistents(strLanguage);
+                GeneratePersistents(objCulture, strLanguage);
 
             object objOutputLock = new object();
             string[] strModuleOutputStrings = new string[Modules.Count];
             Parallel.For(0, strModuleOutputStrings.Length, i =>
             {
-                string strModuleOutput = Modules[i].PrintModule(strLanguage);
+                string strModuleOutput = Modules[i].PrintModule(objCulture, strLanguage);
                 lock (objOutputLock)
                     strModuleOutputStrings[i] = strModuleOutput;
             });

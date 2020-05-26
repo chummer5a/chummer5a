@@ -594,7 +594,7 @@
 			<text>ヘルプ (&amp;H)</text>
 		</string>
 		<string>
-			<key>Menu_Main_NewCharater</key>
+			<key>Menu_Main_NewCharacter</key>
 			<text>新規キャラクター (&amp;N)</text>
 		</string>
 		<string>
@@ -715,7 +715,7 @@
 			<text>有毒クリッターにコンバート</text>
 		</string>
 		<string>
-			<key>Menu_SpecialConverToCyberzombie</key>
+			<key>Menu_SpecialConvertToCyberzombie</key>
 			<text>サイバーゾンビにコンバート</text>
 		</string>
 		<string>
@@ -911,7 +911,7 @@
 			<text>サイバーウェアとバイオウェア</text>
 		</string>
 		<string>
-			<key>Tab_StreeGear</key>
+			<key>Tab_StreetGear</key>
 			<text>ストリート・ギア</text>
 		</string>
 		<string>
@@ -1519,7 +1519,7 @@
 			<text>この複合体にオプションを追加できません.</text>
 		</string>
 		<string>
-			<key>Message_ConntAddComplexFormOptionLimit</key>
+			<key>Message_CannotAddComplexFormOptionLimit</key>
 			<text>レーティングによる制限のため, この複合体には {0} より多くのオプションを追加できません.</text>
 		</string>
 		<string>
@@ -2191,7 +2191,7 @@
 			<text>バイオウェア売却</text>
 		</string>
 		<string>
-			<key>String_ExpensePurchaseCyberwearGear</key>
+			<key>String_ExpensePurchaseCyberwareGear</key>
 			<text>サイバーウェア装備購入</text>
 		</string>
 		<string>
@@ -3048,19 +3048,19 @@
 		</string>
 		<string>
 			<key>Checkbox_GroupInitiation</key>
-			<text>グループ・イニシエーション (-20%)</text>
+			<text>グループ・イニシエーション (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>イニシエイト時の試練 (-20%)</text>
+			<text>イニシエイト時の試練 (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>ネットワーク・サブマージョン (-20%)</text>
+			<text>ネットワーク・サブマージョン (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>サブマージョン時のタスク (-20%)</text>
+			<text>サブマージョン時のタスク (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>
@@ -3533,7 +3533,7 @@
 		</string>
 		<!-- Improvements Tab -->
 		<string>
-			<key>Button_AddImproevment</key>
+			<key>Button_AddImprovement</key>
 			<text>Improvement を追加 (&amp;A)</text>
 		</string>
 		<string>
@@ -3813,7 +3813,7 @@
 			<text>エッジの回復/消費</text>
 		</string>
 		<string>
-			<key>Tip_CMCMPenalty</key>
+			<key>Tip_CMPenalty</key>
 			<text>負傷によるダイスプールへの修正.</text>
 		</string>
 		<string>
@@ -4816,7 +4816,7 @@
 			<text>データファイル名</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_DataDescription</key>
+			<key>Message_OmaeUpload_DataDescription</key>
 			<text>このデータファイルの内容がわかるよう, 簡単な概要を添えてください.</text>
 		</string>
 		<string>
@@ -4836,7 +4836,7 @@
 			<text>キャラクターシートの名前</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_SheetDescription</key>
+			<key>Message_OmaeUpload_SheetDescription</key>
 			<text>このキャラクターシートの内容がわかるよう, 簡単な概要を添えてください.</text>
 		</string>
 		<string>
@@ -6673,7 +6673,7 @@
 			<text>Location:</text>
 		</string>
 		<string>
-			<key>Label_Archtype</key>
+			<key>Label_Archetype</key>
 			<text>Archetype:</text>
 		</string>
 		<string>
@@ -8415,71 +8415,71 @@
 			<text>Counterspelling Dice</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirectDodge</key>
+			<key>Label_SpellDefenseIndirectDodge</key>
 			<text>Indirect Dodge</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirect</key>
+			<key>Label_SpellDefenseIndirect</key>
 			<text>Indirect Soak</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakMana</key>
+			<key>Label_SpellDefenseDirectSoakMana</key>
 			<text>Direct Soak - Mana</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakPhysical</key>
+			<key>Label_SpellDefenseDirectSoakPhysical</key>
 			<text>Direct Soak - Physical</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDetection</key>
+			<key>Label_SpellDefenseDetection</key>
 			<text>Detection Spells</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttBOD</key>
+			<key>Label_SpellDefenseDecAttBOD</key>
 			<text>Decrease Attribute (BOD)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttSTR</key>
+			<key>Label_SpellDefenseDecAttSTR</key>
 			<text>Decrease Attribute (STR)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttAGI</key>
+			<key>Label_SpellDefenseDecAttAGI</key>
 			<text>Decrease Attribute (AGI)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttREA</key>
+			<key>Label_SpellDefenseDecAttREA</key>
 			<text>Decrease Attribute (REA)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttLOG</key>
+			<key>Label_SpellDefenseDecAttLOG</key>
 			<text>Decrease Attribute (LOG)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttWIL</key>
+			<key>Label_SpellDefenseDecAttWIL</key>
 			<text>Decrease Attribute (WIL)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttINT</key>
+			<key>Label_SpellDefenseDecAttINT</key>
 			<text>Decrease Attribute (INT)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttCHA</key>
+			<key>Label_SpellDefenseDecAttCHA</key>
 			<text>Decrease Attribute (CHA)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionMana</key>
+			<key>Label_SpellDefenseIllusionMana</key>
 			<text>Illusion - Mana</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionPhysical</key>
+			<key>Label_SpellDefenseIllusionPhysical</key>
 			<text>Illusion - Physical</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipMental</key>
+			<key>Label_SpellDefenseManipMental</key>
 			<text>Manipulation - Mental</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipPhysical</key>
+			<key>Label_SpellDefenseManipPhysical</key>
 			<text>Manipulation - Physical</text>
 		</string>
 		<string>

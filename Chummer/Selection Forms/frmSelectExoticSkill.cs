@@ -21,7 +21,6 @@ using System.Collections.Generic;
  using System.Linq;
  using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
  using Chummer.Backend.Skills;
 
 namespace Chummer
@@ -93,7 +92,7 @@ namespace Chummer
         /// <summary>
         /// Skill specialisation that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString() ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text, GlobalOptions.Language);
+        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString() ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text);
 
         #endregion
 

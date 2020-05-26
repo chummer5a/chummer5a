@@ -32,7 +32,7 @@ namespace Chummer
 
             return fields.Concat(properties).ToDictionary(key => key.Key, value => value.Value); ;
         }
-        public static bool EqualsByValue(this Dictionary<string, bool> firstDic, Dictionary<string, bool> secondDic)
+        public static bool EqualsByValue(this IDictionary<string, bool> firstDic, IDictionary<string, bool> secondDic)
         {
             if (firstDic.Count != secondDic.Count)
                 return false;

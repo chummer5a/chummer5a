@@ -584,7 +584,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -1533,7 +1533,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
       <forbidden>
         <oneof>
@@ -1569,7 +1569,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*"/>
       </bonus>
       <forbidden>
         <oneof>
@@ -1620,7 +1620,7 @@
       <limit>False</limit>
       <bonus>
         <notoriety>1</notoriety>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -1979,6 +1979,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2014,6 +2015,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2064,6 +2066,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2107,6 +2110,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2138,6 +2142,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2236,6 +2241,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2267,6 +2273,7 @@
           <quality>The Artist's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2337,6 +2344,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Artist's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2365,13 +2373,14 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
-          <quality>The Artist's Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2383,6 +2392,43 @@
       </required>
       <source>SG</source>
       <page>178</page>
+    </quality>
+    <quality>
+      <id>43be9ef8-d7e9-47fe-ac79-7d15c508a2ad</id>
+      <name>The Twisted Way</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <!-- <bonus>
+        <forcetradition>Toxic</forcetradition>
+      </bonus> -->
+      <forbidden>
+        <oneof>
+          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
+          <quality>The Athlete's Way</quality>
+          <quality>The Beast's Way</quality>
+          <quality>The Burnout's Way</quality>
+          <quality>The Invisible Way</quality>
+          <quality>The Magician's Way</quality>
+          <quality>The Speaker's Way</quality>
+          <quality>The Spiritual Way</quality>
+          <quality>The Warrior's Way</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Apprentice</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>85</page>
     </quality>
     <quality>
       <id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
@@ -2399,6 +2445,7 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
@@ -2406,7 +2453,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Artist's Way</quality>
+          <quality>The Twisted Way</quality>
         </oneof>
       </forbidden>
       <required>
@@ -2504,7 +2551,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Academic Knowledge Skills</condition>
+          <condition>LimitCondition_SkillsKnowledgeAcademic</condition>
         </limitmodifier>
       </bonus>
       <source>SASS</source>
@@ -2735,7 +2782,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Limited to Single Sprawl</condition>
+          <condition>LimitCondition_Sprawl</condition>
         </limitmodifier>
         <publicawareness>2</publicawareness>
         <skillcategory>
@@ -2763,7 +2810,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must have 4+ Ranks in National Language</condition>
+          <condition>LimitCondition_NationalLanguageRanks</condition>
         </limitmodifier>
         <publicawareness>3</publicawareness>
         <skillcategory>
@@ -2791,7 +2838,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Limited to Single Megacorp</condition>
+          <condition>LimitCondition_Megacorp</condition>
         </limitmodifier>
         <publicawareness>5</publicawareness>
         <skillcategory>
@@ -3174,7 +3221,7 @@
       <limit>False</limit>
       <bonus>
         <selectcontact />
-        <selecttext />
+        <selecttext select="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -3415,7 +3462,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for situations involving trust.</condition>
+          <condition>LimitCondition_QualityTrustworthy</condition>
         </limitmodifier>
         <skillgroup>
           <name>Influence</name>
@@ -4337,9 +4384,8 @@
       <limit>10</limit>
       <nolevels />
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
-
       <forbidden>
         <oneof>
           <quality>Erased</quality>
@@ -5831,7 +5877,7 @@
       <limit>False</limit>
       <metagenic>True</metagenic>
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype[source = 'SR5']" /> <!-- Ghetto-ass fix for referring to base metatypes -->
       </bonus>
       <required>
         <allof>
@@ -11152,7 +11198,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only when communicating via AR or VR.</condition>
+          <condition>LimitCondition_QualityChatty</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -11838,7 +11884,7 @@
       <category>Positive</category>
       <chargenonly />
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
       <source>CF</source>
       <page>158</page>
@@ -12155,7 +12201,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element" allowedit="True" />
       </bonus>
       <source>HT</source>
       <page>191</page>
@@ -12200,7 +12246,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Does not include Intimidation.</condition>
+          <condition>LimitCondition_ExcludeIntimidation</condition>
         </limitmodifier>
       </bonus>
       <source>HT</source>
@@ -18490,7 +18536,7 @@
     <quality>
       <id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
       <name>Sprite Combustion</name>
-      <karma>-5</karma>
+      <karma>-13</karma>
       <category>Negative</category>
       <bonus />
       <required>

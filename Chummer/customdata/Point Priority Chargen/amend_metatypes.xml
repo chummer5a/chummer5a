@@ -50,7 +50,7 @@
         <limitmodifier amendoperation="addnode">
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for AGI tests</condition>
+          <condition>LimitCondition_AttribAGI</condition>
         </limitmodifier>
       </bonus>
       <metavariants>
@@ -67,7 +67,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -89,7 +89,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -108,7 +108,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -124,7 +124,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>

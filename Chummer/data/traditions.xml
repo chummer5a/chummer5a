@@ -278,6 +278,40 @@
       </spirits>
     </tradition>
     <tradition>
+      <id>8A0D8BC6-47AC-4043-A916-E2681A4D5BD7</id>
+      <name>Toxic</name>
+      <drain />
+      <source>SG</source>
+      <page>84</page>
+      <spirits />
+      <limitspiritchoices>False</limitspiritchoices>
+      <bonus>
+        <limitspiritcategory>
+          <spirit>Abomination</spirit>
+        </limitspiritcategory>
+        <limitspiritcategory>
+          <spirit>Barren</spirit>
+        </limitspiritcategory>
+        <limitspiritcategory>
+          <spirit>Noxious</spirit>
+        </limitspiritcategory>
+        <limitspiritcategory>
+          <spirit>Nuclear</spirit>
+        </limitspiritcategory>
+        <limitspiritcategory>
+          <spirit>Plague</spirit>
+        </limitspiritcategory>
+        <limitspiritcategory>
+          <spirit>Sludge</spirit>
+        </limitspiritcategory>
+      </bonus>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
+    </tradition>
+    <tradition>
       <id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
       <name>Vodou</name>
       <drain>WIL + CHA</drain>

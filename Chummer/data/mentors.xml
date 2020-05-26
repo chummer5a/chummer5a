@@ -853,6 +853,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -885,6 +890,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -918,6 +928,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -942,6 +957,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <quality>The Twisted Way</quality>
+        </allof>
+      </required>
       <source>SG</source>
       <page>86</page>
     </mentor>
@@ -3185,48 +3205,17 @@
       <name>Mystic Guardian</name>
       <advantage>All: +2 dice to one melee combat skill (choose one)</advantage>
       <disadvantage>What does a mystic guardian do when there is nothing to guard? As long as the follower does not have a specific task, an employer or a ward (or does not carry out their self-imposed duties), they suffer a -2 penalty on every test.</disadvantage>
+      <bonus>
+        <selectskill skillgroup="Close Combat">
+          <val>2</val>
+        </selectskill>
+      </bonus>
       <choices>
         <choice>
-          <name>+1 die to Blades</name>
-          <bonus>
-            <specificskill>
-              <name>Blades</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Clubs</name>
-          <bonus>
-            <specificskill>
-              <name>Clubs</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Longarms</name>
-          <bonus>
-            <specificskill>
-              <name>Longarms</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Unarmed Combat</name>
-          <bonus>
-            <specificskill>
-              <name>Unarmed Combat</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice set="2">
           <name>Magician: +2 dice for summoning guardian or beast spirits (choose one)</name>
           <bonus />
         </choice>
-        <choice set="2">
+        <choice>
           <name>Adept: Magic Sense</name>
           <bonus>
             <specificpower>

@@ -49,7 +49,7 @@ namespace Chummer.UI.Table
         public void Add(TableColumn<T> objColumn) {
             if (objColumn == null)
             {
-                throw new ArgumentException(nameof(objColumn));
+                throw new ArgumentNullException(nameof(objColumn));
             }
 
             _lstColumns.Add(objColumn);

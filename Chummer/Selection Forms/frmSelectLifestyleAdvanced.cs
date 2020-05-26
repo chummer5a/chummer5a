@@ -77,7 +77,7 @@ namespace Chummer
                                 nodFreeGridsRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                    Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids", GlobalOptions.Language)
+                                    Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                                 };
                                 treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
                                 nodFreeGridsRoot.Expand();
@@ -137,7 +137,7 @@ namespace Chummer
                                 nodFreeGridsRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                    Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids", GlobalOptions.Language)
+                                    Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                                 };
                                 treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
                                 nodFreeGridsRoot.Expand();
@@ -191,7 +191,7 @@ namespace Chummer
                             nodPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_PositiveQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_PositiveQualities")
                             };
                             treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
                             nodPositiveQualityRoot.Expand();
@@ -204,7 +204,7 @@ namespace Chummer
                             nodNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_NegativeQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_NegativeQualities")
                             };
                             treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1, nodNegativeQualityRoot);
                             nodNegativeQualityRoot.Expand();
@@ -217,7 +217,7 @@ namespace Chummer
                             nodEntertainmentsRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments")
                             };
                             treLifestyleQualities.Nodes.Insert((nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
                             nodEntertainmentsRoot.Expand();
@@ -237,7 +237,7 @@ namespace Chummer
                     nodFreeGridsRoot = new TreeNode
                     {
                         Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                        Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids", GlobalOptions.Language)
+                        Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                     };
                     treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
                     nodFreeGridsRoot.Expand();
@@ -327,7 +327,7 @@ namespace Chummer
                             nodPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_PositiveQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_PositiveQualities")
                             };
                             treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
                             nodPositiveQualityRoot.Expand();
@@ -340,7 +340,7 @@ namespace Chummer
                             nodNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_NegativeQualities", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_NegativeQualities")
                             };
                             treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1, nodNegativeQualityRoot);
                             nodNegativeQualityRoot.Expand();
@@ -353,7 +353,7 @@ namespace Chummer
                             nodEntertainmentsRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments")
                             };
                             treLifestyleQualities.Nodes.Insert((nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
                             nodEntertainmentsRoot.Expand();
@@ -493,29 +493,27 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities);
-                frmSelectLifestyleQuality.ShowDialog(this);
-
-                // Don't do anything else if the form was canceled.
-                if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                using (frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
                 {
-                    frmSelectLifestyleQuality.Close();
-                    return;
+                    frmSelectLifestyleQuality.ShowDialog(this);
+
+                    // Don't do anything else if the form was canceled.
+                    if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                        return;
+                    blnAddAgain = frmSelectLifestyleQuality.AddAgain;
+
+                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
+
+                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+
+                    objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    objQuality.Free = frmSelectLifestyleQuality.FreeCost;
+                    //objNode.ContextMenuStrip = cmsQuality;
+                    if (objQuality.InternalId.IsEmptyGuid())
+                        continue;
+
+                    _objLifestyle.LifestyleQualities.Add(objQuality);
                 }
-                blnAddAgain = frmSelectLifestyleQuality.AddAgain;
-
-                XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
-
-                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-                objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                objQuality.Free = frmSelectLifestyleQuality.FreeCost;
-                frmSelectLifestyleQuality.Close();
-                //objNode.ContextMenuStrip = cmsQuality;
-                if (objQuality.InternalId.IsEmptyGuid())
-                    continue;
-                
-                _objLifestyle.LifestyleQualities.Add(objQuality);
             }
             while (blnAddAgain);
         }
@@ -574,7 +572,7 @@ namespace Chummer
 
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)) return;
             objQuality.ContributesLP = chkQualityContributesLP.Checked;
-            lblQualityLp.Text = objQuality.LP.ToString();
+            lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
         }
 
         private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
@@ -617,12 +615,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (_objLifestyle.TotalLP < 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -633,7 +631,7 @@ namespace Chummer
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             _objLifestyle.Name = txtLifestyleName.Text;
-            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText);
+            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = decimal.ToInt32(nudArea.Value);
@@ -645,7 +643,7 @@ namespace Chummer
             _objLifestyle.BonusLP = decimal.ToInt32(nudBonusLP.Value);
 
             // Get the starting Nuyen information.
-            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText);
+            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.StyleType = StyleType;
             SelectedLifestyle = _objLifestyle;
@@ -666,9 +664,9 @@ namespace Chummer
                 string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 }
                 else
                 {

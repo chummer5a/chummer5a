@@ -45,7 +45,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
@@ -74,7 +74,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -205,7 +205,7 @@ namespace Chummer
                     string strRequiresProgram = objXmlProgram.SelectSingleNode("require")?.Value;
                     if (string.IsNullOrEmpty(strRequiresProgram))
                     {
-                        strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                        strRequiresProgram = LanguageManager.GetString("String_None");
                     }
                     else
                     {
@@ -220,20 +220,20 @@ namespace Chummer
                         string strPage = objXmlProgram.SelectSingleNode("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
-                            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + " " + strPage);
                         }
                         else
                         {
-                            string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                            string strUnknown = LanguageManager.GetString("String_Unknown");
                             lblSource.Text = strUnknown;
                             lblSource.SetToolTip(strUnknown);
                         }
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                        string strUnknown = LanguageManager.GetString("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
@@ -294,6 +294,7 @@ namespace Chummer
         /// </summary>
         private void UpdateProgramList(XPathNodeIterator objXmlNodeList)
         {
+            string strSpace = LanguageManager.GetString("String_Space");
             List<ListItem> lstPrograms = new List<ListItem>();
             foreach (XPathNavigator objXmlProgram in objXmlNodeList)
             {
@@ -320,7 +321,7 @@ namespace Chummer
                     }
                 }
 
-                string strName = objXmlProgram.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strName = objXmlProgram.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 // If this is a critter with Optional Programs, see if this Program is allowed.
                 if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null)
                 {
@@ -336,7 +337,7 @@ namespace Chummer
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            strDisplayName += " [" + objFoundItem.Name + "]";
+                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                         }
                     }
                 }
@@ -365,7 +366,7 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program", GlobalOptions.Language)))
+                if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program")))
                 {
                     return;
                 }

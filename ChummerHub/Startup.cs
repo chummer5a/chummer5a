@@ -1,9 +1,14 @@
+using System;
+using System.IO;
+using System.Reflection;
 using ChummerHub.Controllers.V1;
 using ChummerHub.Data;
 using ChummerHub.Services;
 using ChummerHub.Services.Application_Insights;
 using ChummerHub.Services.GoogleDrive;
+using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.SnapshotCollector;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,11 +27,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
-using System.IO;
-using System.Reflection;
 
 namespace ChummerHub
 {
@@ -39,7 +42,7 @@ namespace ChummerHub
 
         private readonly ILogger<Startup> _logger;
 
-        private static DriveHandler _gdrive = null;
+        private static DriveHandler _gdrive;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
         public static DriveHandler GDrive
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
@@ -119,10 +122,10 @@ namespace ChummerHub
             services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
 
             var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
-            tcbuilder.Use((next) => new GroupNotFoundFilter(next));
+            tcbuilder.Use(next => new GroupNotFoundFilter(next));
 
             // If you have more processors:
-            tcbuilder.Use((next) => new ExceptionDataProcessor(next));
+            tcbuilder.Use(next => new ExceptionDataProcessor(next));
 
 
 
@@ -219,18 +222,17 @@ namespace ChummerHub
                 {
                     options.LoginPath = new PathString("/Identity/Account/Login");
                     options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
-                    options.LogoutPath = $"/Identity/Account/Logout";
+                    options.LogoutPath = "/Identity/Account/Logout";
                     options.Cookie.Name = "Cookies";
                     options.Cookie.HttpOnly = false;
                     options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
                     options.LoginPath = "/Identity/Account/Login";
-                    // ReturnUrlParameter requires 
+                    // ReturnUrlParameter requires
                     //using Microsoft.AspNetCore.Authentication.Cookies;
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = false;
                 })
                 ;
-            ;
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -263,13 +265,13 @@ namespace ChummerHub
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
-                options.LogoutPath = $"/Identity/Account/Logout";
+                options.LogoutPath = "/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.Cookie.Name = "Cookies";
                 options.Cookie.HttpOnly = false;
                 options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
                 options.LoginPath = "/Identity/Account/Login";
-                // ReturnUrlParameter requires 
+                // ReturnUrlParameter requires
                 //using Microsoft.AspNetCore.Authentication.Cookies;
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = false;
@@ -284,9 +286,9 @@ namespace ChummerHub
             services.AddMvc(options => { }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(x =>
                 {
-                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     x.SerializerSettings.PreserveReferencesHandling =
-                        Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                        PreserveReferencesHandling.Objects;
                 });
 
 
@@ -446,7 +448,7 @@ namespace ChummerHub
             // note: that we have to build a temporary service provider here because one has not been created yet
             var provider = MyServices.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(options =>
             {
@@ -491,15 +493,15 @@ namespace ChummerHub
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        var tc = new TelemetryClient();
+                        var telemetry = new ExceptionTelemetry(e);
                         tc.TrackException(telemetry);
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(ex.ToString());
                     }
-                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
+                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e);
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
                 }
@@ -517,15 +519,15 @@ namespace ChummerHub
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                        var tc = new TelemetryClient();
+                        var telemetry = new ExceptionTelemetry(ex);
                         tc.TrackException(telemetry);
                     }
                     catch (Exception e1)
                     {
                         logger.LogError(e1.ToString());
                     }
-                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
+                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex);
                 }
             }
 

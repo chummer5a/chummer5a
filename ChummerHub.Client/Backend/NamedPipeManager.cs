@@ -1,30 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using NLog;
 
 namespace ChummerHub.Client.Backend
 {
     /// <summary>
-    /// A very simple Named Pipe Server implementation that makes it 
+    /// A very simple Named Pipe Server implementation that makes it
     /// easy to pass string messages between two applications.
     /// </summary>
-    public class NamedPipeManager 
+    public class NamedPipeManager
     {
-        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public string NamedPipeName = "Chummer";
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        public string NamedPipeName { get; }
         public event Action<string> ReceiveString;
 
         private const string EXIT_STRING = "__EXIT__";
-        private bool _isRunning = false;
+        private bool _isRunning;
         private Thread Thread;
 
-        public NamedPipeManager(string name)
+        public NamedPipeManager(string name = "Chummer")
         {
             NamedPipeName = name;
         }
@@ -35,21 +31,21 @@ namespace ChummerHub.Client.Backend
         public void StartServer()
         {
             StopServer();
-            Thread = new Thread((pipeName) =>
+            Thread = new Thread(pipeName =>
             {
-                if (!(pipeName is String pipeNameString))
+                if (!(pipeName is string pipeNameString))
                     throw new ArgumentNullException(nameof(pipeName));
+                PipeSecurity ps = new PipeSecurity();
+                System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+                PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                ps.AddAccessRule(par);
                 _isRunning = true;
-                while (true)
+                while (_isRunning)
                 {
-                    string text;
                     try
                     {
-                        PipeSecurity ps = new PipeSecurity();
-                        System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
-                        PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-                        //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-                        ps.AddAccessRule(par);
+                        string text;
                         using (var server = new NamedPipeServerStream(pipeNameString,
                             PipeDirection.InOut, 1,
                             PipeTransmissionMode.Message, PipeOptions.None,
@@ -78,10 +74,6 @@ namespace ChummerHub.Client.Backend
                         Log.Error(e);
                         Thread.Sleep(50);
                     }
-                    
-
-                    if (_isRunning == false)
-                        break;
                 }
             });
             Thread.Start(NamedPipeName);
@@ -124,7 +116,7 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (TimeoutException e)
                     {
-                        if (text != "__EXIT__")
+                        if (text != EXIT_STRING)
                         {
                             Log.Warn(e);
                             return false;

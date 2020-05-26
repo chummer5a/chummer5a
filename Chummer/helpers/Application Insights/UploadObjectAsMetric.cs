@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Metrics;
 
 namespace Chummer
@@ -30,9 +29,10 @@ namespace Chummer
     {
         public static bool UploadObject(TelemetryClient tc, object obj)
         {
+            if (tc == null)
+                throw new ArgumentNullException(nameof(tc));
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
-
 
             List<PropertyInfo> allProperties;
             string name;

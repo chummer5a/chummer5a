@@ -1,7 +1,25 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
   <weapons>
-    <weapon>
+    <weapon amendoperation="addnode">
       <id>78eeb006-e377-4e5a-bf69-adae197bb5d4</id>
       <name>Underbarrel Flamethrower</name>
       <category>Underbarrel Weapons</category>
@@ -44,7 +62,7 @@
         </OR>
       </required>
     </weapon>
-    <weapon>
+    <weapon amendoperation="addnode">
       <id>2845e48b-ce4e-4fd0-af23-41f5aba86f5d</id>
       <name>Underbarrel Chainsaw</name>
       <category>Underbarrel Weapons</category>

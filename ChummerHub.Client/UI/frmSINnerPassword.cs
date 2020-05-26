@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SINners.Models;
 
@@ -37,16 +31,45 @@ namespace ChummerHub.Client.UI
         [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct SHSTOCKICONINFO
         {
-            public UInt32 cbSize;
+            public uint cbSize;
             public IntPtr hIcon;
-            public Int32 iSysIconIndex;
-            public Int32 iIcon;
+            public int iSysIconIndex;
+            public int iIcon;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260/*MAX_PATH*/)]
             public string szPath;
+
+            public override bool Equals(object obj)
+            {
+                if (obj is SHSTOCKICONINFO right)
+                {
+                    return cbSize == right.cbSize
+                           && hIcon == right.hIcon
+                           && iSysIconIndex == right.iSysIconIndex
+                           && iIcon == right.iIcon
+                           && szPath == right.szPath;
+                }
+
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return new {cbSize, hIcon, iSysIconIndex, iIcon, szPath}.GetHashCode();
+            }
+
+            public static bool operator ==(SHSTOCKICONINFO left, SHSTOCKICONINFO right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(SHSTOCKICONINFO left, SHSTOCKICONINFO right)
+            {
+                return !(left == right);
+            }
         }
 
         [DllImport("Shell32.dll", SetLastError = false)]
-        public static extern Int32 SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
+        public static extern int SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
 
         public frmSINnerPassword()
         {
@@ -54,27 +77,27 @@ namespace ChummerHub.Client.UI
             StartPosition = FormStartPosition.CenterScreen;
             SHSTOCKICONINFO sii = new SHSTOCKICONINFO
             {
-                cbSize = (UInt32)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
+                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
             };
 
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(SHSTOCKICONID.SIID_INFO,
                 SHGSI.SHGSI_ICON | SHGSI.SHGSI_LARGEICON,
                 ref sii));
             pbIcon.Image = Icon.FromHandle(sii.hIcon).ToBitmap();
-            this.AcceptButton = this.bOk;
+            AcceptButton = bOk;
         }
 
         public string ShowDialog(string text, string caption)
         {
-            this.Text = caption;
-            this.lPasswordText.Text = text;
-            return this.ShowDialog() == DialogResult.OK ? SINnerGroup.GetHashString(tbPassword.Text) : "";
+            Text = caption;
+            lPasswordText.Text = text;
+            return ShowDialog() == DialogResult.OK ? SINnerGroup.GetHashString(tbPassword.Text) : "";
         }
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

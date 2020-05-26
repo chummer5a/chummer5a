@@ -94,11 +94,11 @@ namespace WpfApplication1
 	        //Skip the first two lines, since we know they're attributes.
 	        for (var i = 2; i < lines.Length; i++)
 	        {
-		        if (lines[i].StartsWith("Initiative"))
+		        if (lines[i].StartsWith("Initiative", StringComparison.Ordinal))
 		        {
 			        //Should probably be a handler for initiative dice here.
 		        }
-		        else if (lines[i].StartsWith("Movement"))
+		        else if (lines[i].StartsWith("Movement", StringComparison.Ordinal))
 		        {
 			        var rawMove = lines[i].Replace("Movement ",string.Empty);
 			        if (rawMove.Contains('('))
@@ -148,7 +148,7 @@ namespace WpfApplication1
 			        xmlNode.InnerText = string.Join("/", sprint);
 			        objHeader.AppendChild(xmlNode);
 		        }
-		        else if (lines[i].StartsWith("Physical Skills") || (lines[i].StartsWith("Matrix Skills")) || (lines[i].StartsWith("Skills")) || (lines[i].StartsWith("Magic Skills")))
+		        else if (lines[i].StartsWith("Physical Skills", StringComparison.Ordinal) || (lines[i].StartsWith("Matrix Skills", StringComparison.Ordinal)) || (lines[i].StartsWith("Skills", StringComparison.Ordinal)) || (lines[i].StartsWith("Magic Skills", StringComparison.Ordinal)))
 		        {
 			        var line = lines[i].Replace("Physical Skills ", string.Empty).Replace("Matrix Skills ", string.Empty).Replace("Magic Skills ", string.Empty).Replace("Skills ", string.Empty);
 			        var split = line.Split(',');
@@ -172,7 +172,7 @@ namespace WpfApplication1
 			        }
 			        objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Complex Forms"))
+		        else if (lines[i].StartsWith("Complex Forms", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Complex Forms ", string.Empty);
 			        var split = line.Split(',');
@@ -192,7 +192,7 @@ namespace WpfApplication1
 					}
 					objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Powers"))
+		        else if (lines[i].StartsWith("Powers", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Powers ", string.Empty);
 			        var split = line.Split(',');
@@ -223,7 +223,7 @@ namespace WpfApplication1
 					}
 					objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Programs"))
+		        else if (lines[i].StartsWith("Programs", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Programs ", string.Empty);
 			        var split = line.Split(',');
@@ -243,7 +243,7 @@ namespace WpfApplication1
 					}
 					objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Qualities"))
+		        else if (lines[i].StartsWith("Qualities", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Qualities ", string.Empty);
 			        var split = line.Split(',');
@@ -263,7 +263,7 @@ namespace WpfApplication1
 			        }
 			        objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Armor"))
+		        else if (lines[i].StartsWith("Armor", StringComparison.Ordinal))
 				{
 					var line = lines[i].Replace("Armor ", string.Empty);
 					xmlNode = doc.CreateElement("armor");

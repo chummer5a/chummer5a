@@ -34,11 +34,11 @@ namespace Chummer
         #region Control Events
         public frmSelectSpec(Skill skill)
         {
-            _objSkill = skill;
+            _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objXmlDocument = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary);
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
@@ -60,30 +60,32 @@ namespace Chummer
             else
                 xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
-            if (xmlParentSkill != null)
+            using (XmlNodeList xmlSpecList = xmlParentSkill?.SelectNodes("specs/spec"))
             {
-                using (XmlNodeList xmlSpecList = xmlParentSkill.SelectNodes("specs/spec"))
-                    if (xmlSpecList != null)
-                        foreach (XmlNode objXmlSpecialization in xmlSpecList)
-                        {
-                            string strInnerText = objXmlSpecialization.InnerText;
-                            lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
+                if (xmlSpecList != null)
+                {
+                    foreach (XmlNode objXmlSpecialization in xmlSpecList)
+                    {
+                        string strInnerText = objXmlSpecialization.InnerText;
+                        lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
 
-                            if (_objSkill.SkillCategory == "Combat Active")
-                            {
-                                // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
-                                //Might need to include skill name or might miss some values?
-                                XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
-                                if (objXmlWeaponList != null)
-                                    foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-                                    {
-                                        string strName = objXmlWeapon["name"]?.InnerText;
-                                        lstItems.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
-                                    }
-                            }
+                        if (_objSkill.SkillCategory != "Combat Active")
+                            continue;
+                        // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
+                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                        //Might need to include skill name or might miss some values?
+                        XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
+                        if (objXmlWeaponList == null)
+                            continue;
+                        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                        {
+                            string strName = objXmlWeapon["name"]?.InnerText;
+                            lstItems.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
             }
+
             // Populate the lists.
             cboSpec.BeginUpdate();
             cboSpec.ValueMember = "Value";

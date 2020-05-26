@@ -158,7 +158,7 @@ namespace Chummer.Properties
             
             string fin = username;
             if(!string.IsNullOrEmpty(name))
-                fin = $"{name}<{username}>";
+                fin = $"{name.Replace("\"", "\\\"")}<{username}>";
 #>
             "<#= fin #>",
 <#
