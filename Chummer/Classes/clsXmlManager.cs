@@ -472,7 +472,8 @@ namespace Chummer
         {
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
-            foreach (string strFile in Directory.GetFiles(strLoopPath, "override_*_" + strFileName, eSearchOption))
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "override_*_" + strFileName, eSearchOption)
+                .Concat(Directory.GetFiles(strLoopPath, "override_" + strFileName, eSearchOption)))
             {
                 try
                 {
@@ -536,7 +537,8 @@ namespace Chummer
             }
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-            foreach (string strFile in Directory.GetFiles(strLoopPath, "custom_*_" + strFileName, eSearchOption))
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "custom_*_" + strFileName, eSearchOption)
+                .Concat(Directory.GetFiles(strLoopPath, "custom_" + strFileName, eSearchOption)))
             {
                 try
                 {
@@ -629,7 +631,8 @@ namespace Chummer
             }
 
             // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
-            foreach (string strFile in Directory.GetFiles(strLoopPath, "amend_*_" + strFileName, eSearchOption))
+            foreach (string strFile in Directory.GetFiles(strLoopPath, "amend_*_" + strFileName, eSearchOption)
+                .Concat(Directory.GetFiles(strLoopPath, "amend_" + strFileName, eSearchOption)))
             {
                 try
                 {
