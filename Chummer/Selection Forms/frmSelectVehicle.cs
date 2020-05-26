@@ -430,11 +430,16 @@ namespace Chummer
 
         private void BuildVehicleList(XPathNodeIterator objXmlVehicleList)
         {
+            string strSpace = LanguageManager.GetString("String_Space");
+            int intOverLimit = 0;
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
             {
                 if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                {
+                    ++intOverLimit;
                     continue;
+                }
                 if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
                 {
                     decimal decCostMultiplier = 1.0m;
@@ -446,7 +451,10 @@ namespace Chummer
                     if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true) == true)
                         decCostMultiplier *= 0.9m;
                     if (!SelectionShared.CheckNuyenRestriction(objXmlVehicle, _objCharacter.Nuyen, decCostMultiplier))
+                    {
+                        ++intOverLimit;
                         continue;
+                    }
                 }
 
                 string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
@@ -459,13 +467,20 @@ namespace Chummer
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            strDisplayname += " [" + objFoundItem.Name + ']';
+                            strDisplayname += strSpace + '[' + objFoundItem.Name + ']';
                         }
                     }
                 }
                 lstVehicles.Add(new ListItem(objXmlVehicle.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayname));
             }
             lstVehicles.Sort(CompareListItems.CompareNames);
+            if (intOverLimit > 0)
+            {
+                // Add after sort so that it's always at the end
+                lstVehicles.Add(new ListItem(string.Empty,
+                    LanguageManager.GetString("String_RestrictedItemsHidden")
+                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+            }
             string strOldSelected = lstVehicle.SelectedValue?.ToString();
             _blnLoading = true;
             lstVehicle.BeginUpdate();

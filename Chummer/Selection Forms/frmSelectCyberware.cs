@@ -992,8 +992,9 @@ namespace Chummer
             bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceIDString == strCurrentGradeId);
-            if (objXmlCyberwareList == null)
+            if (objXmlCyberwareList == null && !blnDoUIUpdate)
                 return lstCyberwares;
+            int intOverLimit = 0;
             foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
             {
                 bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") == null;
@@ -1114,14 +1115,20 @@ namespace Chummer
                     }
                 }
                 if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(xmlCyberware, _objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+                {
+                    ++intOverLimit;
                     continue;
+                }
                 if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
                 {
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
                     if (!SelectionShared.CheckNuyenRestriction(xmlCyberware, _objCharacter.Nuyen, decCostMultiplier))
+                    {
+                        ++intOverLimit;
                         continue;
+                    }
                 }
 
                 if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
@@ -1135,7 +1142,13 @@ namespace Chummer
             if (blnDoUIUpdate)
             {
                 lstCyberwares.Sort(CompareListItems.CompareNames);
-
+                if (intOverLimit > 0)
+                {
+                    // Add after sort so that it's always at the end
+                    lstCyberwares.Add(new ListItem(string.Empty,
+                        LanguageManager.GetString("String_RestrictedItemsHidden")
+                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                }
                 string strOldSelected = lstCyberware.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstCyberware.BeginUpdate();

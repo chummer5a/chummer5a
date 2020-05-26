@@ -309,6 +309,7 @@ namespace Chummer
                 ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod[" + strFilter + "]")
                 : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + "]");
             // Update the list of Mods based on the selected Category.
+            int intOverLimit = 0;
             XPathNavigator objXmlVehicleNode = _objVehicle.GetNode().CreateNavigator();
             List<ListItem> lstMods = new List<ListItem>();
             foreach (XPathNavigator objXmlMod in objXmlModList)
@@ -383,8 +384,17 @@ namespace Chummer
                 {
                     lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
+                else
+                    ++intOverLimit;
             }
             lstMods.Sort(CompareListItems.CompareNames);
+            if (intOverLimit > 0)
+            {
+                // Add after sort so that it's always at the end
+                lstMods.Add(new ListItem(string.Empty,
+                    LanguageManager.GetString("String_RestrictedItemsHidden")
+                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+            }
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();

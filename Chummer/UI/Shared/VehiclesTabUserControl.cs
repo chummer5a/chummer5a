@@ -733,6 +733,8 @@ namespace Chummer.UI.Shared
                 return;
             }
 
+            string strSpace = LanguageManager.GetString("String_Space");
+
             if (treVehicles.SelectedNode?.Tag is IHasSource selected)
             {
                 selected.SetSourceDetail(lblVehicleSource);
@@ -816,7 +818,7 @@ namespace Chummer.UI.Shared
                     DisplayVehicleDroneMods(false);
                     lblVehicleSlotsLabel.Visible = true;
                     lblVehicleSlots.Visible = true;
-                    lblVehicleSlots.Text = objVehicle.Slots + LanguageManager.GetString("String_Space") + '(' + (objVehicle.Slots - objVehicle.SlotsUsed) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining") + ')';
+                    lblVehicleSlots.Text = objVehicle.Slots + strSpace + '(' + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(GlobalOptions.CultureInfo) + strSpace + LanguageManager.GetString("String_Remaining") + ')';
                 }
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount)
@@ -852,11 +854,10 @@ namespace Chummer.UI.Shared
                 string strPage = objWeaponMount.Page(GlobalOptions.Language);
                 lblVehicleSource.Text =
                     CommonFunctions.LanguageBookShort(objWeaponMount.Source) +
-                    LanguageManager.GetString("String_Space") + strPage;
+                    strSpace + strPage;
                 lblVehicleSource.SetToolTip(CommonFunctions.LanguageBookLong(objWeaponMount.Source) +
-                    LanguageManager.GetString("String_Space") +
-                    LanguageManager.GetString("String_Page") +
-                    LanguageManager.GetString("String_Space") + strPage);
+                    strSpace + LanguageManager.GetString("String_Page") +
+                    strSpace + strPage);
             }
             else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
@@ -1064,24 +1065,24 @@ namespace Chummer.UI.Shared
                                 strAmmoName =
                                     LanguageManager.GetString("String_SlotNumber")
                                         .Replace("{0}", i.ToString()) +
-                                    LanguageManager.GetString("String_Space") +
+                                    strSpace +
                                     LanguageManager.GetString("String_Empty");
                             else
                                 strAmmoName =
                                     LanguageManager.GetString("String_SlotNumber")
                                         .Replace("{0}", i.ToString()) +
-                                    LanguageManager.GetString("String_Space") +
+                                    strSpace +
                                     LanguageManager.GetString("String_ExternalSource");
                         }
                         else
                             strAmmoName =
                                 LanguageManager.GetString("String_SlotNumber")
                                     .Replace("{0}", i.ToString()) +
-                                LanguageManager.GetString("String_Space") +
+                                strSpace +
                                 objVehicleGear.DisplayNameShort(GlobalOptions.Language);
 
                         if (!string.IsNullOrEmpty(strPlugins))
-                            strAmmoName += " [" + strPlugins + "]";
+                            strAmmoName += '[' + strPlugins + ']';
                         lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
                     }
 
@@ -1283,7 +1284,9 @@ namespace Chummer.UI.Shared
                 lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
-                lblVehicleSlots.Text = objGear.CalculatedCapacity + LanguageManager.GetString("String_Space") + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining") + ')';
+                lblVehicleSlots.Text = objGear.CalculatedCapacity
+                    + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                    + strSpace + LanguageManager.GetString("String_Remaining") + ')';
 
                 objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
