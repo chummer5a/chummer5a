@@ -112,16 +112,34 @@ namespace Chummer
                         else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                         {
                             string strKey = Path.GetFileName(strEntryFullName);
-                            using (Bitmap imgTemp = new Bitmap(entry.Open(), true))
+                            Bitmap bmpMugshot = new Bitmap(entry.Open(), true);
+                            if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                             {
-                                Bitmap imgMugshot = imgTemp.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                 if (_dicImages.ContainsKey(strKey))
                                 {
                                     _dicImages[strKey].Dispose();
-                                    _dicImages[strKey] = imgMugshot;
+                                    _dicImages[strKey] = bmpMugshot;
                                 }
                                 else
-                                    _dicImages.Add(strKey, imgMugshot);
+                                    _dicImages.Add(strKey, bmpMugshot);
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                                    if (_dicImages.ContainsKey(strKey))
+                                    {
+                                        _dicImages[strKey].Dispose();
+                                        _dicImages[strKey] = bmpMugshotCorrected;
+                                    }
+                                    else
+                                        _dicImages.Add(strKey, bmpMugshotCorrected);
+                                }
+                                finally
+                                {
+                                    bmpMugshot.Dispose();
+                                }
                             }
                         }
                     }

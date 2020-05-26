@@ -61,12 +61,25 @@ namespace Chummer
         /// Converts a Base64 String into a Bitmap with a specific format.
         /// </summary>
         /// <param name="strBase64String">String to convert.</param>
-        /// <param name="objFormat">Pixel format in which the Bitmap is returned.</param>
+        /// <param name="eFormat">Pixel format in which the Bitmap is returned.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Bitmap ToImage(this string strBase64String, PixelFormat objFormat)
+        public static Bitmap ToImage(this string strBase64String, PixelFormat eFormat)
         {
-            return (new Bitmap(strBase64String.ToImage())).ConvertPixelFormat(objFormat);
+            using (Image imgInput = strBase64String.ToImage())
+            {
+                Bitmap bmpInput = new Bitmap(imgInput);
+                if (bmpInput.PixelFormat == eFormat)
+                    return bmpInput;
+                try
+                {
+                    return bmpInput.ConvertPixelFormat(eFormat);
+                }
+                finally
+                {
+                    bmpInput.Dispose();
+                }
+            }
         }
 
         /// <summary>
@@ -97,19 +110,13 @@ namespace Chummer
         /// <summary>
         /// Converts a Bitmap into a new one with a different PixelFormat. (PixelFormat.Format32bppPArgb draws the fastest)
         /// </summary>
-        /// <param name="imgToConvert">Bitmap to convert.</param>
+        /// <param name="bmpToConvert">Bitmap to convert.</param>
         /// <param name="eNewFormat">New format to which to convert.</param>
         /// <returns>Bitmap in the new format.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Bitmap ConvertPixelFormat(this Bitmap imgToConvert, PixelFormat eNewFormat)
+        public static Bitmap ConvertPixelFormat(this Bitmap bmpToConvert, PixelFormat eNewFormat)
         {
-            if (imgToConvert == null || imgToConvert.PixelFormat == eNewFormat)
-                return imgToConvert;
-
-            Bitmap imgReturn = new Bitmap(imgToConvert.Width, imgToConvert.Height, eNewFormat);
-            using (Graphics gr = Graphics.FromImage(imgReturn))
-                gr.DrawImage(imgToConvert, new Rectangle(0, 0, imgReturn.Width, imgReturn.Height));
-            return imgReturn;
+            return bmpToConvert?.Clone(new Rectangle(0, 0, bmpToConvert.Width, bmpToConvert.Height), eNewFormat);
         }
     }
 }

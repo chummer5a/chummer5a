@@ -545,6 +545,7 @@ namespace Chummer
                 if(string.IsNullOrEmpty(lblSettings.Text))
                     lblSettings.Text = strUnknown;
                 lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'));
+                picMugshot.Image?.Dispose();
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.

@@ -15383,7 +15383,6 @@ if (!Utils.IsUnitTest){
                     op_load.MyDependencyTelemetry.Type = "loadHeroLab";
                     op_load.MyDependencyTelemetry.Target = strPorFile;
 
-
                     try
                     {
                         string strLeadsName = string.Empty;
@@ -15455,13 +15454,35 @@ if (!Utils.IsUnitTest){
                                 }
                                 else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                                 {
-                                    Bitmap imgMugshot =
-                                        (new Bitmap(entry.Open(), true)).ConvertPixelFormat(System.Drawing.Imaging
-                                            .PixelFormat.Format32bppPArgb);
-                                    if (dicImages.ContainsKey(strKey))
-                                        dicImages[strKey] = imgMugshot;
+                                    Bitmap bmpMugshot = new Bitmap(entry.Open(), true);
+                                    if (bmpMugshot.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppPArgb)
+                                    {
+                                        if (dicImages.ContainsKey(strKey))
+                                        {
+                                            dicImages[strKey].Dispose();
+                                            dicImages[strKey] = bmpMugshot;
+                                        }
+                                        else
+                                            dicImages.Add(strKey, bmpMugshot);
+                                    }
                                     else
-                                        dicImages.Add(strKey, imgMugshot);
+                                    {
+                                        try
+                                        {
+                                            Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                                            if (dicImages.ContainsKey(strKey))
+                                            {
+                                                dicImages[strKey].Dispose();
+                                                dicImages[strKey] = bmpMugshotCorrected;
+                                            }
+                                            else
+                                                dicImages.Add(strKey, bmpMugshotCorrected);
+                                        }
+                                        finally
+                                        {
+                                            bmpMugshot.Dispose();
+                                        }
+                                    }
                                 }
                             }
 

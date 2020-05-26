@@ -6147,12 +6147,25 @@ namespace Chummer
                     // Convert the image to a string using Base64.
                     _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
-                    using (Bitmap imgMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
+                    Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
+                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                     {
-                        _objCharacter.Mugshots.Add(imgMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
-                        if (_objCharacter.MainMugshotIndex == -1)
-                            _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                        _objCharacter.Mugshots.Add(bmpMugshot);
                     }
+                    else
+                    {
+                        try
+                        {
+                            Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                            _objCharacter.Mugshots.Add(bmpConvertedMugshot);
+                        }
+                        finally
+                        {
+                            bmpMugshot.Dispose();
+                        }
+                    }
+                    if (_objCharacter.MainMugshotIndex == -1)
+                        _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
                 }
             }
             return blnSuccess;
