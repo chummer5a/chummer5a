@@ -886,6 +886,14 @@ namespace Chummer
                             new DependencyGraphNode<string>(nameof(IsChangeling)),
                             new DependencyGraphNode<string>(nameof(Qualities))
                         ))
+                    ),
+                    new DependencyGraphNode<string>(nameof(AstralReputation),
+                        new DependencyGraphNode<string>(nameof(SpiritIndex)),
+                        new DependencyGraphNode<string>(nameof(AstralReputationBurned))
+                    ),
+                    new DependencyGraphNode<string>(nameof(WildReputation),
+                        new DependencyGraphNode<string>(nameof(WildSpiritIndex)),
+                        new DependencyGraphNode<string>(nameof(WildReputationBurned))
                     )
                 );
             #endregion
@@ -1873,7 +1881,7 @@ namespace Chummer
                     objWriter.WriteElementString("wildspiritindex", _intWildSpiritIndex.ToString(GlobalOptions.InvariantCultureInfo));
                     // <wildreputationburned />
                     objWriter.WriteElementString("wildreputationburned", _intWildReputationBurned.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <wildreputationburned />
+                    // <astralreputationburned />
                     objWriter.WriteElementString("astralreputationburned", _intAstralReputationBurned.ToString(GlobalOptions.InvariantCultureInfo));
                     // <created />
                     objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
@@ -4470,6 +4478,18 @@ if (!Utils.IsUnitTest){
             objWriter.WriteElementString("calculatedpublicawareness", CalculatedPublicAwareness.ToString(objCulture));
             // <totalpublicawareness />
             objWriter.WriteElementString("totalpublicawareness", TotalPublicAwareness.ToString(objCulture));
+            // <astralreputation />
+            objWriter.WriteElementString("astralreputation", AstralReputation.ToString(objCulture));
+            // <spiritindex />
+            objWriter.WriteElementString("spiritindex", SpiritIndex.ToString(objCulture));
+            // <astralreputationburned />
+            objWriter.WriteElementString("astralreputationburned", AstralReputationBurned.ToString(objCulture));
+            // <wildreputation />
+            objWriter.WriteElementString("wildreputation", WildReputation.ToString(objCulture));
+            // <wildspiritindex />
+            objWriter.WriteElementString("wildspiritindex", WildSpiritIndex.ToString(objCulture));
+            // <wildreputationburned />
+            objWriter.WriteElementString("wildreputationburned", WildReputationBurned.ToString(objCulture));
             // <created />
             objWriter.WriteElementString("created", Created.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyen />
@@ -7766,8 +7786,10 @@ if (!Utils.IsUnitTest){
         /// Astral Reputation.
         /// </summary>
         public int AstralReputation =>
-            (int) Math.Max(Math.Floor((double) (SpiritIndex / 25)) +
-                ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation) - AstralReputationBurned, 0);
+            Math.Max(0,
+                (SpiritIndex / 25)
+                + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation)
+                - AstralReputationBurned);
 
         /// <summary>
         /// Points of Astral Reputation that have been burned. Mostly expected to have been burned by reducing Wild Reputation.
@@ -7805,10 +7827,10 @@ if (!Utils.IsUnitTest){
         /// Reputation with Wild Spirits (FA 175).
         /// </summary>
         public int WildReputation =>
-            (int) Math.Max(
-                Math.Floor((double) (WildSpiritIndex / 25)) +
-                ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild) -
-                WildReputationBurned, 0);
+            Math.Max(0,
+                (WildSpiritIndex / 25)
+                + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild)
+                - WildReputationBurned);
 
         /// <summary>
         /// Points of Wild Reputation that have been burned. Mostly expected to have been burned by reducing Astral Reputation.
