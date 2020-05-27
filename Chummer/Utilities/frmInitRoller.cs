@@ -23,22 +23,18 @@ namespace Chummer
 {
     public partial class frmInitRoller : Form
     {
-        private int dice;
-
         #region Control Events
         public frmInitRoller()
         {
             InitializeComponent();
-            //LanguageManager.Load(GlobalOptions.Language, this);
-            CenterToParent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmInitRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text += ' ' + dice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ": ";
-            nudDiceResult.Maximum = dice * 6;
-            nudDiceResult.Minimum = dice;
-            MoveControls();
+            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
+            nudDiceResult.Maximum = Dice * 6;
+            nudDiceResult.Minimum = Dice;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -52,41 +48,12 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice
-        {
-            get => dice;
-            set => dice = value;
-        }
-
-        /// <summary>
-        /// Window title.
-        /// </summary>
-        public string Title
-        {
-            set => Text = value;
-        }
-
-        /// <summary>
-        /// Description text.
-        /// </summary>
-        public string Description
-        {
-            set => lblDescription.Text = value;
-        }
+        public int Dice { get; set; }
 
         /// <summary>
         /// Dice roll result.
         /// </summary>
         public int Result => decimal.ToInt32(nudDiceResult.Value);
-
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDiceResult.Left = lblDice.Left + lblDice.Width + 6;
-            lblResult.Left = nudDiceResult.Left + nudDiceResult.Width + 6;
-        }
         #endregion
     }
 }

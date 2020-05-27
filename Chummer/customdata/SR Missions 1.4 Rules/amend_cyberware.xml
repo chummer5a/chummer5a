@@ -32,4 +32,32 @@
     </grade>
     <!-- End Region -->
   </grades>
+  <cyberwares>
+    <!-- Region Paired Cyberware gains Reach (SRM 1.3 p52) -->
+    <cyberware>
+      <name>Hand Blade</name>
+      <pairbonus>
+        <reach name="Hand Blade">1</reach>
+      </pairbonus>
+    </cyberware>
+    <cyberware>
+      <name>Hand Razors</name>
+      <pairbonus>
+        <reach name="Hand Razors">1</reach>
+      </pairbonus>
+    </cyberware>
+    <cyberware>
+      <name>Shock Hand</name>
+      <pairbonus>
+        <reach name="Shock Hand">1</reach>
+      </pairbonus>
+    </cyberware>
+    <cyberware>
+      <name>Spurs</name>
+      <pairbonus>
+        <reach name="Spurs">1</reach>
+      </pairbonus>
+    </cyberware>
+    <!-- End Region -->
+  </cyberwares>
 </chummer>

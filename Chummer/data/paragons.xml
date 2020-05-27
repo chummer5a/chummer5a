@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema mentors.xsd">
-  <version>0</version>
+
   <categories>
     <category>Resonance</category>
     <category>Resonance</category>
@@ -82,14 +82,14 @@
       <name>Delphi (The Oracle)</name>
       <category>Resonance</category>
       <advantage>+1 bonus to dice pool and limit when threading complex forms.</advantage>
-      <disadvantage>–2 modifer to the technomancer’s Initiative Score.</disadvantage>
+      <disadvantage>–2 modifier to the technomancer’s Initiative Score.</disadvantage>
       <bonus>
-          <initiative>-2</initiative>
-          <matrixinitiative>-2</matrixinitiative>
-          <specificskill>
-              <name>Compiling</name>
-              <bonus>1</bonus>
-          </specificskill>
+        <actiondicepool>
+          <name>Threading</name>
+          <val>1</val>
+        </actiondicepool>
+        <initiative>-2</initiative>
+        <matrixinitiative>-2</matrixinitiative>
       </bonus>
       <source>KC</source>
       <page>104</page>

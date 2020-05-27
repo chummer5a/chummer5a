@@ -47,16 +47,16 @@ namespace Chummer.Backend.Skills
         public override void WriteTo(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("skill");
-            objWriter.WriteElementString("guid", Id.ToString("D"));
-            objWriter.WriteElementString("suid", SkillId.ToString("D"));
+            objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isknowledge", bool.FalseString);
             objWriter.WriteElementString("skillcategory", SkillCategory);
             objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
             objWriter.WriteElementString("notes", Notes);
             if (!CharacterObject.Created)
             {
-                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
             if (Specializations.Count != 0)
@@ -81,6 +81,7 @@ namespace Chummer.Backend.Skills
             set
             {
                 _strSpecific = value;
+
                 OnPropertyChanged();
             }
         }
@@ -93,7 +94,7 @@ namespace Chummer.Backend.Skills
             return LanguageManager.TranslateExtra(Specific, strLanguage);
         }
 
-        public override string DisplaySpecializationMethod(string strLanguage)
+        public override string DisplaySpecialization(string strLanguage)
         {
             return DisplaySpecific(strLanguage);
         }

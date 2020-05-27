@@ -30,121 +30,6 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        public class LanguageData
-        {
-            public bool IsRightToLeftScript { get; }
-            public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
-            public XmlDocument DataDocument { get; } = new XmlDocument();
-            public string ErrorMessage { get; } = string.Empty;
-            public bool ErrorAlreadyShown { get; set; }
-
-            public LanguageData(string strLanguage)
-            {
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
-                if (File.Exists(strFilePath))
-                {
-                    XmlDocument objLanguageDocument = new XmlDocument();
-                    try
-                    {
-                        string strExtraMessage = string.Empty;
-                        try
-                        {
-                            using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            {
-                                objLanguageDocument.Load(objStreamReader);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            objLanguageDocument = null;
-                            strExtraMessage += ex.ToString();
-                        }
-                        catch (XmlException ex)
-                        {
-                            objLanguageDocument = null;
-                            strExtraMessage += ex.ToString();
-                        }
-
-                        if (objLanguageDocument != null)
-                        {
-                            IsRightToLeftScript = objLanguageDocument.SelectSingleNode("/chummer/righttoleft")?.InnerText == bool.TrueString;
-                            using (XmlNodeList xmlStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                            {
-                                if (xmlStringList?.Count > 0)
-                                {
-                                    foreach (XmlNode objNode in xmlStringList)
-                                    {
-                                        // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
-                                        // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                                        string strKey = objNode["key"]?.InnerText;
-                                        string strText = objNode["text"]?.InnerText;
-                                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
-                                        {
-                                            if (TranslatedStrings.ContainsKey(strKey))
-                                                TranslatedStrings[strKey] = strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine);
-                                            else
-                                                TranslatedStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
-                    }
-                }
-                else
-                {
-                    ErrorMessage += "Could not find the strings file " + strLanguage + ".xml." + Environment.NewLine;
-                }
-
-                // Check to see if the data translation file for the selected language exists.
-                string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
-                if (File.Exists(strDataPath))
-                {
-                    try
-                    {
-                        try
-                        {
-                            using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
-                            {
-                                DataDocument.Load(objStreamReader);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            DataDocument = null;
-                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
-                        }
-                        catch (XmlException ex)
-                        {
-                            DataDocument = null;
-                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        DataDocument = null;
-                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + "." + Environment.NewLine;
-                    }
-                }
-                else
-                {
-                    ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml." + Environment.NewLine;
-                }
-            }
-        }
-
         private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
         public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages => s_DictionaryLanguages;
         private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
@@ -153,31 +38,34 @@ namespace Chummer
         #region Constructor
         static LanguageManager()
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
-                XmlDocument objEnglishDocument = new XmlDocument();
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                XmlDocument objEnglishDocument = new XmlDocument
+                {
+                    XmlResolver = null
+                };
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        {
-                            objEnglishDocument.Load(objStreamReader);
-                        }
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                objEnglishDocument.Load(objXmlReader);
                     }
                     catch (IOException ex)
                     {
-                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex.ToString();
+                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex;
                     }
                     catch (XmlException ex)
                     {
-                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex.ToString();
+                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex;
                     }
 
                     if (string.IsNullOrEmpty(ManagerErrorMessage))
                     {
                         using (XmlNodeList xmlStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                        {
                             if (xmlStringList != null)
                             {
                                 foreach (XmlNode objNode in xmlStringList)
@@ -198,6 +86,7 @@ namespace Chummer
                                 ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
                                                        Environment.NewLine + Environment.NewLine + "No strings found in file.";
                             }
+                        }
                     }
                 }
                 else
@@ -215,17 +104,21 @@ namespace Chummer
         /// <param name="objObject">Object to translate.</param>
         public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            if (LoadLanguage(strIntoLanguage))
+            if (!Utils.IsDesignerMode)
             {
-                RightToLeft eIntoRightToLeft = RightToLeft.No;
-                if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                if (LoadLanguage(strIntoLanguage))
                 {
-                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    RightToLeft eIntoRightToLeft = RightToLeft.No;
+                    if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                    {
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    }
+
+                    UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
                 }
-                UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
+                else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                    UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
             }
-            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
-                UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
         }
 
         private static bool LoadLanguage(string strLanguage)
@@ -241,7 +134,7 @@ namespace Chummer
                 {
                     if (!objNewLanguage.ErrorAlreadyShown)
                     {
-                        MessageBox.Show("Language with code " + strLanguage + " could not be loaded for the following reasons:" + Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox("Language with code " + strLanguage + " could not be loaded for the following reasons:" + Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objNewLanguage.ErrorAlreadyShown = true;
                     }
                     return false;
@@ -256,11 +149,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft)
         {
             if (objParent == null)
                 return;
-            
+
             objParent.RightToLeft = eIntoRightToLeft;
 
             if (objParent is Form frmForm)
@@ -288,6 +182,7 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
+                    if (objChild.GetType() == typeof(WebBrowser)) continue;
                     Utils.BreakIfDebug();
                 }
 
@@ -355,7 +250,7 @@ namespace Chummer
                         if (objNode.Level == 0)
                         {
                             string strControlTag = objNode.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_"))
+                            if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
                             {
                                 objNode.Text = GetString(strControlTag, strIntoLanguage);
                             }
@@ -390,8 +285,12 @@ namespace Chummer
         /// <param name="tssItem">Given ToolStripItem to translate.</param>
         /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
-        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage, RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
+        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage = "", RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
         {
+            if (tssItem == null)
+                return;
+            if (string.IsNullOrEmpty(strIntoLanguage))
+                strIntoLanguage = GlobalOptions.Language;
             if (eIntoRightToLeft == RightToLeft.Inherit)
             {
                 if (LoadLanguage(strIntoLanguage) && DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
@@ -413,12 +312,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Overload for standard GetString method, using GlobalOptions.Language as default string.
+        /// Overload for standard GetString method, using GlobalOptions.Language as default string, but explicitly defining if an error is returned or not.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         /// <returns></returns>
-        public static string GetString(string strKey, bool blnReturnError = true)
+        public static string GetString(string strKey, bool blnReturnError)
         {
             return GetString(strKey, GlobalOptions.Language, blnReturnError);
         }
@@ -426,10 +325,14 @@ namespace Chummer
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
-        /// <param name="strLanguage">Language in from which the string should be retrieved.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
-        public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
+        public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true)
         {
+            if (Utils.IsDesignerMode)
+                return strKey;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -446,6 +349,109 @@ namespace Chummer
                 return strReturn;
             }
             return !blnReturnError ? string.Empty : $"{strKey} not found; check language file for string";
+        }
+
+        /// <summary>
+        /// Processes a compound string that contains both plaintext and references to localized strings
+        /// </summary>
+        /// <param name="strInput">Input string to process.</param>
+        /// <param name="strLanguage">Language into which to translate the compound string.</param>
+        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
+        /// <returns></returns>
+        public static string ProcessCompoundString(string strInput, string strLanguage = "", bool blnUseTranslateExtra = false)
+        {
+            if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
+                return strInput;
+            // Exit out early if we don't have a pair of curly brackets, which is what would signify localized strings
+            int intStartPosition = strInput.IndexOf('{');
+            if (intStartPosition < 0)
+                return strInput;
+            int intEndPosition = strInput.LastIndexOf('}');
+            if (intEndPosition < 0)
+                return strInput;
+
+            // strInput will get split up based on curly brackets and put into this list as a string-bool Tuple.
+            // String value in Tuple will be a section of strInput either enclosed in curly brackets or between sets of enclosed curly brackets
+            // Bool value in Tuple is a flag for whether the item was enclosed in curly brackets (True) or between sets of enclosed curly brackets (False)
+            List<Tuple<string, bool>> lstStringWithCompoundsSplit = new List<Tuple<string, bool>>
+            {
+                // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
+                new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
+            };
+
+            char[] achrCurlyBrackets = {'{', '}'};
+            // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
+            int intBracketLevel = 1;
+            // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
+            for (int i = strInput.IndexOfAny(achrCurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(achrCurlyBrackets, i + 1))
+            {
+                char chrLoop = strInput[i];
+                switch (chrLoop)
+                {
+                    case '{':
+                    {
+                        if (intBracketLevel == 0)
+                        {
+                            // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
+                            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                            // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
+                            intStartPosition = i;
+                        }
+                        intBracketLevel += 1;
+                        break;
+                    }
+                    case '}':
+                    {
+                        // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
+                        if (intBracketLevel > 0)
+                        {
+                            intBracketLevel -= 1;
+                            if (intBracketLevel == 0)
+                            {
+                                // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
+                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                intStartPosition = i;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            // End with part between the last set of enclosed curly brackets and the end of the string. This will also catch cases where there are opening curly brackets without matching closing brackets
+            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
+
+            // Start building the return value.
+            StringBuilder objReturn = new StringBuilder(strInput.Length);
+            foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
+            {
+                string strLoop = objLoop.Item1;
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
+                    if (objLoop.Item2)
+                    {
+                        // Inner string is a compound string in and of itself, so recurse this method
+                        if (strLoop.IndexOfAny('{', '}') != -1)
+                        {
+                            strLoop = ProcessCompoundString(strLoop, strLanguage, blnUseTranslateExtra);
+                        }
+                        // Use more expensive TranslateExtra if flag is set to use that
+                        objReturn.Append(blnUseTranslateExtra
+                            ? TranslateExtra(strLoop, strLanguage)
+                            : GetString(strLoop, strLanguage, false));
+                    }
+                    // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
+                    else
+                    {
+                        objReturn.Append(strLoop);
+                    }
+                }
+            }
+
+            return objReturn.ToString();
         }
 
         /// <summary>
@@ -473,15 +479,17 @@ namespace Chummer
                 () =>
                 {
                     // Load the English version.
-                    XmlDocument objEnglishDocument = new XmlDocument();
-                    string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                    XmlDocument objEnglishDocument = new XmlDocument
+                    {
+                        XmlResolver=null
+                    };
+                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
 
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        {
-                            objEnglishDocument.Load(objStreamReader);
-                        }
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                objEnglishDocument.Load(objXmlReader);
                     }
                     catch (IOException)
                     {
@@ -492,30 +500,33 @@ namespace Chummer
                         objEnglishDocument = null;
                     }
 
-                    if (objEnglishDocument != null)
+                    using (XmlNodeList xmlEnglishStringList = objEnglishDocument?.SelectNodes("/chummer/strings/string"))
                     {
-                        using (XmlNodeList xmlEnglishStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
-                            if (xmlEnglishStringList != null)
-                                foreach (XmlNode objNode in xmlEnglishStringList)
-                                {
-                                    string strKey = objNode["key"]?.InnerText;
-                                    if (!string.IsNullOrEmpty(strKey))
-                                        lstEnglish.Add(strKey);
-                                }
+                        if (xmlEnglishStringList != null)
+                        {
+                            foreach (XmlNode objNode in xmlEnglishStringList)
+                            {
+                                string strKey = objNode["key"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strKey))
+                                    lstEnglish.Add(strKey);
+                            }
+                        }
                     }
                 },
                 () =>
                 {
                     // Load the selected language version.
-                    XmlDocument objLanguageDocument = new XmlDocument();
-                    string strLangPath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                    XmlDocument objLanguageDocument = new XmlDocument
+                    {
+                        XmlResolver = null
+                    };
+                    string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
 
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                        {
-                            objLanguageDocument.Load(objStreamReader);
-                        }
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                objLanguageDocument.Load(objXmlReader);
                     }
                     catch (IOException)
                     {
@@ -526,16 +537,17 @@ namespace Chummer
                         objLanguageDocument = null;
                     }
 
-                    if (objLanguageDocument != null)
+                    using (XmlNodeList xmlLanguageStringList = objLanguageDocument?.SelectNodes("/chummer/strings/string"))
                     {
-                        using (XmlNodeList xmlLanguageStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                            if (xmlLanguageStringList != null)
-                                foreach (XmlNode objNode in xmlLanguageStringList)
-                                {
-                                    string strKey = objNode["key"]?.InnerText;
-                                    if (!string.IsNullOrEmpty(strKey))
-                                        lstLanguage.Add(strKey);
-                                }
+                        if (xmlLanguageStringList != null)
+                        {
+                            foreach (XmlNode objNode in xmlLanguageStringList)
+                            {
+                                string strKey = objNode["key"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strKey))
+                                    lstLanguage.Add(strKey);
+                            }
+                        }
                     }
                 }
             );
@@ -563,9 +575,9 @@ namespace Chummer
                 }
             );
 
-            string strMessage = (objMissingMessage.ToString() + objUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+            string strMessage = (objMissingMessage + objUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
-            MessageBox.Show(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // List of XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter
@@ -646,8 +658,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        public static string TranslateExtra(string strExtra, string strIntoLanguage)
+        public static string TranslateExtra(string strExtra, string strIntoLanguage = "")
         {
+            if (string.IsNullOrEmpty(strExtra))
+                return string.Empty;
+            if (string.IsNullOrEmpty(strIntoLanguage))
+                strIntoLanguage = GlobalOptions.Language;
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
@@ -687,7 +703,7 @@ namespace Chummer
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ')';
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + GetString("String_Space", strIntoLanguage) + '(' + GetString("String_DescAdept", strIntoLanguage) + ')';
                         break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
@@ -720,11 +736,13 @@ namespace Chummer
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                         object strReturnLock = new object();
-                        Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
+                        Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
                             Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
                             using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
+                            {
                                 if (xmlNodeList != null)
+                                {
                                     foreach (XmlNode objNode in xmlNodeList)
                                     {
                                         if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
@@ -739,6 +757,8 @@ namespace Chummer
                                             }
                                         }
                                     }
+                                }
+                            }
                         });
                         break;
                 }
@@ -756,8 +776,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
-        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage)
+        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
         {
+            if (string.IsNullOrEmpty(strFromLanguage))
+                strFromLanguage = GlobalOptions.Language;
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
 
@@ -815,7 +837,7 @@ namespace Chummer
                     return "MAG";
                 }
 
-                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
+                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + GetString("String_Space", strFromLanguage) + '(' + GetString("String_DescAdept", strFromLanguage) + ')')
                 {
                     return "MAGAdept";
                 }
@@ -868,11 +890,13 @@ namespace Chummer
                 string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                 object strReturnLock = new object();
-                Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
+                Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                 {
                     Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
                     using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                    {
                         if (xmlNodeList != null)
+                        {
                             foreach (XmlNode xmlNode in xmlNodeList)
                             {
                                 if (objXPathPair.Item4(xmlNode) == strExtraNoQuotes)
@@ -887,11 +911,129 @@ namespace Chummer
                                     }
                                 }
                             }
+                        }
+                    }
                 });
             }
 
             return strReturn;
         }
         #endregion
+    }
+
+    public class LanguageData
+    {
+        public bool IsRightToLeftScript { get; }
+        public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
+        public XmlDocument DataDocument { get; } = new XmlDocument { XmlResolver = null };
+        public string ErrorMessage { get; } = string.Empty;
+        public bool ErrorAlreadyShown { get; set; }
+
+        public LanguageData(string strLanguage)
+        {
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            if (File.Exists(strFilePath))
+            {
+                XmlDocument objLanguageDocument = new XmlDocument
+                {
+                    XmlResolver = null
+                };
+                try
+                {
+                    string strExtraMessage = string.Empty;
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                objLanguageDocument.Load(objXmlReader);
+                    }
+                    catch (IOException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage += ex.ToString();
+                    }
+                    catch (XmlException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage += ex.ToString();
+                    }
+
+                    if (objLanguageDocument != null)
+                    {
+                        IsRightToLeftScript = objLanguageDocument.SelectSingleNode("/chummer/righttoleft")?.InnerText == bool.TrueString;
+                        using (XmlNodeList xmlStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                        {
+                            if (xmlStringList?.Count > 0)
+                            {
+                                foreach (XmlNode objNode in xmlStringList)
+                                {
+                                    // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                                    // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                                    string strKey = objNode["key"]?.InnerText;
+                                    string strText = objNode["text"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                    {
+                                        if (TranslatedStrings.ContainsKey(strKey))
+                                            TranslatedStrings[strKey] = strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine);
+                                        else
+                                            TranslatedStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                }
+            }
+            else
+            {
+                ErrorMessage += "Could not find the strings file " + strLanguage + ".xml." + Environment.NewLine;
+            }
+
+            // Check to see if the data translation file for the selected language exists.
+            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            if (File.Exists(strDataPath))
+            {
+                try
+                {
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                DataDocument.Load(objXmlReader);
+                    }
+                    catch (IOException ex)
+                    {
+                        DataDocument = null;
+                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                    }
+                    catch (XmlException ex)
+                    {
+                        DataDocument = null;
+                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DataDocument = null;
+                    ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                }
+            }
+            else
+            {
+                ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml." + Environment.NewLine;
+            }
+        }
     }
 }

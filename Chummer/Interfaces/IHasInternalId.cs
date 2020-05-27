@@ -33,7 +33,7 @@ namespace Chummer
     {
         public static void RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || objParent == null || treGear == null)
                 return;
 
             TreeNode nodParent = treGear.FindNodeByTag(objParent);
@@ -114,7 +114,7 @@ namespace Chummer
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
                 if (objNode == null)
                     return;
-                if (objGear.Location != null)
+                if (objGear.Location == null)
                 {
                     if (intIndex >= 0)
                         nodParent.Nodes.Insert(intIndex, objNode);
@@ -150,7 +150,7 @@ namespace Chummer
 
         public static void RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || objParent == null || treCyberware == null)
                 return;
 
             TreeNode nodParent = treCyberware.FindNodeByTag(objParent);
@@ -244,7 +244,7 @@ namespace Chummer
 
         public static void RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || objParent == null || treWeapons == null)
                 return;
 
             TreeNode nodParent = treWeapons.FindNode(objParent.InternalId);
@@ -335,7 +335,7 @@ namespace Chummer
 
         public static void RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || objParent == null || treWeapons == null)
                 return;
 
             TreeNode nodParent = treWeapons.FindNode(objParent.InternalId);

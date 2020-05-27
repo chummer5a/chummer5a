@@ -47,11 +47,11 @@ namespace Chummer
         {
             cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            string exportDirectoryPath = Path.Combine(Application.StartupPath, "export");
+            string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
             foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
             {
                 // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+                if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase) && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
                 {
                     string strFileName = Path.GetFileNameWithoutExtension(strFile);
                     cboXSLT.Items.Add(strFileName);
@@ -129,17 +129,25 @@ namespace Chummer
             // Look for the file extension information.
             string strLine;
             string strExtension = "xml";
-            string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
-            StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true);
-            while ((strLine = objFile.ReadLine()) != null)
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
+            using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
             {
-                if (strLine.StartsWith("<!-- ext:"))
-                    strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                while ((strLine = objFile.ReadLine()) != null)
+                {
+                    if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
+                        strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                }
             }
-            objFile.Close();
 
-            SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
+            if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml");
+            else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json");
+            else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html");
+            else
+                SaveFileDialog1.Filter = strExtension.ToUpper(GlobalOptions.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -153,7 +161,7 @@ namespace Chummer
 
         private void GenerateXml()
         {
-            string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
 
             XslCompiledTransform objXSLTransform = new XslCompiledTransform();
             objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
@@ -163,14 +171,13 @@ namespace Chummer
             objSettings.ConformanceLevel = ConformanceLevel.Fragment;
 
             MemoryStream objStream = new MemoryStream();
-            XmlWriter objWriter = XmlWriter.Create(objStream, objSettings);
-
-            objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+            using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
+                objXSLTransform.Transform(_objCharacterXML, null, objWriter);
             objStream.Position = 0;
 
             // Read in the resulting code and pass it to the browser.
-            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-            rtbText.Text = objReader.ReadToEnd();
+            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                rtbText.Text = objReader.ReadToEnd();
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
             {
@@ -194,8 +201,8 @@ namespace Chummer
         {
             SaveFileDialog1.AddExtension = true;
             SaveFileDialog1.DefaultExt = "json";
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Language);
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json") + '|' + LanguageManager.GetString("DialogFilter_All");
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs");
             SaveFileDialog1.ShowDialog();
 
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))

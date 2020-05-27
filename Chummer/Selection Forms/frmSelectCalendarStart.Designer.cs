@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblYear = new System.Windows.Forms.Label();
             this.nudYear = new System.Windows.Forms.NumericUpDown();
             this.lblMonth = new System.Windows.Forms.Label();
@@ -37,7 +38,7 @@ namespace Chummer
             this.lblCalendarStart = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudYear)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMonth)).BeginInit();
@@ -50,7 +51,7 @@ namespace Chummer
             // 
             this.lblYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblYear.AutoSize = true;
-            this.lblYear.Location = new System.Drawing.Point(18, 31);
+            this.lblYear.Location = new System.Drawing.Point(3, 31);
             this.lblYear.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblYear.Name = "lblYear";
             this.lblYear.Size = new System.Drawing.Size(32, 13);
@@ -60,10 +61,9 @@ namespace Chummer
             // 
             // nudYear
             // 
-            this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudYear.Location = new System.Drawing.Point(56, 28);
+            this.nudYear.Location = new System.Drawing.Point(41, 28);
             this.nudYear.Maximum = new decimal(new int[] {
             9000,
             0,
@@ -75,7 +75,7 @@ namespace Chummer
             0,
             0});
             this.nudYear.Name = "nudYear";
-            this.nudYear.Size = new System.Drawing.Size(47, 20);
+            this.nudYear.Size = new System.Drawing.Size(59, 20);
             this.nudYear.TabIndex = 2;
             this.nudYear.Value = new decimal(new int[] {
             2072,
@@ -87,7 +87,7 @@ namespace Chummer
             // 
             this.lblMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMonth.AutoSize = true;
-            this.lblMonth.Location = new System.Drawing.Point(116, 31);
+            this.lblMonth.Location = new System.Drawing.Point(106, 31);
             this.lblMonth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMonth.Name = "lblMonth";
             this.lblMonth.Size = new System.Drawing.Size(40, 13);
@@ -97,10 +97,9 @@ namespace Chummer
             // 
             // nudMonth
             // 
-            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMonth.Location = new System.Drawing.Point(162, 28);
+            this.nudMonth.Location = new System.Drawing.Point(152, 28);
             this.nudMonth.Maximum = new decimal(new int[] {
             12,
             0,
@@ -112,7 +111,7 @@ namespace Chummer
             0,
             0});
             this.nudMonth.Name = "nudMonth";
-            this.nudMonth.Size = new System.Drawing.Size(47, 20);
+            this.nudMonth.Size = new System.Drawing.Size(59, 20);
             this.nudMonth.TabIndex = 4;
             this.nudMonth.Value = new decimal(new int[] {
             1,
@@ -125,7 +124,7 @@ namespace Chummer
             // 
             this.lblWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblWeek.AutoSize = true;
-            this.lblWeek.Location = new System.Drawing.Point(223, 31);
+            this.lblWeek.Location = new System.Drawing.Point(217, 31);
             this.lblWeek.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeek.Name = "lblWeek";
             this.lblWeek.Size = new System.Drawing.Size(39, 13);
@@ -135,10 +134,9 @@ namespace Chummer
             // 
             // nudWeek
             // 
-            this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudWeek.Location = new System.Drawing.Point(268, 28);
+            this.nudWeek.Location = new System.Drawing.Point(262, 28);
             this.nudWeek.Maximum = new decimal(new int[] {
             5,
             0,
@@ -150,7 +148,7 @@ namespace Chummer
             0,
             0});
             this.nudWeek.Name = "nudWeek";
-            this.nudWeek.Size = new System.Drawing.Size(48, 20);
+            this.nudWeek.Size = new System.Drawing.Size(59, 20);
             this.nudWeek.TabIndex = 6;
             this.nudWeek.Value = new decimal(new int[] {
             1,
@@ -175,8 +173,7 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0);
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 8;
@@ -189,8 +186,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(78, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(84, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 7;
@@ -206,12 +202,12 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 6;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel1.Controls.Add(this.lblCalendarStart, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblYear, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblMonth, 2, 1);
@@ -220,27 +216,28 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblWeek, 4, 1);
             this.tableLayoutPanel1.Controls.Add(this.nudMonth, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 2);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(13, 13);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(319, 96);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(324, 80);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 6);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(166, 73);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(162, 51);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(153, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
             this.flowLayoutPanel1.TabIndex = 7;
             // 
             // frmSelectCalendarStart
@@ -248,12 +245,14 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(344, 121);
+            this.ClientSize = new System.Drawing.Size(344, 101);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(360, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectCalendarStart";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CalendarStart";

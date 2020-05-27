@@ -51,5 +51,9 @@
       <name>Tohu Wa-Bohu</name>
       <hide />
     </mentor>
+	<mentor>
+		<name>Guanyin</name>
+		<hide />
+	</mentor>
   </mentors>
 </chummer>

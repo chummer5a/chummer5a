@@ -281,7 +281,7 @@ namespace Chummer
                 _textbox.SelectAll();
             }
             // Update UpDownButtons visibility
-            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus | _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
+            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus || _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
             {
                 UpdateUpDownButtonsVisibility();
             }
@@ -294,7 +294,7 @@ namespace Chummer
         {
             _haveFocus = false;
             // Update UpDownButtons visibility
-            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus | _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
+            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus || _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
             {
                 UpdateUpDownButtonsVisibility();
             }
@@ -383,7 +383,17 @@ namespace Chummer
             }
             else
             {
-                base.DownButton();
+                try
+                {
+                    base.DownButton();
+                }
+                catch (ArgumentOutOfRangeException aor)
+                {
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueDecrement", BeforeValueDecrement?.Method.Name);
+                    throw;
+                }
             }
         }
         public override void UpButton()
@@ -399,7 +409,17 @@ namespace Chummer
             }
             else
             {
-                base.UpButton();
+                try
+                {
+                    base.UpButton();
+                }
+                catch (ArgumentOutOfRangeException aor)
+                {
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueIncrement", BeforeValueIncrement?.Method.Name);
+                    throw;
+                }
             }
         }
 
@@ -434,7 +454,7 @@ namespace Chummer
                     newVisible = _haveFocus;
                     break;
                 case ShowUpDownButtonsMode.WhenFocusOrMouseOver:
-                    newVisible = _mouseOver | _haveFocus;
+                    newVisible = _mouseOver || _haveFocus;
                     break;
                 case ShowUpDownButtonsMode.Never:
                     newVisible = false;
@@ -459,7 +479,6 @@ namespace Chummer
                 OnTextBoxResize(_textbox, EventArgs.Empty);
                 Invalidate();
             }
-
         }
 
 

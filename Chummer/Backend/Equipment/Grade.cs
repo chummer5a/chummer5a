@@ -17,7 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment
@@ -28,21 +30,21 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Grade : IHasName, IHasInternalId, IHasXmlNode
     {
-        private Guid _guidSourceId = Guid.Empty;
-        private Guid _guidId;
+        private Guid _guiSourceID = Guid.Empty;
+        private Guid _guiID;
         private string _strName = "Standard";
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-	    private int _intAddictionThreshold;
-		private readonly Improvement.ImprovementSource _eSource;
+        private int _intAddictionThreshold;
+        private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
         public Grade(Improvement.ImprovementSource eSource)
         {
-            _guidId = Guid.NewGuid();
+            _guiID = Guid.NewGuid();
             _eSource = eSource;
         }
 
@@ -53,18 +55,28 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objNode.TryGetField("id", Guid.TryParse, out _guidSourceId))
+
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
-                if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
-                    _guidSourceId = Guid.NewGuid();
+                _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                var xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware
+                        ? "bioware.xml"
+                        : _eSource == Improvement.ImprovementSource.Drug
+                            ? "drugcomponents.xml"
+                            : "cyberware.xml")
+                    .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
+                if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
+                    _guiSourceID = Guid.NewGuid();
             }
             objNode.TryGetDecFieldQuickly("ess", ref _decEss);
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
-			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
                     _intDeviceRating = 3;
@@ -89,12 +101,35 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage).SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = SourceId == Guid.Empty
+                ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
+                : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
+
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Convert a string to a Grade.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="objSource">Source representing whether this is a cyberware, drug or bioware grade.</param>
+        /// <param name="objCharacter">Character from which to fetch a grade list</param>
+        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
+        {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
+            foreach (Grade objGrade in lstGrades)
+            {
+                if (objGrade.Name == strValue)
+                    return objGrade;
+            }
+
+            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
         }
         #endregion
 
@@ -102,12 +137,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
-        public string InternalId => _guidId == Guid.Empty ? string.Empty : _guidId.ToString("D");
+        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
-        /// Identifier of the grade within data files.
+        /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceId => _guidSourceId;
+        public Guid SourceId => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// The English name of the Grade.
@@ -128,6 +168,8 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.
@@ -174,9 +216,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int AddictionThreshold
         {
-            get { return _intAddictionThreshold; }
-            set { _intAddictionThreshold = value; }
+            get => _intAddictionThreshold;
+            set => _intAddictionThreshold = value;
         }
-		#endregion
-	}
+        #endregion
+    }
 }

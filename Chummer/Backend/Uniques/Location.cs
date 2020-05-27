@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -29,21 +30,22 @@ namespace Chummer
     /// <summary>
     /// A Location.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove
+    [DebuggerDisplay("{DisplayName()}")]
+    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
     {
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
+        private int _intSortOrder;
         private readonly Character _objCharacter;
         #region Constructor, Create, Save, Load, and Print Methods
-        public Location(Character objCharacter, ObservableCollection<Location> parent, string name = "")
+        public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            _strName = name;
-            Parent = parent;
+            _strName = strName;
+            Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;
         }
 
@@ -53,10 +55,13 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("location");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -76,6 +81,9 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             }
+
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+
             if (Parent?.Contains(this) == false)
                 Parent.Add(this);
         }
@@ -84,12 +92,13 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("location");
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayNameShort());
+            objWriter.WriteElementString("fullname", DisplayName());
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -101,7 +110,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Metamagic name.
@@ -115,7 +124,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort(string strLanguage)
+        public string DisplayNameShort()
         {
             return Name;
         }
@@ -123,9 +132,9 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName()
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            string strReturn = DisplayNameShort();
 
             return strReturn;
         }
@@ -139,15 +148,24 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
+        }
+
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
-        public ObservableCollection<Location> Parent { get; set; }
+        public ObservableCollection<Location> Parent { get; }
         #endregion
 
         #region UI Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation, bool blnAddCategory = false)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
-            string strText = DisplayName(GlobalOptions.Language);
+            string strText = DisplayName();
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -203,17 +221,18 @@ namespace Chummer
             }
         }
 
-        public bool Remove(Character character, bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (blnConfirmDelete)
             {
-                character.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language));
+                _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation"));
             }
             foreach (IHasLocation item in Children)
             {
                 item.Location = null;
             }
-            return Parent.Remove(this);
+
+            return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
         }
     }
 }

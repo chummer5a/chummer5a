@@ -27,7 +27,7 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private string _strForceMentor = string.Empty;
-        
+
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
         private readonly bool _blnEverShowMentorMask;
@@ -43,7 +43,7 @@ namespace Chummer
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
@@ -73,13 +73,11 @@ namespace Chummer
                 objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
             if (objXmlMentor != null)
             {
-                chkMentorMask.Visible = _blnEverShowMentorMask;
-                
                 cboChoice1.BeginUpdate();
                 cboChoice2.BeginUpdate();
                 cboChoice1.DataSource = null;
                 cboChoice2.DataSource = null;
-                
+
                 // If the Mentor offers a choice of bonuses, build the list and let the user select one.
                 XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
                 if (xmlChoices != null)
@@ -90,7 +88,7 @@ namespace Chummer
                     foreach (XPathNavigator objChoice in xmlChoices.Select("choice"))
                     {
                         string strName = objChoice.SelectSingleNode("name")?.Value ?? string.Empty;
-                        if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
+                        if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:", StringComparison.Ordinal)) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:", StringComparison.Ordinal)))
                         {
                             if (objChoice.SelectSingleNode("@set")?.Value == "2")
                                 lstChoice2.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
@@ -98,7 +96,7 @@ namespace Chummer
                                 lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
                         }
                     }
-                    
+
                     cboChoice1.Visible = true;
                     cboChoice1.ValueMember = "Value";
                     cboChoice1.DisplayMember = "Name";
@@ -115,6 +113,10 @@ namespace Chummer
                     {
                         cboChoice2.Visible = false;
                     }
+
+                    cboChoice1.Visible = lstChoice1.Count > 0;
+                    cboChoice1.Enabled = lstChoice1.Count > 1;
+                    cboChoice2.Enabled = lstChoice2.Count > 1;
                 }
                 else
                 {
@@ -129,24 +131,23 @@ namespace Chummer
                 // Get the information for the selected Mentor.
                 lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
                                     objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                                    LanguageManager.GetString("String_Unknown");
                 lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
                 lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
                                        objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                       LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                                       LanguageManager.GetString("String_Unknown");
                 lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
 
-                string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 cmdOK.Enabled = true;
             }
             else
             {
-                chkMentorMask.Visible = false;
                 lblAdvantageLabel.Visible = false;
                 lblAdvantage.Text = string.Empty;
                 lblDisadvantageLabel.Visible = false;
@@ -196,11 +197,6 @@ namespace Chummer
         /// Second choice that was selected in the dialogue.
         /// </summary>
         public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
-
-        /// <summary>
-        /// Whether the character manifests the Mentor's Mask. Used externally to create improvements.
-        /// </summary>
-        public bool MentorsMask => chkMentorMask.Checked;
         #endregion
 
         #region Methods
@@ -234,7 +230,9 @@ namespace Chummer
             List<ListItem> lstMentors = new List<ListItem>();
             foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select("mentors/mentor[" + strFilter + "]"))
             {
-                string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
+
+                string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strId = objXmlMentor.SelectSingleNode("id")?.Value ?? string.Empty;
                 if (strName == _strForceMentor)
                     strForceId = strId;

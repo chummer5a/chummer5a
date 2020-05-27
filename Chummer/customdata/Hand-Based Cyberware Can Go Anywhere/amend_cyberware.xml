@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+    <cyberwares>
+        <cyberware>
+            <id>ba93ab8d-fd7f-4fc4-bfa3-5f987fd15d77</id>
+            <limit>False</limit>
+            <blocksmounts amendoperation="remove">wrist,elbow,shoulder</blocksmounts>
+            <required amendoperation="remove" />
+        </cyberware>
+        <cyberware>
+            <id>923d1629-5267-4093-a978-34eb4543cb15</id>
+            <limit>False</limit>
+            <blocksmounts amendoperation="remove">wrist,elbow,shoulder</blocksmounts>
+            <required amendoperation="remove" />
+        </cyberware>
+        <cyberware>
+            <id>1aa7fe36-10ab-4c3c-9a4f-f26e8460c0a8</id>
+            <limit>False</limit>
+            <blocksmounts amendoperation="remove">wrist,elbow,shoulder</blocksmounts>
+            <required amendoperation="remove" />
+        </cyberware>
+    </cyberwares>
+</chummer>

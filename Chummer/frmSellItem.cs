@@ -40,7 +40,6 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
         #endregion
-        
 
         #region Properties
         /// <summary>

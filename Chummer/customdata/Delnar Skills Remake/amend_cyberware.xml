@@ -45,7 +45,7 @@
       <name>Neural Amplifiers (Limbic)</name>
       <bonus>
         <limitmodifier>
-          <condition>Only with Intuition Tests</condition>
+          <condition>LimitCondition_TestAttribINT</condition>
         </limitmodifier>
         <specificattribute amendoperation="addnode">
           <name>INT</name>
@@ -57,7 +57,7 @@
       <name>Neural Amplifiers (Neocortical)</name>
       <bonus>
         <limitmodifier>
-          <condition>Only with Logic Tests</condition>
+          <condition>LimitCondition_TestAttribINT</condition>
         </limitmodifier>
         <specificattribute amendoperation="addnode">
           <name>LOG</name>

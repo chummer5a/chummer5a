@@ -23,24 +23,20 @@ namespace Chummer
 {
     public partial class frmDiceHits : Form
     {
-        private int _intDice;
-
         #region Control Events
         public frmDiceHits()
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Language) + strSpaceCharacter + _intDice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ':' + strSpaceCharacter;
-            nudDiceResult.Maximum = _intDice;
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpaceCharacter + Dice.ToString(GlobalOptions.CultureInfo)
+                           + LanguageManager.GetString("String_D6") + LanguageManager.GetString("String_Colon") + strSpaceCharacter;
+            nudDiceResult.Maximum = Dice;
             nudDiceResult.Minimum = 0;
-            lblResult.Text = string.Empty;
-            MoveControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -53,19 +49,7 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice
-        {
-            get => _intDice;
-            set => _intDice = value;
-        }
-
-        /// <summary>
-        /// Window title.
-        /// </summary>
-        public string Title
-        {
-            set => Text = value;
-        }
+        public int Dice { get; set; }
 
         /// <summary>
         /// Description text.
@@ -79,15 +63,6 @@ namespace Chummer
         /// Dice roll result.
         /// </summary>
         public int Result => decimal.ToInt32(nudDiceResult.Value);
-
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDiceResult.Left = lblDice.Left + lblDice.Width + 6;
-            lblResult.Left = nudDiceResult.Left + nudDiceResult.Width + 6;
-        }
         #endregion
     }
 }

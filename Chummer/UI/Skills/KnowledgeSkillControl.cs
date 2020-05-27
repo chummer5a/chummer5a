@@ -31,8 +31,12 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _skill;
         public KnowledgeSkillControl(KnowledgeSkill skill)
         {
+            if (skill == null)
+                return;
             _skill = skill;
             InitializeComponent();
+
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             //Display
             lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));
@@ -74,17 +78,17 @@ namespace Chummer.UI.Skills
                 lblName.Visible = true;
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
                 lblName.DataBindings.Add("ForeColor", skill, nameof(Skill.PreferredColor));
-                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.SkillToolTip));
+                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
 
                 lblSpec.Visible = true;
-                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 cboSkill.Visible = false;
                 chkKarma.Visible = false;
                 cboSpec.Visible = false;
 
                 lblModifiedRating.Location = new Point(294 - 30, 4);
-                
+
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -110,6 +114,7 @@ namespace Chummer.UI.Skills
                 cboSkill.ValueMember = nameof(ListItem.Value);
                 cboSkill.SelectedIndex = -1;
                 cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
+                cboSkill.DataBindings.Add(new NegatableBinding("Enabled", skill, nameof(KnowledgeSkill.ForcedName), true));
 
                 //dropdown/spec
                 cboSpec.DataSource = skill.CGLSpecializations;
@@ -117,19 +122,29 @@ namespace Chummer.UI.Skills
                 cboSpec.ValueMember = nameof(ListItem.Value);
                 cboSpec.SelectedIndex = -1;
 
-                if (skill.ForcedName)
-                    cboSpec.Enabled = false;
-                else
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 skill.PropertyChanged += Skill_PropertyChanged;
             }
 
+            cmdDelete.DataBindings.Add("Visible", skill, nameof(Skill.AllowDelete), false, DataSourceUpdateMode.OnPropertyChanged);
+            cmdDelete.Click += (sender, args) =>
+            {
+                if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill",
+                    GlobalOptions.Language)))
+                    return;
+                skill.UnbindSkill();
+                skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
+            };
             if (skill.ForcedName)
             {
                 DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
-
+                if (!skill.CharacterObject.Created)
+                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
+            }
+            if (!skill.AllowUpgrade)
+            {
                 nudKarma.Visible = false;
                 nudSkill.Visible = false;
                 cboSkill.Enabled = false;
@@ -139,20 +154,9 @@ namespace Chummer.UI.Skills
 
                 if (!skill.CharacterObject.Created)
                 {
-                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
                     lblRating.Visible = true;
                     lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
-
-                cmdDelete.Visible = false;
-            }
-            else
-            {
-                cmdDelete.Click += (sender, args) =>
-                {
-                    skill.UnbindSkill();
-                    skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
-                };
             }
             cboType.EndUpdate();
             cboSkill.EndUpdate();
@@ -162,7 +166,7 @@ namespace Chummer.UI.Skills
         public void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             bool all = false;
-            switch (e.PropertyName)
+            switch (e?.PropertyName)
             {
                 case null:
                     all = true;
@@ -214,8 +218,8 @@ namespace Chummer.UI.Skills
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                _skill.CurrentDisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -250,36 +254,75 @@ namespace Chummer.UI.Skills
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            frmSelectSpec selectForm = new frmSelectSpec(_skill)
+            using (frmSelectSpec selectForm = new frmSelectSpec(_skill)
             {
                 Mode = "Knowledge"
-            };
-            selectForm.ShowDialog();
+            })
+            {
+                selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+                if (selectForm.DialogResult != DialogResult.OK)
+                    return;
 
-            _skill.AddSpecialization(selectForm.SelectedItem);
+                _skill.AddSpecialization(selectForm.SelectedItem);
+            }
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
-        }
-
-        private void cboSpec_TextChanged(object sender, EventArgs e)
-        {
-            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills && nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
-            {
-                chkKarma.Checked = true;
-            }
         }
 
         public void MoveControls(int i)
         {
             lblName.Width = i;
         }
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+
+        private ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        private Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
+        }
+        #endregion
     }
 }

@@ -34,6 +34,17 @@ namespace Chummer.UI.Shared
         public LimitTabUserControl()
         {
             InitializeComponent();
+
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
+            foreach (ToolStripMenuItem objItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+            }
+            foreach (ToolStripMenuItem objItem in cmsLimitModifierNotesOnly.Items.OfType<ToolStripMenuItem>())
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+            }
         }
 
         private void LimitTabUserControl_Load(object sender, EventArgs e)
@@ -66,30 +77,34 @@ namespace Chummer.UI.Shared
             lblAstral.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
 
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
+            RefreshLimitModifiers();
         }
         #region Click Events
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social");
-            frmPickLimitModifier.ShowDialog(this);
+            using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social"))
+            {
+                frmPickLimitModifier.ShowDialog(this);
 
-            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                return;
+                if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                    return;
 
-            // Create the new limit modifier.
-            LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-            if (objLimitModifier.InternalId.IsEmptyGuid())
-                return;
+                // Create the new limit modifier.
+                LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
+                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
+                if (objLimitModifier.InternalId.IsEmptyGuid())
+                    return;
 
-            _objCharacter.LimitModifiers.Add(objLimitModifier);
+                _objCharacter.LimitModifiers.Add(objLimitModifier);
+            }
+
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
             if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(_objCharacter, _objCharacter.Options.ConfirmDelete)) return;
+            if (!selectedObject.Remove(_objCharacter.Options.ConfirmDelete)) return;
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
@@ -105,7 +120,6 @@ namespace Chummer.UI.Shared
             if (treLimit.SelectedNode == null) return;
             if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                
                 WriteNotes(objNotes, treLimit.SelectedNode);
             }
             else
@@ -114,17 +128,23 @@ namespace Chummer.UI.Shared
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
-                        objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString()) continue;
+                        objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
+                        continue;
                     string strOldValue = objImprovement.Notes;
-                    frmNotes frmItemNotes = new frmNotes
+                    using (frmNotes frmItemNotes = new frmNotes
                     {
                         Notes = strOldValue
-                    };
-                    frmItemNotes.ShowDialog(this);
+                    })
+                    {
+                        frmItemNotes.ShowDialog(this);
 
-                    if (frmItemNotes.DialogResult != DialogResult.OK) continue;
-                    objImprovement.Notes = frmItemNotes.Notes;
-                    if (objImprovement.Notes == strOldValue) continue;
+                        if (frmItemNotes.DialogResult != DialogResult.OK)
+                            continue;
+                        objImprovement.Notes = frmItemNotes.Notes;
+                    }
+
+                    if (objImprovement.Notes == strOldValue)
+                        continue;
                     MakeDirty?.Invoke(null, null);
 
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
@@ -142,28 +162,33 @@ namespace Chummer.UI.Shared
 
         /// <summary>
         /// Allows the user to input notes that should be linked to the selected object.
-        /// TODO: Should be linked back to CharacterShared in some way or moved into a more generic helper class. 
+        /// TODO: Should be linked back to CharacterShared in some way or moved into a more generic helper class.
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        private void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             string strOldValue = objNotes.Notes;
-            frmNotes frmItemNotes = new frmNotes
+            using (frmNotes frmItemNotes = new frmNotes
             {
                 Notes = strOldValue
-            };
-            frmItemNotes.ShowDialog(this);
+            })
+            {
+                frmItemNotes.ShowDialog(this);
 
-            if (frmItemNotes.DialogResult != DialogResult.OK) return;
-            objNotes.Notes = frmItemNotes.Notes;
-            if (objNotes.Notes == strOldValue) return;
+                if (frmItemNotes.DialogResult != DialogResult.OK)
+                    return;
+                objNotes.Notes = frmItemNotes.Notes;
+            }
+
+            if (objNotes.Notes == strOldValue)
+                return;
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap(100);
             MakeDirty?.Invoke(null,null);
         }
 
-        protected void RefreshLimitModifiers(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        private void RefreshLimitModifiers(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = (treLimit.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -178,9 +203,9 @@ namespace Chummer.UI.Shared
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                     TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                    if (!objParentNode.Nodes.ContainsKey(objLimitModifier.DisplayName))
+                    if (!objParentNode.Nodes.ContainsKey(objLimitModifier.CurrentDisplayName))
                     {
-                        objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
+                        objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly));
                     }
                 }
 
@@ -206,12 +231,12 @@ namespace Chummer.UI.Shared
                     if (intTargetLimit != -1)
                     {
                         TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                        string strName = objImprovement.UniqueName + ": ";
+                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space");
                         if (objImprovement.Value > 0)
                             strName += '+';
-                        strName += objImprovement.Value.ToString();
+                        strName += objImprovement.Value.ToString(GlobalOptions.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ", " + objImprovement.Condition;
+                            strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
                         if (!objParentNode.Nodes.ContainsKey(strName))
                         {
                             TreeNode objNode = new TreeNode
@@ -219,7 +244,7 @@ namespace Chummer.UI.Shared
                                 Name = strName,
                                 Text = strName,
                                 Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifier,
+                                ContextMenuStrip = cmsLimitModifierNotesOnly,
                                 ForeColor = objImprovement.PreferredColor,
                                 ToolTipText = objImprovement.Notes.WordWrap(100)
                             };
@@ -238,7 +263,7 @@ namespace Chummer.UI.Shared
                     }
                 }
 
-                treLimit.SortCustom(strSelectedId);
+                treLimit.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -256,9 +281,9 @@ namespace Chummer.UI.Shared
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                                 TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.DisplayName))
+                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                 {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(cmsLimitModifier);
+                                    TreeNode objNode = objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
                                     int intNodesCount = lstParentNodeChildren.Count;
                                     int intTargetIndex = 0;
                                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -307,9 +332,9 @@ namespace Chummer.UI.Shared
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                                 TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.DisplayName))
+                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                 {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(cmsLimitModifier);
+                                    TreeNode objNode = objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
                                     int intNodesCount = lstParentNodeChildren.Count;
                                     int intTargetIndex = 0;
                                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -350,7 +375,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Physical",
-                                Text = LanguageManager.GetString("Node_Physical", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Physical")
                             };
                             treLimit.Nodes.Insert(0, objParentNode);
                             break;
@@ -358,7 +383,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Mental",
-                                Text = LanguageManager.GetString("Node_Mental", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Mental")
                             };
                             treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
                             break;
@@ -366,7 +391,7 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Social",
-                                Text = LanguageManager.GetString("Node_Social", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Social")
                             };
                             treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
                             break;
@@ -374,11 +399,13 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode()
                             {
                                 Tag = "Node_Astral",
-                                Text = LanguageManager.GetString("Node_Astral", GlobalOptions.Language)
+                                Text = LanguageManager.GetString("Node_Astral")
                             };
                             treLimit.Nodes.Add(objParentNode);
                             break;
                     }
+
+                    aobjLimitNodes[intTargetLimit] = objParentNode;
                     objParentNode?.Expand();
                 }
                 return objParentNode;
@@ -399,9 +426,10 @@ namespace Chummer.UI.Shared
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound"));
                 return;
             }
+
             using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
             {
                 frmPickLimitModifier.ShowDialog(this);
@@ -412,14 +440,13 @@ namespace Chummer.UI.Shared
                 //Remove the old LimitModifier to ensure we don't double up.
                 _objCharacter.LimitModifiers.Remove(objLimitModifier);
                 // Create the new limit modifier.
-                objLimitModifier = new LimitModifier(_objCharacter);
-                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-                objLimitModifier.Guid = new Guid(strGuid);
+                objLimitModifier = new LimitModifier(_objCharacter, strGuid);
+                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
 
                 _objCharacter.LimitModifiers.Add(objLimitModifier);
-
-                MakeDirtyWithCharacterUpdate?.Invoke(null, null);
             }
+
+            MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
 
         private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -429,9 +456,22 @@ namespace Chummer.UI.Shared
         #endregion
         #region Properties
 
-        public ContextMenuStrip LimitContextMenuStrip => cmsLimitModifier;
+        public ContextMenuStrip LimitContextMenuStrip => cmsLimitModifierNotesOnly;
         public TreeView LimitTreeView => treLimit;
 
         #endregion
+
+        private void treLimit_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (treLimit.SelectedNode?.Tag is LimitModifier objLimitModifier)
+            {
+                cmdDeleteLimitModifier.Enabled = objLimitModifier.CanDelete;
+                tssLimitModifierEdit.Enabled = objLimitModifier.CanDelete;
+            }
+            else
+            {
+                cmdDeleteLimitModifier.Enabled = false;
+            }
+        }
     }
 }

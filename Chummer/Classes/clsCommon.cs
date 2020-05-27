@@ -37,7 +37,7 @@ namespace Chummer
         #region XPath Evaluators
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument();
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
         private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
@@ -122,6 +122,8 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
         }
 
@@ -132,6 +134,8 @@ namespace Chummer
         /// <param name="lstGear">List of Gear to search.</param>
         public static Drug FindDrug(string strGuid, List<Drug> lstGear)
         {
+            if (lstGear == null)
+                throw new ArgumentNullException(nameof(lstGear));
             foreach (Drug objDrug in lstGear)
             {
                 if (objDrug.InternalId == strGuid)
@@ -140,16 +144,18 @@ namespace Chummer
 
             return null;
         }
-		/// <summary>
-		/// Locate a piece of Gear within the character's Vehicles.
-		/// </summary>
-		/// <param name="strGuid">InternalId of the Gear to find.</param>
-		/// <param name="lstVehicles">List of Vehicles to search.</param>
-		/// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
-		/// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
-		/// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-		public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        /// <summary>
+        /// Locate a piece of Gear within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -204,6 +210,8 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle _, out WeaponMount _);
         }
 
@@ -216,6 +224,8 @@ namespace Chummer
         /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 VehicleMod objMod = objVehicle.FindVehicleMod(funcPredicate, out objFoundWeaponMount);
@@ -234,34 +244,40 @@ namespace Chummer
         /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             return lstVehicles.FindVehicleWeapon(strGuid, out objFoundVehicle, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the Weapon was found in.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -327,6 +343,8 @@ namespace Chummer
         /// <returns></returns>
         public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -353,6 +371,8 @@ namespace Chummer
         /// <returns></returns>
         public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out WeaponMount outMount)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -381,6 +401,8 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static WeaponAccessory FindVehicleWeaponAccessory(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -421,6 +443,8 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             return lstVehicles.FindVehicleCyberware(funcPredicate, out VehicleMod _);
         }
 
@@ -432,6 +456,8 @@ namespace Chummer
         /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
         public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate, out VehicleMod objFoundVehicleMod)
         {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 Cyberware objReturn = objVehicle.FindVehicleCyberware(funcPredicate, out objFoundVehicleMod);
@@ -452,6 +478,8 @@ namespace Chummer
         /// <param name="lstArmors">List of Armors to search.</param>
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid)
         {
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
             return lstArmors.FindArmorGear(strGuid, out Armor _, out ArmorMod _);
         }
 
@@ -464,6 +492,8 @@ namespace Chummer
         /// <param name="objFoundArmorMod">Armor mod that the Gear was found in.</param>
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod)
         {
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Armor objArmor in lstArmors)
@@ -501,6 +531,8 @@ namespace Chummer
         /// <param name="lstArmors">List of Armors to search.</param>
         public static ArmorMod FindArmorMod(this IEnumerable<Armor> lstArmors, string strGuid)
         {
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Armor objArmor in lstArmors)
@@ -523,6 +555,8 @@ namespace Chummer
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid)
         {
+            if (lstCyberware == null)
+                throw new ArgumentNullException(nameof(lstCyberware));
             return lstCyberware.FindCyberwareGear(strGuid, out Cyberware _);
         }
 
@@ -534,6 +568,8 @@ namespace Chummer
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, out Cyberware objFoundCyberware)
         {
+            if (lstCyberware == null)
+                throw new ArgumentNullException(nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
@@ -559,6 +595,8 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons to search.</param>
         public static WeaponAccessory FindWeaponAccessory(this IEnumerable<Weapon> lstWeapons, string strGuid)
         {
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0))
@@ -583,6 +621,8 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons to search.</param>
         public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid)
         {
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
             return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory _);
         }
 
@@ -594,6 +634,8 @@ namespace Chummer
         /// <param name="objFoundAccessory">WeaponAccessory that the Gear was found in.</param>
         public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, out WeaponAccessory objFoundAccessory)
         {
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -622,6 +664,8 @@ namespace Chummer
         /// <param name="objCharacter">The character to search.</param>
         public static Enhancement FindEnhancement(this Character objCharacter, string strGuid)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Enhancement objEnhancement in objCharacter.Enhancements)
@@ -648,6 +692,8 @@ namespace Chummer
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
         public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
         {
+            if (lstMartialArts == null)
+                throw new ArgumentNullException(nameof(lstMartialArts));
             return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt _);
         }
 
@@ -659,6 +705,8 @@ namespace Chummer
         /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
         public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
         {
+            if (lstMartialArts == null)
+                throw new ArgumentNullException(nameof(lstMartialArts));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (MartialArt objArt in lstMartialArts)
@@ -684,7 +732,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage)
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
@@ -699,7 +747,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookShort(string strCode, string strLanguage)
+        public static string LanguageBookShort(string strCode, string strLanguage = "")
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
@@ -714,7 +762,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage)
+        public static string LanguageBookLong(string strCode, string strLanguage = "")
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
@@ -741,7 +789,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strNeedle))
                 return string.Empty;
-            string strSearchText = strNeedle.ToUpper();
+            string strSearchText = strNeedle.ToUpperInvariant();
             // Treat everything as being uppercase so the search is case-insensitive.
             return string.Concat(
                 blnAddAnd ? " and ((not(" : "((not(",
@@ -769,13 +817,13 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset;
             int intValue = 1;
-            string strForce = intForce.ToString();
+            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
                 object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess), GlobalOptions.InvariantCultureInfo);
             }
             catch (OverflowException) { } // Result is text and not a double
             catch (InvalidCastException) { }
@@ -800,7 +848,7 @@ namespace Chummer
         /// <returns></returns>
         public static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString();
+            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
 
         #region PDF Functions
@@ -817,11 +865,13 @@ namespace Chummer
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
-        /// <param name="strSource">Book coode and page number to open.</param>
+        /// <param name="strSource">Book code and page number to open.</param>
         /// <param name="strPDFParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
         /// <param name="strPDFAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
         public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
         {
+            if (string.IsNullOrEmpty(strSource))
+                return;
             if (string.IsNullOrEmpty(strPDFParamaters))
                 strPDFParamaters = GlobalOptions.PDFParameters;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
@@ -831,18 +881,18 @@ namespace Chummer
             if (string.IsNullOrEmpty(strPDFAppPath))
                 strPDFAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPDFAppPath))
+            if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpaceCharacter))
                 astrSourceParts = strSource.Split(strSpaceCharacter[0]);
-            else if (strSource.StartsWith("SR5"))
+            else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
             {
                 astrSourceParts = new [] { "SR5", strSource.Substring(3) };
             }
-            else if (strSource.StartsWith("R5"))
+            else if (strSource.StartsWith("R5", StringComparison.Ordinal))
             {
                 astrSourceParts = new [] { "R5", strSource.Substring(3) };
             }
@@ -868,7 +918,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
@@ -883,7 +933,7 @@ namespace Chummer
             intPage += objBookInfo.Offset;
 
             string strParams = strPDFParamaters;
-            strParams = strParams.Replace("{page}", intPage.ToString());
+            strParams = strParams.Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo));
             strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
             strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
@@ -902,7 +952,7 @@ namespace Chummer
         /// <returns></returns>
         public static string GetTextFromPDF(string strSource, string strText)
         {
-            if (string.IsNullOrEmpty(strText))
+            if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
             string[] strTemp = strSource.Split(' ');
@@ -916,7 +966,7 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
@@ -950,7 +1000,7 @@ namespace Chummer
             // Loop through each page, starting at the listed page + offset.
             for (; intPage <= reader.NumberOfPages; ++intPage)
             {
-                // failsafe if something goes wrong, I guess no descrition takes more than two full pages?
+                // failsafe if something goes wrong, I guess no description takes more than two full pages?
                 if (intMaxPagesToRead-- == 0)
                     break;
 
@@ -965,7 +1015,7 @@ namespace Chummer
 
                 for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
                 {
-                    // failsafe for languages that doesn't have case distincion (chinese, japanese, etc)
+                    // failsafe for languages that don't have case distinction (chinese, japanese, etc)
                     // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
                     if (intExtraAllCapsInfo > 10)
                         break;
@@ -1011,7 +1061,7 @@ namespace Chummer
                                     blnTitleWithColon = true;
                                 }
                             }
-                            else // if it is not bigger it is the same lenght
+                            else // if it is not bigger it is the same length
                             {
                                 // this must be an upper case title
                                 if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
@@ -1030,7 +1080,6 @@ namespace Chummer
                                     lstStringFromPDF.RemoveRange(i + 1, intTitleExtraLines);
                                 }
                             }
-
                         }
                     }
                     else // we already found our title, just go to the end of the block
@@ -1110,6 +1159,78 @@ namespace Chummer
                 return strResultContent;
             }
             return string.Empty;
+        }
+        #endregion
+
+        #region Timescale
+        public enum Timescale
+        {
+            Instant = 0,
+            Seconds = 1,
+            CombatTurns = 2,
+            Minutes = 3,
+            Hours = 4,
+            Days = 5
+        }
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static Timescale ConvertStringToTimescale(string strValue)
+        {
+            switch (strValue)
+            {
+                case "Instant":
+                    return Timescale.Instant;
+                case "Seconds":
+                    return Timescale.Seconds;
+                case "CombatTurns":
+                    return Timescale.CombatTurns;
+                case "Minutes":
+                    return Timescale.Minutes;
+                case "Hours":
+                    return Timescale.Hours;
+                case "Days":
+                    return Timescale.Days;
+                default:
+                    return Timescale.Instant;
+            }
+        }
+
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
+        public static string GetTimescaleString(Timescale strValue, bool blnSingle)
+        {
+            switch (strValue)
+            {
+                case Timescale.Seconds when blnSingle:
+                    return LanguageManager.GetString("String_Second");
+                case Timescale.Seconds:
+                    return LanguageManager.GetString("String_Seconds");
+                case Timescale.CombatTurns when blnSingle:
+                    return LanguageManager.GetString("String_CombatTurn");
+                case Timescale.CombatTurns:
+                    return LanguageManager.GetString("String_CombatTurns");
+                case Timescale.Minutes when blnSingle:
+                    return LanguageManager.GetString("String_Minute");
+                case Timescale.Minutes:
+                    return LanguageManager.GetString("String_Minutes");
+                case Timescale.Hours when blnSingle:
+                    return LanguageManager.GetString("String_Hour");
+                case Timescale.Hours:
+                    return LanguageManager.GetString("String_Hours");
+                case Timescale.Days when blnSingle:
+                    return LanguageManager.GetString("String_Day");
+                case Timescale.Days:
+                    return LanguageManager.GetString("String_Days");
+                case Timescale.Instant:
+                    return LanguageManager.GetString("String_Immediate");
+                default:
+                    return LanguageManager.GetString("String_Immediate");
+            }
         }
         #endregion
     }

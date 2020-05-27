@@ -233,7 +233,7 @@ namespace Chummer.UI.Table
                 _objSortPausedSender = null;
 
                 // prevent sort for focus loss when disposing
-                if (_lstItems != null && _lstPermutation.Count == _lstItems.Count) 
+                if (_lstItems != null && _lstPermutation.Count == _lstItems.Count)
                 {
                     Sort();
                 }
@@ -251,7 +251,7 @@ namespace Chummer.UI.Table
             else
             {
                 Comparison<T> comparison = _sortColumn.CreateSorter();
-                
+
                 _lstPermutation.Sort((i1, i2) => comparison(_lstItems[i1], _lstItems[i2]));
                 if (_eSortType == SortOrder.Descending)
                 {
@@ -452,7 +452,7 @@ namespace Chummer.UI.Table
                 }
             }
         }
- 
+
 
         private void ItemsChanged(object sender, ListChangedEventArgs e)
         {
@@ -658,18 +658,8 @@ namespace Chummer.UI.Table
 
         public TableColumnCollection<T> Columns => _columns;
 
-        public override LayoutEngine LayoutEngine
-        {
-            get
-            {
-                if (_layoutEngine == null)
-                {
-                    _layoutEngine = new TableLayoutEngine(this);
-                }
-                return _layoutEngine;
-            }
-        }
-        
+        public override LayoutEngine LayoutEngine => _layoutEngine = _layoutEngine ?? new TableLayoutEngine(this);
+
         public SortOrder SortOrder
         {
             get => _eSortType;

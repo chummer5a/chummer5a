@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema metamagic.xsd">
-  <version>0</version>
+
   <metamagics>
     <!-- Region SR5 -->
     <metamagic>
@@ -65,6 +65,8 @@
       <required>
         <oneof>
           <art>Flexible Signature</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SR5</source>
@@ -78,6 +80,8 @@
       <required>
         <oneof>
           <art>Masking</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SR5</source>
@@ -139,6 +143,32 @@
     </metamagic>
     <!-- End Region -->
     <!-- Region Street Grimoire -->
+    <metamagic>
+      <id>215dbdc3-b4f5-4ca6-98b1-5d6ea5eb5fda</id>
+      <name>Taint</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <metamagic>Paradigm Shift: Toxic</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>87</page>
+    </metamagic>
+    <metamagic>
+      <id>920770d1-a705-4fc9-8814-f3a4a455e8fb</id>
+      <name>Corruption</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <metamagic>Paradigm Shift: Toxic</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>87</page>
+    </metamagic>
     <metamagic>
       <id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
       <name>Sympathetic Linking</name>
@@ -217,9 +247,13 @@
       <magician>True</magician>
       <required>
         <allof>
-          <art>Masking</art>
           <metamagic>Masking</metamagic>
         </allof>
+        <oneof>
+          <art>Masking</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
       </required>
       <source>SG</source>
       <page>149</page>
@@ -245,6 +279,8 @@
       <required>
         <oneof>
           <art>Flexible Signature</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SG</source>
@@ -314,6 +350,8 @@
       <required>
         <oneof>
           <art>Advanced Ritual Casting</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SG</source>
@@ -377,9 +415,9 @@
       <adept>True</adept>
       <magician>False</magician>
       <required>
-        <allof>
+        <oneof>
           <metamagic>Adept Centering</metamagic>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>156</page>
@@ -794,6 +832,25 @@
       <page>165</page>
     </metamagic>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Hard Targets -->
+    <metamagic>
+      <id>7b297dad-1111-4819-8c7a-ecdb95479011</id>
+      <name>Great Form Possession</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <spell>Summon Great Form Spirit</spell>
+        </allof>
+        <oneof>
+          <metamagic>Channeling</metamagic>
+          <traditionspiritform>Possession</traditionspiritform>
+        </oneof>
+      </required>
+      <source>HT</source>
+      <page>134</page>
+    </metamagic>
     <!-- End Region -->
   </metamagics>
   <arts>

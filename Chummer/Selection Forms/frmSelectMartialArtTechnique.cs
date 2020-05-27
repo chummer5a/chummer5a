@@ -42,23 +42,39 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
-            _objMartialArt = objMartialArt;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.
             _xmlBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
             // Populate the Martial Art Tecnnique list.
             XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
-            if (xmlMartialArtNode != null && !xmlMartialArtNode.NodeExists("alltechniques"))
+            if (xmlMartialArtNode != null)
             {
-                foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.Select("techniques/technique"))
+                if (!xmlMartialArtNode.NodeExists("alltechniques"))
                 {
-                    string strTechniqueName = xmlTechnique.Value;
-                    if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
+                    foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.Select("techniques/technique"))
                     {
-                        _setAllowedTechniques.Add(strTechniqueName);
+                        string strTechniqueName = xmlTechnique.Value;
+                        if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
+                        {
+                            _setAllowedTechniques.Add(strTechniqueName);
+                        }
+                    }
+                }
+                else if (_objMartialArt.Techniques.Count == 0)
+                {
+                    //TODO: Support for allowing all techniques  > 0.
+                    string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+                    XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
+
+                    foreach (XPathNavigator xmlTechnique in objTechniquesList)
+                    {
+                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null) continue;
+                            _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
                     }
                 }
             }
+
         }
 
         private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
@@ -102,11 +118,11 @@ namespace Chummer
 
                 if (xmlTechnique != null)
                 {
-                    string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                    string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
@@ -172,7 +188,7 @@ namespace Chummer
                 string strId = xmlTechnique.SelectSingleNode("id")?.Value;
                 if (!string.IsNullOrEmpty(strId))
                 {
-                    string strTechniqueName = xmlTechnique.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strTechniqueName = xmlTechnique.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 
                     if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
                         continue;

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ namespace Chummer
             foreach (string strAbbrev in lstAttributeAbbrevs)
             {
                 string strAttributeDisplayName = strAbbrev == "MAGAdept"
-                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
-                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short", GlobalOptions.Language);
+                    ? LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ')'
+                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short");
                 _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
             }
 

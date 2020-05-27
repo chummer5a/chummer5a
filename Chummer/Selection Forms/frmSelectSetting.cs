@@ -40,17 +40,16 @@ namespace Chummer
         {
             // Build the list of XML files found in the settings directory.
             List<ListItem> lstSettings = new List<ListItem>();
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
             {
                 // Load the file so we can get the Setting name.
-                XmlDocument objXmlDocument = new XmlDocument();
+                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                    {
-                        objXmlDocument.Load(objStreamReader);
-                    }
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -61,7 +60,7 @@ namespace Chummer
                     continue;
                 }
 
-                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown")));
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
@@ -87,7 +86,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-        
+
         #region Properties
         /// <summary>
         /// Settings file that was selected in the dialogue.

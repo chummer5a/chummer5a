@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace Chummer
 {
     public sealed partial class frmChummerMain
@@ -16,6 +18,10 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _frmRoller?.Dispose();
+                _frmUpdate?.Dispose();
+                _workerVersionUpdateChecker?.Dispose();
+                _mascotChummy?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -27,6 +33,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmChummerMain));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,6 +78,7 @@ namespace Chummer
             this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuToolsTranslator = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuHeroLabImporter = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,6 +99,12 @@ namespace Chummer
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tabForms = new System.Windows.Forms.TabControl();
+            this.mnuProcessFile = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsSave = new ToolStripMenuItem();
+            this.tsSaveAs = new ToolStripMenuItem();
+            this.tsClose = new ToolStripMenuItem();
+            this.tsPrint = new ToolStripMenuItem();
+            this.tsExport = new ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -158,7 +172,7 @@ namespace Chummer
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.newToolStripMenuItem.Tag = "Menu_Main_NewCharater";
+            this.newToolStripMenuItem.Tag = "Menu_Main_NewCharacter";
             this.newToolStripMenuItem.Text = "&New Character";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
             // 
@@ -451,7 +465,8 @@ namespace Chummer
             this.mnuRestart,
             this.mnuToolsOmae,
             this.toolStripSeparator6,
-            this.mnuToolsTranslator});
+            this.mnuToolsTranslator,
+            this.mnuHeroLabImporter});
             this.toolsMenu.Name = "toolsMenu";
             this.toolsMenu.Size = new System.Drawing.Size(47, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -519,6 +534,15 @@ namespace Chummer
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
+            // 
+            // mnuHeroLabImporter
+            // 
+            this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
+            this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
+            this.mnuHeroLabImporter.Text = "Hero Lab Importer";
+            this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
             // 
             // windowsMenu
             // 
@@ -640,7 +664,7 @@ namespace Chummer
             this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.newToolStripButton.Tag = "Menu_Main_NewCharater";
+            this.newToolStripButton.Tag = "Menu_Main_NewCharacter";
             this.newToolStripButton.Text = "New";
             this.newToolStripButton.Click += new System.EventHandler(this.ShowNewForm);
             // 
@@ -717,13 +741,87 @@ namespace Chummer
             this.tabForms.TabIndex = 3;
             this.tabForms.Visible = false;
             this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
+            this.tabForms.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tabForms_MouseClick);
+            // 
+            // mnuProcessFile
+            // 
+            this.mnuProcessFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsSave,
+            this.tsSaveAs,
+            this.toolStripSeparator1,
+            this.tsClose,
+            this.toolStripSeparator2,
+            this.tsPrint});
+            this.mnuProcessFile.Name = "mnuProcessFile";
+            this.mnuProcessFile.Size = new System.Drawing.Size(37, 20);
+            this.mnuProcessFile.Tag = "Menu_Main_File";
+            this.mnuProcessFile.Text = "&File";
+            // 
+            // tsSave
+            // 
+            this.tsSave.Image = global::Chummer.Properties.Resources.disk;
+            this.tsSave.ImageTransparentColor = System.Drawing.Color.Black;
+            this.tsSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.tsSave.MergeIndex = 3;
+            this.tsSave.Name = "tsSave";
+            this.tsSave.Size = new System.Drawing.Size(148, 22);
+            this.tsSave.Tag = "Menu_FileSave";
+            this.tsSave.Text = "&Save";
+            this.tsSave.Click += new System.EventHandler(this.tsSave_Click);
+            // 
+            // tsSaveAs
+            // 
+            this.tsSaveAs.Image = global::Chummer.Properties.Resources.disk;
+            this.tsSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.tsSaveAs.MergeIndex = 4;
+            this.tsSaveAs.Name = "tsSaveAs";
+            this.tsSaveAs.Size = new System.Drawing.Size(148, 22);
+            this.tsSaveAs.Tag = "Menu_FileSaveAs";
+            this.tsSaveAs.Text = "Save &As";
+            this.tsSaveAs.Click += new System.EventHandler(this.tsSaveAs_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator1.MergeIndex = 5;
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
+            // 
+            // tsClose
+            // 
+            this.tsClose.Image = global::Chummer.Properties.Resources.cancel;
+            this.tsClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.tsClose.MergeIndex = 6;
+            this.tsClose.Name = "tsClose";
+            this.tsClose.Size = new System.Drawing.Size(148, 22);
+            this.tsClose.Tag = "Menu_FileClose";
+            this.tsClose.Text = "&Close";
+            this.tsClose.Click += new System.EventHandler(this.tsClose_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator2.MergeIndex = 7;
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
+            // 
+            // tsPrint
+            // 
+            this.tsPrint.Image = global::Chummer.Properties.Resources.printer;
+            this.tsPrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.tsPrint.MergeIndex = 8;
+            this.tsPrint.Name = "tsPrint";
+            this.tsPrint.Size = new System.Drawing.Size(148, 22);
+            this.tsPrint.Tag = "Menu_FilePrint";
+            this.tsPrint.Text = "&Print";
+            this.tsPrint.Click += new System.EventHandler(this.tsPrint_Click);
             // 
             // frmChummerMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 729);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
@@ -813,6 +911,13 @@ namespace Chummer
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsTranslator;
         private System.Windows.Forms.ToolStripMenuItem mnuChummerDiscord;
+        private System.Windows.Forms.ToolStripMenuItem mnuHeroLabImporter;
+        private System.Windows.Forms.ContextMenuStrip mnuProcessFile;
+        private ToolStripItem tsSave;
+        private ToolStripItem tsSaveAs;
+        private ToolStripItem tsClose;
+        private ToolStripItem tsPrint;
+        private ToolStripItem tsExport;
     }
 }
 

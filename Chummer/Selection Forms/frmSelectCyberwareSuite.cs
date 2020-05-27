@@ -48,8 +48,8 @@ namespace Chummer
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.GetString("Title_SelectBiowareSuite", GlobalOptions.Language);
-                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite", GlobalOptions.Language);
+                Text = LanguageManager.GetString("Title_SelectBiowareSuite");
+                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite");
             }
 
             _objCharacter = objCharacter;
@@ -133,18 +133,18 @@ namespace Chummer
 
             List<Cyberware> lstSuiteCyberwares = new List<Cyberware>();
             ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
-            StringBuilder objCyberwareLabelString = new StringBuilder();
+            StringBuilder sbdCyberwareLabelString = new StringBuilder();
             foreach (Cyberware objCyberware in lstSuiteCyberwares)
             {
-                WriteList(objCyberwareLabelString, objCyberware, 0);
+                WriteList(sbdCyberwareLabelString, objCyberware, 0);
                 decTotalCost += objCyberware.TotalCost;
-                decTotalESS += objCyberware.CalculatedESS();
+                decTotalESS += objCyberware.CalculatedESS;
             }
 
-            lblCyberware.Text = objCyberwareLabelString.ToString();
+            lblCyberware.Text = sbdCyberwareLabelString.ToString();
             lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
             lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            lblGrade.Text = objGrade.DisplayName(GlobalOptions.Language);
+            lblGrade.Text = objGrade.CurrentDisplayName;
             _decCost = decTotalCost;
         }
         #endregion
@@ -239,7 +239,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<Vehicle> lstVehicles = new List<Vehicle>();
                         Cyberware objCyberware = new Cyberware(_objCharacter);
-                        objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
+                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
                         objCyberware.Suite = true;
 
                         lstChildren.Add(objCyberware);
@@ -259,7 +259,7 @@ namespace Chummer
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
-            objCyberwareLabelString.AppendLine(objCyberware.DisplayName(GlobalOptions.Language));
+            objCyberwareLabelString.AppendLine(objCyberware.CurrentDisplayName);
 
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);

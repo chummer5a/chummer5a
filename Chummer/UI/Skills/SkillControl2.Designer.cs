@@ -140,7 +140,6 @@ namespace Chummer.UI.Skills
             this.cboSpec.Size = new System.Drawing.Size(402, 21);
             this.cboSpec.Sorted = true;
             this.cboSpec.TabIndex = 17;
-            this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
             // 
             // chkKarma
             // 
@@ -251,6 +250,8 @@ namespace Chummer.UI.Skills
             this.cmsSkillLabel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
