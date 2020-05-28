@@ -57,7 +57,7 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Weapon information.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("weapons.xml");
             _xmlBaseChummerNode = objXmlDocument.GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(objXmlDocument);
         }
@@ -556,8 +556,8 @@ namespace Chummer
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
         /// <summary>

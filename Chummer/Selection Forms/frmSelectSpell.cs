@@ -53,7 +53,7 @@ namespace Chummer
             chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell"));
 
             // Load the Spells information.
-            _xmlBaseSpellDataNode = XmlManager.Load("spells.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseSpellDataNode = _objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectSpell_Load(object sender, EventArgs e)
@@ -743,8 +743,8 @@ namespace Chummer
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter +
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter +
                                  LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             _blnRefresh = false;

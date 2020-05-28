@@ -55,8 +55,8 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
-            _objXmlDocument = XmlManager.Load("armor.xml", objCharacter.Options.CustomDataDictionary);
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
+            _objXmlDocument = objCharacter.LoadData("armor.xml");
+            _setBlackMarketMaps = objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)
@@ -426,7 +426,7 @@ namespace Chummer
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= Environment.NewLine.Length;
-                            SourceString strSource = new SourceString(objArmor.Source, objArmor.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+                            SourceString strSource = new SourceString(objArmor.Source, objArmor.DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
                             NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 
                             tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail, strAccessories.ToString(), strSource, strCost);

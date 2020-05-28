@@ -212,7 +212,8 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, CharacterObject);
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -234,7 +235,7 @@ namespace Chummer
                     int intPos = strPowerName.IndexOf('(');
                     if (intPos != -1)
                         strPowerName = strPowerName.Substring(0, intPos - 1);
-                    XmlDocument objXmlDocument = XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary);
+                    XmlDocument objXmlDocument = CharacterObject.LoadData("powers.xml");
                     XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                     if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
@@ -253,7 +254,7 @@ namespace Chummer
                 int intPos = strPowerName.IndexOf('(');
                 if (intPos != -1)
                     strPowerName = strPowerName.Substring(0, intPos - 1);
-                _strAdeptWayDiscount = XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
+                _strAdeptWayDiscount = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
@@ -276,7 +277,7 @@ namespace Chummer
             }
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {
-                XmlNode objXmlPower = XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                XmlNode objXmlPower = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
                 {
                     if (int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
@@ -327,13 +328,13 @@ namespace Chummer
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, CharacterObject, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
             objWriter.WriteElementString("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
             objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayActionMethod(strLanguageToPrint));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, CharacterObject, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -484,7 +485,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, CharacterObject, strLanguage) + ')';
             }
 
             return strReturn;
@@ -1081,11 +1082,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/powers/power[name = \"{Name}\"]")
-                    : XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/powers/power[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = CharacterObject.LoadData("powers.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/powers/power[name = \"{Name}\"]"
+                        : $"/chummer/powers/power[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

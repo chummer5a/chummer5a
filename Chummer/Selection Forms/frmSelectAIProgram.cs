@@ -49,7 +49,7 @@ namespace Chummer
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
-            _xmlBaseChummerNode = XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").CreateNavigator().SelectSingleNode("/chummer");
             if (!_objCharacter.IsCritter) return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNode("optionalaiprograms");
         }
@@ -221,8 +221,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPage))
                         {
                             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + " " + strPage);
+                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + " " + strPage);
                         }
                         else
                         {

@@ -40,7 +40,7 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _xmlStoryDocumentBaseNode = XmlManager.Load("stories.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").CreateNavigator().SelectSingleNode("/chummer");
             _lstStoryModules.CollectionChanged += LstStoryModulesOnCollectionChanged;
         }
 

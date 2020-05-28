@@ -91,7 +91,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Specific;
 
-            return LanguageManager.TranslateExtra(Specific, strLanguage);
+            return LanguageManager.TranslateExtra(Specific, CharacterObject, strLanguage);
         }
 
         public override string DisplaySpecialization(string strLanguage)

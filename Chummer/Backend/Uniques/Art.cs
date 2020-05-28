@@ -161,7 +161,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
             if (_objCharacter.Options.PrintNotes)
@@ -176,7 +176,8 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -314,11 +315,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/arts/art[name = \"{Name}\"]")
-                    : XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/arts/art[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = _objCharacter.LoadData("metamagic.xml", strLanguage)
+                        .SelectSingleNode(SourceID == Guid.Empty
+                            ? $"/chummer/arts/art[name = \"{Name}\"]"
+                            : $"/chummer/arts/art[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

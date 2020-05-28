@@ -222,7 +222,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -237,7 +237,7 @@ namespace Chummer.Backend.Equipment
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -343,7 +343,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
 
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("weapons.xml");
 
             // Populate the Range if it differs from the Weapon's Category.
             XmlNode objRangeNode = objXmlWeapon["range"];
@@ -459,7 +459,7 @@ namespace Chummer.Backend.Equipment
                         XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
                         if (xmlGearsNode != null)
                         {
-                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
+                            XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
                             foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
                             {
                                 XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
@@ -538,7 +538,8 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -737,7 +738,7 @@ namespace Chummer.Backend.Equipment
             // Legacy shim
             if (Name.Contains("Osmium Mace (STR"))
             {
-                XmlNode objNewOsmiumMaceNode = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
+                XmlNode objNewOsmiumMaceNode = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
                 if (objNewOsmiumMaceNode != null)
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
@@ -1038,7 +1039,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             }
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
             objWriter.WriteElementString("location", Location?.DisplayName());
@@ -1330,7 +1331,9 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadData("weapons.xml", strLanguage)
+                       .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText
+                   ?? Category;
         }
 
         /// <summary>
@@ -1344,7 +1347,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;
 
-            return XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
+            return _objCharacter.LoadData("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
         }
 
         /// <summary>
@@ -1356,7 +1359,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoName;
 
-            return XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/gears/gear[name = " + AmmoName.CleanXPath() + "]/@translate")?.InnerText ?? AmmoName;
+            return _objCharacter.LoadData("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = " + AmmoName.CleanXPath() + "]/@translate")?.InnerText ?? AmmoName;
         }
 
         /// <summary>
@@ -1926,11 +1929,10 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/weapons/weapon[name = \"{Name}\"]")
-                    : XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/weapons/weapon[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = _objCharacter.LoadData("weapons.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/weapons/weapon[name = \"{Name}\"]"
+                        : $"/chummer/weapons/weapon[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -3702,7 +3704,7 @@ namespace Chummer.Backend.Equipment
                 strRange = Category;
             if (!string.IsNullOrWhiteSpace(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
+                XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml",  strLanguage);
                 XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
                 XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
                 if (xmlTranslateNode != null)
@@ -3711,7 +3713,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
+                    objXmlDocument = _objCharacter.LoadData("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
                     xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
                     if (xmlTranslateNode != null)
@@ -3731,7 +3733,7 @@ namespace Chummer.Backend.Equipment
             string strRange = AlternateRange.Trim();
             if (!string.IsNullOrEmpty(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
+                XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml", strLanguage);
                 XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
                 XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
                 if (xmlTranslateNode != null)
@@ -3740,7 +3742,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
+                    objXmlDocument = _objCharacter.LoadData("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
                     xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
                     if (xmlTranslateNode != null)
@@ -3768,7 +3770,7 @@ namespace Chummer.Backend.Equipment
                 strRangeCategory = Range;
 
 
-            XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml");
             XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRangeCategory + "\"]");
             if (objXmlCategoryNode?[strFindRange] == null)
             {
@@ -3918,7 +3920,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(range))
                 return string.Empty;
-            int i = Convert.ToInt32(XmlManager.Load("ranges.xml", _objCharacter.Options.CustomDataDictionary)
+            int i = Convert.ToInt32(_objCharacter.LoadData("ranges.xml")
                 .SelectSingleNode($"chummer/modifiers/{range.ToLowerInvariant()}")
                 ?.InnerText, GlobalOptions.InvariantCultureInfo);
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
@@ -4244,7 +4246,7 @@ namespace Chummer.Backend.Equipment
                 string spec = GetNode()?["category"]?.Attributes["gunneryspec"]?.InnerText;
                 if (string.IsNullOrEmpty(spec))
                 {
-                    spec = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary)
+                    spec = _objCharacter.LoadData("weapons.xml")
                                .SelectSingleNode($"/chummer/categories/category[. = \"{Category}\"]")
                                ?.Attributes?["gunneryspec"]?.InnerText ?? "None";
                 }
@@ -5567,7 +5569,7 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlWeaponImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
                 XmlNode xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strOriginalName + "\"]");
                 if (xmlWeaponDataNode == null)
                 {
@@ -5624,7 +5626,7 @@ namespace Chummer.Backend.Equipment
                         string strWeaponAccessoryName = xmlWeaponImportNode.Attributes["name"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponAccessoryName))
                         {
-                            XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
+                            XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
                             XmlNode xmlWeaponAccessoryData = null;
                             foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, \"" + strWeaponAccessoryName + "\")]"))
                             {

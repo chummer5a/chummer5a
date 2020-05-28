@@ -47,14 +47,14 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile, _objCharacter.Options.CustomDataDictionary);
+            XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);
             _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlSkillsDocumentKnowledgeSkillsNode = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/knowledgeskills");
-            XmlDocument xmlQualityDoc = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
+            _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
+            XmlDocument xmlQualityDoc = _objCharacter.LoadData("qualities.xml");
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers");
+            _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
         private void frmMetatype_Load(object sender, EventArgs e)
@@ -283,7 +283,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect));
+                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect, _objCharacter));
                             sbdQualities.Append(')');
                         }
                     }
@@ -355,7 +355,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect));
+                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect, _objCharacter));
                             sbdQualities.Append(')');
                         }
                     }

@@ -45,7 +45,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
             // Load the Lifestyles information.
-            _objXmlDocument = XmlManager.Load("lifestyles.xml", objCharacter.Options.CustomDataDictionary);
+            _objXmlDocument = objCharacter.LoadData("lifestyles.xml");
         }
 
         private void frmSelectLifestyle_Load(object sender, EventArgs e)
@@ -201,8 +201,8 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
             }
             else
             {
@@ -305,8 +305,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
                         string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                        lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                        lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                        lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                        lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                     }
                     else
                     {

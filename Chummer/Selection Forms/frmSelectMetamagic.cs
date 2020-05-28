@@ -71,12 +71,12 @@ namespace Chummer
             {
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
-                    _objXmlDocument = XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary);
+                    _objXmlDocument = _objCharacter.LoadData("metamagic.xml");
                     _strType = LanguageManager.GetString("String_Metamagic");
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
-                    _objXmlDocument = XmlManager.Load("echoes.xml", _objCharacter.Options.CustomDataDictionary);
+                    _objXmlDocument = _objCharacter.LoadData("echoes.xml");
                     _strType = LanguageManager.GetString("String_Echo");
                     break;
             }
@@ -107,8 +107,8 @@ namespace Chummer
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
                     string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 }
                 else
                 {

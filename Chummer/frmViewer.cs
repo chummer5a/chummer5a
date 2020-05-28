@@ -106,7 +106,7 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            cboLanguage  = PopulateLanguageList(cboLanguage, _strSelectedSheet);
+            LanguageManager.PopulateSheetLanguageList(cboLanguage, _strSelectedSheet, _lstCharacters);
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
@@ -312,7 +312,7 @@ namespace Chummer
                             return;
                         }
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
+                        objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
 #else
                         objCharacter.PrintToStream(objWriter, _objPrintCulture, _strPrintLanguage);
 #endif
@@ -553,26 +553,6 @@ namespace Chummer
             }
         }
 
-        private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
-        {
-            List<ListItem> lstSheets = new List<ListItem>();
-
-            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
-            {
-                if (lstSheetNodes != null)
-                {
-                    foreach (XmlNode xmlSheet in lstSheetNodes)
-                    {
-                        lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, xmlSheet["filename"]?.InnerText ?? string.Empty) : xmlSheet["filename"]?.InnerText ?? string.Empty,
-                            xmlSheet["name"]?.InnerText ?? string.Empty));
-                    }
-                }
-            }
-
-            return lstSheets;
-        }
-
         private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
             List<ListItem> lstItems = new List<ListItem>();
@@ -602,7 +582,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
+            IList<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);
             if (GlobalOptions.OmaeEnabled)
             {
                 foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
@@ -614,82 +594,6 @@ namespace Chummer
             cboXSLT.DisplayMember = "Name";
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
-        }
-
-        public static ElasticComboBox PopulateLanguageList(ElasticComboBox myCboLanguage, string myStrSelectedSheet)
-        {
-            if (myCboLanguage == null)
-                throw new ArgumentNullException(nameof(myCboLanguage));
-            string strDefaultSheetLanguage = GlobalOptions.Language;
-            int? intLastIndexDirectorySeparator = myStrSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
-            if (intLastIndexDirectorySeparator.HasValue && (intLastIndexDirectorySeparator != -1))
-            {
-                string strSheetLanguage = myStrSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
-                if (strSheetLanguage.Length == 5)
-                    strDefaultSheetLanguage = strSheetLanguage;
-            }
-
-            myCboLanguage.BeginUpdate();
-            myCboLanguage.ValueMember = "Value";
-            myCboLanguage.DisplayMember = "Name";
-            myCboLanguage.DataSource = LstLanguages;
-            myCboLanguage.SelectedValue = strDefaultSheetLanguage;
-            if (myCboLanguage.SelectedIndex == -1)
-                myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
-            myCboLanguage.EndUpdate();
-            return myCboLanguage;
-        }
-
-        private static List<ListItem> _lstLanguages;
-
-        public static List<ListItem> LstLanguages
-        {
-            get
-            {
-                if (_lstLanguages == null)
-                {
-                    _lstLanguages = new List<ListItem>();
-                    string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-                    string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
-                    foreach (string filePath in languageFilePaths)
-                    {
-                        XmlDocument xmlDocument = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
-
-                        try
-                        {
-                            using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
-                                    xmlDocument.Load(objXmlReader);
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (XmlException)
-                        {
-                            continue;
-                        }
-
-                        XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
-
-                        if (node == null)
-                            continue;
-
-                        string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                        if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
-                        {
-                            _lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
-                        }
-                    }
-                    _lstLanguages.Sort(CompareListItems.CompareNames);
-                }
-
-                return _lstLanguages;
-            }
         }
 
         /// <summary>

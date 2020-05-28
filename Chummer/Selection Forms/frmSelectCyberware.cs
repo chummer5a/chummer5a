@@ -80,13 +80,13 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Cyberware:
                     _objMode = Mode.Cyberware;
-                    _xmlBaseCyberwareDataNode = XmlManager.Load("cyberware.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+                    _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("cyberware.xml").CreateNavigator().SelectSingleNode("/chummer");
                     _strNodeXPath = "cyberwares/cyberware";
                     Tag = "Title_SelectCyberware";
                     break;
                 case Improvement.ImprovementSource.Bioware:
                     _objMode = Mode.Bioware;
-                    _xmlBaseCyberwareDataNode = XmlManager.Load("bioware.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+                    _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("bioware.xml").CreateNavigator().SelectSingleNode("/chummer");
                     _strNodeXPath = "biowares/bioware";
                     Tag = "Title_SelectCyberware_Bioware";
                     break;
@@ -325,8 +325,8 @@ namespace Chummer
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;

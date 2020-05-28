@@ -41,7 +41,7 @@ namespace Chummer
         public string GetStory(string strLanguage)
         {
             //Little bit of data required for following steps
-            XmlDocument xdoc = XmlManager.Load("lifemodules.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
+            XmlDocument xdoc = _objCharacter.LoadData("lifemodules.xml", strLanguage);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
             List<XmlNode> modules = new List<XmlNode>();

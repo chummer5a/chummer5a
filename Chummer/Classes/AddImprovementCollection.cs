@@ -484,7 +484,7 @@ namespace Chummer.Classes
             {
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
-                    XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+                    _objCharacter.LoadDataXPath("traditions.xml").CreateNavigator().SelectSingleNode("/chummer");
                 List<ListItem> lstTraditions = new List<ListItem>();
                 if (xmlTraditionsBaseChummerNode != null)
                 {
@@ -556,7 +556,7 @@ namespace Chummer.Classes
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
-            using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
+            using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter)
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
@@ -794,7 +794,7 @@ namespace Chummer.Classes
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
-            frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
+            frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter)
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
@@ -1520,7 +1520,7 @@ namespace Chummer.Classes
                 }
 
                 // Open the Spells XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Load("spells.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument objXmlDocument = _objCharacter.LoadData("spells.xml");
 
                 node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]") ??
                        objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + frmPickSpell.SelectedSpell + "\"]");
@@ -1579,7 +1579,7 @@ namespace Chummer.Classes
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Calling CreateImprovement");
-            XmlDocument objXmlSpellDocument = XmlManager.Load("spells.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlSpellDocument = _objCharacter.LoadData("spells.xml");
 
             XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + bonusNode.InnerText + "\"]");
 
@@ -1650,7 +1650,7 @@ namespace Chummer.Classes
             }
 
             // Open the ComplexForms XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("complexforms.xml");
 
             XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + strSelectedComplexForm + "\"]") ??
                            objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + strSelectedComplexForm + "\"]");
@@ -1688,7 +1688,7 @@ namespace Chummer.Classes
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Calling CreateImprovement");
-            XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlComplexFormDocument = _objCharacter.LoadData("complexforms.xml");
 
             XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + bonusNode.InnerText + "\"]");
 
@@ -1738,7 +1738,7 @@ namespace Chummer.Classes
             {
                 string strName = xmlGearNode["name"]?.InnerText ?? string.Empty;
                 string strCategory = xmlGearNode["category"]?.InnerText ?? string.Empty;
-                XmlNode xmlGearDataNode = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
+                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
 
                 if (xmlGearDataNode == null)
                     throw new AbortedException();
@@ -1808,7 +1808,7 @@ namespace Chummer.Classes
 
             Log.Info("Adding Weapon");
             string strName = bonusNode["name"]?.InnerText ?? throw new AbortedException();
-            XmlNode node = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]") ?? throw new AbortedException();
+            XmlNode node = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]") ?? throw new AbortedException();
 
             // Create the new piece of Gear.
             List<Weapon> lstWeapons = new List<Weapon>();
@@ -1897,7 +1897,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
 
             XmlNode xmlProgram = null;
-            XmlDocument xmlDocument = XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + ForcedValue + "\"]") ??
@@ -1975,7 +1975,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
 
             XmlNode xmlProgram = null;
-            XmlDocument xmlDocument = XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + ForcedValue + "\"]") ??
@@ -2778,7 +2778,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("martialart");
             Log.Info("martialart = " + bonusNode.OuterXml);
-            XmlDocument _objXmlDocument = XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument _objXmlDocument = _objCharacter.LoadData("martialarts.xml");
             XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + bonusNode.InnerText + "\"]");
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
@@ -3694,7 +3694,7 @@ namespace Chummer.Classes
                             foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
                                 string strInnerText = objXmlCategory.InnerText;
-                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText)));
+                                lstGeneralItems.Add(new ListItem(strInnerText, LanguageManager.TranslateExtra(strInnerText, _objCharacter)));
                             }
                         }
 
@@ -3841,7 +3841,7 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = XmlManager.Load("mentors.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
@@ -3882,7 +3882,7 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = XmlManager.Load("paragons.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
+                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + frmPickMentorSpirit.SelectedMentor + "\"]");
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
@@ -4153,7 +4153,7 @@ namespace Chummer.Classes
                     // Check if the character already has this power
                     Log.Info("strSelection = " + strSelection);
                     Power objNewPower = new Power(_objCharacter);
-                    XmlNode objXmlPower = XmlManager.Load("powers.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
+                    XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
                     if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
                         throw new AbortedException();
 
@@ -4235,7 +4235,7 @@ namespace Chummer.Classes
                                     throw new AbortedException();
                                 }
 
-                                objXmlPower = XmlManager.Load("powers.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
+                                objXmlPower = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
                             }
 
                             // If no, add the power and mark it free or give it free levels
@@ -4313,7 +4313,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlSelectedArt = XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/arts/art[name = \"" + bonusNode.InnerText + "\"]");
+            XmlNode objXmlSelectedArt = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[name = \"" + bonusNode.InnerText + "\"]");
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
@@ -4338,7 +4338,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("metamagic.xml");
             XmlNode objXmlSelectedArt;
             XmlNodeList xmlArtList = bonusNode.SelectNodes("art");
             if (xmlArtList?.Count > 0)
@@ -4405,7 +4405,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlSelectedMetamagic = XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + bonusNode.InnerText + "\"]");
+            XmlNode objXmlSelectedMetamagic = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + bonusNode.InnerText + "\"]");
             string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
@@ -4431,7 +4431,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("metamagic.xml");
             string strForceValue = string.Empty;
             XmlNode objXmlSelectedMetamagic;
             XmlNodeList xmlMetamagicList = bonusNode.SelectNodes("metamagic");
@@ -4507,7 +4507,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("echoes.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("echoes.xml");
             XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + bonusNode.InnerText + "\"]");
             string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
@@ -4534,7 +4534,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("echoes.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("echoes.xml");
             string strForceValue = string.Empty;
             XmlNode xmlSelectedEcho;
             XmlNodeList xmlEchoList = bonusNode.SelectNodes("echo");
@@ -5461,7 +5461,7 @@ namespace Chummer.Classes
             Log.Info("selectsprite");
             Log.Info("selectsprite = " + bonusNode.OuterXml);
             List<ListItem> lstCritters = new List<ListItem>();
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("critters.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/metatypes/metatype[contains(category, \"Sprites\")]"))
+            using (XmlNodeList objXmlNodeList = _objCharacter.LoadData("critters.xml").SelectNodes("/chummer/metatypes/metatype[contains(category, \"Sprites\")]"))
                 if (objXmlNodeList != null)
                     foreach (XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -5495,7 +5495,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
-            XmlNodeList nodeList = XmlManager.Load("options.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/blackmarketpipelinecategories/category");
+            XmlNodeList nodeList = _objCharacter.LoadData("options.xml").SelectNodes("/chummer/blackmarketpipelinecategories/category");
             SelectedValue = string.Empty;
             if (nodeList != null)
             {
@@ -5550,7 +5550,7 @@ namespace Chummer.Classes
                 LimitSelection = ForcedValue;
 
             // Display the Select Item window and record the value that was entered.
-            XmlDocument objXmlDocument = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("armor.xml");
             XmlNodeList objXmlNodeList;
             if (!string.IsNullOrEmpty(bonusNode.InnerText))
             {
@@ -5622,7 +5622,7 @@ namespace Chummer.Classes
 
             // Display the Select Item window and record the value that was entered.
             string strCategory = bonusNode["category"]?.InnerText;
-            XmlNodeList objXmlNodeList = XmlManager.Load("cyberware.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes(!string.IsNullOrEmpty(strCategory)
+            XmlNodeList objXmlNodeList = _objCharacter.LoadData("cyberware.xml").SelectNodes(!string.IsNullOrEmpty(strCategory)
             ? $"/chummer/cyberwares/cyberware[(category = '{strCategory}') and ({_objCharacter.Options.BookXPath()})]"
             : $"/chummer/cyberwares/cyberware[({_objCharacter.Options.BookXPath()})]");
 
@@ -5823,7 +5823,7 @@ namespace Chummer.Classes
                 }
 
                 // Display the Select Critter Power window and record which power was selected.
-                using (frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(lstPowerExtraPairs.ToArray())
+                using (frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(_objCharacter, lstPowerExtraPairs.ToArray())
                 {
                     Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower",
                         GlobalOptions.Language)
@@ -5838,7 +5838,7 @@ namespace Chummer.Classes
                     }
 
                     // Record the improvement.
-                    XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary)
+                    XmlNode objXmlPowerNode = _objCharacter.LoadData("critterpowers.xml")
                         .SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
                     CritterPower objPower = new CritterPower(_objCharacter);
                     objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
@@ -5857,7 +5857,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("critterpowers.xml");
             using (XmlNodeList xmlPowerList = bonusNode.SelectNodes("power"))
             {
                 if (xmlPowerList?.Count > 0)
@@ -6019,7 +6019,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
             using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("addquality"))
             {
                 if (xmlQualityList?.Count > 0)
@@ -6069,7 +6069,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
             List<ListItem> lstQualities = new List<ListItem>();
             using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
             {
@@ -6265,7 +6265,7 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Spell window.
-                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
@@ -6303,7 +6303,7 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Spell window.
-                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
@@ -6438,7 +6438,7 @@ namespace Chummer.Classes
             AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
         }
 
-        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
+        private void AddSpiritOrSprite(string strXmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
         {
             if (xmlAllowedSpirits == null)
                 throw new ArgumentNullException(nameof(xmlAllowedSpirits));
@@ -6450,7 +6450,7 @@ namespace Chummer.Classes
             }
 
             List<ListItem> lstSpirits = new List<ListItem>();
-            using (XmlNodeList xmlSpirits = XmlManager.Load(xmlDoc, _objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/spirits/spirit"))
+            using (XmlNodeList xmlSpirits = _objCharacter.LoadData(strXmlDoc).SelectNodes("/chummer/spirits/spirit"))
             {
                 if (xmlSpirits?.Count > 0)
                 {
@@ -6467,7 +6467,7 @@ namespace Chummer.Classes
 
             if (!string.IsNullOrEmpty(strCritterCategory))
             {
-                using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
+                using (XmlNodeList xmlSpirits = _objCharacter.LoadData("critters.xml").SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
                 {
                     if (xmlSpirits?.Count > 0)
                     {
@@ -6669,7 +6669,7 @@ namespace Chummer.Classes
                         foreach (XmlNode objXmlGroup in objXmlGroups)
                         {
                             lstSkills.Add(new ListItem(objXmlGroup.InnerText,
-                                LanguageManager.TranslateExtra(objXmlGroup.InnerText)));
+                                LanguageManager.TranslateExtra(objXmlGroup.InnerText, _objCharacter)));
                         }
                     }
                 }
@@ -7173,12 +7173,12 @@ namespace Chummer.Classes
             Improvement.ImprovementSource eSource;
             if (bonusNode["type"]?.InnerText == "bioware")
             {
-                node = XmlManager.Load("bioware.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/biowares/bioware[name = \"" + bonusNode["name"]?.InnerText + "\"]");
+                node = _objCharacter.LoadData("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = \"" + bonusNode["name"]?.InnerText + "\"]");
                 eSource = Improvement.ImprovementSource.Bioware;
             }
             else
             {
-                node = XmlManager.Load("cyberware.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + bonusNode["name"]?.InnerText + "\"]");
+                node = _objCharacter.LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + bonusNode["name"]?.InnerText + "\"]");
                 eSource = Improvement.ImprovementSource.Cyberware;
             }
 

@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -200,7 +200,7 @@ namespace Chummer.Backend.Equipment
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -288,7 +288,7 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlSelectModesFromCategory = objXmlArmorNode["selectmodsfromcategory"];
                 if (xmlSelectModesFromCategory != null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary);
+                    XmlDocument objXmlDocument = _objCharacter.LoadData("armor.xml");
 
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
@@ -343,7 +343,7 @@ namespace Chummer.Backend.Equipment
             // Add any Armor Mods that come with the Armor.
             if (objXmlArmorNode["mods"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument objXmlArmorDocument = _objCharacter.LoadData("armor.xml");
 
                 XmlNodeList xmlArmorList = objXmlArmorNode.SelectNodes("mods/name");
                 if (xmlArmorList != null)
@@ -396,7 +396,7 @@ namespace Chummer.Backend.Equipment
             // Add any Gear that comes with the Armor.
             if (objXmlArmorNode["gears"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
 
                 XmlNodeList objXmlGearList = objXmlArmorNode["gears"].SelectNodes("usegear");
                 IList<Weapon> lstChildWeapons = new List<Weapon>();
@@ -416,7 +416,7 @@ namespace Chummer.Backend.Equipment
                 lstWeapons?.AddRange(lstChildWeapons);
             }
 
-            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
 
             // More than one Weapon can be added, so loop through all occurrences.
             foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
@@ -665,7 +665,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("armorname", CustomName);
             objWriter.WriteElementString("equipped", Equipped.ToString(GlobalOptions.InvariantCultureInfo));
@@ -683,7 +683,7 @@ namespace Chummer.Backend.Equipment
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("location", Location?.DisplayNameShort());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -735,7 +735,7 @@ namespace Chummer.Backend.Equipment
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -746,7 +746,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadData("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -983,7 +983,8 @@ namespace Chummer.Backend.Equipment
 
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Armor's Sourcebook.
@@ -1537,7 +1538,7 @@ namespace Chummer.Backend.Equipment
             if (Rating > 0)
                 strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
             return strReturn;
         }
 
@@ -1563,11 +1564,10 @@ namespace Chummer.Backend.Equipment
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                    .SelectSingleNode($"/chummer/armors/armor[name = \"{Name}\"]")
-                : XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                    .SelectSingleNode($"/chummer/armors/armor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+            _objCachedMyXmlNode = _objCharacter.LoadData("armor.xml", strLanguage)
+                .SelectSingleNode(SourceID == Guid.Empty
+                    ? $"/chummer/armors/armor[name = \"{Name}\"]"
+                    : $"/chummer/armors/armor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

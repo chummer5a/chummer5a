@@ -49,7 +49,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Quality information.
-            _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").CreateNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 
@@ -188,8 +188,8 @@ namespace Chummer
                 string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

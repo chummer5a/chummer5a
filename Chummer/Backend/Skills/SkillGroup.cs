@@ -535,7 +535,7 @@ namespace Chummer.Backend.Skills
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
-            return XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]/@translate")?.InnerText ?? Name;
+            return _objCharacter.LoadData("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]/@translate")?.InnerText ?? Name;
         }
 
         public string DisplayRating

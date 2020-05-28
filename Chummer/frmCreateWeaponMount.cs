@@ -38,11 +38,11 @@ namespace Chummer
 
 	    public frmCreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
 		{
-            _xmlDoc = XmlManager.Load("vehicles.xml", objCharacter.Options.CustomDataDictionary);
-		    _objVehicle = objVehicle;
+            _objVehicle = objVehicle;
 		    _objMount = objWeaponMount;
 		    _objCharacter = objCharacter;
-			InitializeComponent();
+            _xmlDoc = _objCharacter.LoadData("vehicles.xml");
+            InitializeComponent();
 		}
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
@@ -514,8 +514,8 @@ namespace Chummer
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter +
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter +
                 LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
 	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 	    }
@@ -569,7 +569,7 @@ namespace Chummer
                     break;
                 }
                 blnAddAgain = frmPickVehicleMod.AddAgain;
-                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
                 VehicleMod objMod = new VehicleMod(_objCharacter)

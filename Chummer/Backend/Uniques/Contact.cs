@@ -208,6 +208,34 @@ namespace Chummer
                     return ContactType.Enemy;
             }
         }
+
+        private static Character _objCharacterForCachedContactArchetypes;
+        private static List<ListItem> _lstCachedContactArchetypes;
+
+        public static List<ListItem> ContactArchetypes(Character objCharacter)
+        {
+            if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter && !GlobalOptions.LiveCustomData)
+                return _lstCachedContactArchetypes;
+            _objCharacterForCachedContactArchetypes = objCharacter;
+            _lstCachedContactArchetypes = new List<ListItem> { ListItem.Blank };
+            XmlNode xmlContactsBaseNode = objCharacter.LoadData("contacts.xml").SelectSingleNode("/chummer");
+            if (xmlContactsBaseNode == null)
+                return _lstCachedContactArchetypes;
+            using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+            {
+                if (xmlNodeList == null)
+                    return _lstCachedContactArchetypes;
+                foreach (XmlNode xmlNode in xmlNodeList)
+                {
+                    string strName = xmlNode.InnerText;
+                    _lstCachedContactArchetypes.Add(new ListItem(strName,
+                        xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                }
+            }
+
+            _lstCachedContactArchetypes.Sort(CompareListItems.CompareNames);
+            return _lstCachedContactArchetypes;
+        }
         #endregion
 
         #region Constructor, Save, Load, and Print Methods
@@ -418,13 +446,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Role;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/contacts/contact[text() = \"" + Role + "\"]/@translate")?.InnerText ?? Role;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/contacts/contact[text() = \"" + Role + "\"]/@translate")?.InnerText ?? Role;
         }
 
         public string DisplayRole
         {
             get => DisplayRoleMethod(GlobalOptions.Language);
-            set => Role = LanguageManager.ReverseTranslateExtra(value);
+            set => Role = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -507,7 +535,7 @@ namespace Chummer
                 // Update character information fields.
                 XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, _objCharacter, strLanguage);
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
                 objMetatypeNode = objMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
@@ -515,17 +543,17 @@ namespace Chummer
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
                     ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
-                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
+                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, _objCharacter, strLanguage) + ')';
             }
             else
-                strReturn = LanguageManager.TranslateExtra(strReturn, strLanguage);
+                strReturn = LanguageManager.TranslateExtra(strReturn, _objCharacter, strLanguage);
             return strReturn;
         }
 
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => Metatype = LanguageManager.ReverseTranslateExtra(value);
+            set => Metatype = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -562,13 +590,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Sex;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]/@translate")?.InnerText ?? Sex;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]/@translate")?.InnerText ?? Sex;
         }
 
         public string DisplaySex
         {
             get => DisplaySexMethod(GlobalOptions.Language);
-            set => Sex = LanguageManager.ReverseTranslateExtra(value);
+            set => Sex = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -597,13 +625,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Age;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/ages/age[text() = \"" + Age + "\"]/@translate")?.InnerText ?? Age;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[text() = \"" + Age + "\"]/@translate")?.InnerText ?? Age;
         }
 
         public string DisplayAge
         {
             get => DisplayAgeMethod(GlobalOptions.Language);
-            set => Age = LanguageManager.ReverseTranslateExtra(value);
+            set => Age = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -632,13 +660,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Type;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/types/type[text() = \"" + Type + "\"]/@translate")?.InnerText ?? Type;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[text() = \"" + Type + "\"]/@translate")?.InnerText ?? Type;
         }
 
         public string DisplayType
         {
             get => DisplayTypeMethod(GlobalOptions.Language);
-            set => Type = LanguageManager.ReverseTranslateExtra(value);
+            set => Type = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -662,13 +690,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return PreferredPayment;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = \"" + PreferredPayment + "\"]/@translate")?.InnerText ?? PreferredPayment;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = \"" + PreferredPayment + "\"]/@translate")?.InnerText ?? PreferredPayment;
         }
 
         public string DisplayPreferredPayment
         {
             get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value);
+            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -692,13 +720,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return HobbiesVice;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
         }
 
         public string DisplayHobbiesVice
         {
             get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value);
+            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -722,13 +750,13 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return PersonalLife;
 
-            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/personallives/personallife[text() = \"" + PersonalLife + "\"]/@translate")?.InnerText ?? PersonalLife;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[text() = \"" + PersonalLife + "\"]/@translate")?.InnerText ?? PersonalLife;
         }
 
         public string DisplayPersonalLife
         {
             get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value);
+            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>

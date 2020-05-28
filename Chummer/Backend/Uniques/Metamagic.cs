@@ -110,7 +110,8 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -184,7 +185,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
@@ -357,11 +358,11 @@ namespace Chummer
                     doc = "echoes.xml";
                     path = "echoes/echo";
                 }
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load(doc, _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/{path}[name = \"{Name}\"]")
-                    : XmlManager.Load(doc, _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode(
-                        $"/chummer/{path}[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+
+                _objCachedMyXmlNode = _objCharacter.LoadData(doc, strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/{path}[name = \"{Name}\"]"
+                        : $"/chummer/{path}[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

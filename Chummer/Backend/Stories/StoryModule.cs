@@ -261,7 +261,7 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                 {
-                    return LanguageManager.ReverseTranslateExtra(strArguments);
+                    return LanguageManager.ReverseTranslateExtra(strArguments, _objCharacter);
                 }
                 case "$XmlNameFriendly":
                 {
@@ -375,7 +375,7 @@ namespace Chummer
                         _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
                     if (!string.IsNullOrEmpty(strExtra))
                     {
-                        return LanguageManager.TranslateExtra(strExtra, strLanguage);
+                        return LanguageManager.TranslateExtra(strExtra, _objCharacter, strLanguage);
                     }
 
                     return string.Empty;
@@ -419,7 +419,7 @@ namespace Chummer
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = XmlManager.Load("stories.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode($"/chummer/stories/story[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+            _objCachedMyXmlNode = _objCharacter.LoadData("stories.xml", strLanguage).SelectSingleNode($"/chummer/stories/story[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

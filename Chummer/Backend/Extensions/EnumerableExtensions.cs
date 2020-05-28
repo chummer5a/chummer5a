@@ -53,5 +53,24 @@ namespace Chummer
 
             return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);
         }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems)
+        {
+            if (lstItems == null)
+                return 0;
+
+            int intHash = 19;
+            foreach (T objItem in lstItems)
+            {
+                intHash = intHash * 31 + objItem.GetHashCode();
+            }
+            return intHash;
+        }
     }
 }

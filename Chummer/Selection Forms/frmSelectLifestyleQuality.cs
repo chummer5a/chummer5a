@@ -59,9 +59,9 @@ namespace Chummer
             _lstExistingQualities = lstExistingQualities;
 
             // Load the Quality information.
-            _objXmlDocument = XmlManager.Load("lifestyles.xml", objCharacter.Options.CustomDataDictionary);
-            _objMetatypeDocument = XmlManager.Load("metatypes.xml", objCharacter.Options.CustomDataDictionary);
-            _objCritterDocument = XmlManager.Load("critters.xml", objCharacter.Options.CustomDataDictionary);
+            _objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
+            _objMetatypeDocument = _objCharacter.LoadData("metatypes.xml");
+            _objCritterDocument = _objCharacter.LoadData("critters.xml");
         }
 
         private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
@@ -155,8 +155,8 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
             }
             else
             {
@@ -549,7 +549,7 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                XmlDocument _objXmlQualityDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument _objXmlQualityDocument = _objCharacter.LoadData("qualities.xml");
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;

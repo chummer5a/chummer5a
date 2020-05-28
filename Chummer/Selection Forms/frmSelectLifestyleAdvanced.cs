@@ -41,7 +41,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             // Load the Lifestyles information.
-            _xmlDocument = XmlManager.Load("lifestyles.xml", objCharacter.Options.CustomDataDictionary);
+            _xmlDocument = _objCharacter.LoadData("lifestyles.xml");
         }
 
         private void frmSelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
@@ -665,8 +665,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 }
                 else
                 {

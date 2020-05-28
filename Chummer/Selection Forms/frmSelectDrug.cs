@@ -60,7 +60,7 @@ namespace Chummer
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
-            _xmlBaseDrugDataNode = XmlManager.Load("drugcomponents.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").CreateNavigator().SelectSingleNode("/chummer");
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -240,8 +240,8 @@ namespace Chummer
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;

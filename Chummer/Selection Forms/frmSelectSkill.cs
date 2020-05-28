@@ -48,11 +48,11 @@ namespace Chummer
         #region Control Events
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _strSourceName = strSource;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objXmlDocument = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary);
+            _objXmlDocument = _objCharacter.LoadData("skills.xml");
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)

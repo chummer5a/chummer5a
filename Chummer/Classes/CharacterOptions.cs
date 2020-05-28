@@ -18,8 +18,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -184,9 +187,11 @@ namespace Chummer
         private int _intBuildPoints = 800;
         private int _intAvailability = 12;
 
-        // List of names of custom data directories
-        private List<CustomDataDirectoryInfo> _customDataDirectories = new List<CustomDataDirectoryInfo>();
-        private readonly Dictionary<string,bool> _dicCustomDataDirectoryNames = new Dictionary<string, bool>();
+        // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
+        private readonly Dictionary<string, Tuple<int, bool>> _dicCustomDataDirectoryNames = new Dictionary<string, Tuple<int, bool>>();
+        // Cached lists that should be updated every time _dicCustomDataDirectoryNames is updated
+        private readonly List<CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new List<CustomDataDirectoryInfo>();
+        private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
         private readonly HashSet<string> _lstBooks = new HashSet<string>();
@@ -525,14 +530,15 @@ namespace Chummer
                         objWriter.WriteElementString("book", strBook);
                     // </books>
                     objWriter.WriteEndElement();
-                    
+
                     // <customdatadirectorynames>
 	            	objWriter.WriteStartElement("customdatadirectorynames");
-		            foreach (KeyValuePair<string, bool> dicDirectoryName in _dicCustomDataDirectoryNames)
+		            foreach (KeyValuePair<string, Tuple<int, bool>> dicDirectoryName in _dicCustomDataDirectoryNames)
 		            {
 		                objWriter.WriteStartElement("customdatadirectoryname");
 		                objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
-		                objWriter.WriteElementString("enabled", dicDirectoryName.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteElementString("order", dicDirectoryName.Value.Item1.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.Item2.ToString(GlobalOptions.InvariantCultureInfo));
 		                objWriter.WriteEndElement();
 		            }
 		            // </customdatadirectorynames>
@@ -861,25 +867,79 @@ namespace Chummer
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
+            int intTopMostLoadOrder = 0;
             _dicCustomDataDirectoryNames.Clear();
-            using (XmlNodeList xmlDirectoryList =
-                objXmlDocument.SelectNodes("/settings/customdatadirectorynames/customdatadirectoryname"))
+            using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/customdatadirectoryname"))
             {
                 if (xmlDirectoryList != null)
+                {
+                    bool blnNeedToProcessInfosWithoutLoadOrder = false;
                     foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
                     {
-                        _dicCustomDataDirectoryNames.Add(objXmlDirectoryName["directoryname"].InnerText,
-                            Convert.ToBoolean(objXmlDirectoryName["enabled"].InnerText));
+                        string strDirectoryName = objXmlDirectoryName["directoryname"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strDirectoryName))
+                        {
+                            // Only load in directories that are either present in our GlobalOptions or are enabled
+                            bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName["enabled"]?.InnerText);
+                            if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                            {
+                                if (objXmlDirectoryName["order"] != null
+                                    && int.TryParse(objXmlDirectoryName["order"].InnerText, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
+                                {
+                                    intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
+                                    _dicCustomDataDirectoryNames.Add(strDirectoryName,
+                                        new Tuple<int, bool>(intOrder, blnLoopEnabled));
+                                }
+                                else
+                                    blnNeedToProcessInfosWithoutLoadOrder = true;
+                            }
+                        }
                     }
+                    // Add in the stragglers that didn't have any load order info
+                    if (blnNeedToProcessInfosWithoutLoadOrder)
+                    {
+                        foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
+                        {
+                            string strDirectoryName = objXmlDirectoryName["directoryname"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strDirectoryName)
+                                && (objXmlDirectoryName["order"] == null
+                                    || !int.TryParse(objXmlDirectoryName["order"].InnerText, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _)))
+                            {
+                                // Only load in directories that are either present in our GlobalOptions or are enabled
+                                bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName["enabled"]?.InnerText);
+                                if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                                {
+                                    _dicCustomDataDirectoryNames.Add(strDirectoryName,
+                                        new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
+                                    ++intTopMostLoadOrder;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             if (_dicCustomDataDirectoryNames.Count == 0)
             {
                 using (XmlNodeList xmlDirectoryList =
                     objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                {
                     if (xmlDirectoryList != null)
+                    {
                         foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
-                            _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText, true);
+                        {
+                            _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText, new Tuple<int, bool>(intTopMostLoadOrder, true));
+                            ++intTopMostLoadOrder;
+                        }
+                    }
+                }
+            }
+
+            // Add in any directories that are in GlobalOptions but are not present in the settings so that we may enable them if we want to
+            foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalOptions.CustomDataDirectoryInfos.Where(x => !_dicCustomDataDirectoryNames.Keys.Contains(x.Name)))
+            {
+                _dicCustomDataDirectoryNames.Add(objMissingDirectory.Name, new Tuple<int, bool>(intTopMostLoadOrder, false));
+                ++intTopMostLoadOrder;
             }
 
             // Load default build settings.
@@ -998,7 +1058,7 @@ namespace Chummer
             }
             string[] strBooks = strBookList.Split(',');
 
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", CustomDataDictionary);
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", EnabledCustomDataDirectoryPaths);
 
             foreach (string strBookName in strBooks)
             {
@@ -1088,7 +1148,28 @@ namespace Chummer
                 _strBookXPath = string.Empty;
         }
 
-        public Dictionary<string, bool> CustomDataDictionary => _dicCustomDataDirectoryNames;
+        public IDictionary<string, Tuple<int, bool>> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
+
+        public IReadOnlyList<string> EnabledCustomDataDirectoryPaths => _lstEnabledCustomDataDirectoryPaths;
+
+        public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _lstEnabledCustomDataDirectories;
+
+        public void RecalculateEnabledCustomDataDirectories()
+        {
+            _lstEnabledCustomDataDirectories.Clear();
+            _lstEnabledCustomDataDirectoryPaths.Clear();
+            foreach (string strEnabledCustomDataDirectoryName in _dicCustomDataDirectoryNames.Where(x => x.Value.Item2).OrderBy(x => x.Value.Item1).Select(x => x.Key))
+            {
+                CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
+                if (objInfoToAdd != null)
+                {
+                    _lstEnabledCustomDataDirectories.Add(objInfoToAdd);
+                    _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.Path);
+                }
+                else
+                    Utils.BreakIfDebug();
+            }
+        }
 
         /// <summary>
         /// Whether or not all Active Skills with a total score higher than 0 should be printed.
@@ -1394,15 +1475,6 @@ namespace Chummer
         /// Sourcebooks.
         /// </summary>
         public ICollection<string> Books => _lstBooks;
-
-        /// <summary>
-        /// Names of custom data directories
-        /// </summary>
-        public List<CustomDataDirectoryInfo> CustomDataDirectories
-        {
-            get => _customDataDirectories;
-            set => _customDataDirectories = value;
-        }
 
         /// <summary>
         /// Setting name.
@@ -2511,104 +2583,5 @@ namespace Chummer
         public int SpecializationBonus { get; } = 2;
 
         #endregion
-    }
-
-
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
-    {
-        #region Properties
-
-        public string Name { get; }
-
-        public string Path { get; }
-
-        public bool Enabled { get; set; }
-
-        #endregion
-
-        public CustomDataDirectoryInfo(string strName, string strPath)
-        {
-            Name = strName;
-            Path = strPath;
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (obj == null)
-                return 1;
-            if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
-            {
-                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if (intReturn == 0)
-                {
-                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                    if (intReturn == 0)
-                    {
-                        intReturn = Enabled == objOtherDirectoryInfo.Enabled ? 0 : (Enabled ? -1 : 1);
-                    }
-                }
-
-                return intReturn;
-            }
-
-            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj is CustomDataDirectoryInfo objOther)
-                return Equals(objOther);
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return new { Name, Path }.GetHashCode();
-        }
-
-        public bool Equals(CustomDataDirectoryInfo other)
-        {
-            return other != null && Name == other.Name && Path == other.Path && Enabled == other.Enabled;
-        }
-
-        public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            if (left is null)
-            {
-                return right is null;
-            }
-
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return !(left == right);
-        }
-
-        public static bool operator <(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return left is null ? !(right is null) : left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return left is null || left.CompareTo(right) <= 0;
-        }
-
-        public static bool operator >(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return !(left is null) && left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
-        }
     }
 }

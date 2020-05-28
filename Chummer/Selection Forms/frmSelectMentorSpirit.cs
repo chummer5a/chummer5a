@@ -37,13 +37,13 @@ namespace Chummer
         {
             InitializeComponent();
 
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile, objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).CreateNavigator().SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
@@ -141,8 +141,8 @@ namespace Chummer
                 string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 cmdOK.Enabled = true;
             }

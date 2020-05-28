@@ -64,12 +64,13 @@ namespace ChummerHub.Client.UI
             if (sinGroups == null)
                 return res;
 
+            List<ListItem> lstLanguages = new List<ListItem>(LanguageManager.GetSheetLanguageList());
             foreach (var ssg in sinGroups)
             {
                 TreeNode tn = new TreeNode(ssg.GroupDisplayname);
                 if (string.IsNullOrEmpty(ssg.Language))
                     ssg.Language = "en-us";
-                int index = frmViewer.LstLanguages.FindIndex(c => c.Value?.ToString() == ssg.Language);
+                int index = lstLanguages.FindIndex(c => c.Value?.ToString() == ssg.Language);
                 if (index != -1)
                 {
                     tn.ImageIndex = index;
@@ -89,7 +90,7 @@ namespace ChummerHub.Client.UI
                         };
                         if (!string.IsNullOrEmpty(member.MySINner?.Language))
                         {
-                            int mindex = frmViewer.LstLanguages.FindIndex(c => c.Value?.ToString() == member.MySINner?.Language);
+                            int mindex = lstLanguages.FindIndex(c => c.Value?.ToString() == member.MySINner?.Language);
                             if (mindex != -1)
                             {
                                 tnm.ImageIndex = mindex;
@@ -113,7 +114,7 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             ImageList myCountryImageList = new ImageList();
-            foreach (var lang in frmViewer.LstLanguages)
+            foreach (var lang in LanguageManager.GetSheetLanguageList())
             {
                 var img = FlagImageGetter.GetFlagFromCountryCode(lang.Value.ToString().Substring(3, 2));
                 myCountryImageList.Images.Add(img);

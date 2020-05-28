@@ -58,7 +58,7 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Vehicle information.
-            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").CreateNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
 
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(imp =>
@@ -398,8 +398,8 @@ namespace Chummer
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 

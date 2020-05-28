@@ -615,7 +615,7 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter.Created)
             {
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
+                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter).ToList();
                 lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 using (frmSelectItem form = new frmSelectItem
                 {

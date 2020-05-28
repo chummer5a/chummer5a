@@ -53,15 +53,15 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
-            XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile, objCharacter.Options.CustomDataDictionary);
+            XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);
             _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlBasePriorityDataNode = XmlManager.Load("priorities.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlBaseSkillDataNode = XmlManager.Load("skills.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
-            XmlDocument xmlQualityDoc = XmlManager.Load("qualities.xml", objCharacter.Options.CustomDataDictionary);
+            _xmlBasePriorityDataNode = _objCharacter.LoadDataXPath("priorities.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBaseSkillDataNode = _objCharacter.LoadDataXPath("skills.xml").CreateNavigator().SelectSingleNode("/chummer");
+            XmlDocument xmlQualityDoc = _objCharacter.LoadData("qualities.xml");
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml", objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers");
+            _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
         private void frmPriorityMetatype_Load(object sender, EventArgs e)
@@ -643,7 +643,7 @@ namespace Chummer
                 strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
                 int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
 
-                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/knowledgeskills"));
+                _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
 
                 // begin priority based character settings
                 // Load the Priority information.
@@ -802,7 +802,7 @@ namespace Chummer
                 }
 
                 // Load the Priority information.
-                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
+                XmlNode objXmlGameplayOption = _objCharacter.LoadData("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
                 {
                     _objCharacter.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText, GlobalOptions.InvariantCultureInfo);
@@ -1044,7 +1044,7 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
                     }
                     else
                     {
@@ -1116,7 +1116,7 @@ namespace Chummer
 
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
                     }
                     else
                     {

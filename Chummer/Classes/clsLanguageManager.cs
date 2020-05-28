@@ -21,7 +21,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
  using System.IO;
 using System.Linq;
-using System.Text;
+ using System.Runtime.CompilerServices;
+ using System.Text;
 using System.Threading.Tasks;
  using System.Windows.Forms;
 using System.Xml;
@@ -317,6 +318,7 @@ namespace Chummer
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(string strKey, bool blnReturnError)
         {
             return GetString(strKey, GlobalOptions.Language, blnReturnError);
@@ -355,10 +357,11 @@ namespace Chummer
         /// Processes a compound string that contains both plaintext and references to localized strings
         /// </summary>
         /// <param name="strInput">Input string to process.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
         /// <returns></returns>
-        public static string ProcessCompoundString(string strInput, string strLanguage = "", bool blnUseTranslateExtra = false)
+        public static string ProcessCompoundString(string strInput, Character objCharacter = null, string strLanguage = "", bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -436,11 +439,11 @@ namespace Chummer
                         // Inner string is a compound string in and of itself, so recurse this method
                         if (strLoop.IndexOfAny('{', '}') != -1)
                         {
-                            strLoop = ProcessCompoundString(strLoop, strLanguage, blnUseTranslateExtra);
+                            strLoop = ProcessCompoundString(strLoop, objCharacter, strLanguage, blnUseTranslateExtra);
                         }
                         // Use more expensive TranslateExtra if flag is set to use that
                         objReturn.Append(blnUseTranslateExtra
-                            ? TranslateExtra(strLoop, strLanguage)
+                            ? TranslateExtra(strLoop, objCharacter, strLanguage)
                             : GetString(strLoop, strLanguage, false));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
@@ -657,8 +660,9 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        public static string TranslateExtra(string strExtra, string strIntoLanguage = "")
+        public static string TranslateExtra(string strExtra, Character objCharacter = null, string strIntoLanguage = "")
         {
             if (string.IsNullOrEmpty(strExtra))
                 return string.Empty;
@@ -739,7 +743,8 @@ namespace Chummer
                         Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
                             Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, new Dictionary<string, bool>(), strIntoLanguage).SelectNodes(objXPathPair.Item2))
+                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
+                                .SelectNodes(objXPathPair.Item2))
                             {
                                 if (xmlNodeList != null)
                                 {
@@ -775,8 +780,9 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
-        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
+        public static string ReverseTranslateExtra(string strExtra, Character objCharacter = null, string strFromLanguage = "")
         {
             if (string.IsNullOrEmpty(strFromLanguage))
                 strFromLanguage = GlobalOptions.Language;
@@ -893,7 +899,8 @@ namespace Chummer
                 Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                 {
                     Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, new Dictionary<string, bool>(), strFromLanguage).SelectNodes(objXPathPair.Item2))
+                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
+                        .SelectNodes(objXPathPair.Item2))
                     {
                         if (xmlNodeList != null)
                         {
@@ -917,6 +924,72 @@ namespace Chummer
             }
 
             return strReturn;
+        }
+
+        public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null)
+        {
+            if (cboLanguage == null)
+                throw new ArgumentNullException(nameof(cboLanguage));
+            string strDefaultSheetLanguage = GlobalOptions.Language;
+            int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+            {
+                string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
+            cboLanguage.BeginUpdate();
+            cboLanguage.ValueMember = "Value";
+            cboLanguage.DisplayMember = "Name";
+            cboLanguage.DataSource = GetSheetLanguageList(lstCharacters);
+            cboLanguage.SelectedValue = strDefaultSheetLanguage;
+            if (cboLanguage.SelectedIndex == -1)
+                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+            cboLanguage.EndUpdate();
+        }
+
+        public static IList<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
+        {
+            List<ListItem> lstLanguages = new List<ListItem>();
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+            List<Character> lstCharacterToUse = lstCharacters?.ToList();
+            foreach (string filePath in languageFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument
+                {
+                    XmlResolver = null
+                };
+
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings { XmlResolver = null }))
+                        xmlDocument.Load(objXmlReader);
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                if (node == null)
+                    continue;
+
+                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
+                if (XmlManager.GetXslFilesFromLocalDirectory(strLanguageCode, lstCharacterToUse, true).Count > 0)
+                {
+                    lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
+                }
+            }
+            lstLanguages.Sort(CompareListItems.CompareNames);
+            return lstLanguages;
         }
         #endregion
     }

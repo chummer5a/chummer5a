@@ -362,7 +362,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectSkillCategory":
-                    using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory())
+                    using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory(_objCharacter))
                     {
                         frmPickSkillCategory.Description = LanguageManager.GetString("Title_SelectSkillCategory");
                         frmPickSkillCategory.ShowDialog(this);
@@ -375,7 +375,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectSkillGroup":
-                    using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup())
+                    using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter))
                     {
                         frmPickSkillGroup.Description = LanguageManager.GetString("Title_SelectSkillGroup");
                         frmPickSkillGroup.ShowDialog(this);
@@ -418,7 +418,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectWeaponCategory":
-                    using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory())
+                    using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter))
                     {
                         frmPickWeaponCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory");
                         frmPickWeaponCategory.ShowDialog(this);
@@ -431,7 +431,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpellCategory":
-                    using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory())
+                    using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter))
                     {
                         frmPickSpellCategory.Description = LanguageManager.GetString("Title_SelectSpellCategory");
                         frmPickSpellCategory.ShowDialog(this);
@@ -597,7 +597,7 @@ namespace Chummer
                         objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
                         string strFirstPartTranslated = objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? astrToTranslateParts[0];
 
-                        return $"{strFirstPartTranslated}{LanguageManager.GetString("String_Space")}({LanguageManager.TranslateExtra(astrToTranslateParts[1])})";
+                        return $"{strFirstPartTranslated}{LanguageManager.GetString("String_Space")}({LanguageManager.TranslateExtra(astrToTranslateParts[1], _objCharacter)})";
                     }
                     else
                     {

@@ -27,8 +27,10 @@ namespace Chummer
         private readonly int _intPage;
         private readonly string _strCachedSpace;
 
-        public SourceString(string strSourceString, string strLanguage)
+        public SourceString(string strSourceString, string strLanguage = "", Character objCharacter = null)
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             Language = strLanguage;
             string strCode = strSourceString ?? string.Empty;
             int intWhitespaceIndex = strCode.IndexOf(' ');
@@ -39,31 +41,36 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
             }
 
-            Code = CommonFunctions.LanguageBookShort(strCode, Language);
+            Code = CommonFunctions.LanguageBookShort(strCode, objCharacter, Language);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language) +
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, objCharacter, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public SourceString(string strSource, string strPage, string strLanguage)
+        // Cannot have strLanguage default to empty string here, otherwise we would have ambiguous constructors
+        public SourceString(string strSource, string strPage, string strLanguage, Character objCharacter = null)
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             Language = strLanguage;
             int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            Code = CommonFunctions.LanguageBookShort(strSource, objCharacter, Language);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, objCharacter, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public SourceString(string strSource, int intPage, string strLanguage)
+        public SourceString(string strSource, int intPage, string strLanguage = "", Character objCharacter = null)
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             Language = strLanguage;
             _intPage = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            Code = CommonFunctions.LanguageBookShort(strSource, objCharacter, Language);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, objCharacter, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 

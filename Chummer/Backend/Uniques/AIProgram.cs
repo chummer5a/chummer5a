@@ -80,7 +80,8 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -149,7 +150,7 @@ namespace Chummer
                 objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram(strLanguageToPrint));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -195,7 +196,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -212,7 +213,7 @@ namespace Chummer
             {
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                    strExtra = LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage);
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
@@ -242,7 +243,8 @@ namespace Chummer
             if (strLanguage == GlobalOptions.Language)
                 return RequiresProgram;
 
-            return XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
+            return _objCharacter.LoadData("programs.xml", strLanguage)
+                .SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
         }
 
         /// <summary>
@@ -313,11 +315,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/programs/program[name = \"{Name}\"]")
-                    : XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/programs/program[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = _objCharacter.LoadData("programs.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/programs/program[name = \"{Name}\"]"
+                        : $"/chummer/programs/program[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -355,34 +355,6 @@ namespace Chummer
                 cmdExpand.Image = value ? Properties.Resources.Collapse : cmdExpand.Image = Properties.Resources.Expand;
             }
         }
-
-        private List<ListItem> _lstContactArchetypes;
-
-        public List<ListItem> ContactArchetypes
-        {
-            get
-            {
-                if (_lstContactArchetypes != null)
-                    return _lstContactArchetypes;
-                _lstContactArchetypes = new List<ListItem>{ListItem.Blank};
-                XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml", _objContact.CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer");
-                if (xmlContactsBaseNode == null)
-                    return _lstContactArchetypes;
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
-                {
-                    if (xmlNodeList == null)
-                        return _lstContactArchetypes;
-                    foreach (XmlNode xmlNode in xmlNodeList)
-                    {
-                        string strName = xmlNode.InnerText;
-                        _lstContactArchetypes.Add(new ListItem(strName,
-                            xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                    }
-                }
-
-                return _lstContactArchetypes;
-            }
-        }
         #endregion
 
         #region Methods
@@ -425,8 +397,8 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            
-            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml", new Dictionary<string, bool>()).SelectSingleNode("/chummer");
+
+            XmlNode xmlContactsBaseNode = _objContact.CharacterObject.LoadData("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
                 //the values are now loaded direct in the (new) property lstContactArchetypes (see above).
@@ -489,7 +461,7 @@ namespace Chummer
             }
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml", _objContact.CharacterObject.Options.CustomDataDictionary).SelectNodes("/chummer/metatypes/metatype"))
+            using (XmlNodeList xmlMetatypeList = _objContact.CharacterObject.LoadData("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypeList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
                     {
@@ -508,7 +480,6 @@ namespace Chummer
                         }
                     }
 
-            ContactArchetypes.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstSexes.Sort(CompareListItems.CompareNames);
             lstAges.Sort(CompareListItems.CompareNames);
@@ -520,7 +491,7 @@ namespace Chummer
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";
             cboContactRole.DisplayMember = "Name";
-            cboContactRole.DataSource = new BindingSource { DataSource = ContactArchetypes };
+            cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();

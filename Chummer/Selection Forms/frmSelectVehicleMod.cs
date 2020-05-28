@@ -55,7 +55,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Vehicle information.
-            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").CreateNavigator().SelectSingleNode("/chummer");
             if (_xmlBaseVehicleDataNode != null)
                 _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNode("modcategories"));
             if (lstExistingMods != null)
@@ -696,8 +696,8 @@ namespace Chummer
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

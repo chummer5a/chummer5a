@@ -29,17 +29,17 @@ namespace Chummer
         private readonly List<ListItem> _lstPowerItems = new List<ListItem>();
 
         #region Control Events
-        public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
+        public frmSelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
-                string strName = LanguageManager.TranslateExtra(lstObject.Item1);
+                string strName = LanguageManager.TranslateExtra(lstObject.Item1, objCharacter);
                 if (!string.IsNullOrEmpty(lstObject.Item2))
                 {
-                    strName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(lstObject.Item2) + ')';
+                    strName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(lstObject.Item2, objCharacter) + ')';
                 }
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }

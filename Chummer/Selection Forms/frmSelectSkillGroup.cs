@@ -32,11 +32,11 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
-        public frmSelectSkillGroup()
+        public frmSelectSkillGroup(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objXmlDocument = XmlManager.Load("skills.xml", new Dictionary<string, bool>());
+            _objXmlDocument = objCharacter?.LoadData("skills.xml") ?? XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSkillGroup_Load(object sender, EventArgs e)

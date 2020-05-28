@@ -191,7 +191,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -206,7 +206,7 @@ namespace Chummer.Backend.Equipment
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -246,7 +246,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearsNode = objXmlAccessory["gears"];
             if (xmlGearsNode != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
+                XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
                 using (XmlNodeList xmlGearsList = xmlGearsNode.SelectNodes("usegear"))
                 {
                     if (xmlGearsList != null)
@@ -295,7 +295,8 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -498,7 +499,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("included", IncludedInWeapon.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture));
             if (Gear.Count > 0)
@@ -678,7 +679,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
             }
 
             return strReturn;
@@ -1238,11 +1239,10 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/accessories/accessory[name = \"{Name}\"]")
-                    : XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/accessories/accessory[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = _objCharacter.LoadData("weapons.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/accessories/accessory[name = \"{Name}\"]"
+                        : $"/chummer/accessories/accessory[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

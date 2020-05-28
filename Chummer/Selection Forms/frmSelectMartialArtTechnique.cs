@@ -45,8 +45,8 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.
-            _xmlBaseChummerNode = XmlManager.Load("martialarts.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
-            // Populate the Martial Art Tecnnique list.
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").CreateNavigator().SelectSingleNode("/chummer");
+            // Populate the Martial Art Technique list.
             XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
             if (xmlMartialArtNode != null)
             {
@@ -121,8 +121,8 @@ namespace Chummer
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else

@@ -44,7 +44,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
-            _xmlBaseDataNode = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").CreateNavigator().SelectSingleNode("/chummer");
             _objArmor = objParentNode;
             _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             if (_xmlBaseDataNode != null)
@@ -393,8 +393,8 @@ namespace Chummer
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 

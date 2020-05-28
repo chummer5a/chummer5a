@@ -6462,7 +6462,7 @@ namespace Chummer
 
         public void PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
             bool blnAddAgain;
 
             do

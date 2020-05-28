@@ -73,7 +73,7 @@ namespace Chummer
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strQualityNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strQualityNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -88,7 +88,7 @@ namespace Chummer
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -104,7 +104,8 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -267,11 +268,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/techniques/technique[name = \"{Name}\"]")
-                    : XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/techniques/technique[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = _objCharacter.LoadData("martialarts.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/techniques/technique[name = \"{Name}\"]"
+                        : $"/chummer/techniques/technique[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

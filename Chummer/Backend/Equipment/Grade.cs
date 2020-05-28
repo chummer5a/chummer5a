@@ -30,6 +30,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Grade : IHasName, IHasInternalId, IHasXmlNode
     {
+        private readonly Character _objCharacter;
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = "Standard";
@@ -42,8 +43,9 @@ namespace Chummer.Backend.Equipment
         private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
-        public Grade(Improvement.ImprovementSource eSource)
+        public Grade(Character objCharacter, Improvement.ImprovementSource eSource)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _guiID = Guid.NewGuid();
             _eSource = eSource;
         }
@@ -52,7 +54,7 @@ namespace Chummer.Backend.Equipment
         /// Load the Grade from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode, IDictionary<string, bool> dicCustomBooks)
+        public void Load(XmlNode objNode)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
 
@@ -62,11 +64,11 @@ namespace Chummer.Backend.Equipment
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                var xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware
+                var xmlDataNode = _objCharacter.LoadData(_eSource == Improvement.ImprovementSource.Bioware
                         ? "bioware.xml"
                         : _eSource == Improvement.ImprovementSource.Drug
                             ? "drugcomponents.xml"
-                            : "cyberware.xml", dicCustomBooks)
+                            : "cyberware.xml")
                     .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
@@ -101,10 +103,16 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceId == Guid.Empty
-                ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
-                : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData(_eSource == Improvement.ImprovementSource.Bioware
+                    ? "bioware.xml"
+                    : _eSource == Improvement.ImprovementSource.Drug
+                        ? "drugcomponents.xml"
+                        : "cyberware.xml", strLanguage)
+                .SelectSingleNode(SourceId == Guid.Empty
+                    ? $"/chummer/grades/grade[name = \"{Name}\"]"
+                    : $"/chummer/grades/grade[id = \"{SourceId}\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

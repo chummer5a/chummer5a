@@ -123,7 +123,8 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -235,9 +236,9 @@ namespace Chummer
             objWriter.WriteElementString("dv", DisplayDV(strLanguageToPrint));
             objWriter.WriteElementString("alchemy", Alchemical.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -363,7 +364,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("spells.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadData("spells.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -673,7 +674,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -738,7 +739,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
             }
             return strReturn;
         }
@@ -855,11 +856,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("spells.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]")
-                    : XmlManager.Load("spells.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/spells/spell[id = \"{0}\" or id = \"{1}\"]", SourceIDString, SourceIDString.ToUpperInvariant()));
+                _objCachedMyXmlNode = _objCharacter.LoadData("spells.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/spells/spell[name = \"" + Name + "\"]"
+                        : string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/spells/spell[id = \"{0}\" or id = \"{1}\"]", SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

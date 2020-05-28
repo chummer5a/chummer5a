@@ -45,7 +45,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _xmlBaseCritterPowerDataNode = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").CreateNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNode();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
@@ -202,8 +202,8 @@ namespace Chummer
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 

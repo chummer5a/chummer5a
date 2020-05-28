@@ -185,7 +185,7 @@ namespace Chummer.UI.Powers
         private void cmdAddPower_Click(object sender, EventArgs e)
         {
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("powers.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlDocument objXmlDocument = _objCharacter.LoadData("powers.xml");
             bool blnAddAgain;
 
             do

@@ -59,7 +59,7 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Weapon information.
-            _objXmlDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
+            _objXmlDocument = _objCharacter.LoadData("weapons.xml");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
@@ -347,7 +347,7 @@ namespace Chummer
                     if (sbdAccessories.Length > 0)
                         sbdAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, sbdAccessories.ToString(), objAvail, strSource, strCost);

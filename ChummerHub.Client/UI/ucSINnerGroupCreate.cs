@@ -34,7 +34,7 @@ namespace ChummerHub.Client.UI
             {
                 EditMode = true;
             }
-            cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
+            LanguageManager.PopulateSheetLanguageList(cboLanguage1, string.Empty);
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
             if (MyGroup != null)

@@ -224,7 +224,7 @@ namespace Chummer
                 ListItem.Blank
             };
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            using (XmlNodeList xmlMetatypesList = XmlManager.Load("critters.xml", _objContact.CharacterObject.Options.CustomDataDictionary).SelectNodes("/chummer/metatypes/metatype"))
+            using (XmlNodeList xmlMetatypesList = _objContact.CharacterObject.LoadData("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypesList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypesList)
                     {

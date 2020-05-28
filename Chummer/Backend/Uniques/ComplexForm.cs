@@ -167,7 +167,7 @@ namespace Chummer
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
             objWriter.WriteElementString("fv", DisplayFV(strLanguageToPrint));
             objWriter.WriteElementString("target", DisplayTarget(strLanguageToPrint));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -213,7 +213,8 @@ namespace Chummer
                 _strName = value;
             }
         }
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
+                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
 
         /// <summary>
         /// Complex Form's extra info.
@@ -221,7 +222,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
         }
 
         /// <summary>
@@ -254,7 +255,7 @@ namespace Chummer
             {
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                    strExtra = LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage);
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
@@ -556,11 +557,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("complexforms.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/complexforms/complexform[name = \"{Name}\"]")
-                    : XmlManager.Load("complexforms.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
-                        .SelectSingleNode($"/chummer/complexforms/complexform[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                _objCachedMyXmlNode = _objCharacter.LoadData("complexforms.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/complexforms/complexform[name = \"{Name}\"]"
+                        : $"/chummer/complexforms/complexform[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

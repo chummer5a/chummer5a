@@ -34,7 +34,7 @@ namespace Chummer.Backend.Skills
         #region Constructor, Create, Save, Load, and Print Methods
         public SkillSpecialization(string strName, bool free, Skill objParent)
         {
-            _strName = LanguageManager.ReverseTranslateExtra(strName);
+            _strName = LanguageManager.ReverseTranslateExtra(strName, objParent.CharacterObject);
             _guiID = Guid.NewGuid();
             _strFree = free;
             _objParent = objParent;

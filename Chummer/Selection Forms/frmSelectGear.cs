@@ -79,7 +79,7 @@ namespace Chummer
             }
 
             // Load the Gear information.
-            _xmlBaseGearDataNode = XmlManager.Load("gear.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseGearDataNode = objCharacter.LoadDataXPath("gear.xml").CreateNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
             foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').Split(','))
             {
@@ -587,8 +587,8 @@ namespace Chummer
             string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
