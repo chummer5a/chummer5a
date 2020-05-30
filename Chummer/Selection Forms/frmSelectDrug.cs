@@ -675,7 +675,7 @@ namespace Chummer
                 return null;
 
             List<ListItem> lstDrugs = new List<ListItem>();
-
+            int intOverLimit = 0;
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
@@ -702,14 +702,20 @@ namespace Chummer
                 }
 
                 if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(xmlDrug, _objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+                {
+                    ++intOverLimit;
                     continue;
+                }
                 if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
                 {
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
                     if (!SelectionShared.CheckNuyenRestriction(xmlDrug, _objCharacter.Nuyen, decCostMultiplier))
+                    {
+                        ++intOverLimit;
                         continue;
+                    }
                 }
                 if (ParentVehicle == null && !xmlDrug.RequirementsMet(_objCharacter))
                     continue;
@@ -720,7 +726,13 @@ namespace Chummer
 
             if (!blnDoUIUpdate) return lstDrugs;
             lstDrugs.Sort(CompareListItems.CompareNames);
-
+            if (intOverLimit > 0)
+            {
+                // Add after sort so that it's always at the end
+                lstDrugs.Add(new ListItem(string.Empty,
+                    LanguageManager.GetString("String_RestrictedItemsHidden")
+                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+            }
             string strOldSelected = lstDrug.SelectedValue?.ToString();
             _blnLoading = true;
             lstDrug.BeginUpdate();

@@ -29,7 +29,7 @@ namespace Chummer
         private readonly List<ListItem> _lstResults = new List<ListItem>(40);
 
         #region Control Events
-        public frmDiceRoller(frmChummerMain frmMainForm, ICollection<Quality> lstQualities = null, int intDice = 1)
+        public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);

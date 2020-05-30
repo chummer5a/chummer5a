@@ -8184,6 +8184,12 @@
       <text>Mystic Adept Power Point</text>
     </string>
     <!-- End Region-->
+    <!-- Region Generic Selection Window -->
+    <string>
+      <key>String_RestrictedItemsHidden</key>
+      <text>* {0} item(s) are hidden by Cost or Availability limits *</text>
+    </string>
+    <!-- End Region -->
     <!-- Region Select Armor Window -->
     <string>
       <key>Title_SelectArmor</key>

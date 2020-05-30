@@ -1347,8 +1347,6 @@ namespace Chummer
                         MdiParent = this,
                         WindowState = wsPreference
                     };
-                    frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
-                    frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;
                     frmCharacter.Show();
                 }
 
@@ -1550,25 +1548,19 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private void objCareer_DiceRollerOpened(object sender)
+        public void OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
         {
-            Program.MainForm.ShowMessageBox("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
-            //TODO: IMPLEMENT THIS SHIT
-        }
-
-        private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)
-        {
-            if(GlobalOptions.SingleDiceRoller)
+            if (GlobalOptions.SingleDiceRoller)
             {
-                if(_frmRoller == null)
+                if (_frmRoller == null)
                 {
-                    _frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice);
+                    _frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
                     _frmRoller.Show();
                 }
                 else
                 {
                     _frmRoller.Dice = intDice;
-                    _frmRoller.Qualities = objCharacter.Qualities;
+                    _frmRoller.Qualities = objCharacter?.Qualities;
                     _frmRoller.Activate();
                 }
             }

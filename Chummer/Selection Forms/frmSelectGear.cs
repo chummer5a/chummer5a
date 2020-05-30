@@ -993,6 +993,8 @@ namespace Chummer
 
         private IList<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
+            string strSpace = LanguageManager.GetString("String_Space");
+            int intOverLimit = 0;
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XPathNavigator objXmlGear in objXmlGearList)
             {
@@ -1061,7 +1063,7 @@ namespace Chummer
                         {
                             ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                             if (!string.IsNullOrEmpty(objFoundItem.Name))
-                                strDisplayName += " [" + objFoundItem.Name + "]";
+                                strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                         }
                     }
                     // When searching, Category needs to be added to the Value so we can identify the English Category name.
@@ -1070,10 +1072,19 @@ namespace Chummer
                     if (blnTerminateAfterFirst)
                         break;
                 }
+                else if (blnDoUIUpdate)
+                    ++intOverLimit;
             }
             if (blnDoUIUpdate)
             {
                 lstGears.Sort(CompareListItems.CompareNames);
+                if (intOverLimit > 0)
+                {
+                    // Add after sort so that it's always at the end
+                    lstGears.Add(new ListItem(string.Empty,
+                        LanguageManager.GetString("String_RestrictedItemsHidden")
+                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                }
                 lstGear.BeginUpdate();
                 string strOldSelected = lstGear.SelectedValue?.ToString();
                 bool blnOldLoading = _blnLoading;

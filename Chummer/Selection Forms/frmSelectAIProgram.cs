@@ -294,6 +294,7 @@ namespace Chummer
         /// </summary>
         private void UpdateProgramList(XPathNodeIterator objXmlNodeList)
         {
+            string strSpace = LanguageManager.GetString("String_Space");
             List<ListItem> lstPrograms = new List<ListItem>();
             foreach (XPathNavigator objXmlProgram in objXmlNodeList)
             {
@@ -336,7 +337,7 @@ namespace Chummer
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            strDisplayName += " [" + objFoundItem.Name + "]";
+                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                         }
                     }
                 }

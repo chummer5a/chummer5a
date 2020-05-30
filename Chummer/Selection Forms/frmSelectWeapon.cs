@@ -329,7 +329,7 @@ namespace Chummer
 
                     string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.CurrentDisplayName;
-                    string strDice = objWeapon.DisplayDicePool;
+                    string strDice = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
                     string strAccuracy = objWeapon.DisplayAccuracy;
                     string strDamage = objWeapon.DisplayDamage;
                     string strAP = objWeapon.DisplayTotalAP;
@@ -389,8 +389,8 @@ namespace Chummer
             }
             else
             {
+                int intOverLimit = 0;
                 List<ListItem> lstWeapons = new List<ListItem>();
-
                 XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
@@ -432,6 +432,7 @@ namespace Chummer
 
                     if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                     {
+                        ++intOverLimit;
                         continue;
                     }
                     if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
@@ -449,12 +450,22 @@ namespace Chummer
                             }
                         }
                         if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                        {
+                            ++intOverLimit;
                             continue;
+                        }
                     }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
 
                 lstWeapons.Sort(CompareListItems.CompareNames);
+                if (intOverLimit > 0)
+                {
+                    // Add after sort so that it's always at the end
+                    lstWeapons.Add(new ListItem(string.Empty,
+                        LanguageManager.GetString("String_RestrictedItemsHidden")
+                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                }
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstWeapon.BeginUpdate();

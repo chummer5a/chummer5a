@@ -264,6 +264,7 @@ namespace Chummer
         #region Methods
         private void BuildSpellList()
         {
+            string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
@@ -382,7 +383,7 @@ namespace Chummer
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            strDisplayName += " [" + objFoundItem.Name + "]";
+                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                         }
                     }
                 }

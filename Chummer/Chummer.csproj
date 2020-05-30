@@ -522,6 +522,12 @@
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Shared\Components\DicePoolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\Components\DicePoolControl.Designer.cs">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Chummy.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1260,6 +1266,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>

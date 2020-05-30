@@ -442,14 +442,20 @@ namespace Chummer
                     break;
                 default:
                     List<ListItem> lstArmors = new List<ListItem>();
+                    int intOverLimit = 0;
+                    string strSpace = LanguageManager.GetString("String_Space");
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
-                        if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) &&
-                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                             SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
+                        if ((!chkHideOverAvailLimit.Checked
+                            || (chkHideOverAvailLimit.Checked
+                                && SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter)))
+                             && (chkFreeItem.Checked
+                                || !chkShowOnlyAffordItems.Checked
+                                || (chkShowOnlyAffordItems.Checked
+                                    && SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
                         {
                             string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
                             if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
@@ -460,15 +466,25 @@ namespace Chummer
                                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                     if (!string.IsNullOrEmpty(objFoundItem.Name))
                                     {
-                                        strDisplayName += " [" + objFoundItem.Name + "]";
+                                        strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                                     }
                                 }
                             }
 
                             lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
                         }
+                        else
+                            ++intOverLimit;
                     }
+                    
                     lstArmors.Sort(CompareListItems.CompareNames);
+                    if (intOverLimit > 0)
+                    {
+                        // Add after sort so that it's always at the end
+                        lstArmors.Add(new ListItem(string.Empty,
+                            LanguageManager.GetString("String_RestrictedItemsHidden")
+                            .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    }
                     _blnLoading = true;
                     string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();

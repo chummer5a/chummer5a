@@ -97,7 +97,7 @@ namespace Chummer
 
             strMount.Append(")");
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
+            int intOverLimit = 0;
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
@@ -118,9 +118,18 @@ namespace Chummer
                         objXmlAccessory.SelectSingleNode("name")?.Value ??
                         LanguageManager.GetString("String_Unknown")));
                 }
+                else
+                    ++intOverLimit;
             }
 
             lstAccessories.Sort(CompareListItems.CompareNames);
+            if (intOverLimit > 0)
+            {
+                // Add after sort so that it's always at the end
+                lstAccessories.Add(new ListItem(string.Empty,
+                    LanguageManager.GetString("String_RestrictedItemsHidden")
+                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+            }
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
             _blnLoading = true;
             lstAccessory.BeginUpdate();
