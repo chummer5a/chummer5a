@@ -2168,6 +2168,18 @@ namespace Chummer
                         nameof(Character.Surprise));
                     break;
                 }
+                case ImprovementType.AstralReputation:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        nameof(Character.AstralReputation));
+                        break;
+                }
+                case ImprovementType.AstralReputationWild:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        nameof(Character.WildReputation));
+                        break;
+                }
             }
         }
 
