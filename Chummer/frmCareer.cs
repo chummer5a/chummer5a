@@ -14996,28 +14996,28 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                string strQualities = string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
+                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
-                    if (strQualities.Length > 0)
-                        strQualities += ',' + Environment.NewLine;
+                    if (sbdQualities.Length > 0)
+                        sbdQualities.AppendLine(",");
 
-                    strQualities += objImprovement.Value > 0
-                        ? objImprovement.ImproveSource + LanguageManager.GetString("String_Space") + "[+" + objImprovement.Value + "%]"
-                        : objImprovement.ImproveSource + LanguageManager.GetString("String_Space") + '[' + objImprovement.Value + "%]";
+                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement)
+                                        + LanguageManager.GetString("String_Space")
+                                        + '[' + objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
                 {
-                    if (strQualities.Length > 0)
-                        strQualities += ',' + Environment.NewLine;
+                    if (sbdQualities.Length > 0)
+                        sbdQualities.AppendLine(",");
 
-                    strQualities += string.Join(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
+                    sbdQualities.Append(string.Join(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName)));
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
-                lblLifestyleQualities.Text = strQualities;
+                lblLifestyleQualities.Text = sbdQualities.ToString();
                 lblLifestyleQualitiesLabel.Visible = true;
                 lblLifestyleQualities.Visible = true;
             }
