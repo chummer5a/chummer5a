@@ -106,9 +106,16 @@ namespace Chummer
                 //Otherwise just log it
 #if DEBUG
                 System.Reflection.MethodBase mth = new StackTrace().GetFrame(1).GetMethod();
-                string errorMsg = $"Tried to read missing field \"{field}\" in {mth.ReflectedType?.Name}.{mth}";
+                string errorMsg = string.Format
+                    (
+                        GlobalOptions.InvariantCultureInfo,
+                        "Tried to read missing field \"{0}\" in {1}.{2}",
+                        field,
+                        mth.ReflectedType?.Name,
+                        mth
+                    );
 #else
-                string errorMsg = $"Tried to read missing field \"{field}\"";
+                string errorMsg = "Tried to read missing field \"" + field + "\"";
 #endif
                 Log.Error(errorMsg);
                 //Finally, we have to assign an out parameter something, so default
@@ -167,7 +174,13 @@ namespace Chummer
                         mth.ReflectedType?.Name
                     );
 #else //So if DEBUG flag is missing we don't reflect info
-                string errorMsg = $"Tried to read missing field \"{field}\" of type \"{typeof(T)}\"";
+                string errorMsg = string.Format
+                    (
+                        GlobalOptions.InvariantCultureInfo,
+                        "Tried to read missing field \"{0}\" of type \"{1}\"",
+                        field,
+                        typeof(T)
+                    );
 #endif
                 Log.Error(errorMsg);
                 //Assign something

@@ -597,7 +597,7 @@ namespace Chummer
                         objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
                         string strFirstPartTranslated = objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? astrToTranslateParts[0];
 
-                        return $"{strFirstPartTranslated}{LanguageManager.GetString("String_Space")}({LanguageManager.TranslateExtra(astrToTranslateParts[1])})";
+                        return strFirstPartTranslated + LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(astrToTranslateParts[1]) + ')';
                     }
                     else
                     {

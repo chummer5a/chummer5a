@@ -469,11 +469,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(txtCritterName.Text))
                     objCharacter.Name = txtCritterName.Text;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                string strSpace = LanguageManager.GetString("String_Space");
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                    FileName = strCritterName + strSpaceCharacter + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpaceCharacter + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
+                    FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
                 })
                 {
                     if (saveFileDialog.ShowDialog(this) != DialogResult.OK)

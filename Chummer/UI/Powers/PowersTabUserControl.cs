@@ -147,7 +147,7 @@ namespace Chummer.UI.Powers
                     {
                         string strName = xmlCategoryNode.InnerText;
                         ret.Add(new Tuple<string, Predicate<Power>>(
-                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
+                            LanguageManager.GetString("Label_Category") + LanguageManager.GetString("String_Space") + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
                             power => power.Category == strName));
                     }
                     */
@@ -226,8 +226,8 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + strSpace + "({1}" + strSpace + LanguageManager.GetString("String_Remaining") + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{1}{0}({2}{0}{3})",
+                LanguageManager.GetString("String_Space"), intPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
         }
 
         private int PowerPointsTotal

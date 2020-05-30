@@ -42,7 +42,7 @@ namespace Chummer.UI.Skills
             lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));
             lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(KnowledgeSkill.PoolToolTip));
 
-            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
+            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes().ToList();
             lstTypes.Sort(CompareListItems.CompareNames);
 
             cboType.BeginUpdate();
@@ -107,7 +107,7 @@ namespace Chummer.UI.Skills
 
                 chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
                         DataSourceUpdateMode.OnPropertyChanged);
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
+                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills().ToList();
                 lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 cboSkill.DataSource = lstDefaultKnowledgeSkills;
                 cboSkill.DisplayMember = nameof(ListItem.Name);

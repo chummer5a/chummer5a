@@ -67,6 +67,9 @@ namespace Chummer
             var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
+                // Set default cultures based on the currently set language
+                CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
+                CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
                 string strPostErrorMessage = string.Empty;
                 string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
                 if (!Directory.Exists(settingsDirectoryPath))
@@ -117,7 +120,8 @@ namespace Chummer
                 sw.TaskEnd("appdomain 2");
 
                 string strInfo =
-                    $"Application Chummer5a build {Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
+                    string.Format(GlobalOptions.InvariantCultureInfo, "Application Chummer5a build {0} started at {1} with command line arguments {2}",
+                        Assembly.GetExecutingAssembly().GetName().Version, DateTime.UtcNow, Environment.CommandLine);
                 sw.TaskEnd("infogen");
 
                 sw.TaskEnd("infoprnt");

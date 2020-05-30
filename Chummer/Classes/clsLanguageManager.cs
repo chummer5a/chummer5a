@@ -348,7 +348,7 @@ namespace Chummer
             {
                 return strReturn;
             }
-            return !blnReturnError ? string.Empty : $"{strKey} not found; check language file for string";
+            return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
         /// <summary>

@@ -63,8 +63,8 @@ namespace Chummer
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version") + strSpaceCharacter + _strCurrentVersion;
+                string strSpace = LanguageManager.GetString("String_Space");
+                string title = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion;
 #if DEBUG
                 title += " DEBUG BUILD";
 #endif
@@ -79,7 +79,7 @@ namespace Chummer
             InitializeComponent();
 
             _strCurrentVersion =
-                $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+                string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
             if (GlobalOptions.HideCharacterRoster)
@@ -121,12 +121,12 @@ namespace Chummer
                     // If Automatic Updates are enabled, check for updates immediately.
 
 #if !DEBUG
-            _workerVersionUpdateChecker.WorkerReportsProgress = false;
-            _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
-            _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
-            _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
-            Application.Idle += IdleUpdateCheck;
-            _workerVersionUpdateChecker.RunWorkerAsync();
+                    _workerVersionUpdateChecker.WorkerReportsProgress = false;
+                    _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
+                    _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
+                    _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
+                    Application.Idle += IdleUpdateCheck;
+                    _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
                     GlobalOptions.MRUChanged += (sender, e) =>
@@ -580,9 +580,9 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter +
-                       LanguageManager.GetString("String_Version") + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
+                string strSpace = LanguageManager.GetString("String_Space");
+                Text = Application.ProductName + strSpace + '-' + strSpace +
+                       LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion + strSpace + '-' + strSpace +
                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
             }
         }

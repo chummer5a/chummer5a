@@ -884,10 +884,10 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
-            if (!string.IsNullOrEmpty(strSpaceCharacter))
-                astrSourceParts = strSource.Split(strSpaceCharacter[0]);
+            if (!string.IsNullOrEmpty(strSpace))
+                astrSourceParts = strSource.Split(strSpace[0]);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
             {
                 astrSourceParts = new [] { "SR5", strSource.Substring(3) };
@@ -1202,34 +1202,35 @@ namespace Chummer
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
         /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
-        public static string GetTimescaleString(Timescale strValue, bool blnSingle)
+        /// <param name="strLanguage">Language to use. If left empty, will use current program language.</param>
+        public static string GetTimescaleString(Timescale strValue, bool blnSingle, string strLanguage = "")
         {
             switch (strValue)
             {
                 case Timescale.Seconds when blnSingle:
-                    return LanguageManager.GetString("String_Second");
+                    return LanguageManager.GetString("String_Second", strLanguage);
                 case Timescale.Seconds:
-                    return LanguageManager.GetString("String_Seconds");
+                    return LanguageManager.GetString("String_Seconds", strLanguage);
                 case Timescale.CombatTurns when blnSingle:
-                    return LanguageManager.GetString("String_CombatTurn");
+                    return LanguageManager.GetString("String_CombatTurn", strLanguage);
                 case Timescale.CombatTurns:
-                    return LanguageManager.GetString("String_CombatTurns");
+                    return LanguageManager.GetString("String_CombatTurns", strLanguage);
                 case Timescale.Minutes when blnSingle:
-                    return LanguageManager.GetString("String_Minute");
+                    return LanguageManager.GetString("String_Minute", strLanguage);
                 case Timescale.Minutes:
-                    return LanguageManager.GetString("String_Minutes");
+                    return LanguageManager.GetString("String_Minutes", strLanguage);
                 case Timescale.Hours when blnSingle:
-                    return LanguageManager.GetString("String_Hour");
+                    return LanguageManager.GetString("String_Hour", strLanguage);
                 case Timescale.Hours:
-                    return LanguageManager.GetString("String_Hours");
+                    return LanguageManager.GetString("String_Hours", strLanguage);
                 case Timescale.Days when blnSingle:
-                    return LanguageManager.GetString("String_Day");
+                    return LanguageManager.GetString("String_Day", strLanguage);
                 case Timescale.Days:
-                    return LanguageManager.GetString("String_Days");
+                    return LanguageManager.GetString("String_Days", strLanguage);
                 case Timescale.Instant:
-                    return LanguageManager.GetString("String_Immediate");
+                    return LanguageManager.GetString("String_Immediate", strLanguage);
                 default:
-                    return LanguageManager.GetString("String_Immediate");
+                    return LanguageManager.GetString("String_Immediate", strLanguage);
             }
         }
         #endregion

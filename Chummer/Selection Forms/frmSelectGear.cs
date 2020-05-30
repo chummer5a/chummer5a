@@ -586,9 +586,9 @@ namespace Chummer
 
             string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
@@ -698,7 +698,9 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
+                                           + strSpace + '-' + strSpace
+                                           + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                         decItemCost = decMin;
                     }
@@ -909,7 +911,7 @@ namespace Chummer
                 }
                 if (chkHideOverAvailLimit.Checked)
                 {
-                    while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -923,7 +925,7 @@ namespace Chummer
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -972,7 +974,7 @@ namespace Chummer
                 }
                 if (objNameFilter.Length > 0)
                 {
-                    strFilter.Append($" and ({objNameFilter.ToString().TrimEndOnce(" or ")})");
+                    strFilter.Append(" and (" + objNameFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
             if (ShowArmorCapacityOnly)
@@ -1072,7 +1074,7 @@ namespace Chummer
                     if (blnTerminateAfterFirst)
                         break;
                 }
-                else if (blnDoUIUpdate)
+                else
                     ++intOverLimit;
             }
             if (blnDoUIUpdate)

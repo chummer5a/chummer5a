@@ -476,7 +476,7 @@ namespace Chummer
                         else
                             ++intOverLimit;
                     }
-                    
+
                     lstArmors.Sort(CompareListItems.CompareNames);
                     if (intOverLimit > 0)
                     {

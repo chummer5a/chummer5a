@@ -27,7 +27,7 @@ namespace Chummer.Backend.Skills
     {
         private static readonly Dictionary<string, string> s_CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribute
 
-        public static IEnumerable<ListItem> DefaultKnowledgeSkills(string strLanguage)
+        public static IEnumerable<ListItem> DefaultKnowledgeSkills(string strLanguage = "")
         {
             using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/knowledgeskills/skill"))
             {
@@ -47,7 +47,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="strLanguage"></param>
         /// <returns></returns>
-        public static IEnumerable<ListItem> KnowledgeTypes(string strLanguage)
+        public static IEnumerable<ListItem> KnowledgeTypes(string strLanguage = "")
         {
             using (XmlNodeList xmlCategoryList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
             {
@@ -128,7 +128,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XmlNode xmlSkillNode = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strSkillName + "\"]");
 
             if (xmlSkillNode == null)
             {
@@ -162,7 +162,7 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + strInputSkillName + "\"]");
 
             if (xmlSkillTranslationNode == null)
             {

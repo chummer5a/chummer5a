@@ -162,7 +162,7 @@ namespace Chummer.UI.Skills
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.Skills.Remove(skill);
                     skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill
-                        ? $"{skill.Name} ({skill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
+                        ? skill.Name + " (" + skill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
                         : skill.Name);
                 };
 
@@ -299,8 +299,9 @@ namespace Chummer.UI.Skills
             List<ListItem> lstAttributeItems = new List<ListItem>();
 		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
-                if (strLoopAttribute != "MAGAdept")
-                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
+                string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
+                if (!string.IsNullOrEmpty(strAttributeShort))
+                    lstAttributeItems.Add(new ListItem (strLoopAttribute, strAttributeShort));
             }
 
             cboSelectAttribute.BeginUpdate();

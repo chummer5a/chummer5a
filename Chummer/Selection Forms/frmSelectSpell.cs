@@ -88,7 +88,7 @@ namespace Chummer
                     {
                         if (_xmlBaseSpellDataNode
                                 .Select(
-                                    $"spells/spell[category = \"{strCategory}\" and range = \"{improvement.ImprovedName}\"]")
+                                    "spells/spell[category = \"" + strCategory + "\" and range = \"" + improvement.ImprovedName + "\"]")
                                 .Count > 0)
                         {
                             limit.Add(strCategory);
@@ -507,6 +507,7 @@ namespace Chummer
                 return;
             }
 
+            string strSpace = LanguageManager.GetString("String_Space");
             string[] strDescriptorsIn = xmlSpell.SelectSingleNode("descriptor")?.Value.Split(',') ?? new string[] {};
 
             StringBuilder objDescriptors = new StringBuilder();
@@ -520,42 +521,29 @@ namespace Chummer
                     {
                         case "Alchemical Preparation":
                             blnAlchemicalFound = true;
-                            objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
                             break;
                         case "Extended Area":
                             blnExtendedFound = true;
-                            objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea"));
                             break;
                         case "Material Link":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink"));
                             break;
                         case "Multi-Sense":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense"));
                             break;
                         case "Organic Link":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink"));
                             break;
                         case "Single-Sense":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense"));
                             break;
                         default:
-                            objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}",
-                                GlobalOptions.Language));
-                            objDescriptors.Append(", ");
+                            objDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
                             break;
                     }
+                    objDescriptors.Append(',' + strSpace);
                 }
             }
 
@@ -579,14 +567,12 @@ namespace Chummer
             // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
             if (chkExtended.Checked && !blnExtendedFound)
             {
-                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea"));
-                objDescriptors.Append(", ");
+                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea") + ',' + strSpace);
             }
 
             if (chkAlchemical.Checked && !blnAlchemicalFound)
             {
-                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
-                objDescriptors.Append(", ");
+                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation") + ',' + strSpace);
             }
 
             // Remove the trailing comma.
@@ -716,7 +702,7 @@ namespace Chummer
             {
                 if (force)
                 {
-                    strDV = $"F{xprResult:+0;-0;}";
+                    strDV = string.Format(GlobalOptions.CultureInfo, "F{0:+0;-0;}", xprResult);
                 }
                 else if (xprResult.ToString() != "0")
                 {
@@ -742,10 +728,9 @@ namespace Chummer
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter +
-                                 LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace +
+                                 LanguageManager.GetString("String_Page") + strSpace + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             _blnRefresh = false;
         }

@@ -781,6 +781,9 @@ namespace Chummer
                     {
                         s_ObjLanguageCultureInfo = SystemCultureInfo;
                     }
+                    // Set default cultures based on the currently set language
+                    CultureInfo.DefaultThreadCurrentCulture = s_ObjLanguageCultureInfo;
+                    CultureInfo.DefaultThreadCurrentUICulture = s_ObjLanguageCultureInfo;
                 }
             }
         }
@@ -811,12 +814,12 @@ namespace Chummer
         /// <summary>
         /// Invariant CultureInfo for saving and loading of numbers.
         /// </summary>
-        public static CultureInfo InvariantCultureInfo { get; } = CultureInfo.InvariantCulture;
+        public static CultureInfo InvariantCultureInfo => CultureInfo.InvariantCulture;
 
         /// <summary>
         /// CultureInfo of the user's current system.
         /// </summary>
-        public static CultureInfo SystemCultureInfo { get; } = CultureInfo.CurrentCulture;
+        public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument {XmlResolver = null};
 

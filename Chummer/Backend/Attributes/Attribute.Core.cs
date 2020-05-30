@@ -375,7 +375,9 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
-        public string DisplayValue => HasModifiers ? $"{Value} ({TotalValue})" : $"{Value}";
+        public string DisplayValue => HasModifiers
+            ? Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + '(' + TotalValue.ToString(GlobalOptions.CultureInfo) + ')'
+            : Value.ToString(GlobalOptions.CultureInfo);
 
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
@@ -685,7 +687,8 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// CharacterAttribute Limits
         /// </summary>
-        public string AugmentedMetatypeLimits => $"{TotalMinimum} / {TotalMaximum} ({TotalAugmentedMaximum})";
+        public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
+            LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
 
         public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
             LanguageManager.GetString("String_Of") +
@@ -726,7 +729,7 @@ namespace Chummer.Backend.Attributes
                 if (!string.IsNullOrEmpty(_strCachedToolTip))
                     return _strCachedToolTip;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder strModifier = new StringBuilder();
 
                 HashSet<string> lstUniqueName = new HashSet<string>();
@@ -749,7 +752,7 @@ namespace Chummer.Backend.Attributes
                     else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                     {
                         int intValue = objImprovement.Augmented * objImprovement.Rating;
-                        strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
+                        strModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpace + '(' +
                                            (intValue).ToString(GlobalOptions.CultureInfo) + ')');
                         intBaseValue += intValue;
                     }
@@ -769,7 +772,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > intHighest)
                             {
                                 intHighest = strValues.Item2;
-                                strNewModifier = new StringBuilder(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                strNewModifier = new StringBuilder(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -780,7 +783,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item1 == "precedence-1")
                             {
                                 intHighest += strValues.Item2;
-                                strNewModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                strNewModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -794,8 +797,7 @@ namespace Chummer.Backend.Attributes
                     StringBuilder strNewModifier = new StringBuilder();
                     foreach (Tuple<string, int, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
-                        strNewModifier.Append(
-                            $"{strSpaceCharacter}+{strSpaceCharacter}{strValues.Item3}{strSpaceCharacter}({strValues.Item2.ToString(GlobalOptions.CultureInfo)})");
+                        strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strValues.Item3, strValues.Item2);
                     }
                     strModifier = strNewModifier;
                 }
@@ -812,7 +814,7 @@ namespace Chummer.Backend.Attributes
                                 if (strValues.Item2 > intHighest)
                                 {
                                     intHighest = strValues.Item2;
-                                    strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                    strModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                                 }
                             }
                         }
@@ -838,7 +840,7 @@ namespace Chummer.Backend.Attributes
                     }
                     else
                     {
-                        strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
+                        strModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpace + '(' +
                                            (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
@@ -854,7 +856,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > intHighest)
                             {
                                 intHighest = strValues.Item2;
-                                strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                strModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -868,14 +870,14 @@ namespace Chummer.Backend.Attributes
                         if (objCyberware.Category == "Cyberlimb")
                         {
                             strModifier.Append(Environment.NewLine);
-                            strModifier.Append(objCyberware.CurrentDisplayName + strSpaceCharacter + '(');
+                            strModifier.Append(objCyberware.CurrentDisplayName + strSpace + '(');
                             strModifier.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString(GlobalOptions.CultureInfo) : objCyberware.TotalStrength.ToString(GlobalOptions.CultureInfo));
                             strModifier.Append(')');
                         }
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier;
+                return _strCachedToolTip = DisplayAbbrev + strSpace + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier;
             }
         }
 
@@ -1198,7 +1200,7 @@ namespace Chummer.Backend.Attributes
             if (Abbrev == "MAGAdept")
                 return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
-            return LanguageManager.GetString($"String_Attribute{Abbrev}Short", strLanguage);
+            return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }
 
         public void Upgrade(int intAmount = 1)
@@ -1213,7 +1215,8 @@ namespace Chummer.Backend.Attributes
                     int intPrice = UpgradeKarmaCost;
                     int intValue = Value;
 
-                    string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {Abbrev} {intValue} -> {intValue + 1}";
+                    string strUpgradetext = string.Format(GlobalOptions.CultureInfo, "{1}{0}{2}{0}{3}{0}->{0}{4}",
+                        LanguageManager.GetString("String_Space"), LanguageManager.GetString("String_ExpenseAttribute"), Abbrev, intValue, intValue + 1);
 
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                     objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);

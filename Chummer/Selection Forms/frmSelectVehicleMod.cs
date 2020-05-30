@@ -439,6 +439,7 @@ namespace Chummer
                 return;
 
             _blnSkipUpdate = true;
+            string strSpace = LanguageManager.GetString("String_Space");
             XPathNavigator xmlVehicleMod = null;
             string strSelectedId = lstMod.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -446,8 +447,8 @@ namespace Chummer
                 // Retireve the information for the selected Mod.
                 // Filtering is also done on the Category in case there are non-unique names across categories.
                 xmlVehicleMod = VehicleMountMods
-                    ? _xmlBaseVehicleDataNode.SelectSingleNode($"weaponmountmods/mod[id = \"{strSelectedId}\"]")
-                    : _xmlBaseVehicleDataNode.SelectSingleNode($"mods/mod[id = \"{strSelectedId}\"]");
+                    ? _xmlBaseVehicleDataNode.SelectSingleNode("weaponmountmods/mod[id = \"" + strSelectedId + "\"]")
+                    : _xmlBaseVehicleDataNode.SelectSingleNode("mods/mod[id = \"" + strSelectedId + "\"]");
             }
 
             if (xmlVehicleMod != null)
@@ -598,7 +599,9 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
+                                           + strSpace + '-' + strSpace
+                                           + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                         strCost = decMin.ToString(GlobalOptions.InvariantCultureInfo);
                     }
@@ -695,9 +698,8 @@ namespace Chummer
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

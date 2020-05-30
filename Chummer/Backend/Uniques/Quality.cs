@@ -324,7 +324,7 @@ namespace Chummer
                 if (objXmlQuality.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) && !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strQualityNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strQualityNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -338,7 +338,7 @@ namespace Chummer
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}", strTranslatedNameOnPage);
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), strTranslatedNameOnPage);
                     }
                 }
                 else
@@ -481,13 +481,13 @@ namespace Chummer
         {
             if (AllowPrint && objWriter != null)
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguageToPrint);
+                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 string strRatingString = string.Empty;
                 if (intRating > 1)
-                    strRatingString = strSpaceCharacter + intRating.ToString(objCulture);
+                    strRatingString = strSpace + intRating.ToString(objCulture);
                 string strSourceName = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SourceName))
-                    strSourceName = strSpaceCharacter + '(' + GetSourceName(strLanguageToPrint) + ')';
+                    strSourceName = strSpace + '(' + GetSourceName(strLanguageToPrint) + ')';
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
@@ -693,17 +693,17 @@ namespace Chummer
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             int intLevels = Levels;
             if (intLevels > 1)
-                strReturn += strSpaceCharacter + intLevels.ToString(objCulture);
+                strReturn += strSpace + intLevels.ToString(objCulture);
 
             return strReturn;
         }
@@ -904,9 +904,9 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("qualities.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]")
                     : XmlManager.Load("qualities.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/qualities/quality[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -60,7 +60,7 @@ namespace Chummer
                 TreeNode nodCategoryNode = treAvailableComponents.FindNode("Node_" + strCategory);
                 if (nodCategoryNode == null)
                 {
-                    Log.Warn($"Unknown category {strCategory} in component {objItem.Key}");
+                    Log.Warn("Unknown category " + strCategory + " in component " + objItem.Key);
                     return;
                 }
                 TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
@@ -170,7 +170,7 @@ namespace Chummer
             TreeNode nodCategoryNode = treChosenComponents.FindNode("Node_" + strCategory);
             if (nodCategoryNode == null)
             {
-                Log.Warn($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
+                Log.Warn("Unknown category " + strCategory + " in component " + objNodeData.DrugComponent.Name);
                 return;
             }
 

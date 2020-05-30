@@ -438,7 +438,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -452,7 +452,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -1440,16 +1440,16 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             else
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguageToPrint);
+                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) /
                                3;
                 objWriter.WriteElementString("name",
-                    DisplayNameShort(strLanguageToPrint) + strSpaceCharacter + '(' +
-                    _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter +
-                    TotalAgility.ToString(objCulture) + ',' + strSpaceCharacter +
-                    _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter +
-                    TotalStrength.ToString(objCulture) + ',' + strSpaceCharacter +
-                    LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpaceCharacter +
+                    DisplayNameShort(strLanguageToPrint) + strSpace + '(' +
+                    _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpace +
+                    TotalAgility.ToString(objCulture) + ',' + strSpace +
+                    _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpace +
+                    TotalStrength.ToString(objCulture) + ',' + strSpace +
+                    LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpace +
                     intLimit.ToString(objCulture) + ')');
             }
 
@@ -1698,17 +1698,17 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) +
-                             strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) +
+                             strSpace + Rating.ToString(objCulture) + ')';
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             if (!string.IsNullOrEmpty(Location))
@@ -1719,7 +1719,7 @@ namespace Chummer.Backend.Equipment
                 else if (Location == "Right")
                     strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
                 if (!string.IsNullOrEmpty(strSide))
-                    strReturn += strSpaceCharacter + '(' + strSide + ')';
+                    strReturn += strSpace + '(' + strSide + ')';
             }
 
             return strReturn;

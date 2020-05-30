@@ -165,7 +165,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -179,7 +179,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -861,7 +861,7 @@ namespace Chummer.Backend.Equipment
                         int intMax = Convert.ToInt32(strValue.Split('[')[0], GlobalOptions.InvariantCultureInfo);
                         if (Rating > intMax)
                             continue;
-                        strAvail = $"{Rating}{strAvailCode}";
+                        strAvail = Rating.ToString(GlobalOptions.InvariantCultureInfo) + strAvailCode;
                         break;
                     }
                 }
@@ -1237,11 +1237,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             return strReturn;
         }
 
@@ -1334,11 +1334,10 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("vehicles.xml", strLanguage);
-                _objCachedMyXmlNode = (XmlManager.Load("vehicles.xml", strLanguage)
-                                             .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]") ??
-                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]")) ??
-                                       objDoc.SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]") ??
-                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{Name}\"]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() +  "\"]")
+                                      ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]")
+                                      ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = \"" + Name +  "\"]")
+                                      ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = \"" + Name + "\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

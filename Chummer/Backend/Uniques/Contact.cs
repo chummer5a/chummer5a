@@ -509,8 +509,10 @@ namespace Chummer
 
                 strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
-                if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
-                objMetatypeNode = objMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
+                if (LinkedCharacter.MetavariantGuid == Guid.Empty)
+                    return strReturn;
+                objMetatypeNode = objMetatypeNode
+                    .SelectSingleNode("metavariants/metavariant[id = \"" + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
@@ -767,7 +769,7 @@ namespace Chummer
 
         public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
-        public string QuickText => $"({Connection}/{(IsGroup ? $"{Loyalty}G" : Loyalty.ToString(GlobalOptions.CultureInfo))})";
+        public string QuickText => string.Format(GlobalOptions.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", Connection, Loyalty);
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.

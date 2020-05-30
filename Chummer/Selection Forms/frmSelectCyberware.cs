@@ -324,9 +324,9 @@ namespace Chummer
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -1114,7 +1114,7 @@ namespace Chummer
                         }
                     }
                 }
-                if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(xmlCyberware, _objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+                if (chkHideOverAvailLimit.Checked && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
                 {
                     ++intOverLimit;
                     continue;
@@ -1124,7 +1124,7 @@ namespace Chummer
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    if (!SelectionShared.CheckNuyenRestriction(xmlCyberware, _objCharacter.Nuyen, decCostMultiplier))
+                    if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                     {
                         ++intOverLimit;
                         continue;
@@ -1357,7 +1357,7 @@ namespace Chummer
             if (_strSubsystems.Length > 0)
             {
                 // Populate the Cyberware Category list.
-                string strSubsystem = $"categories/category[. = \"{_strSubsystems.Replace(",", "\" or . = \"")}\"]";
+                string strSubsystem = "categories/category[. = \"" + _strSubsystems.Replace(",", "\" or . = \"") + "\"]";
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.Select(strSubsystem);
             }
             else

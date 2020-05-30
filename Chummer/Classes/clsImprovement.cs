@@ -43,7 +43,8 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private string DisplayDebug()
         {
-            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+            return string.Format(GlobalOptions.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
+                _objImprovementType, _intVal, _intRating, _objImprovementSource, _strSourceName, _strImprovedName);
         }
 
         public enum ImprovementType

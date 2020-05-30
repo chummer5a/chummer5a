@@ -49,7 +49,9 @@ namespace Chummer
             _xmlMetatypeDataNode = _objCharacter.GetNode();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode($"/metavariants/metavariant[name = \"{_objCharacter.MetavariantGuid}\"]");
+            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = \""
+                                                                                      + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                                                                      + "\"]");
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
@@ -201,9 +203,9 @@ namespace Chummer
 
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 

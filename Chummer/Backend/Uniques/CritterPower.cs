@@ -112,10 +112,10 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */
@@ -590,8 +590,8 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/powers/power[name = \"{Name}\"]"
-                        : $"/chummer/powers/power[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        ? "/chummer/powers/power[name = \"" + Name + "\"]"
+                        : "/chummer/powers/power[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

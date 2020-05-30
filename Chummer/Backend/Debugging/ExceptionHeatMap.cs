@@ -44,7 +44,7 @@ namespace Chummer.Backend
             // In theory shouldn't mask any existing issues?
             if (frame == null)
                 return;
-            string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
+            string heat = string.Format(GlobalOptions.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
 
             if (_map.TryGetValue(heat, out int intTmp))
             {
@@ -68,7 +68,7 @@ namespace Chummer.Backend
             {
                 builder.Append('\t'); builder.Append('\t');
                 length = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), length);
-                builder.Append(exception.Value.ToString($"D{length}", GlobalOptions.InvariantCultureInfo));
+                builder.Append(exception.Value.ToString("D" + length.ToString(GlobalOptions.InvariantCultureInfo), GlobalOptions.InvariantCultureInfo));
 
                 builder.Append(" - ").AppendLine(exception.Key);
             }

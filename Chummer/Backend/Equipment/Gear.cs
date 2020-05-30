@@ -186,7 +186,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -200,7 +200,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -2070,12 +2070,13 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
-                    ? objDoc.SelectSingleNode($"/chummer/gears/gear[(name = \"{strName}\" and category = \"{strCategory}\")]")
-                    : objDoc.SelectSingleNode($"/chummer/gears/gear[(id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\") or (name = {strNameWithQuotes} and category = \"{Category}\")]");
+                    ? objDoc.SelectSingleNode("/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]")
+                    : objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
+                                              + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[name = {strNameWithQuotes}]") ??
-                                          objDoc.SelectSingleNode($"/chummer/gears/gear[contains(name, {strNameWithQuotes})]");
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
+                                          objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
                     _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
@@ -2551,17 +2552,17 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1.0m || Category == "Currency")
-                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
+                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpace + strReturn;
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
 
             if (!string.IsNullOrEmpty(GearName))
             {
-                strReturn += strSpaceCharacter + "(\"" + GearName + "\")";
+                strReturn += strSpace + "(\"" + GearName + "\")";
             }
 
             return strReturn;
@@ -2938,7 +2939,7 @@ namespace Chummer.Backend.Equipment
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
                                 ? CurrentDisplayName
-                                : $"{CurrentDisplayName} ({Parent})";
+                                : CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + Parent + ')';
                         }
                         else
                         {

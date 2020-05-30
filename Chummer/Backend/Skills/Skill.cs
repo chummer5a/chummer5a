@@ -194,9 +194,10 @@ namespace Chummer.Backend.Skills
             }
             else if (suid != Guid.Empty)
             {
-                XmlNode xmlSkillDataNode = xmlSkills.SelectSingleNode($"/chummer/skills/skill[id = '{xmlSkillNode["suid"]?.InnerText}']");
+                XmlNode xmlSkillDataNode = xmlSkills.SelectSingleNode("/chummer/skills/skill[id = '" + xmlSkillNode["suid"]?.InnerText + "']");
 
-                if (xmlSkillDataNode == null) return null;
+                if (xmlSkillDataNode == null)
+                    return null;
 
                 if (xmlSkillDataNode["exotic"]?.InnerText == bool.TrueString)
                 {
@@ -294,9 +295,12 @@ namespace Chummer.Backend.Skills
             else
             {
                 XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
-                XmlNode xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[id = '{suid}']") ??
+                XmlNode xmlSkillDataNode = xmlSkillsDocument
+                                               .SelectSingleNode("/chummer/skills/skill[id = '"
+                                                                 + suid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                                                 + "']")
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
-                    xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[name = \"{strName}\"]");
+                    ?? xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strName + "\"]");
 
 
                 objSkill = FromData(xmlSkillDataNode, objCharacter);
@@ -428,7 +432,8 @@ namespace Chummer.Backend.Skills
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    blnIsKnowledgeSkill = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/categories/category[. = '{category}']/@type")?.InnerText != "active";
+                    blnIsKnowledgeSkill = XmlManager.Load("skills.xml")
+                        .SelectSingleNode("/chummer/categories/category[. = '" + category + "']/@type")?.InnerText != "active";
                     if (SkillTypeCache != null)
                         SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
@@ -797,7 +802,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string DisplayAttributeMethod(string strLanguage)
         {
-            return LanguageManager.GetString($"String_Attribute{Attribute}Short", strLanguage);
+            return LanguageManager.GetString("String_Attribute" + Attribute +  "Short", strLanguage);
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalOptions.Language);
@@ -1055,7 +1060,8 @@ namespace Chummer.Backend.Skills
             {
                 return ((ExoticSkill)this).Specific == strSpecialization;
             }
-            return Specializations.Any(x => (x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)) && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
+            return Specializations.Any(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
+                   && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
         }
 
         public SkillSpecialization GetSpecialization(string strSpecialization)
@@ -1065,7 +1071,9 @@ namespace Chummer.Backend.Skills
             {
                 return Specializations[0];
             }
-            return HasSpecialization(strSpecialization) ? Specializations.FirstOrDefault(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization) : null;
+            return HasSpecialization(strSpecialization)
+                ? Specializations.FirstOrDefault(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
+                : null;
         }
 
         public string PoolToolTip => CompileDicepoolTooltip(Attribute);
@@ -1084,12 +1092,14 @@ namespace Chummer.Backend.Skills
             if (CyberwareRating > TotalBaseRating)
             {
                 s = new StringBuilder(
-                    $"{LanguageManager.GetString("Tip_Skill_SkillsoftRating")}{strSpace}({CyberwareRating})");
+                    LanguageManager.GetString("Tip_Skill_SkillsoftRating")
+                    + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
             }
             else
             {
                 s = new StringBuilder(
-                    $"{LanguageManager.GetString("Tip_Skill_SkillRating")}{strSpace}({Rating}");
+                    LanguageManager.GetString("Tip_Skill_SkillsoftRating")
+                    + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
                 foreach (Improvement objImprovement in lstRelevantImprovements.Where(x => x.AddToRating))
                 {
@@ -1390,17 +1400,20 @@ namespace Chummer.Backend.Skills
             else
             {
                 int intConditionalBonus = PoolOtherAttribute(intAttributeTotalValue, strAttribute, true);
-                if (string.IsNullOrWhiteSpace(Specialization) && intPool == intConditionalBonus) return intPool
-                    .ToString(GlobalOptions.CultureInfo);
-                if (string.IsNullOrWhiteSpace(Specialization)) return $"{intPool} ({intConditionalBonus})";
-                //Handler for the Inspired Quality.
-                if (Name == "Artisan" && !IsKnowledgeSkill &&
-                    CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
+                if (string.IsNullOrWhiteSpace(Specialization) && intPool == intConditionalBonus)
+                    return intPool.ToString(GlobalOptions.CultureInfo);
+                int intSpecBonus = 0;
+                if (!string.IsNullOrWhiteSpace(Specialization))
                 {
-                    return $"{intPool} ({3 + intConditionalBonus})";
+                    intSpecBonus = CharacterObject.Options.SpecializationBonus;
+                    //Handler for the Inspired Quality.
+                    if (Name == "Artisan" && !IsKnowledgeSkill && CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
+                    {
+                        intSpecBonus += 1;
+                    }
                 }
-
-                return $"{intPool} ({2 + intConditionalBonus})";
+                return string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})",
+                    intPool, LanguageManager.GetString("String_Space"), intSpecBonus + intConditionalBonus);
             }
         }
 

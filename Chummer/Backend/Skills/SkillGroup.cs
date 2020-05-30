@@ -558,8 +558,8 @@ namespace Chummer.Backend.Skills
             {
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
                 }
                 return _strToolTip;
             }

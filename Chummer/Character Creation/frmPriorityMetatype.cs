@@ -960,7 +960,7 @@ namespace Chummer
 
         void RefreshSelectedMetatype()
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
@@ -980,7 +980,7 @@ namespace Chummer
                 }
             }
 
-            string strAttributeFormat = "{0}/{1}" + strSpaceCharacter + "({2})";
+            string strAttributeFormat = "{0}/{1}" + strSpace + "({2})";
             if (objXmlMetavariant != null)
             {
                 if (objXmlMetavariantPriorityNode == null)
@@ -1044,14 +1044,14 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpace + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.Value;
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + strSelect + ')';
+                            strQuality += strSpace + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -1069,10 +1069,10 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(strSpaceCharacter);
+                            strQualities.Append(strSpace);
                             strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
-                        strQualities.Append(',' + strSpaceCharacter);
+                        strQualities.Append(',' + strSpace);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();
@@ -1116,14 +1116,14 @@ namespace Chummer
 
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpace + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
                     }
                     else
                     {
                         strQuality = xmlQuality.Value;
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + strSelect + ')';
+                            strQuality += strSpace + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -1141,10 +1141,10 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(strSpaceCharacter);
+                            strQualities.Append(strSpace);
                             strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
-                        strQualities.Append(',' + strSpaceCharacter);
+                        strQualities.Append(',' + strSpace);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();

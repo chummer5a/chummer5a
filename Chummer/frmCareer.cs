@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -548,7 +547,7 @@ namespace Chummer
                             XmlDocument objDoc = XmlManager.Load("metatypes.xml");
                             XmlNode node =
                                 objDoc.SelectSingleNode(
-                                    $"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]");
+                                    "/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
                             List<ListItem> lstAttributeCategories = new List<ListItem>
                             {
                                 new ListItem("Standard",
@@ -556,7 +555,7 @@ namespace Chummer
                             };
 
                             node = node?.SelectSingleNode(
-                                $"metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]/name/@translate");
+                                "metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]/name/@translate");
 
                             //The Shapeshifter attribute category is treated as the METAHUMAN form of a shapeshifter.
                             lstAttributeCategories.Add(new ListItem("Shapeshifter",
@@ -586,7 +585,7 @@ namespace Chummer
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes) continue;
                             lstFireModes.Add(new ListItem(mode.ToString(),
-                                LanguageManager.GetString($"Enum_{mode}")));
+                                LanguageManager.GetString("Enum_" + mode.ToString())));
                         }
 
                         cboVehicleWeaponFiringMode.BeginUpdate();
@@ -1993,12 +1992,12 @@ namespace Chummer
             }
 
             Cursor = Cursors.WaitCursor;
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             Character[] lstClones = new Character[intClones];
             object lstClonesLock = new object();
             Parallel.For(0, intClones, (i =>
             {
-                Character objLoopCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo), true).Result;
+                Character objLoopCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result;
                 lock (lstClonesLock)
                 {
                     lstClones[i] = objLoopCharacter;

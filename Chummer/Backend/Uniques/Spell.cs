@@ -117,7 +117,7 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetText(_strSource + ' ' + _strPage, Name);
             }
             */
         }
@@ -301,11 +301,13 @@ namespace Chummer
         /// <summary>
         /// Translated Descriptors.
         /// </summary>
-        public string DisplayDescriptors(string strLanguage)
+        public string DisplayDescriptors(string strLanguage = "")
         {
+            if (string.IsNullOrWhiteSpace(Descriptors))
+                return LanguageManager.GetString("String_None", strLanguage);
             StringBuilder objReturn = new StringBuilder();
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             bool blnExtendedFound = false;
-            if (string.IsNullOrWhiteSpace(Descriptors)) return LanguageManager.GetString("String_None");
             if (_hashDescriptors.Count > 0)
             {
                 foreach (string strDescriptor in _hashDescriptors)
@@ -319,7 +321,7 @@ namespace Chummer
                         case "Extended Area":
                             blnExtendedFound = true;
                             objReturn.Append(LanguageManager.GetString("String_DescExtendedArea",
-                                GlobalOptions.Language));
+                                strLanguage));
                             break;
                         case "Material Link":
                             objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
@@ -334,23 +336,23 @@ namespace Chummer
                             objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
                             break;
                         default:
-                            objReturn.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}",
+                            objReturn.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim(),
                                 strLanguage));
                             break;
 
                     }
 
-                    objReturn.Append(", ");
+                    objReturn.Append(',' + strSpace);
                 }
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
             if (Extended && !blnExtendedFound)
-                objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage) + ", ");
+                objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage) + ',' + strSpace);
 
             // Remove the trailing comma.
-            if (objReturn.Length >= 2)
-                objReturn.Length -= 2;
+            if (objReturn.Length >= strSpace.Length + 1)
+                objReturn.Length -= strSpace.Length + 1;
 
             return objReturn.ToString();
         }
@@ -521,7 +523,7 @@ namespace Chummer
             foreach (var improvement in RelevantImprovements(i =>
                 i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage ||
                 i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
-                sBld.Append($" + {improvement.Value:0;-0;0}");
+                sBld.AppendFormat(GlobalOptions.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
             string output = sBld.ToString();
 
             object xprResult = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'), out bool blnIsSuccess);
@@ -611,7 +613,7 @@ namespace Chummer
                     i.ImproveType == Improvement.ImprovementType.DrainValue ||
                     i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
                     i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
-                    strDV += $" + {improvement.Value:0;-0;0}";
+                    strDV += string.Format(GlobalOptions.CultureInfo, " + {0:0;-0;0}", improvement.Value);
                 if (Limited)
                 {
                     strDV += " + -2";
@@ -624,7 +626,7 @@ namespace Chummer
                 if (!blnIsSuccess) return strReturn;
                 if (force)
                 {
-                    strReturn = $"F{xprResult:+0;-0;}";
+                    strReturn = string.Format(GlobalOptions.InvariantCultureInfo, "F{0:+0;-0;}", xprResult);
                 }
                 else if (xprResult.ToString() != "0")
                 {
@@ -915,7 +917,7 @@ namespace Chummer
                             {
                                 if (hash.StartsWith("NOT", StringComparison.Ordinal))
                                 {
-                                    if (_hashDescriptors.Any(s => hash == $"NOT({s})"))
+                                    if (_hashDescriptors.Contains(hash.TrimStartOnce("NOT(").TrimEndOnce(')')))
                                     {
                                         allow = false;
                                         break;
@@ -923,7 +925,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    allow = _hashDescriptors.Any(s => s == hash);
+                                    allow = _hashDescriptors.Contains(hash);
                                 }
                             }
 

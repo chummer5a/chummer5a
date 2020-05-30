@@ -671,7 +671,7 @@ namespace Chummer
         /// <param name="xmlDoc">Document element in which to operate.</param>
         /// <param name="xmlAmendingNode">The amending (new) node.</param>
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
-        /// <param name="queExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
+        /// <param name="lstExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
         private static bool AmendNodeChildern(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound)
         {

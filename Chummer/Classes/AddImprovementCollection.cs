@@ -712,13 +712,14 @@ namespace Chummer.Classes
                 foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
                 {
                     ExoticSkill objSkill = (ExoticSkill) objLoopSkill;
-                    if ($"{objSkill.Name} ({objSkill.Specific})" != strSelectedSkill)
+                    string strSpecificName = objSkill.Name + " (" + objSkill.Specific + ')';
+                    if (strSpecificName != strSelectedSkill)
                         continue;
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        CreateImprovement(strSpecificName, _objImprovementSource,
                             SourceName,
                             Improvement.ImprovementType.Skill, _strUnique,
                             ImprovementManager.ValueToInt(_objCharacter, strVal, _intRating), 1,
@@ -728,7 +729,7 @@ namespace Chummer.Classes
                     if (blnDisableSpec)
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        CreateImprovement(strSpecificName, _objImprovementSource,
                             SourceName,
                             Improvement.ImprovementType.DisableSpecializationEffects,
                             _strUnique);
@@ -737,7 +738,7 @@ namespace Chummer.Classes
                     if (!string.IsNullOrEmpty(strMax))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        CreateImprovement(strSpecificName, _objImprovementSource,
                             SourceName,
                             Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
                             ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
@@ -959,6 +960,7 @@ namespace Chummer.Classes
                 }
             }
 
+            string strSpace = LanguageManager.GetString("String_Space");
             StringBuilder sBld = new StringBuilder();
             foreach (string s in AttributeSection.AttributeStrings)
             {
@@ -967,9 +969,9 @@ namespace Chummer.Classes
                 {
                     if (sBld.Length > 0)
                     {
-                        sBld.Append(", ");
+                        sBld.Append(',' + strSpace);
                     }
-                    sBld.Append($"{s} ({i})");
+                    sBld.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})", s, strSpace, i);
                 }
             }
 
@@ -2340,7 +2342,7 @@ namespace Chummer.Classes
                 foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
                 {
                     ExoticSkill objExoticSkill = (ExoticSkill)objLoopSkill;
-                    if ($"{objExoticSkill.Name} ({objExoticSkill.Specific})" != SelectedValue)
+                    if (objExoticSkill.Name + " (" + objExoticSkill.Specific + ')' != SelectedValue)
                         continue;
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
@@ -4218,7 +4220,7 @@ namespace Chummer.Classes
                                 Log.Info("selectpower = " + objNode.OuterXml);
 
                                 frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
-                                
+
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
                                     frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -5623,8 +5625,8 @@ namespace Chummer.Classes
             // Display the Select Item window and record the value that was entered.
             string strCategory = bonusNode["category"]?.InnerText;
             XmlNodeList objXmlNodeList = XmlManager.Load("cyberware.xml").SelectNodes(!string.IsNullOrEmpty(strCategory)
-            ? $"/chummer/cyberwares/cyberware[(category = '{strCategory}') and ({_objCharacter.Options.BookXPath()})]"
-            : $"/chummer/cyberwares/cyberware[({_objCharacter.Options.BookXPath()})]");
+                ? "/chummer/cyberwares/cyberware[(category = '" + strCategory + "') and (" + _objCharacter.Options.BookXPath() + ")]"
+                : "/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ")]");
 
             List<ListItem> list = new List<ListItem>();
             if (objXmlNodeList != null)
@@ -6467,7 +6469,7 @@ namespace Chummer.Classes
 
             if (!string.IsNullOrEmpty(strCritterCategory))
             {
-                using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml").SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
+                using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml").SelectNodes("/chummer/critters/critter[category = \"" + strCritterCategory + "\"]"))
                 {
                     if (xmlSpirits?.Count > 0)
                     {

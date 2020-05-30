@@ -735,7 +735,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = \"" + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }
@@ -784,9 +784,9 @@ namespace Chummer.Backend.Attributes
             XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc?.SelectSingleNode(strMetavariantXPath) : null;
             if (node != null)
             {
-                objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeMinimum = Convert.ToInt32(node[strSourceAbbrev + "min"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeMaximum = Convert.ToInt32(node[strSourceAbbrev + "max"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[strSourceAbbrev + "aug"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             }
 
             objTarget.Base = objSource.Base;

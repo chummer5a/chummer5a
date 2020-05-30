@@ -334,8 +334,10 @@ namespace Chummer
                         decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     lblCost.Text = decMax == decimal.MaxValue
-                        ? $"{decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)}¥+"
-                        : $"{decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)} - {decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)}{'¥'}";
+                        ? decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+"
+                        : decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
+                          + LanguageManager.GetString("String_Space") + '-' + LanguageManager.GetString("String_Space")
+                          + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     lblTest.Text = _objCharacter.AvailTest(decMin, lblAvail.Text);
                 }
@@ -392,9 +394,9 @@ namespace Chummer
 
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 

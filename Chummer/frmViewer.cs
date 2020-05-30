@@ -379,7 +379,7 @@ namespace Chummer
             string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
-                string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
+                string strReturn = "File not found when attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
                 Program.MainForm.ShowMessageBox(strReturn);
                 return;
@@ -395,7 +395,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                string strReturn = $"Error attempting to load {_strSelectedSheet}{Environment.NewLine}";
+                string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
@@ -441,7 +441,7 @@ namespace Chummer
                         File.WriteAllText(_strFilePathName, strOutput);
                     }
 
-                    webBrowser1.Url = new Uri($"file:///{_strFilePathName}");
+                    webBrowser1.Url = new Uri("file:///" + _strFilePathName);
                 }
             }
         }
@@ -558,7 +558,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
                 if (lstSheetNodes != null)
                 {

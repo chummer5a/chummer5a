@@ -368,35 +368,49 @@ namespace Chummer.UI.Skills
             };
             //TODO: TRANSLATIONS
 
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strColon = LanguageManager.GetString("String_Colon");
+
             using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            {
                 if (xmlSkillCategoryList != null)
+                {
+                    string strCategory = LanguageManager.GetString("Label_Category");
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<Skill>>(
-                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
-                            skill => skill.SkillCategory == strName));
+                        if (!string.IsNullOrEmpty(strName))
+                            ret.Add(new Tuple<string, Predicate<Skill>>(
+                                strCategory + strSpace + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
+                                skill => skill.SkillCategory == strName));
                     }
-
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-            {
-                string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", GlobalOptions.Language, false);
-                if (!string.IsNullOrEmpty(strAttributeShort))
-                {
-                    ret.Add(new Tuple<string, Predicate<Skill>>($"{LanguageManager.GetString("String_ExpenseAttribute")}: {strAttributeShort}",
-                        skill => skill.Attribute == strAttribute));
                 }
             }
 
+            string strAttributeLabel = LanguageManager.GetString("String_ExpenseAttribute");
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
+            {
+                string strAttributeShort = LanguageManager.GetString("String_Attribute" + strAttribute + "Short", GlobalOptions.Language, false);
+                if (!string.IsNullOrEmpty(strAttributeShort))
+                    ret.Add(new Tuple<string, Predicate<Skill>>(strAttributeLabel + strColon + strSpace + strAttributeShort,
+                        skill => skill.Attribute == strAttribute));
+            }
+
             using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            {
                 if (xmlSkillGroupList != null)
+                {
+                    string strSkillGroupLabel = LanguageManager.GetString("String_ExpenseSkillGroup");
                     foreach (XmlNode xmlSkillGroupNode in xmlSkillGroupList)
                     {
                         string strName = xmlSkillGroupNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<Skill>>(
-                            $"{LanguageManager.GetString("String_ExpenseSkillGroup")} {xmlSkillGroupNode.Attributes?["translate"]?.InnerText ?? strName}",
-                            skill => skill.SkillGroup == strName));
+                        if (!string.IsNullOrEmpty(strName))
+                            ret.Add(new Tuple<string, Predicate<Skill>>(
+                                strSkillGroupLabel + strSpace + (xmlSkillGroupNode.Attributes?["translate"]?.InnerText ?? strName),
+                                skill => skill.SkillGroup == strName));
                     }
+                }
+            }
 
             return ret;
         }
@@ -439,28 +453,33 @@ namespace Chummer.UI.Skills
                     skill => skill.Rating == 0)
             };
             //TODO: TRANSLATIONS
+
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strColon = LanguageManager.GetString("String_Colon");
+
             using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
+                    string strCategory = LanguageManager.GetString("Label_Category");
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(
-                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
-                            skill => skill.SkillCategory == strName));
+                        if (!string.IsNullOrEmpty(strName))
+                            ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(
+                                strCategory + strSpace + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
+                                skill => skill.SkillCategory == strName));
                     }
                 }
             }
 
+            string strAttributeLabel = LanguageManager.GetString("String_ExpenseAttribute");
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
-                string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", GlobalOptions.Language, false);
+                string strAttributeShort = LanguageManager.GetString("String_Attribute" + strAttribute + "Short", GlobalOptions.Language, false);
                 if (!string.IsNullOrEmpty(strAttributeShort))
-                {
-                    ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>($"{LanguageManager.GetString("String_ExpenseAttribute")}: {strAttributeShort}",
+                    ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(strAttributeLabel + strColon + strSpace + strAttributeShort,
                         skill => skill.Attribute == strAttribute));
-                }
             }
 
             return ret;
@@ -606,7 +625,7 @@ namespace Chummer.UI.Skills
             }
             objSkill.Upgrade();
             _objCharacter.SkillsSection.Skills.Add(objSkill);
-            string key = $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})";
+            string key = objSkill.Name + " (" + objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')';
             if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
                 _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
@@ -615,7 +634,7 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter.Created)
             {
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
+                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills().ToList();
                 lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 using (frmSelectItem form = new frmSelectItem
                 {

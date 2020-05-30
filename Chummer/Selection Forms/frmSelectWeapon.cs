@@ -280,7 +280,7 @@ namespace Chummer
                 tabWeapons.Columns.Add("Cost");
                 tabWeapons.Columns["Cost"].DataType = typeof(NuyenString);
 
-                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
+                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + ParentWeapon?.SourceIDString + "\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
@@ -391,7 +391,7 @@ namespace Chummer
             {
                 int intOverLimit = 0;
                 List<ListItem> lstWeapons = new List<ListItem>();
-                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
+                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + ParentWeapon?.SourceIDString + "\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))

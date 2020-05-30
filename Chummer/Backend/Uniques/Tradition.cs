@@ -138,10 +138,10 @@ namespace Chummer.Backend.Uniques
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */
@@ -556,7 +556,7 @@ namespace Chummer.Backend.Uniques
                                LanguageManager.GetString("String_Space", strLanguage) + '(' +
                                LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
-                    return LanguageManager.GetString($"String_Attribute{strAttribute}Short", strLanguage);
+                    return LanguageManager.GetString("String_Attribute" + strAttribute + "Short", strLanguage);
                 });
             }
 
@@ -604,7 +604,7 @@ namespace Chummer.Backend.Uniques
             {
                 if(Type == TraditionType.None)
                     return string.Empty;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder objToolTip = new StringBuilder(DrainExpression);
 
                 // Update the Fading CharacterAttribute Value.
@@ -613,7 +613,7 @@ namespace Chummer.Backend.Uniques
                     objToolTip.CheapReplace(strAttribute, () =>
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        return objAttrib.DisplayAbbrev + strSpaceCharacter + '(' +
+                        return objAttrib.DisplayAbbrev + strSpace + '(' +
                                objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
                     });
                 }
@@ -624,9 +624,9 @@ namespace Chummer.Backend.Uniques
                         Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
                         objLoopImprovement.Enabled)
                     {
-                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                        objToolTip.Append(strSpace + '+' + strSpace +
                                           _objCharacter.GetObjectName(objLoopImprovement) +
-                                          strSpaceCharacter + '(' +
+                                          strSpace + '(' +
                                           objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
@@ -918,8 +918,9 @@ namespace Chummer.Backend.Uniques
             if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _xmlCachedMyXmlNode = SourceID == Guid.Empty
-                    ? GetTraditionDocument(strLanguage).SelectSingleNode($"/chummer/traditions/tradition[name = \"{Name}\"]")
-                    : GetTraditionDocument(strLanguage).SelectSingleNode($"/chummer/traditions/tradition[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                    ? GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[name = \"" + Name + "\"]")
+                    : GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \""
+                                                                         + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

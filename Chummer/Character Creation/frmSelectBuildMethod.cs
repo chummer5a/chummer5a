@@ -65,6 +65,7 @@ namespace Chummer
             cboBuildMethod.SelectedValue = GlobalOptions.DefaultBuildMethod;
             cboBuildMethod.EndUpdate();
 
+            string strSpace = LanguageManager.GetString("String_Space");
             // Populate the Gameplay Options list.
             List<ListItem> lstGameplayOptions = new List<ListItem>();
             if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
@@ -85,9 +86,9 @@ namespace Chummer
                         if (objXmlGameplayOption.SelectSingleNode("priorityarrays") != null)
                         {
                             XPathNodeIterator iterator = objXmlGameplayOption.Select("priorityarrays/priorityarray");
-                            lstGameplayOptions.AddRange(from XPathNavigator node in iterator
-                                select new ListItem($"{strName}|{node.Value}",
-                                    $"{objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName} ({node.Value})"));
+                            lstGameplayOptions.AddRange(iterator.Cast<XPathNavigator>()
+                                .Select(node => new ListItem(strName + '|' + node.Value,
+                                    (objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName) + strSpace + '(' + node.Value + ')')));
                         }
                         else
                         {
@@ -174,7 +175,7 @@ namespace Chummer
             }
 
             XPathNavigator xmlGameplayOption =
-                _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode($"gameplayoption[name = \"{strSelectedGameplayOption}\"]");
+                _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + strSelectedGameplayOption + "\"]");
 
             if (xmlGameplayOption != null)
             {

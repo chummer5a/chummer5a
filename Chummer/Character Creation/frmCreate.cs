@@ -832,7 +832,7 @@ namespace Chummer
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes) continue;
                             lstFireModes.Add(new ListItem(mode.ToString(),
-                                LanguageManager.GetString($"Enum_{mode}")));
+                                LanguageManager.GetString("Enum_" + mode.ToString())));
                         }
 
                         cboVehicleWeaponFiringMode.BeginUpdate();
@@ -8582,7 +8582,7 @@ namespace Chummer
         private string BuildAttributes(ICollection<CharacterAttrib> attribs, ICollection<CharacterAttrib> extraAttribs = null, bool special = false)
         {
             int bp = CalculateAttributeBP(attribs, extraAttribs);
-            string s = $"{bp} {LanguageManager.GetString("String_Karma")}";
+            string s = bp.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
             int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
             int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority ||
@@ -8591,7 +8591,7 @@ namespace Chummer
                 if (bp > 0)
                 {
                     s = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_OverPriorityPoints"),
-                        (total - att).ToString(GlobalOptions.CultureInfo), total.ToString(GlobalOptions.CultureInfo), bp.ToString(GlobalOptions.CultureInfo));
+                        total - att, total, bp);
                 }
                 else
                 {
@@ -8612,7 +8612,7 @@ namespace Chummer
             int intFreestyleBP = 0;
             StringBuilder sbdPositiveQualityTooltip = new StringBuilder();
             StringBuilder sbdNegativeQualityTooltip = new StringBuilder();
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             string strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma") : string.Empty;
 
             // ------------------------------------------------------------------------------
@@ -8685,7 +8685,7 @@ namespace Chummer
                     {
                         sbdPositiveQualityTooltip.AppendFormat(
                             GlobalOptions.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
-                            strSpaceCharacter, objLoopQuality.BP * CharacterObjectOptions.KarmaQuality);
+                            strSpace, objLoopQuality.BP * CharacterObjectOptions.KarmaQuality);
                         sbdPositiveQualityTooltip.AppendLine();
                     }
                 }
@@ -8695,14 +8695,14 @@ namespace Chummer
                     {
                         sbdPositiveQualityTooltip.AppendFormat(
                             GlobalOptions.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
-                                strSpaceCharacter, objLoopQuality.BP * CharacterObjectOptions.KarmaQuality);
+                                strSpace, objLoopQuality.BP * CharacterObjectOptions.KarmaQuality);
                         sbdPositiveQualityTooltip.AppendLine();
                     }
                     else if (objLoopQuality.Type == QualityType.Negative)
                     {
                         sbdNegativeQualityTooltip.AppendFormat(
                             GlobalOptions.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
-                                strSpaceCharacter, objLoopQuality.BP * CharacterObjectOptions.KarmaQuality);
+                                strSpace, objLoopQuality.BP * CharacterObjectOptions.KarmaQuality);
                         sbdNegativeQualityTooltip.AppendLine();
                     }
                 }
@@ -8739,8 +8739,8 @@ namespace Chummer
                     if (blnDoUIUpdate)
                     {
                         if (strMartialArtsBPToolTip.Length > 0)
-                            strMartialArtsBPToolTip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                        strMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
+                            strMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace);
+                        strMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName + strSpace + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
 
                         bool blnIsFirst = true;
                         foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
@@ -8754,7 +8754,7 @@ namespace Chummer
                             intLoopCost = 5 * CharacterObjectOptions.KarmaQuality;
                             intMartialArtsPoints += intLoopCost;
 
-                            strMartialArtsBPToolTip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter + objTechnique.CurrentDisplayName + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
+                            strMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace + objTechnique.CurrentDisplayName + strSpace + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
                         }
                     }
                     else
@@ -8909,9 +8909,9 @@ namespace Chummer
                         || lblSpellsBP != null
                         || lblBuildRitualsBP != null))
                 {
-                    string strFormat = "{0}" + strSpaceCharacter + "×" + strSpaceCharacter + "{1}" + strSpaceCharacter
-                                       + LanguageManager.GetString("String_Karma") + strSpaceCharacter + "=" + strSpaceCharacter + "{2}"
-                                       + strSpaceCharacter + LanguageManager.GetString("String_Karma");
+                    string strFormat = "{0}" + strSpace + "×" + strSpace + "{1}" + strSpace
+                                       + LanguageManager.GetString("String_Karma") + strSpace + "=" + strSpace + "{2}"
+                                       + strSpace + LanguageManager.GetString("String_Karma");
                     lblSpellsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
                     lblBuildRitualsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
                     lblBuildPrepsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
@@ -8921,21 +8921,21 @@ namespace Chummer
                         {
                             string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints, strOf, limit + limitMod);
                             if (intPrepPointsUsed > 0)
-                                strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpaceCharacter, intPrepPointsUsed, strPoints);
+                                strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
                             lblBuildPrepsBP.Text = strText;
                         }
                         if (lblSpellsBP != null)
                         {
                             string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", spellPoints, strOf, limit + limitMod);
                             if (intSpellPointsUsed > 0)
-                                strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpaceCharacter, intSpellPointsUsed, strPoints);
+                                strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
                             lblSpellsBP.Text = strText;
                         }
                         if (lblBuildRitualsBP != null)
                         {
                             string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", ritualPoints, strOf, limit + limitMod);
                             if (intRitualPointsUsed > 0)
-                                strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpaceCharacter, intRitualPointsUsed, strPoints);
+                                strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
                             lblBuildRitualsBP.Text = strText;
                         }
                     }
@@ -8943,18 +8943,18 @@ namespace Chummer
                     {
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
-                                intPrepPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                                intPrepPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                         if (lblSpellsBP != null)
                             lblSpellsBP.Text =
-                                intSpellPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                                intSpellPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                         if (lblBuildRitualsBP != null)
                             lblBuildRitualsBP.Text =
-                                intRitualPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                                intRitualPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                     }
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = "{0}" + strOf + limitMod.ToString(GlobalOptions.CultureInfo) + strColon + strSpaceCharacter + "{1}" + strSpaceCharacter + strPoints;
+                        strFormat = "{0}" + strOf + limitMod.ToString(GlobalOptions.CultureInfo) + strColon + strSpace + "{1}" + strSpace + strPoints;
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
                                 string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints, intPrepPointsUsed);
@@ -8981,8 +8981,8 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     if (strFociPointsTooltip.Length > 0)
-                        strFociPointsTooltip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                    strFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName + strSpaceCharacter + '(' + objFocus.BindingKarmaCost().ToString(GlobalOptions.CultureInfo) + ')');
+                        strFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
+                    strFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName + strSpace + '(' + objFocus.BindingKarmaCost().ToString(GlobalOptions.CultureInfo) + ')');
                 }
             }
             intKarmaPointsRemain -= intFociPointsUsed;
@@ -8999,8 +8999,8 @@ namespace Chummer
                     if (blnDoUIUpdate)
                     {
                         if (strFociPointsTooltip.Length > 0)
-                            strFociPointsTooltip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                        strFociPointsTooltip.Append(objFocus.CurrentDisplayName + strSpaceCharacter + '(' + intBindingCost.ToString(GlobalOptions.CultureInfo) + ')');
+                            strFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
+                        strFociPointsTooltip.Append(objFocus.CurrentDisplayName + strSpace + '(' + intBindingCost.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
             }
@@ -9146,7 +9146,7 @@ namespace Chummer
                 }
                 if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
                 {
-                    strContactPoints += strSpaceCharacter + '(' + intPointsInContacts + strSpaceCharacter + strPoints + ')';
+                    strContactPoints += strSpace + '(' + intPointsInContacts + strSpace + strPoints + ')';
                 }
 
                 lblContactsBP.Text = strContactPoints;
@@ -9160,17 +9160,17 @@ namespace Chummer
 
                 tabSkillUc.MissingDatabindingsWorkaround();
 
-                lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 lblBuildMartialArts.SetToolTip(strMartialArtsBPToolTip.ToString());
 
-                lblNuyenBP.Text = intNuyenBP.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblNuyenBP.Text = intNuyenBP.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
 
-                lblFociBP.Text = intFociPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblFociBP.Text = intFociPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 lblBuildFoci.SetToolTip(strFociPointsTooltip.ToString());
 
-                lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
 
-                lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
 
                 string strComplexFormsBP;
                 if (CharacterObject.CFPLimit > 0)
@@ -9178,19 +9178,19 @@ namespace Chummer
                     strComplexFormsBP = intFormsPointsUsed.ToString(GlobalOptions.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo);
                     if (intFormsPointsUsed > CharacterObject.CFPLimit)
                     {
-                        strComplexFormsBP += strColon + strSpaceCharacter + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                        strComplexFormsBP += strColon + strSpace + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                     }
                 }
                 else
                 {
-                    strComplexFormsBP = ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                    strComplexFormsBP = ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 }
                 lblComplexFormsBP.Text = strComplexFormsBP;
 
-                lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
-                lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
+                lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
 
-                lblInitiationBP.Text = intInitiationPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblInitiationBP.Text = intInitiationPoints.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 // ------------------------------------------------------------------------------
                 // Update the number of BP remaining in the StatusBar.
                 tssBPRemain.Text = intKarmaPointsRemain.ToString(GlobalOptions.CultureInfo);
@@ -10551,7 +10551,11 @@ namespace Chummer
             {
                 List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
                 XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
-                string strMetavariantXPath = $"/chummer/metatypes/metatype[id = \"{CharacterObject.MetatypeGuid}\"]/metavariants/metavariant[id = \"{CharacterObject.MetavariantGuid}\"]";
+                string strMetavariantXPath = "/chummer/metatypes/metatype[id = \""
+                                             + CharacterObject.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                             + "\"]/metavariants/metavariant[id = \""
+                                             + CharacterObject.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                             + "\"]";
                 foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                 {
                     CharacterAttrib objNewAttribute = new CharacterAttrib(CharacterObject, objOldAttribute.Abbrev,
@@ -11932,55 +11936,13 @@ namespace Chummer
                 lblSpellDamage.Text = objSpell.DisplayDamage(GlobalOptions.Language);
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalOptions.Language);
                 lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Language);
+                lblSpellDV.SetToolTip(objSpell.DVTooltip);
 
                 objSpell.SetSourceDetail(lblSpellSource);
 
                 // Determine the size of the Spellcasting Dice Pool.
                 lblSpellDicePool.Text = objSpell.DicePool.ToString(GlobalOptions.CultureInfo);
                 lblSpellDicePool.SetToolTip(objSpell.DicePoolTooltip);
-
-                // Build the DV tooltip.
-                lblSpellDV.SetToolTip(objSpell.DVTooltip);
-
-                // Update the Drain CharacterAttribute Value.
-                if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
-                {
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    string strDrain = lblDrainAttributes.Text;
-
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strDrain = strDrain.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
-                    int intDrain = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
-                    intDrain += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
-
-                    string strTip = lblDrainAttributes.Text;
-
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
-                    }
-
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.DrainResistance && objImprovement.Enabled)
-                        {
-                            strTip += strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
-                        }
-                    }
-                    //if (objSpell.Limited)
-                    //{
-                    //    intDrain += 2;
-                    //    strTip += " + " + LanguageManager.GetString("String_SpellLimited") + " (2)";
-                    //}
-                    lblDrainAttributesValue.Text = intDrain.ToString(GlobalOptions.CultureInfo);
-                    lblDrainAttributesValue.SetToolTip(strTip);
-                }
             }
             else
             {
@@ -13033,7 +12995,7 @@ namespace Chummer
                     // Create the Lifestyle.
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
 
-                    XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{objXmlLifestyle["baselifestyle"].InnerText}\"]");
+                    XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + objXmlLifestyle["baselifestyle"].InnerText + "\"]");
                     if (objXmlLifestyleNode != null)
                     {
                         objLifestyle.Create(objXmlLifestyleNode);

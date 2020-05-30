@@ -105,6 +105,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
+            string strSpace = LanguageManager.GetString("String_Space");
             XPathNavigator xmlQuality = null;
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedQuality))
@@ -136,7 +137,7 @@ namespace Chummer
                         if (intMax == int.MaxValue)
                             lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
                         else
-                            lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo) + " - " + intMax.ToString(GlobalOptions.CultureInfo);
+                            lblBP.Text = string.Format(GlobalOptions.CultureInfo, "{0}{1}-{1}{2}", intMin, strSpace, intMax);
                     }
                     else
                     {
@@ -187,9 +188,8 @@ namespace Chummer
 
                 string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
