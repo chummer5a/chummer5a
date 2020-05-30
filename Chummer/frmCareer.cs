@@ -57,9 +57,6 @@ namespace Chummer
         private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
         private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
 
-        public Action<object> DiceRollerOpened { get; set; }
-        public Action<Character, int> DiceRollerOpenedInt { get; set; }
-
         public TabControl TabCharacterTabs => tabCharacterTabs;
 
         #region Form Events
@@ -203,11 +200,6 @@ namespace Chummer
                     SuspendLayout();
                     using (_ = Timekeeper.StartSyncron("load_frm_career_databinding", op_load_frm_career))
                     {
-                        cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-                        cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-                        cmdRollComplexForm.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-                        cmdRollFading.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
                         txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false,
@@ -411,16 +403,16 @@ namespace Chummer
 
                         lblDrainAttributes.DoDatabinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DisplayDrainExpression));
-                        lblDrainAttributesValue.DoDatabinding("Text", CharacterObject.MagicTradition,
+                        dpcDrainAttributes.DoDatabinding("DicePool", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValue));
-                        lblDrainAttributesValue.DoDatabinding("ToolTipText", CharacterObject.MagicTradition,
+                        dpcDrainAttributes.DoDatabinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
 
                         lblFadingAttributes.DoDatabinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DisplayDrainExpression));
-                        lblFadingAttributesValue.DoDatabinding("Text", CharacterObject.MagicTradition,
+                        dpcFadingAttributes.DoDatabinding("DicePool", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValue));
-                        lblFadingAttributesValue.DoDatabinding("ToolTipText", CharacterObject.MagicTradition,
+                        dpcFadingAttributes.DoDatabinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
 
                         HashSet<string> limit = new HashSet<string>();
@@ -5380,12 +5372,6 @@ namespace Chummer
                         break;
                     }
 
-                    if (objXmlSelectedQuality == null)
-                    {
-                        UpdateQualityLevelValue(objSelectedQuality);
-                        break;
-                    }
-
                     bool blnFreeCost = objSelectedQuality.BP == 0 || !objSelectedQuality.ContributeToBP;
 
                     QualityType eQualityType = objSelectedQuality.Type;
@@ -6040,53 +6026,6 @@ namespace Chummer
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
-        }
-
-        private void cmdRollSpell_Click(object sender, EventArgs e)
-        {
-            int.TryParse(lblSpellDicePool.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
-        }
-
-        private void cmdRollDrain_Click(object sender, EventArgs e)
-        {
-            int.TryParse(lblDrainAttributesValue.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
-        }
-
-        private void cmdRollFading_Click(object sender, EventArgs e)
-        {
-            int.TryParse(lblFadingAttributesValue.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
-        }
-
-        private void cmdRollComplexForm_Click(object sender, EventArgs e)
-        {
-            int.TryParse(lblComplexFormDicePool.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
-        }
-
-        private void cmdRollWeapon_Click(object sender, EventArgs e)
-        {
-            // Make sure a Vehicle is selected.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            frmSelectText frmPickText = new frmSelectText
-            {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
-            };
-            frmPickText.ShowDialog(this);
-            int.TryParse(lblWeaponDicePool.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
-        }
-
-        private void cmdRollVehicleWeapon_Click(object sender, EventArgs e)
-        {
-            int.TryParse(lblVehicleWeaponDicePool.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
         }
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
@@ -13536,9 +13475,10 @@ namespace Chummer
                 lblWeaponAccuracy.Visible = true;
                 lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
                 lblWeaponDicePoolLabel.Visible = true;
-                lblWeaponDicePool.Visible = true;
-                lblWeaponDicePool.Text = objWeapon.DisplayDicePool;
-                lblWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
+                dpcWeaponDicePool.Visible = true;
+                dpcWeaponDicePool.DicePool = objWeapon.DicePool;
+                dpcWeaponDicePool.CanBeRolled = true;
+                dpcWeaponDicePool.SetLabelToolTip(objWeapon.DicePoolTooltip);
                 if (objWeapon.WeaponType == "Ranged")
                 {
                     lblWeaponReachLabel.Visible = false;
@@ -13810,13 +13750,15 @@ namespace Chummer
                 if (objSelectedAccessory.DicePool == 0)
                 {
                     lblWeaponDicePoolLabel.Visible = false;
-                    lblWeaponDicePool.Visible = false;
+                    dpcWeaponDicePool.Visible = false;
                 }
                 else
                 {
                     lblWeaponDicePoolLabel.Visible = true;
-                    lblWeaponDicePool.Visible = true;
-                    lblWeaponDicePool.Text = objSelectedAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                    dpcWeaponDicePool.Visible = true;
+                    dpcWeaponDicePool.DicePool = objSelectedAccessory.DicePool;
+                    dpcWeaponDicePool.CanBeRolled = false;
+                    dpcWeaponDicePool.SetLabelToolTip(string.Empty);
                 }
                 lblWeaponReachLabel.Visible = false;
                 lblWeaponReach.Visible = false;
@@ -15391,26 +15333,17 @@ namespace Chummer
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbVehiclesWeapon
+                lblVehicleWeaponDamageLabel.Visible = true;
                 lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
+                lblVehicleWeaponAPLabel.Visible = true;
                 lblVehicleWeaponAP.Text = objWeapon.DisplayTotalAP;
+                lblVehicleWeaponAccuracyLabel.Visible = true;
                 lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
-                // Determine the Dice Pool size.
-                int intPilot = objWeapon.ParentVehicle.Pilot;
-                int intAutosoft = 0;
-                foreach (Gear objAutosoft in objWeapon.ParentVehicle.Gear)
-                {
-                    if (objAutosoft.Extra == objWeapon.DisplayCategory(GlobalOptions.DefaultLanguage) &&
-                        (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
-                    {
-                        if (objAutosoft.Rating > intAutosoft)
-                        {
-                            intAutosoft = objAutosoft.Rating;
-                        }
-                    }
-                }
-                if (intAutosoft == 0)
-                    intPilot -= 1;
-                lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString(GlobalOptions.CultureInfo);
+                lblVehicleWeaponDicePoolLabel.Visible = true;
+                dpcVehicleWeaponDicePool.Visible = true;
+                dpcVehicleWeaponDicePool.DicePool = objWeapon.DicePool;
+                dpcVehicleWeaponDicePool.CanBeRolled = true;
+                dpcVehicleWeaponDicePool.SetLabelToolTip(objWeapon.DicePoolTooltip);
                 if (objWeapon.WeaponType == "Ranged")
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
@@ -15420,7 +15353,7 @@ namespace Chummer
                     lblVehicleWeaponMode.Visible = true;
                     lblVehicleWeaponMode.Text = objWeapon.DisplayMode;
 
-                    tlpWeaponsRanges.Visible = true;
+                    tlpVehiclesWeaponRanges.Visible = true;
                     lblVehicleWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
                     lblVehicleWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
                     IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
@@ -15453,7 +15386,7 @@ namespace Chummer
                     lblVehicleWeaponModeLabel.Visible = false;
                     lblVehicleWeaponMode.Visible = false;
 
-                    tlpWeaponsRanges.Visible = false;
+                    tlpVehiclesWeaponRanges.Visible = false;
                 }
 
                 if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
@@ -15645,6 +15578,76 @@ namespace Chummer
                 chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
                 chkVehicleIncludedInWeapon.Visible = true;
                 chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
+
+                // gpbWeaponsWeapon
+                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_WeaponAccessory");
+                if (string.IsNullOrEmpty(objAccessory.Damage))
+                {
+                    lblVehicleWeaponDamageLabel.Visible = false;
+                    lblVehicleWeaponDamage.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
+                    lblVehicleWeaponDamage.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
+                    lblVehicleWeaponDamage.Text = Convert.ToInt32(objAccessory.Damage, GlobalOptions.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (string.IsNullOrEmpty(objAccessory.AP))
+                {
+                    lblVehicleWeaponAPLabel.Visible = false;
+                    lblVehicleWeaponAP.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponAPLabel.Visible = true;
+                    lblVehicleWeaponAP.Visible = true;
+                    lblVehicleWeaponAP.Text = Convert.ToInt32(objAccessory.AP, GlobalOptions.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objAccessory.Accuracy == 0)
+                {
+                    lblVehicleWeaponAccuracyLabel.Visible = false;
+                    lblVehicleWeaponAccuracy.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponAccuracyLabel.Visible = true;
+                    lblVehicleWeaponAccuracy.Visible = true;
+                    lblVehicleWeaponAccuracy.Text = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objAccessory.DicePool == 0)
+                {
+                    lblVehicleWeaponDicePoolLabel.Visible = false;
+                    dpcWeaponDicePool.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponDicePoolLabel.Visible = true;
+                    dpcWeaponDicePool.Visible = true;
+                    dpcWeaponDicePool.DicePool = objAccessory.DicePool;
+                    dpcWeaponDicePool.CanBeRolled = false;
+                    dpcWeaponDicePool.SetLabelToolTip(string.Empty);
+                }
+                if (objAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
+                {
+                    lblVehicleWeaponAmmoLabel.Visible = true;
+                    lblVehicleWeaponAmmo.Visible = true;
+                    StringBuilder sbdAmmoBonus = new StringBuilder();
+                    if (objAccessory.AmmoBonus != 0)
+                        sbdAmmoBonus.Append(objAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
+                        sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
+                    lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();
+                }
+                else
+                {
+                    lblVehicleWeaponAmmoLabel.Visible = false;
+                    lblVehicleWeaponAmmo.Visible = false;
+                }
+                lblVehicleWeaponModeLabel.Visible = false;
+                lblVehicleWeaponMode.Visible = false;
+
+                tlpVehiclesWeaponRanges.Visible = false;
+                tlpVehiclesWeaponCareer.Visible = false;
             }
             else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
@@ -15995,12 +15998,6 @@ namespace Chummer
         /// </summary>
         private void SetTooltips()
         {
-            // Spells Tab.
-            cmdRollSpell.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
-            cmdRollDrain.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
-            // Complex Forms Tab.
-            cmdRollComplexForm.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
-            cmdRollFading.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
             // Armor Tab.
             chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped"));
             // ToolTipFactory.SetToolTip(cmdArmorIncrease, LanguageManager.GetString("Tip_ArmorDegradationAPlus"));
@@ -16009,7 +16006,6 @@ namespace Chummer
             chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled"));
             cmdWeaponBuyAmmo.SetToolTip(LanguageManager.GetString("Tip_BuyAmmo"));
             cmdWeaponMoveToVehicle.SetToolTip(LanguageManager.GetString("Tip_TransferToVehicle"));
-            cmdRollWeapon.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
             // Gear Tab.
             cmdGearIncreaseQty.SetToolTip(LanguageManager.GetString("Tip_IncreaseGearQty"));
             cmdGearReduceQty.SetToolTip(LanguageManager.GetString("Tip_DecreaseGearQty"));
@@ -16022,7 +16018,6 @@ namespace Chummer
             chkVehicleWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled"));
             cmdVehicleGearReduceQty.SetToolTip(LanguageManager.GetString("Tip_DecreaseGearQty"));
             cmdVehicleMoveToInventory.SetToolTip(LanguageManager.GetString("Tip_TransferToInventory"));
-            cmdRollVehicleWeapon.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
             chkVehicleActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink"));
             // Other Info Tab.
             lblCMPhysicalLabel.SetToolTip(LanguageManager.GetString("Tip_OtherCMPhysical"));
@@ -16081,54 +16076,12 @@ namespace Chummer
                 lblSpellDamage.Text = objSpell.DisplayDamage(GlobalOptions.Language);
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalOptions.Language);
                 lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Language);
+                lblSpellDV.SetToolTip(objSpell.DVTooltip);
                 objSpell.SetSourceDetail(lblSpellSource);
 
                 // Determine the size of the Spellcasting Dice Pool.
-                lblSpellDicePool.Text = objSpell.DicePool.ToString(GlobalOptions.CultureInfo);
-                lblSpellDicePool.SetToolTip(objSpell.DicePoolTooltip);
-
-                // Build the DV tooltip.
-                lblSpellDV.SetToolTip(objSpell.DVTooltip);
-
-                // Update the Drain CharacterAttribute Value.
-                if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
-                {
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    string strDrain = lblDrainAttributes.Text;
-
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strDrain = strDrain.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
-                    int intDrain = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
-                    intDrain += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
-
-                    string strTip = lblDrainAttributes.Text;
-
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue + ')');
-                    }
-
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.DrainResistance && objImprovement.Enabled)
-                        {
-                            strTip += strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
-                        }
-                    }
-                    //if (objSpell.Limited)
-                    //{
-                    //    intDrain += 2;
-                    //    strTip += " + " + LanguageManager.GetString("String_SpellLimited") + " (2)";
-                    //}
-                    lblDrainAttributesValue.Text = intDrain.ToString(GlobalOptions.InvariantCultureInfo);
-                    lblDrainAttributesValue.SetToolTip(strTip);
-                }
+                dpcSpellDicePool.DicePool = objSpell.DicePool;
+                dpcSpellDicePool.SetLabelToolTip(objSpell.DicePoolTooltip);
             }
             else
             {
@@ -16303,8 +16256,8 @@ namespace Chummer
                 lblFV.SetToolTip(objComplexForm.FVTooltip);
 
                 // Determine the size of the Threading Dice Pool.
-                lblComplexFormDicePool.Text = objComplexForm.DicePool.ToString(GlobalOptions.CultureInfo);
-                lblComplexFormDicePool.SetToolTip(objComplexForm.DicePoolTooltip);
+                dpcComplexFormDicePool.DicePool = objComplexForm.DicePool;
+                dpcComplexFormDicePool.SetLabelToolTip(objComplexForm.DicePoolTooltip);
 
                 objComplexForm.SetSourceDetail(lblComplexFormSource);
             }

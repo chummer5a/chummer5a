@@ -291,16 +291,10 @@ namespace Chummer
         {
             public int Compare(object x, object y)
             {
-                ICanSort lhs = (x as TreeNode)?.Tag as ICanSort;
-                ICanSort rhs = (y as TreeNode)?.Tag as ICanSort;
-
                 // Sort any non-sortables first
-                if (lhs == null)
+                if (!((x as TreeNode)?.Tag is ICanSort lhs))
                     return -1;
-                if (rhs == null)
-                    return 1;
-
-                return lhs.SortOrder.CompareTo(rhs.SortOrder);
+                return !((y as TreeNode)?.Tag is ICanSort rhs) ? 1 : lhs.SortOrder.CompareTo(rhs.SortOrder);
             }
         }
 

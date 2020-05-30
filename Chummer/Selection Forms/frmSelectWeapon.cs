@@ -329,7 +329,7 @@ namespace Chummer
 
                     string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.CurrentDisplayName;
-                    string strDice = objWeapon.DisplayDicePool;
+                    string strDice = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
                     string strAccuracy = objWeapon.DisplayAccuracy;
                     string strDamage = objWeapon.DisplayDamage;
                     string strAP = objWeapon.DisplayTotalAP;

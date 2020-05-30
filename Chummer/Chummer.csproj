@@ -366,7 +366,6 @@
     <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
     <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
-    <Compile Include="Interfaces\IHasDicePool.cs" />
     <Compile Include="Interfaces\IHasGear.cs" />
     <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
@@ -1267,6 +1266,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
