@@ -15512,7 +15512,7 @@ namespace Chummer
             {
                 gpbVehiclesCommon.Visible = true;
                 gpbVehiclesVehicle.Visible = false;
-                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesWeapon.Visible = true;
                 gpbVehiclesMatrix.Visible = false;
 
                 // Buttons
@@ -15617,15 +15617,15 @@ namespace Chummer
                 if (objAccessory.DicePool == 0)
                 {
                     lblVehicleWeaponDicePoolLabel.Visible = false;
-                    dpcWeaponDicePool.Visible = false;
+                    dpcVehicleWeaponDicePool.Visible = false;
                 }
                 else
                 {
                     lblVehicleWeaponDicePoolLabel.Visible = true;
-                    dpcWeaponDicePool.Visible = true;
-                    dpcWeaponDicePool.DicePool = objAccessory.DicePool;
-                    dpcWeaponDicePool.CanBeRolled = false;
-                    dpcWeaponDicePool.SetLabelToolTip(string.Empty);
+                    dpcVehicleWeaponDicePool.Visible = true;
+                    dpcVehicleWeaponDicePool.DicePool = objAccessory.DicePool;
+                    dpcVehicleWeaponDicePool.CanBeRolled = false;
+                    dpcVehicleWeaponDicePool.SetLabelToolTip(string.Empty);
                 }
                 if (objAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
                 {

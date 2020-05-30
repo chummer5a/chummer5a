@@ -11502,11 +11502,18 @@ namespace Chummer
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbVehiclesWeapon
+                lblVehicleWeaponModeLabel.Visible = true;
+                cboVehicleWeaponFiringMode.Visible = true;
                 cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
+                lblVehicleWeaponDamageLabel.Visible = true;
                 lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
+                lblVehicleWeaponAPLabel.Visible = true;
                 lblVehicleWeaponAP.Text = objWeapon.DisplayTotalAP;
+                lblVehicleWeaponAccuracyLabel.Visible = true;
                 lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
+                lblVehicleWeaponDicePoolLabel.Visible = true;
                 lblVehicleWeaponDicePool.Text = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
+                lblVehicleWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
                 if (objWeapon.WeaponType == "Ranged")
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
@@ -11573,7 +11580,7 @@ namespace Chummer
             {
                 gpbVehiclesCommon.Visible = true;
                 gpbVehiclesVehicle.Visible = false;
-                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesWeapon.Visible = true;
                 gpbVehiclesMatrix.Visible = false;
 
                 // Buttons
@@ -11639,6 +11646,72 @@ namespace Chummer
                 chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
                 chkVehicleIncludedInWeapon.Visible = true;
                 chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
+
+                // gpbVehiclesWeapon
+                lblVehicleWeaponModeLabel.Visible = false;
+                lblVehicleWeaponMode.Visible = false;
+                cboVehicleWeaponFiringMode.Visible = false;
+                if (string.IsNullOrEmpty(objAccessory.Damage))
+                {
+                    lblVehicleWeaponDamageLabel.Visible = false;
+                    lblVehicleWeaponDamage.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
+                    lblVehicleWeaponDamage.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
+                    lblVehicleWeaponDamage.Text = Convert.ToInt32(objAccessory.Damage, GlobalOptions.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (string.IsNullOrEmpty(objAccessory.AP))
+                {
+                    lblVehicleWeaponAPLabel.Visible = false;
+                    lblVehicleWeaponAP.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponAPLabel.Visible = true;
+                    lblVehicleWeaponAP.Visible = true;
+                    lblVehicleWeaponAP.Text = Convert.ToInt32(objAccessory.AP, GlobalOptions.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objAccessory.Accuracy == 0)
+                {
+                    lblVehicleWeaponAccuracyLabel.Visible = false;
+                    lblVehicleWeaponAccuracy.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponAccuracyLabel.Visible = true;
+                    lblVehicleWeaponAccuracy.Visible = true;
+                    lblVehicleWeaponAccuracy.Text = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objAccessory.DicePool == 0)
+                {
+                    lblVehicleWeaponDicePoolLabel.Visible = false;
+                    lblVehicleWeaponDicePool.Visible = false;
+                }
+                else
+                {
+                    lblVehicleWeaponDicePoolLabel.Visible = true;
+                    lblVehicleWeaponDicePool.Visible = true;
+                    lblVehicleWeaponDicePool.Text = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                    lblVehicleWeaponDicePool.SetToolTip(string.Empty);
+                }
+                if (objAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
+                {
+                    lblVehicleWeaponAmmoLabel.Visible = true;
+                    lblVehicleWeaponAmmo.Visible = true;
+                    StringBuilder sbdAmmoBonus = new StringBuilder();
+                    if (objAccessory.AmmoBonus != 0)
+                        sbdAmmoBonus.Append(objAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
+                        sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
+                    lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();
+                }
+                else
+                {
+                    lblVehicleWeaponAmmoLabel.Visible = false;
+                    lblVehicleWeaponAmmo.Visible = false;
+                }
             }
             else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
