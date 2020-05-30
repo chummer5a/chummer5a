@@ -11,6 +11,10 @@ Application Fixes:
 - In an Amend file, if a "recurse" node is set to not add itself if no target is found, it will still recurse into the amending nodes, just in case there is a node somewhere inside that is set to be added if no target is found.
 - The availability filter for buying new cyberware or bioware now works properly for items that do not have a fixed, forced grade.
 - When browsing a list of purchaseable items, if any items are hidden by availability or cost filters, an entry will show up at the bottom of the list saying how many items are hidden. This primarily serves to remind people to check these filters if they somehow cannot find an item for which they are looking.
+- In Career Mode, the dicepool quantities and tooltips for weapons mounted on vehicles are now calculated and displayed properly.
+- Melee weapons mounted on vehicles no longer display a table of ranges.
+- Weapon accessories on weapons mounted on vehicles now display their stat modifiers.
+- Dicepools for weapons no longer display two different values when the character has a relevant specialization. Hovering over the dicepool labels will still list a specialization as the source for +2 bonus if the character does indeed have a relevant specialization.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
