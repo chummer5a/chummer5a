@@ -34,7 +34,7 @@ namespace Chummer.Backend.Skills
         #region Constructor, Create, Save, Load, and Print Methods
         public SkillSpecialization(string strName, bool free, Skill objParent)
         {
-            _strName = LanguageManager.ReverseTranslateExtra(strName, GlobalOptions.Language);
+            _strName = LanguageManager.ReverseTranslateExtra(strName);
             _guiID = Guid.NewGuid();
             _strFree = free;
             _objParent = objParent;
@@ -46,10 +46,12 @@ namespace Chummer.Backend.Skills
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("spec");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("free", _strFree.ToString());
+            objWriter.WriteElementString("free", _strFree.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -76,6 +78,8 @@ namespace Chummer.Backend.Skills
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skillspecialization");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteEndElement();
@@ -88,7 +92,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Skill Specialization's name.
@@ -100,6 +104,11 @@ namespace Chummer.Backend.Skills
 
             return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
         }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists in the program's current language.
+        /// </summary>
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;

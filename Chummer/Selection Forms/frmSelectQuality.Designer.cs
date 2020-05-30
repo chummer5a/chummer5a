@@ -32,18 +32,18 @@ namespace Chummer
             this.lstQualities = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.lblBP = new System.Windows.Forms.Label();
+            this.lblBP = new Chummer.LabelWithToolTip();
             this.lblBPLabel = new System.Windows.Forms.Label();
             this.chkFree = new System.Windows.Forms.CheckBox();
-            this.chkMetagenetic = new System.Windows.Forms.CheckBox();
+            this.chkMetagenic = new System.Windows.Forms.CheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.chkNotMetagenetic = new System.Windows.Forms.CheckBox();
+            this.chkNotMetagenic = new System.Windows.Forms.CheckBox();
             this.nudMinimumBP = new System.Windows.Forms.NumericUpDown();
             this.nudValueBP = new System.Windows.Forms.NumericUpDown();
             this.nudMaximumBP = new System.Windows.Forms.NumericUpDown();
@@ -53,19 +53,19 @@ namespace Chummer
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbKarmaFilter = new System.Windows.Forms.GroupBox();
             this.tlpKarmaFilter = new System.Windows.Forms.TableLayoutPanel();
             this.chkLimitList = new System.Windows.Forms.CheckBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinimumBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudValueBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaximumBP)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.gpbKarmaFilter.SuspendLayout();
             this.tlpKarmaFilter.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstQualities
@@ -114,6 +114,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 5;
             this.lblSource.Text = "[Source]";
+            this.lblSource.ToolTipText = "";
             this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblSourceLabel
@@ -177,6 +178,7 @@ namespace Chummer
             this.lblBP.Size = new System.Drawing.Size(27, 13);
             this.lblBP.TabIndex = 3;
             this.lblBP.Text = "[BP]";
+            this.lblBP.ToolTipText = "";
             // 
             // lblBPLabel
             // 
@@ -203,18 +205,18 @@ namespace Chummer
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
             // 
-            // chkMetagenetic
+            // chkMetagenic
             // 
-            this.chkMetagenetic.AutoSize = true;
-            this.chkMetagenetic.Location = new System.Drawing.Point(3, 157);
-            this.chkMetagenetic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkMetagenetic.Name = "chkMetagenetic";
-            this.chkMetagenetic.Size = new System.Drawing.Size(180, 17);
-            this.chkMetagenetic.TabIndex = 7;
-            this.chkMetagenetic.Tag = "Checkbox_SelectQuality_Metagenetic";
-            this.chkMetagenetic.Text = "Show only Metagenetic Qualities";
-            this.chkMetagenetic.UseVisualStyleBackColor = true;
-            this.chkMetagenetic.CheckedChanged += new System.EventHandler(this.chkMetagenetic_CheckedChanged);
+            this.chkMetagenic.AutoSize = true;
+            this.chkMetagenic.Location = new System.Drawing.Point(3, 157);
+            this.chkMetagenic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMetagenic.Name = "chkMetagenic";
+            this.chkMetagenic.Size = new System.Drawing.Size(180, 17);
+            this.chkMetagenic.TabIndex = 7;
+            this.chkMetagenic.Tag = "Checkbox_SelectQuality_Metagenic";
+            this.chkMetagenic.Text = "Show only Metagenic Qualities";
+            this.chkMetagenic.UseVisualStyleBackColor = true;
+            this.chkMetagenic.CheckedChanged += new System.EventHandler(this.chkMetagenic_CheckedChanged);
             // 
             // txtSearch
             // 
@@ -240,18 +242,18 @@ namespace Chummer
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
             // 
-            // chkNotMetagenetic
+            // chkNotMetagenic
             // 
-            this.chkNotMetagenetic.AutoSize = true;
-            this.chkNotMetagenetic.Location = new System.Drawing.Point(3, 182);
-            this.chkNotMetagenetic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkNotMetagenetic.Name = "chkNotMetagenetic";
-            this.chkNotMetagenetic.Size = new System.Drawing.Size(184, 17);
-            this.chkNotMetagenetic.TabIndex = 15;
-            this.chkNotMetagenetic.Tag = "Checkbox_SelectQuality_Not_Metagenetic";
-            this.chkNotMetagenetic.Text = "Don\'t show Metagenetic Qualities";
-            this.chkNotMetagenetic.UseVisualStyleBackColor = true;
-            this.chkNotMetagenetic.CheckedChanged += new System.EventHandler(this.chkNotMetagenetic_CheckedChanged);
+            this.chkNotMetagenic.AutoSize = true;
+            this.chkNotMetagenic.Location = new System.Drawing.Point(3, 182);
+            this.chkNotMetagenic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkNotMetagenic.Name = "chkNotMetagenic";
+            this.chkNotMetagenic.Size = new System.Drawing.Size(184, 17);
+            this.chkNotMetagenic.TabIndex = 15;
+            this.chkNotMetagenic.Tag = "Checkbox_SelectQuality_Not_Metagenic";
+            this.chkNotMetagenic.Text = "Don\'t show Metagenic Qualities";
+            this.chkNotMetagenic.UseVisualStyleBackColor = true;
+            this.chkNotMetagenic.CheckedChanged += new System.EventHandler(this.chkNotMetagenic_CheckedChanged);
             // 
             // nudMinimumBP
             // 
@@ -354,8 +356,8 @@ namespace Chummer
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
@@ -394,6 +396,25 @@ namespace Chummer
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.Size = new System.Drawing.Size(301, 423);
             this.tableLayoutPanel2.TabIndex = 24;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoScroll = true;
+            this.flowLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel2, 2);
+            this.flowLayoutPanel2.Controls.Add(this.gpbKarmaFilter);
+            this.flowLayoutPanel2.Controls.Add(this.chkLimitList);
+            this.flowLayoutPanel2.Controls.Add(this.chkFree);
+            this.flowLayoutPanel2.Controls.Add(this.chkMetagenic);
+            this.flowLayoutPanel2.Controls.Add(this.chkNotMetagenic);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(301, 76);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(305, 318);
+            this.flowLayoutPanel2.TabIndex = 26;
+            this.flowLayoutPanel2.WrapContents = false;
             // 
             // gpbKarmaFilter
             // 
@@ -446,25 +467,6 @@ namespace Chummer
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
             // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.AutoScroll = true;
-            this.flowLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel2, 2);
-            this.flowLayoutPanel2.Controls.Add(this.gpbKarmaFilter);
-            this.flowLayoutPanel2.Controls.Add(this.chkLimitList);
-            this.flowLayoutPanel2.Controls.Add(this.chkFree);
-            this.flowLayoutPanel2.Controls.Add(this.chkMetagenetic);
-            this.flowLayoutPanel2.Controls.Add(this.chkNotMetagenetic);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(301, 76);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(305, 318);
-            this.flowLayoutPanel2.TabIndex = 26;
-            this.flowLayoutPanel2.WrapContents = false;
-            // 
             // frmSelectQuality
             // 
             this.AcceptButton = this.cmdOK;
@@ -492,12 +494,12 @@ namespace Chummer
             this.flowLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.gpbKarmaFilter.ResumeLayout(false);
             this.gpbKarmaFilter.PerformLayout();
             this.tlpKarmaFilter.ResumeLayout(false);
             this.tlpKarmaFilter.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -508,18 +510,18 @@ namespace Chummer
         private System.Windows.Forms.ListBox lstQualities;
         private System.Windows.Forms.Label lblCategory;
         private ElasticComboBox cboCategory;
-        private System.Windows.Forms.Label lblSource;
+        private Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.Label lblBP;
+        private Chummer.LabelWithToolTip lblBP;
         private System.Windows.Forms.Label lblBPLabel;
         private System.Windows.Forms.CheckBox chkFree;
-        private System.Windows.Forms.CheckBox chkMetagenetic;
+        private System.Windows.Forms.CheckBox chkMetagenic;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
-        private System.Windows.Forms.CheckBox chkNotMetagenetic;
+        private System.Windows.Forms.CheckBox chkNotMetagenic;
         private System.Windows.Forms.NumericUpDown nudMinimumBP;
         private System.Windows.Forms.NumericUpDown nudValueBP;
         private System.Windows.Forms.NumericUpDown nudMaximumBP;

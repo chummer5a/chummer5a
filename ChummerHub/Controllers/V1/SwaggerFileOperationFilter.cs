@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Controllers.V1
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SwaggerFileOperationFilter'
     public class SwaggerFileOperationFilter : IOperationFilter
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SwaggerFileOperationFilter'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SwaggerFileOperationFilter.Apply(Operation, OperationFilterContext)'
         public void Apply(Operation operation, OperationFilterContext context)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SwaggerFileOperationFilter.Apply(Operation, OperationFilterContext)'
         {
             var anyFileStreamResult = context.ApiDescription.SupportedResponseTypes
                 .Any(x => x.Type == typeof(FileStreamResult));

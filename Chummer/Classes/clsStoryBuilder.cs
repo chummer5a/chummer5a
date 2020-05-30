@@ -33,9 +33,9 @@ namespace Chummer
 
         public StoryBuilder(Character objCharacter)
         {
-            _objCharacter = objCharacter;
-            persistenceDictionary.TryAdd("metatype", _objCharacter.Metatype.ToLower());
-            persistenceDictionary.TryAdd("metavariant", _objCharacter.Metavariant.ToLower());
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            persistenceDictionary.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
+            persistenceDictionary.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
         public string GetStory(string strLanguage)
@@ -57,7 +57,7 @@ namespace Chummer
             //Sort the list (Crude way, but have to do)
             for (int i = 0; i < modules.Count; i++)
             {
-                string stageName = xdoc.SelectSingleNode(i <= 4 ? "chummer/stages/stage[@order = \"" + (i + 1).ToString() + "\"]" : "chummer/stages/stage[@order = \"5\"]")?.InnerText;
+                string stageName = xdoc.SelectSingleNode(i <= 4 ? "chummer/stages/stage[@order = \"" + (i + 1).ToString(GlobalOptions.InvariantCultureInfo) + "\"]" : "chummer/stages/stage[@order = \"5\"]")?.InnerText;
                 int j;
                 for (j = i; j < modules.Count; j++)
                 {
@@ -113,7 +113,7 @@ namespace Chummer
 
                 if (trim.StartsWith('$'))
                 {
-                    if (trim.StartsWith("$DOLLAR"))
+                    if (trim.StartsWith("$DOLLAR", StringComparison.Ordinal))
                     {
                         story.Append('$');
                     }
@@ -138,12 +138,12 @@ namespace Chummer
                 }
             }
         }
-        
+
         public string Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            string endString = innerText.ToLower().Substring(1).TrimEnd(',', '.');
+            string endString = innerText.ToLowerInvariant().Substring(1).TrimEnd(',', '.');
             string macroName, macroPool;
             if (endString.Contains('_'))
             {
@@ -179,11 +179,11 @@ namespace Chummer
                 {
                     if (int.TryParse(macroPool, out int age))
                     {
-                        return (DateTime.UtcNow.Year + 62 + age - year).ToString();
+                        return (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo);
                     }
-                    return (DateTime.UtcNow.Year + 62 - year).ToString();
+                    return (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
                 }
-                return $"(ERROR PARSING \"{_objCharacter.Age}\")";
+                return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
             }
 
             //Did not meet predefined macros, check user defined
@@ -235,7 +235,7 @@ namespace Chummer
                         }
                         else
                         {
-                            return $"(Formating error in  $DOLLAR{macroName} )";
+                            return "(Formating error in  $DOLLAR" + macroName + " )";
                         }
                     }
 
@@ -252,12 +252,12 @@ namespace Chummer
                         return strDefault;
                     }
 
-                    return $"(Unknown key {macroPool} in  $DOLLAR{macroName} )";
+                    return "(Unknown key " + macroPool + " in  $DOLLAR" + macroName + " )";
                 }
 
                 return xmlUserMacroNode.Value;
             }
-            return $"(Unknown Macro  $DOLLAR{innerText.Substring(1)} )";
+            return "(Unknown Macro  $DOLLAR" + innerText.Substring(1) + " )";
         }
     }
 }

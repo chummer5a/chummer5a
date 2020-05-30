@@ -1,4 +1,4 @@
-version: "5.205.{build}"
+version: "5.212.{build}"
 branches:
   only:
   - master
@@ -76,7 +76,7 @@ install:
       Write-Host "Old Minor: $($env:OldMinorVersion))"
       Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
       $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
-      $BuildNumber = '{ nextBuildNumber: 2; }'
+      $BuildNumber = '{ nextBuildNumber: 1; }'
       $Format = '{ versionFormat: $Major.$Minor.1; }'
       # get project with last build details
       Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber

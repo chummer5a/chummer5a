@@ -1,29 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	Chummer5a is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	Chummer5a is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+	You can obtain the full source code for Chummer5a at
+	https://github.com/chummer5a/chummer5a
 -->
 <chummer>
 	<version>-494</version>
 	<name>Français (fr-FR)</name>
 	<righttoleft>False</righttoleft>
 	<strings>
-		<!-- Meta Strings -->
-		<string>
+	  <!-- Region Meta Strings -->
+	  <string>
 			<key>Message_Insufficient_Permissions_Warning</key>
 			<text>Chummer5 n'est actuellement pas exécuté avec les permissions appropriées ! Si vous n'exécutez pas Chummer5 en tant qu'administrateur, déplacez-le dans un dossier qui appartient à votre utilisateur.</text>
 		</string>
@@ -31,59 +31,442 @@
 			<key>Message_Save_Error_Warning</key>
 			<text>Chummer5 a rencontré une erreur en sauvegardant le personnage.</text>
 		</string>
-		<!-- Common Strings -->
-		<string>
-			<key>String_BP</key>
-			<text>PC</text>
-		</string>
-		<string>
-			<key>String_Karma</key>
-			<text>Karma</text>
-		</string>
-		<string>
-			<key>String_SumtoTen</key>
-			<text>Système à 10 points</text>
-		</string>
-		<string>
-			<key>String_LifeModule</key>
-			<text>Modules chronologiques</text>
-		</string>
-		<string>
-			<key>String_Life_Module</key>
-			<text>Modules chronologiques</text>
-		</string>
-		<string>
-			<key>String_Page</key>
-			<text>page</text>
-		</string>
-		<string>
-			<key>String_Of</key>
-			<text xml:space="preserve"> sur </text>
-		</string>
-		<string>
-			<key>String_Remaining</key>
-			<text>restants</text>
-		</string>
-		<string>
-			<key>String_OK</key>
-			<text>OK</text>
-		</string>
-		<string>
-			<key>String_Cancel</key>
-			<text>Annuler</text>
-		</string>
-		<string>
-			<key>String_Delete</key>
-			<text>Effacer</text>
-		</string>
-		<string>
-			<key>String_AddMore</key>
-			<text>&amp;Rajouter...</text>
-		</string>
-		<string>
-			<key>String_Rating</key>
-			<text>Indice</text>
-		</string>
+	  <string>
+		<key>Message_File_Cannot_Be_Accessed</key>
+		<text>Chummer5 ne peut pas accéder au fichier pour l'écriture. Il faut s'assurer qu'il a la permission d'écrire à l'emplacement et que le fichier n'est pas utilisé actuellement.</text>
+	  </string>
+	  <string>
+		<key>Message_Files_Cannot_Be_Removed</key>
+		<text>Chummer5 n'a pas pu enlever les fichiers ci-dessous pendant la mise à jour parce qu'ils n'étaient pas accessibles :</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Region File Dialog Filter Strings -->
+	  <string>
+		<key>DialogFilter_Chum5</key>
+		<text>Fichiers Chummer5 (*.chum5)|*.chum5</text>
+	  </string>
+	  <string>
+		<key>DialogFilter_Xml</key>
+		<text>Fichiers XML (*.xml)|*.xml</text>
+	  </string>
+	  <string>
+		<key>DialogFilter_Html</key>
+		<text>Fichiers HTML (*.htm;*.html)|*.htm;*.html</text>
+	  </string>
+	  <string>
+		<key>DialogFilter_Pdf</key>
+		<text>Fichiers PDF (*.pdf)|*.pdf</text>
+	  </string>
+	  <string>
+		<key>DialogFilter_Exe</key>
+		<text>Fichiers exécutables (*.exe)|*.exe</text>
+	  </string>
+	  <string>
+		<key>DialogFilter_Json</key>
+		<text>Fichiers JSON (*.json)|*.json</text>
+	  </string>
+	  <string>
+		<key>DialogFilter_All</key>
+		<text>Tous les fichiers (*.*)|*.*</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Region Common Strings -->
+	  <string>
+		<key>String_NotApplicable</key>
+		<text>N/A</text>
+	  </string>
+	  <string>
+		<key>String_Wireless</key>
+		<text>WiFi</text>
+	  </string>
+	  <string>
+		<key>String_Version</key>
+		<text>Version</text>
+	  </string>
+	  <string>
+		<key>String_Error</key>
+		<text>Erreur</text>
+	  </string>
+	  <string>
+		<key>String_Unknown</key>
+		<text>Inconnu</text>
+	  </string>
+	  <string>
+		<key>String_D6</key>
+		<text>D6</text>
+	  </string>
+	  <string>
+		<key>String_Search</key>
+		<text>Chercher :</text>
+	  </string>
+	  <string>
+		<key>String_Limit</key>
+		<text>Limite :</text>
+	  </string>
+	  <string>
+		<key>String_All</key>
+		<text>Toutes</text>
+	  </string>
+	  <string>
+		<key>String_LifeModule</key>
+		<text>Modules chronologiques</text>
+	  </string>
+	  <string>
+		<key>Label_Stage</key>
+		<text>Rang :</text>
+	  </string>
+	  <string>
+		<key>Tip_CombineItems</key>
+		<text>Vous avez plusieurs compétences avec le même nom. Vous pouvez les combiner en un seul.</text>
+	  </string>
+	  <string>
+		<key>Tip_SplitItems</key>
+		<text>Cet objet est composé de multiples compétences combinées. Cliquez ici pour les séparer</text>
+	  </string>
+	  <string>
+		<key>String_PushTheLimit</key>
+		<text>Repoussez la limite</text>
+	  </string>
+	  <string>
+		<key>String_SecondChance</key>
+		<text>Deuxième chance</text>
+	  </string>
+	  <string>
+		<key>String_SeizeTheInit</key>
+		<text>Prendre l'initiative</text>
+	  </string>
+	  <string>
+		<key>String_Blitz</key>
+		<text>Blitz</text>
+	  </string>
+	  <string>
+		<key>String_CloseCall</key>
+		<text>C'est pas loin</text>
+	  </string>
+	  <string>
+		<key>String_DeadManTrigger</key>
+		<text>Ultime action</text>
+	  </string>
+	  <string>
+		<key>Main_Menu_GM_Dash</key>
+		<text>GM Dashboard</text>
+	  </string>
+	  <string>
+		<key>Main_Menu_Player_Dash</key>
+		<text>Player Dashboard</text>
+	  </string>
+	  <string>
+		<key>String_Dashboard</key>
+		<text>Tableau de bord</text>
+	  </string>
+	  <string>
+		<key>Label_StartingInit</key>
+		<text>Initiative de démarrage</text>
+	  </string>
+	  <string>
+		<key>AddToken_Header</key>
+		<text>Ajouter un jeton Joueur</text>
+	  </string>
+	  <string>
+		<key>Button_Add</key>
+		<text>Ajouter</text>
+	  </string>
+	  <string>
+		<key>Button_Remove</key>
+		<text>Effacer</text>
+	  </string>
+	  <string>
+		<key>String_Name</key>
+		<text>Nom</text>
+	  </string>
+	  <string>
+		<key>Label_Open</key>
+		<text>Ouvrir</text>
+	  </string>
+	  <string>
+		<key>Label_InitiativeDice</key>
+		<text>Dés d'initiative</text>
+	  </string>
+	  <string>
+		<key>Label_AutoRollInit</key>
+		<text>Jeter initiative</text>
+	  </string>
+	  <string>
+		<key>Button_Next</key>
+		<text>Suivant</text>
+	  </string>
+	  <string>
+		<key>Button_Sort</key>
+		<text>Trier</text>
+	  </string>
+	  <string>
+		<key>Button_Delay</key>
+		<text>Retarder</text>
+	  </string>
+	  <string>
+		<key>Button_Reset</key>
+		<text>Réinitialiser</text>
+	  </string>
+	  <string>
+		<key>Button_ApplyManeuver</key>
+		<text>Appliquer la manœuvre</text>
+	  </string>
+	  <string>
+		<key>Label_InitiativeManeuvers</key>
+		<text>Manœuvres d'initiative</text>
+	  </string>
+	  <string>
+		<key>Label_Round</key>
+		<text>Tour</text>
+	  </string>
+	  <string>
+		<key>Label_Vehicles</key>
+		<text>Véhicules</text>
+	  </string>
+	  <string>
+		<key>Label_File</key>
+		<text>Fichier</text>
+	  </string>
+	  <string>
+		<key>Label_Exit</key>
+		<text>Sortie</text>
+	  </string>
+	  <string>
+		<key>Label_Help</key>
+		<text>Aide</text>
+	  </string>
+	  <string>
+		<key>Label_About</key>
+		<text>À propos de</text>
+	  </string>
+	  <string>
+		<key>InitRoller_Header</key>
+		<text>Résultats des dés d'initiative</text>
+	  </string>
+	  <string>
+		<key>InitRoller_Description</key>
+		<text>Entrer le total des résultats des d6.</text>
+	  </string>
+	  <string>
+		<key>Label_InitRoller_ResultOf</key>
+		<text>Résultat de {0}D6 :</text>
+	  </string>
+	  <string>
+		<key>String_BP</key>
+		<text>PC</text>
+	  </string>
+	  <string>
+		<key>String_Karma</key>
+		<text>Karma</text>
+	  </string>
+	  <string>
+		<key>String_SumtoTen</key>
+		<text>Système à 10 points</text>
+	  </string>
+	  <string>
+		<key>Label_SumtoTenHeritage</key>
+		<text>Métatype :</text>
+	  </string>
+	  <string>
+		<key>Label_SumtoTenTalent</key>
+		<text>Magie ou Résonance :</text>
+	  </string>
+	  <string>
+		<key>Label_SumtoTenAttributes</key>
+		<text>Attributs :</text>
+	  </string>
+	  <string>
+		<key>Label_SumtoTenSkills</key>
+		<text>Compétences :</text>
+	  </string>
+	  <string>
+		<key>Label_SumtoTenResources</key>
+		<text>Ressources :</text>
+	  </string>
+	  <string>
+		<key>Message_SumtoTenSpellLimit</key>
+		<text>Vous ne pouvez pas avoir plus de magie que ce qui est autorisé par votre priorité de talent sélectionnée.</text>
+	  </string>
+	  <string>
+		<key>Message_SumtoTenComplexFormLimit</key>
+		<text>Votre nombre de Formes Complexes ne peut pas excéder le nombre défini par votre priorité.</text>
+	  </string>
+	  <string>
+		<key>Message_FailedLoad</key>
+		<text>Ce fichier n'a pas réussi à se charger avec l'erreur XML suivante :\n{0}</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_FailedLoad</key>
+		<text>Ouverture impossible</text>
+	  </string>
+	  <string>
+		<key>Message_FailedSave</key>
+		<text>Ce fichier n'a pas pu être sauvé en raison de l'erreur XML suivante :\n{0}</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_FailedSave</key>
+		<text>Impossible de sauvegarder</text>
+	  </string>
+	  <string>
+		<key>Message_OverCapacityLimit</key>
+		<text>La dimension de l'objet est supérieure à la capacité de l'objet parent : {0}, {1} requis</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_OverCapacityLimit</key>
+		<text>Au-dessus de la limite de capacité</text>
+	  </string>
+	  <string>
+		<key>String_BuyWithKarma</key>
+		<text>Acheter avec Karma</text>
+	  </string>
+	  <string>
+		<key>String_Points</key>
+		<text>Points</text>
+	  </string>
+	  <string>
+		<key>String_Priority</key>
+		<text>Priorité</text>
+	  </string>
+	  <string>
+		<key>String_Special</key>
+		<text>Spécial</text>
+	  </string>
+	  <string>
+		<key>String_SpecialAttributes</key>
+		<text>Attributs spéciaux</text>
+	  </string>
+	  <string>
+		<key>Label_SpecialAttributes</key>
+		<text>Attributs spéciaux :</text>
+	  </string>
+	  <string>
+		<key>String_SpecialAttributePoints</key>
+		<text>Points d'attributs spéciaux</text>
+	  </string>
+	  <string>
+		<key>String_AttributePoints</key>
+		<text>Points d'attributs</text>
+	  </string>
+	  <string>
+		<key>String_Metamagic</key>
+		<text>Métamagie</text>
+	  </string>
+	  <string>
+		<key>String_Echo</key>
+		<text>Écho</text>
+	  </string>
+	  <string>
+		<key>String_Art</key>
+		<text>Talent</text>
+	  </string>
+	  <string>
+		<key>String_Ritual</key>
+		<text>Rituel</text>
+	  </string>
+	  <string>
+		<key>String_Enchantment</key>
+		<text>Enchantement</text>
+	  </string>
+	  <string>
+		<key>String_Enhancement</key>
+		<text>Amélioration</text>
+	  </string>
+	  <string>
+		<key>Label_Metamagic</key>
+		<text>Métamagie :</text>
+	  </string>
+	  <string>
+		<key>Label_Echo</key>
+		<text>Écho :</text>
+	  </string>
+	  <string>
+		<key>Label_Art</key>
+		<text>Talent :</text>
+	  </string>
+	  <string>
+		<key>Label_Ritual</key>
+		<text>Rituel :</text>
+	  </string>
+	  <string>
+		<key>Label_Enchantment</key>
+		<text>Enchantement :</text>
+	  </string>
+	  <string>
+		<key>Label_Enhancement</key>
+		<text>Amélioration :</text>
+	  </string>
+	  <string>
+		<key>String_MartialArtsCount</key>
+		<text>Arts martiaux</text>
+	  </string>
+	  <string>
+		<key>String_TechniquesCount</key>
+		<text>Techniques</text>
+	  </string>
+	  <string>
+		<key>String_SkillPoints</key>
+		<text>Points de compétences</text>
+	  </string>
+	  <string>
+		<key>String_SkillGroupPoints</key>
+		<text>Points de groupes de compétences</text>
+	  </string>
+	  <string>
+		<key>String_Spells</key>
+		<text>Sorts</text>
+	  </string>
+	  <string>
+		<key>String_ComplexForms</key>
+		<text>Forme complexe</text>
+	  </string>
+	  <string>
+		<key>String_Page</key>
+		<text>page</text>
+	  </string>
+	  <string>
+		<key>String_OverPriorityPoints</key>
+		<text>{0} de {1} : {2} Karma</text>
+	  </string>
+	  <string>
+		<key>String_Of</key>
+		<text xml:space="preserve"> sur </text>
+	  </string>
+	  <string>
+		<key>String_Space</key>
+		<text xml:space="preserve"> </text>
+	  </string>
+	  <string>
+		<key>String_Colon</key>
+		<text>:</text>
+	  </string>
+	  <string>
+		<key>String_Remaining</key>
+		<text>restants</text>
+	  </string>
+	  <string>
+		<key>String_OK</key>
+		<text>OK</text>
+	  </string>
+	  <string>
+		<key>String_Cancel</key>
+		<text>Annuler</text>
+	  </string>
+	  <string>
+		<key>String_Delete</key>
+		<text>Effacer</text>
+	  </string>
+	  <string>
+		<key>String_AddMore</key>
+		<text>&amp;Rajouter...</text>
+	  </string>
+	  <string>
+		<key>String_Rating</key>
+		<text>Indice</text>
+	  </string>
+	  <string>
+		<key>String_TotalRating</key>
+		<text>Indice total</text>
+	  </string>
 		<string>
 			<key>String_System</key>
 			<text>Système</text>
@@ -104,247 +487,375 @@
 			<key>String_UnnamedCharacter</key>
 			<text>Personnage sans nom</text>
 		</string>
-		<string>
-			<key>Checkbox_Free</key>
-			<text>Gratuit</text>
-		</string>
-		<string>
-			<key>Checkbox_BlackMarketDiscount</key>
-			<text>Réduction contact au marché noir (10%)</text>
-		</string>
-		<string>
-			<key>Checkbox_HomeNode</key>
-			<text>Noeud de résidence</text>
-		</string>
-		<string>
-			<key>Checkbox_Commlinks</key>
-			<text>Afficher uniquement les Commlinks</text>
-		</string>
-		<string>
-			<key>Checkbox_ActiveCommlink</key>
-			<text>Commlink Actif</text>
-		</string>
-		<string>
-			<key>Label_BP</key>
-			<text>PC :</text>
-		</string>
-		<string>
-			<key>Label_BPRemaining</key>
-			<text>PC restants :</text>
-		</string>
-		<string>
-			<key>Label_Karma</key>
-			<text>Karma :</text>
-		</string>
-		<string>
-			<key>Label_LP</key>
-			<text>PV :</text>
-		</string>
-		<string>
-			<key>String_KarmaRemaining</key>
-			<text>Karma restant</text>
-		</string>
-		<string>
-			<key>Label_KarmaRemaining</key>
-			<text>Karma restant :</text>
-		</string>
-		<string>
-			<key>Label_Source</key>
-			<text>Source :</text>
-		</string>
-		<string>
-			<key>Label_Name</key>
-			<text>Nom :</text>
-		</string>
-		<string>
-			<key>Label_Category</key>
-			<text>Catégorie :</text>
-		</string>
-		<string>
-			<key>Label_Handling</key>
-			<text>Maniabilité :</text>
-		</string>
-		<string>
-			<key>Label_Accel</key>
-			<text>Accélération :</text>
-		</string>
-		<string>
-			<key>Label_Speed</key>
-			<text>Vitesse :</text>
-		</string>
-		<string>
-			<key>Label_Device</key>
-			<text>Appareil :</text>
-		</string>
-		<string>
-			<key>Label_Pilot</key>
-			<text>AutoPilote :</text>
-		</string>
-		<string>
-			<key>Label_Body</key>
-			<text>Structure :</text>
-		</string>
-		<string>
-			<key>Label_Armor</key>
-			<text>Blindage :</text>
-		</string>
-		<string>
-			<key>Label_Seats</key>
-			<text>Sièges :</text>
-		</string>
-		<string>
-			<key>Label_Sensor</key>
-			<text>Senseurs :</text>
-		</string>
-		<string>
-			<key>Label_Avail</key>
-			<text>Disponibilité :</text>
-		</string>
-		<string>
-			<key>Label_Cost</key>
-			<text>Coût :</text>
-		</string>
-		<string>
-			<key>Label_Slots</key>
-			<text>Emplacements :</text>
-		</string>
-		<string>
-			<key>Label_Rating</key>
-			<text>Indice :</text>
-		</string>
-		<string>
-			<key>Label_Qty</key>
-			<text>Quantité :</text>
-		</string>
-		<string>
-			<key>Label_Grade</key>
-			<text>Gamme :</text>
-		</string>
-		<string>
-			<key>Label_Essence</key>
-			<text>Essence :</text>
-		</string>
-		<string>
-			<key>Label_Type</key>
-			<text>Type :</text>
-		</string>
-		<string>
-			<key>Label_Action</key>
-			<text>Action :</text>
-		</string>
-		<string>
-			<key>Label_Range</key>
-			<text>Portée :</text>
-		</string>
-		<string>
-			<key>Label_Duration</key>
-			<text>Durée :</text>
-		</string>
-		<string>
-			<key>Label_Points</key>
-			<text>Points :</text>
-		</string>
-		<string>
-			<key>Label_Descriptors</key>
-			<text>Descriptions :</text>
-		</string>
-		<string>
-			<key>Label_Damage</key>
-			<text>Dommages :</text>
-		</string>
-		<string>
-			<key>Label_DV</key>
-			<text>Dég :</text>
-		</string>
-		<string>
-			<key>Label_RC</key>
-			<text>Compensation Recul :</text>
-		</string>
-		<string>
-			<key>Label_AP</key>
-			<text>Pénétration Armure :</text>
-		</string>
-		<string>
-			<key>Label_Ammo</key>
-			<text>Munitions :</text>
-		</string>
-		<string>
-			<key>Label_Reach</key>
-			<text>Allonge :</text>
-		</string>
-		<string>
-			<key>Label_Mode</key>
-			<text>Mode :</text>
-		</string>
-		<string>
-			<key>Label_Mount</key>
-			<text>Monture :</text>
-		</string>
-		<string>
-			<key>Label_Mount</key>
-			<text>Monture Extra :</text>
-		</string>
-		<string>
-			<key>Label_DataFile</key>
-			<text>Fichiers :</text>
-		</string>
-		<string>
-			<key>Label_Search</key>
-			<text>&amp;Rechercher :</text>
-		</string>
-		<string>
-			<key>Label_Capacity</key>
-			<text>Capacité :</text>
-		</string>
-		<string>
-			<key>Label_Response</key>
-			<text>Réponse :</text>
-		</string>
-		<string>
-			<key>Label_Signal</key>
-			<text>Signal :</text>
-		</string>
-		<string>
-			<key>Label_System</key>
-			<text>Système :</text>
-		</string>
-		<string>
-			<key>Label_Firewall</key>
-			<text>Firewall :</text>
-		</string>
-		<string>
-			<key>Label_BiofeedbackFilter</key>
-			<text>Filtre de biofeedback :</text>
-		</string>
-		<string>
-			<key>Label_MaximumCapacityAllowed</key>
-			<text>Capacité maximum autorisée :</text>
-		</string>
-		<string>
-			<key>Label_Test</key>
-			<text>Test :</text>
-		</string>
-		<string>
-			<key>String_None</key>
-			<text>Aucun</text>
-		</string>
-		<string>
-			<key>String_Varies</key>
-			<text>Variable</text>
-		</string>
-		<string>
-			<key>String_Qualities</key>
-			<text>Traits</text>
-		</string>
-		<string>
-			<key>Label_Qualities</key>
-			<text>Traits :</text>
-		</string>
-		<string>
-			<key>Label_Metavariant</key>
-			<text>Métavariante :</text>
-		</string>
-		<string>
+	  <string>
+		<key>Checkbox_Free</key>
+		<text>Gratuit</text>
+	  </string>
+	  <string>
+		<key>Checkbox_BlackMarketDiscount</key>
+		<text>Réduction contact au marché noir (10 %)</text>
+	  </string>
+	  <string>
+		<key>Checkbox_HomeNode</key>
+		<text>Noeud de résidence</text>
+	  </string>
+	  <string>
+		<key>Checkbox_Wireless</key>
+		<text>WiFi activé</text>
+	  </string>
+	  <string>
+		<key>Checkbox_Commlinks</key>
+		<text>Afficher uniquement les commlinks</text>
+	  </string>
+	  <string>
+		<key>Checkbox_ActiveCommlink</key>
+		<text>Commlink actif</text>
+	  </string>
+	  <string>
+		<key>Label_BP</key>
+		<text>PC :</text>
+	  </string>
+	  <string>
+		<key>Label_BPRemaining</key>
+		<text>PC restants :</text>
+	  </string>
+	  <string>
+		<key>Label_Karma</key>
+		<text>Karma :</text>
+	  </string>
+	  <string>
+		<key>Label_LP</key>
+		<text>PV :</text>
+	  </string>
+	  <string>
+		<key>Label_BonusLP</key>
+		<text>PV bonus :</text>
+	  </string>
+	  <string>
+		<key>Label_QualityLP</key>
+		<text>PV qualité :</text>
+	  </string>
+	  <string>
+		<key>Label_QualityCost</key>
+		<text>Coût :</text>
+	  </string>
+	  <string>
+		<key>Label_QualitySource</key>
+		<text>Source :</text>
+	  </string>
+	  <string>
+		<key>Checkbox_Randomize1D6</key>
+		<text>Lancer 1D6</text>
+	  </string>
+	  <string>
+		<key>String_KarmaRemaining</key>
+		<text>Karma restant</text>
+	  </string>
+	  <string>
+		<key>Label_KarmaRemaining</key>
+		<text>Karma restant :</text>
+	  </string>
+	  <string>
+		<key>Label_Source</key>
+		<text>Source :</text>
+	  </string>
+	  <string>
+		<key>Label_Name</key>
+		<text>Nom :</text>
+	  </string>
+	  <string>
+		<key>Label_Bonus</key>
+		<text>Bonus :</text>
+	  </string>
+	  <string>
+		<key>Label_Category</key>
+		<text>Catégorie :</text>
+	  </string>
+	  <string>
+		<key>Label_Handling</key>
+		<text>Maniabilité :</text>
+	  </string>
+	  <string>
+		<key>Label_Accel</key>
+		<text>Accélération :</text>
+	  </string>
+	  <string>
+		<key>Label_Speed</key>
+		<text>Vitesse :</text>
+	  </string>
+	  <string>
+		<key>String_Handling</key>
+		<text>Maniabilité</text>
+	  </string>
+	  <string>
+		<key>Label_Response</key>
+		<text>Réponse :</text>
+	  </string>
+	  <string>
+		<key>Label_Device</key>
+		<text>Appareil :</text>
+	  </string>
+	  <string>
+		<key>Label_Pilot</key>
+		<text>Autopilote :</text>
+	  </string>
+	  <string>
+		<key>Label_Body</key>
+		<text>Structure :</text>
+	  </string>
+	  <string>
+		<key>String_VehicleBody</key>
+		<text>Structure</text>
+	  </string>
+	  <string>
+		<key>Label_Armor</key>
+		<text>Blindage :</text>
+	  </string>
+	  <string>
+		<key>Label_Seats</key>
+		<text>Places :</text>
+	  </string>
+	  <string>
+		<key>Label_Sensor</key>
+		<text>Senseurs :</text>
+	  </string>
+	  <string>
+		<key>String_Sensor</key>
+		<text>Senseurs</text>
+	  </string>
+	  <string>
+		<key>Label_Avail</key>
+		<text>Disponibilité :</text>
+	  </string>
+	  <string>
+		<key>Label_Cost</key>
+		<text>Coût :</text>
+	  </string>
+	  <string>
+		<key>Label_Accuracy</key>
+		<text>Précision :</text>
+	  </string>
+	  <string>
+		<key>Label_Slots</key>
+		<text>Emplacements :</text>
+	  </string>
+	  <string>
+		<key>Label_Weapons</key>
+		<text>Armes:</text>
+	  </string>
+	  <string>
+		<key>Label_Protection</key>
+		<text>Protection :</text>
+	  </string>
+	  <string>
+		<key>Label_Powertrain</key>
+		<text>Puissance :</text>
+	  </string>
+	  <string>
+		<key>Label_Bodymod</key>
+		<text>Modifs :</text>
+	  </string>
+	  <string>
+		<key>Label_Electromagnetic</key>
+		<text>Électro :</text>
+	  </string>
+	  <string>
+		<key>Label_Cosmetic</key>
+		<text>Esthétique :</text>
+	  </string>
+	  <string>
+		<key>Label_DroneModSlots</key>
+		<text>Emplacements pour modification :</text>
+	  </string>
+	  <string>
+		<key>Label_Rating</key>
+		<text>Indice :</text>
+	  </string>
+	  <string>
+		<key>Label_Qty</key>
+		<text>Quantité :</text>
+	  </string>
+	  <string>
+		<key>Label_Grade</key>
+		<text>Gamme :</text>
+	  </string>
+	  <string>
+		<key>Label_Essence</key>
+		<text>Essence :</text>
+	  </string>
+	  <string>
+		<key>Label_Type</key>
+		<text>Type :</text>
+	  </string>
+	  <string>
+		<key>Label_Action</key>
+		<text>Action :</text>
+	  </string>
+	  <string>
+		<key>Label_Range</key>
+		<text>Portée :</text>
+	  </string>
+	  <string>
+		<key>Label_Duration</key>
+		<text>Durée :</text>
+	  </string>
+	  <string>
+		<key>Label_Points</key>
+		<text>Points :</text>
+	  </string>
+	  <string>
+		<key>Label_Descriptors</key>
+		<text>Descriptions :</text>
+	  </string>
+	  <string>
+		<key>Label_Damage</key>
+		<text>Dommages :</text>
+	  </string>
+	  <string>
+		<key>Label_DV</key>
+		<text>VD :</text>
+	  </string>
+	  <string>
+		<key>Label_RC</key>
+		<text>CR :</text>
+	  </string>
+	  <string>
+		<key>Label_AP</key>
+		<text>PA :</text>
+	  </string>
+	  <string>
+		<key>Label_Ammo</key>
+		<text>Munitions :</text>
+	  </string>
+	  <string>
+		<key>Label_Reach</key>
+		<text>Allonge :</text>
+	  </string>
+	  <string>
+		<key>Label_Mode</key>
+		<text>Mode :</text>
+	  </string>
+	  <string>
+		<key>Label_Mount</key>
+		<text>Monture :</text>
+	  </string>
+	  <string>
+		<key>Label_ExtraMount</key>
+		<text>Monture supp. :</text>
+	  </string>
+	  <string>
+		<key>Label_DataFile</key>
+		<text>Fichiers :</text>
+	  </string>
+	  <string>
+		<key>Label_Search</key>
+		<text>&amp;Rechercher :</text>
+	  </string>
+	  <string>
+		<key>Label_Capacity</key>
+		<text>Capacité :</text>
+	  </string>
+	  <string>
+		<key>Label_DeviceRating</key>
+		<text>Indice :</text>
+	  </string>
+	  <string>
+		<key>Label_Signal</key>
+		<text>Signal :</text>
+	  </string>
+	  <string>
+		<key>Label_System</key>
+		<text>Système :</text>
+	  </string>
+	  <string>
+		<key>Label_Attack</key>
+		<text>Attaque :</text>
+	  </string>
+	  <string>
+		<key>Label_Sleaze</key>
+		<text>Corruption :</text>
+	  </string>
+	  <string>
+		<key>Label_DataProcessing</key>
+		<text>Traitement de données :</text>
+	  </string>
+	  <string>
+		<key>Label_Firewall</key>
+		<text>Firewall :</text>
+	  </string>
+	  <string>
+		<key>Label_BiofeedbackFilter</key>
+		<text>Filtre de biofeedback :</text>
+	  </string>
+	  <string>
+		<key>Label_MaximumCapacityAllowed</key>
+		<text>Capacité maximum autorisée :</text>
+	  </string>
+	  <string>
+		<key>Label_ArmorShort</key>
+		<text>Nom :</text>
+	  </string>
+	  <string>
+		<key>Label_ArmorValueShort</key>
+		<text>Armure :</text>
+	  </string>
+	  <string>
+		<key>Label_ArmorLong</key>
+		<text>Armure :</text>
+	  </string>
+	  <string>
+		<key>Label_Test</key>
+		<text>Test :</text>
+	  </string>
+	  <string>
+		<key>String_None</key>
+		<text>Aucun</text>
+	  </string>
+	  <string>
+		<key>String_Varies</key>
+		<text>Variable</text>
+	  </string>
+	  <string>
+		<key>String_Qualities</key>
+		<text>Traits</text>
+	  </string>
+	  <string>
+		<key>Label_Qualities</key>
+		<text>Traits :</text>
+	  </string>
+	  <string>
+		<key>String_Quality</key>
+		<text>Qualité</text>
+	  </string>
+	  <string>
+		<key>Label_Metavariant</key>
+		<text>Métavariante :</text>
+	  </string>
+	  <string>
+		<key>Title_ChooseCharacterPriorities</key>
+		<text>Choisir les priorités des personnages</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityHeritage</key>
+		<text>Métatype :</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityTalent</key>
+		<text>Magie ou Résonance :</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityAttributes</key>
+		<text>Attributs :</text>
+	  </string>
+	  <string>
+		<key>Label_PrioritySkills</key>
+		<text>Compétences :</text>
+	  </string>
+	  <string>
+		<key>Label_PriorityResources</key>
+		<text>Ressources :</text>
+	  </string>
+	  <string>
 			<key>Label_ActiveSkill</key>
 			<text>Compétence active:</text>
 		</string>
@@ -352,59 +863,164 @@
 			<key>String_Force</key>
 			<text>Puissance</text>
 		</string>
-		<string>
-			<key>String_CyberlimbAttributeModifier</key>
-			<text>, affecté par les attributs d'un membre cybernétique</text>
-		</string>
-		<string>
-			<key>String_Contact</key>
-			<text>Contact</text>
-		</string>
-		<string>
-			<key>String_Enemy</key>
-			<text>Ennemi</text>
-		</string>
-		<string>
-			<key>String_Pet</key>
-			<text>Animal</text>
-		</string>
-		<string>
-			<key>String_Day</key>
-			<text>jour</text>
-		</string>
-		<string>
-			<key>String_Days</key>
-			<text>jours</text>
-		</string>
-		<string>
-			<key>String_Week</key>
-			<text>semaine</text>
-		</string>
-		<string>
-			<key>String_Weeks</key>
-			<text>semaines</text>
-		</string>
-		<string>
-			<key>String_Month</key>
-			<text>mois</text>
-		</string>
-		<string>
-			<key>String_Months</key>
-			<text>mois</text>
-		</string>
-		<string>
-			<key>String_Hour</key>
-			<text>heure</text>
-		</string>
-		<string>
-			<key>String_Hours</key>
-			<text>heures</text>
-		</string>
-		<string>
-			<key>String_StackedFocus</key>
-			<text>Focus multiple</text>
-		</string>
-		<!-- Printout Strings -->
+	  <string>
+		<key>String_Level</key>
+		<text>Niveau</text>
+	  </string>
+	  <string>
+		<key>String_CyberlimbAttributeModifier</key>
+		<text>, affecté par les attributs d'un membre cybernétique</text>
+	  </string>
+	  <string>
+		<key>String_Contact</key>
+		<text>Contact</text>
+	  </string>
+	  <string>
+		<key>Label_Location</key>
+		<text>Localisation :</text>
+	  </string>
+	  <string>
+		<key>Label_Archetype</key>
+		<text>Archétype :</text>
+	  </string>
+	  <string>
+		<key>String_Contacts</key>
+		<text>Contacts</text>
+	  </string>
+	  <string>
+		<key>String_Enemy</key>
+		<text>Ennemi</text>
+	  </string>
+	  <string>
+		<key>String_Pet</key>
+		<text>Animal</text>
+	  </string>
+	  <string>
+		<key>String_Immediate</key>
+		<text>Immédiat</text>
+	  </string>
+	  <string>
+		<key>String_Second</key>
+		<text>seconde</text>
+	  </string>
+	  <string>
+		<key>String_Seconds</key>
+		<text>secondes</text>
+	  </string>
+	  <string>
+		<key>String_CombatTurn</key>
+		<text>tour de combat</text>
+	  </string>
+	  <string>
+		<key>String_CombatTurns</key>
+		<text>tours de combat</text>
+	  </string>
+	  <string>
+		<key>String_Minute</key>
+		<text>minute</text>
+	  </string>
+	  <string>
+		<key>String_Minutes</key>
+		<text>minutes</text>
+	  </string>
+	  <string>
+		<key>String_Day</key>
+		<text>jour</text>
+	  </string>
+	  <string>
+		<key>String_Days</key>
+		<text>jours</text>
+	  </string>
+	  <string>
+		<key>String_Week</key>
+		<text>semaine</text>
+	  </string>
+	  <string>
+		<key>String_Weeks</key>
+		<text>semaines</text>
+	  </string>
+	  <string>
+		<key>String_Month</key>
+		<text>mois</text>
+	  </string>
+	  <string>
+		<key>String_Months</key>
+		<text>mois</text>
+	  </string>
+	  <string>
+		<key>String_Hour</key>
+		<text>heure</text>
+	  </string>
+	  <string>
+		<key>String_Hours</key>
+		<text>heures</text>
+	  </string>
+	  <string>
+		<key>String_ArmorEncumbrance</key>
+		<text>Armure Encombrement</text>
+	  </string>
+	  <string>
+		<key>String_StackedFocus</key>
+		<text>Focus multiple</text>
+	  </string>
+	  <string>
+		<key>String_Initiative</key>
+		<text>{0} + {1}d6</text>
+	  </string>
+	  <string>
+		<key>String_MatrixInitiative</key>
+		<text>{0} + TD + {1}d6</text>
+	  </string>
+	  <string>
+		<key>String_MatrixInitiativeLong</key>
+		<text>{0} + Traitement de données + {1}d6</text>
+	  </string>
+	  <string>
+		<key>Checkbox_HideOverAvailLimit</key>
+		<text>Masquer les éléments au-delà de la limite disponible ({0})</text>
+	  </string>
+	  <string>
+		<key>Checkbox_ShowOnlyAffordItems</key>
+		<text>Montrer uniquement les éléments que je peux acheter</text>
+	  </string>
+	  <string>
+		<key>String_Immune</key>
+		<text>Immunisé</text>
+	  </string>
+	  <string>
+		<key>String_LifeModules</key>
+		<text>Modules chonologiques</text>
+	  </string>
+	  <string>
+		<key>String_Armor</key>
+		<text>Armure</text>
+	  </string>
+	  <string>
+		<key>String_Info</key>
+		<text>Infos</text>
+	  </string>
+	  <string>
+		<key>String_Matrix</key>
+		<text>Matrice</text>
+	  </string>
+	  <string>
+		<key>String_Paragon</key>
+		<text>Parangon</text>
+	  </string>
+	  <string>
+		<key>String_Stream</key>
+		<text>Flux</text>
+	  </string>
+	  <string>
+		<key>String_Vehicle</key>
+		<text>Véhicule</text>
+	  </string>
+	  <string>
+		<key>String_Weapon</key>
+		<text>Arme</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Printout Strings -->
 		<string>
 			<key>String_UnarmedAttack</key>
 			<text>Attaque à mains nues</text>
@@ -613,7 +1229,7 @@
 			<text>&amp;Aide</text>
 		</string>
 		<string>
-			<key>Menu_Main_NewCharater</key>
+			<key>Menu_Main_NewCharacter</key>
 			<text>&amp;Nouveau personnage</text>
 		</string>
 		<string>
@@ -730,7 +1346,7 @@
 			<text>Convertir en créature toxique</text>
 		</string>
 		<string>
-			<key>Menu_SpecialConverToCyberzombie</key>
+			<key>Menu_SpecialConvertToCyberzombie</key>
 			<text>Convertir en cyberzombie</text>
 		</string>
 		<string>
@@ -930,7 +1546,7 @@
 			<text>Bioware et cyberware</text>
 		</string>
 		<string>
-			<key>Tab_StreeGear</key>
+			<key>Tab_StreetGear</key>
 			<text>Équipement</text>
 		</string>
 		<string>
@@ -1008,10 +1624,6 @@
 		<string>
 			<key>Message_CyberzombieRequirementsEssence</key>
 			<text>Le personnage doit avoir une Essence négative.</text>
-		</string>
-		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Le personnage doit avoir un stimulateur de mémoire évoquée.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>
@@ -1538,7 +2150,7 @@
 			<text>Cette forme complexe ne permet pas d'options.</text>
 		</string>
 		<string>
-			<key>Message_ConntAddComplexFormOptionLimit</key>
+			<key>Message_CannotAddComplexFormOptionLimit</key>
 			<text>Cette Forme Complexe ne peut pas avoir plus de {0} options à cause de son Indice.</text>
 		</string>
 		<string>
@@ -2206,7 +2818,7 @@
 			<text>Vente de bioware</text>
 		</string>
 		<string>
-			<key>String_ExpensePurchaseCyberwearGear</key>
+			<key>String_ExpensePurchaseCyberwareGear</key>
 			<text>Achat d'une suite cyberware</text>
 		</string>
 		<string>
@@ -3056,19 +3668,19 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_GroupInitiation</key>
-			<text>Initiation de Groupe (-10%)</text>
+			<text>Initiation de Groupe (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_InitiationOrdeal</key>
-			<text>Epreuve initiatique (-10%)</text>
+			<text>Epreuve initiatique (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_NetworkSubmersion</key>
-			<text>Submersion en Réseau (-20%)</text>
+			<text>Submersion en Réseau (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_SubmersionTask</key>
-			<text>Tâche de Submersion (-20%)</text>
+			<text>Tâche de Submersion (-{0})</text>
 		</string>
 		<string>
 			<key>Checkbox_JoinedGroup</key>
@@ -3204,19 +3816,19 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>Moyenne (-1)</text>
+			<text>Moyenne ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>Longue (-3)</text>
+			<text>Longue ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>Extrême (-6)</text>
+			<text>Extrême ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>
-			<text>Réserve de dés :</text>
+			<text>Nombre de Dés :</text>
 		</string>
 		<string>
 			<key>Checkbox_BaseWeapon</key>
@@ -3541,7 +4153,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<!-- Improvements Tab -->
 		<string>
-			<key>Button_AddImproevment</key>
+			<key>Button_AddImprovement</key>
 			<text>&amp;Ajouter une amélioration</text>
 		</string>
 		<string>
@@ -3716,7 +4328,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Vol :</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>Sang-froid :</text>
 		</string>
 		<string>
@@ -3825,7 +4437,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Regain ou dépense de Chance</text>
 		</string>
 		<string>
-			<key>Tip_CMCMPenalty</key>
+			<key>Tip_CMPenalty</key>
 			<text>Pénalité provenant des dégats du Moniteur de Condition et appliquées aux réserves de dés.</text>
 		</string>
 		<string>
@@ -4072,7 +4684,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_Skill_DicePoolModifiers</key>
-			<text>Modificateur de Réserve de Dés</text>
+			<text>Modificateur de Nombre de Dés</text>
 		</string>
 		<string>
 			<key>Tip_Skill_NativeLanguage</key>
@@ -4868,7 +5480,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Nom du fichier de données</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_DataDescription</key>
+			<key>Message_OmaeUpload_DataDescription</key>
 			<text>Donnez une courte description de ce que le fichier de données contient.</text>
 		</string>
 		<string>
@@ -4888,7 +5500,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Nom de la fiche de personnage</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_SheetDescription</key>
+			<key>Message_OmaeUpload_SheetDescription</key>
 			<text>Donnez une courte description de ce que la fiche de personnage contient.</text>
 		</string>
 		<string>
@@ -5976,11 +6588,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>N'afficher que les traits disponibles</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>N'afficher que les traits métagénétiques</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>Ne pas afficher Qualités Meta génétiques</text>
 		</string>
 		<string>
@@ -6557,122 +7169,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Métamagie</text>
 		</string>
 		<string>
-			<key>String_Priority</key>
-			<text>Priorité</text>
-		</string>
-		<string>
-			<key>String_Special</key>
-			<text>Spécial</text>
-		</string>
-		<string>
-			<key>String_SpecialAttributes</key>
-			<text>Attributs Spéciaux</text>
-		</string>
-		<string>
-			<key>Label_SpecialAttributes</key>
-			<text>Attributs Spéciaux:</text>
-		</string>
-		<string>
-			<key>String_SpecialAttributePoints</key>
-			<text>Points d'Attributs spéciaux</text>
-		</string>
-		<string>
-			<key>String_AttributePoints</key>
-			<text>Points d'Attributs</text>
-		</string>
-		<string>
-			<key>String_MartialArtsCount</key>
-			<text>Arts Martiaux</text>
-		</string>
-		<string>
-			<key>String_TechniquesCount</key>
-			<text>Téchniques</text>
-		</string>
-		<string>
-			<key>String_SkillPoints</key>
-			<text>Points de Compétences</text>
-		</string>
-		<string>
-			<key>String_SkillGroupPoints</key>
-			<text>Points de Groupe de Compétences</text>
-		</string>
-		<string>
-			<key>String_Spells</key>
-			<text>Sorts</text>
-		</string>
-		<string>
-			<key>String_ComplexForms</key>
-			<text>Forme Complexe</text>
-		</string>
-		<string>
-			<key>Label_Bonus</key>
-			<text>Bonus :</text>
-		</string>
-		<string>
-			<key>Label_Accuracy</key>
-			<text>Précision :</text>
-		</string>
-		<string>
-			<key>Label_DeviceRating</key>
-			<text>Indice :</text>
-		</string>
-		<string>
-			<key>Label_Attack</key>
-			<text>Attaque :</text>
-		</string>
-		<string>
-			<key>String_Break</key>
-			<text>Casser</text>
-		</string>
-		<string>
-			<key>Label_Sleaze</key>
-			<text>Corruption :</text>
-		</string>
-		<string>
-			<key>Label_DataProcessing</key>
-			<text>Traitement de données:</text>
-		</string>
-		<string>
-			<key>Label_ArmorShort</key>
-			<text>Nom :</text>
-		</string>
-		<string>
-			<key>Label_ArmorValueShort</key>
-			<text>Armure :</text>
-		</string>
-		<string>
-			<key>Label_ArmorLong</key>
-			<text>Armure :</text>
-		</string>
-		<string>
-			<key>Label_PriorityHeritage</key>
-			<text>Métatype :</text>
-		</string>
-		<string>
-			<key>Label_PriorityTalent</key>
-			<text>Magie ou Résonance :</text>
-		</string>
-		<string>
-			<key>Label_PriorityAttributes</key>
-			<text>Attributs :</text>
-		</string>
-		<string>
-			<key>Label_PrioritySkills</key>
-			<text>Compétences :</text>
-		</string>
-		<string>
-			<key>Label_PriorityResources</key>
-			<text>Ressources :</text>
-		</string>
-		<string>
-			<key>String_Contacts</key>
-			<text>Contacts</text>
-		</string>
-		<string>
-			<key>String_ArmorEncumbrance</key>
-			<text>Armure Encombrement</text>
-		</string>
-		<string>
 			<key>Menu_Main_DumpshockThread</key>
 			<text>&amp;Fil Dumpshock</text>
 		</string>
@@ -7001,54 +7497,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Réserve</text>
 		</string>
 		<string>
-			<key>String_Metamagic</key>
-			<text>Métamagie</text>
-		</string>
-		<string>
-			<key>Label_Metamagic</key>
-			<text>Métamagie:</text>
-		</string>
-		<string>
-			<key>String_Ritual</key>
-			<text>Rituel</text>
-		</string>
-		<string>
-			<key>String_Enchantment</key>
-			<text>Enchantement</text>
-		</string>
-		<string>
-			<key>Label_Ritual</key>
-			<text>Rituel:</text>
-		</string>
-		<string>
-			<key>Label_Enchantment</key>
-			<text>Enchantement:</text>
-		</string>
-		<string>
-			<key>String_Enhancement</key>
-			<text>Amélioration</text>
-		</string>
-		<string>
-			<key>Label_Enhancement</key>
-			<text>Amélioration:</text>
-		</string>
-		<string>
-			<key>String_Art</key>
-			<text>Talent</text>
-		</string>
-		<string>
-			<key>Label_Art</key>
-			<text>Talent:</text>
-		</string>
-		<string>
-			<key>String_Echo</key>
-			<text>Écho</text>
-		</string>
-		<string>
-			<key>Label_Echo</key>
-			<text>Écho :</text>
-		</string>
-		<string>
 			<key>Message_ConfirmKarmaandNuyenExpense</key>
 			<text>Êtes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyen pour améliorer de {0} à {1} ?</text>
 		</string>
@@ -7073,24 +7521,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Ignorer les prérequis du Grimoire des rues pour les Talents</text>
 		</string>
 		<string>
+		  <key>Checkbox_Options_AllowFreeGrids</key>
+		  <text>Permettre les abonnements de grille disponibles pour les niveau de vie, même si 'Hard Targets' n'est pas sélectionné comme livre source</text>
+		</string>
+		<string>
 			<key>Message_UndoNotHighestGrade</key>
 			<text>Vous devez d'abord annuler les entrées des grades d'initiation.</text>
-		</string>
-		<string>
-			<key>String_BuyWithKarma</key>
-			<text>Acheter avec Karma</text>
-		</string>
-		<string>
-			<key>String_Points</key>
-			<text>Points</text>
-		</string>
-		<string>
-			<key>Label_Location</key>
-			<text>Endroit :</text>
-		</string>
-		<string>
-			<key>Label_Archtype</key>
-			<text>Archétype :</text>
 		</string>
 		<string>
 			<key>MessageTitle_DeleteGrade</key>
@@ -7301,10 +7737,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Sélection d'un Programme ou Programme Avancé</text>
 		</string>
 		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Vous ne réunissez pas les conditions minimales pour ce programme avancé. Vous devez savoir tout les programmes suivants: </text>
-		</string>
-		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
 			<text>Prérequis du Programme Avancé</text>
 		</string>
@@ -7327,100 +7759,8 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<!-- End Region -->
 		<string>
-			<key>Tip_CombineItems</key>
-			<text>Vous avez plusieurs compétences avec le même nom. Vous pouvez les combiner en un seul</text>
-		</string>
-		<string>
-			<key>Tip_SplitItems</key>
-			<text>Cet objet est composé de multiples compétences combinées. Cliquez ici pour les séparer</text>
-		</string>
-		<string>
-			<key>String_SecondChance</key>
-			<text>Deuxième chance</text>
-		</string>
-		<string>
-			<key>Button_Add</key>
-			<text>Ajouter</text>
-		</string>
-		<string>
-			<key>Button_Remove</key>
-			<text>Effacer</text>
-		</string>
-		<string>
-			<key>Button_Next</key>
-			<text>Suivant</text>
-		</string>
-		<string>
-			<key>Button_Sort</key>
-			<text>Trier</text>
-		</string>
-		<string>
-			<key>Button_Delay</key>
-			<text>Retarder</text>
-		</string>
-		<string>
-			<key>Label_File</key>
-			<text>Fichier</text>
-		</string>
-		<string>
-			<key>Label_Help</key>
-			<text>Aide</text>
-		</string>
-		<string>
-			<key>Label_About</key>
-			<text>À propos de</text>
-		</string>
-		<string>
-			<key>Label_SumtoTenAttributes</key>
-			<text>Attributs:</text>
-		</string>
-		<string>
-			<key>Label_SumtoTenSkills</key>
-			<text>Compétences:</text>
-		</string>
-		<string>
-			<key>Message_FailedLoad</key>
-			<text>Ce fichier n'a pas réussi à se charger avec l'erro XML suivant:\n{0}</text>
-		</string>
-		<string>
-			<key>MessageTitle_FailedLoad</key>
-			<text>Impossible de l'ouvrir</text>
-		</string>
-		<string>
-			<key>MessageTitle_FailedSave</key>
-			<text>Impossible de sauver</text>
-		</string>
-		<string>
-			<key>String_VehicleBody</key>
-			<text>Carrosserie</text>
-		</string>
-		<string>
-			<key>Label_Weapons</key>
-			<text>Armes:</text>
-		</string>
-		<string>
-			<key>Title_ChooseCharacterPriorities</key>
-			<text>Choisir les priorités des personnages</text>
-		</string>
-		<string>
 			<key>String_Seconds</key>
 			<text>secondes</text>
-		</string>
-		<string>
-			<key>Checkbox_HideOverAvailLimit</key>
-			<text>Masquer les éléments au-delà de la limite disponible ({0})</text>
-		</string>
-		<string>
-			<key>Checkbox_ShowOnlyAffordItems</key>
-			<text>Montrer seulement les éléments que je peux acheter</text>
-		</string>
-		<string>
-			<key>String_Vehicle</key>
-			<text>Véhicule</text>
-		</string>
-		<string>
-			<key>String_Weapon</key>
-			<text>Arme</text>
 		</string>
 		<string>
 			<key>String_MountNone</key>
@@ -7444,7 +7784,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tab_Roster_CharacterNotes</key>
-			<text>Notes de caractère</text>
+			<text>Notes de personnage</text>
 		</string>
 		<string>
 			<key>Tab_Roster_GameNotes</key>
@@ -7455,7 +7795,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Personnages récents</text>
 		</string>
 		<string>
-			<key>Treenode_Roster_FavouriteCharacters</key>
+			<key>Treenode_Roster_FavoriteCharacters</key>
 			<text>Personnages préférés</text>
 		</string>
 		<string>
@@ -7553,10 +7893,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Title_CreateWeaponMount</key>
 			<text>Créer un support d'arme</text>
-		</string>
-		<string>
-			<key>String_Sensor</key>
-			<text>Sonde</text>
 		</string>
 		<string>
 			<key>MessageTitle_NoValidWeaponMount</key>
@@ -7759,35 +8095,35 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Éditer les informations du livre source</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttBOD</key>
+			<key>Label_SpellDefenseDecAttBOD</key>
 			<text>Diminuer l'attribut (CON)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttSTR</key>
+			<key>Label_SpellDefenseDecAttSTR</key>
 			<text>Diminuer l'attribut (FOR)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttAGI</key>
+			<key>Label_SpellDefenseDecAttAGI</key>
 			<text>Diminuer l'attribut (AGI)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttREA</key>
+			<key>Label_SpellDefenseDecAttREA</key>
 			<text>Diminuer l'attribut (RÉA)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttLOG</key>
+			<key>Label_SpellDefenseDecAttLOG</key>
 			<text>Diminuer l'attribut (LOG)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttWIL</key>
+			<key>Label_SpellDefenseDecAttWIL</key>
 			<text>Diminuer l'attribut (VOL)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttINT</key>
+			<key>Label_SpellDefenseDecAttINT</key>
 			<text>Diminuer l'attribut (INT)</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttCHA</key>
+			<key>Label_SpellDefenseDecAttCHA</key>
 			<text>Diminuer l'attribut (CHA)</text>
 		</string>
 		<string>
@@ -7847,38 +8183,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Effacé qualité positive</text>
 		</string>
 		<string>
-			<key>Message_File_Cannot_Be_Accessed</key>
-			<text>Chummer5 ne peut pas accéder au fichier pour l'écriture. Il faut s'assurer qu'il a la permission d'écrire à l'emplacement et que le fichier n'est pas utilisé actuellement.</text>
-		</string>
-		<string>
-			<key>DialogFilter_Chum5</key>
-			<text>Fichiers Chummer5 (*.chum5)|*.chum5</text>
-		</string>
-		<string>
-			<key>DialogFilter_Xml</key>
-			<text>Fichiers XML (*.xml)|*.xml</text>
-		</string>
-		<string>
-			<key>DialogFilter_Html</key>
-			<text>Fichiers HTML (*.htm;*.html)|*.htm;*.html</text>
-		</string>
-		<string>
-			<key>DialogFilter_Pdf</key>
-			<text>Fichiers PDF (*.pdf)|*.pdf</text>
-		</string>
-		<string>
-			<key>DialogFilter_Exe</key>
-			<text>Fichiers exécutables (*.exe)|*.exe</text>
-		</string>
-		<string>
-			<key>DialogFilter_Json</key>
-			<text>Fichiers JSON (*.json)|*.json</text>
-		</string>
-		<string>
-			<key>DialogFilter_All</key>
-			<text>Tous les fichiers (*.*)|*.*</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_AllowHoverIncrement</key>
 			<text>Permet d'incrémenter les chiffres des commandes numériques en survolant la commande</text>
 		</string>
@@ -7927,20 +8231,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Diminuer l'ordre de la charge</text>
 		</string>
 		<string>
-			<key>String_Armor</key>
-			<text>Armure</text>
-		</string>
-		<string>
 			<key>String_Checking_For_Update</key>
 			<text>Vérification des actualisations...</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseDrug</key>
 			<text>Drogues achetées</text>
-		</string>
-		<string>
-			<key>String_Unknown</key>
-			<text>Inconnue</text>
 		</string>
 		<string>
 			<key>String_Up_To_Date</key>
@@ -7973,78 +8269,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>String_SkillFilterBrokenSkillGroup</key>
 			<text>Montrer des compétences actives dans des groupes de compétences brisées</text>
-		</string>
-		<string>
-			<key>String_Quality</key>
-			<text>Qualité</text>
-		</string>
-		<string>
-			<key>String_Search</key>
-			<text>Chercher :</text>
-		</string>
-		<string>
-			<key>String_NotApplicable</key>
-			<text>N/A</text>
-		</string>
-		<string>
-			<key>String_Error</key>
-			<text>Erreur</text>
-		</string>
-		<string>
-			<key>String_Limit</key>
-			<text>Limite :</text>
-		</string>
-		<string>
-			<key>String_All</key>
-			<text>Toutes</text>
-		</string>
-		<string>
-			<key>String_Name</key>
-			<text>Nom</text>
-		</string>
-		<string>
-			<key>Label_Open</key>
-			<text>Ouvrir</text>
-		</string>
-		<string>
-			<key>Button_Reset</key>
-			<text>Réinitialiser</text>
-		</string>
-		<string>
-			<key>Button_ApplyManeuver</key>
-			<text>Appliquer la manœuvre</text>
-		</string>
-		<string>
-			<key>Label_InitiativeManeuvers</key>
-			<text>Manœuvres d'initiative</text>
-		</string>
-		<string>
-			<key>Label_Round</key>
-			<text>Rondes</text>
-		</string>
-		<string>
-			<key>Label_Vehicles</key>
-			<text>Véhicules</text>
-		</string>
-		<string>
-			<key>Label_SumtoTenHeritage</key>
-			<text>Métatype:</text>
-		</string>
-		<string>
-			<key>Label_SumtoTenResources</key>
-			<text>Ressources :</text>
-		</string>
-		<string>
-			<key>Message_SumtoTenSpellLimit</key>
-			<text>Vous ne pouvez pas avoir plus de magie que ce qui est autorisé par votre priorité de talent sélectionnée.</text>
-		</string>
-		<string>
-			<key>Message_FailedSave</key>
-			<text>Ce fichier n'a pas pu être sauvé en raison de l'erreur XML suivante :\n{0}</text>
-		</string>
-		<string>
-			<key>String_OverPriorityPoints</key>
-			<text>{0} de {1}: {2} Karma</text>
 		</string>
 		<string>
 			<key>Menu_Main_HeroLabImporter</key>
@@ -8087,10 +8311,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Êtes-vous sûr de dépenser {1} Karma pour enlever un level de {0} ?</text>
 		</string>
 		<string>
-			<key>Label_DroneModSlots</key>
-			<text>Fentes de modification :</text>
-		</string>
-		<string>
 			<key>Menu_Main_ClearUnpinnedItems</key>
 			<text>&amp;Effacer éléments non épinglés</text>
 		</string>
@@ -8121,18 +8341,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Label_QualityLevel</key>
 			<text>Niveau de qualité :</text>
-		</string>
-		<string>
-			<key>Label_StartingInit</key>
-			<text>Initiative de démarrage</text>
-		</string>
-		<string>
-			<key>InitRoller_Description</key>
-			<text>Entrer le total des résultats des d6.</text>
-		</string>
-		<string>
-			<key>Label_InitRoller_ResultOf</key>
-			<text>Résultat de {0}D6 :</text>
 		</string>
 		<string>
 			<key>Tip_OptionsDontDoubleQualityRefunds</key>
@@ -8394,11 +8602,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Button_Clean_Reinstall</key>
-			<text>Propre Réinstaller</text>
+			<text>Réinstallation complète</text>
 		</string>
 		<string>
 			<key>MessageTitle_Updater_CleanReinstallPrompt</key>
-			<text>Propre Réinstaller ?</text>
+			<text>Effectuer une réinstallation complète ?</text>
 		</string>
 		<string>
 			<key>Button_Redownload</key>
@@ -8437,10 +8645,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Les armes utilisées avec des techniques de combat non armées reçoivent le bonus pour cette technique</text>
 		</string>
 		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Il est impossible d'ajouter deux fois le même composant.</text>
-		</string>
-		<string>
 			<key>Button_RemoveEcho</key>
 			<text>Enlever l'Écho</text>
 		</string>
@@ -8459,214 +8663,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Warning_NoLimitFound</key>
 			<text>Impossible de trouver la limite appropriée à modifier. Assurez-vous d'avoir sélectionné un modificateur de limite personnalisé.</text>
-		</string>
-		<string>
-			<key>String_Version</key>
-			<text>Version</text>
-		</string>
-		<string>
-			<key>String_D6</key>
-			<text>D6</text>
-		</string>
-		<string>
-			<key>Label_Stage</key>
-			<text>Rang :</text>
-		</string>
-		<string>
-			<key>String_PushTheLimit</key>
-			<text>Repoussez la limite</text>
-		</string>
-		<string>
-			<key>String_SeizeTheInit</key>
-			<text>Prendre l'initiative</text>
-		</string>
-		<string>
-			<key>String_Blitz</key>
-			<text>Blitz</text>
-		</string>
-		<string>
-			<key>String_CloseCall</key>
-			<text>C'est pas loin</text>
-		</string>
-		<string>
-			<key>String_DeadManTrigger</key>
-			<text>Dead Man's Trigger</text>
-		</string>
-		<string>
-			<key>Main_Menu_GM_Dash</key>
-			<text>GM Dashboard</text>
-		</string>
-		<string>
-			<key>Main_Menu_Player_Dash</key>
-			<text>Player Dashboard</text>
-		</string>
-		<string>
-			<key>String_Dashboard</key>
-			<text>Dashboard</text>
-		</string>
-		<string>
-			<key>AddToken_Header</key>
-			<text>Ajouter un jeton Joueur</text>
-		</string>
-		<string>
-			<key>Label_InitiativeDice</key>
-			<text>Dés d'initiative</text>
-		</string>
-		<string>
-			<key>Label_AutoRollInit</key>
-			<text>Jeter initiative</text>
-		</string>
-		<string>
-			<key>Label_Exit</key>
-			<text>Sortie</text>
-		</string>
-		<string>
-			<key>InitRoller_Header</key>
-			<text>Résultats des dés d'initiative</text>
-		</string>
-		<string>
-			<key>Label_SumtoTenTalent</key>
-			<text>Magie ou Résonance :</text>
-		</string>
-		<string>
-			<key>Message_SumtoTenComplexFormLimit</key>
-			<text>Votre nombre de Formes Complexes ne peut pas excéder le nombre défini par votre priorité.</text>
-		</string>
-		<string>
-			<key>Message_OverCapacityLimit</key>
-			<text>La dimension de l'objet est supérieur à la capacité de l'objet parent : {0}, {1} requis</text>
-		</string>
-		<string>
-			<key>MessageTitle_OverCapacityLimit</key>
-			<text>Au-dessus de la limite de capacité</text>
-		</string>
-		<string>
-			<key>String_Space</key>
-			<text xml:space="preserve"> </text>
-		</string>
-		<string>
-			<key>String_Colon</key>
-			<text>:</text>
-		</string>
-		<string>
-			<key>String_TotalRating</key>
-			<text>Indice total</text>
-		</string>
-		<string>
-			<key>Label_BonusLP</key>
-			<text>PV Bonus :</text>
-		</string>
-		<string>
-			<key>Label_QualityLP</key>
-			<text>PV Qualité :</text>
-		</string>
-		<string>
-			<key>Label_QualityCost</key>
-			<text>Coût :</text>
-		</string>
-		<string>
-			<key>Label_QualitySource</key>
-			<text>Source :</text>
-		</string>
-		<string>
-			<key>Checkbox_Randomize1D6</key>
-			<text>Randomize 1D6</text>
-		</string>
-		<string>
-			<key>String_Handling</key>
-			<text>Maniabilité</text>
-		</string>
-		<string>
-			<key>Label_Protection</key>
-			<text>Protection :</text>
-		</string>
-		<string>
-			<key>Label_Powertrain</key>
-			<text>Puissance :</text>
-		</string>
-		<string>
-			<key>Label_Bodymod</key>
-			<text>Modifs :</text>
-		</string>
-		<string>
-			<key>Label_Electromagnetic</key>
-			<text>Électro :</text>
-		</string>
-		<string>
-			<key>Label_Cosmetic</key>
-			<text>Esthétique :</text>
-		</string>
-		<string>
-			<key>Label_ExtraMount</key>
-			<text>Monture supp. :</text>
-		</string>
-		<string>
-			<key>String_Level</key>
-			<text>Niveau</text>
-		</string>
-		<string>
-			<key>String_Immediate</key>
-			<text>Immédiat</text>
-		</string>
-		<string>
-			<key>String_Second</key>
-			<text>seconde</text>
-		</string>
-		<string>
-			<key>String_Seconds</key>
-			<text>secondes</text>
-		</string>
-		<string>
-			<key>String_CombatTurn</key>
-			<text>tour de combat</text>
-		</string>
-		<string>
-			<key>String_CombatTurns</key>
-			<text>tours de combat</text>
-		</string>
-		<string>
-			<key>String_Minute</key>
-			<text>minute</text>
-		</string>
-		<string>
-			<key>String_Minutes</key>
-			<text>minutes</text>
-		</string>
-		<string>
-			<key>String_Initiative</key>
-			<text>{0} +{1}d6</text>
-		</string>
-		<string>
-			<key>String_MatrixInitiative</key>
-			<text>{0} + TD +{1}d6</text>
-		</string>
-		<string>
-			<key>String_MatrixInitiativeLong</key>
-			<text>{0} + Traitement de données +{1}d6</text>
-		</string>
-		<string>
-			<key>String_Immune</key>
-			<text>Immunisé</text>
-		</string>
-		<string>
-			<key>String_LifeModules</key>
-			<text>Modules de vie</text>
-		</string>
-		<string>
-			<key>String_Info</key>
-			<text>Infos</text>
-		</string>
-		<string>
-			<key>String_Matrix</key>
-			<text>Matrice</text>
-		</string>
-		<string>
-			<key>String_Paragon</key>
-			<text>Parangon</text>
-		</string>
-		<string>
-			<key>String_Stream</key>
-			<text>Flux</text>
 		</string>
 		<string>
 			<key>Message_OutdatedChummerSave</key>
@@ -9099,39 +9095,39 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Dés de contresort</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirectDodge</key>
+			<key>Label_SpellDefenseIndirectDodge</key>
 			<text>Esquive des sorts indirects</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirect</key>
+			<key>Label_SpellDefenseIndirect</key>
 			<text>Sorts indirects</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakMana</key>
+			<key>Label_SpellDefenseDirectSoakMana</key>
 			<text>Sorts mana directs</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakPhysical</key>
+			<key>Label_SpellDefenseDirectSoakPhysical</key>
 			<text>Sorts physiques directs</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDetection</key>
+			<key>Label_SpellDefenseDetection</key>
 			<text>Sorts de détection</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionMana</key>
+			<key>Label_SpellDefenseIllusionMana</key>
 			<text>Illusion - Mana</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionPhysical</key>
+			<key>Label_SpellDefenseIllusionPhysical</key>
 			<text>Illusion - Physique</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipMental</key>
+			<key>Label_SpellDefenseManipMental</key>
 			<text>Manipulation - Mentale</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipPhysical</key>
+			<key>Label_SpellDefenseManipPhysical</key>
 			<text>Manipulation - Physique</text>
 		</string>
 		<string>
@@ -9279,24 +9275,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>[{0}/{1}]</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
 			<text>Loisirs</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
 			<text>Indice :</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
@@ -9527,10 +9511,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Programme</text>
 		</string>
 		<string>
-			<key>Message_Files_Cannot_Be_Removed</key>
-			<text>Chummer5 n'a pas pu enlever les fichiers ci-dessous pendant la mise à jour parce qu'ils n'étaient pas accessibles :</text>
-		</string>
-		<string>
 			<key>Label_StolenGearNuyen</key>
 			<text>Nuyen (volé) :</text>
 		</string>
@@ -9559,12 +9539,236 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Des améliorations inattribuables sont présentes</text>
 		</string>
 		<string>
-			<key>Checkbox_Wireless</key>
-			<text>WiFi activé</text>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>Enregistrement local uniquement</text>
 		</string>
 		<string>
-			<key>String_Wireless</key>
-			<text>WiFi</text>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>Téléchargement des informations statistiques</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Télécharger des plantages de programme</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Info</key>
+			<text>Télécharger les protocoles normaux</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Trace</key>
+			<text>Télécharger les protocoles détaillés</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>Chummer décide</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>Groupes de SINner</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archétypes</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+			<text>La compétence améliorée est limitée par la puissance apprise à 1,5 au lieu de 0,5</text>
+		</string>
+		<string>
+			<key>Label_SummaryMetagenicQualities</key>
+			<text>Traits métagénétiques</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValue</key>
+			<text>{0}P/{1}N - max. {2}</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValueAppend</key>
+			<text> (1 Karma)</text>
+		</string>
+		<string>
+			<key>Message_InvalidPowerPoints</key>
+			<text>{0} de plus que les points de pouvoir maximum des adeptes ({1})</text>
+		</string>
+		<string>
+			<key>Label_RatingFormat</key>
+			<text>{0}:</text>
+		</string>
+		<string>
+			<key>Rating_LengthInCmBy10</key>
+			<text>Longueur (cm)x10</text>
+		</string>
+		<string>
+			<key>Rating_Meters</key>
+			<text>Mètres</text>
+		</string>
+		<string>
+			<key>String_SINners_HowToGroupParentDescription</key>
+			<text>Un groupe peut être assigné comme sous-groupe par glisser-déposer après sa création.</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPassword</key>
+			<text>Ce groupe est protégé par un mot de passe. Entrer le mot de passe :</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPasswordTitle</key>
+			<text>Entrez votre mot de passe</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharts</key>
+			<text>Masquer les tables qui causent des problèmes avec Wine</text>
+		</string>
+		<string>
+			<key>String_Bullet</key>
+			<text>Projectile</text>
+		</string>
+		<string>
+			<key>String_Bullets</key>
+			<text>Projectiles</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_EnablePlugins</key>
+			<text>Activer les plugins (expérimental)</text>
+		</string>
+		<string>
+			<key>Chummy_Intro</key>
+			<text>Salut ! C'est Chummy, l'assistante de Chummer à l'IA ! Il y a beaucoup de conseils et de recommandations utiles pour vos personnages !</text>
+		</string>
+		<string>
+			<key>String_online</key>
+			<text>Connecté</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummer</key>
+			<text>Recommandez Chummer à un ami</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnerSearch</key>
+			<text>Recherche par SINner</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINnerSearch</key>
+			<text>Recherche dans la base de données des SIN</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINners</key>
+			<text>SINner</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummerGroup</key>
+			<text>Partager tout le groupe</text>
+		</string>
+		<string>
+			<key>Menu_AddPinnedGroup</key>
+			<text>Epingler le groupe</text>
+		</string>
+		<string>
+			<key>Checkbox_CreateImprovementIgnoreLimits</key>
+			<text>Ignorer des limites</text>
+		</string>
+		<string>
+			<key>Tip_ImproveItemAtMaximum</key>
+			<text>Non augmentable, maximum atteint</text>
+		</string>
+		<string>
+			<key>Tip_OtherSurprise</key>
+			<text>Surprise est calculé comme RÉA + INT.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowEasterEggs</key>
+			<text>Permettre les œufs de Pâques</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Vous ne pouvez pas ajouter le même composant plus de {0} fois.</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_Name</key>
+			<text>Entrez un nom pour votre drogue.</text>
+		</string>
+		<string>
+			<key>MessageTitle_CustomDrug_MissingFoundation</key>
+			<text>Base manquante</text>
+		</string>
+		<string>
+			<key>Label_Options_BrowserVersion</key>
+			<text>Aperçu utilise la version d'Internet Explorer</text>
+		</string>
+		<string>
+			<key>Label_OtherSurprise</key>
+			<text>Surprise :</text>
+		</string>
+		<string>
+			<key>Message_CyberzombieRequirementsImprovement</key>
+			<text>Il faut que vous ayez une amélioration qui vous permette de devenir un cyberzombie.</text>
+		</string>
+		<string>
+			<key>Message_InvalidActiveSkillExcessSpecializations</key>
+			<text>Une ou plusieurs compétences actives ont plus d'une spécialisation :</text>
+		</string>
+		<string>
+			<key>Message_DeleteDrug</key>
+			<text>Vous êtes sûr de vouloir supprimer cette recette de drogue ?</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_MissingFoundation</key>
+			<text>Il faut que les drogues aient un base.</text>
+		</string>
+		<string>
+			<key>String_Avail</key>
+			<text>Disponibilité</text>
+		</string>
+		<string>
+			<key>String_Capacity</key>
+			<text>Capacité</text>
+		</string>
+		<string>
+			<key>String_Cost</key>
+			<text>Coût</text>
+		</string>
+		<string>
+			<key>String_Source</key>
+			<text>Source</text>
+		</string>
+		<string>
+			<key>String_Accessories</key>
+			<text>Accessoires</text>
+		</string>
+		<string>
+			<key>String_Accuracy</key>
+			<text>Précision</text>
+		</string>
+		<string>
+			<key>String_Ammo</key>
+			<text>Munitions</text>
+		</string>
+		<string>
+			<key>String_AP</key>
+			<text>PA</text>
+		</string>
+		<string>
+			<key>String_Damage</key>
+			<text>Dommages</text>
+		</string>
+		<string>
+			<key>String_Dicepool</key>
+			<text>Nombre de Dés</text>
+		</string>
+		<string>
+			<key>String_Mode</key>
+			<text>Mode</text>
+		</string>
+		<string>
+			<key>String_RC</key>
+			<text>CR</text>
+		</string>
+		<string>
+			<key>String_Reach</key>
+			<text>Allonge</text>
 		</string>
 	</strings>
 </chummer>

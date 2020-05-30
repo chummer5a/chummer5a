@@ -1,29 +1,30 @@
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using System.Linq;
-using Microsoft.AspNetCore;
-using ChummerHub.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.ApplicationInsights.DataContracts;
+using System;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace ChummerHub
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program'
     public class Program
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program'
     {
-        public static IWebHost MyHost = null;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
+        public static IWebHost MyHost;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         public static void Main(string[] args)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         {
-            System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-         
-#if DEBUG           
+
+
+
+#if DEBUG
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -33,15 +34,16 @@ namespace ChummerHub
                 //.WriteTo.File(@"ChummerHub_log.txt")
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
+#else
+            System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
 #endif
+
             MyHost = CreateWebHostBuilder(args);
-            Seed();
             MyHost.Run();
-            return;
         }
 
-        private static bool _preventOverflow = false;
-       
+        private static bool _preventOverflow;
+
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
             try
@@ -49,7 +51,7 @@ namespace ChummerHub
                 if (_preventOverflow)
                     return;
                 _preventOverflow = true;
-                string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
+                string msg = e.Exception + Environment.NewLine + Environment.NewLine;
 
                 if (!e.Exception.Message.Contains("Non-static method requires a target."))
                 {
@@ -67,7 +69,7 @@ namespace ChummerHub
             }
             catch (Exception ex)
             {
-                string msg = ex.ToString() + Environment.NewLine + Environment.NewLine;
+                string msg = ex + Environment.NewLine + Environment.NewLine;
                 Console.WriteLine(msg);
                 System.Diagnostics.Debug.WriteLine(msg);
                 //AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });
@@ -79,63 +81,11 @@ namespace ChummerHub
             }
         }
 
-        public static void Seed()
-        {
 
-            using(var scope = MyHost.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
-                try
-                {
-                    context.Database.Migrate();
-                }
-                catch(Exception e)
-                {
-                    try
-                    {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
-                        tc.TrackException(telemetry);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex.ToString());
-                    }
-                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
-                    context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
-                }
-                // requires using Microsoft.Extensions.Configuration;
-                var config = services.GetRequiredService<IConfiguration>();
-                // Set password with the Secret Manager tool.
-                // dotnet user-secrets set SeedUserPW <pw>
-                var testUserPw = config["SeedUserPW"];
-                try
-                {
-                    var env = services.GetService<IHostingEnvironment>();
-                    SeedData.Initialize(services, testUserPw, env).Wait();
-                }
-                catch(Exception ex)
-                {
-                    try
-                    {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
-                        tc.TrackException(telemetry);
-                    }
-                    catch (Exception e1)
-                    {
-                        logger.LogError(e1.ToString());
-                    }
-                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
-                }
-            }
 
-        }
-
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
         public static IWebHost CreateWebHostBuilder(string[] args) =>
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
                 .UseKestrel(options =>
@@ -155,6 +105,11 @@ namespace ChummerHub
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
+                    logging.AddApplicationInsights("95c486ab-aeb7-4361-8667-409b7bf62713");
+                    logging.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Trace);
+                    // Additional filtering For category starting in "Microsoft",
+                    // only Warning or above will be sent to Application Insights.
+                    logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
                 })
                 .CaptureStartupErrors(true)
                 .Build();

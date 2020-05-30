@@ -1,10 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Chummer;
 
 namespace SINners.Models
 {
@@ -13,8 +8,10 @@ namespace SINners.Models
 
         public SINnerSearchGroup(SINnerGroup myGroup)
         {
+            if (myGroup == null)
+                throw new ArgumentNullException(nameof(myGroup));
             MyMembers = new List<SINnerSearchGroupMember>();
-            
+
             Id = myGroup.Id;
             MyParentGroupId = myGroup.MyParentGroupId;
             IsPublic = myGroup.IsPublic;
@@ -23,7 +20,6 @@ namespace SINners.Models
             //PasswordHash = myGroup.PasswordHash;
             Language = myGroup.Language;
             MyGroups = myGroup.MyGroups;
-            MyParentGroup = myGroup.MyParentGroup;
             MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
         }
 
@@ -37,13 +33,13 @@ namespace SINners.Models
             get
             {
                 string ret = Groupname;
-                if (!(String.IsNullOrEmpty(Language)))
+                if (!string.IsNullOrEmpty(Language))
                 {
-                    if ((this.MyMembers != null)
-                        && (this.MyMembers.Any()))
-                    {
-                        ret += ": " + MyMembers.Count + " members";
-                    }
+                    //if ((this.MyMembers != null)
+                    //    && (this.MyMembers.Any()))
+                    //{
+                    //    ret += ": " + MyMembers.Count + " members";
+                    //}
                 }
                 return ret;
             }

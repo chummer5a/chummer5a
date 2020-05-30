@@ -1,23 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using ChummerHub.API;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
-using ChummerHub.API;
-using Swashbuckle.AspNetCore.Filters;
-using System.Net;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
-using ChummerHub.Models.V1.Examples;
-using ChummerHub.Services.GoogleDrive;
-using Microsoft.AspNetCore.Http.Internal;
-using System.IO;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
+using Newtonsoft.Json;
 
 //using Swashbuckle.AspNetCore.Filters;
 
@@ -26,31 +27,40 @@ namespace ChummerHub.Controllers.V1
     //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SINGroup")]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController'
     public class SINnerGroupController : ControllerBase
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController'
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
-        private SignInManager<ApplicationUser> _signInManager = null;
-        private UserManager<ApplicationUser> _userManager = null;
+        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly UserManager<ApplicationUser> _userManager = null;
+        private readonly TelemetryClient tc;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.SINnerGroupController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public SINnerGroupController(ApplicationDbContext context,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.SINnerGroupController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
             ILogger<SINnerController> logger,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, TelemetryClient telemetry)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
+            this.tc = telemetry;
         }
 
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.~SINnerGroupController()'
         ~SINnerGroupController()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.~SINnerGroupController()'
         {
-       
+
         }
 
         /// <summary>
@@ -63,11 +73,18 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupInGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutGroupInGroup")]
         [Authorize(Roles = "Administrator,GroupAdmin")]
-        public async Task<ActionResult<SINner>> PutGroupInGroup(Guid GroupId, string groupname, Guid? parentGroupId, string adminIdentityRole, bool isPublicVisible)
+#pragma warning disable CS1573 // Parameter 'isPublicVisible' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
+#pragma warning disable CS1573 // Parameter 'adminIdentityRole' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
+#pragma warning disable CS1573 // Parameter 'parentGroupId' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
+        public async Task<ActionResult<ResultGroupPutGroupInGroup>> PutGroupInGroup(Guid GroupId, string groupname, Guid? parentGroupId, string adminIdentityRole, bool isPublicVisible)
+#pragma warning restore CS1573 // Parameter 'parentGroupId' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
+#pragma warning restore CS1573 // Parameter 'adminIdentityRole' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
+#pragma warning restore CS1573 // Parameter 'isPublicVisible' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
         {
-            _logger.LogTrace("PutGroupInGroup: " + GroupId + " (" + parentGroupId + ", " + adminIdentityRole +").");
+            ResultGroupPutGroupInGroup res;
+            _logger.LogTrace("PutGroupInGroup called with GroupId: " + GroupId + " and ParentGroupId: " + parentGroupId + " - adminIdentityRole: " + adminIdentityRole + ".");
             ApplicationUser user = null;
             try
             {
@@ -86,58 +103,113 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-                    return BadRequest(new HubException(msg));
+
+                    var e = new HubException(msg);
+                    res = new ResultGroupPutGroupInGroup(e);
+                    return BadRequest(res);
+                }
+                
+                SINnerGroup myGroup = await (from a in _context.SINnerGroups
+                    where a.Id == GroupId
+                    select a).FirstOrDefaultAsync();
+                if (myGroup == null)
+                {
+                    var e = new ArgumentException("Group with Id " + GroupId.ToString() + " not found.");
+                    res = new ResultGroupPutGroupInGroup(e);
+                    return NotFound(res);
                 }
 
+                SINnerGroup returnGroup = myGroup;
+                bool onlyFavremoval = false;
                 SINnerGroup parentGroup = null;
                 if (parentGroupId != null)
                 {
-                    var getParentseq = (from a in _context.SINnerGroups.Include(a => a.MyGroups)
-                        where a.Id == parentGroupId
-                        select a).Take(1);
-                    if (!getParentseq.Any())
-                        return NotFound("Parentgroup with Id " + parentGroupId?.ToString() + " not found.");
-                    parentGroup = getParentseq.FirstOrDefault();
-                }
+                    if (parentGroupId == Guid.Empty)
+                    {
+                        //only make this group a favorite group of the user and return
+                        if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == GroupId))
+                        {
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = GroupId
+                            });
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        parentGroup = await (from a in _context.SINnerGroups
+                            where a.Id == parentGroupId
+                            select a).FirstOrDefaultAsync();
+                        if (parentGroup == null)
+                        {
+                            var e = new ArgumentException("Parentgroup with Id " + parentGroupId?.ToString() +
+                                                          " not found.");
+                            res = new ResultGroupPutGroupInGroup(e);
+                            return NotFound(res);
+                        }
 
-                SINnerGroup myGroup = null;
-                var getGroupseq = (from a in _context.SINnerGroups
-                                where a.Id == GroupId
-                                   select a).Take(1);
-                if (!getGroupseq.Any())
-                    return NotFound("Group with Id " + parentGroupId.ToString() + " not found.");
-                myGroup = getGroupseq.FirstOrDefault();
-                myGroup.Groupname = groupname;
-                myGroup.IsPublic = isPublicVisible;
-                myGroup.MyAdminIdentityRole = adminIdentityRole;
-                myGroup.MyParentGroup = parentGroup;
-                if (parentGroup != null)
-                {
-                    if (parentGroup.MyGroups == null)
-                        parentGroup.MyGroups = new List<SINnerGroup>();
-                    if (!parentGroup.MyGroups.Contains(myGroup))
-                        parentGroup.MyGroups.Add(myGroup);
+                        returnGroup = parentGroup;
+                    }
                 }
                 else
                 {
-                    myGroup.MyParentGroupId = null;
+                    if (user.FavoriteGroups.Any(a => a.FavoriteGuid == GroupId))
+                    {
+                        var removefav = user.FavoriteGroups.FirstOrDefault(a => a.FavoriteGuid == GroupId);
+                        if (removefav != null)
+                        {
+                            user.FavoriteGroups.Remove(removefav);
+                            onlyFavremoval = true;
+                        }
+
+                    }
                 }
-                
-                await _context.SaveChangesAsync();
-                if (myGroup.MyParentGroup != null)
+
+                myGroup.Groupname = groupname;
+                myGroup.IsPublic = isPublicVisible;
+                myGroup.MyAdminIdentityRole = adminIdentityRole;
+                if (!onlyFavremoval)
                 {
-                    myGroup.MyParentGroup.PasswordHash = "";
-                    myGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                    myGroup.MyParentGroup = parentGroup;
+                    if (parentGroup != null)
+                    {
+                        if (parentGroup.MyGroups == null)
+                            parentGroup.MyGroups = new List<SINnerGroup>();
+                        if (!parentGroup.MyGroups.Contains(myGroup))
+                            parentGroup.MyGroups.Add(myGroup);
+                    }
+                    else
+                    {
+                        myGroup.MyParentGroupId = null;
+                    }
                 }
-                myGroup.PasswordHash = "";
-                myGroup.MyGroups = RemovePWHashRecursive(myGroup.MyGroups);
-                return Ok(myGroup);
+
+                await _context.SaveChangesAsync();
+
+                returnGroup = await _context.SINnerGroups.Include(a => a.MyGroups)
+                    .FirstOrDefaultAsync(b => b.Id == returnGroup.Id);
+
+
+                if (returnGroup.MyParentGroup != null)
+                {
+                    returnGroup.MyParentGroup.PasswordHash = "";
+                    returnGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                }
+                returnGroup.PasswordHash = "";
+                returnGroup.MyGroups = RemovePWHashRecursive(returnGroup.MyGroups);
+                res = new ResultGroupPutGroupInGroup(returnGroup);
+                var logmessage = Newtonsoft.Json.JsonConvert.SerializeObject(res, Formatting.Indented);
+                logmessage = "PutGroupInGroup returns Object ResultGroupPutGroupInGroup: " + Environment.NewLine +
+                             logmessage;
+                _logger.LogDebug(logmessage);
+                return Ok(res);
             }
             catch (Exception e)
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("GroupId", GroupId.ToString());
@@ -147,30 +219,121 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                HubException hue = new HubException("Exception in PutSINerInGroup: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupPutGroupInGroup(e);
+                return BadRequest(res);
             }
 
         }
 
-       
+        // PUT: api/ChummerFiles/5
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupSetting")]
+        [Authorize]
+        public async Task<ActionResult<ResultGroupPutSetting>> PutGroupSetting([FromRoute] Guid id, IFormFile uploadedFile)
+        {
+            ResultGroupPutSetting res;
+            ApplicationUser user = null;
+            SINnerGroup dbgroup = null;
+            try
+            {
+                var group = await _context.SINnerGroups.Include(a => a.MySettings).FirstOrDefaultAsync(a => a.Id == id);
+                if (group == null)
+                {
+                    var e = new ArgumentException("Group with Id " + id + " not found!");
+                    res = new ResultGroupPutSetting(e);
+                    return NotFound(res);
+                }
+                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+
+                if (user == null)
+                {
+                    var e = new NoUserRightException("User not found!");
+                    res = new ResultGroupPutSetting(e);
+                    return NotFound(res);
+                }
+
+                dbgroup.MySettings.DownloadUrl = Startup.GDrive.StoreXmlInCloud(dbgroup.MySettings, uploadedFile);
+                try
+                {
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
+                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackEvent(telemetry);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
+                try
+                {
+                    int x = await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException e)
+                {
+                    res = new ResultGroupPutSetting(e);
+                    return Conflict(res);
+                }
+
+                res = new ResultGroupPutSetting(dbgroup);
+                return Ok(res);
+            }
+            catch (NoUserRightException e)
+            {
+                res = new ResultGroupPutSetting(e);
+                return BadRequest(res);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                res = new ResultGroupPutSetting(e);
+                return BadRequest(res);
+            }
+        }
+
 
         /// <summary>
-            /// Store the new group
-            /// </summary>
-            /// <param name="mygroup"></param>
-            /// <param name="SinnerId"></param>
-            /// <returns></returns>
-            [HttpPost()]
+        /// Store the new group
+        /// </summary>
+        /// <param name="mygroup"></param>
+        /// <param name="SinnerId"></param>
+        /// <returns></returns>
+        [HttpPost()]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "")]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted, "Group existed", typeof(SINnerGroup))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, "Group created", typeof(SINnerGroup))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPostGroup")]
         [Authorize]
-        public async Task<IActionResult> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
+        public async Task<ActionResult<ResultGroupPostGroup>> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
         {
+            ResultGroupPostGroup res;
             _logger.LogTrace("Post SINnerGroupInternal: " + mygroup?.Groupname + " (" + SinnerId + ").");
             ApplicationUser user = null;
             var returncode = HttpStatusCode.OK;
@@ -193,37 +356,39 @@ namespace ChummerHub.Controllers.V1
                             }
 
                         }
-
-                        return BadRequest(new HubException(msg));
+                        res = new ResultGroupPostGroup(new HubException(msg));
+                        return BadRequest(res);
                     }
 
                     if (mygroup == null)
                     {
-                        return BadRequest(new HubException("group == null."));
+                        res = new ResultGroupPostGroup(new HubException("group == null."));
+                        return BadRequest(res);
                     }
 
-                    if (String.IsNullOrEmpty(mygroup?.Groupname))
+                    if (string.IsNullOrEmpty(mygroup?.Groupname))
                     {
-                        return BadRequest(new HubException("Groupname may not be empty."));
+                        res = new ResultGroupPostGroup(new HubException("Groupname may not be empty."));
+                        return BadRequest(res);
                     }
 
                     SINnerGroup parentGroup = null;
 
-                    
+
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                     List<SINnerGroup> groupfoundseq;
-                    if (mygroup.Id == null || mygroup.Id == Guid.Empty)
+                    if (mygroup.Id != null && mygroup.Id != Guid.Empty)
                     {
                         groupfoundseq = await (from a in _context.SINnerGroups
-                            where a.Id == mygroup.Id
-                            select a).Take(1).ToListAsync();
+                                               where a.Id == mygroup.Id
+                                               select a).Take(1).ToListAsync();
                     }
                     else
                     {
                         groupfoundseq = await (from a in _context.SINnerGroups
-                            where a.Groupname == mygroup.Groupname
-                                  && a.Language == mygroup.Language
-                            select a).Take(1).ToListAsync();
+                                               where a.Groupname == mygroup.Groupname
+                                                     && a.Language == mygroup.Language
+                                               select a).Take(1).ToListAsync();
                     }
 
                     SINnerGroup storegroup = null;
@@ -234,10 +399,11 @@ namespace ChummerHub.Controllers.V1
                         var roles = await _userManager.GetRolesAsync(user);
                         if (!roles.Contains("GroupAdmin") || roles.Contains(storegroup?.MyAdminIdentityRole))
                         {
+
                             string msg = "A group with the name " + mygroup.Groupname +
-                                         " already exists and user is not GroupAdmin or " +
-                                         storegroup?.MyAdminIdentityRole + "!";
-                            return BadRequest(new HubException(msg));
+                                         " already exists! (Multiple groups with the same name can only be created by Admins, because they should know what the do)";
+                            res = new ResultGroupPostGroup(new HubException(msg));
+                            return BadRequest(res);
                         }
 
                     }
@@ -258,8 +424,8 @@ namespace ChummerHub.Controllers.V1
                     else
                     {
                         returncode = HttpStatusCode.Accepted;
-                        if ((String.IsNullOrEmpty(mygroup.MyAdminIdentityRole))
-                            && (!String.IsNullOrEmpty(storegroup.MyAdminIdentityRole)))
+                        if ((string.IsNullOrEmpty(mygroup.MyAdminIdentityRole))
+                            && (!string.IsNullOrEmpty(storegroup.MyAdminIdentityRole)))
                         {
                             mygroup.MyAdminIdentityRole = storegroup.MyAdminIdentityRole;
                         }
@@ -267,31 +433,35 @@ namespace ChummerHub.Controllers.V1
                         _context.Entry(storegroup).CurrentValues.SetValues(mygroup);
                     }
 
+                    if (mygroup?.Id != null)
+                    {
+                        if (user.FavoriteGroups.All(a => a.FavoriteGuid != mygroup.Id.Value))
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = mygroup.Id.Value
+                            });
+                    }
+
                     if (SinnerId != null)
                     {
                         var sinnerseq =
                             await (from a in _context.SINners.Include(b => b.SINnerMetaData.Visibility.UserRights)
-                                where a.Id == SinnerId
-                                select a).ToListAsync();
+                                   where a.Id == SinnerId
+                                   select a).ToListAsync();
                         if (!sinnerseq.Any())
                         {
                             string msg = "Please upload SINner prior to adding him/her to a group!";
-                            return BadRequest(new HubException(msg));
+                            res = new ResultGroupPostGroup(new HubException(msg));
+                            return BadRequest(res);
                         }
 
                         foreach (var sinner in sinnerseq)
                         {
                             if (sinner.SINnerMetaData.Visibility.UserRights.Any() == false)
                             {
-                                return BadRequest(
-                                    new HubException("Sinner  " + sinner.Id + ": Visibility contains no entries!"));
+                                res = new ResultGroupPostGroup(new HubException("Sinner  " + sinner.Id + ": Visibility contains no entries!"));
+                                return BadRequest(res);
                             }
-
-                            if (sinner.LastChange == null)
-                            {
-                                return BadRequest(new HubException("Sinner  " + sinner.Id + ": LastChange not set!"));
-                            }
-
                             if (sinner.SINnerMetaData.Visibility.Id == null)
                             {
                                 sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
@@ -311,7 +481,9 @@ namespace ChummerHub.Controllers.V1
                             if (!found)
                             {
                                 string msg = "Sinner " + sinner.Id + " is not editable for user " + user.UserName + ".";
-                                return BadRequest(new HubException(msg));
+
+                                res = new ResultGroupPostGroup(new HubException(msg));
+                                return BadRequest(res);
                             }
                         }
                     }
@@ -322,23 +494,25 @@ namespace ChummerHub.Controllers.V1
                 {
                     foreach (var entry in ex.Entries)
                     {
-                        if (entry.Entity is SINner)
+                        if (entry.Entity is SINner || entry.Entity is Tag || entry.Entity is SINnerGroup)
                         {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
-                        }
-                        else if (entry.Entity is Tag)
-                        {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
-                        }
-                        else if (entry.Entity is SINnerGroup)
-                        {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                            try
+                            {
+                                Utils.DbUpdateExceptionHandler(entry, _logger);
+                            }
+                            catch (Exception e)
+                            {
+                                res = new ResultGroupPostGroup(e);
+                                return BadRequest(res);
+                            }
                         }
                         else
                         {
-                            throw new NotSupportedException(
+                            var e = new NotSupportedException(
                                 "Don't know how to handle concurrency conflicts for "
                                 + entry.Metadata.Name);
+                            res = new ResultGroupPostGroup(e);
+                            return BadRequest(res);
                         }
                     }
                 }
@@ -346,7 +520,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                         Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                             new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                         telemetry.Properties.Add("User", user?.Email);
@@ -357,43 +531,41 @@ namespace ChummerHub.Controllers.V1
                         _logger.LogError(ex.ToString());
                     }
 
-                    HubException hue = new HubException("Exception in PostGroup: " + e.ToString(), e);
-                    var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict)
-                        {ReasonPhrase = e.Message};
-                    return Conflict(hue);
+                    var re = new ResultGroupPostGroup(e)
+                    {
+                        ErrorText = "A group \"" + mygroup.Groupname + "\" for language \"" + mygroup.Language + "\" already exists!"
+                    };
+                    return BadRequest(re);
                 }
-
-            switch (returncode)
-            {
-                case HttpStatusCode.Accepted:
-                    return Accepted("PostGroup", mygroup);
-                case HttpStatusCode.Created:
-                    return CreatedAtAction("PostGroup", mygroup);
-                default:
-                    break;
+                res = new ResultGroupPostGroup(mygroup);
+                switch (returncode)
+                {
+                    case HttpStatusCode.Accepted:
+                        return Accepted("PostGroup", res);
+                    case HttpStatusCode.Created:
+                        return CreatedAtAction("PostGroup", res);
+                    default:
+                        return Ok(res);
+                }
             }
-
-            return BadRequest();
+            catch (Exception e)
+            {
+                try
+                {
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("Groupname", mygroup?.Groupname?.ToString());
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                var re = new ResultGroupPostGroup(e);
+                return BadRequest(re);
+            }
         }
-        catch(Exception e)
-        {
-            try
-            {
-                var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
-                telemetry.Properties.Add("User", user?.Email);
-                telemetry.Properties.Add("Groupname", mygroup?.Groupname?.ToString());
-                tc.TrackException(telemetry);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-            }
-            HubException hue = new HubException("Exception in PostGroup: " + e.Message, e);
-            return BadRequest(hue);
-          
-        }
-    }
 
 
         /// <summary>
@@ -406,10 +578,11 @@ namespace ChummerHub.Controllers.V1
         [HttpPut()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "SINner joined the group", typeof(SINner))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutSINerInGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutSINerInGroup")]
         [Authorize]
-        public async Task<ActionResult<SINner>> PutSINerInGroup(Guid GroupId, Guid SinnerId, string pwhash)
+        public async Task<ActionResult<ResultGroupPutSINerInGroup>> PutSINerInGroup(Guid? GroupId, Guid? SinnerId, string pwhash)
         {
+            ResultGroupPutSINerInGroup res;
             _logger.LogTrace("PutSINerInGroup: " + GroupId + " (" + SinnerId + ").");
             ApplicationUser user = null;
             try
@@ -429,76 +602,104 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-                    return BadRequest(new HubException(msg));
+
+                    res = new ResultGroupPutSINerInGroup(new HubException(msg));
+                    return BadRequest(res);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
-                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger, pwhash, roles);
-                return Ok(sin);
+                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger, pwhash, roles, tc);
+                res = new ResultGroupPutSINerInGroup(sin);
+                return Ok(res);
             }
             catch (Exception e)
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("GroupId", GroupId.ToString());
                     tc.TrackException(telemetry);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in PutSINerInGroup: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupPutSINerInGroup(e)
+                {
+                    ErrorText = e.Message
+                };
+                return BadRequest(res);
             }
 
         }
 
-        internal static async Task<ActionResult<SINner>> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
+        internal static async Task<SINner> PutSiNerInGroupInternal(Guid? GroupId, Guid? SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles, TelemetryClient tc)
         {
             try
             {
-                if (GroupId == Guid.Empty)
-                {
-                    throw new ArgumentNullException(nameof(GroupId), "GroupId may not be empty.");
-                }
+                SINnerGroup MyTargetGroup = null;
+                
 
-                if (SinnerId == Guid.Empty)
+                if ((SinnerId == Guid.Empty) || (SinnerId == null))
                 {
                     throw new ArgumentNullException(nameof(SinnerId), "SinnerId may not be empty.");
                 }
-
-                var groupset = await (from a in context.SINnerGroups
-                        .Include(a => a.MySettings)
-                        .Include(a => a.MyParentGroup)
-                        .Include(a => a.MyParentGroup.MyGroups)
-                        .Include(a => a.MyGroups)
-                        .ThenInclude(a => a.MyGroups)
-                        where a.Id == GroupId
-                    select a).ToListAsync();
-                if (!groupset.Any())
+                if (GroupId == Guid.Empty)
                 {
-                    throw new ArgumentException("GroupId not found", nameof(GroupId));
+                    if (user.FavoriteGroups.All(a => a.FavoriteGuid != SinnerId.Value))
+                        user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                        {
+                            FavoriteGuid = SinnerId.Value
+                        });
                 }
-
-                var group = groupset.FirstOrDefault();
-
-                if ((!String.IsNullOrEmpty(group.PasswordHash))
-                    && (group.PasswordHash != pwhash))
+                else if (GroupId == null)
                 {
-                    throw new NoUserRightException("PW is wrong!");
+                    user.FavoriteGroups.RemoveAll(a => a.FavoriteGuid == SinnerId);
                 }
-
-                if (!String.IsNullOrEmpty(group.MyAdminIdentityRole))
+                else if (GroupId != null)
                 {
-                    if (!userroles.Contains(group.MyAdminIdentityRole))
+                    var groupset = await (from a in context.SINnerGroups
+                            .Include(a => a.MySettings)
+                            .Include(a => a.MyParentGroup)
+                            .Include(a => a.MyParentGroup.MyGroups)
+                            .Include(a => a.MyGroups)
+                            .ThenInclude(a => a.MyGroups)
+                                          where a.Id == GroupId
+                                          select a).ToListAsync();
+                    if (!groupset.Any())
                     {
-                        throw new NoUserRightException("User " + user.UserName + " has not the role " + group.MyAdminIdentityRole + ".");
+                        throw new ArgumentException("GroupId not found", nameof(GroupId));
+                    }
+
+                    MyTargetGroup = groupset.FirstOrDefault();
+
+                    if ((!string.IsNullOrEmpty(MyTargetGroup.PasswordHash))
+                        && (MyTargetGroup.PasswordHash != pwhash))
+                    {
+                        throw new NoUserRightException("PW is wrong!");
+                    }
+                    if (!string.IsNullOrEmpty(MyTargetGroup.MyAdminIdentityRole))
+                    {
+                        if (!userroles.Contains(MyTargetGroup.MyAdminIdentityRole))
+                        {
+                            throw new NoUserRightException("User " + user?.UserName + " has not the role " +
+                                                           MyTargetGroup.MyAdminIdentityRole + ".");
+                        }
+                    }
+
+                    if ((MyTargetGroup?.Id != null) && (user != null))
+                    {
+                        if (user.FavoriteGroups.All(a => a.FavoriteGuid != MyTargetGroup.Id.Value))
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = MyTargetGroup.Id.Value
+                            });
                     }
                 }
+                if (user != null)
+                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+
 
                 var sinnerseq = await (from a in context.SINners
                         .Include(a => a.MyGroup)
@@ -506,10 +707,11 @@ namespace ChummerHub.Controllers.V1
                         .Include(a => a.MyGroup.MyParentGroup.MyGroups)
                         .Include(a => a.MyGroup.MyGroups)
                         .Include(a => a.SINnerMetaData)
+                        //.Include(a => a.MyExtendedAttributes)
                         .Include(a => a.SINnerMetaData.Visibility)
                         .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    where a.Id == SinnerId
-                    select a).ToListAsync();
+                                       where a.Id == SinnerId
+                                       select a).ToListAsync();
                 SINner sin = null;
                 if (!sinnerseq.Any())
                 {
@@ -519,15 +721,25 @@ namespace ChummerHub.Controllers.V1
                 {
                     sin = sinnerseq.FirstOrDefault();
                     if (sin != null)
-                        sin.MyGroup = group;
+                    {
+                        if (string.IsNullOrEmpty(sin.DownloadUrl))
+                            throw new ArgumentException("Sinner " + sin.Alias + " does not have a DownloadURL!");
+                        //if (String.IsNullOrEmpty(sin.MyExtendedAttributes?.JsonSummary))
+                        //    throw new ArgumentException("Sinner " + sin.Alias + " does not have a valid JsonSummary!");
+                        sin.MyGroup = MyTargetGroup;
+                    }
                 }
 
+
                 await context.SaveChangesAsync();
-                sin.MyGroup.MyGroups = RemovePWHashRecursive(sin.MyGroup.MyGroups);
-                if (sin.MyGroup.MyParentGroup != null)
+                if (sin?.MyGroup != null)
                 {
-                    sin.MyGroup.MyParentGroup.PasswordHash = "";
-                    sin.MyGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                    sin.MyGroup.MyGroups = RemovePWHashRecursive(sin.MyGroup.MyGroups);
+                    if (sin.MyGroup.MyParentGroup != null)
+                    {
+                        sin.MyGroup.MyParentGroup.PasswordHash = "";
+                        sin.MyGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                    }
                 }
 
                 return sin;
@@ -536,7 +748,8 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    if (tc == null)
+                        tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                         new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
@@ -547,7 +760,6 @@ namespace ChummerHub.Controllers.V1
                 {
                     logger?.LogError(ex.ToString());
                 }
-
                 HubException hue = new HubException("Exception in PutSiNerInGroupInternal: " + e.Message, e);
                 throw hue;
             }
@@ -561,28 +773,30 @@ namespace ChummerHub.Controllers.V1
         [HttpGet()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupById")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupById")]
         [Authorize]
-        public async Task<ActionResult<SINnerGroup>> GetGroupById(Guid groupid)
+        public async Task<ActionResult<ResultGroupGetGroupById>> GetGroupById(Guid groupid)
         {
+            ResultGroupGetGroupById res;
             _logger.LogTrace("GetById: " + groupid + ".");
-           
+
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
                                                .Where(y => y.Count > 0)
                                                .ToList();
                     string msg = "ModelState is invalid: ";
-                    foreach(var err in errors)
+                    foreach (var err in errors)
                     {
-                        foreach(var singleerr in err)
+                        foreach (var singleerr in err)
                         {
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
                     }
-                    return BadRequest(new HubException(msg));
+                    res = new ResultGroupGetGroupById(new HubException(msg));
+                    return BadRequest(res);
                 }
 
                 var groupfoundseq = await (from a in _context.SINnerGroups
@@ -590,10 +804,16 @@ namespace ChummerHub.Controllers.V1
                         .Include(a => a.MyGroups)
                         .ThenInclude(b => b.MyGroups)
                         .ThenInclude(b => b.MyGroups)
-                    where a.Id == groupid select a).ToListAsync();
+                                           where a.Id == groupid
+                                           select a).ToListAsync();
 
                 if (!groupfoundseq.Any())
-                    return NotFound(groupid);
+                {
+                    var e = new ArgumentException("Could not find group with id " + groupid + ".");
+                    res = new ResultGroupGetGroupById(e);
+                    return NotFound(res);
+                }
+
 
                 var group = groupfoundseq.FirstOrDefault();
                 group.MyGroups = RemovePWHashRecursive(group.MyGroups);
@@ -603,28 +823,25 @@ namespace ChummerHub.Controllers.V1
                     group.MyParentGroup.PasswordHash = "";
                     group.MyParentGroup.MyGroups = new List<SINnerGroup>();
                 }
-
-                return Ok(group);
+                res = new ResultGroupGetGroupById(group);
+                return Ok(res);
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("groupid", groupid.ToString());
                     tc.TrackException(telemetry);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetGroupById: " + e.Message, e);
-                return BadRequest(hue);
-
+                res = new ResultGroupGetGroupById(e);
+                return BadRequest(res);
             }
         }
 
@@ -638,21 +855,88 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetPublicGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetPublicGroup")]
         [AllowAnonymous]
-        public async Task<ActionResult<SINSearchGroupResult>> GetPublicGroup(string Groupname, string Language)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetPublicGroup(string Groupname, string Language)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            ResultGroupGetSearchGroups res = null;
             _logger.LogTrace("GetPublicGroup: " + Groupname + ".");
             try
             {
-                return await GetSearchGroupsInternal(Groupname, null, null, Language);
+                var ssg = await GetSearchGroupsInternal(Groupname, null, null, Language);
+                res = new ResultGroupGetSearchGroups(ssg);
+                return Ok(res);
             }
             catch (Exception e)
             {
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
+                        new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
+            }
+            finally
+            {
+                Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry =
+                    new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetPublicGroup",
+                        DateTimeOffset.Now, sw.Elapsed, "Azure", res?.CallSuccess ?? false, res?.ErrorText);
+                tc.TrackAvailability(telemetry);
+            }
+        }
+
+#pragma warning disable CS1572 // XML comment has a param tag for 'UsernameOrEmail', but there is no parameter by that name
+#pragma warning disable CS1572 // XML comment has a param tag for 'SINnerName', but there is no parameter by that name
+        /// <summary>
+        /// Search for Groups
+        /// </summary>
+        /// <param name="Groupname"></param>
+        /// <param name="UsernameOrEmail"></param>
+        /// <param name="SINnerName"></param>
+        /// <returns></returns>
+        [HttpGet()]
+#pragma warning restore CS1572 // XML comment has a param tag for 'SINnerName', but there is no parameter by that name
+#pragma warning restore CS1572 // XML comment has a param tag for 'UsernameOrEmail', but there is no parameter by that name
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupmembers")]
+        [AllowAnonymous]
+#pragma warning disable CS1573 // Parameter 'email' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+#pragma warning disable CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+#pragma warning disable CS1573 // Parameter 'password' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email, string password)
+#pragma warning restore CS1573 // Parameter 'password' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+#pragma warning restore CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+#pragma warning restore CS1573 // Parameter 'email' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+        {
+            ResultGroupGetSearchGroups res;
+            _logger.LogTrace("GetGroupmembers: " + Groupname + "/" + Language + "/" + email + ".");
+            try
+            {
+                var r = await GetGroupmembersInternal(Groupname, Language, email, password);
+                res = new ResultGroupGetSearchGroups(r);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -661,12 +945,89 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
             }
         }
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHash(string)'
+        public static byte[] GetHash(string inputString)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHash(string)'
+        {
+            HashAlgorithm algorithm = SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHashString(string)'
+        public static string GetHashString(string inputString)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHashString(string)'
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
+
+        private async Task<SINSearchGroupResult> GetGroupmembersInternal(string Groupname, string language, string email, string password)
+        {
+            try
+            {
+                SINSearchGroupResult result = new SINSearchGroupResult();
+                List<Guid?> groupfoundseq = new List<Guid?>();
+                if (!string.IsNullOrEmpty(Groupname))
+                {
+                    groupfoundseq = await (from a in _context.SINnerGroups
+                                           where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
+                                           && (a.Language == language || string.IsNullOrEmpty(language))
+                                           select a.Id).ToListAsync();
+                    if (!groupfoundseq.Any())
+                    {
+                        throw new ArgumentException("No group found with the given parameter: " + Groupname);
+                    }
+                }
+
+                var user = await _userManager.FindByEmailAsync(email);
+                foreach (var groupid in groupfoundseq)
+                {
+                    //check for the password
+                    var group = await _context.SINnerGroups.FindAsync(groupid);
+                    if (group == null)
+                        continue;
+                    if (group.HasPassword)
+                    {
+                        string pwhash = GetHashString(password);
+                        if (!group.PasswordHash.Equals(password))
+                        {
+                            throw new ArgumentException("Wrong password provided for group: " + Groupname);
+                        }
+                    }
+                    var ssg = await GetSinSearchGroupResultById(groupid, user, true);
+                    result.SINGroups.Add(ssg);
+                }
+
+                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+
+                return result;
+
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("Groupname", Groupname?.ToString());
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                throw;
+            }
+        }
+
 
 
         /// <summary>
@@ -677,26 +1038,47 @@ namespace ChummerHub.Controllers.V1
         /// <param name="SINnerName"></param>
         /// <returns></returns>
         [HttpGet()]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "Groups found", typeof(SINSearchGroupResult))]
-        [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK )]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [ProducesResponseType(typeof(HubException), StatusCodes.Status400BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "Group not found")]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSearchGroups")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetSearchGroups")]
         [Authorize]
-        public async Task<ActionResult<SINSearchGroupResult>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
+#pragma warning disable CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetSearchGroups(string, string, string, string)' (but other parameters do)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
+#pragma warning restore CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetSearchGroups(string, string, string, string)' (but other parameters do)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            ResultGroupGetSearchGroups res = null;
+            var user = await _signInManager.UserManager.GetUserAsync(User);
             _logger.LogTrace("GetSearchGroups: " + Groupname + "/" + UsernameOrEmail + "/" + SINnerName + ".");
+            string teststring = "not set";
             try
             {
-                return await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
+                var r = await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
+                res = new ResultGroupGetSearchGroups(r);
+                teststring = Newtonsoft.Json.JsonConvert.SerializeObject(res);
+                var returnObj = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(teststring);
+                try
+                {
+
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("GroupGetSearchGroups");
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("JSON", teststring);
+                    telemetry.Properties.Add("Object", res.ToString());
+                    tc.TrackEvent(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                return Ok(res);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -705,10 +1087,15 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
+            }
+            finally
+            {
+                Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry =
+                    new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetSearchGroups",
+                        DateTimeOffset.Now, sw.Elapsed, "Azure", res?.CallSuccess ?? false, res?.ErrorText);
+                tc.TrackAvailability(telemetry);
             }
         }
 
@@ -735,7 +1122,7 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -763,10 +1150,10 @@ namespace ChummerHub.Controllers.V1
         [Authorize]
         public async Task<ActionResult<bool>> DeleteGroup(Guid groupid)
         {
-            _logger.LogTrace("DeleteLeaveGroup: " + groupid +  ".");
+            _logger.LogTrace("DeleteLeaveGroup: " + groupid + ".");
             try
             {
-                var group =  await DeleteGroupInternal(groupid);
+                var group = await DeleteGroupInternal(groupid);
                 _context.SINnerGroups.Remove(group);
                 await _context.SaveChangesAsync();
                 return Ok(true);
@@ -777,7 +1164,7 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -797,10 +1184,10 @@ namespace ChummerHub.Controllers.V1
         {
             if ((groupid == null) || (groupid == Guid.Empty))
                 throw new ArgumentNullException(nameof(groupid));
-            var groupbyidseq = await(from a in _context.SINnerGroups
-                    .Include(a => a.MyGroups)
-                where a.Id == groupid
-                select a).Take(1).ToListAsync();
+            var groupbyidseq = await (from a in _context.SINnerGroups
+                     .Include(a => a.MyGroups)
+                                      where a.Id == groupid
+                                      select a).Take(1).ToListAsync();
             if (!groupbyidseq.Any())
                 return null;
 
@@ -809,13 +1196,19 @@ namespace ChummerHub.Controllers.V1
             ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
             if (user == null)
                 throw new NoUserRightException("Could not verify ApplicationUser!");
-
             bool candelete = false;
+            var members = (from a in _context.SINners where a.MyGroup == mygroup select a).ToList();
             if (mygroup.IsPublic == false)
             {
-                if (mygroup.GroupCreatorUserName != user.UserName)
+                if (mygroup.GroupCreatorUserName?.ToUpperInvariant() != user.NormalizedEmail
+                    && !string.IsNullOrEmpty(mygroup.GroupCreatorUserName))
                 {
-                    throw new NoUserRightException("Only " + mygroup.GroupCreatorUserName + " can delete this group.");
+                    if (members.Count() > 2)
+                    {
+                        //if there is only one member left, it's a pointless group anyway
+                        throw new NoUserRightException("Only " + mygroup.GroupCreatorUserName +
+                                                       " can delete this group.");
+                    }
                 }
             }
             else
@@ -831,7 +1224,7 @@ namespace ChummerHub.Controllers.V1
                 }
             }
 
-            var members = (from a in _context.SINners where a.MyGroup == mygroup select a).ToList();
+            
             foreach (var member in members)
             {
                 member.MyGroup = null;
@@ -860,17 +1253,17 @@ namespace ChummerHub.Controllers.V1
             if ((sinnerid == null) || (sinnerid == Guid.Empty))
                 throw new ArgumentNullException(nameof(sinnerid));
 
-            var groupbyidseq = await(from a in _context.SINnerGroups
-                   .Include(a => a.MyGroups)
-                                     where a.Id == groupid
-                                     select a).Take(1).ToListAsync();
+            var groupbyidseq = await (from a in _context.SINnerGroups
+                    .Include(a => a.MyGroups)
+                                      where a.Id == groupid
+                                      select a).Take(1).ToListAsync();
 
             if (!groupbyidseq.Any())
                 return NotFound(groupid);
 
             var group = groupbyidseq.FirstOrDefault();
 
-            var members = await group.GetGroupMembers(_context);
+            var members = await group.GetGroupMembers(_context, false);
 
             var sinnerseq = await (from a in _context.SINners.Include(a => a.MyGroup)
                                    where a.Id == sinnerid
@@ -892,123 +1285,200 @@ namespace ChummerHub.Controllers.V1
             }
             await _context.SaveChangesAsync();
             return true;
-            
+
 
         }
 
-        private async Task<ActionResult<SINSearchGroupResult>> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName, string language)
+        private async Task<SINSearchGroupResult> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName, string language)
         {
             ApplicationUser user = null;
             try
             {
-                if (User != null)
-                    user = await _signInManager.UserManager.GetUserAsync(User);
-                if (!ModelState.IsValid)
-                {
-                    var errors = ModelState.Select(x => x.Value.Errors)
-                        .Where(y => y.Count > 0)
-                        .ToList();
-                    string msg = "ModelState is invalid: ";
-                    foreach (var err in errors)
+                using (var t = new TransactionScope(TransactionScopeOption.Required,
+                    new TransactionOptions
                     {
-                        foreach (var singleerr in err)
+                        IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+
+                    }, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    if (User != null)
+                        user = await _signInManager.UserManager.GetUserAsync(User);
+                    if (!ModelState.IsValid)
+                    {
+                        var errors = ModelState.Select(x => x.Value.Errors)
+                            .Where(y => y.Count > 0)
+                            .ToList();
+                        string msg = "ModelState is invalid: ";
+                        foreach (var err in errors)
                         {
-                            msg += Environment.NewLine + "\t" + singleerr.ToString();
-                        }
-                    }
-
-                    return BadRequest(new HubException(msg));
-                }
-
-                SINSearchGroupResult result = new SINSearchGroupResult();
-
-                List<Guid?> groupfoundseq = new List<Guid?>();
-                if (!String.IsNullOrEmpty(Groupname))
-                {
-                    groupfoundseq = await (from a in _context.SINnerGroups
-                                           where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
-                                           && (a.Language == language || String.IsNullOrEmpty(language))
-                                           select a.Id).ToListAsync();
-                    if (!groupfoundseq.Any())
-                    {
-                        return NotFound();
-                    }
-                }
-                else if (String.IsNullOrEmpty(UsernameOrEmail) && String.IsNullOrEmpty(sINnerName))
-                {
-                    groupfoundseq = await (from a in _context.SINnerGroups
-                                           where a.IsPublic == true && a.MyParentGroupId == null
-                                           select a.Id).ToListAsync();
-                    if (!groupfoundseq.Any())
-                    {
-                        return NotFound();
-                    }
-                }
-                
-
-                foreach (var groupid in groupfoundseq)
-                {
-                    var ssg = await GetSinSearchGroupResultById(groupid, user);
-                    result.SINGroups.Add(ssg);
-                }
-
-                if (!String.IsNullOrEmpty(UsernameOrEmail))
-                {
-                    List<SINner> byUser = new List<SINner>();
-                    ApplicationUser bynameuser = await _userManager.FindByNameAsync(UsernameOrEmail);
-
-                    if (bynameuser != null)
-                    {
-                        var usersinners = await SINner.GetSINnersFromUser(bynameuser, _context, true);
-                        byUser.AddRange(usersinners);
-                    }
-
-                    ApplicationUser byemailuser = await _userManager.FindByEmailAsync(UsernameOrEmail);
-                    if ((byemailuser != null) && (byemailuser != bynameuser))
-                    {
-                        var usersinners = await SINner.GetSINnersFromUser(byemailuser, _context, true);
-                        byUser.AddRange(usersinners);
-                    }
-
-
-                    foreach (var sin in byUser)
-                    {
-                        if (sin.MyGroup != null)
-                        {
-                            SINnerSearchGroup ssg = null;
-                            var foundseq = (from a in result.SINGroups
-                                             where a.Groupname?.ToLowerInvariant() == sin.MyGroup?.Groupname.ToLowerInvariant()
-                                            select a).ToList();
-                            if (foundseq.Any())
+                            foreach (var singleerr in err)
                             {
-                                ssg = foundseq.FirstOrDefault();
+                                msg += Environment.NewLine + "\t" + singleerr.ToString();
                             }
+                        }
 
-                            if (ssg == null)
-                                ssg = new SINnerSearchGroup(sin.MyGroup);
-                         
-                            SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
-                            {
-                                MySINner = sin
-                            };
-                            if (byemailuser != null)
-                                ssgm.Username = byemailuser?.UserName;
-                            if (bynameuser != null)
-                                ssgm.Username = bynameuser?.UserName;
-                            ssg.MyMembers.Add(ssgm);
+                        throw new HubException(msg);
+                    }
+
+                    SINSearchGroupResult result = new SINSearchGroupResult();
+                    if (user != null)
+                    {
+                        SINnerSearchGroup ssgFavs = new SINnerSearchGroup
+                        {
+                            Id = Guid.Empty,
+                            Groupname = "Favorites"
+                        };
+                        var favlist = user.FavoriteGroups.Select(a => a.FavoriteGuid).ToHashSet();
+                        var favgrouplist = await _context.SINnerGroups.Where(a => a.Id != null && favlist.Contains(a.Id.Value))
+                            .ToListAsync();
+                        foreach (var favgroup in favgrouplist)
+                        {
+                            var ssgsinglefav = new SINnerSearchGroup(favgroup, user);
+                            ssgFavs.MySINSearchGroups.Add(ssgsinglefav);
+                        }
+
+                        result.SINGroups.Add(ssgFavs);
+                    }
+
+                    List<Guid?> groupfoundseq = new List<Guid?>();
+                    if (!string.IsNullOrEmpty(Groupname))
+                    {
+                        groupfoundseq = await (from a in _context.SINnerGroups
+                                               where a.Groupname != null && a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
+                                                     && (a.Language == language || string.IsNullOrEmpty(language))
+                                               select a.Id).ToListAsync();
+                        if (!groupfoundseq.Any())
+                        {
+                            throw new ArgumentException("No group found with the given parameter: " + Groupname);
                         }
                     }
-                }
-                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                    else if (string.IsNullOrEmpty(UsernameOrEmail) && string.IsNullOrEmpty(sINnerName))
+                    {
+                        groupfoundseq = await (from a in _context.SINnerGroups
+                                               where a.IsPublic == true && a.MyParentGroupId == null
+                                               select a.Id).ToListAsync();
+                        if (!groupfoundseq.Any())
+                        {
+                            throw new ArgumentException("No group found with the given parameter IsPublic");
+                        }
+                    }
 
-                return Ok(result);
+                    foreach (var groupid in groupfoundseq)
+                    {
+                        var ssg = await GetSinSearchGroupResultById(groupid, user);
+                        result.SINGroups.Add(ssg);
+                    }
+
+                    if (!string.IsNullOrEmpty(UsernameOrEmail))
+                    {
+                        List<SINner> byUser = new List<SINner>();
+                        ApplicationUser bynameuser = await _userManager.FindByNameAsync(UsernameOrEmail);
+
+                        if (bynameuser != null)
+                        {
+                            var usersinners = await SINner.GetSINnersFromUser(bynameuser, _context, true);
+                            byUser.AddRange(usersinners);
+                        }
+
+                        ApplicationUser byemailuser = await _userManager.FindByEmailAsync(UsernameOrEmail);
+                        if ((byemailuser != null) && (byemailuser != bynameuser))
+                        {
+                            var usersinners = await SINner.GetSINnersFromUser(byemailuser, _context, true);
+                            byUser.AddRange(usersinners);
+                        }
+
+
+                        foreach (var sin in byUser)
+                        {
+                            if (sin.MyGroup != null)
+                            {
+                                SINnerSearchGroup ssg = null;
+                                var foundseq = (from a in result.SINGroups
+                                                where a.Groupname?.ToLowerInvariant() == sin.MyGroup?.Groupname.ToLowerInvariant()
+                                                select a).ToList();
+                                if (foundseq.Any())
+                                {
+                                    ssg = foundseq.FirstOrDefault();
+                                }
+
+                                if (ssg == null)
+                                    ssg = new SINnerSearchGroup(sin.MyGroup, user);
+
+                                SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember(user, sin);
+                                if (byemailuser != null)
+                                    ssgm.Username = byemailuser?.UserName;
+                                if (bynameuser != null)
+                                    ssgm.Username = bynameuser?.UserName;
+                                ssg.MyMembers.Add(ssgm);
+                            }
+                        }
+                    }
+
+                    result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                    if (user != null)
+                    {
+                        //now add owned SINners
+                        SINnerSearchGroup ownedGroup = new SINnerSearchGroup()
+                        {
+                            Groupname = "My Data (virtual Group)",
+                            Description = "This isn't a group, but only a list of all the Chummers you \"own\"."
+                                          + Environment.NewLine +
+                                          "You can't delete this fictional group or remove your Chummers from here."
+                                          + Environment.NewLine +
+                                          "But you can drag'n'drop from here to have a Chummer of yours join another group."
+                        };
+                        result.SINGroups.Add(ownedGroup);
+                        List<SINner> mySinners;
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (!roles.Contains("SeeAllSInners"))
+                            mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                        else
+                        {
+                            mySinners = await _context.SINners.Include(a => a.MyGroup)
+                                .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                                //.Include(a => a.MyExtendedAttributes)
+                                .Include(a => a.SINnerMetaData)
+                                .Include(a => a.SINnerMetaData.Visibility)
+                                .ToListAsync();
+                        }
+
+                        foreach (var ownedSin in mySinners)
+                        {
+                            SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember(user, ownedSin);
+                            ownedGroup.MyMembers.Add(ssgm);
+                        }
+
+                        //add the users own groups - always!
+                        var userownedgroupsseq = await SINner.GetSINnersFromUser(user, _context, true);
+                        List<Guid?> usergroups = new List<Guid?>();
+                        foreach (var sin in userownedgroupsseq)
+                        {
+                            if (sin.MyGroup != null)
+                            {
+                                if (!usergroups.Contains(sin.MyGroup.Id))
+                                    usergroups.Add(sin.MyGroup.Id);
+                            }
+                        }
+
+                        foreach (var groupid in usergroups)
+                        {
+                            var ssg = await GetSinSearchGroupResultById(groupid, user);
+                            ownedGroup.MySINSearchGroups.Add(ssg);
+                        }
+                    }
+                    result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                    t.Complete();
+                    return result;
+                }
+
+
 
             }
             catch (Exception e)
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("Groupname", Groupname?.ToString());
@@ -1018,13 +1488,12 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
-
+                throw;
             }
         }
+
+
+
 
         /// <summary>
         /// Search for all members and subgroups of a group
@@ -1032,17 +1501,18 @@ namespace ChummerHub.Controllers.V1
         /// <param name="groupid"></param>
         /// <returns></returns>
         [HttpGet()]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int) HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int) HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupMembers")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupmembersById")]
         [Authorize]
-        public async Task<ActionResult<SINSearchGroupResult>> GetGroupMembers(Guid groupid)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembersById(Guid groupid)
         {
-            _logger.LogTrace("GetGroupMembers: " + groupid + ".");
+            ResultGroupGetSearchGroups res;
+            _logger.LogTrace("GetGroupmembersById: " + groupid + ".");
 
             ApplicationUser user = null;
-            
+
             try
             {
                 if (User != null)
@@ -1060,21 +1530,22 @@ namespace ChummerHub.Controllers.V1
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
                     }
-
-                    return BadRequest(new HubException(msg));
+                    res = new ResultGroupGetSearchGroups(new HubException(msg));
+                    return BadRequest(res);
                 }
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
                 var range = await GetSinSearchGroupResultById(groupid, user);
                 result.SINGroups.Add(range);
                 result.SINGroups = RemovePWHashRecursive(result.SINGroups);
-                Ok(result);
+                res = new ResultGroupGetSearchGroups(result);
+                Ok(res);
             }
             catch (Exception e)
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("groupid", groupid.ToString());
@@ -1084,22 +1555,24 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
             }
 
-            return BadRequest();
+            return NotFound(res);
         }
 
         private static List<SINnerSearchGroup> RemovePWHashRecursive(List<SINnerSearchGroup> sINGroups)
         {
             if (sINGroups == null)
                 return new List<SINnerSearchGroup>();
-            foreach(var group in sINGroups)
+            foreach (var group in sINGroups)
             {
-                group.PasswordHash = "";
+                if (!string.IsNullOrEmpty(group.PasswordHash))
+                {
+                    group.HasPassword = true;
+                    group.PasswordHash = "";
+                }
                 group.MyGroups = RemovePWHashRecursive(group.MyGroups);
             }
             return sINGroups;
@@ -1117,78 +1590,94 @@ namespace ChummerHub.Controllers.V1
             return sINGroups;
         }
 
-        private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid, ApplicationUser askingUser)
+        private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid, ApplicationUser askingUser,
+            bool addTags = false)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
                 throw new ArgumentNullException(nameof(groupid));
-            ApplicationUser user = null;
-            if (User != null)
-                user = await _signInManager.UserManager.GetUserAsync(User);
-            SINnerSearchGroup ssg = null;
-            var groupbyidseq = await (from a in _context.SINnerGroups
-                    .Include(a => a.MyParentGroup)
-                    .Include(a => a.MyGroups)
-                    .Include(a => a.MySettings)
-                    .Include(a => a.MyGroups)
-                    .ThenInclude(b => b.MyGroups)
-                    .ThenInclude(b => b.MyGroups)
-                    .ThenInclude(b => b.MyGroups)
-                    where a.Id == groupid
-                select a).Take(1).ToListAsync();
-            
-            foreach (var group in groupbyidseq)
+            using (var t = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions
+                {
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+
+                }, TransactionScopeAsyncFlowOption.Enabled))
             {
-                if (group.MyGroups == null)
-                    group.MyGroups = new List<SINnerGroup>();
-                ssg = new SINnerSearchGroup(group);
+                ApplicationUser user = null;
+                if (User != null)
+                    user = await _signInManager.UserManager.GetUserAsync(User);
+                SINnerSearchGroup ssg = null;
+                var groupbyidseq = await (from a in _context.SINnerGroups
+                        //.Include(a => a.MyParentGroup)
+                        .Include(a => a.MySettings)
+                        .Include(a => a.MyGroups)
+                        .ThenInclude(b => b.MyGroups)
+                        .ThenInclude(b => b.MyGroups)
+                        .ThenInclude(b => b.MyGroups)
+                                          where a.Id == groupid
+                                          select a).Take(1).ToListAsync();
 
-                var members = await ssg.GetGroupMembers(_context);
-                foreach (var member in members)
+                foreach (var group in groupbyidseq)
                 {
-                    member.MyGroup = null;
-                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
-                    {
-                        MySINner = member
-                    };
-                    ssg.MyMembers.Add(ssgm);
-                }
+                    if (group.MyGroups == null)
+                        group.MyGroups = new List<SINnerGroup>();
+                    ssg = new SINnerSearchGroup(group, user);
 
-                foreach (var child in group.MyGroups)
-                {
-                    bool okToShow = false;
-                    if ((child.IsPublic == false) && user == null)
+                    var members = await ssg.GetGroupMembers(_context, addTags);
+                    foreach (var member in members)
                     {
-                        continue;
+                        if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
+                        {
+                            if (member.SINnerMetaData?.Visibility.UserRights.Any(a => string.IsNullOrEmpty(a.EMail)) == false)
+                            {
+                                if (user == null || member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                        a.EMail?.ToUpperInvariant() == user.NormalizedEmail) == false)
+                                {
+                                    //dont show this guy!
+                                    continue;
+                                }
+                            }
+                        }
+                        member.MyGroup = null;
+                        SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember(user, member);
+                        ssg.MyMembers.Add(ssgm);
                     }
-                    else if (child.IsPublic == false && user != null)
+
+                    foreach (var child in group.MyGroups)
                     {
-                        //check if the user has the right to see this group
-                        var roles = await _userManager.GetRolesAsync(user);
-                        if (roles.Contains(child.MyAdminIdentityRole) == true)
+                        bool okToShow = false;
+                        if ((child.IsPublic == false) && user == null)
+                        {
+                            continue;
+                        }
+                        else if (child.IsPublic == false && user != null)
+                        {
+                            //check if the user has the right to see this group
+                            var roles = await _userManager.GetRolesAsync(user);
+                            if (roles.Contains(child.MyAdminIdentityRole) == true)
+                            {
+                                okToShow = true;
+                            }
+                        }
+                        else if (child.IsPublic == true)
                         {
                             okToShow = true;
                         }
-                        else
-                        {
-                            //check if the user has a chummer that is part of the group
-                            //maybe later
-                        }
-                    }
-                    else if (child.IsPublic == true)
-                    {
-                        okToShow = true;
-                    }
 
-                    if (okToShow)
-                    {
-                        var childresult = await GetSinSearchGroupResultById(child.Id, user);
-                        ssg.MySINSearchGroups.Add(childresult);
+                        if (okToShow)
+                        {
+                            var childresult = await GetSinSearchGroupResultById(child.Id, user);
+                            ssg.MySINSearchGroups.Add(childresult);
+                        }
+
                     }
-                    
                 }
+
+                ssg.MyGroups = RemovePWHashRecursive(ssg.MyGroups);
+                t.Complete();
+                return ssg;
+
             }
-            ssg.MyGroups = RemovePWHashRecursive(ssg.MyGroups);
-            return ssg;
+
         }
     }
 }

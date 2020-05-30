@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -11,13 +9,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
-    public partial class IndexModel : PageModel
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel'
+    public class IndexModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.IndexModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, IEmailSender)'
         public IndexModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.IndexModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, IEmailSender)'
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender)
@@ -27,28 +29,44 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             _emailSender = emailSender;
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.Username'
         public string Username { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.Username'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.IsEmailConfirmed'
         public bool IsEmailConfirmed { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.IsEmailConfirmed'
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.StatusMessage'
         public string StatusMessage { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.StatusMessage'
 
         [BindProperty]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.Input'
         public InputModel Input { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.Input'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.InputModel'
         public class InputModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.InputModel'
         {
             [Required]
             [EmailAddress]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.InputModel.Email'
             public string Email { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.InputModel.Email'
 
             [Phone]
             [Display(Name = "Phone number")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.InputModel.PhoneNumber'
             public string PhoneNumber { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.InputModel.PhoneNumber'
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.OnGetAsync()'
         public async Task<IActionResult> OnGetAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.OnGetAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -73,7 +91,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.OnPostAsync()'
         public async Task<IActionResult> OnPostAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.OnPostAsync()'
         {
             if (!ModelState.IsValid)
             {
@@ -113,7 +133,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.OnPostSendVerificationEmailAsync()'
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel.OnPostSendVerificationEmailAsync()'
         {
             if (!ModelState.IsValid)
             {
@@ -133,7 +155,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = userId, code = code },
+                values: new {userId, code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,

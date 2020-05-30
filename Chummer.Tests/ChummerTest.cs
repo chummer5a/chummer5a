@@ -67,7 +67,7 @@ namespace Chummer.Tests
         public void LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
-            
+
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             string strTestPath = Path.Combine(strPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
             DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
@@ -76,13 +76,13 @@ namespace Chummer.Tests
             foreach (FileInfo objFileInfo in aobjFiles)
             {
                 string destination = Path.Combine(objTestPath.FullName, objFileInfo.Name);
-                Character c = LoadCharacter(objFileInfo);
-                SaveCharacter(c, destination);
-                c = new Character
+                using (Character c = LoadCharacter(objFileInfo))
+                    SaveCharacter(c, destination);
+                using (Character c = new Character
                 {
                     FileName = destination
-                };
-                Assert.IsTrue(c.Load());
+                })
+                    Assert.IsTrue(c.Load().Result);
             }
             //objTestPath.Delete(true);
         }
@@ -142,24 +142,38 @@ namespace Chummer.Tests
         }
 
         /// <summary>
-        /// Validate that a given list of Characters can be successfully loaded. 
+        /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
         public Character LoadCharacter(FileInfo objFileInfo)
         {
-            Character c = new Character();
+            Character objCharacter = null;
             try
             {
                 Debug.WriteLine("Loading: " + objFileInfo.Name);
-                Character objCharacter = new Character
+                objCharacter = new Character
                 {
                     FileName = objFileInfo.FullName
                 };
-                Assert.IsTrue(objCharacter.Load());
-                Debug.WriteLine("Character loaded: " + c.Name);
-                c = objCharacter;
+                Assert.IsTrue(objCharacter.Load().Result);
+                Debug.WriteLine("Character loaded: " + objCharacter.Name);
+                /*
+                if (objCharacter.Created)
+                {
+                    frmCareer _ = new frmCareer(objCharacter);
+                    //SINnersUsercontrol sINnersUsercontrol = new SINnersUsercontrol(career);
+                    //sINnersUsercontrol.UploadSINnerAsync();
+                }
+                else
+                {
+                    frmCreate _ = new frmCreate(objCharacter);
+                }
+                Debug.WriteLine("Test Form Created: " + objCharacter.Name);
+                */
             }
             catch (AssertFailedException e)
             {
+                objCharacter?.Dispose();
+                objCharacter = null;
                 string strErrorMessage = "Could not load " + objFileInfo.FullName + "!";
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
@@ -167,6 +181,7 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
+                objCharacter?.Dispose();
                 string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ":";
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
@@ -174,7 +189,7 @@ namespace Chummer.Tests
                 throw;
             }
 
-            return c;
+            return objCharacter;
         }
 
         /// <summary>
@@ -191,21 +206,21 @@ namespace Chummer.Tests
             catch (AssertFailedException e)
             {
                 string strErrorMessage = "Could not load " + c.FileName + "!";
-                strErrorMessage += Environment.NewLine + e.ToString();
+                strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
             }
             catch (InvalidOperationException e)
             {
                 string strErrorMessage = "Could not save to " + path + "!";
-                strErrorMessage += Environment.NewLine + e.ToString();
+                strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
             }
             catch (Exception e)
             {
                 string strErrorMessage = "Exception while loading " + c.FileName + ":";
-                strErrorMessage += Environment.NewLine + e.ToString();
+                strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 throw;

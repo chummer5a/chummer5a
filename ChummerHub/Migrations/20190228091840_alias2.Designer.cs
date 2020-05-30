@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190228091840_alias2")]
     partial class alias2
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'alias2.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'alias2.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -18,7 +18,8 @@
  */
  using System;
  using System.IO;
- using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -26,6 +27,7 @@ namespace Chummer
     {
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
+        private bool _blnCharacterAdded;
         private Character _character;
 
         public frmAddToken(InitiativeUserControl init)
@@ -40,43 +42,50 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
-            };
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                LoadCharacter(openFileDialog.FileName);
+                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+            })
+                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                    await LoadCharacter(openFileDialog.FileName).ConfigureAwait(true);
         }
 
         /// <summary>
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private void LoadCharacter(string fileName)
+        private async Task<bool> LoadCharacter(string fileName)
         {
-            if (File.Exists(fileName) && fileName.EndsWith("chum5"))
+            if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
                 Cursor = Cursors.WaitCursor;
                 Character objCharacter = new Character
                 {
                     FileName = fileName
                 };
-                if (!objCharacter.Load())
+                if (!await objCharacter.Load().ConfigureAwait(true))
                 {
                     Cursor = Cursors.Default;   // TODO edward setup error page
-                    return; // we obviously cannot init
+                    objCharacter.Dispose();
+                    return false; // we obviously cannot init
                 }
 
                 nudInit.Value = objCharacter.InitiativeDice;
                 txtName.Text = objCharacter.Name;
                 if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
                     nudInitStart.Value = intTemp;
+                if (_character != null)
+                {
+                    _character.Dispose();
+                    _blnCharacterAdded = false;
+                }
                 _character = objCharacter;
                 Cursor = Cursors.Default;
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -126,6 +135,7 @@ namespace Chummer
             else
                 _character.InitRoll = int.MinValue;
 
+            _blnCharacterAdded = true;
             parentControl.AddToken(_character);
             Close();
         }

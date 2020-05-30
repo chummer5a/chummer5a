@@ -1,16 +1,14 @@
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace ChummerHub.Models.V1.Examples
 {
 
- 
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample'
     public class SINnerExample : IExamplesProvider
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample'
     {
         /// <summary>
         /// Class to enalbe Swagger to generate an Example
@@ -20,19 +18,23 @@ namespace ChummerHub.Models.V1.Examples
 
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetExamples()'
         public object GetExamples()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetExamples()'
         {
             return GetSINnerExample();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetSINnerExample()'
         public SINner GetSINnerExample()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetSINnerExample()'
         {
             Guid parentTagGuid = Guid.NewGuid();
             Guid childTagGuid = Guid.NewGuid();
-            var sin =  new SINner
+            var sin = new SINner
             {
-                 Id = Guid.NewGuid(),
-                 UploadClientId = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                UploadClientId = Guid.NewGuid()
             };
             sin.SINnerMetaData = new SINnerMetaData()
             {
@@ -41,16 +43,16 @@ namespace ChummerHub.Models.V1.Examples
                 Visibility = new SINnerVisibility()
                 {
                     IsGroupVisible = true,
-                    UserRights = new List<SINerUserRight>()
+                    UserRights = new List<SINnerUserRight>()
                     {
-                         new SINerUserRight(sin.Id.Value)
+                         new SINnerUserRight(sin.Id.Value)
                          {
                               EMail = "archon.megalon@gmail.com",
                               CanEdit = true
                          }
                     }
                 }
-              
+
             };
             var parenttag = new Tag(sin, null)
             {
@@ -74,14 +76,18 @@ namespace ChummerHub.Models.V1.Examples
                 }
             };
             sin.SINnerMetaData.Tags.Add(parenttag);
-            sin.MyExtendedAttributes.JsonSummary = "{}";
+            //sin.MyExtendedAttributes.JsonSummary = "{}";
             sin.LastChange = DateTime.Now;
             return sin;
         }
     }
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample'
     public class SINnerListExample : IExamplesProvider
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample.GetExamples()'
         public object GetExamples()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample.GetExamples()'
         {
             var list = new List<SINner>() { new SINnerExample().GetSINnerExample() };
             return list;

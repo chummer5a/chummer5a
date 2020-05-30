@@ -40,7 +40,7 @@ namespace Chummer
             _lstFiles.Clear();
             GetDirectories(txtFilePath.Text);
             OmaeHelper.CompressMutipleToFile(_lstFiles, txtDestination.Text);
-            MessageBox.Show("Done");
+            Program.MainForm.ShowMessageBox("Done");
         }
         #endregion
 

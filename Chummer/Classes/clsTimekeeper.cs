@@ -21,11 +21,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
  using System.Diagnostics;
  using System.Text;
+ using NLog;
 
 namespace Chummer
 {
-    static class Timekeeper
+    public static class Timekeeper
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
@@ -35,9 +37,18 @@ namespace Chummer
             s_Time.Start();
         }
 
-        public static void Start(string taskname)
+        public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
         {
+            var dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+            return dependencyActivity;
+        }
+
+        public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
+        {
+            var dependencyActivity = new CustomActivity(taskname, parentActivity);
+            s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+            return dependencyActivity;
         }
 
         public static TimeSpan Elapsed(string taskname)
@@ -54,12 +65,14 @@ namespace Chummer
 
         public static TimeSpan Finish(string taskname)
         {
+            TimeSpan final = TimeSpan.Zero;
             if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
             {
-                TimeSpan final = s_Time.Elapsed - objStartTimeSpan;
+                final = s_Time.Elapsed - objStartTimeSpan;
 
-                string logentry = $"Task \"{taskname}\" finished in {final}";
-                Chummer.Log.Info(logentry);
+                string logentry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+                    taskname, final);
+                //Logger.Trace(logentry);
 
                 Debug.WriteLine(logentry);
 
@@ -71,14 +84,12 @@ namespace Chummer
                 {
                     s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
-
-                return final;
             }
             else
             {
                 Debug.WriteLine("Non started task \"" + taskname + "\" finished");
-                return TimeSpan.Zero;
             }
+            return final;
         }
 
         public static void Log()
@@ -87,12 +98,13 @@ namespace Chummer
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
-                sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
+                sb.AppendLine(string.Format(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}",
+                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1));
             }
 
             string strined = sb.ToString();
             Debug.WriteLine(strined);
-            Chummer.Log.Info(strined);
+            Logger.Info(strined);
         }
 
     }

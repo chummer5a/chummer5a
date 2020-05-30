@@ -18,8 +18,14 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
+                _lstActiveSkills?.Dispose();
+                _lstSkillGroups?.Dispose();
+                _lstKnowledgeSkills?.Dispose();
                 UnbindSkillsTabUserControl();
+                if (!(ParentForm is CharacterShared frmParent) || frmParent.CharacterObject != _objCharacter)
+                    _objCharacter?.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

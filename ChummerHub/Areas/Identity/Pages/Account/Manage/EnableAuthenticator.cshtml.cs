@@ -1,19 +1,18 @@
-﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel'
     public class EnableAuthenticatorModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<EnableAuthenticatorModel> _logger;
@@ -21,7 +20,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.EnableAuthenticatorModel(UserManager<ApplicationUser>, ILogger<EnableAuthenticatorModel>, UrlEncoder)'
         public EnableAuthenticatorModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.EnableAuthenticatorModel(UserManager<ApplicationUser>, ILogger<EnableAuthenticatorModel>, UrlEncoder)'
             UserManager<ApplicationUser> userManager,
             ILogger<EnableAuthenticatorModel> logger,
             UrlEncoder urlEncoder)
@@ -31,29 +32,45 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             _urlEncoder = urlEncoder;
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.SharedKey'
         public string SharedKey { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.SharedKey'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.AuthenticatorUri'
         public string AuthenticatorUri { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.AuthenticatorUri'
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.RecoveryCodes'
         public string[] RecoveryCodes { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.RecoveryCodes'
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.StatusMessage'
         public string StatusMessage { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.StatusMessage'
 
         [BindProperty]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.Input'
         public InputModel Input { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.Input'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel'
         public class InputModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel'
         {
             [Required]
             [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Text)]
             [Display(Name = "Verification Code")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel.Code'
             public string Code { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel.Code'
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.OnGetAsync()'
         public async Task<IActionResult> OnGetAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.OnGetAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -66,7 +83,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.OnPostAsync()'
         public async Task<IActionResult> OnPostAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.OnPostAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

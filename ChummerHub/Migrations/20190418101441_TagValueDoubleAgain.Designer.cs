@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190418101441_TagValueDoubleAgain")]
     partial class TagValueDoubleAgain
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TagValueDoubleAgain.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TagValueDoubleAgain.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

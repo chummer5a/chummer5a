@@ -41,26 +41,22 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
 
-            if (_objCharacter.IsCritter)
+            _xmlOptionalComplexFormNode = _objCharacter.GetNode();
+            if (_xmlOptionalComplexFormNode == null) return;
+            if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
-                _xmlOptionalComplexFormNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") ??
-                                             XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (_xmlOptionalComplexFormNode != null)
-                {
-                    if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-                    {
-                        XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
-                        if (xmlMetavariantNode != null)
-                            _xmlOptionalComplexFormNode = xmlMetavariantNode;
-                    }
-
-                    _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
-                }
+                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = \""
+                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                                                                                 + "\"]");
+                if (xmlMetavariantNode != null)
+                    _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
+
+            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
         }
 
         private void frmSelectComplexForm_Load(object sender, EventArgs e)
@@ -88,66 +84,67 @@ namespace Chummer
                 switch (xmlComplexForm.SelectSingleNode("duration")?.Value)
                 {
                     case "P":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent", GlobalOptions.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent");
                         break;
                     case "S":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                         break;
                     case "Special":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                         break;
                     default:
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant");
                         break;
                 }
+
                 switch (xmlComplexForm.SelectSingleNode("target")?.Value)
                 {
                     case "Persona":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona");
                         break;
                     case "Device":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice");
                         break;
                     case "File":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile");
                         break;
                     case "Self":
-                        lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf");
                         break;
                     case "Sprite":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite");
                         break;
                     case "Host":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost");
                         break;
                     case "IC":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC");
                         break;
                     default:
-                        lblTarget.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_None");
                         break;
                 }
 
                 string strFV = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
                 if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel", GlobalOptions.Language))
-                        .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Language))
-                        .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language))
-                        .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Language))
-                        .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
-                        .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
+                    strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
+                        .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
+                        .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"))
+                        .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"))
+                        .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"))
+                        .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
                 }
 
                 lblFV.Text = strFV;
 
-                string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
 
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace +
+                    LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {
@@ -254,7 +251,10 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strId))
                     continue;
 
-                string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                if (!xmlComplexForm.RequirementsMet(_objCharacter))
+                    continue;
+
+                string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null)
                 {
