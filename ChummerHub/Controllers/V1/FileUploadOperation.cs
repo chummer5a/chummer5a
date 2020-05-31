@@ -1,23 +1,22 @@
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ChummerHub.Controllers.V1
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'FileUploadOperation'
     public class FileUploadOperation : IOperationFilter
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'FileUploadOperation'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'FileUploadOperation.FileUploadOperation()'
         public FileUploadOperation()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'FileUploadOperation.FileUploadOperation()'
         {
 
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'FileUploadOperation.Apply(Operation, OperationFilterContext)'
         public void Apply(Operation operation, OperationFilterContext context)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'FileUploadOperation.Apply(Operation, OperationFilterContext)'
         {
             if (operation.OperationId.ToLower() == "ApiV1SINnerByIdPut".ToLower())
             {

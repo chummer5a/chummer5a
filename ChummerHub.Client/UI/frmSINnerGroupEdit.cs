@@ -1,18 +1,13 @@
 using SINners.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupEdit : Form
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         //public frmSINnerGroupEdit()
         //{
         //    InitializeComponent();
@@ -22,12 +17,11 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             MySINnerGroupCreate.MyGroup = group;
-            if (group.Id == null || group.Id == Guid.Empty)
+            if (group?.Id == null || group.Id == Guid.Empty)
                 MySINnerGroupCreate.EditMode = true;
             MySINnerGroupCreate.InitializeMe(onlyPWHash);
         }
-        
 
-        public SINnerGroupCreate MySINnerGroupCreate { get { return this.siNnerGroupCreate1; } }
+        public ucSINnerGroupCreate MySINnerGroupCreate => siNnerGroupCreate1;
     }
 }

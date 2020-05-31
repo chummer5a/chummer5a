@@ -35,6 +35,8 @@ namespace Chummer
 
         public frmSelectCalendarStart(CalendarWeek objWeek)
         {
+            if (objWeek == null)
+                throw new ArgumentNullException(nameof(objWeek));
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 

@@ -3,9 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Chummer;
-using ChummerHub.Client.Backend;
+using ChummerHub.Client.Tests.Properties;
 using ChummerHub.Client.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Utils = ChummerHub.Client.Backend.Utils;
 
 namespace ChummerHub.Client.Tests
 {
@@ -20,12 +21,12 @@ namespace ChummerHub.Client.Tests
         [TestMethod]
         public async Task LoadCharacter()
         {
-            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
+            Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             if (MainForm == null)
                 MainForm = new frmChummerMain(true);
-            path = System.IO.Path.Combine(path, "data");
+            path = Path.Combine(path, "data");
             DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
             FileInfo[] Files = d.GetFiles("*.chum5"); //Getting Text files
             foreach (FileInfo file in Files)
@@ -33,7 +34,7 @@ namespace ChummerHub.Client.Tests
                 try
                 {
                     Debug.WriteLine("Loading: " + file.Name);
-                    Character c = MainForm.LoadCharacter(file.FullName);
+                    Character c = await MainForm.LoadCharacter(file.FullName);
                     if (c == null)
                         continue;
                     Debug.WriteLine("Character loaded: " + c.Name);
@@ -42,12 +43,11 @@ namespace ChummerHub.Client.Tests
                         using (frmCareer career = new frmCareer(c))
                         {
                             career.Show();
-                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
                             var ce = await sINnersUsercontrol.SetCharacterFrom(career);
-                            await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
-                            await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
+                            await Utils.PostSINnerAsync(ce);
+                            await Utils.UploadChummerFileAsync(ce);
                             career.Hide();
-                            career.Dispose();
                         }
                     }
                     else
@@ -55,25 +55,22 @@ namespace ChummerHub.Client.Tests
                         using (frmCreate create = new frmCreate(c))
                         {
                             create.Show();
-                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
                             var ce = await sINnersUsercontrol.SetCharacterFrom(create);
-                            await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
-                            await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
+                            await Utils.PostSINnerAsync(ce);
+                            await Utils.UploadChummerFileAsync(ce);
                             create.Hide();
-                            create.Dispose();
                         }
                     }
                 }
                 catch(Exception e)
                 {
                     string msg = "Exception while loading " + file.FullName + ":";
-                    msg += Environment.NewLine + e.ToString();
+                    msg += Environment.NewLine + e;
                     Debug.Write(msg);
                     throw;
                 }
             }
         }
-
-       
     }
 }

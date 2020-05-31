@@ -31,6 +31,8 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _skill;
         public KnowledgeSkillControl(KnowledgeSkill skill)
         {
+            if (skill == null)
+                return;
             _skill = skill;
             InitializeComponent();
 
@@ -40,7 +42,7 @@ namespace Chummer.UI.Skills
             lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));
             lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(KnowledgeSkill.PoolToolTip));
 
-            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
+            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes().ToList();
             lstTypes.Sort(CompareListItems.CompareNames);
 
             cboType.BeginUpdate();
@@ -76,17 +78,17 @@ namespace Chummer.UI.Skills
                 lblName.Visible = true;
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
                 lblName.DataBindings.Add("ForeColor", skill, nameof(Skill.PreferredColor));
-                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.SkillToolTip));
+                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
 
                 lblSpec.Visible = true;
-                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 cboSkill.Visible = false;
                 chkKarma.Visible = false;
                 cboSpec.Visible = false;
 
                 lblModifiedRating.Location = new Point(294 - 30, 4);
-                
+
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -105,7 +107,7 @@ namespace Chummer.UI.Skills
 
                 chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
                         DataSourceUpdateMode.OnPropertyChanged);
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
+                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills().ToList();
                 lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 cboSkill.DataSource = lstDefaultKnowledgeSkills;
                 cboSkill.DisplayMember = nameof(ListItem.Name);
@@ -120,20 +122,29 @@ namespace Chummer.UI.Skills
                 cboSpec.ValueMember = nameof(ListItem.Value);
                 cboSpec.SelectedIndex = -1;
 
-                if (skill.ForcedName)
-                    cboSpec.Enabled = false;
-                else
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 skill.PropertyChanged += Skill_PropertyChanged;
             }
 
-
-            if (skill.ForcedName && !skill.AllowUpgrade)
+            cmdDelete.DataBindings.Add("Visible", skill, nameof(Skill.AllowDelete), false, DataSourceUpdateMode.OnPropertyChanged);
+            cmdDelete.Click += (sender, args) =>
+            {
+                if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill",
+                    GlobalOptions.Language)))
+                    return;
+                skill.UnbindSkill();
+                skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
+            };
+            if (skill.ForcedName)
             {
                 DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
-
+                if (!skill.CharacterObject.Created)
+                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
+            }
+            if (!skill.AllowUpgrade)
+            {
                 nudKarma.Visible = false;
                 nudSkill.Visible = false;
                 cboSkill.Enabled = false;
@@ -143,20 +154,9 @@ namespace Chummer.UI.Skills
 
                 if (!skill.CharacterObject.Created)
                 {
-                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
                     lblRating.Visible = true;
                     lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
-
-                cmdDelete.Visible = false;
-            }
-            else
-            {
-                cmdDelete.Click += (sender, args) =>
-                {
-                    skill.UnbindSkill();
-                    skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
-                };
             }
             cboType.EndUpdate();
             cboSkill.EndUpdate();
@@ -166,7 +166,7 @@ namespace Chummer.UI.Skills
         public void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             bool all = false;
-            switch (e.PropertyName)
+            switch (e?.PropertyName)
             {
                 case null:
                     all = true;
@@ -218,8 +218,8 @@ namespace Chummer.UI.Skills
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                _skill.CurrentDisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -254,20 +254,23 @@ namespace Chummer.UI.Skills
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            frmSelectSpec selectForm = new frmSelectSpec(_skill)
+            using (frmSelectSpec selectForm = new frmSelectSpec(_skill)
             {
                 Mode = "Knowledge"
-            };
-            selectForm.ShowDialog();
+            })
+            {
+                selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+                if (selectForm.DialogResult != DialogResult.OK)
+                    return;
 
-            _skill.AddSpecialization(selectForm.SelectedItem);
+                _skill.AddSpecialization(selectForm.SelectedItem);
+            }
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;

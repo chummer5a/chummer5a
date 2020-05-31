@@ -1,16 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Services.GoogleDrive
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmbeddedResource'
     public static class EmbeddedResource
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmbeddedResource'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmbeddedResource.GetResource(string)'
         public static string GetResource(string namespaceAndFileName)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmbeddedResource.GetResource(string)'
         {
             try
             {
@@ -21,9 +22,12 @@ namespace ChummerHub.Services.GoogleDrive
 
                 using (var stream = assembly.GetManifestResourceStream(namespaceAndFileName))
                 {
-                    using (var reader = new StreamReader(stream, Encoding.UTF8))
+                    if (stream != null)
                     {
-                        return reader.ReadToEnd();
+                        using (var reader = new StreamReader(stream, Encoding.UTF8))
+                        {
+                            return reader.ReadToEnd();
+                        }
                     }
                 }
             }
@@ -33,6 +37,8 @@ namespace ChummerHub.Services.GoogleDrive
                 System.Diagnostics.Trace.TraceError(exception.Message);
                 throw new Exception($"Failed to read Embedded Resource {namespaceAndFileName}");
             }
+
+            return string.Empty;
         }
     }
 }

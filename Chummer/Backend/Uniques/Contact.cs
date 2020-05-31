@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -47,12 +48,12 @@ namespace Chummer
     /// A Contact or Enemy.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
-    public class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes
+    public sealed class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
     {
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
-        private string _strUnique = Guid.NewGuid().ToString("D");
+        private string _strUnique = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
@@ -80,6 +81,7 @@ namespace Chummer
         private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
+        private int _intKarmaMinimum = 2;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,15 +97,15 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties?.Count > 0 != true)
                 return;
 
             if (lstNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
@@ -125,65 +127,65 @@ namespace Chummer
             }
         }
 
-        private static readonly DependancyGraph<string> ContactDependencyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(NoLinkedCharacter),
-                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+        private static readonly DependencyGraph<string> ContactDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(NoLinkedCharacter),
+                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
                 ),
-                new DependancyGraphNode<string>(nameof(Name),
-                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(Name),
+                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplaySex),
-                    new DependancyGraphNode<string>(nameof(Sex),
-                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(DisplaySex),
+                    new DependencyGraphNode<string>(nameof(Sex),
+                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(DisplayMetatype),
-                    new DependancyGraphNode<string>(nameof(Metatype),
-                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(DisplayMetatype),
+                    new DependencyGraphNode<string>(nameof(Metatype),
+                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(DisplayAge),
-                    new DependancyGraphNode<string>(nameof(Age),
-                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(DisplayAge),
+                    new DependencyGraphNode<string>(nameof(Age),
+                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(MainMugshot),
-                    new DependancyGraphNode<string>(nameof(LinkedCharacter)),
-                    new DependancyGraphNode<string>(nameof(Mugshots),
-                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string>(nameof(MainMugshot),
+                    new DependencyGraphNode<string>(nameof(LinkedCharacter)),
+                    new DependencyGraphNode<string>(nameof(Mugshots),
+                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
                     ),
-                    new DependancyGraphNode<string>(nameof(MainMugshotIndex))
+                    new DependencyGraphNode<string>(nameof(MainMugshotIndex))
                 ),
-                new DependancyGraphNode<string>(nameof(IsNotEnemy),
-                    new DependancyGraphNode<string>(nameof(EntityType))
+                new DependencyGraphNode<string>(nameof(IsNotEnemy),
+                    new DependencyGraphNode<string>(nameof(EntityType))
                 ),
-                new DependancyGraphNode<string>(nameof(NotReadOnly),
-                    new DependancyGraphNode<string>(nameof(ReadOnly))
+                new DependencyGraphNode<string>(nameof(NotReadOnly),
+                    new DependencyGraphNode<string>(nameof(ReadOnly))
                 ),
-                new DependancyGraphNode<string>(nameof(GroupEnabled),
-                    new DependancyGraphNode<string>(nameof(ReadOnly))
+                new DependencyGraphNode<string>(nameof(GroupEnabled),
+                    new DependencyGraphNode<string>(nameof(ReadOnly))
                 ),
-                new DependancyGraphNode<string>(nameof(LoyaltyEnabled),
-                    new DependancyGraphNode<string>(nameof(IsGroup)),
-                    new DependancyGraphNode<string>(nameof(ForcedLoyalty)),
-                    new DependancyGraphNode<string>(nameof(ReadOnly))
+                new DependencyGraphNode<string>(nameof(LoyaltyEnabled),
+                    new DependencyGraphNode<string>(nameof(IsGroup)),
+                    new DependencyGraphNode<string>(nameof(ForcedLoyalty)),
+                    new DependencyGraphNode<string>(nameof(ReadOnly))
                 ),
-                new DependancyGraphNode<string>(nameof(ContactPoints),
-                    new DependancyGraphNode<string>(nameof(Free)),
-                    new DependancyGraphNode<string>(nameof(Connection),
-                        new DependancyGraphNode<string>(nameof(ConnectionMaximum))
+                new DependencyGraphNode<string>(nameof(ContactPoints),
+                    new DependencyGraphNode<string>(nameof(Free)),
+                    new DependencyGraphNode<string>(nameof(Connection),
+                        new DependencyGraphNode<string>(nameof(ConnectionMaximum))
                     ),
-                    new DependancyGraphNode<string>(nameof(Loyalty)),
-                    new DependancyGraphNode<string>(nameof(Family)),
-                    new DependancyGraphNode<string>(nameof(Blackmail))
+                    new DependencyGraphNode<string>(nameof(Loyalty)),
+                    new DependencyGraphNode<string>(nameof(Family)),
+                    new DependencyGraphNode<string>(nameof(Blackmail))
                 ),
-                new DependancyGraphNode<string>(nameof(QuickText),
-                    new DependancyGraphNode<string>(nameof(Connection)),
-                    new DependancyGraphNode<string>(nameof(IsGroup)),
-                    new DependancyGraphNode<string>(nameof(Loyalty),
-                        new DependancyGraphNode<string>(nameof(IsGroup)),
-                        new DependancyGraphNode<string>(nameof(ForcedLoyalty))
+                new DependencyGraphNode<string>(nameof(QuickText),
+                    new DependencyGraphNode<string>(nameof(Connection)),
+                    new DependencyGraphNode<string>(nameof(IsGroup)),
+                    new DependencyGraphNode<string>(nameof(Loyalty),
+                        new DependencyGraphNode<string>(nameof(IsGroup)),
+                        new DependencyGraphNode<string>(nameof(ForcedLoyalty))
                     )
                 )
             );
@@ -196,7 +198,7 @@ namespace Chummer
         public static ContactType ConvertToContactType(string strValue)
         {
             if (string.IsNullOrEmpty(strValue))
-                return default(ContactType);
+                return default;
             switch (strValue)
             {
                 case "Contact":
@@ -213,7 +215,8 @@ namespace Chummer
         public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
             _objCharacter = objCharacter;
-            _objCharacter.PropertyChanged += CharacterObjectOnPropertyChanged;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged += CharacterObjectOnPropertyChanged;
             _blnReadOnly = blnIsReadOnly;
         }
 
@@ -229,6 +232,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("role", _strRole);
@@ -247,12 +252,12 @@ namespace Chummer
             objWriter.WriteElementString("relative", _strRelativeName);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("groupname", _strGroupName);
-            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString());
-            objWriter.WriteElementString("group", _blnIsGroup.ToString());
-            objWriter.WriteElementString("family", _blnFamily.ToString());
-            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
-            objWriter.WriteElementString("free", _blnFree.ToString());
-            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString());
+            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("family", _blnFamily.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString(GlobalOptions.InvariantCultureInfo));
 
             if (_blnReadOnly)
                 objWriter.WriteElementString("readonly", string.Empty);
@@ -267,7 +272,7 @@ namespace Chummer
             /* Disabled for now because we cannot change any properties in the linked character anyway
             if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
                 LinkedCharacter.Save();
-                */
+            */
 
             objWriter.WriteEndElement();
         }
@@ -329,6 +334,8 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
@@ -347,8 +354,8 @@ namespace Chummer
             objWriter.WriteElementString("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
             objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType.ToString(), strLanguageToPrint));
             objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
-            objWriter.WriteElementString("blackmail", Blackmail.ToString());
-            objWriter.WriteElementString("family", Family.ToString());
+            objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("family", Family.ToString(GlobalOptions.InvariantCultureInfo));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
@@ -363,7 +370,7 @@ namespace Chummer
         public bool ReadOnly => _blnReadOnly;
 
         public bool NotReadOnly => !ReadOnly;
-        
+
         /// <summary>
         /// Total points used for this contact.
         /// </summary>
@@ -378,6 +385,10 @@ namespace Chummer
                     intReturn += 1;
                 if (Blackmail)
                     intReturn += 2;
+                intReturn +=
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
+                intReturn = Math.Max(intReturn,
+                    _intKarmaMinimum + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
                 return intReturn;
             }
         }
@@ -414,7 +425,7 @@ namespace Chummer
         public string DisplayRole
         {
             get => DisplayRoleMethod(GlobalOptions.Language);
-            set => Role = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Role = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -495,25 +506,19 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", strLanguage);
-                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
-                if (objMetatypeNode == null)
-                {
-                    objMetatypeDoc = XmlManager.Load("critters.xml", strLanguage);
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
-                }
+                XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode?["translate"]?.InnerText ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
-                if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
-                {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
+                if (LinkedCharacter.MetavariantGuid == Guid.Empty)
+                    return strReturn;
+                objMetatypeNode = objMetatypeNode
+                    .SelectSingleNode("metavariants/metavariant[id = \"" + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
 
-                    string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
-                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
-                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
-                        : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
-                }
+                string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
+                strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
+                    ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
+                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
             }
             else
                 strReturn = LanguageManager.TranslateExtra(strReturn, strLanguage);
@@ -523,7 +528,7 @@ namespace Chummer
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => Metatype = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Metatype = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -539,7 +544,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant) && LinkedCharacter.Metavariant != "None")
                     {
-                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LinkedCharacter.Metavariant + ')';
+                        strMetatype += LanguageManager.GetString("String_Space") + '(' + LinkedCharacter.Metavariant + ')';
                     }
                     return strMetatype;
                 }
@@ -566,7 +571,7 @@ namespace Chummer
         public string DisplaySex
         {
             get => DisplaySexMethod(GlobalOptions.Language);
-            set => Sex = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Sex = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -601,7 +606,7 @@ namespace Chummer
         public string DisplayAge
         {
             get => DisplayAgeMethod(GlobalOptions.Language);
-            set => Age = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Age = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -636,7 +641,7 @@ namespace Chummer
         public string DisplayType
         {
             get => DisplayTypeMethod(GlobalOptions.Language);
-            set => Type = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Type = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -666,7 +671,7 @@ namespace Chummer
         public string DisplayPreferredPayment
         {
             get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -696,7 +701,7 @@ namespace Chummer
         public string DisplayHobbiesVice
         {
             get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -726,7 +731,7 @@ namespace Chummer
         public string DisplayPersonalLife
         {
             get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -765,7 +770,7 @@ namespace Chummer
 
         public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
-        public string QuickText => $"({Connection}/{(IsGroup ? $"{Loyalty}G" : Loyalty.ToString(GlobalOptions.CultureInfo))})";
+        public string QuickText => string.Format(GlobalOptions.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", Connection, Loyalty);
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
@@ -850,7 +855,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Contact Colour.
+        /// Contact Color.
         /// </summary>
         public Color PreferredColor
         {
@@ -879,7 +884,7 @@ namespace Chummer
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && UniqueId == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
 
                 return _intCachedFreeFromImprovement > 0;
@@ -892,7 +897,9 @@ namespace Chummer
         /// <summary>
         /// Unique ID for this contact
         /// </summary>
-        public string GUID => _strUnique;
+        public string UniqueId => _strUnique;
+
+        public string InternalId => UniqueId;
 
         private int _intCachedGroupEnabled = -1;
 
@@ -905,7 +912,7 @@ namespace Chummer
             {
                 if (_intCachedGroupEnabled < 0)
                 {
-                    _intCachedGroupEnabled = !ReadOnly && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactForceGroup && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedGroupEnabled = !ReadOnly && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactForceGroup && UniqueId == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
 
                 return _intCachedGroupEnabled > 0;
@@ -950,7 +957,7 @@ namespace Chummer
                 int intMaxForcedLoyalty = 0;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == GUID && objImprovement.Enabled)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == UniqueId && objImprovement.Enabled)
                     {
                         intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value);
                     }
@@ -966,7 +973,7 @@ namespace Chummer
 
         public bool NoLinkedCharacter => _objLinkedCharacter == null;
 
-        public void RefreshLinkedCharacter(bool blnShowError = false)
+        public async void RefreshLinkedCharacter(bool blnShowError = false)
         {
             Character objOldLinkedCharacter = _objLinkedCharacter;
             CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -986,17 +993,17 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
-                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
             {
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                if (strFile.EndsWith(".chum5"))
+                if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    _objLinkedCharacter = objOpenCharacter ?? await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false).ConfigureAwait(true);
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1006,15 +1013,18 @@ namespace Chummer
                 if (objOldLinkedCharacter != null)
                 {
                     objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
-                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objOldLinkedCharacter) && x != objOldLinkedCharacter))
+                    if (Program.MainForm.OpenCharacters.Contains(objOldLinkedCharacter))
                     {
-                        Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
-                        objOldLinkedCharacter.DeleteCharacter();
+                        if (Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != objOldLinkedCharacter))
+                            Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
+                    else
+                        objOldLinkedCharacter.Dispose();
                 }
                 if (_objLinkedCharacter != null)
                 {
-                    if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
+                    if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter"))
                         _strName = Name;
                     if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
                         _strAge = Age;
@@ -1132,12 +1142,14 @@ namespace Chummer
 
         public void SaveMugshots(XmlTextWriter objWriter)
         {
-            objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString());
+            if (objWriter == null)
+                return;
+            objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString(GlobalOptions.InvariantCultureInfo));
             // <mugshot>
             objWriter.WriteStartElement("mugshots");
             foreach (Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", imgMugshot.ToBase64String());
+                objWriter.WriteElementString("mugshot", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
             }
             // </mugshot>
             objWriter.WriteEndElement();
@@ -1173,6 +1185,8 @@ namespace Chummer
 
         public void PrintMugshots(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             if (LinkedCharacter != null)
                 LinkedCharacter.PrintMugshots(objWriter);
             else if (Mugshots.Count > 0)
@@ -1189,11 +1203,11 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
-                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + ".img");
+                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + ".img");
                 Image imgMainMugshot = MainMugshot;
                 if (imgMainMugshot != null)
                 {
@@ -1201,10 +1215,10 @@ namespace Chummer
                     // <mainmugshotpath />
                     objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
+                    objWriter.WriteElementString("mainmugshotbase64", GlobalOptions.ImageToBase64StringForStorage(imgMainMugshot));
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString());
+                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalOptions.InvariantCultureInfo));
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
@@ -1213,9 +1227,9 @@ namespace Chummer
                     Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
 
-                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
+                    objWriter.WriteElementString("stringbase64", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
 
-                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + i.ToString() + ".img");
+                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + i.ToString(GlobalOptions.InvariantCultureInfo) + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
@@ -1224,6 +1238,15 @@ namespace Chummer
                 // </mugshots>
                 objWriter.WriteEndElement();
             }
+        }
+
+        public void Dispose()
+        {
+            if (_objLinkedCharacter != null && !Utils.IsUnitTest
+                                            && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
+                                            && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
+                Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
         }
         #endregion
     }

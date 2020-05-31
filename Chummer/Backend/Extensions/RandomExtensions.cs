@@ -28,6 +28,8 @@ namespace Chummer
         /// <param name="objRandom">Instance of Random to use.</param>
         public static int NextD6ModuloBiasRemoved(this Random objRandom)
         {
+            if (objRandom == null)
+                throw new ArgumentNullException(nameof(objRandom));
             const int intModuloCheck = int.MaxValue - 1;  // Faster Modulo bias removal for 1d6
             int intLoopResult;
             do
@@ -46,6 +48,8 @@ namespace Chummer
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
         public static int NextModuloBiasRemoved(this Random objRandom, int maxValue)
         {
+            if (objRandom == null)
+                throw new ArgumentNullException(nameof(objRandom));
             int intModuloCheck = int.MaxValue - int.MaxValue % maxValue;
             int intLoopResult;
             do

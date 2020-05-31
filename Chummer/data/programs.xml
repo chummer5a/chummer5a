@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.w3.org/2001/XMLSchema programs.xsd">
-  <version>0</version>
+
   <categories>
     <category>Autosofts</category>
     <category>Advanced Programs</category>
@@ -474,7 +474,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>269</page>
@@ -487,7 +487,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>269</page>
@@ -500,7 +500,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
         <bonus>
-            <selecttext />
+          <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
         </bonus>
       <source>SR5</source>
       <page>270</page>
@@ -513,7 +513,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Ranged']" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>270</page>
@@ -574,7 +574,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Melee']" allowedit="True" />
       </bonus>
       <source>R5</source>
       <page>127</page>
@@ -756,7 +756,7 @@
       <avail>0F</avail>
       <cost>0</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Ranged']" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -801,7 +801,7 @@
       <avail>0F</avail>
       <cost>0</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <required>
         <oneof>

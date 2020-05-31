@@ -392,7 +392,7 @@
         </gear>
       </gears>
       <mods>
-        <name rating="1">Metahuman Adjustment</name>
+        <name rating="2">Metahuman Adjustment</name>
       </mods>
       <seats>2</seats>
     </vehicle>
@@ -2086,7 +2086,7 @@
         <name>Amenities (Middle)</name>
         <name rating="3">Anti-Theft System</name>
         <name rating="2">Life Support</name>
-        <name>Missile Defence System</name>
+        <name>Missile Defense System</name>
         <name rating="6">Passenger Protection System</name>
       </mods>
       <seats>8</seats>
@@ -3364,7 +3364,7 @@
         </gear>
       </gears>
       <mods>
-        <name rating="1">Metahuman Adjustment</name>
+        <name rating="10">Metahuman Adjustment</name>
       </mods>
       <seats>20</seats>
     </vehicle>
@@ -3537,6 +3537,19 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Built-In</size>
+          <visibility>Concealed</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Melee Bite</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>b5ef225a-9a22-4dfd-bf4e-2832cbe8e064</id>
@@ -4381,6 +4394,19 @@
         </gear>
       </gears>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Built-In</size>
+          <visibility>Concealed</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Jaws</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>671e4bc0-bd06-4158-9515-2e353f2f6123</id>
@@ -6078,7 +6104,7 @@
       <source>SR5</source>
       <accel>3</accel>
       <armor>8</armor>
-      <avail>16</avail>
+      <avail>10</avail>
       <body>16</body>
       <category>VTOL/VSTOL</category>
       <cost>350000</cost>
@@ -6676,16 +6702,35 @@
       <speed>2</speed>
       <gears>
         <gear>
+          <name>Medkit</name>
+          <rating>4</rating>
+        </gear>
+        <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
           <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
-        <name>Drone Arm</name>
-        <name>Drone Arm</name>
+        <mod>
+          <name>Drone Arm</name>
+          <subsystems>
+            <cyberware>
+              <name>Snake Fingers</name>
+            </cyberware>
+          </subsystems>
+        </mod>
+        <mod>
+          <name>Drone Arm</name>
+          <subsystems>
+            <cyberware>
+              <name>Snake Fingers</name>
+            </cyberware>
+          </subsystems>
+        </mod>
         <name>Drone Leg</name>
         <name>Drone Leg</name>
+        <name>Rigger Adaptation</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -7852,7 +7897,7 @@
       <mods>
         <name>Off-Road Suspension</name>
         <name rating="2">Anti-Theft System</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="3">Metahuman Adjustment</name>
       </mods>
       <seats>3</seats>
     </vehicle>
@@ -8037,7 +8082,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8100,7 +8145,7 @@
         <name>Amenities (Middle)</name>
         <name>Interior Cameras</name>
         <name>SunCell</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="25">Metahuman Adjustment</name>
       </mods>
       <seats>50</seats>
     </vehicle>
@@ -8919,7 +8964,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
       </mods>
       <seats>1</seats>
     </vehicle>
@@ -8946,7 +8991,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="8">Metahuman Adjustment</name>
       </mods>
       <seats>8</seats>
     </vehicle>
@@ -9411,7 +9456,7 @@
     <vehicle>
       <id>bf1c4807-6f21-425c-aa1e-521ebf34ffe8</id>
       <name>Lone Star SecureSector Mk2</name>
-      <page>40</page>
+      <page>29</page>
       <source>TSG</source>
       <accel>2</accel>
       <armor>4</armor>
@@ -9419,7 +9464,7 @@
       <body>4</body>
       <category>Drones: Small</category>
       <cost>5000</cost>
-      <handling>4/3</handling>
+      <handling>5</handling>
       <pilot>3</pilot>
       <sensor>3</sensor>
       <speed>4</speed>
@@ -9493,7 +9538,7 @@
         <name>Removed Manual Controls</name>
         <name>Off-Road Suspension</name>
         <name>GridLink</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Rigger Interface</name>
       </mods>
       <seats>4</seats>
@@ -10146,6 +10191,57 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle>
+      <id>8e710ab0-637a-43a1-93a2-66120e7dbea5</id>
+      <name>Porsche-Dornier Aqua 503</name>
+      <page>18</page>
+      <source>SOTG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>8</body>
+      <category>Boats</category>
+      <cost>40000</cost>
+      <handling>5</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Squatter)</name>
+        <name>Rigger Interface</name>
+      </mods>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>bb04e470-621f-4eec-9d3d-09a718a3402f</id>
+      <name>Ruhrmetall Hovawart</name>
+      <page>19</page>
+      <source>SOTG</source>
+      <accel>3</accel>
+      <armor>2</armor>
+      <avail>8R</avail>
+      <body>2</body>
+      <category>Drones: Small</category>
+      <cost>14000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
           <maxrating>3</maxrating>
         </gear>
       </gears>
@@ -10877,7 +10973,7 @@
     </mod>
     <mod>
       <id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-      <name>Missile Defence System</name>
+      <name>Missile Defense System</name>
       <page>160</page>
       <source>R5</source>
       <avail>12R</avail>
@@ -12756,10 +12852,51 @@
       </required>
     </mod>
     <!-- End Region -->
+	<!-- Region Rigger 5.0 German -->
+    <mod>
+      <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+      <name>Ejection seat</name>
+      <page>171</page>
+      <source>R5G</source>
+      <avail>8R</avail>
+      <category>Protection</category>
+      <cost>750</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <category>Bikes</category>
+            <category>Cars</category>
+            <category>Trucks</category>
+            <category>Municipal/Construction</category>
+            <category>Corpsec/Police/Military</category>
+            <category>Boats</category>
+            <category>Submarines</category>
+            <category>Fixed-Wing Aircraft</category>
+            <category>LTAV</category>
+            <category>Rotorcraft</category>
+            <category>VTOL/VSTOL</category>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <!-- End Region -->
   </mods>
   <!-- Region Vehicle Mounts -->
   <weaponmounts>
     <!-- Region Size -->
+    <weaponmount>
+      <id>ccc4f175-0a93-4a27-a069-29d5ba8375e2</id>
+      <name>Built-In</name>
+      <hide />
+      <page>0</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Size</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
       <name>Standard [SR5]</name>
@@ -13221,7 +13358,9 @@
       <cost>50</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <ammoreplace>Weapon * 2</ammoreplace>
+      <!--TODO: This should probably add a second ammo slot or something instead.
+      Also, needs to safeguard against underbarrel weapons picking up the extra ammo. -->
+      <ammobonuspercent>100</ammobonuspercent>
       <optionaldrone />
       <required>
         <vehicledetails>

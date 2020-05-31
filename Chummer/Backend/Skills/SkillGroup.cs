@@ -169,7 +169,7 @@ namespace Chummer.Backend.Skills
                         _intCachedKarmaUnbroken = 0;
                     else
                     {
-                        int high = SkillList.Max(x => x.BasePoints + x.FreeBase);
+                        int high = SkillList.DefaultIfEmpty().Max(x => x.BasePoints + x.FreeBase);
 
                         _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase + x.KarmaPoints + x.FreeKarma >= high) ? 1 : 0;
                     }
@@ -222,7 +222,7 @@ namespace Chummer.Backend.Skills
                                                                               (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
                                     _intCachedCareerIncrease = 0;
                                 else
-                                    _intCachedCareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
+                                    _intCachedCareerIncrease = _lstAffectedSkills.DefaultIfEmpty().Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
                             }
                         }
 
@@ -244,7 +244,7 @@ namespace Chummer.Backend.Skills
                 return _intCachedCareerIncrease > 0;
             }
         }
-        
+
         public bool CareerCanIncrease
         {
             get
@@ -295,7 +295,9 @@ namespace Chummer.Backend.Skills
 
                 //If data file contains {4} this crashes but...
                 string strUpgradetext =
-                    $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} -> {(Rating + 1)}";
+                    string.Format(GlobalOptions.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
+                        LanguageManager.GetString("String_ExpenseSkillGroup"), CurrentDisplayName,
+                        Rating, Rating + 1, LanguageManager.GetString("String_Space"));
 
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
@@ -314,6 +316,8 @@ namespace Chummer.Backend.Skills
         #region All the other stuff that is required
         public static SkillGroup Get(Skill objSkill)
         {
+            if (objSkill == null)
+                return null;
             if (objSkill.SkillGroupObject != null)
                 return objSkill.SkillGroupObject;
 
@@ -332,7 +336,7 @@ namespace Chummer.Backend.Skills
 
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal),
+            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.CurrentDisplayName, r.CurrentDisplayName, StringComparison.Ordinal),
                 (l, r) => { foreach (Skill x in r.SkillList.Where(y => !l.SkillList.Contains(y))) l.SkillList.Add(x); });
 
             return objNewGroup;
@@ -347,11 +351,13 @@ namespace Chummer.Backend.Skills
 
         internal void WriteTo(XmlWriter writer)
         {
+            if (writer == null)
+                return;
             writer.WriteStartElement("group");
 
-            writer.WriteElementString("karma", _intSkillFromKarma.ToString());
-            writer.WriteElementString("base", _intSkillFromSp.ToString());
-            writer.WriteElementString("id", _guidId.ToString("D"));
+            writer.WriteElementString("karma", _intSkillFromKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            writer.WriteElementString("base", _intSkillFromSp.ToString(GlobalOptions.InvariantCultureInfo));
+            writer.WriteElementString("id", _guidId.ToString("D", GlobalOptions.InvariantCultureInfo));
             writer.WriteElementString("name", _strGroupName);
 
             writer.WriteEndElement();
@@ -359,9 +365,11 @@ namespace Chummer.Backend.Skills
 
         internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("skillgroup");
 
-            objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
@@ -373,6 +381,8 @@ namespace Chummer.Backend.Skills
 
         public void Load(XmlNode xmlNode)
         {
+            if (xmlNode == null)
+                return;
             if (xmlNode.TryGetField("id", Guid.TryParse, out Guid g))
                 _guidId = g;
             xmlNode.TryGetStringFieldQuickly("name", ref _strGroupName);
@@ -382,6 +392,8 @@ namespace Chummer.Backend.Skills
 
         public void LoadFromHeroLab(XmlNode xmlNode)
         {
+            if (xmlNode == null)
+                return;
             string strTemp = xmlNode.SelectSingleNode("@name")?.InnerText;
             if (!string.IsNullOrEmpty(strTemp))
                 _strGroupName = strTemp.TrimEndOnce("Group").Trim();
@@ -390,70 +402,72 @@ namespace Chummer.Backend.Skills
                 _intSkillFromKarma = intTemp;
         }
 
-        private static readonly DependancyGraph<string> SkillGroupDependencyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(DisplayRating),
-                    new DependancyGraphNode<string>(nameof(SkillList)),
-                    new DependancyGraphNode<string>(nameof(CareerIncrease),
-                        new DependancyGraphNode<string>(nameof(SkillList)),
-                        new DependancyGraphNode<string>(nameof(RatingMaximum)),
-                        new DependancyGraphNode<string>(nameof(IsDisabled),
-                            new DependancyGraphNode<string>(nameof(Name))
+        private static readonly DependencyGraph<string> SkillGroupDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(DisplayRating),
+                    new DependencyGraphNode<string>(nameof(SkillList)),
+                    new DependencyGraphNode<string>(nameof(CareerIncrease),
+                        new DependencyGraphNode<string>(nameof(SkillList)),
+                        new DependencyGraphNode<string>(nameof(RatingMaximum)),
+                        new DependencyGraphNode<string>(nameof(IsDisabled),
+                            new DependencyGraphNode<string>(nameof(Name))
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(Rating),
-                        new DependancyGraphNode<string>(nameof(Karma),
-                            new DependancyGraphNode<string>(nameof(IsDisabled)),
-                            new DependancyGraphNode<string>(nameof(RatingMaximum)),
-                            new DependancyGraphNode<string>(nameof(FreeLevels),
-                                new DependancyGraphNode<string>(nameof(Name))
+                    new DependencyGraphNode<string>(nameof(Rating),
+                        new DependencyGraphNode<string>(nameof(Karma),
+                            new DependencyGraphNode<string>(nameof(IsDisabled)),
+                            new DependencyGraphNode<string>(nameof(RatingMaximum)),
+                            new DependencyGraphNode<string>(nameof(FreeLevels),
+                                new DependencyGraphNode<string>(nameof(Name))
                             ),
-                            new DependancyGraphNode<string>(nameof(KarmaPoints)),
-                            new DependancyGraphNode<string>(nameof(KarmaUnbroken),
-                                new DependancyGraphNode<string>(nameof(IsDisabled)),
-                                new DependancyGraphNode<string>(nameof(SkillList))
+                            new DependencyGraphNode<string>(nameof(KarmaPoints)),
+                            new DependencyGraphNode<string>(nameof(KarmaUnbroken),
+                                new DependencyGraphNode<string>(nameof(IsDisabled)),
+                                new DependencyGraphNode<string>(nameof(SkillList))
                             )
                         ),
-                        new DependancyGraphNode<string>(nameof(Base),
-                            new DependancyGraphNode<string>(nameof(IsDisabled)),
-                            new DependancyGraphNode<string>(nameof(RatingMaximum)),
-                            new DependancyGraphNode<string>(nameof(FreeBase),
-                                new DependancyGraphNode<string>(nameof(Name))
+                        new DependencyGraphNode<string>(nameof(Base),
+                            new DependencyGraphNode<string>(nameof(IsDisabled)),
+                            new DependencyGraphNode<string>(nameof(RatingMaximum)),
+                            new DependencyGraphNode<string>(nameof(FreeBase),
+                                new DependencyGraphNode<string>(nameof(Name))
                             ),
-                            new DependancyGraphNode<string>(nameof(BasePoints))
+                            new DependencyGraphNode<string>(nameof(BasePoints))
                         )
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(UpgradeToolTip),
-                    new DependancyGraphNode<string>(nameof(SkillList)),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost),
-                        new DependancyGraphNode<string>(nameof(SkillList)),
-                        new DependancyGraphNode<string>(nameof(IsDisabled)),
-                        new DependancyGraphNode<string>(nameof(Rating)),
-                        new DependancyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(UpgradeToolTip),
+                    new DependencyGraphNode<string>(nameof(SkillList)),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost),
+                        new DependencyGraphNode<string>(nameof(SkillList)),
+                        new DependencyGraphNode<string>(nameof(IsDisabled)),
+                        new DependencyGraphNode<string>(nameof(Rating)),
+                        new DependencyGraphNode<string>(nameof(Name))
                     )
                 ),
-                new DependancyGraphNode<string>(nameof(CareerCanIncrease),
-                    new DependancyGraphNode<string>(nameof(UpgradeKarmaCost)),
-                    new DependancyGraphNode<string>(nameof(CareerIncrease))
+                new DependencyGraphNode<string>(nameof(CareerCanIncrease),
+                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost)),
+                    new DependencyGraphNode<string>(nameof(CareerIncrease))
                 ),
-                new DependancyGraphNode<string>(nameof(BaseUnbroken),
-                    new DependancyGraphNode<string>(nameof(IsDisabled)),
-                    new DependancyGraphNode<string>(nameof(SkillList))
+                new DependencyGraphNode<string>(nameof(BaseUnbroken),
+                    new DependencyGraphNode<string>(nameof(IsDisabled)),
+                    new DependencyGraphNode<string>(nameof(SkillList))
                 ),
-                new DependancyGraphNode<string>(nameof(ToolTip),
-                    new DependancyGraphNode<string>(nameof(SkillList))
+                new DependencyGraphNode<string>(nameof(ToolTip),
+                    new DependencyGraphNode<string>(nameof(SkillList))
                 ),
-                new DependancyGraphNode<string>(nameof(DisplayName),
-                    new DependancyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string>(nameof(DisplayName),
+                        new DependencyGraphNode<string>(nameof(Name))
+                    )
                 ),
-                new DependancyGraphNode<string>(nameof(CurrentSpCost),
-                    new DependancyGraphNode<string>(nameof(BasePoints)),
-                    new DependancyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string>(nameof(CurrentSpCost),
+                    new DependencyGraphNode<string>(nameof(BasePoints)),
+                    new DependencyGraphNode<string>(nameof(Name))
                 ),
-                new DependancyGraphNode<string>(nameof(CurrentKarmaCost),
-                    new DependancyGraphNode<string>(nameof(KarmaPoints)),
-                    new DependancyGraphNode<string>(nameof(SkillList))
+                new DependencyGraphNode<string>(nameof(CurrentKarmaCost),
+                    new DependencyGraphNode<string>(nameof(KarmaPoints)),
+                    new DependencyGraphNode<string>(nameof(SkillList))
                 )
             );
 
@@ -479,7 +493,7 @@ namespace Chummer.Backend.Skills
                                           nameof(CurrentKarmaCost),
                                           nameof(UpgradeKarmaCost));
         }
-        
+
         private readonly List<Skill> _lstAffectedSkills = new List<Skill>();
         private string _strGroupName;
         private readonly Character _objCharacter;
@@ -488,13 +502,14 @@ namespace Chummer.Backend.Skills
         {
             _objCharacter = objCharacter;
             _strGroupName = strGroupName;
-
-            _objCharacter.PropertyChanged += Character_PropertyChanged;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged += Character_PropertyChanged;
         }
 
         public void UnbindSkillGroup()
         {
-            _objCharacter.PropertyChanged -= Character_PropertyChanged;
+            if (_objCharacter != null)
+                _objCharacter.PropertyChanged -= Character_PropertyChanged;
             foreach (Skill objSkill in _lstAffectedSkills)
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
@@ -513,10 +528,10 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
-        
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
-        public string DisplayNameMethod(string strLanguage)
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
+        public string DisplayName(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
@@ -529,10 +544,10 @@ namespace Chummer.Backend.Skills
             {
                 if (_objCharacter.Created && !CareerIncrease)
                 {
-                    return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
+                    return LanguageManager.GetString("Label_SkillGroup_Broken");
                 }
 
-                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString() : 0.ToString();
+                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString(GlobalOptions.CultureInfo) : 0.ToString(GlobalOptions.CultureInfo);
             }
         }
 
@@ -543,8 +558,8 @@ namespace Chummer.Backend.Skills
             {
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
                 }
                 return _strToolTip;
             }
@@ -552,12 +567,12 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get { return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
         }
 
         private Guid _guidId = Guid.NewGuid();
         public Guid Id => _guidId;
-        public string InternalId => _guidId.ToString("D");
+        public string InternalId => _guidId.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         #region HasWhateverSkills
         public bool HasCombatSkills
@@ -615,10 +630,10 @@ namespace Chummer.Backend.Skills
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependants(strPropertyName);
+                    lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependents(strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SkillGroupDependencyGraph.GetWithAllDependants(strPropertyName))
+                    foreach (string strLoopChangedProperty in SkillGroupDependencyGraph.GetWithAllDependents(strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -705,7 +720,7 @@ namespace Chummer.Backend.Skills
 
                 int intCost = intUpper * (intUpper + 1);
                 intCost -= intLower * (intLower + 1);
-                intCost /= 2; //We get sqre, need triangle
+                intCost /= 2; //We get square, need triangle
 
                 if (intCost == 1)
                     intCost *= _objCharacter.Options.KarmaNewSkillGroup;

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +29,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 
 namespace Chummer.Backend
@@ -48,7 +50,7 @@ namespace Chummer.Backend
 
                 _dicAttributes = new Dictionary<string, string>
                 {
-                    {"visible-crash-id", Guid.NewGuid().ToString("D")},
+                    {"visible-crash-id", Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo)},
 #if DEBUG
                     {"visible-build-type", "DEBUG"},
 #else
@@ -60,7 +62,9 @@ namespace Chummer.Backend
                     {"current-dir", Utils.GetStartupPath},
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
-                    {"visible-error-friendly", ex?.Message ?? "No description available"}
+                    {"visible-error-friendly", ex?.Message ?? "No description available"},
+                    { "installation-id", Properties.Settings.Default.UploadClientId.ToString() },
+                    { "option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
                 };
 
                 try
@@ -91,13 +95,15 @@ namespace Chummer.Backend
                 //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
                 if (Registry.LocalMachine != null)
                 {
+                    RegistryKey obj64BitRegistryKey = null;
                     RegistryKey objCurrentVersionKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
                     if (objCurrentVersionKey?.GetValueNames().Contains("ProductId") == false)
                     {
                         //On 32 bit builds? get 64 bit registry
                         objCurrentVersionKey.Close();
-                        objCurrentVersionKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                        obj64BitRegistryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                        objCurrentVersionKey = obj64BitRegistryKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                     }
 
                     if (objCurrentVersionKey != null)
@@ -122,6 +128,7 @@ namespace Chummer.Backend
 
                         objCurrentVersionKey.Close();
                     }
+                    obj64BitRegistryKey?.Close();
                 }
 
                 PropertyInfo[] systemInformation = typeof(SystemInformation).GetProperties();
@@ -189,15 +196,39 @@ namespace Chummer.Backend
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
+                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
+                {
+                    if (Program.ChummerTelemetryClient != null)
+                    {
+                        ex.Data.Add("IsCrash", bool.TrueString);
+                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                        {
+                            SeverityLevel = SeverityLevel.Critical
+
+                        };
+                        //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                        foreach (DictionaryEntry d in ex.Data)
+                        {
+                            if ((d.Key != null) && (d.Value != null))
+                                et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                        }
+                        Program.ChummerTelemetryClient.TrackException(et);
+                        Program.ChummerTelemetryClient.Flush();
+                    }
+                }
+
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
                 Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
 
                 crashHandler?.WaitForExit();
             }
-            catch(Exception nex)
+            catch (Exception nex)
             {
-                MessageBox.Show("Failed to create crash report." + Environment.NewLine +
-                                "Here is some information to help the developers figure out why:" + Environment.NewLine + nex + Environment.NewLine + "Crash information:" + Environment.NewLine + ex);
+                Program.MainForm.ShowMessageBox("Failed to create crash report."
+                                                + Environment.NewLine + "Here is some information to help the developers figure out why:"
+                                                + Environment.NewLine + nex
+                                                + Environment.NewLine + "Crash information:"
+                                                + Environment.NewLine + ex);
             }
         }
     }

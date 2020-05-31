@@ -1,27 +1,29 @@
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using ChummerHub.API;
 using ChummerHub.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ChummerHub.API;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChummerHub
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData'
     public class SeedData
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData'
     {
 
         #region snippet_Initialize
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostingEnvironment env)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
             {
-                
+
                 if (context.Users.Any())
                 {
                     return;   // DB has been seeded
@@ -66,9 +68,9 @@ namespace ChummerHub
         /// <param name="username"></param>
         /// <param name="userpwd"></param>
         /// <returns></returns>
-        private static String GetSqlCommandMasterUser(string username, string userpwd)
+        private static string GetSqlCommandMasterUser(string username, string userpwd)
         {
-            string sqltext =                       @"IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name='" + username + "') ";
+            string sqltext = @"IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name='" + username + "') ";
             sqltext += " " + Environment.NewLine + "   BEGIN";
             sqltext += " " + Environment.NewLine + "       CREATE LOGIN " + username + " WITH PASSWORD = '" + userpwd + "';";
             sqltext += " " + Environment.NewLine + "       CREATE USER[" + username + "] FROM LOGIN[" + username + "];";
@@ -82,7 +84,7 @@ namespace ChummerHub
             return sqltext;
         }
 
-      
+
         private static async Task<Guid> EnsureUser(IServiceProvider serviceProvider,
                                                    ApplicationUser user, string userPW)
         {
@@ -96,17 +98,19 @@ namespace ChummerHub
                     user.PasswordHash = userManager.PasswordHasher.HashPassword(user, userPW);
                     await userManager.CreateAsync(user);
                 }
-                return u.Id;
+                return u?.Id ?? Guid.Empty;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 System.Diagnostics.Trace.TraceError(e.ToString());
             }
             return Guid.Empty;
-            
+
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.EnsureRole(IServiceProvider, Guid, string, RoleManager<ApplicationRole>, UserManager<ApplicationUser>)'
         public static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.EnsureRole(IServiceProvider, Guid, string, RoleManager<ApplicationRole>, UserManager<ApplicationUser>)'
                                                                       Guid uid, string role, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             IdentityResult IR = null;

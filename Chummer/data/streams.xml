@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema streams.xsd">
-  <version>0</version>
+
   <traditions>
     <tradition>
       <id>7a3ecfbe-616e-425d-b204-329de37ffdbb</id>

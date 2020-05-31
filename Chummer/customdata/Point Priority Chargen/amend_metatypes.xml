@@ -19,13 +19,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
-  <categories>
-    <category>Metahuman</category>
-    <category>Metavariant</category>
-    <category>Metasapient</category>
-    <category xpathfilter="text() = 'Shapeshifter'">Shapeshifter</category>
-  </categories>
+
   <metatypes>
     <!-- Region Metahuman -->
     <metatype>
@@ -56,7 +50,7 @@
         <limitmodifier amendoperation="addnode">
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for AGI tests</condition>
+          <condition>LimitCondition_AttribAGI</condition>
         </limitmodifier>
       </bonus>
       <metavariants>
@@ -73,7 +67,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -95,7 +89,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -114,7 +108,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -130,7 +124,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <matrixattributes>
+    <attribute>Attack</attribute>
+    <attribute>Data Processing</attribute>
+    <attribute>Firewall</attribute>
+    <attribute>Sleaze</attribute>
+  </matrixattributes>
+  <elements>
+    <element>Acid</element>
+    <element>Cold</element>
+    <element>Electricity</element>
+    <element>Fire</element>
+    <element>Pollutant</element>
+    <element>Radiation</element>
+    <element>Water</element>
+  </elements>
+  <immunities>
+    <immunity>Age</immunity>
+    <immunity>Normal Weapons</immunity>
+  </immunities>
+  <spiritcategories>
+    <category>Combat</category>
+    <category>Detection</category>
+    <category>Health</category>
+    <category>Illusion</category>
+    <category>Manipulation</category>
+  </spiritcategories>
+</chummer>

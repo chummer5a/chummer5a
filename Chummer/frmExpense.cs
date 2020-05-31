@@ -36,18 +36,31 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
-            DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
-            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
+
+            if (GlobalOptions.CustomDateTimeFormats)
+            {
+                datDate.CustomFormat = GlobalOptions.DatesIncludeTime
+                    ? GlobalOptions.CustomDateFormat+GlobalOptions.CustomTimeFormat
+                    : GlobalOptions.CustomDateFormat;
+            }
+            else
+            {
+                DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
+                datDate.CustomFormat = GlobalOptions.DatesIncludeTime
+                    ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss")
+                    : objDateTimeInfo.LongDatePattern;
+            }
+
             datDate.Value = DateTime.Now;
 
-            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);
+            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -103,6 +116,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not this is a Karma refund.
+        /// </summary>
+        public bool ForceCareerVisible
+        {
+            get => chkForceCareerVisible.Checked;
+            set => chkForceCareerVisible.Checked = value;
+        }
+
+        /// <summary>
         /// Date and Time that was selected.
         /// </summary>
         public DateTime SelectedDate
@@ -120,16 +142,16 @@ namespace Chummer
             {
                 if (value == ExpenseType.Nuyen)
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount", GlobalOptions.Language);
-                    Text = LanguageManager.GetString("Title_Expense_Nuyen", GlobalOptions.Language);
-                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen", GlobalOptions.Language);
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
+                    Text = LanguageManager.GetString("Title_Expense_Nuyen");
+                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen");
                     nudPercent.Visible = true;
                     lblPercent.Visible = true;
                 }
                 else
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount", GlobalOptions.Language);
-                    Text = LanguageManager.GetString("Title_Expense_Karma", GlobalOptions.Language);
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount");
+                    Text = LanguageManager.GetString("Title_Expense_Karma");
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }
@@ -172,6 +194,12 @@ namespace Chummer
             {
                 nudAmount.Increment = 1;
             }
+
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            if (!chkForceCareerVisible.Enabled)
+            {
+                chkForceCareerVisible.Checked = false;
+            }
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
@@ -179,6 +207,7 @@ namespace Chummer
         {
             chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
         }
     }
 }

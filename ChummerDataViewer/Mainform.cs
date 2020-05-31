@@ -78,8 +78,8 @@ namespace ChummerDataViewer
 			};
 
 			_bldCrashReports.Sort(new CrashReportTimeStampFilter());
-			
-			tabReports.Controls.Add(_bldCrashReports);
+
+            tabReports.Controls.Add(_bldCrashReports);
 
 			string automation = PersistentState.Database.GetKey("autodownload_automation");
 			if (automation != null)

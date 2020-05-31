@@ -14077,7 +14077,7 @@
         <name>Wanted</name>
         <translate>通缉名单</translate>
       </quality>
-      <!-- Region Run Faster Metagenetic Qualities -->
+      <!-- Region Run Faster Metagenic Qualities -->
       <quality>
         <id>0355c69a-85b4-48ae-84d6-f6dbf031eae7</id>
         <name>Arcane Arrester</name>
@@ -14402,32 +14402,32 @@
       </quality>
       <quality>
         <id>2ffd990c-ced6-4484-955c-108473df5335</id>
-        <name>Metagenetic Improvement (Body)</name>
+        <name>Metagenic Improvement (Body)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-        <name>Metagenetic Improvement (Agility)</name>
+        <name>Metagenic Improvement (Agility)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-        <name>Metagenetic Improvement (Reaction)</name>
+        <name>Metagenic Improvement (Reaction)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-        <name>Metagenetic Improvement (Strength)</name>
+        <name>Metagenic Improvement (Strength)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-        <name>Metagenetic Improvement (Charisma)</name>
+        <name>Metagenic Improvement (Charisma)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-        <name>Metagenetic Improvement (Intuition)</name>
+        <name>Metagenic Improvement (Intuition)</name>
         <translate></translate>
       </quality>
       <quality>
@@ -14436,7 +14436,7 @@
       </quality>
       <quality>
         <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-        <name>Metagenetic Improvement (Willpower)</name>
+        <name>Metagenic Improvement (Willpower)</name>
         <translate></translate>
       </quality>
       <quality>
@@ -19247,7 +19247,7 @@
       </mod>
       <mod>
         <id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-        <name>Missile Defence System</name>
+        <name>Missile Defense System</name>
         <translate>导弹防御系统</translate>
       </mod>
       <mod>

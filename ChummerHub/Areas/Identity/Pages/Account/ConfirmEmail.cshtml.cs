@@ -1,25 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel'
     public class ConfirmEmailModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.ConfirmEmailModel(UserManager<ApplicationUser>)'
         public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.ConfirmEmailModel(UserManager<ApplicationUser>)'
         {
             _userManager = userManager;
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.OnGetAsync(string, string)'
         public async Task<IActionResult> OnGetAsync(string userId, string code)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.OnGetAsync(string, string)'
         {
             if (userId == null || code == null)
             {

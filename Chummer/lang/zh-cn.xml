@@ -72,10 +72,6 @@
 			<text>生命历程</text>
 		</string>
 		<string>
-			<key>String_Life_Module</key>
-			<text>生命历程</text>
-		</string>
-		<string>
 			<key>String_OK</key>
 			<text>OK</text>
 		</string>
@@ -114,10 +110,6 @@
 		<string>
 			<key>String_UnnamedCharacter</key>
 			<text>未命名角色</text>
-		</string>
-		<string>
-			<key>String_Break</key>
-			<text>拆解</text>
 		</string>
 		<string>
 			<key>Checkbox_Free</key>
@@ -632,7 +624,7 @@
 			<text>帮助(&amp;H)</text>
 		</string>
 		<string>
-			<key>Menu_Main_NewCharater</key>
+			<key>Menu_Main_NewCharacter</key>
 			<text>新角色(&amp;N)</text>
 		</string>
 		<string>
@@ -753,7 +745,7 @@
 			<text>转变为有毒怪物</text>
 		</string>
 		<string>
-			<key>Menu_SpecialConverToCyberzombie</key>
+			<key>Menu_SpecialConvertToCyberzombie</key>
 			<text>转变为赛博僵尸</text>
 		</string>
 		<string>
@@ -949,7 +941,7 @@
 			<text>赛博改造和生体改造</text>
 		</string>
 		<string>
-			<key>Tab_StreeGear</key>
+			<key>Tab_StreetGear</key>
 			<text>街头装备</text>
 		</string>
 		<string>
@@ -2181,7 +2173,7 @@
 			<text>出售生体改造</text>
 		</string>
 		<string>
-			<key>String_ExpensePurchaseCyberwearGear</key>
+			<key>String_ExpensePurchaseCyberwareGear</key>
 			<text>购买赛博改造装备</text>
 		</string>
 		<string>
@@ -3449,7 +3441,7 @@
 		</string>
 		<!-- Improvements Tab -->
 		<string>
-			<key>Button_AddImproevment</key>
+			<key>Button_AddImprovement</key>
 			<text>添加进阶选项(&amp;A)</text>
 		</string>
 		<string>
@@ -3628,7 +3620,7 @@
 			<text>飞行：</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>沉着：</text>
 		</string>
 		<string>
@@ -3737,7 +3729,7 @@
 			<text>消耗/回复极限点</text>
 		</string>
 		<string>
-			<key>Tip_CMCMPenalty</key>
+			<key>Tip_CMPenalty</key>
 			<text>骰池受到伤势调整值的调整。</text>
 		</string>
 		<string>
@@ -5485,11 +5477,11 @@
 			<text>只显示我可以选择的特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>只显示泛遗传学特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>不显示泛遗传学特质</text>
 		</string>
 		<string>
@@ -6238,7 +6230,7 @@
 			<text>所在地：</text>
 		</string>
 		<string>
-			<key>Label_Archtype</key>
+			<key>Label_Archetype</key>
 			<text>身份:</text>
 		</string>
 		<string>
@@ -6633,6 +6625,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>忽略《街头魔典SG》要求的技艺</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>计算移动速度时，使用赛博腿的属性</text>
@@ -7340,55 +7336,55 @@
 			<text>法术防御</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttAGI</key>
+			<key>Label_SpellDefenseDecAttAGI</key>
 			<text>降低属性（AGI）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttBOD</key>
+			<key>Label_SpellDefenseDecAttBOD</key>
 			<text>降低属性（BOD）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttCHA</key>
+			<key>Label_SpellDefenseDecAttCHA</key>
 			<text>降低属性（CHA）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttINT</key>
+			<key>Label_SpellDefenseDecAttINT</key>
 			<text>降低属性（INT）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttLOG</key>
+			<key>Label_SpellDefenseDecAttLOG</key>
 			<text>降低属性（LOG）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttREA</key>
+			<key>Label_SpellDefenseDecAttREA</key>
 			<text>降低属性（REA）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttSTR</key>
+			<key>Label_SpellDefenseDecAttSTR</key>
 			<text>降低属性（STR）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDecAttWIL</key>
+			<key>Label_SpellDefenseDecAttWIL</key>
 			<text>降低属性（WIL）</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDetection</key>
+			<key>Label_SpellDefenseDetection</key>
 			<text>侦测法术</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionMana</key>
+			<key>Label_SpellDefenseIllusionMana</key>
 			<text>幻象-法力</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIllusionPhysical</key>
+			<key>Label_SpellDefenseIllusionPhysical</key>
 			<text>幻象-物理</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipMental</key>
+			<key>Label_SpellDefenseManipMental</key>
 			<text>操纵-精神</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceManipPhysical</key>
+			<key>Label_SpellDefenseManipPhysical</key>
 			<text>操纵-物理</text>
 		</string>
 		<string>
@@ -7556,19 +7552,19 @@
 			<text>利手</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirect</key>
+			<key>Label_SpellDefenseIndirect</key>
 			<text>间接法术抵抗</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceIndirectDodge</key>
+			<key>Label_SpellDefenseIndirectDodge</key>
 			<text>间接法术躲避</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakMana</key>
+			<key>Label_SpellDefenseDirectSoakMana</key>
 			<text>直接法术抵抗-法力</text>
 		</string>
 		<string>
-			<key>Label_SpellDefenceDirectSoakPhysical</key>
+			<key>Label_SpellDefenseDirectSoakPhysical</key>
 			<text>直接法术抵抗-物理</text>
 		</string>
 		<string>
@@ -8146,7 +8142,7 @@
 			<text>数据文件名称</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_DataDescription</key>
+			<key>Message_OmaeUpload_DataDescription</key>
 			<text>你必须为该数据文件内容提供一个简短的描述。</text>
 		</string>
 		<string>
@@ -8166,7 +8162,7 @@
 			<text>角色表名称</text>
 		</string>
 		<string>
-			<key>Message_OameUpload_SheetDescription</key>
+			<key>Message_OmaeUpload_SheetDescription</key>
 			<text>你必须为该角色表内容提供一个简短的描述。</text>
 		</string>
 		<string>
@@ -8426,7 +8422,7 @@
 			<text>翻译程序</text>
 		</string>
 		<string>
-			<key>Treenode_Roster_FavouriteCharacters</key>
+			<key>Treenode_Roster_FavoriteCharacters</key>
 			<text>特别喜欢的角色</text>
 		</string>
 		<string>

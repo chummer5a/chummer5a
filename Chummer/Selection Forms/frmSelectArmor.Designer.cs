@@ -249,7 +249,7 @@ namespace Chummer
             this.ArmorName.Name = "ArmorName";
             this.ArmorName.ReadOnly = true;
             this.ArmorName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ArmorName.TranslationTag = null;
+            this.ArmorName.TranslationTag = "String_Name";
             this.ArmorName.Width = 60;
             // 
             // Armor
@@ -261,7 +261,7 @@ namespace Chummer
             this.Armor.Name = "Armor";
             this.Armor.ReadOnly = true;
             this.Armor.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Armor.TranslationTag = null;
+            this.Armor.TranslationTag = "String_Armor";
             this.Armor.Width = 59;
             // 
             // Capacity
@@ -273,7 +273,7 @@ namespace Chummer
             this.Capacity.Name = "Capacity";
             this.Capacity.ReadOnly = true;
             this.Capacity.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Capacity.TranslationTag = null;
+            this.Capacity.TranslationTag = "String_Capacity";
             this.Capacity.Width = 73;
             // 
             // Special
@@ -286,7 +286,7 @@ namespace Chummer
             this.Special.Name = "Special";
             this.Special.ReadOnly = true;
             this.Special.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Special.TranslationTag = null;
+            this.Special.TranslationTag = "String_Special";
             this.Special.Width = 67;
             // 
             // Avail
@@ -298,7 +298,7 @@ namespace Chummer
             this.Avail.Name = "Avail";
             this.Avail.ReadOnly = true;
             this.Avail.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Avail.TranslationTag = null;
+            this.Avail.TranslationTag = "String_Avail";
             this.Avail.Width = 55;
             // 
             // Source
@@ -309,7 +309,7 @@ namespace Chummer
             this.Source.Name = "Source";
             this.Source.ReadOnly = true;
             this.Source.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Source.TranslationTag = null;
+            this.Source.TranslationTag = "String_Source";
             this.Source.Width = 66;
             // 
             // Cost
@@ -325,7 +325,7 @@ namespace Chummer
             this.Cost.Name = "Cost";
             this.Cost.ReadOnly = true;
             this.Cost.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Cost.TranslationTag = null;
+            this.Cost.TranslationTag = "String_Cost";
             this.Cost.Width = 53;
             // 
             // tabControl
@@ -758,7 +758,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated1.HeaderText = "Name";
             this.dataGridViewTextBoxColumnTranslated1.Name = "dataGridViewTextBoxColumnTranslated1";
             this.dataGridViewTextBoxColumnTranslated1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated1.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated1.TranslationTag = "String_Name";
             // 
             // dataGridViewTextBoxColumnTranslated2
             // 
@@ -768,7 +768,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated2.HeaderText = "Armor";
             this.dataGridViewTextBoxColumnTranslated2.Name = "dataGridViewTextBoxColumnTranslated2";
             this.dataGridViewTextBoxColumnTranslated2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated2.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated2.TranslationTag = "String_Armor";
             // 
             // dataGridViewTextBoxColumnTranslated3
             // 
@@ -778,7 +778,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated3.HeaderText = "Capacity";
             this.dataGridViewTextBoxColumnTranslated3.Name = "dataGridViewTextBoxColumnTranslated3";
             this.dataGridViewTextBoxColumnTranslated3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated3.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated3.TranslationTag = "String_Capacity";
             // 
             // dataGridViewTextBoxColumnTranslated4
             // 
@@ -789,7 +789,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated4.HeaderText = "Special";
             this.dataGridViewTextBoxColumnTranslated4.Name = "dataGridViewTextBoxColumnTranslated4";
             this.dataGridViewTextBoxColumnTranslated4.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated4.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated4.TranslationTag = "String_Special";
             // 
             // dataGridViewTextBoxColumnTranslated5
             // 
@@ -799,7 +799,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated5.HeaderText = "Avail";
             this.dataGridViewTextBoxColumnTranslated5.Name = "dataGridViewTextBoxColumnTranslated5";
             this.dataGridViewTextBoxColumnTranslated5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated5.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated5.TranslationTag = "String_Avail";
             // 
             // dataGridViewTextBoxColumnTranslated6
             // 
@@ -808,7 +808,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated6.HeaderText = "Source";
             this.dataGridViewTextBoxColumnTranslated6.Name = "dataGridViewTextBoxColumnTranslated6";
             this.dataGridViewTextBoxColumnTranslated6.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated6.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated6.TranslationTag = "String_Source";
             // 
             // dataGridViewTextBoxColumnTranslated7
             // 
@@ -822,7 +822,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated7.HeaderText = "Cost";
             this.dataGridViewTextBoxColumnTranslated7.Name = "dataGridViewTextBoxColumnTranslated7";
             this.dataGridViewTextBoxColumnTranslated7.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated7.TranslationTag = null;
+            this.dataGridViewTextBoxColumnTranslated7.TranslationTag = "String_Cost";
             // 
             // tableLayoutPanel2
             // 

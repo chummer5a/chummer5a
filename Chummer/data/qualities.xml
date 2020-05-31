@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
-  <version>0</version>
+
   <categories>
     <category>Positive</category>
     <category>Negative</category>
@@ -479,6 +479,10 @@
       <category>Positive</category>
       <bonus>
         <physicalcmrecovery>2</physicalcmrecovery>
+        <spelldicepool>
+          <name>Heal</name>
+          <val>2</val>
+        </spelldicepool>
         <stuncmrecovery>2</stuncmrecovery>
       </bonus>
       <forbidden>
@@ -580,7 +584,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -838,13 +842,15 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <onlyprioritygiven />
-      <bonus>
+      <bonus useselected="False">
+        <blockspelldescriptor>Spell</blockspelldescriptor>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
         <enabletab>
           <name>adept</name>
         </enabletab>
+        <limitspellcategory>Rituals</limitspellcategory>
         <unlockskills>Adept</unlockskills>
       </bonus>
       <forbidden>
@@ -1231,9 +1237,9 @@
       <name>Combat Paralysis</name>
       <karma>-12</karma>
       <category>Negative</category>
-      <implemented>False</implemented>
       <bonus>
         <notoriety>1</notoriety>
+        <surprise>-3</surprise>
       </bonus>
       <source>SR5</source>
       <page>80</page>
@@ -1527,7 +1533,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
       <forbidden>
         <oneof>
@@ -1563,7 +1569,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*"/>
       </bonus>
       <forbidden>
         <oneof>
@@ -1614,7 +1620,7 @@
       <limit>False</limit>
       <bonus>
         <notoriety>1</notoriety>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -1779,6 +1785,27 @@
       <page>87</page>
     </quality>
     <!--Street Grimoire Positive Qualities -->
+    <quality>
+      <id>237EB46A-A012-4E0B-808A-80EDA1C1A586</id>
+      <name>Tattoo Magic</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Apprentice</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>131</page>
+    </quality>
     <quality>
       <id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
       <name>Spirit Champion</name>
@@ -1952,6 +1979,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -1987,6 +2015,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2037,6 +2066,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2064,6 +2094,7 @@
       </costdiscount>
       <doublecareer>False</doublecareer>
       <bonus>
+        <freequality>ced3fecf-2277-4b20-b1e0-894162ca9ae2</freequality><!-- Mentor Spirit -->
         <specificskill>
           <name>Animal Handling</name>
           <bonus>1</bonus>
@@ -2079,6 +2110,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2110,6 +2142,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2208,6 +2241,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2239,6 +2273,7 @@
           <quality>The Artist's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2309,6 +2344,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Artist's Way</quality>
           <quality>The Spiritual Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2328,6 +2364,7 @@
       <category>Positive</category>
       <doublecareer>False</doublecareer>
       <bonus>
+        <freequality>ced3fecf-2277-4b20-b1e0-894162ca9ae2</freequality><!-- Mentor Spirit -->
         <skillgroup>
           <name>Conjuring</name>
           <bonus>1</bonus>
@@ -2336,13 +2373,14 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
-          <quality>The Artist's Way</quality>
+          <quality>The Twisted Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2354,6 +2392,43 @@
       </required>
       <source>SG</source>
       <page>178</page>
+    </quality>
+    <quality>
+      <id>43be9ef8-d7e9-47fe-ac79-7d15c508a2ad</id>
+      <name>The Twisted Way</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <!-- <bonus>
+        <forcetradition>Toxic</forcetradition>
+      </bonus> -->
+      <forbidden>
+        <oneof>
+          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
+          <quality>The Athlete's Way</quality>
+          <quality>The Beast's Way</quality>
+          <quality>The Burnout's Way</quality>
+          <quality>The Invisible Way</quality>
+          <quality>The Magician's Way</quality>
+          <quality>The Speaker's Way</quality>
+          <quality>The Spiritual Way</quality>
+          <quality>The Warrior's Way</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Apprentice</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>85</page>
     </quality>
     <quality>
       <id>32d0d753-9dad-4074-ab38-2d1ff5069a6a</id>
@@ -2370,6 +2445,7 @@
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
@@ -2377,7 +2453,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Artist's Way</quality>
+          <quality>The Twisted Way</quality>
         </oneof>
       </forbidden>
       <required>
@@ -2475,7 +2551,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Academic Knowledge Skills</condition>
+          <condition>LimitCondition_SkillsKnowledgeAcademic</condition>
         </limitmodifier>
       </bonus>
       <source>SASS</source>
@@ -2500,7 +2576,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <metageneticlimit>30</metageneticlimit>
+        <metageniclimit>30</metageniclimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -2519,7 +2595,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <metageneticlimit>30</metageneticlimit>
+        <metageniclimit>30</metageniclimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -2538,7 +2614,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <metageneticlimit>30</metageneticlimit>
+        <metageniclimit>30</metageniclimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -2564,7 +2640,12 @@
       <name>Animal Empathy</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>2</bonus>
+        </specificskill>
+	  </bonus>
       <source>RF</source>
       <page>145</page>
     </quality>
@@ -2618,15 +2699,15 @@
           <val>50</val>
           <condition>create</condition>
         </skillcategorykarmacostmultiplier>
+        <skillcategorypointcostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
         <skillcategoryspecializationkarmacostmultiplier>
           <name>Academic</name>
           <val>50</val>
           <condition>create</condition>
         </skillcategoryspecializationkarmacostmultiplier>
-        <skillcategorypointcostmultiplier>
-          <name>Academic</name>
-          <val>50</val>
-        </skillcategorypointcostmultiplier>
       </bonus>
       <source>RF</source>
       <page>145</page>
@@ -2701,7 +2782,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Limited to Single Sprawl</condition>
+          <condition>LimitCondition_Sprawl</condition>
         </limitmodifier>
         <publicawareness>2</publicawareness>
         <skillcategory>
@@ -2729,7 +2810,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must have 4+ Ranks in National Language</condition>
+          <condition>LimitCondition_NationalLanguageRanks</condition>
         </limitmodifier>
         <publicawareness>3</publicawareness>
         <skillcategory>
@@ -2757,7 +2838,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Limited to Single Megacorp</condition>
+          <condition>LimitCondition_Megacorp</condition>
         </limitmodifier>
         <publicawareness>5</publicawareness>
         <skillcategory>
@@ -2861,6 +2942,12 @@
           <min>6</min>
           <condition>career</condition>
         </activeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </knowledgeskillkarmacostmin>
         <knowledgeskillkarmacost>
           <name />
           <val>-1</val>
@@ -2920,13 +3007,13 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <mademan />
         <addcontact>
           <forcedloyalty>3</forcedloyalty>
+          <forcegroup />
           <free />
           <group />
-          <forcegroup />
         </addcontact>
+        <mademan />
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -3134,7 +3221,7 @@
       <limit>False</limit>
       <bonus>
         <selectcontact />
-        <selecttext />
+        <selecttext select="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -3278,12 +3365,6 @@
       <bonus>
         <trustfund>1</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund II</quality>
@@ -3291,6 +3372,12 @@
           <quality>Trust Fund IV</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3302,12 +3389,6 @@
       <bonus>
         <trustfund>2</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund I</quality>
@@ -3315,6 +3396,12 @@
           <quality>Trust Fund IV</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3326,12 +3413,6 @@
       <bonus>
         <trustfund>3</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund I</quality>
@@ -3339,6 +3420,12 @@
           <quality>Trust Fund IV</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3350,12 +3437,6 @@
       <bonus>
         <trustfund>4</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund I</quality>
@@ -3363,6 +3444,12 @@
           <quality>Trust Fund III</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3375,7 +3462,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for situations involving trust.</condition>
+          <condition>LimitCondition_QualityTrustworthy</condition>
         </limitmodifier>
         <skillgroup>
           <name>Influence</name>
@@ -3423,7 +3510,22 @@
       <name>Witness My Hate</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <spelldescriptordamage>
+          <descriptor>Direct,NOT(Area)</descriptor>
+          <val>2</val>
+        </spelldescriptordamage>
+        <spelldescriptordrain>
+          <descriptor>Direct,NOT(Area)</descriptor>
+          <val>2</val>
+        </spelldescriptordrain>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aspected Magician</quality>
+          <quality>Magician</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3824,6 +3926,7 @@
       <name>In Debt</name>
       <karma>-1</karma>
       <category>Negative</category>
+      <contributetobp>False</contributetobp>
       <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>
@@ -3866,22 +3969,10 @@
         </specificattribute>
       </bonus>
       <firstlevelbonus>
-        <specificattribute>
-          <name>BOD</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>AGI</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>REA</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>STR</name>
-          <aug>-4</aug>
-        </specificattribute>
+        <attributemaxclamp>AGI</attributemaxclamp>
+        <attributemaxclamp>BOD</attributemaxclamp>
+        <attributemaxclamp>REA</attributemaxclamp>
+        <attributemaxclamp>STR</attributemaxclamp>
       </firstlevelbonus>
       <source>RF</source>
       <page>156</page>
@@ -4257,6 +4348,16 @@
       <page>158</page>
     </quality>
     <quality>
+      <id>bbb3bce6-8adc-4992-94b5-7248556a391a</id>
+      <name>Poor Self Control (Thrill Seeker) (Dareadrenaline)</name>
+      <karma>0</karma>
+      <category>Negative</category>
+      <hide />
+      <bonus />
+      <source>CF</source>
+      <page>160</page>
+    </quality>
+    <quality>
       <id>62de8226-b9a9-4065-9e82-b9ac4d4d027a</id>
       <name>Poor Self Control (Vindictive)</name>
       <karma>-5</karma>
@@ -4283,9 +4384,8 @@
       <limit>10</limit>
       <nolevels />
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
       </bonus>
-
       <forbidden>
         <oneof>
           <quality>Erased</quality>
@@ -4438,12 +4538,7 @@
       <name>Centaur Body</name>
       <karma>0</karma>
       <category>Positive</category>
-      <bonus>
-        <addlimb>
-          <limbslot>leg</limbslot>
-          <val>2</val>
-        </addlimb>
-      </bonus>
+      <hide />
       <required>
         <allof>
           <metatype>Centaur</metatype>
@@ -4451,19 +4546,6 @@
       </required>
       <source>RF</source>
       <page>105</page>
-    </quality>
-    <quality>
-      <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
-      <name>Magic Sense</name>
-      <karma>7</karma>
-      <category>Positive</category>
-      <required>
-        <allof>
-          <metatype>Centaur</metatype>
-        </allof>
-      </required>
-      <source>SG</source>
-      <page>172</page>
     </quality>
     <quality>
       <id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
@@ -4497,14 +4579,14 @@
       <page>309</page>
     </quality>
     <!-- End Region -->
-    <!-- Region Run Faster Metagenetic Qualities -->
+    <!-- Region Run Faster Metagenic Qualities -->
     <!-- Region Positive Qualities -->
     <quality>
       <id>6509ce7a-a453-4941-9bfa-ec0fe48c6d40</id>
       <name>360-degree Eyesight</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4521,7 +4603,7 @@
       <name>Animal Pelage (Quills)</name>
       <karma>5</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4544,7 +4626,7 @@
       <name>Animal Pelage (Insulating Pelt)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <coldarmor>4</coldarmor>
       </bonus>
@@ -4569,7 +4651,7 @@
       <name>Animal Pelage (Camo Fur)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4593,7 +4675,7 @@
       <karma>10</karma>
       <category>Positive</category>
       <limit>2</limit>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <spellresistance>2</spellresistance>
       </bonus>
@@ -4617,7 +4699,7 @@
       <name>Balance Receptor</name>
       <karma>6</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -4639,7 +4721,7 @@
       <name>Beak</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <lifestylecost>-10</lifestylecost>
         <toxiningestionresist>1</toxiningestionresist>
@@ -4660,7 +4742,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <addweapon>Raptor Beak</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <lifestylecost>-10</lifestylecost>
         <toxiningestionresist>1</toxiningestionresist>
@@ -4680,7 +4762,7 @@
       <name>Bicardiac</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4697,7 +4779,7 @@
       <name>Biosonar</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4714,7 +4796,7 @@
       <name>Bone Spikes</name>
       <karma>5</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <unarmeddv>2</unarmeddv>
         <unarmeddvphysical />
@@ -4734,7 +4816,7 @@
       <name>Broadened Auditory System (Infrasound)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4751,7 +4833,7 @@
       <name>Broadened Auditory System (Ultrasound)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4768,7 +4850,7 @@
       <name>Camouflage</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4785,7 +4867,7 @@
       <name>Dynamic Coloration</name>
       <karma>8</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -4802,7 +4884,7 @@
       <name>Celerity</name>
       <karma>6</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <movementreplace>
           <category>Ground</category>
@@ -4840,7 +4922,7 @@
       <karma>3</karma>
       <category>Positive</category>
       <addweapon>Digging Claws</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4864,7 +4946,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <addweapon>Razor Claws</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4888,7 +4970,7 @@
       <karma>7</karma>
       <category>Positive</category>
       <addweapon>Retractable Claws</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4932,7 +5014,7 @@
       <name>Climate Adaptation (Desert)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4954,7 +5036,7 @@
       <name>Corrosive Spit</name>
       <karma>5</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -4976,7 +5058,7 @@
       <name>Dermal Alteration (Bark Skin)</name>
       <karma>5</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <armor group="0">2</armor>
       </bonus>
@@ -5003,7 +5085,7 @@
       <name>Dermal Alteration (Blubber)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <coldarmor>2</coldarmor>
       </bonus>
@@ -5030,7 +5112,7 @@
       <name>Dermal Alteration (Dragon Skin)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <firearmor>2</firearmor>
       </bonus>
@@ -5057,7 +5139,7 @@
       <name>Dermal Alteration (Granite Shell)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <armor group="0">4</armor>
       </bonus>
@@ -5084,7 +5166,7 @@
       <name>Dermal Alteration (Rhino Hide)</name>
       <karma>8</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <armor group="0">3</armor>
       </bonus>
@@ -5111,7 +5193,7 @@
       <name>Dermal Deposits</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <armor>1</armor>
       </bonus>
@@ -5130,7 +5212,7 @@
       <name>Defensive Secretion</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5147,7 +5229,7 @@
       <name>Electroception (Electrosense)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5164,7 +5246,7 @@
       <name>Electroception (Technosense)</name>
       <karma>7</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5181,7 +5263,7 @@
       <name>Elongated Limbs</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <reach>1</reach>
       </bonus>
@@ -5201,7 +5283,7 @@
       <karma>4</karma>
       <category>Positive</category>
       <addweapon>Fangs</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5218,7 +5300,7 @@
       <name>Frog Tongue</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5235,7 +5317,7 @@
       <name>Functional Tail (Balance)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -5265,7 +5347,7 @@
       <name>Functional Tail (Paddle)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Swimming</name>
@@ -5295,7 +5377,7 @@
       <name>Functional Tail (Prehensile)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -5326,7 +5408,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <addweapon>Functional Tail (Thagomizer)</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5351,7 +5433,7 @@
       <name>Gills (Air)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5374,7 +5456,7 @@
       <name>Gills (Aqua)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5397,7 +5479,7 @@
       <name>Gills (Full)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5420,7 +5502,7 @@
       <name>Glamour</name>
       <karma>12</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <addqualities>
           <addquality>Distinctive Style</addquality>
@@ -5447,7 +5529,7 @@
       <name>Greasy Skin</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5465,7 +5547,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <addweapon>Goring Horns</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5482,7 +5564,7 @@
       <name>Keen-Eared</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5500,7 +5582,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <addweapon>Larger Tusks</addweapon>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5517,7 +5599,7 @@
       <name>Low-Light Vision (Changeling)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5534,7 +5616,7 @@
       <name>Low-Light Vision (Feline)</name>
       <karma>2</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5548,13 +5630,14 @@
     </quality>
     <quality>
       <id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-      <name>Magic Sense (Changeling)</name>
+      <name>Magic Sense</name>
       <karma>7</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
+          <metatype>Centaur</metatype>
           <quality>Changeling (Class I SURGE)</quality>
           <quality>Changeling (Class II SURGE)</quality>
           <quality>Changeling (Class III SURGE)</quality>
@@ -5568,7 +5651,7 @@
       <name>Magnetoception</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Navigation</name>
@@ -5590,7 +5673,7 @@
       <name>Marsupial Pouch</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5604,10 +5687,10 @@
     </quality>
     <quality>
       <id>2ffd990c-ced6-4484-955c-108473df5335</id>
-      <name>Metagenetic Improvement (Body)</name>
+      <name>Metagenic Improvement (Body)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>BOD</name>
@@ -5627,10 +5710,10 @@
     </quality>
     <quality>
       <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-      <name>Metagenetic Improvement (Agility)</name>
+      <name>Metagenic Improvement (Agility)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>AGI</name>
@@ -5650,10 +5733,10 @@
     </quality>
     <quality>
       <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-      <name>Metagenetic Improvement (Reaction)</name>
+      <name>Metagenic Improvement (Reaction)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>REA</name>
@@ -5673,10 +5756,10 @@
     </quality>
     <quality>
       <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-      <name>Metagenetic Improvement (Strength)</name>
+      <name>Metagenic Improvement (Strength)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>STR</name>
@@ -5696,10 +5779,10 @@
     </quality>
     <quality>
       <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-      <name>Metagenetic Improvement (Charisma)</name>
+      <name>Metagenic Improvement (Charisma)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>CHA</name>
@@ -5719,10 +5802,10 @@
     </quality>
     <quality>
       <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-      <name>Metagenetic Improvement (Intuition)</name>
+      <name>Metagenic Improvement (Intuition)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>INT</name>
@@ -5742,10 +5825,10 @@
     </quality>
     <quality>
       <id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
-      <name>Metagenetic Improvement (Logic)</name>
+      <name>Metagenic Improvement (Logic)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>LOG</name>
@@ -5765,10 +5848,10 @@
     </quality>
     <quality>
       <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-      <name>Metagenetic Improvement (Willpower)</name>
+      <name>Metagenic Improvement (Willpower)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>WIL</name>
@@ -5792,9 +5875,9 @@
       <karma>2</karma>
       <category>Positive</category>
       <limit>False</limit>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype[source = 'SR5']" /> <!-- Ghetto-ass fix for referring to base metatypes -->
       </bonus>
       <required>
         <allof>
@@ -5814,7 +5897,7 @@
       <name>Monkey Paws</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -5831,7 +5914,7 @@
       <name>Nasty Vibe</name>
       <karma>5</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Intimidation</name>
@@ -5853,7 +5936,7 @@
       <name>Natural Venom (Exhaled, Mild)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5886,7 +5969,7 @@
       <name>Natural Venom (Exhaled, Moderate)</name>
       <karma>8</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5919,7 +6002,7 @@
       <name>Natural Venom (Exhaled, Serious)</name>
       <karma>13</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5952,7 +6035,7 @@
       <name>Natural Venom (Exhaled, Deadly)</name>
       <karma>18</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -5985,7 +6068,7 @@
       <name>Natural Venom (Spat, Mild)</name>
       <karma>8</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6018,7 +6101,7 @@
       <name>Natural Venom (Spat, Moderate)</name>
       <karma>10</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6051,7 +6134,7 @@
       <name>Natural Venom (Spat, Serious)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6084,7 +6167,7 @@
       <name>Natural Venom (Spat, Deadly)</name>
       <karma>20</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6117,7 +6200,7 @@
       <name>Natural Venom (Injected, Mild)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6153,7 +6236,7 @@
       <name>Natural Venom (Injected, Moderate)</name>
       <karma>5</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6189,7 +6272,7 @@
       <name>Natural Venom (Injected, Serious)</name>
       <karma>10</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6225,7 +6308,7 @@
       <name>Natural Venom (Injected, Deadly)</name>
       <karma>15</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6261,7 +6344,7 @@
       <name>Ogre Stomach</name>
       <karma>8</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <lifestylecost>-20</lifestylecost>
         <toxiningestionresist>2</toxiningestionresist>
@@ -6281,7 +6364,7 @@
       <name>Photometabolism</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <lifestylecost>-10</lifestylecost>
       </bonus>
@@ -6321,7 +6404,7 @@
       <name>Satyr Legs</name>
       <karma>10</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <movementreplace>
           <category>Ground</category>
@@ -6348,7 +6431,7 @@
       <name>Setae</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -6366,7 +6449,7 @@
       <karma>8</karma>
       <category>Positive</category>
       <limit>2</limit>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <addlimb>
           <limbslot>arm</limbslot>
@@ -6388,7 +6471,7 @@
       <name>Thermal Sensitivity</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -6405,7 +6488,7 @@
       <name>Thermographic Vision (SURGE)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -6422,7 +6505,7 @@
       <name>Thorns</name>
       <karma>2</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <skillcategory>
           <name>Physical Active</name>
@@ -6445,7 +6528,7 @@
       <name>Underwater Vision</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -6462,7 +6545,7 @@
       <name>Vomeronasal Organ</name>
       <karma>3</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -6479,7 +6562,7 @@
       <name>Webbed Digits</name>
       <karma>4</karma>
       <category>Positive</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Swimming</name>
@@ -6503,7 +6586,7 @@
       <name>Adiposis</name>
       <karma>-10</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <movementreplace>
           <category>Ground</category>
@@ -6551,7 +6634,7 @@
         </required>
         <value>10</value>
       </costdiscount>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>119</page>
@@ -6561,7 +6644,7 @@
       <name>Berserker</name>
       <karma>-6</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>119</page>
@@ -6571,7 +6654,7 @@
       <name>Bioluminescence</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>119</page>
@@ -6581,7 +6664,7 @@
       <name>Cephalopod Skull</name>
       <karma>-6</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>120</page>
@@ -6591,7 +6674,7 @@
       <name>Cold-Blooded</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>120</page>
@@ -6601,7 +6684,7 @@
       <name>Critter Spook</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>120</page>
@@ -6611,7 +6694,7 @@
       <name>Cyclopean Eye</name>
       <karma>-6</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6626,7 +6709,7 @@
       <name>Deformity (Picasso)</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -6641,7 +6724,7 @@
       <name>Deformity (Quasimodo)</name>
       <karma>-15</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <skillcategory>
           <name>Physical Active</name>
@@ -6657,7 +6740,7 @@
       <name>Feathers</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6676,7 +6759,7 @@
       <name>Impaired Attribute (Body)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>BOD</name>
@@ -6691,7 +6774,7 @@
       <name>Impaired Attribute (Agility)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>AGI</name>
@@ -6706,7 +6789,7 @@
       <name>Impaired Attribute (Reaction)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>REA</name>
@@ -6721,7 +6804,7 @@
       <name>Impaired Attribute (Strength)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>STR</name>
@@ -6736,7 +6819,7 @@
       <name>Impaired Attribute (Charisma)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>CHA</name>
@@ -6751,7 +6834,7 @@
       <name>Impaired Attribute (Intuition)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>INT</name>
@@ -6766,7 +6849,7 @@
       <name>Impaired Attribute (Logic)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>LOG</name>
@@ -6781,7 +6864,7 @@
       <name>Impaired Attribute (Willpower)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <specificattribute>
           <name>WIL</name>
@@ -6796,7 +6879,7 @@
       <name>Insectoid Features</name>
       <karma>-6</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>121</page>
@@ -6806,7 +6889,7 @@
       <name>Mood Hair</name>
       <karma>-4</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6823,7 +6906,7 @@
       <name>Neoteny</name>
       <karma>-6</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <conditionmonitor>
           <physical>-2</physical>
@@ -6838,7 +6921,7 @@
       <name>Nocturnal</name>
       <karma>-4</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6853,7 +6936,7 @@
       <name>Progeria</name>
       <karma>-9</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <skillcategory>
           <name>Physical Active</name>
@@ -6868,7 +6951,7 @@
       <name>Scales</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6887,7 +6970,7 @@
       <name>Scent Glands</name>
       <karma>-4</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>121</page>
@@ -6897,7 +6980,7 @@
       <name>Slow Healer</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <physicalcmrecovery>-2</physicalcmrecovery>
         <stuncmrecovery>-2</stuncmrecovery>
@@ -6910,7 +6993,7 @@
       <name>Striking Skin Pigmentation</name>
       <karma>-4</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>122</page>
@@ -6920,7 +7003,7 @@
       <name>Stubby Arms</name>
       <karma>-10</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus>
         <reach>-1</reach>
       </bonus>
@@ -6932,7 +7015,7 @@
       <name>Symbiosis</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <source>RF</source>
       <page>122</page>
@@ -6942,7 +7025,7 @@
       <name>Third Eye</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6957,7 +7040,7 @@
       <name>Unusual Hair</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6972,7 +7055,7 @@
       <name>Vestigial Tail</name>
       <karma>-6</karma>
       <category>Negative</category>
-      <metagenetic>True</metagenetic>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -7016,8 +7099,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <critterpowers>
           <power>Adaptive Coloration</power>
           <power select="Sunlight, Mild">Allergy</power>
@@ -7029,6 +7111,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7153,10 +7237,14 @@
           <power select="Silver">Vulnerability</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
@@ -7295,7 +7383,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7306,10 +7394,14 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower>Armor</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -7446,8 +7538,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power select="Corrosive">Secretion/Substance Extrusion</power>
@@ -7464,6 +7555,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7583,8 +7676,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7599,6 +7691,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7725,8 +7819,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7741,6 +7834,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7867,8 +7962,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7883,6 +7977,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8009,8 +8105,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8025,6 +8120,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8151,8 +8248,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8167,6 +8263,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8293,8 +8391,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8309,6 +8406,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8425,8 +8524,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power select="Vermin">Animal Control</power>
@@ -8443,6 +8541,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8561,7 +8661,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8574,10 +8674,14 @@
           <power select="Metahuman Flesh">Dietary Requirement</power>
           <power select="Iron">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8723,8 +8827,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Animal Control</power>
@@ -8743,7 +8846,9 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8876,8 +8981,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -8893,8 +8997,10 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -9033,8 +9139,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -9053,8 +9158,10 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -9203,7 +9310,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Essence Drain</power>
@@ -9223,6 +9330,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -9369,7 +9477,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9389,6 +9497,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9523,7 +9632,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power select="Age">Immunity</power>
@@ -9535,10 +9644,14 @@
           <power select="Metahuman Blood">Dietary Requirement</power>
           <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9668,7 +9781,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9680,10 +9793,14 @@
           <power select="Metahuman Blood">Dietary Requirement</power>
           <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9811,7 +9928,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power select="Age">Immunity</power>
@@ -9824,10 +9941,14 @@
           <power select="Salt">Dietary Requirement</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9957,7 +10078,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9970,10 +10091,14 @@
           <power select="Salt">Dietary Requirement</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10121,7 +10246,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -10140,10 +10265,11 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
-          <optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+          <optionalpower select="Visual Acuity">Enhanced Senses</optionalpower>
           <optionalpower select="Pathogens">Immunity</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
         </optionalpowers>
@@ -10163,8 +10289,8 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>6</max>
-            <aug>10</aug>
+            <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
@@ -10586,8 +10712,32 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>
-    <quality>
+    </quality>	
+	<quality>
+      <id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
+      <name>Infected Advanced Optional Power: Mimicry</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus>
+        <critterpowers>
+          <power>Mimicry</power>
+        </critterpowers>
+      </bonus>
+	  <forbidden>
+        <oneof>
+          <critterpower>Mimicry</critterpower>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Infected: Nosferatu</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>398</page>
+    </quality>    
+	<quality>
       <id>7843087c-30a3-4d87-aaa2-5ebdb90cccd8</id>
       <name>Infected Optional Power: Mist Form</name>
       <karma>12</karma>
@@ -10609,7 +10759,7 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>
+    </quality>	
     <quality>
       <id>6d9f205e-52a0-4bb2-a4c2-e49232dd8346</id>
       <name>Infected Optional Power: Paralyzing Howl</name>
@@ -10634,6 +10784,30 @@
       <source>RF</source>
       <page>136</page>
     </quality>
+	<quality>
+      <id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
+      <name>Infected Advanced Optional Power: Psychokinesis</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus>
+        <critterpowers>
+          <power>Psychokinesis</power>
+        </critterpowers>
+      </bonus>
+	  <forbidden>
+        <oneof>
+          <critterpower>Psychokinesis</critterpower>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Infected: Nosferatu</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>400</page>
+    </quality>    
     <quality>
       <id>311ebb96-bf65-483e-86b7-62702a43aae3</id>
       <name>Infected Optional Power: Regeneration</name>
@@ -10767,8 +10941,8 @@
       <category>Positive</category>
       <bonus>
         <addcontact>
-          <connection>5</connection>
           <loyalty>1</loyalty>
+          <connection>5</connection>
           <forcedloyalty>3</forcedloyalty>
           <free />
           <group />
@@ -10796,7 +10970,7 @@
       <page>46</page>
     </quality>
     <!-- End Region -->
-    <!-- Region Dark Terrors Negetive Qualities -->
+    <!-- Region Dark Terrors Negative Qualities -->
     <quality>
       <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
       <name>Wildcard Chimera</name>
@@ -11024,7 +11198,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only when communicating via AR or VR.</condition>
+          <condition>LimitCondition_QualityChatty</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -11710,7 +11884,7 @@
       <category>Positive</category>
       <chargenonly />
       <bonus>
-        <selecttext />
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
       <source>CF</source>
       <page>158</page>
@@ -12027,7 +12201,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element" allowedit="True" />
       </bonus>
       <source>HT</source>
       <page>191</page>
@@ -12072,7 +12246,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Does not include Intimidation.</condition>
+          <condition>LimitCondition_ExcludeIntimidation</condition>
         </limitmodifier>
       </bonus>
       <source>HT</source>
@@ -12274,6 +12448,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12339,6 +12514,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>2</val>
@@ -12400,6 +12576,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12458,7 +12635,7 @@
         <critterpowers>
           <power>Dual Natured</power>
           <power>Shift (Dracoform)</power>
-          <power>Underwater Adapation</power>
+          <power>Underwater Adaptation</power>
           <power rating="2">Hardened Armor</power>
           <power rating="2">Hardened Mystic Armor</power>
           <power select="Fire">Elemental Attack</power>
@@ -12469,6 +12646,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12666,7 +12844,7 @@
     </quality>
     <quality>
       <id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
-      <name>Dishevelled</name>
+      <name>Disheveled</name>
       <karma>-5</karma>
       <category>Negative</category>
       <bonus />
@@ -12789,6 +12967,1001 @@
       <page>152</page>
     </quality>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <quality>
+      <id>e59e5011-61be-44d8-be87-8924555956cb</id>
+      <name>Free Insect Spirit: Cutter Ant</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>61008635-56be-4a0f-885e-c69cdad6381c</id>
+      <name>Free Insect Spirit: Fire Ant</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>128a7a7d-7bd2-400c-a388-fd444672cc07</id>
+      <name>Free Insect Spirit: Desert Locust</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+          <power select="Fire">Immunity</power>
+          <power select="Cold">Vulnerability</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>791a36c5-3fff-447e-bf47-ae5c186d5e00</id>
+      <name>Free Insect Spirit: Mole Cricket</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>walk</speed>
+          <val>3</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>sprint</speed>
+          <val>500</val>
+        </movementreplace>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>64cd8760-41ac-4280-a1bb-ccbe470cb36a</id>
+      <name>Free Insect Spirit: Subterranean Termite</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power select="Blind">Reduced Sense</power>
+        </critterpowers>
+		<damageresistance>2</damageresistance>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>3c7f9965-3cf9-4d18-92cd-00b07d18bd96</id>
+      <name>Free Insect Spirit: Hunter Wasp</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>b18aa02f-5259-43ce-9f42-108d4cee192c</id>
+      <name>Free Insect Spirit: Bee</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>f6f960ff-f4eb-48ac-ab6e-95e73f523777</id>
+      <name>Free Insect Spirit: Goliath Beetle</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <damageresistance>4</damageresistance>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>a752d652-d59b-4bc5-89b4-3a4d2cf763cb</id>
+      <name>Free Insect Spirit: Water Beetle</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>a2680005-2e89-4054-8941-91ac53cde39d</id>
+      <name>Free Insect Spirit: House Centipede</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+		  <power select="Self Only">Movement</power>
+        <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>8726c88b-0c03-41c9-b67c-c0bd8b8f7547</id>
+      <name>Free Insect Spirit: Tropical Centipede</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+		  <power select="Self Only">Movement</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Venom</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>7c99a5ee-a98a-429c-a27a-dd007ba9f680</id>
+      <name>Free Insect Spirit: Century Cicada</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power select="Queen's Command">Induced Dormancy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>e55ea45c-c1c2-47cb-91f3-528683d58c49</id>
+      <name>Free Insect Spirit: Trapdoor Spider</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Binding</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>218a86f5-e292-418d-a3f6-fdb1b9ce5891</id>
+      <name>Free Insect Spirit: Black Widow</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Binding</power>
+		  <power>Wall Walking</power>
+		  <power>Venom</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>578fedfb-a533-413c-ae88-4171cbbcf595</id>
+      <name>Free Insect Spirit: Burster Firefly</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power select="Mass Sight Removal">Innate Spell</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>75b52efb-39a2-471d-8c5a-94341eafb5df</id>
+      <name>Free Insect Spirit: Botfly</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>5be18c92-264a-48ea-8438-79adfffa88f5</id>
+      <name>Free Insect Spirit: Dragonfly</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Movement</power>
+		  <power>Dive Attack</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>0833bbaf-db69-4956-9ad6-1fa6c7674536</id>
+      <name>Free Insect Spirit: Mimic Mantis</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>b22312fc-ccfb-4ad2-ae79-9d988c2e5ad0</id>
+      <name>Free Insect Spirit: Orchid Mantis</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Empathy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>bce09acf-46b8-4b27-af72-f2ed0909fd9c</id>
+      <name>Free Insect Spirit: Vampire Mosquito</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Essence Loss</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>2570b568-dea1-40b7-a9eb-dfab2e69fde7</id>
+      <name>Free Insect Spirit: Tick</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power>Essence Drain</power>
+		  <power>Pestilence</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>e1d20998-d6b8-4019-8b55-c3a66a6a239b</id>
+      <name>Free Insect Spirit: Death's Head Moth</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>walk</speed>
+          <val>3</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>sprint</speed>
+          <val>500</val>
+        </movementreplace>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>20543040-e552-4894-ba3b-f05eabcf58ab</id>
+      <name>Free Insect Spirit: Cryptid Moth</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+          <power select="Foreboding">Innate Spell</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>walk</speed>
+          <val>3</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>sprint</speed>
+          <val>500</val>
+        </movementreplace>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>f34b7ccf-5624-492a-938e-fd39a8887a54</id>
+      <name>Free Insect Spirit: Cave Roach</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power select="Blind">Reduced Sense</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <id>fe67d03c-1394-41e0-a82a-532f5fe85d2e</id>
+      <name>Free Insect Spirit: Silverfish</name>
+      <karma>42</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <critterpowers>
+          <power>Dual Natured</power>
+          <power>Aura Masking</power>
+          <power select="Smell">Enhanced Senses</power>
+          <power select="Thermographic Vision">Enhanced Senses</power>
+          <power select="Normal Weapons">Immunity</power>
+          <power>Realistic Form</power>
+          <power select="Insecticides, Mild">Allergy</power>
+		  <power select="Sugar">Dietary Requirement</power>
+        </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <gameplayoption>Prime Runner</gameplayoption>
+        </oneof>
+      </required>
+      <source>DTR</source>
+      <page>151</page>
+    </quality>
     <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <!-- Region Mastery Qualities -->
@@ -13155,8 +14328,9 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <!-- TODO: Source code for this is super hacky, so it definitely needs cleaning up at the next opportunity -->
       <bonus>
+        <allowspellrange>T</allowspellrange>
+        <allowspellrange>T (A)</allowspellrange>
         <freespells attribute="MAG" limit="half,touchonly" />
       </bonus>
       <required>
@@ -13414,6 +14588,7 @@
       <name>Close Combat Mage</name>
       <karma>5</karma>
       <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
       <limit>3</limit>
       <nolevels />
@@ -13445,7 +14620,9 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addspirit />
+      </bonus>
       <required>
         <allof>
           <attribute>
@@ -16223,11 +17400,11 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
+        <addmetamagic forced="True">Psychometry</addmetamagic>
+        <addmetamagic forced="True">Sensing</addmetamagic>
         <skillgroupdisable>Sorcery</skillgroupdisable>
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <skillgroupdisable>Enchanting</skillgroupdisable>
-        <addmetamagic forced="True">Psychometry</addmetamagic>
-        <addmetamagic forced="True">Sensing</addmetamagic>
       </bonus>
       <required>
         <oneof>
@@ -16249,15 +17426,15 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
+        <addmetamagic forced="True">Reflection</addmetamagic>
+        <addqualities>
+          <addquality forced="True">Magic Resistance</addquality>
+        </addqualities>
         <skilldisable>Binding</skilldisable>
         <skilldisable>Spellcasting</skilldisable>
         <skilldisable>Ritual Spellcasting</skilldisable>
         <skilldisable>Alchemy</skilldisable>
         <skilldisable>Artificing</skilldisable>
-        <addmetamagic forced="True">Reflection</addmetamagic>
-        <addqualities>
-          <addquality forced="True">Magic Resistance</addquality>
-        </addqualities>
       </bonus>
       <required>
         <oneof>
@@ -16292,6 +17469,7 @@
       <source>FA</source>
       <page>182</page>
     </quality>
+    <!-- End Region -->
     <!-- End Region -->
     <!-- Region SotA ADL Negative Qualities-->
     <quality>
@@ -17358,7 +18536,7 @@
     <quality>
       <id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
       <name>Sprite Combustion</name>
-      <karma>-5</karma>
+      <karma>-13</karma>
       <category>Negative</category>
       <bonus />
       <required>
@@ -17498,7 +18676,9 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <allowspritefettering />
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
@@ -17759,7 +18939,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <specialmodificationlimit>1</specialmodificationlimit>
+        <specialmodificationlimit>2</specialmodificationlimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -17790,7 +18970,7 @@
       <category>Positive</category>
       <limit>2</limit>
       <bonus>
-        <specialmodificationlimit>1</specialmodificationlimit>
+        <specialmodificationlimit>2</specialmodificationlimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -17848,7 +19028,7 @@
       <karma>20</karma>
       <category>Positive</category>
       <bonus>
-          <!--<contactkarma>-2</contactkarma>-->
+          <contactkarma>-2</contactkarma>
       </bonus>
       <forbidden>
         <oneof>
@@ -17864,7 +19044,8 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <!--<contactkarma>-1</contactkarma>-->
+        <contactkarma>-1</contactkarma>
+        <contactkarmaminimum>-1</contactkarmaminimum>
       </bonus>
       <forbidden>
         <oneof>
@@ -17879,6 +19060,7 @@
       <name>Stolen Gear</name>
       <karma>-1</karma>
       <category>Negative</category>
+      <contributetobp>False</contributetobp>
       <limit>20</limit>
       <bonus>
         <nuyenamt condition="Stolen">10000</nuyenamt>

@@ -383,7 +383,17 @@ namespace Chummer
             }
             else
             {
-                base.DownButton();
+                try
+                {
+                    base.DownButton();
+                }
+                catch (ArgumentOutOfRangeException aor)
+                {
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueDecrement", BeforeValueDecrement?.Method.Name);
+                    throw;
+                }
             }
         }
         public override void UpButton()
@@ -399,7 +409,17 @@ namespace Chummer
             }
             else
             {
-                base.UpButton();
+                try
+                {
+                    base.UpButton();
+                }
+                catch (ArgumentOutOfRangeException aor)
+                {
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueIncrement", BeforeValueIncrement?.Method.Name);
+                    throw;
+                }
             }
         }
 
@@ -459,7 +479,6 @@ namespace Chummer
                 OnTextBoxResize(_textbox, EventArgs.Empty);
                 Invalidate();
             }
-
         }
 
 

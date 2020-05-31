@@ -71,6 +71,11 @@
                     <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="allowaccessory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="allowmod" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowfullburst" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowlongburst" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowshortburst" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowsingleshot" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="allowsuppressive" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="alternaterange" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:simpleContent>
@@ -84,10 +89,18 @@
                     <xs:element name="ammoname" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="ammoslots" type="xs:integer" minOccurs="0" maxOccurs="1" />
                     <xs:element name="cyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
+					<xs:element name="doubledcostaccessorymounts" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                     <xs:element name="extramount" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element name="fullburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+					<xs:element name="longburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
                     <xs:element name="mods" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
@@ -115,7 +128,9 @@
                     </xs:element>
                     <xs:element name="requireammo" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+					<xs:element name="singleshot" type="xs:integer" minOccurs="0" maxOccurs="1" />
                     <xs:element name="sizecategory" type="xs:string" minOccurs="0" maxOccurs="1" />
+					<xs:element name="shortburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
                     <xs:element name="spec" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="spec2" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="suppressive" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -127,6 +142,7 @@
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="useskill" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="useskillspec" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -52,25 +54,57 @@ namespace Chummer
         {
             if (!xmlTechniqueDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", xmlTechniqueDataNode });
+                Log.Warn(new object[] {"Missing id field for xmlnode", xmlTechniqueDataNode});
                 Utils.BreakIfDebug();
             }
+
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
                 if (!xmlTechniqueDataNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                     xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
-            
+
+            if (string.IsNullOrEmpty(Notes))
+            {
+                string strEnglishNameOnPage = Name;
+                string strNameOnPage = string.Empty;
+                // make sure we have something and not just an empty tag
+                if (xmlTechniqueDataNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                    !string.IsNullOrEmpty(strNameOnPage))
+                    strEnglishNameOnPage = strNameOnPage;
+
+                string strQualityNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
+
+                if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                {
+                    string strTranslatedNameOnPage = CurrentDisplayName;
+
+                    // don't check again it is not translated
+                    if (strTranslatedNameOnPage != _strName)
+                    {
+                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                        if (xmlTechniqueDataNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                            strTranslatedNameOnPage = strNameOnPage;
+
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
+                            strTranslatedNameOnPage);
+                    }
+                }
+                else
+                    Notes = strQualityNotes;
+            }
+
             if (xmlTechniqueDataNode["bonus"] == null) return;
-            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
+            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique,
+                _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), xmlTechniqueDataNode["bonus"], 1, CurrentDisplayName))
             {
                 _guiID = Guid.Empty;
             }
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -78,13 +112,15 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("martialarttechnique");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strSource);
+            objWriter.WriteElementString("page", _strPage);
             objWriter.WriteEndElement();
 
             _objCharacter.SourceProcess(_strSource);
@@ -118,13 +154,15 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("martialarttechnique");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteElementString("source", Source);
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
         #endregion
@@ -133,7 +171,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Martial Art Technique in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -151,7 +189,7 @@ namespace Chummer
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D");
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Name.
@@ -174,6 +212,8 @@ namespace Chummer
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
         /// <summary>
         /// Notes attached to this technique.
         /// </summary>
@@ -193,15 +233,26 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
         {
-            // Get the translated name if applicable.
-            if (strLanguage != GlobalOptions.DefaultLanguage)
-                return _strPage;
+            get => _strPage;
+            set => _strPage = value;
+        }
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -218,9 +269,9 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("martialarts.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/techniques/technique[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/techniques/technique[name = \"" + Name +  "\"]")
                     : XmlManager.Load("martialarts.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/techniques/technique[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/techniques/technique[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -229,19 +280,19 @@ namespace Chummer
 
         #region Methods
 
-        public bool Remove(Character objCharacter, bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (blnConfirmDelete)
             {
-                if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                     GlobalOptions.Language)))
                     return false;
             }
             // Find the selected Advantage object.
-            //TODO: Advantages should know what their parent is. 
-            objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
+            //TODO: Advantages should know what their parent is.
+            _objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
 
-            ImprovementManager.RemoveImprovements(objCharacter,
+            ImprovementManager.RemoveImprovements(_objCharacter,
                 Improvement.ImprovementSource.MartialArtTechnique, InternalId);
 
             objMartialArt.Techniques.Remove(this);
@@ -258,7 +309,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = CurrentDisplayName,
                 Tag = this,
                 ContextMenuStrip = cmsMartialArtTechnique,
                 ForeColor = PreferredColor,
