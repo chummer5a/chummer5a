@@ -27,6 +27,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -7080,7 +7081,7 @@ if (!Utils.IsUnitTest){
             objWriter.WriteStartElement("mugshots");
             foreach(Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", imgMugshot.ToBase64String());
+                objWriter.WriteElementString("mugshot", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
             }
 
             // </mugshot>
@@ -7109,13 +7110,13 @@ if (!Utils.IsUnitTest){
                     i =>
                     {
                         objMugshotImages[i] = lstMugshotsBase64[i]
-                            .ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                            .ToImage(PixelFormat.Format32bppPArgb);
                     });
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if(lstMugshotsBase64.Count == 1)
             {
-                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
             }
 
             // Legacy Shimmer
@@ -7125,7 +7126,7 @@ if (!Utils.IsUnitTest){
                 string strMugshot = objOldMugshotNode?.Value;
                 if(!string.IsNullOrWhiteSpace(strMugshot))
                 {
-                    _lstMugshots.Add(strMugshot.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    _lstMugshots.Add(strMugshot.ToImage(PixelFormat.Format32bppPArgb));
                     _intMainMugshotIndex = 0;
                 }
             }
@@ -7164,7 +7165,7 @@ if (!Utils.IsUnitTest){
                     objWriter.WriteElementString("mainmugshotpath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
+                    objWriter.WriteElementString("mainmugshotbase64", GlobalOptions.ImageToBase64StringForStorage(imgMainMugshot));
                 }
 
                 // <othermugshots>
@@ -7178,7 +7179,7 @@ if (!Utils.IsUnitTest){
                     Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
 
-                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
+                    objWriter.WriteElementString("stringbase64", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
 
                     imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                         guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + i.ToString(GlobalOptions.InvariantCultureInfo) + ".img");
@@ -15450,7 +15451,7 @@ if (!Utils.IsUnitTest){
                                 else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                                 {
                                     Bitmap bmpMugshot = new Bitmap(entry.Open(), true);
-                                    if (bmpMugshot.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppPArgb)
+                                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                                     {
                                         if (dicImages.ContainsKey(strKey))
                                         {
@@ -15464,7 +15465,7 @@ if (!Utils.IsUnitTest){
                                     {
                                         try
                                         {
-                                            Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                                            Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                             if (dicImages.ContainsKey(strKey))
                                             {
                                                 dicImages[strKey].Dispose();
@@ -17902,11 +17903,7 @@ if (!Utils.IsUnitTest){
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public Image Mugshot
-        {
-            get => MugshotBase64.ToImage();
-            set => MugshotBase64 = value.ToBase64String();
-        }
+        public Image Mugshot => MugshotBase64.ToImage();
 
         public string MugshotBase64 { get; set; } = string.Empty;
 

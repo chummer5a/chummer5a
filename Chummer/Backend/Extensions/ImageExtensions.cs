@@ -86,25 +86,56 @@ namespace Chummer
         /// Converts an Image into a Base64 string.
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="eOverrideFormat">The image format in which the image should be saved. If null, will use <paramref name="imgToConvert"/>'s RawFormat.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToBase64String(this Image imgToConvert)
+        public static string ToBase64String(this Image imgToConvert, ImageFormat eOverrideFormat = null)
         {
             if (imgToConvert == null)
                 return string.Empty;
             using (MemoryStream objImageStream = new MemoryStream())
             {
-                try
-                {
-                    imgToConvert.Save(objImageStream, imgToConvert.RawFormat);
-                }
-                catch (ArgumentNullException)
-                {
-                    imgToConvert.Save(objImageStream, ImageFormat.Png);
-                }
-
+                imgToConvert.Save(objImageStream, eOverrideFormat ?? imgToConvert.RawFormat);
                 return Convert.ToBase64String(objImageStream.ToArray());
             }
+        }
+
+        /// <summary>
+        /// Converts an Image into a Base64 string.
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="objCodecInfo">Encoder to use to encode the image.</param>
+        /// <param name="lstEncoderParameters">List of parameters for <paramref name="objCodecInfo"/>.</param>
+        /// <returns>Base64 string from Image.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToBase64String(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
+        {
+            if (imgToConvert == null)
+                return string.Empty;
+            using (MemoryStream objImageStream = new MemoryStream())
+            {
+                imgToConvert.Save(objImageStream, objCodecInfo, lstEncoderParameters);
+                return Convert.ToBase64String(objImageStream.ToArray());
+            }
+        }
+
+        /// <summary>
+        /// Converts an Image into a Base64 string of its Jpeg version with a custom quality setting (default ImageFormat.Jpeg quality is 50).
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="intQuality">Jpeg quality to use. 90 by default.</param>
+        /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToBase64StringAsJpeg(this Image imgToConvert, int intQuality = 90)
+        {
+            if (imgToConvert == null)
+                return string.Empty;
+            ImageCodecInfo objJpegEncoder = GetEncoder(ImageFormat.Jpeg);
+            EncoderParameters lstJpegParameters = new EncoderParameters(1)
+            {
+                Param = {[0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+            };
+            return imgToConvert.ToBase64String(objJpegEncoder, lstJpegParameters);
         }
 
         /// <summary>
@@ -117,6 +148,23 @@ namespace Chummer
         public static Bitmap ConvertPixelFormat(this Bitmap bmpToConvert, PixelFormat eNewFormat)
         {
             return bmpToConvert?.Clone(new Rectangle(0, 0, bmpToConvert.Width, bmpToConvert.Height), eNewFormat);
+        }
+
+        /// <summary>
+        /// Returns the encoder of an image format
+        /// </summary>
+        /// <param name="eFormat">Image format whose encoder is to be fetched</param>
+        /// <returns>The encoder of <paramref name="eFormat"/> if one is found, otherwise null.</returns>
+        public static ImageCodecInfo GetEncoder(this ImageFormat eFormat)
+        {
+            foreach (ImageCodecInfo objCodec in ImageCodecInfo.GetImageDecoders())
+            {
+                if (objCodec.FormatID == eFormat.Guid)
+                {
+                    return objCodec;
+                }
+            }
+            return null;
         }
     }
 }

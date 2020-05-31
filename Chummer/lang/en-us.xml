@@ -7927,7 +7927,7 @@
     </string>
     <string>
       <key>Label_Options_BrowserVersion</key>
-      <text>Preview uses Internet Explorer version</text>
+      <text>Preview uses Internet Explorer version:</text>
     </string>
     <string>
       <key>Label_Options_EssenceDecimals</key>
@@ -8060,6 +8060,22 @@
     <string>
       <key>String_AvailablePlugins</key>
       <text>Available Plugins</text>
+    </string>
+    <string>
+      <key>Label_Options_MugshotCompression</key>
+      <text>Mugshot Storage Format:</text>
+    </string>
+    <string>
+      <key>Label_Options_ImageQuality</key>
+      <text>Image Quality:</text>
+    </string>
+    <string>
+      <key>String_Lossless_Compression_Option</key>
+      <text>Lossless (PNG)</text>
+    </string>
+    <string>
+      <key>String_Lossy_Compression_Option</key>
+      <text>Lossy (JPG)</text>
     </string>
     <!-- End Region-->
     <!-- Region Print Multiple Window -->

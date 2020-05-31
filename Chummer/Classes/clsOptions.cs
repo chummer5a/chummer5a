@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -267,6 +269,7 @@ namespace Chummer
         private static string _strCustomTimeFormat;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
+        private static int _intSavedImageQuality = int.MaxValue;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
@@ -558,12 +561,15 @@ namespace Chummer
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
-            // Prefer Nightly Updates.
+            // Hide or show Expenses charts.
             LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
 
             LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "customdatetimeformats");
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
             LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
+
+            // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg
+            LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality");
 
             RebuildCustomDataDirectoryInfoList();
 
@@ -1044,6 +1050,19 @@ namespace Chummer
         }
 
         public static string PDFArguments { get; internal set; }
+
+        public static int SavedImageQuality
+        {
+            get => _intSavedImageQuality;
+            set => _intSavedImageQuality = value;
+        }
+
+        public static string ImageToBase64StringForStorage(Image objImageToSave)
+        {
+            return SavedImageQuality == int.MaxValue
+                ? objImageToSave.ToBase64String(ImageFormat.Png)
+                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+        }
         #endregion
 
         #region MRU Methods

@@ -17,6 +17,7 @@ Application Fixes:
 - Dicepools for weapons no longer display two different values when the character has a relevant specialization. Hovering over the dicepool labels will still list a specialization as the source for +2 bonus if the character does indeed have a relevant specialization.
 - In the Lifestyles tab, improvements that change lifestyle costs now display the actual source of the improvement (e.g. a quality like Dependents) instead of just the type of source.
 - Weapon ratings are now saved and loaded properly.
+- Added an option that lets users choose the method by which mugshots are saved in save files and when exporting the sheet as an HTML or PDF file. The program can use lossless compression (PNG) or lossy compression (JPEG), with the latter also having an additional setting where the user can choose the JPEG quality at which their mugshot will be saved. Switching from lossless to lossy and/or lowering JPEG image quality can dramatically reduce the size of .chum5 save files at a loss in image quality of each mugshot (a fairly small loss at high JPEG quality).
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -24,6 +25,10 @@ Data Changes:
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
+- Label_Options_MugshotCompression
+- Label_Options_ImageQuality
+- String_Lossless_Compression_Option
+- String_Lossy_Compression_Option
 
 Build 212
 Application Changes:
