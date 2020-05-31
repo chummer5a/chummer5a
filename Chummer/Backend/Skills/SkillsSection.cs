@@ -763,27 +763,35 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteStartElement("skills");
-            foreach (Skill objSkill in Skills)
+            List<Skill> lstSkillsOrdered = new List<Skill>(Skills);
+            lstSkillsOrdered.Sort(CompareSkills);
+            foreach (Skill objSkill in lstSkillsOrdered)
             {
                 objSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("knoskills");
-            foreach (KnowledgeSkill objKnowledgeSkill in KnowledgeSkills)
+            List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowledgeSkills);
+            lstKnoSkillsOrdered.Sort(CompareSkills);
+            foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
             {
                 objKnowledgeSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
 
             objWriter.WriteStartElement("skilljackknowledgeskills");
-            foreach (KnowledgeSkill objSkill in KnowsoftSkills)
+            lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowsoftSkills);
+            lstKnoSkillsOrdered.Sort(CompareSkills);
+            foreach (KnowledgeSkill objSkill in lstKnoSkillsOrdered)
             {
                 objSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
 
             objWriter.WriteStartElement("groups");
-            foreach (SkillGroup objSkillGroup in SkillGroups)
+            List<SkillGroup> lstSkillGroups = new List<SkillGroup>(SkillGroups);
+            lstSkillGroups.Sort(CompareSkillGroups);
+            foreach (SkillGroup objSkillGroup in lstSkillGroups)
             {
                 objSkillGroup.WriteTo(objWriter);
             }

@@ -808,16 +808,18 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalOptions.InvariantCultureInfo));
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            if (_nodBonus != null)
+            if (!string.IsNullOrEmpty(_nodBonus?.InnerXml))
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
-            if (_nodWirelessBonus != null)
+            if (!string.IsNullOrEmpty(_nodWirelessBonus?.InnerXml))
                 objWriter.WriteRaw("<wirelessbonus>" + _nodWirelessBonus.InnerXml + "</wirelessbonus>");
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
-            if (_nodWeaponBonus != null)
+            if (!string.IsNullOrEmpty(_nodWeaponBonus?.InnerXml))
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
+            else
+                objWriter.WriteElementString("weaponbonus", string.Empty);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("canformpersona", _strCanFormPersona);

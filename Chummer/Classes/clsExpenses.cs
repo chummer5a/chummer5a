@@ -245,7 +245,38 @@ namespace Chummer
         {
             if (obj is ExpenseLogEntry objEntry)
             {
-                return Date.CompareTo(objEntry.Date);
+                if (Equals(_objCharacter, objEntry._objCharacter))
+                {
+                    int intReturn = Date.CompareTo(objEntry.Date);
+                    if (intReturn == 0)
+                        intReturn = _objExpenseType.CompareTo(objEntry._objExpenseType);
+                    if (intReturn == 0)
+                        intReturn = string.Compare(Reason, objEntry.Reason, StringComparison.Ordinal);
+                    if (intReturn == 0)
+                        intReturn = Refund.CompareTo(objEntry.Refund);
+                    if (intReturn == 0)
+                        intReturn = Amount.CompareTo(objEntry.Amount);
+                    if (intReturn == 0)
+                        intReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
+                    return intReturn;
+                }
+
+                int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, objEntry._objCharacter?.FileName ?? string.Empty, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                    intBackupReturn = string.Compare(_objCharacter?.CharacterName ?? string.Empty, objEntry._objCharacter?.CharacterName ?? string.Empty, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                    intBackupReturn = Date.CompareTo(objEntry.Date);
+                if (intBackupReturn == 0)
+                    intBackupReturn = _objExpenseType.CompareTo(objEntry._objExpenseType);
+                if (intBackupReturn == 0)
+                    intBackupReturn = string.Compare(Reason, objEntry.Reason, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                    intBackupReturn = Refund.CompareTo(objEntry.Refund);
+                if (intBackupReturn == 0)
+                    intBackupReturn = Amount.CompareTo(objEntry.Amount);
+                if (intBackupReturn == 0)
+                    intBackupReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
+                return intBackupReturn;
             }
             return 1;
         }
@@ -465,7 +496,7 @@ namespace Chummer
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(_objCharacter, other._objCharacter) && Date.Equals(other.Date) && Amount == other.Amount && Reason == other.Reason && _objExpenseType == other._objExpenseType && Refund == other.Refund && ForceCareerVisible == other.ForceCareerVisible;
+            return CompareTo(other) == 0;
         }
 
         public override bool Equals(object obj)

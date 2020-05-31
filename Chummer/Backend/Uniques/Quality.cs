@@ -377,11 +377,11 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("sourcename", _strSourceName);
-            if (_nodBonus != null)
+            if (!string.IsNullOrEmpty(_nodBonus?.InnerXml))
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
-            if (_nodFirstLevelBonus != null)
+            if (!string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerXml))
                 objWriter.WriteRaw("<firstlevelbonus>" + _nodFirstLevelBonus.InnerXml + "</firstlevelbonus>");
             else
                 objWriter.WriteElementString("firstlevelbonus", string.Empty);

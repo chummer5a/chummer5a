@@ -118,7 +118,17 @@ namespace Chummer.Tests
                             Diff myDiff = DiffBuilder
                                 .Compare(controlFileStream)
                                 .WithTest(testFileStream)
-                                .CheckForSimilar()
+                                .CheckForIdentical()
+                                .WithNodeFilter(x =>
+                                    // image loading and unloading is not going to be deterministic due to compression algorithms
+                                    x.Name != "mugshot"
+                                    // internal IDs can safely change because items added by improvements will have a different ID every time they are loaded
+                                    && x.Name != "guid"
+                                    && x.Name != "improvedname"
+                                    // improvements that are regenerated on every load do not need their IDs checked
+                                    && (x.Name != "unique"
+                                        || x.ParentNode?["sourcename"]?.InnerText.StartsWith("SEEKER_", StringComparison.Ordinal) != true)
+                                    )
                                 .WithNodeMatcher(new DefaultNodeMatcher(ElementSelectors.Or(ElementSelectors.ByNameAndText,
                                     ElementSelectors.ByName)))
                                 .IgnoreWhitespace()
