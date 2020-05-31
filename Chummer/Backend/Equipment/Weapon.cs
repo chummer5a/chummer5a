@@ -570,7 +570,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
-            objWriter.WriteElementString("rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
             {
@@ -730,8 +730,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
-            objNode.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
+            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             if (objNode["firingmode"] != null)
                 _eFiringMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
