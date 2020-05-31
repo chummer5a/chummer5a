@@ -2997,18 +2997,16 @@ if (!Utils.IsUnitTest){
                                         "Living Persona")
                                         objLivingPersonaQuality = objQuality;
                                     // Legacy shim
-                                    if (LastSavedVersion <= new Version("5.195.1") &&
-                                        (objQuality.Name == "The Artisan's Way" ||
-                                         objQuality.Name == "The Artist's Way" ||
-                                         objQuality.Name == "The Athlete's Way" ||
-                                         objQuality.Name == "The Burnout's Way" ||
-                                         objQuality.Name == "The Invisible Way" ||
-                                         objQuality.Name ==
-                                         "The Magician's Way" ||
-                                         objQuality.Name == "The Speaker's Way" ||
-                                         objQuality.Name ==
-                                         "The Warrior's Way") &&
-                                        objQuality.Bonus?.HasChildNodes == false)
+                                    if (LastSavedVersion <= new Version(5, 195, 1)
+                                        && (objQuality.Name == "The Artisan's Way"
+                                            || objQuality.Name == "The Artist's Way"
+                                            || objQuality.Name == "The Athlete's Way"
+                                            || objQuality.Name == "The Burnout's Way"
+                                            || objQuality.Name == "The Invisible Way"
+                                            || objQuality.Name == "The Magician's Way"
+                                            || objQuality.Name == "The Speaker's Way"
+                                            || objQuality.Name == "The Warrior's Way")
+                                        && objQuality.Bonus?.HasChildNodes == false)
                                     {
                                         ImprovementManager.RemoveImprovements(this,
                                             Improvement.ImprovementSource.Quality,
@@ -3065,8 +3063,9 @@ if (!Utils.IsUnitTest){
                                         }
                                     }
 
-                                    if (LastSavedVersion <= new Version("5.200.0") && objQuality.Name == "Made Man" &&
-                                        objQuality.Bonus["selectcontact"] != null)
+                                    if (LastSavedVersion <= new Version(5, 200, 0)
+                                        && objQuality.Name == "Made Man"
+                                        && objQuality.Bonus["selectcontact"] != null)
                                     {
                                         string selectedContactUniqueId = (Improvements.FirstOrDefault(x =>
                                                 x.SourceName == objQuality.InternalId &&
@@ -3451,7 +3450,7 @@ if (!Utils.IsUnitTest){
                             _lstCyberware.Add(objCyberware);
                             // Legacy shim #1
                             if (objCyberware.Name == "Myostatin Inhibitor" &&
-                                LastSavedVersion <= new Version("5.195.1") &&
+                                LastSavedVersion <= new Version(5, 195, 1) &&
                                 !Improvements.Any(x =>
                                     x.SourceName == objCyberware.InternalId &&
                                     x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
@@ -3508,7 +3507,7 @@ if (!Utils.IsUnitTest){
                         }
 
                         // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
-                        if (LastSavedVersion <= new Version("5.200.0"))
+                        if (LastSavedVersion <= new Version(5, 200, 0))
                         {
                             foreach (Cyberware objCyberware in Cyberware)
                             {
@@ -3645,7 +3644,7 @@ if (!Utils.IsUnitTest){
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
                         // Powers.
-                        bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
+                        bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
                         List<ListItem> lstPowerOrder = new List<ListItem>();
                         objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
                         // Sort the Powers in alphabetical order.
@@ -3812,7 +3811,7 @@ if (!Utils.IsUnitTest){
                         }
 
                         // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
-                        if (objLivingPersonaQuality != null && LastSavedVersion <= new Version("5.195.1"))
+                        if (objLivingPersonaQuality != null && LastSavedVersion <= new Version(5, 195, 1))
                         {
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
                                 objLivingPersonaQuality.InternalId);

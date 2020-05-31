@@ -1115,7 +1115,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Legacy shim for mis-formatted name of Reflex Recorder
-            if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version("5.198.31"))
+            if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version(5, 198, 31))
             {
                 // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
                 XmlNode xmlReflexRecorderNode = _objImprovementSource == Improvement.ImprovementSource.Bioware

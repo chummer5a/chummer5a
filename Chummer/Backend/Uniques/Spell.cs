@@ -192,7 +192,7 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
-            if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version("5.197.30"))
+            if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version(5, 197, 30))
             {
                 GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
             }

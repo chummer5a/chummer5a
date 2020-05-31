@@ -463,7 +463,7 @@ namespace Chummer.Backend.Equipment
         private void LegacyShim(XmlNode xmlLifestyleNode)
         {
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
-            if (_objCharacter.LastSavedVersion > new Version("5.197.0") ||
+            if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
                 xmlLifestyleNode["costforarea"] != null) return;
             XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
             XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");

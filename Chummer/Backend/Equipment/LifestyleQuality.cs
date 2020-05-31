@@ -336,7 +336,8 @@ namespace Chummer.Backend.Equipment
         private void LegacyShim()
         {
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
-            if (_objCharacter.LastSavedVersion > new Version("5.190.0")) return;
+            if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
+                return;
             var objXmlDocument = XmlManager.Load("lifestyles.xml");
             var objLifestyleQualityNode = GetNode() ??
                                           objXmlDocument.SelectSingleNode(

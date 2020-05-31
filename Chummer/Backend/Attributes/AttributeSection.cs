@@ -414,7 +414,7 @@ namespace Chummer.Backend.Attributes
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
                 // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
-                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
                 {
                     CharacterAttrib objAttribute;
                     switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
