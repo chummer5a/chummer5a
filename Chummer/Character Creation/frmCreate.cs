@@ -867,9 +867,9 @@ namespace Chummer
                         Program.PluginLoader.CallPlugins(this, op_load_frm_create);
                     }
 
-                    if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
+                    if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
                     {
-                        if (Utils.IsUnitTest || MessageBox.Show(
+                        if (MessageBox.Show(
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -9330,7 +9330,7 @@ namespace Chummer
 
             Cursor = Cursors.Default;
 
-            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
+            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
             {
                 if (MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"),
                     LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
