@@ -49,11 +49,7 @@ namespace Chummer
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
-        public static PluginControl PluginLoader
-        {
-            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
-            set => _pluginLoader = value;
-        }
+        public static PluginControl PluginLoader => _pluginLoader ?? (_pluginLoader = new PluginControl());
 
 
         /// <summary>
@@ -175,19 +171,25 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
-                    MainForm.ShowMessageBox(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MainForm is null at the moment, so we have to show error box manually
+                    using (Form objForm = new Form {TopMost = true})
+                        MessageBox.Show(objForm, LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MainForm.ShowMessageBox(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MainForm is null at the moment, so we have to show error box manually
+                    using (Form objForm = new Form { TopMost = true })
+                        MessageBox.Show(objForm, GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(strPostErrorMessage))
                 {
-                    MainForm.ShowMessageBox(strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MainForm is null at the moment, so we have to show error box manually
+                    using (Form objForm = new Form { TopMost = true })
+                        MessageBox.Show(objForm, strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                     return;
                 }
 
@@ -366,10 +368,10 @@ namespace Chummer
                 }
                 if (showMainForm)
                 {
-                    MainForm.FormMainInitialize(pvt);
+                    MainForm.MyStartupPVT = pvt;
                     Application.Run(MainForm);
                 }
-                _pluginLoader?.Dispose();
+                PluginLoader?.Dispose();
                 Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
