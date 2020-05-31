@@ -95,19 +95,19 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        public void FormMainInitialize(PageViewTelemetry pvt = null)
+        private void frmChummerMain_Load(object sender, EventArgs e)
         {
-            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
+            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
                     op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
                     op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
-                    if (pvt != null)
+                    if (MyStartupPVT != null)
                     {
-                        pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
-                        op_frmChummerMain.tc.TrackPageView(pvt);
+                        MyStartupPVT.Duration = DateTimeOffset.UtcNow - MyStartupPVT.Timestamp;
+                        op_frmChummerMain.tc.TrackPageView(MyStartupPVT);
                     }
 
                     Text = MainTitle;
@@ -129,10 +129,7 @@ namespace Chummer
                     _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
-                    GlobalOptions.MRUChanged += (sender, e) =>
-                    {
-                        this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
-                    };
+                    GlobalOptions.MRUChanged += (senderInner, eInner) => { this.DoThreadSafe(() => { PopulateMRUToolstripMenu(senderInner, eInner); }); };
 
                     try
                     {
@@ -146,24 +143,24 @@ namespace Chummer
                                 if (File.Exists(strLoopOldFilePath))
                                     File.Delete(strLoopOldFilePath);
                             }
-                            catch (UnauthorizedAccessException e)
+                            catch (UnauthorizedAccessException ex)
                             {
                                 //we will just delete it the next time
                                 //its probably the "used by another process"
-                                Log.Trace(e,
+                                Log.Trace(ex,
                                     "UnauthorizedAccessException can be ignored - probably used by another process.");
                             }
                         }
                     }
-                    catch (UnauthorizedAccessException e)
+                    catch (UnauthorizedAccessException ex)
                     {
-                        Log.Trace(e,
+                        Log.Trace(ex,
                             "UnauthorizedAccessException in " + Utils.GetStartupPath +
                             "can be ignored - probably a weird path like Recycle.Bin or something...");
                     }
-                    catch (IOException e)
+                    catch (IOException ex)
                     {
-                        Log.Trace(e,
+                        Log.Trace(ex,
                             "IOException in " + Utils.GetStartupPath +
                             "can be ignored - probably another instance blocking it...");
                     }
@@ -179,7 +176,7 @@ namespace Chummer
                     }
 
 
-                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text})
+                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text })
                     {
                         frmLoadingForm.Reset(3);
                         frmLoadingForm.Show();
@@ -279,18 +276,18 @@ namespace Chummer
                                     }
                                 });
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 if (op_frmChummerMain.MyDependencyTelemetry != null)
                                     op_frmChummerMain.MyDependencyTelemetry.Success = false;
                                 if (op_frmChummerMain.MyRequestTelemetry != null)
                                     op_frmChummerMain.MyRequestTelemetry.Success = false;
-                                ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                                ExceptionTelemetry ext = new ExceptionTelemetry(ex)
                                 {
                                     SeverityLevel = SeverityLevel.Warning
                                 };
-                                op_frmChummerMain.tc.TrackException(ex);
-                                Log.Warn(e);
+                                op_frmChummerMain.tc.TrackException(ext);
+                                Log.Warn(ex);
                             }
                         }
 
@@ -317,7 +314,7 @@ namespace Chummer
                         LanguageManager.TranslateToolStripItemsRecursively(objItem);
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     if (op_frmChummerMain != null)
                     {
@@ -325,15 +322,56 @@ namespace Chummer
                             op_frmChummerMain.MyDependencyTelemetry.Success = false;
                         if (op_frmChummerMain.MyRequestTelemetry != null)
                             op_frmChummerMain.MyRequestTelemetry.Success = false;
-                        op_frmChummerMain.tc.TrackException(e);
+                        op_frmChummerMain.tc.TrackException(ex);
                     }
-                    Log.Error(e);
+
+                    Log.Error(ex);
                     throw;
                 }
 
-            }
+                //sometimes the Configuration gets messed up - make sure it is valid!
+                try
+                {
+                    Size si = Properties.Settings.Default.Size;
+                }
+                catch (ArgumentException ex)
+                {
+                    //the config is invalid - reset it!
+                    Properties.Settings.Default.Reset();
+                    Properties.Settings.Default.Save();
+                    Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                }
+                catch (System.Configuration.ConfigurationErrorsException ex)
+                {
+                    //the config is invalid - reset it!
+                    Properties.Settings.Default.Reset();
+                    Properties.Settings.Default.Save();
+                    Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                }
 
+                if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
+                {
+                    Size = new Size(1280, 720);
+                    StartPosition = FormStartPosition.CenterScreen;
+                }
+                else
+                {
+                    WindowState = Properties.Settings.Default.WindowState;
+
+                    if (WindowState == FormWindowState.Minimized) WindowState = FormWindowState.Normal;
+
+                    Location = Properties.Settings.Default.Location;
+                    Size = Properties.Settings.Default.Size;
+                }
+
+                if (GlobalOptions.StartupFullscreen)
+                    WindowState = FormWindowState.Maximized;
+
+                mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
+            }
         }
+
+        public PageViewTelemetry MyStartupPVT { get; set; }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -993,48 +1031,6 @@ namespace Chummer
             }
         }
 
-        private void frmChummerMain_Load(object sender, EventArgs e)
-        {
-            //sometimes the Configuration gets messed up - make sure it is valid!
-            try
-            {
-                Size si = Properties.Settings.Default.Size;
-            }
-            catch (ArgumentException ex)
-            {
-                //the config is invalid - reset it!
-                Properties.Settings.Default.Reset();
-                Properties.Settings.Default.Save();
-                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
-            }
-            catch (System.Configuration.ConfigurationErrorsException ex)
-            {
-                //the config is invalid - reset it!
-                Properties.Settings.Default.Reset();
-                Properties.Settings.Default.Save();
-                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
-            }
-            if(Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
-            {
-                Size = new Size(1280, 720);
-                StartPosition = FormStartPosition.CenterScreen;
-            }
-            else
-            {
-                WindowState = Properties.Settings.Default.WindowState;
-
-                if(WindowState == FormWindowState.Minimized) WindowState = FormWindowState.Normal;
-
-                Location = Properties.Settings.Default.Location;
-                Size = Properties.Settings.Default.Size;
-            }
-
-            if(GlobalOptions.StartupFullscreen)
-                WindowState = FormWindowState.Maximized;
-
-            mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
-        }
-
         private static bool IsVisibleOnAnyScreen()
         {
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
@@ -1138,7 +1134,6 @@ namespace Chummer
                     msg += "Exception: " + e;
                     Log.Fatal(e, msg);
                 }
-
             }
 
             using (Form objForm = new Form {TopMost = true})
