@@ -869,10 +869,10 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
                     {
-                        if (MessageBox.Show(
-                                LanguageManager.GetString("Message_ImprovementLoadError"),
-                                LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (Utils.IsUnitTest || MessageBox.Show(
+                            LanguageManager.GetString("Message_ImprovementLoadError"),
+                            LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         {
                             DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                             CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
@@ -2184,7 +2184,7 @@ namespace Chummer
 
             Cursor = Cursors.Default;
 
-            if (strOutdatedItems.Length > 0)
+            if (strOutdatedItems.Length > 0 && !Utils.IsUnitTest)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
                                 strOutdatedItems +

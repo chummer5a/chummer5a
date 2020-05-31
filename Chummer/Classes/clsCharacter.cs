@@ -892,7 +892,7 @@ namespace Chummer
             XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
             XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
-                : "/chummer/metatypes/metatype[id = \"" + MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
                 return xmlMetatypeNode;
             _xmlMetatypeNode = xmlMetatypeNode;

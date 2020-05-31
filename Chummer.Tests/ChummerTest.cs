@@ -162,6 +162,7 @@ namespace Chummer.Tests
                             frmCharacterForm.MdiParent = MainForm;
                             frmCharacterForm.WindowState = FormWindowState.Minimized;
                             frmCharacterForm.Show();
+                            frmCharacterForm.Close();
                         }
                     }
                     catch (Exception e)

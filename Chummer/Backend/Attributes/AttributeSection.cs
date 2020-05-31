@@ -678,6 +678,8 @@ namespace Chummer.Backend.Attributes
         {
             if (objNewAttribute == null)
                 return null;
+            if (objCharacterNode == null)
+                throw new ArgumentNullException(nameof(objCharacterNode));
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
                 strAttributeLower = "mag";
