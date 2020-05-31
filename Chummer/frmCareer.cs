@@ -15875,27 +15875,27 @@ namespace Chummer
                 }
             }
 
-            double dblKarmaValue = 0;
-            double dblNuyenValue = 0;
+            decimal decKarmaValue = 0;
+            decimal decNuyenValue = 0;
 
             foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
-                    dblKarmaValue += decimal.ToDouble(objExpense.Amount);
-                    expenseChart1.Karma.Add(dblKarmaValue);
-                    expenseChart2.Karma.Add(Convert.ToDouble(objExpense.Amount));
+                    decKarmaValue += objExpense.Amount;
+                    expenseChart1.Karma.Add(decKarmaValue);
+                    expenseChart2.Karma.Add(objExpense.Amount);
                 }
                 else
                 {
-                    dblNuyenValue += decimal.ToDouble(objExpense.Amount);
-                    expenseChart1.Nuyen.Add(dblNuyenValue/1000);
-                    expenseChart2.Nuyen.Add(Convert.ToDouble(objExpense.Amount/1000));
+                    decNuyenValue += objExpense.Amount;
+                    expenseChart1.Nuyen.Add(decNuyenValue);
+                    expenseChart2.Nuyen.Add(decNuyenValue);
                 }
             }
 
-            expenseChart1.Karma.Add(dblKarmaValue);
-            expenseChart1.Nuyen.Add(dblNuyenValue/1000);
+            expenseChart1.Karma.Add(decKarmaValue);
+            expenseChart1.Nuyen.Add(decNuyenValue);
         }
 
         /// <summary>

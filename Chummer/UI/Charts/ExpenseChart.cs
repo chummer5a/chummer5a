@@ -26,16 +26,13 @@ namespace Chummer.UI.Charts
 {
     public partial class ExpenseChart : UserControl
     {
-        private ChartValues<double> _karma;
-        private ChartValues<double> _nuyen;
-        private ChartValues<string> _date;
+        private ChartValues<decimal> _karma = new ChartValues<decimal>();
+        private ChartValues<decimal> _nuyen = new ChartValues<decimal>();
+        private ChartValues<string> _date = new ChartValues<string>();
 
         public ExpenseChart()
         {
             InitializeComponent();
-            _karma = new ChartValues<double>();
-            _nuyen = new ChartValues<double>();
-            _date = new ChartValues<string>();
             cartesianChart1.Series = new SeriesCollection
             {
                 new LineSeries
@@ -93,13 +90,13 @@ namespace Chummer.UI.Charts
 
         #region Properties
 
-        public ChartValues<double> Karma
+        public ChartValues<decimal> Karma
         {
             get => _karma;
             set => _karma = value;
         }
 
-        public ChartValues<double> Nuyen
+        public ChartValues<decimal> Nuyen
         {
             get => _nuyen;
             set => _nuyen = value;
