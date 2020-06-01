@@ -28,13 +28,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
+using LiveCharts.Defaults;
 using NLog;
 
 namespace Chummer
@@ -1830,7 +1830,7 @@ namespace Chummer
         private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //HACK PERFORMANCE
-            //So, skills tell if anything maybe interesting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVYER FYCKING THING we do it only every 5 ms
+            //So, skills tell if anything maybe interesting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVERY FYCKING THING we do it only every 5 ms
             if (SkillPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
             SkillPropertyChanged_StopWatch.Restart();
             
@@ -15788,20 +15788,19 @@ namespace Chummer
             lstNuyen.Items.Clear();
             lstKarma.ContextMenuStrip = null;
             lstNuyen.ContextMenuStrip = null;
-            //Find the first karma/nuyen entry
-            DateTime KarmaFirst = DateTime.MinValue;
-            DateTime KarmaLast = DateTime.Now;
-            DateTime NuyenFirst = DateTime.MinValue;
-            DateTime NuyenLast = DateTime.Now;
+            chtKarma.SuspendLayout();
+            chtNuyen.SuspendLayout();
+            chtKarma.ExpenseValues.Clear();
+            chtNuyen.ExpenseValues.Clear();
+            decimal decKarmaValue = 0;
+            decimal decNuyenValue = 0;
+            //Find the last karma/nuyen entry as well in case a chart only contains one point
+            DateTime KarmaLast = DateTime.MinValue;
+            DateTime NuyenLast = DateTime.MinValue;
             foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
-                    if (KarmaFirst == DateTime.MinValue || objExpense.Date.CompareTo(KarmaFirst) < 0)
-                        KarmaFirst = objExpense.Date;
-                    if (objExpense.Date.CompareTo(KarmaLast) > 0)
-                        KarmaLast = objExpense.Date;
-
                     if (objExpense.Amount != 0 || chkShowFreeKarma.Checked)
                     {
                         ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
@@ -15819,13 +15818,11 @@ namespace Chummer
 
                         ListViewItem objItem = new ListViewItem
                         {
-                            Text = GlobalOptions.CustomDateTimeFormats
-                                ? objExpense.Date.ToString(GlobalOptions.CustomDateFormat, GlobalOptions.CultureInfo) +
-                                  LanguageManager.GetString("String_Space") +
-                                  objExpense.Date.ToString(GlobalOptions.CustomTimeFormat, GlobalOptions.CultureInfo)
-                                : objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern, GlobalOptions.CultureInfo) +
-                                  LanguageManager.GetString("String_Space") +
-                                  objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
+                            Text = objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
+                                       ? GlobalOptions.CustomDateFormat
+                                         + ' ' + GlobalOptions.CustomTimeFormat
+                                       : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
+                                         + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
                         };
                         objItem.SubItems.Add(objAmountItem);
                         objItem.SubItems.Add(objReasonItem);
@@ -15834,121 +15831,63 @@ namespace Chummer
                         lstKarma.Items.Insert(0, objItem);
                         if (objExpense.Undo != null)
                             lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
+
+                        if (objExpense.Amount != 0)
+                        {
+                            if (objExpense.Date > KarmaLast)
+                                KarmaLast = objExpense.Date;
+                            decKarmaValue += objExpense.Amount;
+                            chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
+                        }
                     }
                 }
-                else
+                else if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
                 {
-                    if (NuyenFirst == DateTime.MinValue || objExpense.Date.CompareTo(NuyenFirst) < 0)
-                        NuyenFirst = objExpense.Date;
-                    if (objExpense.Date.CompareTo(NuyenLast) > 0)
-                        NuyenLast = objExpense.Date;
-
-                    if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
+                    ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
                     {
-                        ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objExpense.Amount.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo)
-                        };
-                        ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objExpense.DisplayReason(GlobalOptions.Language)
-                        };
-                        ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objExpense.InternalId
-                        };
+                        Text = objExpense.Amount.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                    };
+                    ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
+                    {
+                        Text = objExpense.DisplayReason(GlobalOptions.Language)
+                    };
+                    ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                    {
+                        Text = objExpense.InternalId
+                    };
 
-                        ListViewItem objItem = new ListViewItem
-                        {
-                            Text = objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern, GlobalOptions.CultureInfo) +
-                                   LanguageManager.GetString("String_Space") +
-                                   objExpense.Date.ToString(GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
-                        };
-                        objItem.SubItems.Add(objAmountItem);
-                        objItem.SubItems.Add(objReasonItem);
-                        objItem.SubItems.Add(objInternalIdItem);
+                    ListViewItem objItem = new ListViewItem
+                    {
+                        Text = objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
+                            ? GlobalOptions.CustomDateFormat
+                              + ' ' + GlobalOptions.CustomTimeFormat
+                            : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
+                              + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
+                    };
+                    objItem.SubItems.Add(objAmountItem);
+                    objItem.SubItems.Add(objReasonItem);
+                    objItem.SubItems.Add(objInternalIdItem);
 
-                        lstNuyen.Items.Insert(0, objItem);
-                        if (objExpense.Undo != null)
-                            lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
+                    lstNuyen.Items.Insert(0, objItem);
+                    if (objExpense.Undo != null)
+                        lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
+                    if (objExpense.Amount != 0)
+                    {
+                        if (objExpense.Date > NuyenLast)
+                            NuyenLast = objExpense.Date;
+                        decNuyenValue += objExpense.Amount;
+                        chtNuyen.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decNuyenValue)));
                     }
                 }
             }
-
-            // Charting test for Expenses.
-            Series objKarmaSeries;
-            if (chtKarma.Series.Count > 0)
-            {
-                objKarmaSeries = chtKarma.Series[0];
-                objKarmaSeries.Points.Clear();
-            }
-            else
-            {
-                objKarmaSeries = new Series
-                {
-                    Name = "KarmaSeries",
-                    Color = Color.Blue,
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = false,
-                    ChartType = SeriesChartType.Area
-                };
-                chtKarma.Series.Add(objKarmaSeries);
-            }
-            Series objNuyenSeries;
-            if (chtNuyen.Series.Count > 0)
-            {
-                objNuyenSeries = chtNuyen.Series[0];
-                objNuyenSeries.Points.Clear();
-            }
-            else
-            {
-                objNuyenSeries = new Series
-                {
-                    Name = "NuyenSeries",
-                    Color = Color.Green,
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = false,
-                    ChartType = SeriesChartType.Area
-                };
-                chtNuyen.Series.Add(objNuyenSeries);
-            }
-
-            // Configure the Karma chart.
-            ChartArea objKarmaChartArea = chtKarma.ChartAreas[0];
-            objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
-            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("String_KarmaRemaining");
-            objKarmaChartArea.AxisX.Minimum = 0;
-            objKarmaChartArea.AxisX.Maximum = (KarmaLast - KarmaFirst).TotalDays;
-
-            // Configure the Nuyen chart.
-            ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
-            objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
-            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("String_NuyenRemaining");
-            objNuyenChartArea.AxisX.Minimum = 0;
-            objNuyenChartArea.AxisX.Maximum = (NuyenLast - NuyenFirst).TotalDays;
-
-            double dblKarmaValue = 0;
-            double dblNuyenValue = 0;
-
-            foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
-            {
-                if (objExpense.Type == ExpenseType.Karma)
-                {
-                    dblKarmaValue += decimal.ToDouble(objExpense.Amount);
-                    objKarmaSeries.Points.AddXY((objExpense.Date - KarmaFirst).TotalDays, dblKarmaValue);
-                }
-                else
-                {
-                    dblNuyenValue += decimal.ToDouble(objExpense.Amount);
-                    objNuyenSeries.Points.AddXY((objExpense.Date - NuyenFirst).TotalDays, dblNuyenValue);
-                }
-            }
-
-            objKarmaSeries.Points.AddXY((KarmaLast - KarmaFirst).TotalDays, CharacterObject.Karma);
-            objNuyenSeries.Points.AddXY((NuyenLast - NuyenFirst).TotalDays, CharacterObject.Nuyen);
-
-            chtKarma.Invalidate();
-            chtNuyen.Invalidate();
+            if (chtKarma.ExpenseValues.Count < 2)
+                chtKarma.ExpenseValues.Add(new DateTimePoint(NuyenLast != DateTime.MinValue ? NuyenLast : DateTime.Now, decimal.ToDouble(decKarmaValue)));
+            if (chtNuyen.ExpenseValues.Count < 2)
+                chtNuyen.ExpenseValues.Add(new DateTimePoint(KarmaLast != DateTime.MinValue ? KarmaLast : DateTime.Now, decimal.ToDouble(decNuyenValue)));
+            chtKarma.NormalizeYAxis();
+            chtNuyen.NormalizeYAxis();
+            chtKarma.ResumeLayout();
+            chtNuyen.ResumeLayout();
         }
 
         /// <summary>

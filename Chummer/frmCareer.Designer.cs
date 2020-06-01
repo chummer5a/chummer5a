@@ -56,8 +56,6 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Drugs");
             System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Improvements");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCareer));
             this.lblTraditionSource = new System.Windows.Forms.Label();
@@ -1227,7 +1225,6 @@ namespace Chummer
             this.tabKarma = new System.Windows.Forms.TabPage();
             this.splitKarmaNuyen = new System.Windows.Forms.SplitContainer();
             this.tlpKarma = new System.Windows.Forms.TableLayoutPanel();
-            this.chtKarma = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.flowLayoutPanel11 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdKarmaGained = new System.Windows.Forms.Button();
             this.cmdKarmaSpent = new System.Windows.Forms.Button();
@@ -1237,8 +1234,9 @@ namespace Chummer
             this.colKarmaDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colKarmaAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chtKarma = new Chummer.UI.Charts.ExpenseChart();
             this.tlpNuyen = new System.Windows.Forms.TableLayoutPanel();
-            this.chtNuyen = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chtNuyen = new Chummer.UI.Charts.ExpenseChart();
             this.lstNuyen = new System.Windows.Forms.ListView();
             this.colNuyenDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNuyenAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -1564,10 +1562,8 @@ namespace Chummer
             this.splitKarmaNuyen.Panel2.SuspendLayout();
             this.splitKarmaNuyen.SuspendLayout();
             this.tlpKarma.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).BeginInit();
             this.flowLayoutPanel11.SuspendLayout();
             this.tlpNuyen.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).BeginInit();
             this.flowLayoutPanel12.SuspendLayout();
             this.tabCalendar.SuspendLayout();
             this.tblCalendar.SuspendLayout();
@@ -16795,30 +16791,20 @@ namespace Chummer
             // 
             this.tlpKarma.ColumnCount = 1;
             this.tlpKarma.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpKarma.Controls.Add(this.chtKarma, 0, 2);
             this.tlpKarma.Controls.Add(this.flowLayoutPanel11, 0, 0);
             this.tlpKarma.Controls.Add(this.lstKarma, 0, 1);
+            this.tlpKarma.Controls.Add(this.chtKarma, 0, 3);
             this.tlpKarma.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarma.Location = new System.Drawing.Point(0, 0);
             this.tlpKarma.Margin = new System.Windows.Forms.Padding(0);
             this.tlpKarma.Name = "tlpKarma";
-            this.tlpKarma.RowCount = 3;
+            this.tlpKarma.RowCount = 4;
             this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tlpKarma.Size = new System.Drawing.Size(414, 625);
             this.tlpKarma.TabIndex = 7;
-            // 
-            // chtKarma
-            // 
-            chartArea1.Name = "KarmaArea";
-            this.chtKarma.ChartAreas.Add(chartArea1);
-            this.chtKarma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chtKarma.Location = new System.Drawing.Point(3, 422);
-            this.chtKarma.Name = "chtKarma";
-            this.chtKarma.Size = new System.Drawing.Size(408, 200);
-            this.chtKarma.TabIndex = 4;
-            this.chtKarma.Text = "chart1";
             // 
             // flowLayoutPanel11
             // 
@@ -16900,7 +16886,7 @@ namespace Chummer
             this.lstKarma.Location = new System.Drawing.Point(3, 32);
             this.lstKarma.MultiSelect = false;
             this.lstKarma.Name = "lstKarma";
-            this.lstKarma.Size = new System.Drawing.Size(408, 384);
+            this.lstKarma.Size = new System.Drawing.Size(408, 350);
             this.lstKarma.TabIndex = 0;
             this.lstKarma.UseCompatibleStateImageBehavior = false;
             this.lstKarma.View = System.Windows.Forms.View.Details;
@@ -16925,6 +16911,18 @@ namespace Chummer
             this.colKarmaReason.Text = "Reason";
             this.colKarmaReason.Width = 208;
             // 
+            // chtKarma
+            // 
+            this.chtKarma.AutoSize = true;
+            this.chtKarma.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.chtKarma.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chtKarma.Location = new System.Drawing.Point(3, 388);
+            this.chtKarma.Name = "chtKarma";
+            this.chtKarma.NuyenMode = false;
+            this.chtKarma.Padding = new System.Windows.Forms.Padding(3);
+            this.chtKarma.Size = new System.Drawing.Size(408, 234);
+            this.chtKarma.TabIndex = 7;
+            // 
             // tlpNuyen
             // 
             this.tlpNuyen.ColumnCount = 1;
@@ -16944,14 +16942,15 @@ namespace Chummer
             // 
             // chtNuyen
             // 
-            chartArea2.Name = "NuyenArea";
-            this.chtNuyen.ChartAreas.Add(chartArea2);
+            this.chtNuyen.AutoSize = true;
+            this.chtNuyen.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.chtNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chtNuyen.Location = new System.Drawing.Point(3, 422);
+            this.chtNuyen.Location = new System.Drawing.Point(3, 388);
             this.chtNuyen.Name = "chtNuyen";
-            this.chtNuyen.Size = new System.Drawing.Size(411, 200);
-            this.chtNuyen.TabIndex = 7;
-            this.chtNuyen.Text = "chart1";
+            this.chtNuyen.NuyenMode = true;
+            this.chtNuyen.Padding = new System.Windows.Forms.Padding(3);
+            this.chtNuyen.Size = new System.Drawing.Size(411, 234);
+            this.chtNuyen.TabIndex = 9;
             // 
             // lstNuyen
             // 
@@ -16966,7 +16965,7 @@ namespace Chummer
             this.lstNuyen.Location = new System.Drawing.Point(3, 32);
             this.lstNuyen.MultiSelect = false;
             this.lstNuyen.Name = "lstNuyen";
-            this.lstNuyen.Size = new System.Drawing.Size(411, 384);
+            this.lstNuyen.Size = new System.Drawing.Size(411, 350);
             this.lstNuyen.TabIndex = 3;
             this.lstNuyen.UseCompatibleStateImageBehavior = false;
             this.lstNuyen.View = System.Windows.Forms.View.Details;
@@ -18541,12 +18540,10 @@ namespace Chummer
             this.splitKarmaNuyen.ResumeLayout(false);
             this.tlpKarma.ResumeLayout(false);
             this.tlpKarma.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).EndInit();
             this.flowLayoutPanel11.ResumeLayout(false);
             this.flowLayoutPanel11.PerformLayout();
             this.tlpNuyen.ResumeLayout(false);
             this.tlpNuyen.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).EndInit();
             this.flowLayoutPanel12.ResumeLayout(false);
             this.flowLayoutPanel12.PerformLayout();
             this.tabCalendar.ResumeLayout(false);
@@ -19338,7 +19335,6 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabKarma;
         private System.Windows.Forms.SplitContainer splitKarmaNuyen;
         private System.Windows.Forms.CheckBox chkShowFreeKarma;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chtKarma;
         private System.Windows.Forms.Button cmdKarmaEdit;
         private System.Windows.Forms.Button cmdKarmaGained;
         private System.Windows.Forms.ListView lstKarma;
@@ -19347,7 +19343,6 @@ namespace Chummer
         private System.Windows.Forms.ColumnHeader colKarmaReason;
         private System.Windows.Forms.Button cmdKarmaSpent;
         private System.Windows.Forms.CheckBox chkShowFreeNuyen;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chtNuyen;
         private System.Windows.Forms.Button cmdNuyenEdit;
         private System.Windows.Forms.ListView lstNuyen;
         private System.Windows.Forms.ColumnHeader colNuyenDate;
@@ -19880,6 +19875,8 @@ namespace Chummer
         private CheckBox chkWeaponWireless;
         private ToolStripMenuItem tsCyberwareUpgrade;
         private CheckBox chkCyberwareWireless;
+        private UI.Charts.ExpenseChart chtKarma;
+        private UI.Charts.ExpenseChart chtNuyen;
         private BufferedTableLayoutPanel btlpPhysicalCMBoxes;
         private Label lblPhysicalRecoveryText;
         private Label lblCMPhysicalRecoveryPool;
