@@ -497,13 +497,13 @@ namespace Chummer
 
             if (objSource != null)
             {
-                grpSelectedSourcebook.Visible = true;
+                grpSelectedSourcebook.Enabled = true;
                 txtPDFLocation.Text = objSource.Path;
                 nudPDFOffset.Value = objSource.Offset;
             }
             else
             {
-                grpSelectedSourcebook.Visible = false;
+                grpSelectedSourcebook.Enabled = false;
             }
         }
 
@@ -1523,8 +1523,16 @@ namespace Chummer
             chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
             chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
             chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
-            txtDateFormat.Text = GlobalOptions.CustomDateFormat;
-            txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
+            if (!chkCustomDateTimeFormats.Checked)
+            {
+                txtDateFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern;
+                txtTimeFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern;
+            }
+            else
+            {
+                txtDateFormat.Text = GlobalOptions.CustomDateFormat;
+                txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
+            }
             PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
