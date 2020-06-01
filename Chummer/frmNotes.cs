@@ -38,7 +38,7 @@ namespace Chummer
 			Width = s_IntWidth;
 			Height = s_IntHeight;
             _blnLoading = false;
-		}
+        }
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{

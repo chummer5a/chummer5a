@@ -137,6 +137,9 @@
       <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.14.0\lib\net45\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.21\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
@@ -538,6 +541,12 @@
     </Compile>
     <Compile Include="UI\Charts\ExpenseChart.Designer.cs">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Editor\HtmlEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Editor\HtmlEditor.Designer.cs">
+      <DependentUpon>HtmlEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Shared\Components\DicePoolControl.cs">
       <SubType>UserControl</SubType>
@@ -1286,6 +1295,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Editor\HtmlEditor.resx">
+      <DependentUpon>HtmlEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
