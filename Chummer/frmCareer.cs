@@ -2569,7 +2569,7 @@ namespace Chummer
             }
 
             string strOpenFile = string.Empty;
-            System.Windows.Forms.Cursor objOldCursor = Cursor;
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
             using (Character objMerge = new Character
@@ -2777,7 +2777,7 @@ namespace Chummer
                 return;
 
             string strOpenFile = string.Empty;
-            System.Windows.Forms.Cursor objOldCursor = Cursor;
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
             // Load the Spirit's save file into a new Merge character.

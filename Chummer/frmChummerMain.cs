@@ -332,7 +332,7 @@ namespace Chummer
                 //sometimes the Configuration gets messed up - make sure it is valid!
                 try
                 {
-                    Size si = Properties.Settings.Default.Size;
+                    Size _ = Properties.Settings.Default.Size;
                 }
                 catch (ArgumentException ex)
                 {
@@ -1561,7 +1561,7 @@ namespace Chummer
             }
             else
             {
-                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice);
+                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
                 frmRoller.Show();
             }
         }

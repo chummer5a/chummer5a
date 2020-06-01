@@ -1173,13 +1173,13 @@ namespace Chummer
                 Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
                 Parallel.For(0, lstMugshotsBase64.Count, i =>
                 {
-                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
                 });
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if (lstMugshotsBase64.Count == 1)
             {
-                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
             }
         }
 

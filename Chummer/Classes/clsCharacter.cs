@@ -2535,21 +2535,23 @@ namespace Chummer
                             }
                         }
 #if !DEBUG
-if (!Utils.IsUnitTest){
-                Version verCurrentversion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                int intResult = verCurrentversion.CompareTo(_verSavedVersion);
-                if (intResult == -1)
-                {
-                    DialogResult result =
- Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_OutdatedChummerSave"), _verSavedVersion.ToString(), verCurrentversion.ToString()),
-                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-
-                    if (result != DialogResult.Yes)
-                    {
-                        IsLoading = false;
-                        return false;
-                    }
-                }}
+                        if (!Utils.IsUnitTest)
+                        {
+                            Version verCurrentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                            if (verCurrentVersion.CompareTo(_verSavedVersion) == -1)
+                            {
+                                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
+                                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
+                                        _verSavedVersion.ToString(), verCurrentVersion.ToString()),
+                                    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Error))
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                            }
+                        }
 #endif
                         // Get the name of the settings file in use if possible.
                         xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
