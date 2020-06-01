@@ -5,10 +5,10 @@ using System.IO;
 
 namespace ChummerDataViewer.Model
 {
-	internal class Database
+    public class Database : IDisposable
 	{
 		private readonly object _syncRoot = new object();
-		private DatabasePrivateApi innerApi;
+		private readonly DatabasePrivateApi innerApi;
 
 		private readonly SQLiteConnection _dbConnection;
 		private readonly SQLiteCommand _setKey;
@@ -73,7 +73,7 @@ namespace ChummerDataViewer.Model
 			_insertCrash = new SQLiteCommand("INSERT OR IGNORE INTO crashreports " +
 			                                 "(guid, timestamp, buildtype, errorfriendly, encryptionkey, url, version) " +
 			                                 "VALUES " +
-			                                 "(@guid, @timestamp, @buildtype, @errorfriendly, @encryptionkey, @url, @version);", 
+			                                 "(@guid, @timestamp, @buildtype, @errorfriendly, @encryptionkey, @url, @version);",
 				_dbConnection);
 
 			_getAllCrashes = new SQLiteCommand("SELECT * FROM crashreports ORDER BY timestamp DESC;", _dbConnection);
@@ -93,7 +93,7 @@ namespace ChummerDataViewer.Model
 			new SQLiteConnection($"Data Source={Path.Combine(PersistentState.DatabaseFolder, "persistent.db")}; Version=3;")
 				.OpenAndReturn())
 		{
-			
+
 		}
 
 		public void SetKey(string key, string value)
@@ -153,7 +153,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_insertCrash.Reset(true, false);
-				_insertCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_insertCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@timestamp", timestamp));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@buildtype", buildType));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@errorfriendly", errorFriendly));
@@ -222,9 +222,9 @@ namespace ChummerDataViewer.Model
 			string s3 = reader.GetString(4);
 			string s4 = reader.GetString(5);
 			Version v = Version.Parse(reader.GetString(6));
-			string s6 = reader.GetValue(7) as string;         //Not GetString as GetString throws an invalidCast 
+			string s6 = reader.GetValue(7) as string;         //Not GetString as GetString throws an invalidCast
 			string s7 = reader.GetValue(8) as string;         //(or another exception, cannot rmbr)
-			string userstory = reader.GetValue(9) as string;  //If the value is null, and this and following fields 
+			string userstory = reader.GetValue(9) as string;  //If the value is null, and this and following fields
 			string trace = reader.GetValue(10) as string;     //can be null as they aren't set before zip is downloaded
 
 
@@ -236,7 +236,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_getSingleCrash.Reset(true, false);
-				_getSingleCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_getSingleCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 
 				using (SQLiteDataReader reader = _getSingleCrash.ExecuteReader())
 				{
@@ -255,7 +255,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setZipFile.Reset(true, false);
-				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setZipFile.Parameters.Add(new SQLiteParameter("@ziplocation", filePath));
 
 				_setZipFile.ExecuteNonQuery();
@@ -267,7 +267,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setUserStory.Reset(true, false);
-				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setUserStory.Parameters.Add(new SQLiteParameter("@userstory", userstory));
 
 				_setUserStory.ExecuteNonQuery();
@@ -279,30 +279,30 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setStackTrace.Reset(true, false);
-				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setStackTrace.Parameters.Add(new SQLiteParameter("@stacktrace", exception));
 
 				_setStackTrace.ExecuteNonQuery();
 			}
 		}
 
-		public class DatabasePrivateApi
+		public sealed class DatabasePrivateApi
 		{
-			private Database _db;
+            private readonly Database _db;
 
-			internal DatabasePrivateApi(Database db)
+            public DatabasePrivateApi(Database db)
 			{
 				_db = db;
 			}
 
-			internal void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
+            public void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
 
-			public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
+            public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
 
-			public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
+            public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
 		}
 
-		
+
 
 		public void Delete()
 		{
@@ -312,5 +312,40 @@ namespace ChummerDataViewer.Model
 				File.Delete(Path.Combine(PersistentState.DatabaseFolder, "persistent.db"));
 			}
 		}
-	}
+
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _dbConnection.Dispose();
+                    _setKey.Dispose();
+                    _deleteKey.Dispose();
+                    _getKey.Dispose();
+
+                    _getAllCrashes.Dispose();
+                    _getSingleCrash.Dispose();
+                    _getDistinctVersions.Dispose();
+                    _getDistinctBuildTypes.Dispose();
+
+                    _insertCrash.Dispose();
+                    _setZipFile.Dispose();
+                    _setUserStory.Dispose();
+                    _setStackTrace.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
 }

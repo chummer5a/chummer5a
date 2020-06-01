@@ -4,14 +4,18 @@ using System.Windows.Forms;
 [assembly: CLSCompliant(true)]
 namespace Translator
 {
-    internal static class Program
+    static class Program
     {
+        private static frmTranslatorMain s_FrmMain;
         [STAThread]
         private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            s_FrmMain = new frmTranslatorMain();
+            Application.Run(s_FrmMain);
         }
+
+        public static frmTranslatorMain MainForm => s_FrmMain;
     }
 }

@@ -36,7 +36,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -45,13 +45,13 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <TransformOnBuild>True</TransformOnBuild>
@@ -61,8 +61,9 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DebugSymbols>true</DebugSymbols>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -90,69 +91,157 @@
   <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.Core.1.5.1-beta1\lib\net45\HtmlRenderer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.6\lib\net45\HtmlRenderer.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlRenderer.PdfSharp, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.PdfSharp.1.5.1-beta1\lib\net45\HtmlRenderer.PdfSharp.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer.PdfSharp, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.PdfSharp.1.5.0.6\lib\net45\HtmlRenderer.PdfSharp.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlRenderer.WinForms, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.1-beta1\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="MersenneTwister, Version=1.0.6146.4688, Culture=neutral, PublicKeyToken=9c84633ec57842f3, processorArchitecture=MSIL">
-      <HintPath>..\packages\MersenneTwister.1.0.5\lib\portable-net45+netcore45+win8+wp8\MersenneTwister.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
-    <Reference Include="PdfSharp, Version=1.50.4619.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.1.50.4619-beta4c\lib\net20\PdfSharp.dll</HintPath>
+    <Reference Include="LiveCharts.WinForms, Version=0.9.7.1, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.WinForms.0.9.7.1\lib\net45\LiveCharts.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="PdfSharp.Charting, Version=1.50.4619.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.1.50.4619-beta4c\lib\net20\PdfSharp.Charting.dll</HintPath>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="MersenneTwister, Version=1.0.7081.25709, Culture=neutral, PublicKeyToken=9c84633ec57842f3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MersenneTwister.1.0.6\lib\portable-net45+netcore45+win8+wp8\MersenneTwister.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.14.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.14.0\lib\net45\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.21\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Composition.AttributedModel, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.AttributedModel.1.4.1\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Convention.1.4.1\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Hosting.1.4.1\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Runtime.1.4.1\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.TypedParts.1.4.1\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\netstandard1.1\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
+    <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
+    <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
+    <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
+    <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
+    <Compile Include="Backend\Datastructures\NuyenString.cs" />
+    <Compile Include="Backend\Datastructures\DependencyGraph.cs" />
+    <Compile Include="Backend\Datastructures\SourceString.cs" />
+    <Compile Include="Backend\Datastructures\TaggedObservableCollection.cs" />
+    <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Extensions\ListExtensions.cs" />
+    <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
+    <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
+    <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="Backend\Improvements\ImprovementMethods.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImprovementMethods.tt</DependentUpon>
+    </Compile>
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
-    <Compile Include="Backend\Datastructures\ReverseTree.cs" />
+    <Compile Include="Backend\Datastructures\DependencyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Equipment\Armor.cs" />
     <Compile Include="Backend\Equipment\CapacityStyle.cs" />
-    <Compile Include="Backend\Equipment\Commlink.cs" />
     <Compile Include="Backend\Equipment\Cyberware.cs" />
-    <Compile Include="Backend\Equipment\Equipment.cs" />
+    <Compile Include="Backend\Equipment\Drugs.cs" />
     <Compile Include="Backend\Equipment\Gear.cs" />
     <Compile Include="Backend\Equipment\Grade.cs" />
-    <Compile Include="Backend\Equipment\GradeList.cs" />
     <Compile Include="Backend\Equipment\Lifestyle.cs" />
     <Compile Include="Backend\Equipment\LifestyleQuality.cs" />
     <Compile Include="Backend\Equipment\LifestyleType.cs" />
@@ -162,7 +251,7 @@
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
-    <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Backend\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
     <Compile Include="Backend\Powers\PowerSorters.cs" />
@@ -174,6 +263,29 @@
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
+    <Compile Include="Backend\Stories\Story.cs" />
+    <Compile Include="Backend\Stories\StoryModule.cs" />
+    <Compile Include="Backend\Uniques\AIProgram.cs" />
+    <Compile Include="Backend\Uniques\Art.cs" />
+    <Compile Include="Backend\Uniques\CalendarWeek.cs" />
+    <Compile Include="Backend\Uniques\ComplexForm.cs" />
+    <Compile Include="Backend\Uniques\Contact.cs" />
+    <Compile Include="Backend\Uniques\CritterPower.cs" />
+    <Compile Include="Backend\Uniques\Enhancement.cs" />
+    <Compile Include="Backend\Uniques\Focus.cs" />
+    <Compile Include="Backend\Uniques\InitiationGrade.cs" />
+    <Compile Include="Backend\Uniques\LimitModifier.cs" />
+    <Compile Include="Backend\Uniques\Location.cs" />
+    <Compile Include="Backend\Uniques\MartialArt.cs" />
+    <Compile Include="Backend\Uniques\MartialArtManeuver.cs" />
+    <Compile Include="Backend\Uniques\MartialArtTechnique.cs" />
+    <Compile Include="Backend\Uniques\MentorSpirit.cs" />
+    <Compile Include="Backend\Uniques\Metamagic.cs" />
+    <Compile Include="Backend\Uniques\Quality.cs" />
+    <Compile Include="Backend\Uniques\Spell.cs" />
+    <Compile Include="Backend\Uniques\Spirit.cs" />
+    <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -185,10 +297,10 @@
     </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
-    <Compile Include="Classes\clsCrashreport.cs" />
+    <Compile Include="Classes\clsCrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
     <Compile Include="Classes\clsCharacter.cs" />
-    <Compile Include="Classes\clsHoverDisplayCordinator.cs" />
+    <Compile Include="Classes\clsHoverDisplayCoordinator.cs" />
     <Compile Include="Classes\clsImprovement.cs" />
     <Compile Include="Classes\clsExpenses.cs" />
     <Compile Include="Classes\clsLanguageManager.cs" />
@@ -199,18 +311,16 @@
     <Compile Include="Classes\clsParameterAttribute.cs" />
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
-    <Compile Include="Classes\clsUnique.cs" />
     <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
+    <Compile Include="Classes\ITranslatable.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\RichTextBoxExtended.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Classes\TooltipFactory.cs" />
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,21 +333,67 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\Button.cs">
+    <Compile Include="frmLoading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLoading.Designer.cs">
+      <DependentUpon>frmLoading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\Application Insights\CustomActivity.cs" />
+    <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
+    <Compile Include="helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
+    <Compile Include="helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
+    <Compile Include="helpers\Application Insights\UploadObjectAsMetric.cs" />
+    <Compile Include="helpers\BufferedTableLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\Guid.cs" />
-    <Compile Include="helpers\Label.cs">
+    <Compile Include="helpers\BufferedTableLayoutPanel.Designer.cs">
+      <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\CursorWait.cs" />
+    <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
+    <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="helpers\ButtonWithToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\FlagImageGetter.cs" />
+    <Compile Include="helpers\HubTagAttribute.cs" />
+    <Compile Include="helpers\LabelWithToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\Application Insights\LiveStreamProvider.cs" />
+    <Compile Include="helpers\NegateBinding.cs" />
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interfaces\INamedItemWithGuid.cs" />
+    <Compile Include="Interfaces\ICanPaste.cs" />
+    <Compile Include="Interfaces\ICanEquip.cs" />
+    <Compile Include="Interfaces\ICanRemove.cs" />
+    <Compile Include="Interfaces\ICanSort.cs" />
+    <Compile Include="Interfaces\IHasConditionMonitor.cs" />
+    <Compile Include="Interfaces\IHasCustomName.cs" />
+    <Compile Include="Interfaces\ICanSell.cs" />
+    <Compile Include="Interfaces\IHasChildren.cs" />
+    <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasGear.cs" />
+    <Compile Include="Interfaces\IHasLocation.cs" />
+    <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
+    <Compile Include="Interfaces\IHasMugshots.cs" />
+    <Compile Include="Interfaces\IHasInternalId.cs" />
+    <Compile Include="Interfaces\IHasName.cs" />
+    <Compile Include="Interfaces\IHasNotes.cs" />
+    <Compile Include="Interfaces\IHasStolenProperty.cs" />
+    <Compile Include="Interfaces\IHasRating.cs" />
+    <Compile Include="Interfaces\IHasSource.cs" />
+    <Compile Include="Interfaces\IHasWirelessBonus.cs" />
+    <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
     <Compile Include="PdfConvert.cs" />
+    <Compile Include="Plugins\PluginControl.cs" />
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -255,13 +411,15 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="controllers\clsDashboardController.cs" />
-    <Compile Include="Controls\DiceRollerControl.cs">
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DiceRollerControl.Designer.cs">
+    </None>
+    <None Include="Controls\DiceRollerControl.Designer.cs">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -279,6 +437,12 @@
     </Compile>
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCreateCustomDrug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateCustomDrug.Designer.cs">
+      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
     </Compile>
     <Compile Include="frmCreateCyberwareSuite.cs">
       <SubType>Form</SubType>
@@ -304,17 +468,27 @@
     <Compile Include="frmCreateSpell.Designer.cs">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGMDashboard.cs">
+    <None Include="data\drugcomponents.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\gameplayoptions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="data\SchemaExtensions.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="frmGMDashboard.cs">
+      <SubType>Form</SubType>
+    </None>
+    <None Include="frmGMDashboard.Designer.cs">
+      <DependentUpon>frmGMDashboard.cs</DependentUpon>
+    </None>
+    <Compile Include="Selection Forms\frmSelectDrug.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmGMDashboard.Designer.cs">
-      <DependentUpon>frmGMDashboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="helpers\ComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="helpers\TreeView.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Selection Forms\frmSelectDrug.Designer.cs">
+      <DependentUpon>frmSelectDrug.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectOptionalPower.cs">
       <SubType>Form</SubType>
@@ -359,6 +533,128 @@
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Charts\ExpenseChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Charts\ExpenseChart.Designer.cs">
+      <DependentUpon>ExpenseChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\Components\DicePoolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\Components\DicePoolControl.Designer.cs">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Chummy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Chummy.Designer.cs">
+      <DependentUpon>Chummy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\LimitTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
+      <DependentUpon>LimitTabUserControl.cs</DependentUpon>
+    </Compile>
+    <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\amend_encumbrance_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Availability and costs of Chameleon Suit\amend_chameleonsuit_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - High Velocity Weapons\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Painade\amend_painade_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Painade\amend_painade_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Quality Karma Costs\amend_costs_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Rigger 5 Mods - Dodge Rhino\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Reduced Weapon Mount Prices\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Skilljacks and Skillwires\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\amend_crossbow_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\custom_crossbow_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Underbarrel Weapons\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Yamaha Kaburaya\amend_kaburaya_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Morrissey Alta Availability\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Orks Have Natural Weapon Tusks\amend_orktusk_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Orks Have Natural Weapon Tusks\custom_orktusk_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Stolen Gear and In Debt Contribute to BP\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Toxic Tradition Has No Requirement\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Unrestricted Kill Code Qualities\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Visible Rigid Stock\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\actions.xml" />
+    <Content Include="data\strings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES-MersenneTwister.txt" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UI\Shared\VehiclesTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </None>
+    <None Include="UI\Shared\VehiclesTabUserControl.Designer.cs">
+      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
+    </None>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -395,6 +691,57 @@
     <Compile Include="UI\Skills\SkillsTabUserControl.Designer.cs">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Table\Alignment.cs" />
+    <Compile Include="UI\Table\ButtonTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\ButtonTableCell.Designer.cs">
+      <DependentUpon>ButtonTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\CheckBoxTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\CheckBoxTableCell.Designer.cs">
+      <DependentUpon>CheckBoxTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\HeaderCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\HeaderCell.Designer.cs">
+      <DependentUpon>HeaderCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\SpinnerTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\SpinnerTableCell.Designer.cs">
+      <DependentUpon>SpinnerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableCell.Designer.cs">
+      <DependentUpon>TableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableColumn.cs" />
+    <Compile Include="UI\Table\TableColumnCollection.cs" />
+    <Compile Include="UI\Table\TableRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableRow.Designer.cs">
+      <DependentUpon>TableRow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableView.Designer.cs">
+      <DependentUpon>TableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TextTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TextTableCell.Designer.cs">
+      <DependentUpon>TextTableCell.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -424,6 +771,12 @@
     </Compile>
     <Compile Include="frmHistory.Designer.cs">
       <DependentUpon>frmHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\frmHeroLabImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utilities\frmHeroLabImporter.Designer.cs">
+      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\frmInitiative.cs">
       <SubType>Form</SubType>
@@ -455,54 +808,54 @@
     <Compile Include="frmNotes.Designer.cs">
       <DependentUpon>frmNotes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Omae\frmOmae.cs">
+    <None Include="Omae\frmOmae.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmae.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmae.Designer.cs">
       <DependentUpon>frmOmae.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeAccount.cs">
+    </None>
+    <None Include="Omae\frmOmaeAccount.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeAccount.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeAccount.Designer.cs">
       <DependentUpon>frmOmaeAccount.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeCompress.cs">
+    </None>
+    <None Include="Omae\frmOmaeCompress.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeCompress.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeCompress.Designer.cs">
       <DependentUpon>frmOmaeCompress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUpload.cs">
+    </None>
+    <None Include="Omae\frmOmaeUpload.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUpload.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUpload.Designer.cs">
       <DependentUpon>frmOmaeUpload.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadData.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadData.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadData.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadData.Designer.cs">
       <DependentUpon>frmOmaeUploadData.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadLanguage.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadLanguage.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadLanguage.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadLanguage.Designer.cs">
       <DependentUpon>frmOmaeUploadLanguage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadSheet.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadSheet.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadSheet.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadSheet.Designer.cs">
       <DependentUpon>frmOmaeUploadSheet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmPlayerDashboard.cs">
+    </None>
+    <None Include="frmPlayerDashboard.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmPlayerDashboard.Designer.cs">
+    </None>
+    <None Include="frmPlayerDashboard.Designer.cs">
       <DependentUpon>frmPlayerDashboard.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmPrintMultiple.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -599,18 +952,18 @@
     <Compile Include="Selection Forms\frmSelectMartialArt.Designer.cs">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.cs">
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.Designer.cs">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.cs">
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -623,12 +976,12 @@
     <Compile Include="Selection Forms\frmSelectMetamagic.Designer.cs">
       <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.cs">
+    <None Include="Selection Forms\frmSelectNexus.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectNexus.Designer.cs">
       <DependentUpon>frmSelectNexus.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectNumber.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -641,12 +994,12 @@
     <Compile Include="Selection Forms\frmSelectPACKSKit.Designer.cs">
       <DependentUpon>frmSelectPACKSKit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgramOption.cs">
+    <None Include="Selection Forms\frmSelectProgramOption.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectProgramOption.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectProgramOption.Designer.cs">
       <DependentUpon>frmSelectProgramOption.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectQuality.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -731,11 +1084,11 @@
     <Compile Include="Selection Forms\frmSelectPower.Designer.cs">
       <DependentUpon>frmSelectPower.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgram.cs">
+    <Compile Include="Selection Forms\frmSelectComplexForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgram.Designer.cs">
-      <DependentUpon>frmSelectProgram.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectComplexForm.Designer.cs">
+      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectSpell.cs">
       <SubType>Form</SubType>
@@ -749,11 +1102,11 @@
     <Compile Include="Selection Forms\frmSelectText.Designer.cs">
       <DependentUpon>frmSelectText.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="frmChummerMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="frmChummerMain.Designer.cs">
+      <DependentUpon>frmChummerMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectWeaponAccessory.cs">
       <SubType>Form</SubType>
@@ -797,23 +1150,17 @@
     <Compile Include="Controls\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Omae\OmaeRecord.cs">
+    <None Include="Omae\OmaeRecord.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Omae\OmaeRecord.Designer.cs">
+    </None>
+    <None Include="Omae\OmaeRecord.Designer.cs">
       <DependentUpon>OmaeRecord.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Controls\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Powers\PowerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Powers\PowerControl.Designer.cs">
-      <DependentUpon>PowerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -874,9 +1221,6 @@
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\RichTextBoxExtended.resx">
-      <DependentUpon>RichTextBoxExtended.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </EmbeddedResource>
@@ -891,6 +1235,9 @@
     <EmbeddedResource Include="frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCreateCustomDrug.resx">
+      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCreateCyberwareSuite.resx">
       <DependentUpon>frmCreateCyberwareSuite.cs</DependentUpon>
@@ -910,6 +1257,12 @@
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmLoading.resx">
+      <DependentUpon>frmLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selection Forms\frmSelectDrug.resx">
+      <DependentUpon>frmSelectDrug.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectOptionalPower.resx">
       <DependentUpon>frmSelectOptionalPower.cs</DependentUpon>
     </EmbeddedResource>
@@ -927,6 +1280,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Charts\ExpenseChart.resx">
+      <DependentUpon>ExpenseChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Chummy.resx">
+      <DependentUpon>Chummy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
+      <DependentUpon>LimitTabUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\VehiclesTabUserControl.resx">
+      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
@@ -946,6 +1314,9 @@
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Table\TableRow.resx">
+      <DependentUpon>TableRow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
     </EmbeddedResource>
@@ -961,6 +1332,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utilities\frmHeroLabImporter.resx">
+      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmInitiative.resx">
       <DependentUpon>frmInitiative.cs</DependentUpon>
@@ -1050,8 +1424,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArt.resx">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtAdvantage.resx">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtTechnique.resx">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArtManeuver.resx">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
@@ -1116,8 +1490,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectPower.resx">
       <DependentUpon>frmSelectPower.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectProgram.resx">
-      <DependentUpon>frmSelectProgram.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectComplexForm.resx">
+      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSpell.resx">
       <DependentUpon>frmSelectSpell.cs</DependentUpon>
@@ -1125,8 +1499,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectText.resx">
       <DependentUpon>frmSelectText.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="frmChummerMain.resx">
+      <DependentUpon>frmChummerMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectWeaponAccessory.resx">
@@ -1156,9 +1530,6 @@
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Powers\PowerControl.resx">
-      <DependentUpon>PowerControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
       <DependentUpon>frmCreate.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1173,7 +1544,7 @@
       <DependentUpon>frmSelectSkill.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1185,153 +1556,171 @@
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="Backend\Attributes\Attribute.Core.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="Chummer_TemporaryKey.pfx" />
     <None Include="data\armor.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\bioware.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\bonuses.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\books.xsc">
       <DependentUpon>books.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\books.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\books.xss">
       <DependentUpon>books.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\character.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\complexforms.xsd" />
+    <None Include="data\complexforms.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="data\critterpowers.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\critters.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\cyberware.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\echoes.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\gear.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\lifestyles.xsc">
       <DependentUpon>lifestyles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\lifestyles.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\lifestyles.xss">
       <DependentUpon>lifestyles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\martialarts.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\mentors.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\metamagic.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\metatypes.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\packs.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\paragons.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\powers.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\programs.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\qualities.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\ranges.xsc">
       <DependentUpon>ranges.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\ranges.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\conditions.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\ranges.xss">
       <DependentUpon>ranges.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\skills.xsc">
       <DependentUpon>skills.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\skills.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\skills.xss">
       <DependentUpon>skills.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\spells.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\streams.xsc">
       <DependentUpon>streams.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\streams.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\streams.xss">
       <DependentUpon>streams.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\traditions.xsc">
       <DependentUpon>traditions.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\traditions.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\traditions.xss">
       <DependentUpon>traditions.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vehicles.xsc">
       <DependentUpon>vehicles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vehicles.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vehicles.xss">
       <DependentUpon>vehicles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vessels.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\weapons.xsc">
       <DependentUpon>weapons.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\weapons.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\weapons.xss">
       <DependentUpon>weapons.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Documentation\Lifemodule.md" />
     <None Include="lang\language.xsc">
@@ -1348,16 +1737,13 @@
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="nuget.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\DataSources\System.Xml.Linq.XElement.datasource" />
     <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="Properties\Settings.Designer.cs">
@@ -1596,16 +1982,257 @@
     <None Include="icons\emoticon_waii.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Backend\Improvements\ImprovementMethods.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImprovementMethods.cs</LastGenOutput>
+    </Content>
     <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\amend_AdapsinMultiplier_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Bone Lacing Adds to Body\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\College Education Qualities Stack\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimb Customisation Does Not Incur Grade Costs\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_critterpowers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_streams.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Commanding Voice and Authoritative Tone are equal\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Commlink App Prices\amend_commlinkappsprices_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Electronic Firing Barrel to Internal Slot\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Garage Capacity\amend_garagecapacity_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Garage Capacity\custom_garagecapacity_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Gyro-Stablisation Vehicle Mod\override_gyro-stabilization_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Heightened Concentration has Levels\amend_heightenedconcentration_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Ingram Smartgun X\amend_smartgunxstock_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Poseidon RCC\amend_poseidonrcc_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Practice, Practice, Practice\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Rigger 5 Mods - Catalina 2\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Weapon Mounts Can Use SMGs\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Hand-Based Cyberware Can Go Anywhere\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Helmets Are Mods, SWAT and MilSpec Are FBA\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Herolab Vehicle Ram Plate Stats\amend_ramplate_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Legal SIN and Licenses\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Seeker Shaft and Monotip Head Cost and Avail\amend_arrows_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_echoes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_gameplayoptions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rainforest Carbine Missions Errata\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_armor.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_bioware.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_complexforms.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_cyberware.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_gear.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_martialarts.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_mentors.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_metamagic.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_metatypes.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_powers.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_priorities.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_qualities.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_spells.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_traditions.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_vehicles.xml" />
+    <Content Include="customdata\Runnerhub Rules\amend_weapons.xml" />
+    <Content Include="customdata\ShadowNET Rules\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_books.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_contacts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_licenses.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_metamagic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_ranges.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\ShadowNET Rules\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\SR Missions 1.4 Rules\amend_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\SR Missions 1.4 Rules\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions Animal Prices\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Trolls Have Natural Weapon Horns\amend_trollhorn_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Trolls Have Natural Weapon Horns\custom_trollhorn_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\sheets.xml">
@@ -1641,7 +2268,1221 @@
     <Content Include="customdata\SR Missions 1.4 Rules\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LICENSES-MersenneTwister.txt">
+    <Content Include="data\tips.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="icons\accept.png" />
+    <Content Include="icons\anchor.png" />
+    <Content Include="icons\application.png" />
+    <Content Include="icons\application_add.png" />
+    <Content Include="icons\application_cascade.png" />
+    <Content Include="icons\application_delete.png" />
+    <Content Include="icons\application_double.png" />
+    <Content Include="icons\application_edit.png" />
+    <Content Include="icons\application_error.png" />
+    <Content Include="icons\application_form.png" />
+    <Content Include="icons\application_form_add.png" />
+    <Content Include="icons\application_form_delete.png" />
+    <Content Include="icons\application_form_edit.png" />
+    <Content Include="icons\application_form_magnify.png" />
+    <Content Include="icons\application_get.png" />
+    <Content Include="icons\application_go.png" />
+    <Content Include="icons\application_home.png" />
+    <Content Include="icons\application_key.png" />
+    <Content Include="icons\application_lightning.png" />
+    <Content Include="icons\application_link.png" />
+    <Content Include="icons\application_osx.png" />
+    <Content Include="icons\application_osx_terminal.png" />
+    <Content Include="icons\application_put.png" />
+    <Content Include="icons\application_side_boxes.png" />
+    <Content Include="icons\application_side_contract.png" />
+    <Content Include="icons\application_side_expand.png" />
+    <Content Include="icons\application_side_list.png" />
+    <Content Include="icons\application_side_tree.png" />
+    <Content Include="icons\application_split.png" />
+    <Content Include="icons\application_tile_horizontal.png" />
+    <Content Include="icons\application_tile_vertical.png" />
+    <Content Include="icons\application_view_columns.png" />
+    <Content Include="icons\application_view_detail.png" />
+    <Content Include="icons\application_view_gallery.png" />
+    <Content Include="icons\application_view_icons.png" />
+    <Content Include="icons\application_view_list.png" />
+    <Content Include="icons\application_view_tile.png" />
+    <Content Include="icons\application_xp.png" />
+    <Content Include="icons\application_xp_terminal.png" />
+    <Content Include="icons\arrow_branch.png" />
+    <Content Include="icons\arrow_down.png" />
+    <Content Include="icons\arrow_in.png" />
+    <Content Include="icons\arrow_inout.png" />
+    <Content Include="icons\arrow_left.png" />
+    <Content Include="icons\arrow_merge.png" />
+    <Content Include="icons\arrow_out.png" />
+    <Content Include="icons\arrow_refresh.png" />
+    <Content Include="icons\arrow_refresh_small.png" />
+    <Content Include="icons\arrow_right.png" />
+    <Content Include="icons\arrow_rotate_anticlockwise.png" />
+    <Content Include="icons\arrow_rotate_clockwise.png" />
+    <Content Include="icons\arrow_switch.png" />
+    <Content Include="icons\arrow_turn_left.png" />
+    <Content Include="icons\arrow_turn_right.png" />
+    <Content Include="icons\arrow_up.png" />
+    <Content Include="icons\asterisk_yellow.png" />
+    <Content Include="icons\attach.png" />
+    <Content Include="icons\award_star_bronze_1.png" />
+    <Content Include="icons\award_star_bronze_2.png" />
+    <Content Include="icons\award_star_bronze_3.png" />
+    <Content Include="icons\award_star_delete.png" />
+    <Content Include="icons\award_star_gold_1.png" />
+    <Content Include="icons\award_star_gold_2.png" />
+    <Content Include="icons\award_star_gold_3.png" />
+    <Content Include="icons\award_star_silver_1.png" />
+    <Content Include="icons\award_star_silver_2.png" />
+    <Content Include="icons\award_star_silver_3.png" />
+    <Content Include="icons\basket.png" />
+    <Content Include="icons\basket_delete.png" />
+    <Content Include="icons\basket_error.png" />
+    <Content Include="icons\basket_go.png" />
+    <Content Include="icons\basket_put.png" />
+    <Content Include="icons\basket_remove.png" />
+    <Content Include="icons\bell.png" />
+    <Content Include="icons\bell_add.png" />
+    <Content Include="icons\bell_delete.png" />
+    <Content Include="icons\bell_error.png" />
+    <Content Include="icons\bell_go.png" />
+    <Content Include="icons\bell_link.png" />
+    <Content Include="icons\bin.png" />
+    <Content Include="icons\bin_closed.png" />
+    <Content Include="icons\bin_empty.png" />
+    <Content Include="icons\book.png" />
+    <Content Include="icons\book_add.png" />
+    <Content Include="icons\book_addresses.png" />
+    <Content Include="icons\book_delete.png" />
+    <Content Include="icons\book_edit.png" />
+    <Content Include="icons\book_error.png" />
+    <Content Include="icons\book_go.png" />
+    <Content Include="icons\book_key.png" />
+    <Content Include="icons\book_link.png" />
+    <Content Include="icons\book_next.png" />
+    <Content Include="icons\book_open.png" />
+    <Content Include="icons\book_previous.png" />
+    <Content Include="icons\box.png" />
+    <Content Include="icons\brick.png" />
+    <Content Include="icons\bricks.png" />
+    <Content Include="icons\brick_edit.png" />
+    <Content Include="icons\brick_error.png" />
+    <Content Include="icons\brick_link.png" />
+    <Content Include="icons\briefcase.png" />
+    <Content Include="icons\bug.png" />
+    <Content Include="icons\bug_add.png" />
+    <Content Include="icons\bug_delete.png" />
+    <Content Include="icons\bug_edit.png" />
+    <Content Include="icons\bug_error.png" />
+    <Content Include="icons\bug_go.png" />
+    <Content Include="icons\bug_link.png" />
+    <Content Include="icons\building.png" />
+    <Content Include="icons\building_add.png" />
+    <Content Include="icons\building_delete.png" />
+    <Content Include="icons\building_error.png" />
+    <Content Include="icons\building_go.png" />
+    <Content Include="icons\building_key.png" />
+    <Content Include="icons\building_link.png" />
+    <Content Include="icons\bullet_add.png" />
+    <Content Include="icons\bullet_arrow_bottom.png" />
+    <Content Include="icons\bullet_arrow_down.png" />
+    <Content Include="icons\bullet_arrow_top.png" />
+    <Content Include="icons\bullet_arrow_up.png" />
+    <Content Include="icons\bullet_black.png" />
+    <Content Include="icons\bullet_blue.png" />
+    <Content Include="icons\bullet_delete.png" />
+    <Content Include="icons\bullet_disk.png" />
+    <Content Include="icons\bullet_error.png" />
+    <Content Include="icons\bullet_feed.png" />
+    <Content Include="icons\bullet_go.png" />
+    <Content Include="icons\bullet_green.png" />
+    <Content Include="icons\bullet_key.png" />
+    <Content Include="icons\bullet_orange.png" />
+    <Content Include="icons\bullet_picture.png" />
+    <Content Include="icons\bullet_pink.png" />
+    <Content Include="icons\bullet_purple.png" />
+    <Content Include="icons\bullet_red.png" />
+    <None Include="icons\bullet_star.png" />
+    <Content Include="icons\bullet_toggle_minus.png" />
+    <Content Include="icons\bullet_toggle_plus.png" />
+    <Content Include="icons\bullet_white.png" />
+    <Content Include="icons\bullet_wrench.png" />
+    <Content Include="icons\bullet_yellow.png" />
+    <Content Include="icons\cake.png" />
+    <Content Include="icons\calculator.png" />
+    <Content Include="icons\calculator_add.png" />
+    <Content Include="icons\calculator_delete.png" />
+    <Content Include="icons\calculator_edit.png" />
+    <Content Include="icons\calculator_error.png" />
+    <Content Include="icons\calculator_link.png" />
+    <Content Include="icons\calendar.png" />
+    <Content Include="icons\calendar_add.png" />
+    <Content Include="icons\calendar_delete.png" />
+    <Content Include="icons\calendar_edit.png" />
+    <Content Include="icons\calendar_link.png" />
+    <Content Include="icons\calendar_view_day.png" />
+    <Content Include="icons\calendar_view_month.png" />
+    <Content Include="icons\calendar_view_week.png" />
+    <Content Include="icons\camera.png" />
+    <Content Include="icons\camera_delete.png" />
+    <Content Include="icons\camera_edit.png" />
+    <Content Include="icons\camera_error.png" />
+    <Content Include="icons\camera_go.png" />
+    <Content Include="icons\camera_link.png" />
+    <Content Include="icons\camera_small.png" />
+    <Content Include="icons\cancel.png" />
+    <Content Include="icons\car.png" />
+    <Content Include="icons\cart.png" />
+    <Content Include="icons\cart_add.png" />
+    <Content Include="icons\cart_delete.png" />
+    <Content Include="icons\cart_edit.png" />
+    <Content Include="icons\cart_error.png" />
+    <Content Include="icons\cart_go.png" />
+    <Content Include="icons\cart_put.png" />
+    <Content Include="icons\cart_remove.png" />
+    <Content Include="icons\car_delete.png" />
+    <Content Include="icons\cd.png" />
+    <Content Include="icons\cd_add.png" />
+    <Content Include="icons\cd_burn.png" />
+    <Content Include="icons\cd_delete.png" />
+    <Content Include="icons\cd_edit.png" />
+    <Content Include="icons\cd_eject.png" />
+    <Content Include="icons\cd_go.png" />
+    <Content Include="icons\chart_bar.png" />
+    <Content Include="icons\chart_bar_add.png" />
+    <Content Include="icons\chart_bar_delete.png" />
+    <Content Include="icons\chart_bar_edit.png" />
+    <Content Include="icons\chart_bar_error.png" />
+    <Content Include="icons\chart_bar_link.png" />
+    <Content Include="icons\chart_curve.png" />
+    <Content Include="icons\chart_curve_add.png" />
+    <Content Include="icons\chart_curve_delete.png" />
+    <Content Include="icons\chart_curve_edit.png" />
+    <Content Include="icons\chart_curve_error.png" />
+    <Content Include="icons\chart_curve_go.png" />
+    <Content Include="icons\chart_curve_link.png" />
+    <Content Include="icons\chart_line.png" />
+    <Content Include="icons\chart_line_add.png" />
+    <Content Include="icons\chart_line_delete.png" />
+    <Content Include="icons\chart_line_edit.png" />
+    <Content Include="icons\chart_line_error.png" />
+    <Content Include="icons\chart_line_link.png" />
+    <Content Include="icons\chart_organisation.png" />
+    <Content Include="icons\chart_organisation_add.png" />
+    <Content Include="icons\chart_organisation_delete.png" />
+    <Content Include="icons\chart_pie.png" />
+    <Content Include="icons\chart_pie_add.png" />
+    <Content Include="icons\chart_pie_delete.png" />
+    <Content Include="icons\chart_pie_edit.png" />
+    <Content Include="icons\chart_pie_error.png" />
+    <Content Include="icons\chart_pie_link.png" />
+    <Content Include="icons\clock.png" />
+    <Content Include="icons\clock_add.png" />
+    <Content Include="icons\clock_delete.png" />
+    <Content Include="icons\clock_edit.png" />
+    <Content Include="icons\clock_error.png" />
+    <Content Include="icons\clock_go.png" />
+    <Content Include="icons\clock_link.png" />
+    <Content Include="icons\clock_pause.png" />
+    <Content Include="icons\clock_play.png" />
+    <Content Include="icons\clock_red.png" />
+    <Content Include="icons\clock_stop.png" />
+    <Content Include="icons\cog.png" />
+    <Content Include="icons\cog_add.png" />
+    <Content Include="icons\cog_delete.png" />
+    <Content Include="icons\cog_error.png" />
+    <Content Include="icons\cog_go.png" />
+    <Content Include="icons\coins.png" />
+    <Content Include="icons\coins_add.png" />
+    <Content Include="icons\coins_delete.png" />
+    <Content Include="icons\color_swatch.png" />
+    <Content Include="icons\color_wheel.png" />
+    <Content Include="icons\comment.png" />
+    <Content Include="icons\comments.png" />
+    <Content Include="icons\comments_add.png" />
+    <Content Include="icons\comments_delete.png" />
+    <Content Include="icons\comment_add.png" />
+    <Content Include="icons\comment_delete.png" />
+    <Content Include="icons\comment_edit.png" />
+    <Content Include="icons\compress.png" />
+    <Content Include="icons\computer.png" />
+    <Content Include="icons\computer_delete.png" />
+    <Content Include="icons\computer_edit.png" />
+    <Content Include="icons\computer_error.png" />
+    <Content Include="icons\computer_go.png" />
+    <Content Include="icons\computer_key.png" />
+    <Content Include="icons\computer_link.png" />
+    <Content Include="icons\connect.png" />
+    <Content Include="icons\contrast.png" />
+    <Content Include="icons\contrast_decrease.png" />
+    <Content Include="icons\contrast_high.png" />
+    <Content Include="icons\contrast_increase.png" />
+    <Content Include="icons\contrast_low.png" />
+    <Content Include="icons\controller.png" />
+    <Content Include="icons\controller_add.png" />
+    <Content Include="icons\controller_delete.png" />
+    <Content Include="icons\controller_error.png" />
+    <Content Include="icons\control_eject.png" />
+    <Content Include="icons\control_eject_blue.png" />
+    <Content Include="icons\control_end.png" />
+    <Content Include="icons\control_end_blue.png" />
+    <Content Include="icons\control_equalizer.png" />
+    <Content Include="icons\control_equalizer_blue.png" />
+    <Content Include="icons\control_fastforward.png" />
+    <Content Include="icons\control_fastforward_blue.png" />
+    <Content Include="icons\control_pause.png" />
+    <Content Include="icons\control_pause_blue.png" />
+    <Content Include="icons\control_play.png" />
+    <Content Include="icons\control_play_blue.png" />
+    <Content Include="icons\control_repeat.png" />
+    <Content Include="icons\control_repeat_blue.png" />
+    <Content Include="icons\control_rewind.png" />
+    <Content Include="icons\control_rewind_blue.png" />
+    <Content Include="icons\control_start.png" />
+    <Content Include="icons\control_start_blue.png" />
+    <Content Include="icons\control_stop.png" />
+    <Content Include="icons\control_stop_blue.png" />
+    <Content Include="icons\creditcards.png" />
+    <Content Include="icons\cross.png" />
+    <Content Include="icons\css.png" />
+    <Content Include="icons\css_add.png" />
+    <Content Include="icons\css_delete.png" />
+    <Content Include="icons\css_go.png" />
+    <Content Include="icons\css_valid.png" />
+    <Content Include="icons\cup.png" />
+    <Content Include="icons\cup_add.png" />
+    <Content Include="icons\cup_delete.png" />
+    <Content Include="icons\cup_edit.png" />
+    <Content Include="icons\cup_error.png" />
+    <Content Include="icons\cup_go.png" />
+    <Content Include="icons\cup_key.png" />
+    <Content Include="icons\cup_link.png" />
+    <Content Include="icons\cursor.png" />
+    <Content Include="icons\cut.png" />
+    <Content Include="icons\cut_red.png" />
+    <Content Include="icons\database.png" />
+    <Content Include="icons\database_add.png" />
+    <Content Include="icons\database_connect.png" />
+    <Content Include="icons\database_delete.png" />
+    <Content Include="icons\database_edit.png" />
+    <Content Include="icons\database_error.png" />
+    <Content Include="icons\database_gear.png" />
+    <Content Include="icons\database_go.png" />
+    <Content Include="icons\database_key.png" />
+    <Content Include="icons\database_lightning.png" />
+    <Content Include="icons\database_link.png" />
+    <Content Include="icons\database_refresh.png" />
+    <Content Include="icons\database_save.png" />
+    <Content Include="icons\database_table.png" />
+    <Content Include="icons\date.png" />
+    <Content Include="icons\date_add.png" />
+    <Content Include="icons\date_delete.png" />
+    <Content Include="icons\date_edit.png" />
+    <Content Include="icons\date_error.png" />
+    <Content Include="icons\date_go.png" />
+    <Content Include="icons\date_link.png" />
+    <Content Include="icons\date_magnify.png" />
+    <Content Include="icons\date_next.png" />
+    <Content Include="icons\date_previous.png" />
+    <Content Include="icons\disconnect.png" />
+    <Content Include="icons\disk_multiple.png" />
+    <Content Include="icons\door.png" />
+    <Content Include="icons\door_in.png" />
+    <Content Include="icons\door_open.png" />
+    <Content Include="icons\door_out.png" />
+    <Content Include="icons\drink.png" />
+    <Content Include="icons\drink_empty.png" />
+    <Content Include="icons\drive.png" />
+    <Content Include="icons\drive_add.png" />
+    <Content Include="icons\drive_burn.png" />
+    <Content Include="icons\drive_cd.png" />
+    <Content Include="icons\drive_cd_empty.png" />
+    <Content Include="icons\drive_delete.png" />
+    <Content Include="icons\drive_disk.png" />
+    <Content Include="icons\drive_edit.png" />
+    <Content Include="icons\drive_error.png" />
+    <Content Include="icons\drive_go.png" />
+    <Content Include="icons\drive_key.png" />
+    <Content Include="icons\drive_link.png" />
+    <Content Include="icons\drive_magnify.png" />
+    <Content Include="icons\drive_network.png" />
+    <Content Include="icons\drive_rename.png" />
+    <Content Include="icons\drive_user.png" />
+    <Content Include="icons\drive_web.png" />
+    <Content Include="icons\dvd.png" />
+    <Content Include="icons\dvd_add.png" />
+    <Content Include="icons\dvd_delete.png" />
+    <Content Include="icons\dvd_edit.png" />
+    <Content Include="icons\dvd_error.png" />
+    <Content Include="icons\dvd_go.png" />
+    <Content Include="icons\dvd_key.png" />
+    <Content Include="icons\dvd_link.png" />
+    <Content Include="icons\email.png" />
+    <Content Include="icons\email_add.png" />
+    <Content Include="icons\email_attach.png" />
+    <Content Include="icons\email_delete.png" />
+    <Content Include="icons\email_edit.png" />
+    <Content Include="icons\email_error.png" />
+    <Content Include="icons\email_go.png" />
+    <Content Include="icons\email_link.png" />
+    <Content Include="icons\email_open.png" />
+    <Content Include="icons\email_open_image.png" />
+    <Content Include="icons\emoticon_grin.png" />
+    <Content Include="icons\emoticon_happy.png" />
+    <Content Include="icons\emoticon_smile.png" />
+    <Content Include="icons\emoticon_wink.png" />
+    <Content Include="icons\error.png" />
+    <Content Include="icons\error_add.png" />
+    <Content Include="icons\error_delete.png" />
+    <Content Include="icons\error_go.png" />
+    <Content Include="icons\exclamation.png" />
+    <Content Include="icons\eye.png" />
+    <Content Include="icons\feed.png" />
+    <Content Include="icons\feed_add.png" />
+    <Content Include="icons\feed_delete.png" />
+    <Content Include="icons\feed_disk.png" />
+    <Content Include="icons\feed_edit.png" />
+    <Content Include="icons\feed_error.png" />
+    <Content Include="icons\feed_go.png" />
+    <Content Include="icons\feed_key.png" />
+    <Content Include="icons\feed_link.png" />
+    <Content Include="icons\feed_magnify.png" />
+    <Content Include="icons\female.png" />
+    <Content Include="icons\film.png" />
+    <Content Include="icons\film_add.png" />
+    <Content Include="icons\film_delete.png" />
+    <Content Include="icons\film_edit.png" />
+    <Content Include="icons\film_error.png" />
+    <Content Include="icons\film_go.png" />
+    <Content Include="icons\film_key.png" />
+    <Content Include="icons\film_link.png" />
+    <Content Include="icons\film_save.png" />
+    <Content Include="icons\find.png" />
+    <Content Include="icons\flags\ad.png" />
+    <Content Include="icons\flags\ae.png" />
+    <Content Include="icons\flags\af.png" />
+    <Content Include="icons\flags\ag.png" />
+    <Content Include="icons\flags\ai.png" />
+    <Content Include="icons\flags\al.png" />
+    <Content Include="icons\flags\am.png" />
+    <Content Include="icons\flags\an.png" />
+    <Content Include="icons\flags\ao.png" />
+    <Content Include="icons\flags\ar.png" />
+    <Content Include="icons\flags\as.png" />
+    <Content Include="icons\flags\at.png" />
+    <Content Include="icons\flags\au.png" />
+    <Content Include="icons\flags\aw.png" />
+    <Content Include="icons\flags\ax.png" />
+    <Content Include="icons\flags\az.png" />
+    <Content Include="icons\flags\ba.png" />
+    <Content Include="icons\flags\bb.png" />
+    <Content Include="icons\flags\bd.png" />
+    <Content Include="icons\flags\be.png" />
+    <Content Include="icons\flags\bf.png" />
+    <Content Include="icons\flags\bg.png" />
+    <Content Include="icons\flags\bh.png" />
+    <Content Include="icons\flags\bi.png" />
+    <Content Include="icons\flags\bj.png" />
+    <Content Include="icons\flags\bm.png" />
+    <Content Include="icons\flags\bn.png" />
+    <Content Include="icons\flags\bo.png" />
+    <Content Include="icons\flags\br.png" />
+    <Content Include="icons\flags\bs.png" />
+    <Content Include="icons\flags\bt.png" />
+    <Content Include="icons\flags\bv.png" />
+    <Content Include="icons\flags\bw.png" />
+    <Content Include="icons\flags\by.png" />
+    <Content Include="icons\flags\bz.png" />
+    <Content Include="icons\flags\ca.png" />
+    <Content Include="icons\flags\cc.png" />
+    <Content Include="icons\flags\cd.png" />
+    <Content Include="icons\flags\cf.png" />
+    <Content Include="icons\flags\cg.png" />
+    <Content Include="icons\flags\ch.png" />
+    <Content Include="icons\flags\ci.png" />
+    <Content Include="icons\flags\ck.png" />
+    <Content Include="icons\flags\cl.png" />
+    <Content Include="icons\flags\cm.png" />
+    <Content Include="icons\flags\cn.png" />
+    <Content Include="icons\flags\co.png" />
+    <Content Include="icons\flags\cr.png" />
+    <Content Include="icons\flags\cs.png" />
+    <Content Include="icons\flags\ct.png" />
+    <Content Include="icons\flags\cu.png" />
+    <Content Include="icons\flags\cv.png" />
+    <Content Include="icons\flags\cx.png" />
+    <Content Include="icons\flags\cy.png" />
+    <Content Include="icons\flags\cz.png" />
+    <Content Include="icons\flags\de.png" />
+    <Content Include="icons\flags\defaulted.png" />
+    <Content Include="icons\flags\dj.png" />
+    <Content Include="icons\flags\dk.png" />
+    <Content Include="icons\flags\dm.png" />
+    <Content Include="icons\flags\do.png" />
+    <Content Include="icons\flags\dz.png" />
+    <Content Include="icons\flags\ec.png" />
+    <Content Include="icons\flags\ee.png" />
+    <Content Include="icons\flags\eg.png" />
+    <Content Include="icons\flags\eh.png" />
+    <Content Include="icons\flags\er.png" />
+    <Content Include="icons\flags\es.png" />
+    <Content Include="icons\flags\et.png" />
+    <Content Include="icons\flags\eu.png" />
+    <Content Include="icons\flags\fi.png" />
+    <Content Include="icons\flags\fj.png" />
+    <Content Include="icons\flags\fk.png" />
+    <Content Include="icons\flags\fm.png" />
+    <Content Include="icons\flags\fo.png" />
+    <Content Include="icons\flags\fr.png" />
+    <Content Include="icons\flags\ga.png" />
+    <Content Include="icons\flags\gb.png" />
+    <Content Include="icons\flags\gd.png" />
+    <Content Include="icons\flags\ge.png" />
+    <Content Include="icons\flags\gf.png" />
+    <Content Include="icons\flags\gh.png" />
+    <Content Include="icons\flags\gi.png" />
+    <Content Include="icons\flags\gl.png" />
+    <Content Include="icons\flags\gm.png" />
+    <Content Include="icons\flags\gn.png" />
+    <Content Include="icons\flags\gp.png" />
+    <Content Include="icons\flags\gq.png" />
+    <Content Include="icons\flags\gr.png" />
+    <Content Include="icons\flags\gs.png" />
+    <Content Include="icons\flags\gt.png" />
+    <Content Include="icons\flags\gu.png" />
+    <Content Include="icons\flags\gw.png" />
+    <Content Include="icons\flags\gy.png" />
+    <Content Include="icons\flags\hk.png" />
+    <Content Include="icons\flags\hm.png" />
+    <Content Include="icons\flags\hn.png" />
+    <Content Include="icons\flags\hr.png" />
+    <Content Include="icons\flags\ht.png" />
+    <Content Include="icons\flags\hu.png" />
+    <Content Include="icons\flags\id.png" />
+    <Content Include="icons\flags\ie.png" />
+    <Content Include="icons\flags\il.png" />
+    <Content Include="icons\flags\in.png" />
+    <Content Include="icons\flags\io.png" />
+    <Content Include="icons\flags\iq.png" />
+    <Content Include="icons\flags\ir.png" />
+    <Content Include="icons\flags\is.png" />
+    <Content Include="icons\flags\it.png" />
+    <Content Include="icons\flags\jm.png" />
+    <Content Include="icons\flags\jo.png" />
+    <Content Include="icons\flags\jp.png" />
+    <Content Include="icons\flags\ke.png" />
+    <Content Include="icons\flags\kg.png" />
+    <Content Include="icons\flags\kh.png" />
+    <Content Include="icons\flags\ki.png" />
+    <Content Include="icons\flags\km.png" />
+    <Content Include="icons\flags\kn.png" />
+    <Content Include="icons\flags\kp.png" />
+    <Content Include="icons\flags\kr.png" />
+    <Content Include="icons\flags\kw.png" />
+    <Content Include="icons\flags\ky.png" />
+    <Content Include="icons\flags\kz.png" />
+    <Content Include="icons\flags\la.png" />
+    <Content Include="icons\flags\lb.png" />
+    <Content Include="icons\flags\lc.png" />
+    <Content Include="icons\flags\li.png" />
+    <Content Include="icons\flags\lk.png" />
+    <Content Include="icons\flags\lr.png" />
+    <Content Include="icons\flags\ls.png" />
+    <Content Include="icons\flags\lt.png" />
+    <Content Include="icons\flags\lu.png" />
+    <Content Include="icons\flags\lv.png" />
+    <Content Include="icons\flags\ly.png" />
+    <Content Include="icons\flags\ma.png" />
+    <Content Include="icons\flags\mc.png" />
+    <Content Include="icons\flags\md.png" />
+    <Content Include="icons\flags\me.png" />
+    <Content Include="icons\flags\mg.png" />
+    <Content Include="icons\flags\mh.png" />
+    <Content Include="icons\flags\mk.png" />
+    <Content Include="icons\flags\ml.png" />
+    <Content Include="icons\flags\mm.png" />
+    <Content Include="icons\flags\mn.png" />
+    <Content Include="icons\flags\mo.png" />
+    <Content Include="icons\flags\mp.png" />
+    <Content Include="icons\flags\mq.png" />
+    <Content Include="icons\flags\mr.png" />
+    <Content Include="icons\flags\ms.png" />
+    <Content Include="icons\flags\mt.png" />
+    <Content Include="icons\flags\mu.png" />
+    <Content Include="icons\flags\mv.png" />
+    <Content Include="icons\flags\mw.png" />
+    <Content Include="icons\flags\mx.png" />
+    <Content Include="icons\flags\my.png" />
+    <Content Include="icons\flags\mz.png" />
+    <Content Include="icons\flags\na.png" />
+    <Content Include="icons\flags\nc.png" />
+    <Content Include="icons\flags\ne.png" />
+    <Content Include="icons\flags\nf.png" />
+    <Content Include="icons\flags\ng.png" />
+    <Content Include="icons\flags\ni.png" />
+    <Content Include="icons\flags\nl.png" />
+    <Content Include="icons\flags\noimagedots.png" />
+    <Content Include="icons\flags\no.png" />
+    <Content Include="icons\flags\np.png" />
+    <Content Include="icons\flags\nr.png" />
+    <Content Include="icons\flags\nu.png" />
+    <Content Include="icons\flags\nz.png" />
+    <Content Include="icons\flags\om.png" />
+    <Content Include="icons\flags\pa.png" />
+    <Content Include="icons\flags\pe.png" />
+    <Content Include="icons\flags\pf.png" />
+    <Content Include="icons\flags\pg.png" />
+    <Content Include="icons\flags\ph.png" />
+    <Content Include="icons\flags\pk.png" />
+    <Content Include="icons\flags\pl.png" />
+    <Content Include="icons\flags\pm.png" />
+    <Content Include="icons\flags\pn.png" />
+    <Content Include="icons\flags\pr.png" />
+    <Content Include="icons\flags\ps.png" />
+    <Content Include="icons\flags\pt.png" />
+    <Content Include="icons\flags\pw.png" />
+    <Content Include="icons\flags\py.png" />
+    <Content Include="icons\flags\qa.png" />
+    <Content Include="icons\flags\re.png" />
+    <Content Include="icons\flags\ro.png" />
+    <Content Include="icons\flags\rs.png" />
+    <Content Include="icons\flags\ru.png" />
+    <Content Include="icons\flags\rw.png" />
+    <Content Include="icons\flags\sa.png" />
+    <Content Include="icons\flags\sb.png" />
+    <Content Include="icons\flags\sc.png" />
+    <Content Include="icons\flags\sd.png" />
+    <Content Include="icons\flags\se.png" />
+    <Content Include="icons\flags\sg.png" />
+    <Content Include="icons\flags\sh.png" />
+    <Content Include="icons\flags\si.png" />
+    <Content Include="icons\flags\sj.png" />
+    <Content Include="icons\flags\sk.png" />
+    <Content Include="icons\flags\sl.png" />
+    <Content Include="icons\flags\sm.png" />
+    <Content Include="icons\flags\sn.png" />
+    <Content Include="icons\flags\so.png" />
+    <Content Include="icons\flags\sr.png" />
+    <Content Include="icons\flags\st.png" />
+    <Content Include="icons\flags\sv.png" />
+    <Content Include="icons\flags\sy.png" />
+    <Content Include="icons\flags\sz.png" />
+    <Content Include="icons\flags\tc.png" />
+    <Content Include="icons\flags\td.png" />
+    <Content Include="icons\flags\tf.png" />
+    <Content Include="icons\flags\tg.png" />
+    <Content Include="icons\flags\th.png" />
+    <Content Include="icons\flags\tj.png" />
+    <Content Include="icons\flags\tk.png" />
+    <Content Include="icons\flags\tl.png" />
+    <Content Include="icons\flags\tm.png" />
+    <Content Include="icons\flags\tn.png" />
+    <Content Include="icons\flags\to.png" />
+    <Content Include="icons\flags\tr.png" />
+    <Content Include="icons\flags\tt.png" />
+    <Content Include="icons\flags\tv.png" />
+    <Content Include="icons\flags\tw.png" />
+    <Content Include="icons\flags\tz.png" />
+    <Content Include="icons\flags\ua.png" />
+    <Content Include="icons\flags\ug.png" />
+    <Content Include="icons\flags\um.png" />
+    <Content Include="icons\flags\us.png" />
+    <Content Include="icons\flags\uy.png" />
+    <Content Include="icons\flags\uz.png" />
+    <Content Include="icons\flags\va.png" />
+    <Content Include="icons\flags\vc.png" />
+    <Content Include="icons\flags\ve.png" />
+    <Content Include="icons\flags\vg.png" />
+    <Content Include="icons\flags\vi.png" />
+    <Content Include="icons\flags\vn.png" />
+    <Content Include="icons\flags\vu.png" />
+    <Content Include="icons\flags\wf.png" />
+    <Content Include="icons\flags\ws.png" />
+    <Content Include="icons\flags\xe.png" />
+    <Content Include="icons\flags\xs.png" />
+    <Content Include="icons\flags\xw.png" />
+    <Content Include="icons\flags\ye.png" />
+    <Content Include="icons\flags\yt.png" />
+    <Content Include="icons\flags\za.png" />
+    <Content Include="icons\flags\zm.png" />
+    <Content Include="icons\flags\zw.png" />
+    <Content Include="icons\flag_blue.png" />
+    <Content Include="icons\flag_green.png" />
+    <Content Include="icons\flag_orange.png" />
+    <Content Include="icons\flag_pink.png" />
+    <Content Include="icons\flag_purple.png" />
+    <Content Include="icons\flag_red.png" />
+    <Content Include="icons\flag_yellow.png" />
+    <Content Include="icons\folder.png" />
+    <Content Include="icons\folder_add.png" />
+    <Content Include="icons\folder_bell.png" />
+    <Content Include="icons\folder_brick.png" />
+    <Content Include="icons\folder_bug.png" />
+    <Content Include="icons\folder_camera.png" />
+    <Content Include="icons\folder_database.png" />
+    <Content Include="icons\folder_delete.png" />
+    <Content Include="icons\folder_edit.png" />
+    <Content Include="icons\folder_error.png" />
+    <Content Include="icons\folder_explore.png" />
+    <Content Include="icons\folder_feed.png" />
+    <Content Include="icons\folder_find.png" />
+    <Content Include="icons\folder_go.png" />
+    <Content Include="icons\folder_heart.png" />
+    <Content Include="icons\folder_image.png" />
+    <Content Include="icons\folder_key.png" />
+    <Content Include="icons\folder_lightbulb.png" />
+    <Content Include="icons\folder_link.png" />
+    <Content Include="icons\folder_magnify.png" />
+    <Content Include="icons\folder_page_white.png" />
+    <Content Include="icons\folder_palette.png" />
+    <Content Include="icons\folder_picture.png" />
+    <Content Include="icons\folder_star.png" />
+    <Content Include="icons\folder_table.png" />
+    <Content Include="icons\folder_user.png" />
+    <Content Include="icons\folder_wrench.png" />
+    <Content Include="icons\font.png" />
+    <Content Include="icons\font_add.png" />
+    <Content Include="icons\font_delete.png" />
+    <Content Include="icons\font_go.png" />
+    <Content Include="icons\group.png" />
+    <Content Include="icons\group_add.png" />
+    <Content Include="icons\group_delete.png" />
+    <Content Include="icons\group_edit.png" />
+    <Content Include="icons\group_error.png" />
+    <Content Include="icons\group_gear.png" />
+    <Content Include="icons\group_go.png" />
+    <Content Include="icons\group_key.png" />
+    <Content Include="icons\group_link.png" />
+    <Content Include="icons\heart.png" />
+    <Content Include="icons\heart_add.png" />
+    <Content Include="icons\heart_delete.png" />
+    <Content Include="icons\help.png" />
+    <Content Include="icons\HeroLab_16.png" />
+    <Content Include="icons\hourglass.png" />
+    <Content Include="icons\hourglass_add.png" />
+    <Content Include="icons\hourglass_delete.png" />
+    <Content Include="icons\hourglass_go.png" />
+    <Content Include="icons\hourglass_link.png" />
+    <Content Include="icons\house_go.png" />
+    <Content Include="icons\house_link.png" />
+    <Content Include="icons\html.png" />
+    <Content Include="icons\html_add.png" />
+    <Content Include="icons\html_delete.png" />
+    <Content Include="icons\html_go.png" />
+    <Content Include="icons\html_valid.png" />
+    <Content Include="icons\icons8-discord-16.png" />
+    <Content Include="icons\image.png" />
+    <Content Include="icons\images.png" />
+    <Content Include="icons\image_add.png" />
+    <Content Include="icons\image_delete.png" />
+    <Content Include="icons\image_edit.png" />
+    <Content Include="icons\image_link.png" />
+    <Content Include="icons\information.png" />
+    <Content Include="icons\ipod.png" />
+    <Content Include="icons\ipod_cast.png" />
+    <Content Include="icons\ipod_cast_add.png" />
+    <Content Include="icons\ipod_cast_delete.png" />
+    <Content Include="icons\ipod_sound.png" />
+    <Content Include="icons\joystick.png" />
+    <Content Include="icons\joystick_add.png" />
+    <Content Include="icons\joystick_delete.png" />
+    <Content Include="icons\joystick_error.png" />
+    <Content Include="icons\key.png" />
+    <Content Include="icons\keyboard.png" />
+    <Content Include="icons\keyboard_add.png" />
+    <Content Include="icons\keyboard_delete.png" />
+    <Content Include="icons\keyboard_magnify.png" />
+    <Content Include="icons\key_add.png" />
+    <Content Include="icons\key_delete.png" />
+    <Content Include="icons\key_go.png" />
+    <Content Include="icons\layers.png" />
+    <Content Include="icons\layout.png" />
+    <Content Include="icons\layout_add.png" />
+    <Content Include="icons\layout_content.png" />
+    <Content Include="icons\layout_delete.png" />
+    <Content Include="icons\layout_edit.png" />
+    <Content Include="icons\layout_error.png" />
+    <Content Include="icons\layout_header.png" />
+    <Content Include="icons\layout_link.png" />
+    <Content Include="icons\layout_sidebar.png" />
+    <Content Include="icons\lightbulb.png" />
+    <Content Include="icons\lightbulb_add.png" />
+    <Content Include="icons\lightbulb_delete.png" />
+    <Content Include="icons\lightbulb_off.png" />
+    <Content Include="icons\lightning.png" />
+    <Content Include="icons\lightning_add.png" />
+    <Content Include="icons\lightning_delete.png" />
+    <Content Include="icons\lightning_go.png" />
+    <Content Include="icons\link_break.png" />
+    <Content Include="icons\link_edit.png" />
+    <Content Include="icons\link_error.png" />
+    <Content Include="icons\lock.png" />
+    <Content Include="icons\lock_add.png" />
+    <Content Include="icons\lock_break.png" />
+    <Content Include="icons\lock_delete.png" />
+    <Content Include="icons\lock_edit.png" />
+    <Content Include="icons\lock_go.png" />
+    <Content Include="icons\lock_open.png" />
+    <Content Include="icons\lorry.png" />
+    <Content Include="icons\lorry_add.png" />
+    <Content Include="icons\lorry_delete.png" />
+    <Content Include="icons\lorry_error.png" />
+    <Content Include="icons\lorry_flatbed.png" />
+    <Content Include="icons\lorry_go.png" />
+    <Content Include="icons\lorry_link.png" />
+    <Content Include="icons\magifier_zoom_out.png" />
+    <Content Include="icons\magnifier.png" />
+    <Content Include="icons\magnifier_zoom_in.png" />
+    <Content Include="icons\male.png" />
+    <Content Include="icons\map.png" />
+    <Content Include="icons\map_add.png" />
+    <Content Include="icons\map_delete.png" />
+    <Content Include="icons\map_edit.png" />
+    <Content Include="icons\map_go.png" />
+    <Content Include="icons\map_magnify.png" />
+    <Content Include="icons\medal_bronze_1.png" />
+    <Content Include="icons\medal_bronze_2.png" />
+    <Content Include="icons\medal_bronze_3.png" />
+    <Content Include="icons\medal_bronze_add.png" />
+    <Content Include="icons\medal_bronze_delete.png" />
+    <Content Include="icons\medal_gold_1.png" />
+    <Content Include="icons\medal_gold_2.png" />
+    <Content Include="icons\medal_gold_3.png" />
+    <Content Include="icons\medal_gold_delete.png" />
+    <Content Include="icons\medal_silver_1.png" />
+    <Content Include="icons\medal_silver_2.png" />
+    <Content Include="icons\medal_silver_3.png" />
+    <Content Include="icons\medal_silver_add.png" />
+    <Content Include="icons\medal_silver_delete.png" />
+    <Content Include="icons\money.png" />
+    <Content Include="icons\money_add.png" />
+    <Content Include="icons\money_delete.png" />
+    <Content Include="icons\money_dollar.png" />
+    <Content Include="icons\money_euro.png" />
+    <Content Include="icons\money_pound.png" />
+    <Content Include="icons\money_yen.png" />
+    <Content Include="icons\monitor.png" />
+    <Content Include="icons\monitor_add.png" />
+    <Content Include="icons\monitor_delete.png" />
+    <Content Include="icons\monitor_edit.png" />
+    <Content Include="icons\monitor_error.png" />
+    <Content Include="icons\monitor_go.png" />
+    <Content Include="icons\monitor_lightning.png" />
+    <Content Include="icons\monitor_link.png" />
+    <Content Include="icons\mouse.png" />
+    <Content Include="icons\mouse_add.png" />
+    <Content Include="icons\mouse_delete.png" />
+    <Content Include="icons\mouse_error.png" />
+    <Content Include="icons\music.png" />
+    <Content Include="icons\new.png" />
+    <Content Include="icons\newspaper.png" />
+    <Content Include="icons\newspaper_add.png" />
+    <Content Include="icons\newspaper_delete.png" />
+    <Content Include="icons\newspaper_go.png" />
+    <Content Include="icons\newspaper_link.png" />
+    <Content Include="icons\note.png" />
+    <Content Include="icons\note_add.png" />
+    <Content Include="icons\note_delete.png" />
+    <Content Include="icons\note_error.png" />
+    <Content Include="icons\note_go.png" />
+    <Content Include="icons\overlays.png" />
+    <Content Include="icons\package.png" />
+    <Content Include="icons\package_add.png" />
+    <Content Include="icons\package_delete.png" />
+    <Content Include="icons\package_go.png" />
+    <Content Include="icons\package_green.png" />
+    <Content Include="icons\package_link.png" />
+    <Content Include="icons\page_add.png" />
+    <Content Include="icons\page_attach.png" />
+    <Content Include="icons\page_code.png" />
+    <Content Include="icons\page_delete.png" />
+    <Content Include="icons\page_edit.png" />
+    <Content Include="icons\page_error.png" />
+    <Content Include="icons\page_excel.png" />
+    <Content Include="icons\page_find.png" />
+    <Content Include="icons\page_gear.png" />
+    <Content Include="icons\page_go.png" />
+    <Content Include="icons\page_green.png" />
+    <Content Include="icons\page_key.png" />
+    <Content Include="icons\page_lightning.png" />
+    <Content Include="icons\page_link.png" />
+    <Content Include="icons\page_paintbrush.png" />
+    <Content Include="icons\page_red.png" />
+    <Content Include="icons\page_refresh.png" />
+    <Content Include="icons\page_save.png" />
+    <Content Include="icons\page_white.png" />
+    <Content Include="icons\page_white_acrobat.png" />
+    <Content Include="icons\page_white_actionscript.png" />
+    <Content Include="icons\page_white_add.png" />
+    <Content Include="icons\page_white_c.png" />
+    <Content Include="icons\page_white_camera.png" />
+    <Content Include="icons\page_white_cd.png" />
+    <Content Include="icons\page_white_code.png" />
+    <Content Include="icons\page_white_code_red.png" />
+    <Content Include="icons\page_white_coldfusion.png" />
+    <Content Include="icons\page_white_compressed.png" />
+    <Content Include="icons\page_white_copy.png" />
+    <Content Include="icons\page_white_cplusplus.png" />
+    <Content Include="icons\page_white_csharp.png" />
+    <Content Include="icons\page_white_cup.png" />
+    <Content Include="icons\page_white_database.png" />
+    <Content Include="icons\page_white_delete.png" />
+    <Content Include="icons\page_white_dvd.png" />
+    <Content Include="icons\page_white_edit.png" />
+    <Content Include="icons\page_white_error.png" />
+    <Content Include="icons\page_white_excel.png" />
+    <Content Include="icons\page_white_find.png" />
+    <Content Include="icons\page_white_flash.png" />
+    <Content Include="icons\page_white_freehand.png" />
+    <Content Include="icons\page_white_gear.png" />
+    <Content Include="icons\page_white_get.png" />
+    <Content Include="icons\page_white_go.png" />
+    <Content Include="icons\page_white_h.png" />
+    <Content Include="icons\page_white_horizontal.png" />
+    <Content Include="icons\page_white_key.png" />
+    <Content Include="icons\page_white_lightning.png" />
+    <Content Include="icons\page_white_link.png" />
+    <Content Include="icons\page_white_magnify.png" />
+    <Content Include="icons\page_white_medal.png" />
+    <Content Include="icons\page_white_office.png" />
+    <Content Include="icons\page_white_paint.png" />
+    <Content Include="icons\page_white_paintbrush.png" />
+    <Content Include="icons\page_white_paste.png" />
+    <Content Include="icons\page_white_php.png" />
+    <Content Include="icons\page_white_picture.png" />
+    <Content Include="icons\page_white_powerpoint.png" />
+    <Content Include="icons\page_white_put.png" />
+    <Content Include="icons\page_white_ruby.png" />
+    <Content Include="icons\page_white_stack.png" />
+    <Content Include="icons\page_white_star.png" />
+    <Content Include="icons\page_white_swoosh.png" />
+    <Content Include="icons\page_white_text.png" />
+    <Content Include="icons\page_white_text_width.png" />
+    <Content Include="icons\page_white_tux.png" />
+    <Content Include="icons\page_white_vector.png" />
+    <Content Include="icons\page_white_visualstudio.png" />
+    <Content Include="icons\page_white_width.png" />
+    <Content Include="icons\page_white_word.png" />
+    <Content Include="icons\page_white_world.png" />
+    <Content Include="icons\page_white_wrench.png" />
+    <Content Include="icons\page_white_zip.png" />
+    <Content Include="icons\page_word.png" />
+    <Content Include="icons\page_world.png" />
+    <Content Include="icons\paintbrush.png" />
+    <Content Include="icons\paintcan.png" />
+    <Content Include="icons\palette.png" />
+    <Content Include="icons\paste_plain.png" />
+    <Content Include="icons\paste_word.png" />
+    <Content Include="icons\pencil_add.png" />
+    <Content Include="icons\pencil_delete.png" />
+    <Content Include="icons\pencil_go.png" />
+    <Content Include="icons\phone.png" />
+    <Content Include="icons\phone_add.png" />
+    <Content Include="icons\phone_delete.png" />
+    <Content Include="icons\phone_sound.png" />
+    <Content Include="icons\photo.png" />
+    <Content Include="icons\photos.png" />
+    <Content Include="icons\photo_add.png" />
+    <Content Include="icons\photo_delete.png" />
+    <Content Include="icons\photo_link.png" />
+    <Content Include="icons\picture.png" />
+    <Content Include="icons\pictures.png" />
+    <Content Include="icons\picture_add.png" />
+    <Content Include="icons\picture_delete.png" />
+    <Content Include="icons\picture_edit.png" />
+    <Content Include="icons\picture_empty.png" />
+    <Content Include="icons\picture_error.png" />
+    <Content Include="icons\picture_go.png" />
+    <Content Include="icons\picture_key.png" />
+    <Content Include="icons\picture_link.png" />
+    <Content Include="icons\picture_save.png" />
+    <Content Include="icons\pilcrow.png" />
+    <Content Include="icons\pill.png" />
+    <Content Include="icons\pill_add.png" />
+    <Content Include="icons\pill_delete.png" />
+    <Content Include="icons\pill_go.png" />
+    <Content Include="icons\plugin.png" />
+    <Content Include="icons\plugin_delete.png" />
+    <Content Include="icons\plugin_disabled.png" />
+    <Content Include="icons\plugin_edit.png" />
+    <Content Include="icons\plugin_error.png" />
+    <Content Include="icons\plugin_go.png" />
+    <Content Include="icons\plugin_link.png" />
+    <Content Include="icons\printer_add.png" />
+    <Content Include="icons\printer_delete.png" />
+    <Content Include="icons\printer_empty.png" />
+    <Content Include="icons\printer_error.png" />
+    <Content Include="icons\rainbow.png" />
+    <Content Include="icons\report.png" />
+    <Content Include="icons\report_add.png" />
+    <Content Include="icons\report_delete.png" />
+    <Content Include="icons\report_disk.png" />
+    <Content Include="icons\report_edit.png" />
+    <Content Include="icons\report_go.png" />
+    <Content Include="icons\report_key.png" />
+    <Content Include="icons\report_link.png" />
+    <Content Include="icons\report_magnify.png" />
+    <Content Include="icons\report_picture.png" />
+    <Content Include="icons\report_user.png" />
+    <Content Include="icons\report_word.png" />
+    <Content Include="icons\resultset_first.png" />
+    <Content Include="icons\resultset_last.png" />
+    <Content Include="icons\resultset_next.png" />
+    <Content Include="icons\resultset_previous.png" />
+    <Content Include="icons\rosette.png" />
+    <Content Include="icons\rss.png" />
+    <Content Include="icons\rss_add.png" />
+    <Content Include="icons\rss_delete.png" />
+    <Content Include="icons\rss_go.png" />
+    <Content Include="icons\rss_valid.png" />
+    <Content Include="icons\ruby.png" />
+    <Content Include="icons\ruby_add.png" />
+    <Content Include="icons\ruby_delete.png" />
+    <Content Include="icons\ruby_gear.png" />
+    <Content Include="icons\ruby_get.png" />
+    <Content Include="icons\ruby_go.png" />
+    <Content Include="icons\ruby_key.png" />
+    <Content Include="icons\ruby_link.png" />
+    <Content Include="icons\ruby_put.png" />
+    <Content Include="icons\script.png" />
+    <Content Include="icons\script_add.png" />
+    <Content Include="icons\script_code.png" />
+    <Content Include="icons\script_code_red.png" />
+    <Content Include="icons\script_delete.png" />
+    <Content Include="icons\script_edit.png" />
+    <Content Include="icons\script_error.png" />
+    <Content Include="icons\script_gear.png" />
+    <Content Include="icons\script_go.png" />
+    <Content Include="icons\script_key.png" />
+    <Content Include="icons\script_lightning.png" />
+    <Content Include="icons\script_link.png" />
+    <Content Include="icons\script_palette.png" />
+    <Content Include="icons\script_save.png" />
+    <Content Include="icons\server.png" />
+    <Content Include="icons\server_add.png" />
+    <Content Include="icons\server_chart.png" />
+    <Content Include="icons\server_compressed.png" />
+    <Content Include="icons\server_connect.png" />
+    <Content Include="icons\server_database.png" />
+    <Content Include="icons\server_delete.png" />
+    <Content Include="icons\server_edit.png" />
+    <Content Include="icons\server_error.png" />
+    <Content Include="icons\server_go.png" />
+    <Content Include="icons\server_key.png" />
+    <Content Include="icons\server_link.png" />
+    <Content Include="icons\server_uncompressed.png" />
+    <Content Include="icons\shading.png" />
+    <Content Include="icons\shape_align_bottom.png" />
+    <Content Include="icons\shape_align_center.png" />
+    <Content Include="icons\shape_align_left.png" />
+    <Content Include="icons\shape_align_middle.png" />
+    <Content Include="icons\shape_align_right.png" />
+    <Content Include="icons\shape_align_top.png" />
+    <Content Include="icons\shape_flip_horizontal.png" />
+    <Content Include="icons\shape_flip_vertical.png" />
+    <Content Include="icons\shape_group.png" />
+    <Content Include="icons\shape_handles.png" />
+    <Content Include="icons\shape_move_back.png" />
+    <Content Include="icons\shape_move_backwards.png" />
+    <Content Include="icons\shape_move_forwards.png" />
+    <Content Include="icons\shape_move_front.png" />
+    <Content Include="icons\shape_rotate_anticlockwise.png" />
+    <Content Include="icons\shape_rotate_clockwise.png" />
+    <Content Include="icons\shape_square.png" />
+    <Content Include="icons\shape_square_add.png" />
+    <Content Include="icons\shape_square_delete.png" />
+    <Content Include="icons\shape_square_edit.png" />
+    <Content Include="icons\shape_square_error.png" />
+    <Content Include="icons\shape_square_go.png" />
+    <Content Include="icons\shape_square_key.png" />
+    <Content Include="icons\shape_square_link.png" />
+    <Content Include="icons\shape_ungroup.png" />
+    <Content Include="icons\shield.png" />
+    <Content Include="icons\shield_delete.png" />
+    <Content Include="icons\shield_go.png" />
+    <Content Include="icons\sitemap.png" />
+    <Content Include="icons\sitemap_color.png" />
+    <Content Include="icons\sound.png" />
+    <Content Include="icons\sound_add.png" />
+    <Content Include="icons\sound_delete.png" />
+    <Content Include="icons\sound_low.png" />
+    <Content Include="icons\sound_mute.png" />
+    <Content Include="icons\sound_none.png" />
+    <Content Include="icons\spellcheck.png" />
+    <Content Include="icons\sport_8ball.png" />
+    <Content Include="icons\sport_basketball.png" />
+    <Content Include="icons\sport_football.png" />
+    <Content Include="icons\sport_golf.png" />
+    <Content Include="icons\sport_raquet.png" />
+    <Content Include="icons\sport_shuttlecock.png" />
+    <Content Include="icons\sport_soccer.png" />
+    <Content Include="icons\sport_tennis.png" />
+    <Content Include="icons\star.png" />
+    <Content Include="icons\status_away.png" />
+    <Content Include="icons\status_busy.png" />
+    <Content Include="icons\status_offline.png" />
+    <Content Include="icons\status_online.png" />
+    <Content Include="icons\stop.png" />
+    <Content Include="icons\style.png" />
+    <Content Include="icons\style_add.png" />
+    <Content Include="icons\style_delete.png" />
+    <Content Include="icons\style_edit.png" />
+    <Content Include="icons\style_go.png" />
+    <Content Include="icons\sum.png" />
+    <Content Include="icons\tab.png" />
+    <Content Include="icons\table.png" />
+    <Content Include="icons\table_add.png" />
+    <Content Include="icons\table_delete.png" />
+    <Content Include="icons\table_error.png" />
+    <Content Include="icons\table_gear.png" />
+    <Content Include="icons\table_go.png" />
+    <Content Include="icons\table_key.png" />
+    <Content Include="icons\table_lightning.png" />
+    <Content Include="icons\table_link.png" />
+    <Content Include="icons\table_multiple.png" />
+    <Content Include="icons\table_refresh.png" />
+    <Content Include="icons\table_relationship.png" />
+    <Content Include="icons\table_row_delete.png" />
+    <Content Include="icons\table_row_insert.png" />
+    <Content Include="icons\table_save.png" />
+    <Content Include="icons\table_sort.png" />
+    <Content Include="icons\tab_add.png" />
+    <Content Include="icons\tab_delete.png" />
+    <Content Include="icons\tab_edit.png" />
+    <Content Include="icons\tab_go.png" />
+    <Content Include="icons\tag.png" />
+    <Content Include="icons\tag_blue.png" />
+    <Content Include="icons\tag_blue_add.png" />
+    <Content Include="icons\tag_blue_delete.png" />
+    <Content Include="icons\tag_blue_edit.png" />
+    <Content Include="icons\tag_green.png" />
+    <Content Include="icons\tag_orange.png" />
+    <Content Include="icons\tag_pink.png" />
+    <Content Include="icons\tag_purple.png" />
+    <Content Include="icons\tag_yellow.png" />
+    <Content Include="icons\telephone.png" />
+    <Content Include="icons\telephone_add.png" />
+    <Content Include="icons\telephone_delete.png" />
+    <Content Include="icons\telephone_edit.png" />
+    <Content Include="icons\telephone_error.png" />
+    <Content Include="icons\telephone_go.png" />
+    <Content Include="icons\telephone_key.png" />
+    <Content Include="icons\telephone_link.png" />
+    <Content Include="icons\television.png" />
+    <Content Include="icons\television_add.png" />
+    <Content Include="icons\television_delete.png" />
+    <Content Include="icons\textfield.png" />
+    <Content Include="icons\textfield_add.png" />
+    <Content Include="icons\textfield_delete.png" />
+    <Content Include="icons\textfield_key.png" />
+    <Content Include="icons\textfield_rename.png" />
+    <Content Include="icons\text_align_center.png" />
+    <Content Include="icons\text_align_justify.png" />
+    <Content Include="icons\text_align_left.png" />
+    <Content Include="icons\text_align_right.png" />
+    <Content Include="icons\text_allcaps.png" />
+    <Content Include="icons\text_bold.png" />
+    <Content Include="icons\text_columns.png" />
+    <Content Include="icons\text_dropcaps.png" />
+    <Content Include="icons\text_heading_1.png" />
+    <Content Include="icons\text_heading_2.png" />
+    <Content Include="icons\text_heading_3.png" />
+    <Content Include="icons\text_heading_4.png" />
+    <Content Include="icons\text_heading_5.png" />
+    <Content Include="icons\text_heading_6.png" />
+    <Content Include="icons\text_horizontalrule.png" />
+    <Content Include="icons\text_indent.png" />
+    <Content Include="icons\text_indent_remove.png" />
+    <Content Include="icons\text_italic.png" />
+    <Content Include="icons\text_kerning.png" />
+    <Content Include="icons\text_letterspacing.png" />
+    <Content Include="icons\text_letter_omega.png" />
+    <Content Include="icons\text_linespacing.png" />
+    <Content Include="icons\text_list_bullets.png" />
+    <Content Include="icons\text_list_numbers.png" />
+    <Content Include="icons\text_lowercase.png" />
+    <Content Include="icons\text_padding_bottom.png" />
+    <Content Include="icons\text_padding_left.png" />
+    <Content Include="icons\text_padding_right.png" />
+    <Content Include="icons\text_padding_top.png" />
+    <Content Include="icons\text_replace.png" />
+    <Content Include="icons\text_signature.png" />
+    <Content Include="icons\text_smallcaps.png" />
+    <Content Include="icons\text_strikethrough.png" />
+    <Content Include="icons\text_subscript.png" />
+    <Content Include="icons\text_superscript.png" />
+    <Content Include="icons\text_underline.png" />
+    <Content Include="icons\text_uppercase.png" />
+    <Content Include="icons\thumb_down.png" />
+    <Content Include="icons\thumb_up.png" />
+    <Content Include="icons\tick.png" />
+    <Content Include="icons\time.png" />
+    <Content Include="icons\timeline_marker.png" />
+    <Content Include="icons\time_add.png" />
+    <Content Include="icons\time_delete.png" />
+    <Content Include="icons\time_go.png" />
+    <Content Include="icons\transmit.png" />
+    <Content Include="icons\transmit_add.png" />
+    <Content Include="icons\transmit_blue.png" />
+    <Content Include="icons\transmit_delete.png" />
+    <Content Include="icons\transmit_edit.png" />
+    <Content Include="icons\transmit_error.png" />
+    <Content Include="icons\transmit_go.png" />
+    <Content Include="Plugins\Readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\troll.png" />
+    <Content Include="icons\tux.png" />
+    <Content Include="icons\user.png" />
+    <Content Include="icons\user_comment.png" />
+    <None Include="icons\user_delete.png" />
+    <Content Include="icons\user_edit.png" />
+    <Content Include="icons\user_female.png" />
+    <Content Include="icons\user_gray.png" />
+    <Content Include="icons\user_green.png" />
+    <Content Include="icons\user_orange.png" />
+    <Content Include="icons\user_red.png" />
+    <Content Include="icons\user_suit.png" />
+    <Content Include="icons\vcard.png" />
+    <Content Include="icons\vcard_add.png" />
+    <Content Include="icons\vcard_delete.png" />
+    <Content Include="icons\vcard_edit.png" />
+    <Content Include="icons\vector.png" />
+    <Content Include="icons\vector_add.png" />
+    <Content Include="icons\vector_delete.png" />
+    <Content Include="icons\wand.png" />
+    <Content Include="icons\weather_clouds.png" />
+    <Content Include="icons\weather_cloudy.png" />
+    <Content Include="icons\weather_lightning.png" />
+    <Content Include="icons\weather_rain.png" />
+    <Content Include="icons\weather_snow.png" />
+    <Content Include="icons\weather_sun.png" />
+    <Content Include="icons\webcam.png" />
+    <Content Include="icons\webcam_add.png" />
+    <Content Include="icons\webcam_delete.png" />
+    <Content Include="icons\webcam_error.png" />
+    <Content Include="icons\world.png" />
+    <Content Include="icons\world_add.png" />
+    <Content Include="icons\world_delete.png" />
+    <Content Include="icons\world_edit.png" />
+    <Content Include="icons\world_link.png" />
+    <Content Include="icons\wrench.png" />
+    <Content Include="icons\wrench_orange.png" />
+    <Content Include="icons\xhtml.png" />
+    <Content Include="icons\xhtml_add.png" />
+    <Content Include="icons\xhtml_delete.png" />
+    <Content Include="icons\xhtml_go.png" />
+    <Content Include="icons\xhtml_valid.png" />
+    <Content Include="icons\zoom.png" />
+    <Content Include="icons\zoom_in.png" />
+    <Content Include="icons\zoom_out.png" />
+    <Content Include="lang\pt-br.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lang\pt-br_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Calendar set.xslt">
@@ -1662,55 +3503,70 @@
     <Content Include="sheets\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Dossier.xsl">
+    <Content Include="sheets\de-de\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Fahrzeuge.xsl">
+    <Content Include="sheets\de-de\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Formatieren Nur Text.xsl">
+    <Content Include="sheets\de-de\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Kalender.xsl">
+    <Content Include="sheets\de-de\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Kommlinks.xsl">
+    <Content Include="sheets\de-de\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Kontakte.xsl">
+    <Content Include="sheets\de-de\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Kosten.xsl">
+    <Content Include="sheets\de-de\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Notizen.xsl">
+    <Content Include="sheets\de-de\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Nur Text.xsl">
+    <Content Include="sheets\de-de\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Fancy Blocks.xsl">
+    <Content Include="sheets\de-de\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Shadowrun 5 %28Rating greater 0%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Shadowrun 5 %28Kern%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Shadowrun 5.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\Game Master Summary.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de\xz.language.xslt">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Game Master Summary.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Dossier set.xslt">
@@ -1739,55 +3595,70 @@
     <Content Include="sheets\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Blocs fantaisie.xsl">
+    <Content Include="sheets\fr-fr\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Calendrier.xsl">
+    <Content Include="sheets\fr-fr\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Commlinks.xsl">
+    <Content Include="sheets\fr-fr\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Contacts.xsl">
+    <Content Include="sheets\fr-fr\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Expenses.xsl">
+    <Content Include="sheets\fr-fr\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Dossier.xsl">
+    <Content Include="sheets\fr-fr\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Formatted Text-Only.xsl">
+    <Content Include="sheets\fr-fr\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Remarques.xsl">
+    <Content Include="sheets\fr-fr\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Game Master Summary.xsl">
+    <Content Include="sheets\fr-fr\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Shadowrun 5 %28Coeur%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Shadowrun 5 %28Rating greater 0%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Shadowrun 5.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Texte seulement.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Vehicles.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\xz.language.xslt">
+    <Content Include="sheets\fr-fr\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\Vehicles.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Game Master Summary set.xslt">
@@ -1796,55 +3667,70 @@
     <Content Include="sheets\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Calendar.xsl">
+    <Content Include="sheets\ja-jp\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Commlinks.xsl">
+    <Content Include="sheets\ja-jp\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Contacts.xsl">
+    <Content Include="sheets\ja-jp\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Dossier.xsl">
+    <Content Include="sheets\ja-jp\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Expenses.xsl">
+    <Content Include="sheets\ja-jp\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Fancy Blocks.xsl">
+    <Content Include="sheets\ja-jp\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Formatted Text-Only.xsl">
+    <Content Include="sheets\ja-jp\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Game Master Summary.xsl">
+    <Content Include="sheets\ja-jp\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Notes.xsl">
+    <Content Include="sheets\ja-jp\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Shadowrun 5 %28Core%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Shadowrun 5 %28Rating greater 0%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Shadowrun 5.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Text-Only.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\Vehicles.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp\xz.language.xslt">
+    <Content Include="sheets\ja-jp\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Vehicles.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Notes set.xslt">
@@ -1853,16 +3739,91 @@
     <Content Include="sheets\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\pt-br\Calendar.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Commlinks.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Contacts.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Dossier.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Expenses.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Fancy Blocks.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Formatted Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Game Master Summary.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Notes.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Core%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Vehicles.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\xz.language.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Rating greater 0%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 set.xslt">
@@ -1870,6 +3831,12 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Spirits and Sprites set.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Spirits and Sprites.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Text-Only set.xslt">
@@ -1887,10 +3854,13 @@
     <Content Include="sheets\xs.fnx.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xs.fnxTests.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xs.SkillsGroupedAssorted.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\xs.SkillsGroupedByName.xslt">
+    <Content Include="sheets\xs.SkillsGroupedByPool.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xs.SkillsGroupedByRating.xslt">
@@ -1902,6 +3872,9 @@
     <Content Include="sheets\xt.Calendar.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.ComplexForms.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.ConditionMonitor.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -1909,16 +3882,31 @@
     <Content Include="sheets\xt.Contacts.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.CritterPowers.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.Expenses.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.Lifestyles.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.MetamagicArts.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.Metamagics.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.MovementRate.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.Notes.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.Nothing2Show.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.PreserveLineBreaks.xslt">
@@ -1936,6 +3924,9 @@
     <Content Include="sheets\xt.RuleLine.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.SkillCategory.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.SkillGroups.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1951,69 +3942,78 @@
     <Content Include="sheets\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\GM简要.xsl">
+    <Content Include="sheets\zh-cn\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\xz.language.xslt">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\人脉.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\仅文本.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\备注.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\多彩方块.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\收支.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\日程表.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\暗影狂奔5.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 set CSS.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\暗影狂奔5（名称排列）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\暗影狂奔5（技能等级＞0）.xsl">
+    <Content Include="sheets\zh-cn\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\暗影狂奔5（核心）.xsl">
+    <Content Include="sheets\zh-cn\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\暗影狂奔5（等级排列）.xsl">
+    <Content Include="sheets\zh-cn\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\格式仅文本.xsl">
+    <Content Include="sheets\zh-cn\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\档案.xsl">
+    <Content Include="sheets\zh-cn\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\矩阵设备.xsl">
+    <Content Include="sheets\zh-cn\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\载具和无人机.xsl">
+    <Content Include="sheets\zh-cn\Calendar.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Formatted Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Dossier.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Commlinks.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="wkhtmltopdf.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
-    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="data\options.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Properties\Contributors.tt">
@@ -2021,147 +4021,150 @@
       <LastGenOutput>Contributors.cs</LastGenOutput>
     </Content>
     <Content Include="data\armor.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\bioware.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\books.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\complexforms.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\contacts.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\critterpowers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\critters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\cyberware.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="data\drugcomponents.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\echoes.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\gameplayoptions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\gear.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\improvements.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\licenses.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\lifemodules.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\lifestyles.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\martialarts.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\mentors.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\metamagic.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\metatypes.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\packs.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\paragons.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\powers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\priorities.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\programs.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\qualities.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\ranges.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\skills.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spells.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spiritpowers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\streams.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\traditions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\vehicles.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\vessels.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\weapons.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="Expand.png" />
     <Content Include="export\Squad Manager.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\de.xml">
+    <Content Include="lang\de-de.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="lang\de_data.xml">
+    <Content Include="lang\de-de_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -2169,24 +4172,24 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="lang\fr.xml">
+    <Content Include="lang\fr-fr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="lang\fr_data.xml">
+    <Content Include="lang\fr-fr_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\jp.xml">
+    <Content Include="lang\ja-jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="lang\jp_data.xml">
+    <Content Include="lang\ja-jp_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\zh.xml">
+    <Content Include="lang\zh-cn.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\zh_data.xml">
+    <Content Include="lang\zh-cn_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Collapse.png" />
@@ -2206,6 +4209,22 @@
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
 </PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

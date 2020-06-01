@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <qualities>
+    <quality>
+      <id>5caec3b1-21d0-4df7-98a7-7ca24f12e8b3</id>
+      <name>Tusks</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <naturalweapons>
+        <naturalweapon>
+          <id>0f884cd7-f4d2-4e63-8538-0cffdb03e4f6</id>
+          <name>Horns</name>
+          <category>Bio-Weapon</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>(STR)P</damage>
+          <ap>-1</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>0</avail>
+          <cost>0</cost>
+          <source>CF</source>
+          <page>121</page>
+          <allowaccessory>False</allowaccessory>
+          <hide />
+          <useskill>Unarmed Combat</useskill>
+        </naturalweapon>
+      </naturalweapons>
+      <hide />
+      <source>CF</source>
+      <page>121</page>
+    </quality>
+  </qualities>
+</chummer>

@@ -16,30 +16,29 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmSelectCalendarStart : Form
     {
-        private int _intSelectedYear = 2072;
+        private int _intSelectedYear = DateTime.UtcNow.Year + 62;
         private int _intSelectedWeek = 1;
-        CalendarWeek objDefaultWeek = new CalendarWeek();
 
         #region Control Events
         public frmSelectCalendarStart()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         public frmSelectCalendarStart(CalendarWeek objWeek)
         {
+            if (objWeek == null)
+                throw new ArgumentNullException(nameof(objWeek));
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             nudYear.Value = objWeek.Year;
             nudMonth.Value = objWeek.Month;
@@ -59,7 +58,7 @@ namespace Chummer
         private void nudMonth_ValueChanged(object sender, EventArgs e)
         {
             // All months have 4 weeks with the exception of months 3, 6, 9, and 12 which have 5 each.
-            switch (Convert.ToInt32(nudMonth.Value))
+            switch (decimal.ToInt32(nudMonth.Value))
             {
                 case 3:
                 case 6:
@@ -80,9 +79,9 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _intSelectedYear = Convert.ToInt32(nudYear.Value);
-            int intMonth = Convert.ToInt32(nudMonth.Value);
-            int intWeek = Convert.ToInt32(nudWeek.Value);
+            _intSelectedYear = decimal.ToInt32(nudYear.Value);
+            int intMonth = decimal.ToInt32(nudMonth.Value);
+            int intWeek = decimal.ToInt32(nudWeek.Value);
 
             // Calculate the week number based on the selected month and week combination.
             _intSelectedWeek = (intMonth - 1) * 4 + intWeek;
@@ -96,39 +95,19 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-
-        private void MoveControls()
-        {
-            nudYear.Left = lblYear.Left + lblYear.Width + 6;
-            lblMonth.Left = nudYear.Left + nudYear.Width + 16;
-            nudMonth.Left = lblMonth.Left + lblMonth.Width + 6;
-            lblWeek.Left = nudMonth.Left + nudMonth.Width + 16;
-            nudWeek.Left = lblWeek.Left + lblWeek.Width + 6;
-        }
         #endregion
 
         #region Properties
         /// <summary>
         /// Selected year.
         /// </summary>
-        public int SelectedYear
-        {
-            get
-            {
-                return _intSelectedYear;
-            }
-        }
+        public int SelectedYear => _intSelectedYear;
 
         /// <summary>
         /// Selected week.
         /// </summary>
-        public int SelectedWeek
-        {
-            get
-            {
-                return _intSelectedWeek;
-            }
-        }
+        public int SelectedWeek => _intSelectedWeek;
+
         #endregion
     }
 }

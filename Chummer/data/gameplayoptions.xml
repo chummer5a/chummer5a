@@ -23,34 +23,109 @@
       <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
       <name>Standard</name>
       <karma>25</karma>
+      <qualitylimit>25</qualitylimit>
+      <pointbuykarma>800</pointbuykarma>
+      <lifemoduleskarma>750</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>12</maxavailability>
       <maxnuyen>10</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
-      <default>yes</default>
+      <default>True</default>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
     </gameplayoption>
     <gameplayoption>
       <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
       <name>Prime Runner</name>
       <karma>35</karma>
+      <qualitylimit>35</qualitylimit>
+      <pointbuykarma>1000</pointbuykarma>
+      <lifemoduleskarma>950</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>15</maxavailability>
       <maxnuyen>25</maxnuyen>
       <contactmultiplier>6</contactmultiplier>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
     </gameplayoption>
     <gameplayoption>
       <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
       <name>Street Level</name>
       <karma>13</karma>
+      <qualitylimit>13</qualitylimit>
+      <pointbuykarma>600</pointbuykarma>
+      <lifemoduleskarma>550</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>10</maxavailability>
       <maxnuyen>5</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
     </gameplayoption>
     <gameplayoption>
       <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
       <name>Street Scum</name>
       <karma>13</karma>
+      <qualitylimit>13</qualitylimit>
+      <pointbuykarma>600</pointbuykarma>
+      <lifemoduleskarma>550</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>10</maxavailability>
       <maxnuyen>5</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+      <priorityarrays>
+        <priorityarray>BCDEE</priorityarray>
+        <priorityarray>CCDDE</priorityarray>
+      </priorityarrays>
+    </gameplayoption>
+    <gameplayoption>
+      <id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+      <name>High Life</name>
+      <karma>35</karma>
+      <qualitylimit>35</qualitylimit>
+      <pointbuykarma>1000</pointbuykarma>
+      <lifemoduleskarma>950</lifemoduleskarma>
+      <sumtoten>15</sumtoten>
+      <maxavailability>999</maxavailability>
+      <maxnuyen>25</maxnuyen>
+      <contactmultiplier>6</contactmultiplier>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+      <priorityarrays>
+        <priorityarray>AABCC</priorityarray>
+      </priorityarrays>
     </gameplayoption>
   </gameplayoptions>
 </chummer>

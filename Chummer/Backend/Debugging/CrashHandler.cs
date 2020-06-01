@@ -1,94 +1,154 @@
-﻿using System;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Threading;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 
-namespace Chummer.Backend.Debugging
+namespace Chummer.Backend
 {
-
-
-    internal class CrashHandler
+    public static class CrashHandler
     {
-        [DllImport("kernel32.dll")]
-        static extern uint GetCurrentThreadId();
-
-        private class DumpData
+        private static class NativeMethods
         {
-            public DumpData()
+            [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+            internal static extern uint GetCurrentThreadId();
+        }
+
+        private sealed class DumpData : ISerializable
+        {
+            public DumpData(Exception ex)
             {
-                AddDefaultInfo();
-            }
+                _dicPretendFiles = new Dictionary<string, string> {{"exception.txt", ex?.ToString() ?? "No Exception Specified"}};
 
-            public List<string> capturefiles = new List<string>();
-            public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
-            public Dictionary<string, string> attributes = new Dictionary<string, string>();
-            public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = GetCurrentThreadId();
-            public IntPtr exceptionPrt = IntPtr.Zero;
-
-            void AddDefaultInfo()
-            {
-                //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
-                attributes.Add("visible-crash-id", Guid.NewGuid().ToString());
-
-                attributes.Add("visible-build-type",
-                    #if DEBUG
-                    "DEBUG"
-#else
-                    "RELEASE"
-#endif
-                    );
-                attributes.Add("commandline", Environment.CommandLine);
-                attributes.Add("visible-version", Application.ProductVersion);
-
-                if (Registry.LocalMachine != null)
+                _dicAttributes = new Dictionary<string, string>
                 {
-                    RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    {"visible-crash-id", Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo)},
+#if DEBUG
+                    {"visible-build-type", "DEBUG"},
+#else
+                    {"visible-build-type", "RELEASE"},
+#endif
+                    {"commandline", Environment.CommandLine},
+                    {"visible-version", Application.ProductVersion},
+                    {"machine-name", Environment.MachineName},
+                    {"current-dir", Utils.GetStartupPath},
+                    {"application-dir", Application.ExecutablePath},
+                    {"os-type", Environment.OSVersion.VersionString},
+                    {"visible-error-friendly", ex?.Message ?? "No description available"},
+                    { "installation-id", Properties.Settings.Default.UploadClientId.ToString() },
+                    { "option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
+                };
 
-                    if (cv != null)
-                    {
-                        if (!cv.GetValueNames().Contains("ProductId"))
-                        {
-                            //On 32 bit builds? get 64 bit registry
-                            cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                        }
-
-                        attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
-                        attributes.Add("os-name", cv.GetValue("ProductName").ToString());
-                    }
+                try
+                {
+                    _dicAttributes.Add("chummer-ui-language", GlobalOptions.Language);
+                }
+                catch (Exception e)
+                {
+                    _dicAttributes.Add("chummer-ui-language", e.ToString());
+                }
+                try
+                {
+                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.CultureInfo.ToString());
+                }
+                catch (Exception e)
+                {
+                    _dicAttributes.Add("chummer-cultureinfo", e.ToString());
+                }
+                try
+                {
+                    _dicAttributes.Add("system-cultureinfo", GlobalOptions.SystemCultureInfo.ToString());
+                }
+                catch (Exception e)
+                {
+                    _dicAttributes.Add("system-cultureinfo", e.ToString());
                 }
 
-                attributes.Add("machine-name", Environment.MachineName);
-                attributes.Add("current-dir", Application.StartupPath);
-                attributes.Add("application-dir", Application.ExecutablePath);
-                attributes.Add("os-type", Environment.OSVersion.VersionString);
+                //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
+                if (Registry.LocalMachine != null)
+                {
+                    RegistryKey obj64BitRegistryKey = null;
+                    RegistryKey objCurrentVersionKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
+                    if (objCurrentVersionKey?.GetValueNames().Contains("ProductId") == false)
+                    {
+                        //On 32 bit builds? get 64 bit registry
+                        objCurrentVersionKey.Close();
+                        obj64BitRegistryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                        objCurrentVersionKey = obj64BitRegistryKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    }
 
-                attributes.Add("visible-error-friendly", "No description available");
+                    if (objCurrentVersionKey != null)
+                    {
+                        try
+                        {
+                            _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            _dicAttributes.Add("machine-id", e.ToString());
+                        }
+
+                        try
+                        {
+                            _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            _dicAttributes.Add("os-name", e.ToString());
+                        }
+
+                        objCurrentVersionKey.Close();
+                    }
+                    obj64BitRegistryKey?.Close();
+                }
 
                 PropertyInfo[] systemInformation = typeof(SystemInformation).GetProperties();
                 foreach (PropertyInfo propertyInfo in systemInformation)
                 {
-                    attributes.Add("system-info-"+ propertyInfo.Name, propertyInfo.GetValue(null).ToString());
+                    _dicAttributes.Add("system-info-" + propertyInfo.Name, propertyInfo.GetValue(null).ToString());
                 }
             }
 
-            public void AddException(Exception ex)
-            {
-                exceptionPrt = Marshal.GetExceptionPointers();
-
-                pretendfiles.Add("exception.txt", ex.ToString());
-
-                attributes["visible-error-friendly"] = ex.Message;
-            }
+            // JavaScriptSerializer requires that all properties it accesses be public.
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly Dictionary<string, string> _dicPretendFiles;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly Dictionary<string, string> _dicAttributes;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
             public string SerializeBase64()
             {
@@ -96,34 +156,79 @@ namespace Chummer.Backend.Debugging
                 return Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
             }
 
-            public void AddFile(string file)
+            public void AddFile(string strFileName)
             {
-                capturefiles.Add(file);
+                string strContents;
+                try
+                {
+                    strContents = File.ReadAllText(strFileName);
+                }
+                catch (Exception e)
+                {
+                    strContents = e.ToString();
+                }
+
+                if (!_dicCapturedFiles.TryAdd(strFileName, strContents))
+                    _dicCapturedFiles[strFileName] = strContents;
             }
 
-            public void AddPrentendFile(string filename, string contents)
+            public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                pretendfiles.Add(filename, contents);
+                info.AddValue("procesid", _intProcessId);
+                info.AddValue("threadid", _uintThreadId);
+                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
+                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)
+                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
+                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
             }
         }
 
-        internal static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex)
         {
             try
             {
-                DumpData dump = new DumpData();
+                DumpData dump = new DumpData(ex);
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "settings", "default.xml"));
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
 
-                dump.AddException(ex);
-                dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
-                dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
-                Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
+                {
+                    if (Program.ChummerTelemetryClient != null)
+                    {
+                        ex.Data.Add("IsCrash", bool.TrueString);
+                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                        {
+                            SeverityLevel = SeverityLevel.Critical
 
-                crashHandler.WaitForExit();
+                        };
+                        //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                        foreach (DictionaryEntry d in ex.Data)
+                        {
+                            if ((d.Key != null) && (d.Value != null))
+                                et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                        }
+                        Program.ChummerTelemetryClient.TrackException(et);
+                        Program.ChummerTelemetryClient.Flush();
+                    }
+                }
+
+                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
+                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
+
+                crashHandler?.WaitForExit();
             }
-            catch(Exception nex)
+            catch (Exception nex)
             {
-                MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
+                Program.MainForm.ShowMessageBox("Failed to create crash report."
+                                                + Environment.NewLine + "Here is some information to help the developers figure out why:"
+                                                + Environment.NewLine + nex
+                                                + Environment.NewLine + "Crash information:"
+                                                + Environment.NewLine + ex);
             }
         }
     }

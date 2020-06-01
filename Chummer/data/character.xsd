@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="../data../bonuses.xsd" /> 
+<xs:include schemaLocation="bonuses.xsd" /> 
   <xs:element name="gear">
     <xs:complexType>
       <xs:sequence>
@@ -44,10 +44,11 @@
         </xs:element>
         <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="response" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="firewall" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="system" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="signal" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="attack" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="dataprocessing" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="firewall" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="programlimit" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="sleaze" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="gearname" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="includedinparent" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="maxskillrating" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -325,9 +326,6 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <!-- A.I. Special Attributes -->
-              <xs:element name="response" type="xs:integer" minOccurs="0" maxOccurs="1" />
-              <xs:element name="signal" type="xs:integer" minOccurs="0" maxOccurs="1" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -518,7 +516,7 @@
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="doublecost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
@@ -619,10 +617,10 @@
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="martialartadvantages" minOccurs="1" maxOccurs="1">
+                    <xs:element name="martialarttechniques" minOccurs="1" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="martialartadvantage" minOccurs="0" maxOccurs="unbounded">
+                          <xs:element name="martialarttechnique" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:sequence>
                                 <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -719,7 +717,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="location" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="discountedcost" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -865,11 +863,6 @@
                                 <xs:element name="slots" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="response" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="system" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="firewall" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="signal" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="pilot" type="xs:integer" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />

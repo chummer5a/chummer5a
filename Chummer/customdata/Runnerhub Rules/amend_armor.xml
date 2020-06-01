@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <armors>
+    <armor xpathfilter='starts-with(name, "Hardened Mil-Spec Battle Armor")'>
+      <hide />
+    </armor>
+    <armor>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <hide />
+    </armor>
+    <armor>
+      <name>Cloak</name>
+      <forcemodcategory>Cloaks</forcemodcategory>
+    </armor>
+    <armor>
+      <name>Designed Cloak</name>      
+      <forcemodcategory>Cloaks</forcemodcategory>
+    </armor>  
+    <armor>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <hide/>
+    </armor>
+    <armor xpathfilter='not(starts-with(armor, "+"))'>      
+      <addmodcategory amendoperation="addnode">Full Armor Piece</addmodcategory>
+    </armor>
+  </armors>
+  <mods>
+    <mod>
+      <name>Gel Packs</name>
+      <category>Full Armor Piece</category>
+    </mod>
+    <mod>
+      <name>YNT Softweave Armor</name>
+      <category>Full Armor Piece</category>
+    </mod>
+    <mod amendoperation="addnode">
+      <id>f2862a7c-dc59-46cc-8e58-910c59c878f2</id>
+      <name>Chemical Protection (Cloak)</name>
+      <category>Cloaks</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
+      <avail>6</avail>
+      <cost>Rating * 250</cost>
+      <bonus unique="chemicalprotection">
+        <toxincontactresist>Rating</toxincontactresist>
+        <pathogencontactresist>Rating</pathogencontactresist>
+      </bonus>
+      <source>SR5</source>
+      <page>437</page>
+    </mod>
+    <mod amendoperation="addnode">
+      <id>3112fddf-a427-44d9-94b8-e7971e353bd4</id>
+      <name>Fire Resistance (Cloak)</name>
+      <category>Cloaks</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
+      <avail>6</avail>
+      <cost>Rating * 250</cost>
+      <bonus unique="fireresistance">
+        <firearmor>Rating</firearmor>
+      </bonus>
+      <source>SR5</source>
+      <page>437</page>
+    </mod>
+    <mod amendoperation="addnode">
+      <id>23897bae-5b38-4ff6-900b-89008e055af7</id>
+      <name>Insulation (Cloak)</name>
+      <category>Cloaks</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
+      <avail>6</avail>
+      <cost>Rating * 250</cost>
+      <bonus unique="insulation">
+        <coldarmor>Rating</coldarmor>
+      </bonus>
+      <source>SR5</source>
+      <page>437</page>
+    </mod>
+    <mod amendoperation="addnode">
+      <id>0b45ed28-bf43-4380-b131-97bf2368c0ad</id>
+      <name>Nonconductivity (Cloak)</name>
+      <category>Cloaks</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
+      <avail>6</avail>
+      <cost>Rating * 250</cost>
+      <bonus unique="nonconductivity">
+        <electricityarmor>Rating</electricityarmor>
+      </bonus>
+      <source>SR5</source>
+      <page>438</page>
+    </mod>
+    <mod amendoperation="addnode">
+      <id>e22f6d94-b686-4642-aefd-c6f32c3f943d</id>
+      <name>Thermal Damping (Cloak)</name>
+      <category>Cloaks</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
+      <avail>10R</avail>
+      <cost>Rating * 500</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>Rating</value>
+          <condition>LimitCondition_TestSneakingThermal</condition>
+        </limitmodifier>
+      </bonus>
+      <source>SR5</source>
+      <page>438</page>
+    </mod>
+    <mod amendoperation="addnode">
+      <id>df220b7c-10c6-4b15-87b3-45848d761bc5</id>
+      <name>Radiation Shielding (Cloak)</name>
+      <category>Cloaks</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 200</cost>
+      <bonus>
+        <radiationresist>Rating</radiationresist>
+      </bonus>
+      <source>RG</source>
+      <page>84</page>
+    </mod>
+  </mods>
+</chummer>

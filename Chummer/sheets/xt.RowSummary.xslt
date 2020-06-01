@@ -66,10 +66,12 @@
       page-break-after: auto;
       }
       .sectionhide {
-      visibility: visible;
+      visibility: hidden;
+      height: 1em;
+      max-height: 1em;
       bottom-padding: 0;
       page-break-inside: avoid;
-      margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
+      margin: 0 0 0 0;
       }
     </style>
 
@@ -119,10 +121,8 @@
 
     <table class="rowsummary">
     <tr>
-      <td width="30%">
-        <xsl:call-template name="fnx-uc">
-          <xsl:with-param name="string" select="$txt"/>
-        </xsl:call-template>
+      <td width="30%" class="upper" style="text-align: left">
+        <xsl:value-of select="$txt"/>
       </td>
       <xsl:if test="$buttons != 'N'">
         <xsl:variable name="blk">

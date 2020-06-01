@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,8 +19,19 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+
   <improvements>
+    <!--  <improvement>
+      <name>Action Dice-Pool Modifier</name>
+      <id>actiondicepool</id>
+      <internal>actiondicepool</internal>
+      <fields>
+        <field>SelectActionDicePool</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><<val>{val}</val>]]></xml>
+      <page>Adjusts the dicepool modifier for a given Action. Note: This is current unused</page>
+    </improvement> -->
     <improvement>
       <name>Enable Special Attribute</name>
       <id>enableattribute</id>
@@ -70,18 +82,11 @@
       <page>Enables the character's 'Complex Forms and Sprites' tab, allowing them to purchase Complex Forms and compile Sprites. The character is flagged as a Technomancer for the purposes of quality requirements, but does not receive access to the Submersion tab, unlock their Resonance attribute or receive any of the Resonance skills. Incompatible with improvements that enable the Spells and Spirits tab.</page>
     </improvement>
     <improvement>
-      <name>Enable Initiation/Submersion Tab</name>
-      <id>enableinitiationtab</id>
-      <internal>enabletab</internal>
+      <name>Force Disable Initiation/Submersion Tab</name>
+      <id>disableinitiationtab</id>
+      <internal>disabletab</internal>
       <xml><![CDATA[<name>initiation</name>]]></xml>
-      <page>Enables the character's Adept Powers tab, allowing them to buy spells and bind spirits. The character receives access to the Initiation tab, or the Submersion tab for Technomancers.</page>
-    </improvement>
-    <improvement>
-      <name>Enable Spells and Spirits Tab</name>
-      <id>enablemagiciantab</id>
-      <internal>enabletab</internal>
-      <xml><![CDATA[<name>magician</name>]]></xml>
-      <page>Enables the character's Spells and Spirits tab, allowing them to buy spells and bind spirits. The character is flagged as a Magician, but does not receive access to the Initiation tab, unlock their Magic attribute or receive any of the Magical skills.</page>
+      <page>Forcibly disables the character's Initiation or Submersion tab, forbidding them from getting metamagics or echoes.</page>
     </improvement>
     <improvement>
       <name>Enable Critter Tab</name>
@@ -203,14 +208,54 @@
       <page>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</page>
     </improvement>
     <improvement>
-      <name>Living Persona, Biofeedback Filter</name>
-      <id>livingpersonabiofeedback</id>
+      <name>Living Persona, Device Rating</name>
+      <id>livingpersonadevicerating</id>
       <internal>livingpersona</internal>
       <fields>
         <field>val</field>
       </fields>
-      <xml><![CDATA[<biofeedback>{val}</biofeedback>]]></xml>
-      <page>Adjusts the Living Persona's Biofeedback Filter Rating by the value entered. Positive numbers improve the Biofeedback Filter Rating. Negative numbers reduce the Biofeedback Filter Rating. This has no effect on characters that do not have a Living Persona.</page>
+      <xml><![CDATA[<devicerating>{val}</devicerating>]]></xml>
+      <page>Adjusts the Living Persona's Device Rating by the value entered. Positive numbers improve the Device Rating. Negative numbers reduce the Device Rating. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Program Limit</name>
+      <id>livingpersonaprogramlimit</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<programlimit>{val}</programlimit>]]></xml>
+      <page>Adjusts the Living Persona's Program Limit by the value entered. Positive numbers improve the Program Limit. Negative numbers reduce the Program Limit. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Attack</name>
+      <id>livingpersonaattack</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<attack>{val}</attack>]]></xml>
+      <page>Adjusts the Living Persona's Attack by the value entered. Positive numbers improve Attack. Negative numbers reduce Attack. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Sleaze</name>
+      <id>livingpersonasleaze</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<sleaze>{val}</sleaze>]]></xml>
+      <page>Adjusts the Living Persona's Sleaze by the value entered. Positive numbers improve Sleaze. Negative numbers reduce Sleaze. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Data Processing</name>
+      <id>livingpersonadataprocessing</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<dataprocessing>{val}</dataprocessing>]]></xml>
+      <page>Adjusts the Living Persona's Data Processing by the value entered. Positive numbers improve Data Processing. Negative numbers reduce Data Processing. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
     </improvement>
     <improvement>
       <name>Living Persona, Firewall</name>
@@ -220,37 +265,7 @@
         <field>val</field>
       </fields>
       <xml><![CDATA[<firewall>{val}</firewall>]]></xml>
-      <page>Adjusts the Living Persona's Firewall Rating by the value entered. Positive numbers improve the Firewall Rating. Negative numbers reduce the Firewall Rating. This has no effect on characters that do not have a Living Persona.</page>
-    </improvement>
-    <improvement>
-      <name>Living Persona, Response</name>
-      <id>livingpersonaresponse</id>
-      <internal>livingpersona</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<response>{val}</response>]]></xml>
-      <page>Adjusts the Living Persona's Response Rating by the value entered. Positive numbers improve the Response Rating. Negative numbers reduce the Response Rating. This has no effect on characters that do not have a Living Persona.</page>
-    </improvement>
-    <improvement>
-      <name>Living Persona, Signal</name>
-      <id>livingpersonasignal</id>
-      <internal>livingpersona</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<signal>{val}</signal>]]></xml>
-      <page>Adjusts the Living Persona's Signal Rating by the value entered. Positive numbers improve the Signal Rating. Negative numbers reduce the Signal Rating. This has no effect on characters that do not have a Living Persona.</page>
-    </improvement>
-    <improvement>
-      <name>Living Persona, System</name>
-      <id>livingpersonasystem</id>
-      <internal>livingpersona</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<system>{val}</system>]]></xml>
-      <page>Adjusts the Living Persona's System Rating by the value entered. Positive numbers improve the System Rating. Negative numbers reduce the System Rating. This has no effect on characters that do not have a Living Persona.</page>
+      <page>Adjusts the Living Persona's Firewall by the value entered. Positive numbers improve Firewall. Negative numbers reduce Firewall. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
     </improvement>
     <improvement>
       <name>Skill</name>
@@ -301,24 +316,14 @@
       <page>Adjusts the value for all of the Skills linked to an Attribute by the value entered. Positive numbers increase the Skills. Negative numbers decrease the Skills. Select a linked Attribute to affect by clicking the Select Value button. The modifier can be applied to the Skills' Ratings by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</page>
     </improvement>
     <improvement>
-      <name>Armor, Ballistic</name>
-      <id>armorb</id>
+      <name>Armor</name>
+      <id>armor</id>
       <internal>armor</internal>
       <fields>
         <field>val</field>
       </fields>
-      <xml><![CDATA[<b>{val}</b>]]></xml>
-      <page>Adjusts the character's Ballistic Armor Rating by the value entered. Positive numbers improve Ballistic Armor. Negative numbers reduce Ballistic Armor.</page>
-    </improvement>
-    <improvement>
-      <name>Armor, Impact</name>
-      <id>armori</id>
-      <internal>armor</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<i>{val}</i>]]></xml>
-      <page>Adjusts the character's Impact Armor Rating by the value entered. Positive numbers improve Impact Armor. Negative numbers reduce Impact Armor.</page>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Armor Rating by the value entered. Positive numbers improve Armor. Negative numbers reduce Armor.</page>
     </improvement>
     <improvement>
       <name>Reach</name>
@@ -418,16 +423,6 @@
       <page>Adjusts the Nuyen cost of Bioware in the Genetech categories by the percent value entered. All Genetech Nuyen costs will now be X% of their original value. Numbers lower than 100 reduce the Nuyen cost. Numbers higher than 100 increase the Nuyen cost.</page>
     </improvement>
     <improvement>
-      <name>Transgenics Cost</name>
-      <id>transgenicsgenetechcost</id>
-      <internal>transgenicsgenetechcost</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[{val}]]></xml>
-      <page>Adjusts the Nuyen cost of Bioware in the Genetech: Transgenics category by the percent value entered. All Transgenics Nuyen costs will now be X% of their original value. Numbers lower than 100 reduce the Nuyen cost. Numbers higher than 100 increase the Nuyen cost.</page>
-    </improvement>
-    <improvement>
       <name>Basic Bioware Essence Cost</name>
       <id>basicbiowareessmultiplier</id>
       <internal>basicbiowareessmultiplier</internal>
@@ -446,6 +441,16 @@
       </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the Essence cost of Bioware by the percent value entered. All Bioware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
+    </improvement>
+    <improvement>
+      <name>Genetech Essence Cost</name>
+      <id>genetechessmultiplier</id>
+      <internal>genetechessmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the Essence cost of Genetech by the percent value entered. All Genetech Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
     </improvement>
     <improvement>
       <name>Cyberware Essence Cost</name>
@@ -590,21 +595,22 @@
       <page>Adjusts the size of the character's Spellcasting pool when casting Spell in the selected category. Positive values improve Spellcasting. Negative values reduce Spellcasting.</page>
     </improvement>
     <improvement>
+      <name>Specific Spell Dicepool</name>
+      <id>spelldicepool</id>
+      <internal>spelldicepool</internal>
+      <fields>
+        <field>SelectSpell</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val>]]></xml>
+      <page>Adjusts the size of the character's Spellcasting pool when casting the Spell with the selected name. Positive values improve Spellcasting. Negative values reduce Spellcasting.</page>
+    </improvement>
+    <improvement>
       <name>Skillsoft Access</name>
       <id>skillsoftaccess</id>
       <internal>skillsoftaccess</internal>
       <xml />
       <page>The character can use Knowsoft and Linguasoft Skillsofts as though they had a direct neural link.</page>
-    </improvement>
-    <improvement>
-      <name>Essence</name>
-      <id>essence</id>
-      <internal>specificattribute</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<name>ESS</name><val>{val}</val><min>0</min><max>0</max><aug>0</aug>]]></xml>
-      <page>Adjusts the character's Essence by the value entered. Positive values increase Essence. Negative values decrease Essence.</page>
     </improvement>
     <improvement>
       <name>Essence Maximum</name>
@@ -698,6 +704,83 @@
       <internal>ignorecmpenaltyphysical</internal>
       <xml />
       <page>Reduces the characters Physical Condition Monitor Penalty to 0 while the Improvement is active.</page>
+    </improvement>
+    <improvement>
+      <name>Street Cred Multiplier</name>
+      <id>streetcredmultiplier</id>
+      <internal>streetcredmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases or reduces the multiplier used to calculate Street Cred.</page>
+    </improvement>
+    <improvement>
+      <name>Bonus Street Cred</name>
+      <id>streetcred</id>
+      <internal>streetcred</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases the character's Street Cred by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Dodge</name>
+      <id>dodge</id>
+      <internal>dodge</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases the character's Dodge pool by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Cyberzombie Conversion</name>
+      <id>enablecyberzombie</id>
+      <internal>enablecyberzombie</internal>
+      <xml />
+      <page>Allows the character to be converted into a Cyberzombie.</page>
+    </improvement>
+    <improvement>
+      <name>Free Spells</name>
+      <id>freespells</id>
+      <internal>freespells</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Allows the character to mark some spells as Free, avoiding Karma costs.</page>
+    </improvement>
+    <improvement>
+      <name>Mental Limit</name>
+      <id>mentallimit</id>
+      <internal>mentallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Mental Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Physical Limit</name>
+      <id>physicallimit</id>
+      <internal>physicallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Physical Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Social Limit</name>
+      <id>sociallimit</id>
+      <internal>sociallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Social Limit by the listed value.</page>
     </improvement>
   </improvements>
 </chummer>

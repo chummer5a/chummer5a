@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-<xs:include schemaLocation="../data../bonuses.xsd" />
-  <xs:include schemaLocation="../data../conditions.xsd" />
+  <xs:include schemaLocation="bonuses.xsd" />
+  <xs:include schemaLocation="conditions.xsd" />
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -13,11 +13,17 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"  />
-					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"  />
                     <xs:element name="points" type="xs:decimal" minOccurs="1" maxOccurs="1"  />
-                    <xs:element name="levels" type="xs:boolean" minOccurs="1" maxOccurs="1"  />
+                    <xs:element name="levels" type="xs:string" minOccurs="1" maxOccurs="1"  />
                     <xs:element name="limit" type="xs:unsignedByte" minOccurs="1" maxOccurs="1"  />
+                    <xs:element minOccurs="0" name="includeinlimit">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1"  />
                     <xs:element name="page" type="xs:unsignedShort" minOccurs="1" maxOccurs="1"  />
                     <xs:element name="action" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -25,13 +31,16 @@
                     <xs:element minOccurs="0" name="adeptwayrequires">
                       <xs:complexType>
                         <xs:sequence>
+                          <xs:element name="magicianswayforbids" type="xs:string" minOccurs="0" maxOccurs="1" />
                           <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element minOccurs="0" name="doublecost" type="xs:string" />
                     <xs:element minOccurs="0" name="extrapointcost" type="xs:decimal" />
+                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element minOccurs="0" name="maxlevels" type="xs:unsignedByte" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
@@ -47,7 +56,7 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="power" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -59,6 +68,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>

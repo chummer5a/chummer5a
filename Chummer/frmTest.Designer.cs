@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmTest
     {
@@ -13,9 +13,10 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                _objCharacter?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,10 +29,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboTest = new System.Windows.Forms.ComboBox();
+            this.cboTest = new ElasticComboBox();
             this.cmdTest = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.pgbProgress = new System.Windows.Forms.ProgressBar();
+            this.chkAddExceptionInfoToErrors = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cboTest
@@ -66,25 +68,42 @@
             // 
             // txtOutput
             // 
+            this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOutput.Location = new System.Drawing.Point(12, 68);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
+            this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtOutput.Size = new System.Drawing.Size(927, 524);
             this.txtOutput.TabIndex = 2;
             // 
             // pgbProgress
             // 
+            this.pgbProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.pgbProgress.Location = new System.Drawing.Point(12, 39);
             this.pgbProgress.Name = "pgbProgress";
             this.pgbProgress.Size = new System.Drawing.Size(927, 23);
+            this.pgbProgress.Step = 1;
             this.pgbProgress.TabIndex = 3;
+            // 
+            // chkAddExceptionInfoToErrors
+            // 
+            this.chkAddExceptionInfoToErrors.AutoSize = true;
+            this.chkAddExceptionInfoToErrors.Location = new System.Drawing.Point(287, 13);
+            this.chkAddExceptionInfoToErrors.Name = "chkAddExceptionInfoToErrors";
+            this.chkAddExceptionInfoToErrors.Size = new System.Drawing.Size(253, 17);
+            this.chkAddExceptionInfoToErrors.TabIndex = 4;
+            this.chkAddExceptionInfoToErrors.Text = "Include Exception Information in Error Messages";
+            this.chkAddExceptionInfoToErrors.UseVisualStyleBackColor = true;
             // 
             // frmTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(951, 604);
+            this.Controls.Add(this.chkAddExceptionInfoToErrors);
             this.Controls.Add(this.pgbProgress);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.cmdTest);
@@ -98,9 +117,10 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboTest;
+        private ElasticComboBox cboTest;
         private System.Windows.Forms.Button cmdTest;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.ProgressBar pgbProgress;
+        private System.Windows.Forms.CheckBox chkAddExceptionInfoToErrors;
     }
 }

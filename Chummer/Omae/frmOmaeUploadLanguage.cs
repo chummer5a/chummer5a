@@ -27,8 +27,6 @@ namespace Chummer
 {
     public partial class frmOmaeUploadLanguage : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
@@ -40,13 +38,13 @@ namespace Chummer
         private const int RESULT_UNAUTHORIZED = 1;
         private const int RESULT_INVALID_FILE = 2;
 
-        private string _strUserName;
+        private readonly string _strUserName;
 
         #region Control Events
         public frmOmaeUploadLanguage(string strUserName)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, null);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
             _strUserName = strUserName;
 
             NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection");
@@ -60,9 +58,11 @@ namespace Chummer
 
         private void cmdBrowse_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
-            openFileDialog.Multiselect = false;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "XML Files (*.xml)|*.xml",
+                Multiselect = false
+            };
 
             if (openFileDialog.ShowDialog(this) != DialogResult.OK)
             {
@@ -75,7 +75,7 @@ namespace Chummer
             // Make sure a .chum5 file was selected.
             if (!openFileDialog.FileName.EndsWith(".xml"))
             {
-                MessageBox.Show("You must select a valid XML file to upload.", "Cannot Upload File", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox("You must select a valid XML file to upload.", "Cannot Upload File", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -83,11 +83,19 @@ namespace Chummer
             XmlDocument objXmlDocument = new XmlDocument();
             try
             {
-                objXmlDocument.Load(openFileDialog.FileName);
+                using (StreamReader objStreamReader = new StreamReader(openFileDialog.FileName, true))
+                {
+                    objXmlDocument.Load(objStreamReader);
+                }
             }
-            catch
+            catch (IOException ex)
             {
-                MessageBox.Show("This is not a valid XML file.", "Invalid XML File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(ex.ToString());
+                return;
+            }
+            catch (XmlException ex)
+            {
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
 
@@ -99,28 +107,28 @@ namespace Chummer
             // Make sure a file has been selected.
             if (string.IsNullOrEmpty(txtFilePath.Text))
             {
-                MessageBox.Show("Please select a language file to upload.", "No Language File Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox("Please select a language file to upload.", "No Language File Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             byte[] bytFile = File.ReadAllBytes(txtFilePath.Text);
             string strFileName = Path.GetFileName(txtFilePath.Text);
 
-            translationSoapClient objService = _objOmaeHelper.GetTranslationService();
+            translationSoapClient objService = OmaeHelper.GetTranslationService();
             try
             {
                 int intResult = objService.UploadLanguage(_strUserName, strFileName, bytFile);
 
                 if (intResult == RESULT_SUCCESS)
-                    MessageBox.Show(MESSAGE_SUCCESS, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(MESSAGE_SUCCESS, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else if (intResult == RESULT_UNAUTHORIZED)
-                    MessageBox.Show(MESSAGE_UNAUTHORIZED, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(MESSAGE_UNAUTHORIZED, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else if (intResult == RESULT_INVALID_FILE)
-                    MessageBox.Show(MESSAGE_INVALID_FILE, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(MESSAGE_INVALID_FILE, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (EndpointNotFoundException)
             {
-                MessageBox.Show(NO_CONNECTION_MESSAGE, NO_CONNECTION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(NO_CONNECTION_MESSAGE, NO_CONNECTION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             objService.Close();
         }

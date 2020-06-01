@@ -1,4 +1,22 @@
-﻿// ============================================================================ '
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+// ============================================================================ '
 // NumericUpDownEx - v.1.6                                                      '
 // ============================================================================ '
 // Author:   Claudio Nicora                                                     '
@@ -13,19 +31,16 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Input;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
-using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
-namespace Chummer.helpers
+namespace Chummer
 {
     public class NumericUpDownEx : NumericUpDown
     {
         // reference to the underlying TextBox control
-        private TextBox _textbox;
+        private readonly TextBox _textbox;
 
         // reference to the underlying UpDownButtons control
-        private Control _upDownButtons;
+        private readonly Control _upDownButtons;
 
         // default value that will be used when incrementing via mousewheel
         private int _intMouseIncrement = 1;
@@ -34,21 +49,20 @@ namespace Chummer.helpers
         /// object creator
         /// </summary>
         public NumericUpDownEx()
-            : base()
         {
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
-            _upDownButtons = base.Controls[0];
+            _upDownButtons = Controls[0];
             if (_upDownButtons == null || _upDownButtons.GetType().FullName != "System.Windows.Forms.UpDownBase+UpDownButtons")
             {
-                throw new ArgumentNullException(this.GetType().FullName + ": Can't find internal UpDown buttons field.");
+                throw new ArgumentNullException(GetType().FullName, "Can't find internal UpDown buttons field.");
             }
             // Get a reference to the underlying TextBox field.
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
-            _textbox = base.Controls[1] as TextBox;
+            _textbox = Controls[1] as TextBox;
             if (_textbox == null || _textbox.GetType().FullName != "System.Windows.Forms.UpDownBase+UpDownEdit")
             {
-                throw new ArgumentNullException(this.GetType().FullName + ": Can't find internal TextBox field.");
+                throw new ArgumentNullException(GetType().FullName, "Can't find internal TextBox field.");
             }
             // add handlers (MouseEnter and MouseLeave events of NumericUpDown
             // are not working properly)
@@ -61,12 +75,21 @@ namespace Chummer.helpers
             base.MouseLeave += _mouseEnterLeave;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _textbox?.Dispose();
+                _upDownButtons?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             if (_upDownButtons.Visible == false)
             {
-                e.Graphics.Clear(this.BackColor);
+                e.Graphics.Clear(BackColor);
             }
             base.OnPaint(e);
         }
@@ -87,7 +110,7 @@ namespace Chummer.helpers
         /// <summary>
         /// WndProc override to kill WN_MOUSEWHEEL message
         /// </summary>
-        protected override void WndProc(ref System.Windows.Forms.Message m)
+        protected override void WndProc(ref Message m)
         {
             const int WM_MOUSEWHEEL = 0x20a;
 
@@ -140,8 +163,8 @@ namespace Chummer.helpers
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectionStart
         {
-            get { return _textbox.SelectionStart; }
-            set { _textbox.SelectionStart = value; }
+            get => _textbox.SelectionStart;
+            set => _textbox.SelectionStart = value;
         }
 
 
@@ -149,8 +172,8 @@ namespace Chummer.helpers
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectionLength
         {
-            get { return _textbox.SelectionLength; }
-            set { _textbox.SelectionLength = value; }
+            get => _textbox.SelectionLength;
+            set => _textbox.SelectionLength = value;
         }
 
 
@@ -158,8 +181,8 @@ namespace Chummer.helpers
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SelectedText
         {
-            get { return _textbox.SelectedText; }
-            set { _textbox.SelectedText = value; }
+            get => _textbox.SelectedText;
+            set => _textbox.SelectedText = value;
         }
 
 
@@ -168,8 +191,8 @@ namespace Chummer.helpers
         [Description("Enables MouseWheel only under certain conditions.")]
         public InterceptMouseWheelMode InterceptMouseWheel
         {
-            get { return _interceptMouseWheel; }
-            set { _interceptMouseWheel = value; }
+            get => _interceptMouseWheel;
+            set => _interceptMouseWheel = value;
         }
 
         private InterceptMouseWheelMode _interceptMouseWheel = InterceptMouseWheelMode.Always;
@@ -192,7 +215,7 @@ namespace Chummer.helpers
         [Description("Set UpDownButtons visibility mode.")]
         public ShowUpDownButtonsMode ShowUpDownButtons
         {
-            get { return _showUpDownButtons; }
+            get => _showUpDownButtons;
             set
             {
                 _showUpDownButtons = value;
@@ -214,11 +237,11 @@ namespace Chummer.helpers
             /// <summary>UpDownButtons are visible when control has focus or mouse is over it</summary>
             WhenFocusOrMouseOver,
             /// <summary>UpDownButtons are never visible</summary>
-            Never,
+            Never
         }
 
         /// <summary>
-        /// If set, incrementing value will cause it to restart from Minimum 
+        /// If set, incrementing value will cause it to restart from Minimum
         /// when Maximum is reached (and viceversa).
         /// </summary>
         [Category("Behavior")]
@@ -226,12 +249,12 @@ namespace Chummer.helpers
         [Description("Indicates the amount to increment or decrement with the use of the mouse wheel.")]
         public int MouseIncrement
         {
-            get { return _intMouseIncrement; }
-            set { _intMouseIncrement = value; }
+            get => _intMouseIncrement;
+            set => _intMouseIncrement = value;
         }
 
         /// <summary>
-        /// If set, incrementing value will cause it to restart from Minimum 
+        /// If set, incrementing value will cause it to restart from Minimum
         /// when Maximum is reached (and viceversa).
         /// </summary>
         [Category("Behavior")]
@@ -239,10 +262,10 @@ namespace Chummer.helpers
         [Description("If set, incrementing value will cause it to restart from Minimum when Maximum is reached (and viceversa).")]
         public bool WrapValue
         {
-            get { return _wrapValue; }
-            set { _wrapValue = value; }
+            get => _wrapValue;
+            set => _wrapValue = value;
         }
-        private bool _wrapValue = false;
+        private bool _wrapValue;
 
         #endregion
 
@@ -250,7 +273,7 @@ namespace Chummer.helpers
         #region Text selection
 
         // select all the text on focus enter
-        protected override void OnGotFocus(System.EventArgs e)
+        protected override void OnGotFocus(EventArgs e)
         {
             _haveFocus = true;
             if (AutoSelect)
@@ -258,7 +281,7 @@ namespace Chummer.helpers
                 _textbox.SelectAll();
             }
             // Update UpDownButtons visibility
-            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus | _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
+            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus || _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
             {
                 UpdateUpDownButtonsVisibility();
             }
@@ -271,7 +294,7 @@ namespace Chummer.helpers
         {
             _haveFocus = false;
             // Update UpDownButtons visibility
-            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus | _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
+            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus || _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
             {
                 UpdateUpDownButtonsVisibility();
             }
@@ -281,7 +304,7 @@ namespace Chummer.helpers
 
         // MouseUp will kill the SelectAll made on GotFocus.
         // Will restore it, but only if user have not made a partial text selection.
-        protected override void OnMouseUp(System.Windows.Forms.MouseEventArgs mevent)
+        protected override void OnMouseUp(MouseEventArgs mevent)
         {
             if (AutoSelect && _textbox.SelectionLength == 0)
             {
@@ -304,13 +327,13 @@ namespace Chummer.helpers
         public event CancelEventHandler BeforeValueIncrement;
 
         // flag to track mouse position
-        private bool _mouseOver = false;
+        private bool _mouseOver;
 
         // flag to track focus
-        private bool _haveFocus = false;
+        private bool _haveFocus;
 
         // this handler is called at each mouse Enter/Leave movement
-        private void _mouseEnterLeave(object sender, System.EventArgs e)
+        private void _mouseEnterLeave(object sender, EventArgs e)
         {
             Rectangle cr = RectangleToScreen(ClientRectangle);
             Point mp = MousePosition;
@@ -349,7 +372,7 @@ namespace Chummer.helpers
         // raises the two new events
         public override void DownButton()
         {
-            if (base.ReadOnly) return;
+            if (ReadOnly) return;
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueDecrement?.Invoke(this, e);
             if (e.Cancel) return;
@@ -360,12 +383,22 @@ namespace Chummer.helpers
             }
             else
             {
-                base.DownButton();
+                try
+                {
+                    base.DownButton();
+                }
+                catch (ArgumentOutOfRangeException aor)
+                {
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueDecrement", BeforeValueDecrement?.Method.Name);
+                    throw;
+                }
             }
         }
         public override void UpButton()
         {
-            if (base.ReadOnly) return;
+            if (ReadOnly) return;
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueIncrement?.Invoke(this, e);
             if (e.Cancel) return;
@@ -376,20 +409,29 @@ namespace Chummer.helpers
             }
             else
             {
-                base.UpButton();
+                try
+                {
+                    base.UpButton();
+                }
+                catch (ArgumentOutOfRangeException aor)
+                {
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
+                    aor.Data.Add("BeforeValueIncrement", BeforeValueIncrement?.Method.Name);
+                    throw;
+                }
             }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            HandledMouseEventArgs hme = e as HandledMouseEventArgs;
-            if (hme != null)
+            if (e is HandledMouseEventArgs hme)
                 hme.Handled = true;
 
             if (e.Delta > 0)
-                this.Value = Math.Min(this.Value + this.MouseIncrement, this.Maximum);
+                Value = Math.Min(Value + MouseIncrement, Maximum);
             else if (e.Delta < 0)
-                this.Value = Math.Max(this.Value - this.MouseIncrement, this.Minimum);
+                Value = Math.Max(Value - MouseIncrement, Minimum);
         }
         #endregion
 
@@ -402,7 +444,7 @@ namespace Chummer.helpers
         public void UpdateUpDownButtonsVisibility()
         {
             // test new state
-            bool newVisible = false;
+            bool newVisible;
             switch (_showUpDownButtons)
             {
                 case ShowUpDownButtonsMode.WhenMouseOver:
@@ -412,7 +454,7 @@ namespace Chummer.helpers
                     newVisible = _haveFocus;
                     break;
                 case ShowUpDownButtonsMode.WhenFocusOrMouseOver:
-                    newVisible = _mouseOver | _haveFocus;
+                    newVisible = _mouseOver || _haveFocus;
                     break;
                 case ShowUpDownButtonsMode.Never:
                     newVisible = false;
@@ -427,24 +469,23 @@ namespace Chummer.helpers
             {
                 if (newVisible)
                 {
-                    _textbox.Width = this.ClientRectangle.Width - _upDownButtons.Width;
+                    _textbox.Width = ClientRectangle.Width - _upDownButtons.Width;
                 }
                 else
                 {
-                    _textbox.Width = this.ClientRectangle.Width;
+                    _textbox.Width = ClientRectangle.Width;
                 }
                 _upDownButtons.Visible = newVisible;
                 OnTextBoxResize(_textbox, EventArgs.Empty);
-                this.Invalidate();
+                Invalidate();
             }
-
         }
 
 
         /// <summary>
         /// Custom textbox size management
         /// </summary>
-        protected override void OnTextBoxResize(object source, System.EventArgs e)
+        protected override void OnTextBoxResize(object source, EventArgs e)
         {
             if (_textbox == null)
                 return;
@@ -458,11 +499,11 @@ namespace Chummer.helpers
                 // custom management
 
                 // change position if RTL
-                bool fixPos = this.RightToLeft == RightToLeft.Yes ^ this.UpDownAlign == LeftRightAlignment.Left;
+                bool fixPos = RightToLeft == RightToLeft.Yes ^ UpDownAlign == LeftRightAlignment.Left;
 
                 if (_mouseOver)
                 {
-                    _textbox.Width = this.ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
+                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
                     if (fixPos)
                         _textbox.Location = new Point(16, _textbox.Location.Y);
                 }
@@ -470,7 +511,7 @@ namespace Chummer.helpers
                 {
                     if (fixPos)
                         _textbox.Location = new Point(2, _textbox.Location.Y);
-                    _textbox.Width = this.ClientSize.Width - _textbox.Left - 2;
+                    _textbox.Width = ClientSize.Width - _textbox.Left - 2;
                 }
 
             }

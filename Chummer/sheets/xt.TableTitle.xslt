@@ -19,9 +19,7 @@
       border-width: 0.25em 0.25em 0 0.25em;
       font-size: 125%;
       font-weight: bold;
-      page-break-after: avoid;
       page-break-before: auto;
-      page-break-inside: avoid;
       text-align: center;
       vertical-align: bottom;
       width: 100%;

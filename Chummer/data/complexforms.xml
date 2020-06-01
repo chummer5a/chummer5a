@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,8 +18,9 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema complexforms.xsd">
-  <version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema complexforms.xsd">
+
   <complexforms>
     <complexform>
       <id>373638b9-4334-4645-99f5-c3673e4f809b</id>
@@ -36,7 +38,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext />
+         <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*"/>
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -57,7 +59,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*"/>
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -205,6 +207,205 @@
       <fv>L+3</fv>
       <source>CF</source>
       <page>25</page>
-    </complexform>    
+    </complexform>
+    <!-- Region Kill Code -->
+    <complexform>
+      <id>60b3f99f-f903-426a-ae13-ea604e77a956</id>
+      <name>Overdrive</name>
+      <target>Cyberware</target>
+      <duration>S</duration>
+      <fv>L+1</fv>
+      <source>KC</source>
+      <page>90</page>
+      <required>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>3bed693e-d9dd-4873-8d54-2cbe97202174</id>
+      <name>LOTO</name>
+      <target>Device</target>
+      <duration>I</duration>
+      <fv>L-1</fv>
+      <source>KC</source>
+      <page>90</page>
+      <required>
+        <oneof>
+          <quality>Resonant Stream: Machinist</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>174f61be-5dad-41ad-8d6b-641bc514b9bb</id>
+      <name>Hyperthreading</name>
+      <target>Persona</target>
+      <duration>Special</duration>
+      <fv>Special</fv>
+      <source>KC</source>
+      <page>91</page>
+      <required>
+        <oneof>
+          <quality>Resonant Stream: Sourceror</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>c9eb7fba-b5dd-40b1-907a-a6683dc9977d</id>
+      <name>Sprite Pet</name>
+      <target>Persona</target>
+      <duration>P</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>91</page>
+      <required>
+        <oneof>
+          <quality>Resonant Stream: Technoshaman</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>92b4cf59-62ca-443b-aeb8-f5044967c835</id>
+      <name>Causal Nexus</name>
+      <target>Device</target>
+      <duration>P</duration>
+      <fv>L+0</fv>
+      <source>KC</source>
+      <page>133</page>
+      <required>
+        <oneof>
+          <quality>Dissonant Stream: Apophenian</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>4856cfa1-89c8-484a-9127-ddc4a2327c63</id>
+      <name>Dissonance Spike</name>
+      <target>Device</target>
+      <duration>I</duration>
+      <fv>L+6</fv>
+      <source>KC</source>
+      <page>134</page>
+      <required>
+        <oneof>
+          <quality>Dissonant Stream: Erisian</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>cadf7e01-c75d-4a49-8676-87ddcb0eaa74</id>
+      <name>Forced Heuristics</name>
+      <target>Host</target>
+      <duration>S</duration>
+      <fv>L+1</fv>
+      <source>KC</source>
+      <page>133</page>
+      <required>
+        <oneof>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </required>
+    </complexform>
+    <complexform>
+      <id>07b461db-3982-4fa2-8e24-cc5007c377a4</id>
+      <name>Arc Feedback</name>
+      <target>Icon</target>
+      <duration>S</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>94</page>
+    </complexform>
+    <complexform>
+      <id>42a11004-5379-4b79-90fa-a30f7ddf4f14</id>
+      <name>Bootleg Program</name>
+      <target>Device</target>
+      <duration>I</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>94</page>
+    </complexform>
+    <complexform>
+      <id>72630724-8d43-4a28-837c-160c735a0d0d</id>
+      <name>Host Emulator</name>
+      <target>Self</target>
+      <duration>P</duration>
+      <fv>L</fv>
+      <source>KC</source>
+      <page>94</page>
+    </complexform>
+    <complexform>
+      <id>080013b7-deb3-4a2e-822f-400ecf8293b2</id>
+      <name>Mirrored Persona</name>
+      <target>Self</target>
+      <duration>I</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>95</page>
+    </complexform>
+    <complexform>
+      <id>7d98d12d-5b02-4bc8-bf1f-b0b3507ebdaf</id>
+      <name>Pinch</name>
+      <target>Self</target>
+      <duration>S</duration>
+      <fv>L+2</fv>
+      <source>KC</source>
+      <page>95</page>
+    </complexform>
+    <complexform>
+      <id>1a4a6137-53d6-4ada-a788-49e56f73bb86</id>
+      <name>Primed Charge</name>
+      <target>Self</target>
+      <duration>I</duration>
+      <fv>L</fv>
+      <source>KC</source>
+      <page>95</page>
+    </complexform>
+    <complexform>
+      <id>b3e7f9e4-aec4-4114-bd49-e04a43be502f</id>
+      <name>Resonance Bind</name>
+      <target>Persona</target>
+      <duration>S</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>95</page>
+    </complexform>
+    <complexform>
+      <id>c5185f4d-32b4-4239-91a9-f0095ccf8572</id>
+      <name>Resonance Cache</name>
+      <target>IC</target>
+      <duration>I</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>95</page>
+    </complexform>
+    <complexform>
+      <id>f89957e0-9c70-4503-b47d-0511b7bca5b6</id>
+      <name>Search History</name>
+      <target>Device</target>
+      <duration>I</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>95</page>
+    </complexform>
+    <complexform>
+      <id>819a111f-b49d-498b-ac63-54f770cf7cd7</id>
+      <name>Weaken Data Bomb</name>
+      <target>File</target>
+      <duration>I</duration>
+      <fv>L-2</fv>
+      <source>KC</source>
+      <page>96</page>
+    </complexform>
+    <complexform>
+      <id>9e849f66-6ad4-49fb-9ccd-e0b250b0625b</id>
+      <name>Weaken Encryption</name>
+      <target>File</target>
+      <duration>I</duration>
+      <fv>L-3</fv>
+      <source>KC</source>
+      <page>96</page>
+    </complexform>
+    <!-- End Region -->
   </complexforms>
 </chummer>

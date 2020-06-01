@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+
 // ReSharper disable InconsistentNaming
 
 namespace CrashHandler
@@ -17,10 +14,10 @@ namespace CrashHandler
         internal bool ClientPointers;
 	}
 
-	static class DbgHlp
+    internal static class NativeMethods
 	{
 		[DllImport("Dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-		public static extern bool MiniDumpWriteDump
+		internal static extern bool MiniDumpWriteDump
 		(
 			IntPtr hProcess,
 			short ProcessId,
@@ -32,7 +29,7 @@ namespace CrashHandler
 		);
 
 		[DllImport("Dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-		public static extern bool MiniDumpWriteDump
+        internal static extern bool MiniDumpWriteDump
 		(
 			IntPtr hProcess,
 			short ProcessId,
@@ -44,8 +41,7 @@ namespace CrashHandler
 		);
 
 		[DllImport("Kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-		public static extern bool DebugActiveProcess(IntPtr hProcess);
-
+        internal static extern bool DebugActiveProcess(IntPtr hProcess);
 	}
 
 	[Flags]

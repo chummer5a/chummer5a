@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+
+using System;
 using System.Collections.Generic;
- using System.Diagnostics;
- using System.Linq;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -29,82 +29,100 @@ namespace Chummer
     // ReSharper disable once InconsistentNaming
     public partial class frmSelectMetamagic : Form
     {
+        private bool _blnLoading = true;
         private string _strSelectedMetamagic = string.Empty;
 
-        private Mode _objMode = Mode.Metamagic;
-        private string _strNode = "metamagic";
-        private string _strRoot = "metamagics";
-        private bool _blnAddAgain = false;
+        private readonly string _strType = string.Empty;
+        private readonly string _strRootXPath = "/chummer/metamagics/metamagic";
 
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument;
 
-        private readonly XmlDocument _objMetatypeDocument;
-        private readonly XmlDocument _objCritterDocument;
-        private readonly XmlDocument _objQualityDocument;
+        private readonly List<KeyValuePair<string, int>> _lstMetamagicLimits = new List<KeyValuePair<string, int>>();
+        private readonly Mode _objMode;
 
         public enum Mode
         {
             Metamagic = 0,
-            Echo = 1,
+            Echo,
         }
 
         #region Control Events
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objMode = objMode;
 
-            _objMetatypeDocument = XmlManager.Load("metatypes.xml");
-            _objCritterDocument = XmlManager.Load("critters.xml");
-            _objQualityDocument = XmlManager.Load("qualities.xml");
-            WindowMode = objMode;
+            if (_objCharacter.Improvements.Any(imp =>
+                imp.ImproveType == Improvement.ImprovementType.MetamagicLimit))
+            {
+                foreach (Improvement imp in _objCharacter.Improvements.Where(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.MetamagicLimit && imp.Enabled))
+                {
+                    _lstMetamagicLimits.Add(new KeyValuePair<string, int>(imp.ImprovedName, imp.Rating));
+                }
+            }
+
             // Load the Metamagic information.
-            switch (_objMode)
+            switch (objMode)
             {
                 case Mode.Metamagic:
+                    _strRootXPath = "/chummer/metamagics/metamagic";
                     _objXmlDocument = XmlManager.Load("metamagic.xml");
+                    _strType = LanguageManager.GetString("String_Metamagic");
                     break;
                 case Mode.Echo:
+                    _strRootXPath = "/chummer/echoes/echo";
                     _objXmlDocument = XmlManager.Load("echoes.xml");
+                    _strType = LanguageManager.GetString("String_Echo");
                     break;
             }
         }
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            // Update the window title if needed.
-            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-            Text = LanguageManager.GetString("Title_SelectGeneric").Replace("{0}", s);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", s);
+            Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
+            chkLimitList.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);
 
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = string.Empty;
-            }
-
+            _blnLoading = false;
             BuildMetamagicList();
         }
 
         private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstMetamagic.Text))
+            if (_blnLoading)
                 return;
 
-            // Retireve the information for the selected piece of Cyberware.
-            XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/" + _strRoot + "/" + _strNode + "[name = \"" + lstMetamagic.SelectedValue + "\"]");
-
-            if (objXmlMetamagic != null)
+            string strSelectedId = lstMetamagic.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlMetamagic["source"]?.InnerText);
-                string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                lblSource.Text = $"{strBook} {strPage}";
+                // Retireve the information for the selected piece of Cyberware.
+                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                if (objXmlMetamagic != null)
+                {
+                    string strSource = objXmlMetamagic["source"]?.InnerText;
+                    string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                }
+                else
+                {
+                    lblSource.Text = string.Empty;
+                    lblSource.SetToolTip(string.Empty);
+                }
             }
+            else
+            {
+                lblSource.Text = string.Empty;
+                lblSource.SetToolTip(string.Empty);
+            }
+
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -119,11 +137,15 @@ namespace Chummer
 
         private void lstMetamagic_DoubleClick(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstMetamagic.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildMetamagicList();
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             BuildMetamagicList();
         }
@@ -131,52 +153,10 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Id of Metamagic that was selected in the dialogue.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public string SelectedMetamagic => _strSelectedMetamagic;
 
-        /// <summary>
-        /// Set the window's Mode to Cyberware or Bioware.
-        /// </summary>
-        public Mode WindowMode
-        {
-            get
-            {
-                return _objMode;
-            }
-            set
-            {
-                _objMode = value;
-                switch (_objMode)
-                {
-                    case Mode.Metamagic:
-                        _strNode = "metamagic";
-                        _strRoot = "metamagics";
-                        break;
-                    case Mode.Echo:
-                        _strNode = "echo";
-                        _strRoot = "echoes";
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Name of Metamagic that was selected in the dialogue.
-        /// </summary>
-        public string SelectedMetamagic
-        {
-            get
-            {
-                return _strSelectedMetamagic;
-            }
-        }
         #endregion
 
         #region Methods
@@ -185,48 +165,54 @@ namespace Chummer
         /// </summary>
         private void BuildMetamagicList()
         {
-            XmlNodeList objXmlMetamagicList;
-            List<ListItem> lstMetamagics = new List<ListItem>();
-
+            string strFilter = _objCharacter.Options.BookXPath();
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (_objCharacter.MAGEnabled)
             {
-                if (_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[magician = 'yes' and (" + _objCharacter.Options.BookXPath() + ")]");
-                else if (!_objCharacter.MagicianEnabled && _objCharacter.AdeptEnabled)
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[adept = 'yes' and (" + _objCharacter.Options.BookXPath() + ")]");
-                else
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
-            }
-            else
-                objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
-            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-
-            if (objXmlMetamagicList != null)
-                foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
+                bool blnIsMagician = _objCharacter.MagicianEnabled;
+                if (blnIsMagician != _objCharacter.AdeptEnabled)
                 {
-
-                    bool add = !chkLimitList.Checked ||
-                                  (chkLimitList.Checked &&
-                                   Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter,
-                                       _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s));
-                    if (!add) continue;
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMetamagic["name"]?.InnerText;
-                    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objItem.Value;
-                    lstMetamagics.Add(objItem);
+                    if (blnIsMagician)
+                        strFilter = "magician = 'True' and (" + strFilter + ')';
+                    else
+                        strFilter = "adept = 'True' and (" + strFilter + ')';
                 }
-            else
-            {
-                Utils.BreakIfDebug();
             }
-            SortListItem objSort = new SortListItem();
-            lstMetamagics.Sort(objSort.Compare);
+
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            List<ListItem> lstMetamagics = new List<ListItem>();
+            using (XmlNodeList objXmlMetamagicList = _objXmlDocument.SelectNodes(_strRootXPath + '[' + strFilter + ']'))
+                if (objXmlMetamagicList?.Count > 0)
+                    foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
+                    {
+                        string strId = objXmlMetamagic["id"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            if (_lstMetamagicLimits.Count > 0 && (_objMode == Mode.Metamagic && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic["name"]?.InnerText && (item.Value == -1 || item.Value == _objCharacter.InitiateGrade)) ||
+                                                                  _objMode == Mode.Echo && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic["name"]?.InnerText && (item.Value == -1 || item.Value == _objCharacter.SubmersionGrade))))
+                            {
+                                continue;
+                            }
+                            if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
+                            {
+                                lstMetamagics.Add(new ListItem(strId,
+                                    objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ??
+                                    LanguageManager.GetString("String_Unknown")));
+                            }
+                        }
+                    }
+            lstMetamagics.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstMetamagic.SelectedValue?.ToString();
+            _blnLoading = true;
             lstMetamagic.BeginUpdate();
-            lstMetamagic.DataSource = null;
             lstMetamagic.ValueMember = "Value";
             lstMetamagic.DisplayMember = "Name";
             lstMetamagic.DataSource = lstMetamagics;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstMetamagic.SelectedValue = strOldSelected;
+            else
+                lstMetamagic.SelectedIndex = -1;
             lstMetamagic.EndUpdate();
         }
 
@@ -235,27 +221,25 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstMetamagic.Text))
-                return;
+            string strSelectedId = lstMetamagic.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                // Make sure the selected Metamagic or Echo meets its requirements.
+                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
 
-            _strSelectedMetamagic = lstMetamagic.SelectedValue.ToString();
+                if (objXmlMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, _strType) != true)
+                    return;
 
-            // Make sure the selected Metamagic or Echo meets its requirements.
-            XmlNode objXmlMetamagic = _objMode == Mode.Metamagic
-                ? _objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + lstMetamagic.SelectedValue + "\"]")
-                : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
+                _strSelectedMetamagic = strSelectedId;
 
-            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
-                return;
-            DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
+            }
         }
 
-        #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
+        #endregion
     }
 }

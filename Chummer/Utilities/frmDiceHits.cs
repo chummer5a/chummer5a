@@ -16,30 +16,27 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmDiceHits : Form
     {
-        private int _intDice = 0;
-
         #region Control Events
         public frmDiceHits()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + " " + _intDice.ToString() + "D6: ";
-            nudDiceResult.Maximum = _intDice;
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalOptions.CultureInfo)
+                           + LanguageManager.GetString("String_D6") + LanguageManager.GetString("String_Colon") + strSpace;
+            nudDiceResult.Maximum = Dice;
             nudDiceResult.Minimum = 0;
-            lblResult.Text = string.Empty;
-            MoveControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -52,58 +49,20 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice
-        {
-            get
-            {
-                return _intDice;
-            }
-            set
-            {
-                _intDice = value;
-            }
-        }
-
-        /// <summary>
-        /// Window title.
-        /// </summary>
-        public string Title
-        {
-            set
-            {
-                Text = value;
-            }
-        }
+        public int Dice { get; set; }
 
         /// <summary>
         /// Description text.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result
-        {
-            get
-            {
-                return Convert.ToInt32(nudDiceResult.Value);
-            }
-        }
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDiceResult.Left = lblDice.Left + lblDice.Width + 6;
-            lblResult.Left = nudDiceResult.Left + nudDiceResult.Width + 6;
-        }
+        public int Result => decimal.ToInt32(nudDiceResult.Value);
         #endregion
     }
 }

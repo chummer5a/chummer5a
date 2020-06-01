@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xs:include schemaLocation="../data../bonuses.xsd" />
-    <xs:include schemaLocation="../data../conditions.xsd" />
+    <xs:include schemaLocation="bonuses.xsd" />
+    <xs:include schemaLocation="conditions.xsd" />
 
     <xs:element name="chummer">
         <xs:complexType>
@@ -39,28 +39,31 @@
                                         <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                                         <xs:element name="armorcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="modattack" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="attributearray" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="modattributearray" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="matrixcmbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                                        <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="modattributearray" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="matrixcmbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="capacity" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="childavailmodifier" type="xs:integer" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="childcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="cost" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="costfor" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="disablequantity" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="moddataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="modfirewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="canformpersona" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="programs" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="response" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="skill" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="system" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="modsleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="tags" minOccurs="0" maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:sequence>

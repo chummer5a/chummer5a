@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
+ using System.Text.RegularExpressions;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -31,69 +28,65 @@ namespace Chummer
     /// This class allows to read more advanced Values out of an XmlNode
     /// Such as "FixedValues([523],[42],[421])" or "Rating * 3"
     /// 
-    /// Provided it doesn't contain "FixedValues" the expression is evaulated
+    /// Provided it doesn't contain "FixedValues" the expression is evaluated
     /// at runtime as a mathematical expression, allowing stuff such as
     /// "Rating * Rating * 4", "Rating * 5 + 2" or "(Rating / 2) * 4000"
     /// <c>Expressions are evaluated in the order of expression NOT as defined
     /// by mathematics. That means "1 + 0 * 10" evaluates to 10</c> <i>so far</i>
     /// </summary>
-    class ParameterAttribute
+    public sealed class ParameterAttribute
     {
          //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
-        private static Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
-        private Gear _gear;
-        private String _attribute;
-        private double[] fixedDoubles;
+        private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
+        private readonly Gear _gear;
+        private readonly string _attribute;
+        private readonly double[] fixedDoubles;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gear"></param>
         /// <param name="attribute"></param>
-        public ParameterAttribute(Gear gear, String attribute)
+        public ParameterAttribute(Gear gear, string attribute)
         {
-            
+            if (gear == null)
+                throw new ArgumentNullException(nameof(gear));
+            if (attribute == null)
+                throw new ArgumentNullException(nameof(attribute));
+
             _gear = gear;
             _attribute = attribute;
 
             //If we have FixedValues use that
-            //I wan't to create array with rating as index for future, but
-            //this is keept for backwards/laziness
-            if (_attribute.StartsWith("FixedValues"))
+            //I wasn't to create array with rating as index for future, but
+            //this is kept for backwards/laziness
+            if (_attribute.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                //Regex to extracxt anything between ( ) in Param
+                //Regex to extract anything between ( ) in Param
                 Match m = FixedExtract.Match(_attribute);
-                String vals = m.Groups[1].Value;
+                string vals = m.Groups[1].Value;
 
-                //Regex to extract anything inbetween [ ]
-                //Not sure why i don't just split by , and remove it durring 
+                //Regex to extract anything in between [ ]
+                //Not sure why i don't just split by , and remove it during
                 //next phase
                 MatchCollection m2 = Regex.Matches(vals, @"\[([^\]]*)\]");
 
-                double junk; //Not used, tryparse needs out
+                //double junk; //Not used, tryparse needs out
 
                 //LINQ magic to cast matchcollection to the double[]
-                fixedDoubles = (from val in m2.Cast<Match>()
-                    where double.TryParse(val.Groups[1].Value, out junk)
-                    select double.Parse(val.Groups[1].Value)).ToArray();
+                List<double> lstValues = new List<double>();
+                foreach (Match objMatch in m2)
+                {
+                    if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out double dblValue))
+                        lstValues.Add(dblValue);
+                }
+                fixedDoubles = lstValues.ToArray();
             }
-            else
-            {
-                
-            }
-
-            
         }
 
-        public Gear Gear
-        {
-            get { return _gear; }
-        }
+        public Gear Gear => _gear;
 
-        public String AttributeString
-        {
-            get { return _attribute; }
-        }
+        public string AttributeString => _attribute;
 
         public double AttributeDouble
         {
@@ -113,7 +106,7 @@ namespace Chummer
                     }
                     else  //Structured like this to allow easy disabling of
                          //above code if IndexOutOfRangeException turns out to be
-                        //prefered. This is an elseif
+                        //preferred. This is an elseif
                         if(true)
                         {
                             return fixedDoubles[_gear.Rating];
@@ -126,11 +119,6 @@ namespace Chummer
             }
         }
 
-        public int AttributeInt
-        {
-            get { return (int) AttributeDouble; }
-        }
-
-
+        public int AttributeInt => (int) AttributeDouble;
     }
 }

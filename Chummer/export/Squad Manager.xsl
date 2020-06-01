@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Export for Squad Manager (http://stauder-online.de/sr/english.htm) -->
 <!-- Version -500 -->
 <!-- ext:xml -->
@@ -373,7 +373,7 @@
                                     </xsl:attribute>
                                 </xsl:if>
                                 <xsl:attribute name="costs">
-                                    <xsl:value-of select="number(format-number(bp, '###0.0###;#'))"/>
+                                    <xsl:value-of select="number(format-number(bp, '#,0.##'))"/>
                                 </xsl:attribute>
                             </xsl:element>
                         </xsl:for-each>

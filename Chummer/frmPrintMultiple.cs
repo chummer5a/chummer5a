@@ -16,35 +16,57 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
-using System.Text;
+ using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace Chummer
 {
     public partial class frmPrintMultiple : Form
     {
+        private readonly BackgroundWorker _workerPrinter = new BackgroundWorker();
+        List<Character> _lstCharacters;
+
         #region Control Events
         public frmPrintMultiple()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All");
+
+            _workerPrinter.WorkerReportsProgress = true;
+            _workerPrinter.WorkerSupportsCancellation = true;
+
+            _workerPrinter.DoWork += DoPrint;
+            _workerPrinter.RunWorkerCompleted += FinishPrint;
         }
 
         private void cmdSelectCharacter_Click(object sender, EventArgs e)
         {
+            if (_workerPrinter.IsBusy)
+            {
+                _workerPrinter.CancelAsync();
+                cmdPrint.Enabled = true;
+                prgProgress.Value = 0;
+            }
             // Add the selected Files to the list of characters to print.
             if (dlgOpenFile.ShowDialog(this) == DialogResult.OK)
             {
                 foreach (string strFileName in dlgOpenFile.FileNames)
                 {
-                    TreeNode objNode = new TreeNode();
-                    objNode.Text = Path.GetFileName(strFileName);
-                    objNode.Tag = strFileName;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown"),
+                        Tag = strFileName
+                    };
                     treCharacters.Nodes.Add(objNode);
+                }
+                if (_frmPrintView != null)
+                {
+                    cmdPrint_Click(sender, e);
                 }
             }
         }
@@ -53,83 +75,94 @@ namespace Chummer
         {
             if (treCharacters.SelectedNode != null)
             {
+                if (_workerPrinter.IsBusy)
+                {
+                    _workerPrinter.CancelAsync();
+                    cmdPrint.Enabled = true;
+                    prgProgress.Value = 0;
+                }
                 treCharacters.SelectedNode.Remove();
+                if (_frmPrintView != null)
+                {
+                    cmdPrint_Click(sender, e);
+                }
             }
         }
 
         private void cmdPrint_Click(object sender, EventArgs e)
         {
-            prgProgress.Value = 0;
-            prgProgress.Maximum = treCharacters.Nodes.Count;
-
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            MemoryStream objStream = new MemoryStream();
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
-
-            // Being the document.
-            objWriter.WriteStartDocument();
-            // <characters>
-            objWriter.WriteStartElement("characters");
-
-            // Fire the PrintToStream method for all of the characters in the list.
-            foreach (TreeNode objNode in treCharacters.Nodes)
+            cmdPrint.Enabled = false;
+            if (!_workerPrinter.IsBusy)
             {
-                Character objCharacter = new Character();
-                objCharacter.FileName = objNode.Tag.ToString();
-                objCharacter.Load();
+                prgProgress.Value = 0;
+                prgProgress.Maximum = treCharacters.Nodes.Count;
+                _workerPrinter.RunWorkerAsync();
+            }
+        }
 
-#if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter);
-#else
-                objCharacter.PrintToStream(objWriter);
-#endif
-                prgProgress.Value++;
-                Application.DoEvents();
+        private void DoPrint(object sender, DoWorkEventArgs e)
+        {
+            void FuncIncreaseProgress()
+            {
+                prgProgress.Value += 1;
             }
 
-            // Finish the document and flush the Writer and Stream.
-            // </characters>
-            objWriter.WriteEndElement();
-            objWriter.WriteEndDocument();
-            objWriter.Flush();
-            objStream.Flush();
+            Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
+            for (int i = 0; i < lstCharacters.Length; ++i)
+            {
+                if (_workerPrinter.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                lstCharacters[i] = new Character
+                {
+                    FileName = treCharacters.Nodes[i].Tag.ToString()
+                };
+            }
 
-            // Read the stream.
-            StreamReader objReader = new StreamReader(objStream);
-            objStream.Position = 0;
-            XmlDocument objCharacterXML = new XmlDocument();
+            // Parallelized load because this is one major bottleneck.
+            Parallel.ForEach(lstCharacters, objCharacter =>
+            {
+                if (_workerPrinter.CancellationPending)
+                    throw new OperationCanceledException();
+                objCharacter.Load().RunSynchronously();
+                prgProgress.Invoke((Action) FuncIncreaseProgress);
+            });
 
-            // Put the stream into an XmlDocument and send it off to the Viewer.
-            string strXML = objReader.ReadToEnd();
-            objCharacterXML.LoadXml(strXML);
+            if (_workerPrinter.CancellationPending)
+                e.Cancel = true;
+            else
+                _lstCharacters = new List<Character>(lstCharacters);
+        }
 
-            objWriter.Close();
+        private frmViewer _frmPrintView;
 
+        public frmViewer PrintViewForm => _frmPrintView;
+
+        public IList<Character> CharacterList => _lstCharacters;
+
+        private void FinishPrint(object sender, RunWorkerCompletedEventArgs e)
+        {
+            cmdPrint.Enabled = true;
             // Set the ProgressBar back to 0.
             prgProgress.Value = 0;
 
-            frmViewer frmViewCharacter = new frmViewer();
-            frmViewCharacter.CharacterXML = objCharacterXML;
-            frmViewCharacter.SelectedSheet = "Game Master Summary";
-            frmViewCharacter.ShowDialog();
-        }
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(cmdSelectCharacter.Width, cmdPrint.Width);
-            intWidth = Math.Max(intWidth, cmdDelete.Width);
-            cmdSelectCharacter.AutoSize = false;
-            cmdPrint.AutoSize = false;
-            cmdDelete.AutoSize = false;
-
-            cmdSelectCharacter.Width = intWidth;
-            cmdPrint.Width = intWidth;
-            cmdDelete.Width = intWidth;
-            Width = cmdPrint.Left + cmdPrint.Width + 19;
-
-            prgProgress.Width = Width - prgProgress.Left - 19;
+            if (!e.Cancelled)
+            {
+                if (_frmPrintView == null)
+                {
+                    _frmPrintView = new frmViewer();
+                    _frmPrintView.SetSelectedSheet("Game Master Summary");
+                    _frmPrintView.SetCharacters(_lstCharacters.ToArray());
+                    _frmPrintView.Show();
+                }
+                else
+                {
+                    _frmPrintView.Activate();
+                }
+                _frmPrintView.RefreshCharacters();
+            }
         }
         #endregion
     }

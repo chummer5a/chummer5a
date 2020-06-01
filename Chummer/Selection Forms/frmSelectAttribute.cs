@@ -16,9 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -26,56 +26,32 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-        private List<ListItem> _lstAttributes = new List<ListItem>();
+        private readonly List<ListItem> _lstAttributes;
 
         #region Control Events
-        public frmSelectAttribute()
+        public frmSelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
-            ListItem objBOD = new ListItem();
-            ListItem objAGI = new ListItem();
-            ListItem objREA = new ListItem();
-            ListItem objSTR = new ListItem();
-            ListItem objCHA = new ListItem();
-            ListItem objINT = new ListItem();
-            ListItem objLOG = new ListItem();
-            ListItem objWIL = new ListItem();
-            ListItem objEDG = new ListItem();
-            objBOD.Value = "BOD";
-            objBOD.Name = LanguageManager.GetString("String_AttributeBODShort");
-            objAGI.Value = "AGI";
-            objAGI.Name = LanguageManager.GetString("String_AttributeAGIShort");
-            objREA.Value = "REA";
-            objREA.Name = LanguageManager.GetString("String_AttributeREAShort");
-            objSTR.Value = "STR";
-            objSTR.Name = LanguageManager.GetString("String_AttributeSTRShort");
-            objCHA.Value = "CHA";
-            objCHA.Name = LanguageManager.GetString("String_AttributeCHAShort");
-            objINT.Value = "INT";
-            objINT.Name = LanguageManager.GetString("String_AttributeINTShort");
-            objLOG.Value = "LOG";
-            objLOG.Name = LanguageManager.GetString("String_AttributeLOGShort");
-            objWIL.Value = "WIL";
-            objWIL.Name = LanguageManager.GetString("String_AttributeWILShort");
-            objEDG.Value = "EDG";
-            objEDG.Name = LanguageManager.GetString("String_AttributeEDGShort");
-            _lstAttributes.Add(objBOD);
-            _lstAttributes.Add(objAGI);
-            _lstAttributes.Add(objREA);
-            _lstAttributes.Add(objSTR);
-            _lstAttributes.Add(objCHA);
-            _lstAttributes.Add(objINT);
-            _lstAttributes.Add(objLOG);
-            _lstAttributes.Add(objWIL);
-            _lstAttributes.Add(objEDG);
+            _lstAttributes = new List<ListItem>(lstAttributeAbbrevs.Length);
+            foreach (string strAbbrev in lstAttributeAbbrevs)
+            {
+                string strAttributeDisplayName = strAbbrev == "MAGAdept"
+                    ? LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ')'
+                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short");
+                _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
+            }
 
             cboAttribute.BeginUpdate();
             cboAttribute.ValueMember = "Value";
             cboAttribute.DisplayMember = "Name";
             cboAttribute.DataSource = _lstAttributes;
+            if (_lstAttributes.Count >= 1)
+                cboAttribute.SelectedIndex = 0;
+            else
+                cmdOK.Enabled = false;
             cboAttribute.EndUpdate();
         }
 
@@ -87,21 +63,15 @@ namespace Chummer
 
         private void frmSelectAttribute_Load(object sender, EventArgs e)
         {
-            // Select the first Attribute in the list.
-            cboAttribute.SelectedIndex = 0;
+            if (_lstAttributes.Count == 1)
+            {
+                cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-        }
-
-        private void frmSelectAttribute_Shown(object sender, EventArgs e)
-        {
-            // If only a single Attribute is in the list when the form is shown,
-            // click the OK button since the user really doesn't have a choice.
-            if (cboAttribute.Items.Count == 1)
-                cmdOK_Click(sender, e);
         }
         #endregion
 
@@ -109,23 +79,14 @@ namespace Chummer
         /// <summary>
         /// Attribute that was selected in the dialogue.
         /// </summary>
-        public string SelectedAttribute
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedAttribute => _strReturnValue;
 
         /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -133,141 +94,14 @@ namespace Chummer
         /// </summary>
         public bool ShowMetatypeMaximum
         {
-            set
-            {
-                chkDoNotAffectMetatypeMaximum.Visible = value;
-            }
+            set => chkDoNotAffectMetatypeMaximum.Visible = value;
         }
 
         /// <summary>
         /// Whether or not the Metatype Maximum value should be affected as well.
         /// </summary>
-        public bool DoNotAffectMetatypeMaximum
-        {
-            get
-            {
-                return chkDoNotAffectMetatypeMaximum.Checked;
-            }
-        }
-        #endregion
+        public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
 
-        #region Methods
-        /// <summary>
-        /// Add MAG to the list of selectable Attributes.
-        /// </summary>
-        public void AddMAG()
-        {
-            ListItem objMAG = new ListItem();
-            objMAG.Value = "MAG";
-            objMAG.Name = LanguageManager.GetString("String_AttributeMAGShort");
-            _lstAttributes.Add(objMAG);
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Add RES to the list of selectable Attributes.
-        /// </summary>
-        public void AddRES()
-        {
-            ListItem objRES = new ListItem();
-            objRES.Value = "RES";
-            objRES.Name = LanguageManager.GetString("String_AttributeRESShort");
-            _lstAttributes.Add(objRES);
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Add DEP to the list of selectable Attributes.
-        /// </summary>
-        public void AddDEP()
-        {
-            ListItem objDEP = new ListItem();
-            objDEP.Value = "DEP";
-            objDEP.Name = LanguageManager.GetString("String_AttributeDEPShort");
-            _lstAttributes.Add(objDEP);
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Limit the list to a single Attribute.
-        /// </summary>
-        /// <param name="strValue">Single Attribute to display.</param>
-        public void SingleAttribute(string strValue)
-        {
-            List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem();
-            objItem.Value = strValue;
-            objItem.Name = strValue;
-            lstItems.Add(objItem);
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = lstItems;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Limit the list to a few Attributes.
-        /// </summary>
-        /// <param name="strValue">List of Attributes.</param>
-        public void LimitToList(IEnumerable<string> strValue)
-        {
-            _lstAttributes.Clear();
-            foreach (string strAttribute in strValue)
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = strAttribute;
-                objItem.Name = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
-                _lstAttributes.Add(objItem);
-            }
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Exclude the list of Attributes.
-        /// </summary>
-        /// <param name="strValue">List of Attributes.</param>
-        public void RemoveFromList(IEnumerable<string> strValue)
-        {
-            foreach (string strAttribute in strValue)
-            {
-                foreach (ListItem objItem in _lstAttributes)
-                {
-                    if (objItem.Value == strAttribute)
-                    {
-                        _lstAttributes.Remove(objItem);
-                        break;
-                    }
-                }
-            }
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
         #endregion
     }
 }

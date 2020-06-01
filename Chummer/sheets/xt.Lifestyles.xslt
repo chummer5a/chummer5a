@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!-- Character contacts -->
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Character lifestyles -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:template name="Lifestyles">
 
-    <tr style="font-weight: bold; text-transform: uppercase;">
-      <td width="50%">
+    <tr class="title">
+      <th width="40%" style="text-align: left">
         <xsl:value-of select="$lang.Lifestyle"/>
-      </td>
-      <td width="10%" style="text-align: center">
+      </th>
+      <th width="10%" style="text-align: center">
         <xsl:value-of select="$lang.Level"/>
-      </td>
-      <td width="10%" style="text-align: center">
+      </th>
+      <th width="10%" style="text-align: center">
         <xsl:value-of select="$lang.Cost"/>
-      </td>
-      <td width="10%" style="text-align: center">
-        <xsl:value-of select="$lang.Months"/>
-      </td>
-      <td width="10%"/>
-      <td width="10%"/>
+      </th>
+      <th width="20%" style="text-align: center">
+        <xsl:value-of select="$lang.Duration"/>
+      </th>
+      <th width="10%"/>
+      <th width="10%"/>
     </tr>
 
     <xsl:for-each select="lifestyles/lifestyle">
@@ -31,14 +31,44 @@
         <td style="text-align: center">
           <xsl:value-of select="baselifestyle"/>
         </td>
-        <td style="text-align: center">
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="totalmonthlycost"/>        
-          </xsl:call-template>
+        <td style="text-align: center;white-space: nowrap;">
+          <xsl:value-of select="totalmonthlycost"/>
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </td>
         <td style="text-align: center">
-          <xsl:value-of select="months"/>
+          <xsl:value-of select="months"/>&#160;
+          <xsl:choose>
+            <xsl:when test="increment = 'Day'">
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Day"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Days"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:when test="increment = 'Week'">
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Week"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Weeks"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Month"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Months"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>
         </td>
         <td/>
         <td style="text-align: center">
@@ -50,7 +80,7 @@
 
       <tr><td colspan="100%" style="padding: 0 2%; text-align: justify;">
         <xsl:for-each select="qualities/quality">
-          <xsl:value-of select="name"/>
+          <xsl:value-of select="fullname"/>
           <text>; </text>
         </xsl:for-each>
       </td></tr>

@@ -18,54 +18,46 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-    <books>
-        <book>
-            <name>Bullets &amp; Bandages</name>
-            <hide />
-        </book>
-        <book>
-            <name>Nothing Personal</name>
-            <hide />
-        </book>
-        <book>
-            <name>Data Trails (Dissonant Echoes)</name>
-			<hide />
-        </book>
-        <book>
-            <name>Bloody Business</name>
-            <hide />
-        </book>
-        <book>
-            <name>Schattenhandbuch (German Handbook)</name>
-            <hide />
-        </book>
-        <book>
-            <name>Schattenhandbuch 2 (German Handbook)</name>
-            <hide />
-        </book>
-        <book>
-            <name>Battle Of Manhattan</name>
-            <hide />
-        </book>
-        <book>
-            <name>Splintered State</name>
-            <hide />
-        </book>
-        <book>
-            <name>Hong Kong Sourcebook</name>
-            <hide />
-        </book>
-        <book>
-            <name>Shadows In Focus: Metropole</name>
-            <hide />
-        </book>
-        <book>
-            <name>Shadowrun 2050 (5th Edition)</name>
-            <hide />
-        </book>
-        <book>
-            <name>State of the Art ADL (German Handbook)</name>
-            <hide />
-        </book>
-    </books>
+  <books>
+    <book>
+      <name>Bullets &amp; Bandages</name>
+      <hide />
+    </book>
+    <book>
+      <name>Data Trails (Dissonant Echoes)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Bloody Business</name>
+      <hide />
+    </book>
+    <book>
+      <name>Schattenhandbuch (German Handbook)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Schattenhandbuch 2 (German Handbook)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Battle Of Manhattan</name>
+      <hide />
+    </book>
+    <book>
+      <name>Splintered State</name>
+      <hide />
+    </book>
+    <book>
+      <name>Hong Kong Sourcebook</name>
+      <hide />
+    </book>
+    <book>
+      <name>Shadowrun 2050 (5th Edition)</name>
+      <hide />
+    </book>
+    <book>
+      <name>State of the Art ADL (German Handbook)</name>
+      <hide />
+    </book>
+  </books>
 </chummer>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,14 +18,16 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema bioware.xsd">
-  <version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema bioware.xsd">
+
   <grades>
-	<grade>
+    <grade>
       <id>ee71d4f8-0fd0-4992-8b4e-70ef4dfbcce1</id>
       <name>None</name>
       <ess>1</ess>
       <cost>1</cost>
+      <devicerating>0</devicerating>
       <avail>0</avail>
       <source>SR5</source>
       <page>1</page>
@@ -34,6 +37,7 @@
       <name>Standard</name>
       <ess>1</ess>
       <cost>1</cost>
+      <devicerating>0</devicerating>
       <avail>0</avail>
       <source>SR5</source>
       <page>451</page>
@@ -43,6 +47,7 @@
       <name>Standard (Burnout's Way)</name>
       <ess>0.8</ess>
       <cost>1</cost>
+      <devicerating>0</devicerating>
       <avail>0</avail>
       <source>SG</source>
       <page>177</page>
@@ -52,6 +57,7 @@
       <name>Used</name>
       <ess>1.25</ess>
       <cost>0.75</cost>
+      <devicerating>0</devicerating>
       <avail>-4</avail>
       <source>SR5</source>
       <page>451</page>
@@ -61,6 +67,7 @@
       <name>Alphaware</name>
       <ess>0.8</ess>
       <cost>1.2</cost>
+      <devicerating>0</devicerating>
       <avail>+2</avail>
       <source>SR5</source>
       <page>451</page>
@@ -70,6 +77,7 @@
       <name>Betaware</name>
       <ess>0.7</ess>
       <cost>1.5</cost>
+      <devicerating>0</devicerating>
       <avail>+4</avail>
       <source>SR5</source>
       <page>451</page>
@@ -79,6 +87,7 @@
       <name>Deltaware</name>
       <ess>0.5</ess>
       <cost>2.5</cost>
+      <devicerating>0</devicerating>
       <avail>+8</avail>
       <source>SR5</source>
       <page>451</page>
@@ -88,6 +97,7 @@
       <name>Gammaware</name>
       <ess>0.4</ess>
       <cost>5</cost>
+      <devicerating>0</devicerating>
       <avail>+12</avail>
       <source>CF</source>
       <page>72</page>
@@ -97,21 +107,23 @@
       <name>Omegaware</name>
       <ess>1</ess>
       <cost>0.75</cost>
+      <devicerating>0</devicerating>
       <avail>-4</avail>
       <source>CF</source>
       <page>71</page>
     </grade>
   </grades>
   <categories>
-    <category>Basic</category>
-    <category>Biosculpting</category>
-    <category>Bio-Weapons</category>
-    <category>Chemical Gland Modifications</category>
-    <category>Cosmetic Bioware</category>
-    <category>Cultured</category>
-    <category>Genemods</category>
-    <category>Orthoskin Upgrades</category>
-    <category>Symbionts</category>
+    <category blackmarket="Bioware">Basic</category>
+    <category blackmarket="Bioware">Biosculpting</category>
+    <category blackmarket="Bioware">Bio-Weapons</category>
+    <category blackmarket="Bioware">Chemical Gland Modifications</category>
+    <category blackmarket="Bioware">Cosmetic Bioware</category>
+    <category blackmarket="Bioware">Cultured</category>
+    <category blackmarket="Bioware">Genemods</category>
+    <category blackmarket="Bioware">Orthoskin Upgrades</category>
+    <category blackmarket="Bioware">Symbionts</category>
+    <category blackmarket="Bioware">Genetic Restoration</category>
   </categories>
   <biowares>
     <!-- Region Shadowrun 5-->
@@ -166,7 +178,7 @@
       <id>81b40aa8-98d1-4a5d-89d6-9b6d438006da</id>
       <name>Cerebral Booster</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>Rating * 6</avail>
@@ -185,17 +197,17 @@
       <id>c46fbaba-d941-44b5-9bdc-643c5c6f4b24</id>
       <name>Damage Compensators</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>(Rating * 3)F</avail>
       <cost>Rating * 2000</cost>
       <bonus>
         <conditionmonitor>
-		  <sharedthresholdoffset>Rating</sharedthresholdoffset>
+          <sharedthresholdoffset>Rating</sharedthresholdoffset>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
           <quality>High Pain Tolerance</quality>
         </oneof>
@@ -213,21 +225,18 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-          <condition>Only for Escape Artist</condition>
-        </limitmodifier>
+        <physicallimit>1</physicallimit>
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+          <bioware>Elastic Joints</bioware>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>459</page>
     </bioware>
@@ -235,7 +244,7 @@
       <id>b2289ebe-4bb0-49d0-a151-38fc1261bba8</id>
       <name>Mnemonic Enhancer</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>Rating * 5</avail>
@@ -282,11 +291,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Celerity</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Celerity</quality>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -299,17 +308,17 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 32000</cost>
-      <bonus>
+      <bonus unique="muscle">
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Celerity</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Celerity</quality>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -338,7 +347,7 @@
       <id>add913d1-6174-41d6-8021-b8bf35345e7a</id>
       <name>Pain Editor</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>18F</avail>
@@ -354,12 +363,12 @@
       <capacity>0</capacity>
       <avail>(Rating * 2)</avail>
       <cost>Rating * 4500</cost>
-	  <bonus>
-		<pathogencontactresist>Rating</pathogencontactresist>
-		<pathogeningestionresist>Rating</pathogeningestionresist>
-		<pathogeninhalationresist>Rating</pathogeninhalationresist>
-		<pathogeninjectionresist>Rating</pathogeninjectionresist>
-	  </bonus>
+      <bonus>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
+      </bonus>
       <rating>6</rating>
       <source>SR5</source>
       <page>459</page>
@@ -377,10 +386,10 @@
     </bioware>
     <bioware>
       <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
-      <name>Reflex Recorder (Skill)</name>
-	  <limit>no</limit>
+      <name>Reflex Recorder</name>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>10</avail>
@@ -388,7 +397,7 @@
       <bonus>
         <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
         </selectskill>
       </bonus>
       <source>SR5</source>
@@ -397,7 +406,7 @@
     <bioware>
       <id>3fd172b8-0ff5-46ee-a468-91edd4cdc448</id>
       <name>Skin Pocket</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -410,7 +419,7 @@
       <id>5ffb0e03-c281-4aee-bc13-639576d932ab</id>
       <name>Sleep Regulator</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -441,7 +450,7 @@
           <val>1</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>1</val>
         </specificattribute>
       </bonus>
@@ -456,10 +465,10 @@
       <capacity>0</capacity>
       <avail>Rating * 5</avail>
       <cost>Rating * 3500</cost>
-	  <bonus>
-		<stuncmrecovery>Rating</stuncmrecovery>
-		<physicalcmrecovery>Rating</physicalcmrecovery>
-	  </bonus>
+      <bonus>
+        <stuncmrecovery>Rating</stuncmrecovery>
+        <physicalcmrecovery>Rating</physicalcmrecovery>
+      </bonus>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -468,7 +477,7 @@
       <id>4a4e1079-5872-4f3f-a450-48c30a5504f3</id>
       <name>Synaptic Booster</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.5</ess>
       <capacity>0</capacity>
       <avail>(Rating * 6)R</avail>
@@ -525,12 +534,12 @@
       <capacity>0</capacity>
       <avail>Rating * 3</avail>
       <cost>Rating * 4800</cost>
-	  <bonus>
-		<toxincontactresist>Rating</toxincontactresist>
-		<toxiningestionresist>Rating</toxiningestionresist>
-		<toxininhalationresist>Rating</toxininhalationresist>
-		<toxininjectionresist>Rating</toxininjectionresist>
-	  </bonus>
+      <bonus>
+        <toxincontactresist>Rating</toxincontactresist>
+        <toxiningestionresist>Rating</toxiningestionresist>
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <toxininjectionresist>Rating</toxininjectionresist>
+      </bonus>
       <rating>6</rating>
       <source>SR5</source>
       <page>460</page>
@@ -543,9 +552,9 @@
       <capacity>0</capacity>
       <avail>Rating * 3</avail>
       <cost>Rating * 4500</cost>
-	  <bonus>
-		<toxininhalationresist>Rating</toxininhalationresist>
-	  </bonus>
+      <bonus>
+        <toxininhalationresist>Rating</toxininhalationresist>
+      </bonus>
       <rating>6</rating>
       <source>SR5</source>
       <page>460</page>
@@ -556,42 +565,42 @@
     <bioware>
       <id>abdbc210-c1fa-45f1-9840-4f78d9eb8867</id>
       <name>Chemical Gland (Internal Release or Gradual Release)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>12R or Gear</avail>
       <cost>20000 + (99 * Gear Cost)</cost>
-	  <allowgear>
+      <allowgear>
         <gearcategory>Drugs</gearcategory>
-		<gearcategory>Toxins</gearcategory>
-		<gearcategory>Custom</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
-	  <allowsubsystems>
+      <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-	  <notes>Bonus is for whether this is Internal Release or Gradual Release, not the cost of the chemical.</notes>
-	  <bonus>
-		<selecttext />
-	  </bonus>
+      <notes>Bonus is for whether this is Internal Release or Gradual Release, not the cost of the chemical.</notes>
+      <bonus>
+        <selecttext />
+      </bonus>
       <source>CF</source>
       <page>112</page>
     </bioware>
     <bioware>
       <id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
       <name>Chemical Gland (Exhalation Sprayer)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>12R or Gear</avail>
       <cost>26000 + (99 * Gear Cost)</cost>
-	  <allowgear>
+      <allowgear>
         <gearcategory>Drugs</gearcategory>
-		<gearcategory>Toxins</gearcategory>
-		<gearcategory>Custom</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
-	  <allowsubsystems>
+      <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
       <source>CF</source>
@@ -600,44 +609,43 @@
     <bioware>
       <id>47608117-a4af-4dfe-81bb-0dc8c6c5122d</id>
       <name>Chemical Gland (Spitter)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>12R or Gear</avail>
       <cost>26000 + (99 * Gear Cost)</cost>
-	  <allowgear>
+      <allowgear>
         <gearcategory>Drugs</gearcategory>
-		<gearcategory>Toxins</gearcategory>
-		<gearcategory>Custom</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
-	  <allowsubsystems>
+      <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-	  <forbidden>
-		<oneof>
-		  <bioware>Chemical Gland (Spitter)</bioware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <bioware>Chemical Gland (Spitter)</bioware>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>915b1458-e33c-4010-a093-47d40cfa11de</id>
       <name>Chemical Gland (Weapon Reservoir)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.2</ess>
-	  <addtoparentess />
       <capacity>0</capacity>
       <avail>12F or Gear</avail>
       <cost>24000 + (99 * Gear Cost)</cost>
-	  <allowgear>
+      <allowgear>
         <gearcategory>Drugs</gearcategory>
-		<gearcategory>Toxins</gearcategory>
-		<gearcategory>Custom</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
-	  <allowsubsystems>
+      <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
       <source>CF</source>
@@ -646,26 +654,27 @@
     <bioware>
       <id>d2064cf2-e9f7-479f-92cc-7da7c6024121</id>
       <name>Chemical Gland Expanded Reservoir</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Chemical Gland Modifications</category>
       <ess>0.1</ess>
+      <addtoparentess />
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>2000 + (4 * Parent Gear Cost)</cost>
-	  <allowgear>
+      <allowgear>
         <gearcategory>Drugs</gearcategory>
-		<gearcategory>Toxins</gearcategory>
-		<gearcategory>Custom</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+        <gearcategory>Custom</gearcategory>
       </allowgear>
-	  <requireparent />
-	  <required>
-		<oneof>
-		  <bioware>Chemical Gland (Internal Release or Gradual Release)</bioware>
-		  <bioware>Chemical Gland (Exhalation Sprayer)</bioware>
-		  <bioware>Chemical Gland (Spitter)</bioware>
-		  <bioware>Chemical Gland (Weapon Reservoir)</bioware>
-		</oneof>
-	  </required>
+      <requireparent />
+      <required>
+        <oneof>
+          <bioware>Chemical Gland (Internal Release or Gradual Release)</bioware>
+          <bioware>Chemical Gland (Exhalation Sprayer)</bioware>
+          <bioware>Chemical Gland (Spitter)</bioware>
+          <bioware>Chemical Gland (Weapon Reservoir)</bioware>
+        </oneof>
+      </required>
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -677,15 +686,15 @@
       <capacity>0</capacity>
       <avail>12R</avail>
       <cost>20000</cost>
-	  <bonus>
-	    <toxincontactresist>2</toxincontactresist>
+      <bonus>
+        <toxincontactresist>2</toxincontactresist>
         <fatigueresist>-2</fatigueresist>
       </bonus>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -697,14 +706,14 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
-	  <bonus>
-	    <firearmor>2</firearmor>
+      <bonus>
+        <firearmor>2</firearmor>
       </bonus>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -716,19 +725,19 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
-	  <bonus>
-	    <electricityarmor>2</electricityarmor>
+      <bonus>
+        <electricityarmor>2</electricityarmor>
       </bonus>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
-	  <forbidden>
-		<oneof>
-		  <bioware>Electroshock</bioware>
-		</oneof>
-	  </forbidden>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
+      <forbidden>
+        <oneof>
+          <bioware>Electroshock</bioware>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -740,19 +749,19 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
-	  <bonus>
-	    <electricityarmor>-2</electricityarmor>
+      <bonus>
+        <electricityarmor>-2</electricityarmor>
       </bonus>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
-	  <forbidden>
-		<oneof>
-		  <bioware>Insulation</bioware>
-		</oneof>
-	  </forbidden>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
+      <forbidden>
+        <oneof>
+          <bioware>Insulation</bioware>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -764,14 +773,14 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
-	  <bonus>
-	    <coldarmor>2</coldarmor>
+      <bonus>
+        <coldarmor>2</coldarmor>
       </bonus>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -783,11 +792,11 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -799,14 +808,14 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
-	  <bonus>
-		<unarmedreach>1</unarmedreach>
-	  </bonus>
-	  <required>
-		<oneof>
-		  <bioware>Orthoskin</bioware>
-		</oneof>
-	  </required>
+      <bonus>
+        <unarmedreach>1</unarmedreach>
+      </bonus>
+      <required>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+        </oneof>
+      </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -822,9 +831,16 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Escape Artist</condition>
+          <condition>LimitCondition_SkillsActiveEscapeArtist</condition>
         </limitmodifier>
       </bonus>
+        <forbidden>
+          <oneof>
+            <bioware>Elastic Joints</bioware>
+            <bioware>Enhanced Articulation</bioware>
+            <cyberware>Smart Articulation</cyberware>
+          </oneof>
+        </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -836,7 +852,7 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
-	  <bonus>
+      <bonus>
         <fatigueresist>-2</fatigueresist>
       </bonus>
       <source>CF</source>
@@ -850,45 +866,47 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>1000</cost>
-	  <selectside />
+      <selectside />
+      <limit>{arm}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Swimming</condition>
+          <condition>LimitCondition_SkillsActiveSwimming</condition>
         </limitmodifier>
       </bonus>
-	  <pairbonus>
+      <pairbonus>
         <walkmultiplier>
           <val>1</val>
           <category>Swim</category>
         </walkmultiplier>
-	  </pairbonus>
+      </pairbonus>
       <source>CF</source>
       <page>113</page>
     </bioware>
-	<bioware>
-      <id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+    <bioware>
+      <id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
       <name>Hand and Foot Webbing (Feet)</name>
       <category>Basic</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>1000</cost>
-	  <selectside />
+      <selectside />
+      <limit>{leg}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Swimming</condition>
+          <condition>LimitCondition_SkillsActiveSwimming</condition>
         </limitmodifier>
       </bonus>
-	  <pairbonus>
+      <pairbonus>
         <walkmultiplier>
           <val>1</val>
           <category>Swim</category>
         </walkmultiplier>
-	  </pairbonus>
+      </pairbonus>
       <source>CF</source>
       <page>113</page>
     </bioware>
@@ -917,7 +935,7 @@
     <bioware>
       <id>8b57132f-507f-4624-a892-2ec4b14b7be8</id>
       <name>Joint Replacement</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -929,7 +947,7 @@
     <bioware>
       <id>02e4af5e-22a6-4ebc-a3dd-05d71448be64</id>
       <name>Spidersilk Gland</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
@@ -941,7 +959,7 @@
     <bioware>
       <id>c5069f19-dae1-45f3-a1d4-b57d02534efa</id>
       <name>Spinal Realignment</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -964,7 +982,7 @@
     <bioware>
       <id>bac3eaa6-c1d3-457e-a319-1ce141baef37</id>
       <name>Tail</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.25</ess>
       <capacity>0</capacity>
@@ -976,7 +994,7 @@
     <bioware>
       <id>ada5468c-e350-4323-be31-29d0fe545c9e</id>
       <name>Tail, Prehensile</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
@@ -1008,12 +1026,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for tests involving speaking</condition>
+          <condition>LimitCondition_TestSpeech</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Performance (Singing)</condition>
+          <condition>LimitCondition_SkillsActivePerformanceSinging</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1031,12 +1049,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for test involving speaking</condition>
+          <condition>LimitCondition_TestSpeech</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Performance (Singing)</condition>
+          <condition>LimitCondition_SkillsActivePerformanceSinging</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1050,19 +1068,19 @@
       <capacity>0</capacity>
       <avail>Rating * 2</avail>
       <cost>Rating * 4000</cost>
-	  <bonus>
+      <bonus>
         <physiologicaladdictionfirsttime>Rating</physiologicaladdictionfirsttime>
-		<psychologicaladdictionfirsttime>Rating</psychologicaladdictionfirsttime>
-		<physiologicaladdictionalreadyaddicted>Rating</physiologicaladdictionalreadyaddicted>
-		<psychologicaladdictionalreadyaddicted>Rating</psychologicaladdictionalreadyaddicted>
-		<toxincontactresist>Rating</toxincontactresist>
-		<toxiningestionresist>Rating</toxiningestionresist>
-		<toxininhalationresist>Rating</toxininhalationresist>
-		<toxininjectionresist>Rating</toxininjectionresist>
-		<pathogencontactresist>Rating</pathogencontactresist>
-		<pathogeningestionresist>Rating</pathogeningestionresist>
-		<pathogeninhalationresist>Rating</pathogeninhalationresist>
-		<pathogeninjectionresist>Rating</pathogeninjectionresist>
+        <psychologicaladdictionfirsttime>Rating</psychologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>Rating</physiologicaladdictionalreadyaddicted>
+        <psychologicaladdictionalreadyaddicted>Rating</psychologicaladdictionalreadyaddicted>
+        <toxincontactresist>Rating</toxincontactresist>
+        <toxiningestionresist>Rating</toxiningestionresist>
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <toxininjectionresist>Rating</toxininjectionresist>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
       </bonus>
       <rating>6</rating>
       <source>CF</source>
@@ -1102,7 +1120,7 @@
       <capacity>0</capacity>
       <avail>Rating * 4</avail>
       <cost>Rating * 2000</cost>
-	  <bonus>
+      <bonus>
         <fatigueresist>Rating</fatigueresist>
       </bonus>
       <rating>4</rating>
@@ -1117,11 +1135,11 @@
       <capacity>0</capacity>
       <avail>Rating * 7</avail>
       <cost>Rating * 4000</cost>
-	  <bonus>
-		<pathogencontactresist>Rating</pathogencontactresist>
-		<pathogeningestionresist>Rating</pathogeningestionresist>
-		<pathogeninhalationresist>Rating</pathogeninhalationresist>
-		<pathogeninjectionresist>Rating</pathogeninjectionresist>
+      <bonus>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
       </bonus>
       <rating>4</rating>
       <source>CF</source>
@@ -1132,7 +1150,7 @@
     <bioware>
       <id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
       <name>Minor Biosculpting Modification</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1147,7 +1165,7 @@
     <bioware>
       <id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
       <name>Moderate Biosculpting Modification</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1162,7 +1180,7 @@
     <bioware>
       <id>a4ca355b-6188-42c1-88c7-93947f233314</id>
       <name>Severe Biosculpting Modification</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0.25</ess>
       <capacity>0</capacity>
@@ -1223,7 +1241,7 @@
     <bioware>
       <id>af01e25f-1e95-4c1a-a937-8cbe922529ca</id>
       <name>Ethnicity/Sex Change</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1238,7 +1256,7 @@
     <bioware>
       <id>4c6458ec-082e-423c-b3df-ed57a62561f4</id>
       <name>Metatype Modification</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1252,11 +1270,11 @@
     </bioware>
     <!-- End Region -->
     <!-- Region Bio-Weapons -->
-	<!-- Kept for legacy Region -->
+    <!-- Kept for legacy Region -->
     <bioware>
       <id>dfd48ff5-3ecf-47b4-81fd-62b1ff3f74e4</id>
       <name>Claws</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1*Rating</ess>
       <capacity>0</capacity>
@@ -1267,12 +1285,12 @@
       <rating>2</rating>
       <source>CF</source>
       <page>120</page>
-	  <hide />
+      <hide />
     </bioware>
     <bioware>
       <id>885aa282-e624-4f8d-94e6-afafe672b3af</id>
       <name>Claws (Retractable)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.15*Rating</ess>
       <capacity>0</capacity>
@@ -1283,9 +1301,9 @@
       <rating>2</rating>
       <source>CF</source>
       <page>120</page>
-	  <hide />
+      <hide />
     </bioware>
-	<bioware>
+    <bioware>
       <id>8832f6ac-0082-4b9b-9e1c-7f90874a23a1</id>
       <name>Striking Callus</name>
       <category>Bio-Weapons</category>
@@ -1301,12 +1319,12 @@
       <rating>4</rating>
       <source>CF</source>
       <page>121</page>
-	  <hide />
+      <hide />
     </bioware>
     <bioware>
       <id>f56ee63d-7ed3-4b5f-bde9-5b581eca9220</id>
       <name>Tusk(s), Small</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1316,12 +1334,12 @@
       <rating>2</rating>
       <source>CF</source>
       <page>121</page>
-	  <hide />
+      <hide />
     </bioware>
     <bioware>
       <id>3caa7752-63ee-40c9-ba3f-d11aef038812</id>
       <name>Tusk(s), Medium</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1*Rating</ess>
       <capacity>0</capacity>
@@ -1332,12 +1350,12 @@
       <rating>2</rating>
       <source>CF</source>
       <page>121</page>
-	  <hide />
+      <hide />
     </bioware>
-	<bioware>
+    <bioware>
       <id>d5e4c407-58e4-4b24-ba11-65c45d256f97</id>
       <name>Tusk(s), Large</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2*Rating</ess>
       <capacity>0</capacity>
@@ -1348,125 +1366,131 @@
       <rating>2</rating>
       <source>CF</source>
       <page>121</page>
-	  <hide />
+      <hide />
     </bioware>
-	<!-- End Region -->
-	<bioware>
+    <!-- End Region -->
+    <bioware>
       <id>c0dedc5f-2c75-4dcb-9fc3-86fc44adea58</id>
       <name>Claws, Fixed (Hands)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>4R</avail>
       <cost>500</cost>
       <addweapon>Claws (Bio-Weapon)</addweapon>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <pairbonus>
-		<unarmedreach>1</unarmedreach>
-	  </pairbonus>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <pairbonus>
+        <unarmedreach>1</unarmedreach>
+      </pairbonus>
       <source>CF</source>
       <page>120</page>
     </bioware>
     <bioware>
       <id>df52299c-321c-4cf8-9f38-038c5a44d455</id>
       <name>Claws, Retractable (Hands)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Bio-Weapons</category>
       <ess>0.15</ess>
       <capacity>0</capacity>
       <avail>6R</avail>
       <cost>1000</cost>
       <addweapon>Retractable Claws (Bio-Weapon)</addweapon>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
       <pairbonus>
-		<unarmedreach>1</unarmedreach>
-	  </pairbonus>
+        <unarmedreach>1</unarmedreach>
+      </pairbonus>
       <source>CF</source>
       <page>120</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>da38afc5-fe4c-4dfa-8f9f-e9e88adcb357</id>
       <name>Claws, Fixed (Feet)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>4R</avail>
       <cost>500</cost>
       <addweapon>Claws (Bio-Weapon)</addweapon>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
-	  <pairbonus>
-		<unarmedreach>1</unarmedreach>
-	  </pairbonus>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
+      <pairbonus>
+        <unarmedreach>1</unarmedreach>
+      </pairbonus>
       <source>CF</source>
       <page>120</page>
     </bioware>
     <bioware>
       <id>ea389d15-539a-4d7b-aa2f-33ea6cf0d40b</id>
       <name>Claws, Retractable (Feet)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Bio-Weapons</category>
       <ess>0.15</ess>
       <capacity>0</capacity>
       <avail>6R</avail>
       <cost>1000</cost>
       <addweapon>Retractable Claws (Bio-Weapon)</addweapon>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
-	  <pairbonus>
-		<unarmedreach>1</unarmedreach>
-	  </pairbonus>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
+      <pairbonus>
+        <unarmedreach>1</unarmedreach>
+      </pairbonus>
       <source>CF</source>
       <page>120</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>ccd4b880-cf85-4b96-9de0-211dc6fb48e2</id>
       <name>Striking Callus (Hands)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Bio-Weapons</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
       <avail>2</avail>
       <cost>250</cost>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
       <bonus>
         <unarmeddvphysical />
       </bonus>
-	  <pairbonus>
-		<unarmeddv>1</unarmeddv>
-	  </pairbonus>
+      <pairbonus>
+        <unarmeddv>1</unarmeddv>
+      </pairbonus>
+      <pairinclude>
+        <name>Striking Callus (Feet)</name>
+      </pairinclude>
       <source>CF</source>
       <page>121</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>56f6c403-3d29-4055-a323-a7b67acb607d</id>
       <name>Striking Callus (Feet)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Bio-Weapons</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
       <avail>2</avail>
       <cost>250</cost>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
       <bonus>
         <unarmeddvphysical />
       </bonus>
-	  <pairbonus>
-		<unarmeddv>1</unarmeddv>
-	  </pairbonus>
+      <pairbonus>
+        <unarmeddv>1</unarmeddv>
+      </pairbonus>
+      <pairinclude>
+        <name>Striking Callus (Hands)</name>
+      </pairinclude>
       <source>CF</source>
       <page>121</page>
     </bioware>
     <bioware>
       <id>ee1d31e8-f5c9-4326-8139-3e591003f736</id>
       <name>Tusk(s), Small</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1478,7 +1502,7 @@
     <bioware>
       <id>34310f59-55d5-4e95-8966-a97b20a388ce</id>
       <name>Tusk(s), Medium</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1488,10 +1512,10 @@
       <source>CF</source>
       <page>121</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>715d0e82-9fbf-42d6-94a6-efbb03540435</id>
       <name>Tusk(s), Large</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -1501,10 +1525,10 @@
       <source>CF</source>
       <page>121</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>1c919d10-72ae-4cd9-bad2-6b4a23ae48b0</id>
       <name>Replacement Tusk(s), Small</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1512,16 +1536,16 @@
       <cost>100</cost>
       <source>CF</source>
       <page>121</page>
-	  <required>
-		<allof>
-		  <metatype>Ork</metatype>
-		</allof>
-	  </required>
+      <required>
+        <allof>
+          <metatype>Ork</metatype>
+        </allof>
+      </required>
     </bioware>
     <bioware>
       <id>f97ba92a-bba5-4b52-ab4c-28102c67acd7</id>
       <name>Replacement Tusk(s), Medium</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1530,16 +1554,16 @@
       <addweapon>Medium Tusk(s)</addweapon>
       <source>CF</source>
       <page>121</page>
-	  <required>
-		<allof>
-		  <metatype>Ork</metatype>
-		</allof>
-	  </required>
+      <required>
+        <allof>
+          <metatype>Ork</metatype>
+        </allof>
+      </required>
     </bioware>
     <bioware>
       <id>787ff755-16f5-4dfa-9cf8-49b8399103e6</id>
       <name>Electrical Discharge</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
@@ -1552,7 +1576,7 @@
     <bioware>
       <id>82780b5b-41dd-49ae-964f-c14ca91a0f14</id>
       <name>Fangs</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1565,7 +1589,7 @@
     <bioware>
       <id>3f0fda69-a098-4c9a-855e-5dd2d46ae3da</id>
       <name>Fangs (Retractable)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.15</ess>
       <capacity>0</capacity>
@@ -1578,7 +1602,7 @@
     <bioware>
       <id>cbe09df9-556d-44d4-9d68-073415850deb</id>
       <name>Horns</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1596,7 +1620,12 @@
       <capacity>0</capacity>
       <avail>8R</avail>
       <cost>2000</cost>
-      <addweapon></addweapon>
+      <bonus>
+        <weaponaccuracy>
+          <name>[contains]Fangs</name>
+          <value>2</value>
+        </weaponaccuracy>
+      </bonus>
       <source>CF</source>
       <page>121</page>
     </bioware>
@@ -1615,7 +1644,7 @@
     <bioware>
       <id>b9085cbe-8e67-4205-8e49-603e31f9d6f7</id>
       <name>Stinger, Tiny</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -1627,7 +1656,7 @@
     <bioware>
       <id>77bcbea4-fc69-42e6-b4e3-0debe6c08596</id>
       <name>Stinger, Medium</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1640,7 +1669,7 @@
     <bioware>
       <id>c466a6cf-bf31-4300-b53e-0f83af141342</id>
       <name>Stinger, Large</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -1655,7 +1684,7 @@
     <bioware>
       <id>f8195e35-fed4-463a-bd09-b559a6e05803</id>
       <name>Bio-Tattoos</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>FixedValues(0,0.01,0.02)</ess>
       <capacity>0</capacity>
@@ -1680,7 +1709,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Stealth group, Must be completely naked</condition>
+          <condition>LimitCondition_SkillGroupStealthNaked</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1698,7 +1727,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Stealth group, Must be completely naked</condition>
+          <condition>LimitCondition_SkillGroupStealthNaked</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1740,7 +1769,7 @@
     <bioware>
       <id>89137e94-5bf3-4c6d-93d9-571c96fc5b2f</id>
       <name>Hair Growth</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1755,7 +1784,7 @@
     <bioware>
       <id>a3e4a944-6463-4cd9-b3bc-6b940c6427f3</id>
       <name>Hair Growth (Full-Body)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1767,7 +1796,7 @@
     <bioware>
       <id>9f86544d-da24-4312-b4d5-6ab47956b7fa</id>
       <name>Perfect Eyes</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1779,7 +1808,7 @@
     <bioware>
       <id>e53383b8-ed64-4840-a2bf-baaa8885c61b</id>
       <name>Sensitive Skin</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1795,7 +1824,7 @@
     <bioware>
       <id>98e8f46f-e742-4456-95b7-f6f3eaa7d795</id>
       <name>Silky Skin</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1807,7 +1836,7 @@
     <bioware>
       <id>487ba675-b689-48e0-bd45-e6729d671a51</id>
       <name>Skin Pigmentation</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1822,7 +1851,7 @@
     <bioware>
       <id>9cd588c4-c93f-4fef-b216-9da2707066f7</id>
       <name>Skin Pigmentation (Permanent)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1840,7 +1869,7 @@
       <id>afbf823f-3116-4967-93d2-0e334bb35d3a</id>
       <name>Cerebellum Booster</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>Rating * 8</avail>
@@ -1859,7 +1888,7 @@
       <id>1abeac7c-79c5-4774-ad45-cd355ebc1476</id>
       <name>Boosted Reflexes</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>1</ess>
       <capacity>0</capacity>
       <avail>8R</avail>
@@ -1873,75 +1902,75 @@
     <bioware>
       <id>aece83ad-cec8-4117-adbd-3ec5e2049372</id>
       <name>Knowledge Infusion</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>2000</cost>
-	  <bonus>
-		<selectskill maximumrating="0" knowledgeskills="true">
-		  <val>1</val>
-		  <applytorating>yes</applytorating>
-		</selectskill>
-	  </bonus>
+      <bonus>
+        <selectskill maximumrating="0" knowledgeskills="True">
+          <val>1</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
       <source>CF</source>
       <page>118</page>
     </bioware>
     <bioware>
       <id>19000eeb-099e-4d63-9e1f-39a321569abe</id>
       <name>Limb replacement (Finger/Toe)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
-	  <selectside />
+      <selectside />
       <source>CF</source>
       <page>118</page>
     </bioware>
     <bioware>
       <id>7346dc96-af61-48f4-a98c-3bbe5fa64005</id>
       <name>Limb replacement (Hand/foot)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>20000</cost>
-	  <selectside />
+      <selectside />
       <source>CF</source>
       <page>118</page>
     </bioware>
     <bioware>
       <id>4a61e7db-b4e2-48e3-8744-6a44bff453a7</id>
       <name>Limb replacement (Half arm/leg)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>40000</cost>
-	  <selectside />
+      <selectside />
       <source>CF</source>
       <page>118</page>
     </bioware>
     <bioware>
       <id>67be6b07-11e4-49e6-8f6f-6931a3f8bf1f</id>
       <name>Limb replacement (Full arm/leg)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>80000</cost>
-	  <selectside />
+      <selectside />
       <source>CF</source>
       <page>118</page>
     </bioware>
@@ -1949,7 +1978,7 @@
       <id>f0aa87d0-2d86-482c-808d-667f1078f357</id>
       <name>Neuro Retention Amplification</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -1965,9 +1994,9 @@
     <bioware>
       <id>0dc21074-6b2c-446a-aadc-e8304c9c124f</id>
       <name>Reproductive Replacement, Male</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
@@ -1978,9 +2007,9 @@
     <bioware>
       <id>31b609ee-6856-44bb-b1f5-19066c0a74c0</id>
       <name>Reproductive Replacement, Female</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -1992,7 +2021,7 @@
       <id>e99097a1-84d5-4038-8525-761d199c58a7</id>
       <name>Trauma Damper</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>(Rating * 4)R</avail>
@@ -2005,7 +2034,7 @@
       <id>e78a9465-d399-4e94-bea8-7e98c8fc960d</id>
       <name>Tremor Reducer</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>Rating * 6</avail>
@@ -2018,7 +2047,7 @@
       <id>5f2c33a4-3472-4643-a0bb-9a6e52554c2f</id>
       <name>Reception Enhancer</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -2036,7 +2065,7 @@
       <capacity>0</capacity>
       <avail>16F</avail>
       <cost>57000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -2048,20 +2077,20 @@
       <capacity>0</capacity>
       <avail>10F</avail>
       <cost>40000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>157</page>
     </bioware>
     <bioware>
       <id>5f3da0ce-261f-4d1a-87a7-1e0614d65ef0</id>
       <name>Reprint</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>30000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -2073,7 +2102,7 @@
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>20000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -2085,7 +2114,7 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>10000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
     </bioware>
@@ -2097,7 +2126,7 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>15000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <memory>2</memory>
       </bonus>
@@ -2112,10 +2141,10 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>16500</cost>
-	  <bonus>
+      <bonus>
         <fatigueresist>1</fatigueresist>
       </bonus>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
     </bioware>
@@ -2127,10 +2156,10 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>12000</cost>
-	  <bonus>
-	    <electricityarmor>1</electricityarmor>
+      <bonus>
+        <electricityarmor>1</electricityarmor>
       </bonus>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
     </bioware>
@@ -2142,12 +2171,16 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>30500</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>STR</name>
           <val>1</val>
         </specificattribute>
+        <attributekarmacost>
+          <name>STR</name>
+          <val>-2</val>
+        </attributekarmacost>
       </bonus>
       <source>CF</source>
       <page>159</page>
@@ -2160,13 +2193,13 @@
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>16420</cost>
-	  <bonus>
+      <bonus>
         <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
-		<psychologicaladdictionfirsttime>-2</psychologicaladdictionfirsttime>
-		<physiologicaladdictionalreadyaddicted>2</physiologicaladdictionalreadyaddicted>
-		<psychologicaladdictionalreadyaddicted>2</psychologicaladdictionalreadyaddicted>
+        <psychologicaladdictionfirsttime>-2</psychologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>2</physiologicaladdictionalreadyaddicted>
+        <psychologicaladdictionalreadyaddicted>2</psychologicaladdictionalreadyaddicted>
       </bonus>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
     </bioware>
@@ -2178,7 +2211,7 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>17000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>160</page>
     </bioware>
@@ -2190,12 +2223,12 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>8000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
-	    <toxincontactresist>1</toxincontactresist>
-		<toxiningestionresist>1</toxiningestionresist>
-		<toxininhalationresist>1</toxininhalationresist>
-		<toxininjectionresist>1</toxininjectionresist>
+        <toxincontactresist>1</toxincontactresist>
+        <toxiningestionresist>1</toxiningestionresist>
+        <toxininhalationresist>1</toxininhalationresist>
+        <toxininjectionresist>1</toxininjectionresist>
         <lifestylecost>-10</lifestylecost>
       </bonus>
       <source>CF</source>
@@ -2209,7 +2242,7 @@
       <capacity>0</capacity>
       <avail>16</avail>
       <cost>30000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <adapsin />
       </bonus>
@@ -2224,15 +2257,35 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>61000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
-        <specificattribute>
+		<composure>1</composure>
+		<judgeintentionsdefense>1</judgeintentionsdefense>
+		<drainresist>1</drainresist>
+		<fadingresist>1</fadingresist>
+		<directmanaspellresist>1</directmanaspellresist>
+		<detectionspellresist>1</detectionspellresist>
+		<manaillusionresist>1</manaillusionresist>
+		<mentalmanipulationresist>1</mentalmanipulationresist>
+		<decreasebodresist>1</decreasebodresist>
+		<decreaseagiresist>1</decreaseagiresist>
+		<decreaserearesist>1</decreaserearesist>
+		<decreasestrresist>1</decreasestrresist>
+		<decreasecharesist>1</decreasecharesist>
+		<decreaseintresist>1</decreaseintresist>
+		<decreaselogresist>1</decreaselogresist>
+		<decreasewilresist>1</decreasewilresist>
+		<skillattribute>
           <name>WIL</name>
-          <val>1</val>
-        </specificattribute>
-		<addqualities>
-          <addquality>Poor Self Control (Thrill Seeker)</addquality>
-		</addqualities>
+          <bonus>1</bonus>
+        </skillattribute>
+		<physiologicaladdictionfirsttime>1</physiologicaladdictionfirsttime>
+        <psychologicaladdictionfirsttime>1</psychologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>1</physiologicaladdictionalreadyaddicted>
+        <psychologicaladdictionalreadyaddicted>1</psychologicaladdictionalreadyaddicted>
+        <addqualities>
+          <addquality>Poor Self Control (Thrill Seeker) (Dareadrenaline)</addquality>
+        </addqualities>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2245,10 +2298,10 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>18000</cost>
-	  <bonus>
+      <bonus>
         <fatigueresist>-1</fatigueresist>
       </bonus>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>160</page>
     </bioware>
@@ -2260,7 +2313,7 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>8000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <lifestylecost>10</lifestylecost>
       </bonus>
@@ -2269,13 +2322,13 @@
     </bioware>
     <bioware>
       <id>ef4a3bfe-5698-43ae-a4ff-8056aec4095d</id>
-      <name>Magnasense</name>
+      <name>Magnesense</name>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>7000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificskill>
           <name>Navigation</name>
@@ -2293,16 +2346,16 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>38000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <physicallimit>1</physicallimit>
-		<stuncmrecovery>1</stuncmrecovery>
-		<physicalcmrecovery>1</physicalcmrecovery>
+        <stuncmrecovery>1</stuncmrecovery>
+        <physicalcmrecovery>1</physicalcmrecovery>
         <skillgroup>
           <name>Athletics</name>
           <bonus>1</bonus>
         </skillgroup>
-		<fatigueresist>1</fatigueresist>
+        <fatigueresist>1</fatigueresist>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2315,12 +2368,12 @@
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>62000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>LOG</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2333,12 +2386,12 @@
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>65000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>INT</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <source>CF</source>
       <page>161</page>
@@ -2350,9 +2403,9 @@
       <ess>0.4</ess>
       <capacity>0</capacity>
       <avail>10</avail>
-      <cost>75000</cost>
-	  <forcegrade>None</forcegrade>
-	  <bonus>
+      <cost>73000</cost>
+      <forcegrade>None</forcegrade>
+      <bonus>
         <dodge>2</dodge>
       </bonus>
       <source>CF</source>
@@ -2366,7 +2419,7 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>9000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -2384,7 +2437,7 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <lifestylecost>-10</lifestylecost>
       </bonus>
@@ -2399,7 +2452,7 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>78000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <initiative precedence="0">1</initiative>
         <initiativepass precedence="0">1</initiativepass>
@@ -2415,7 +2468,7 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>14000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2433,7 +2486,14 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>8000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>3</bonus>
+          <condition>Visual</condition>
+        </specificskill>
+      </bonus>
       <source>CF</source>
       <page>161</page>
     </bioware>
@@ -2445,7 +2505,7 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>15000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>161</page>
     </bioware>
@@ -2457,8 +2517,8 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>20000</cost>
-	  <bonus unique="microadaptation" />
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation" />
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2470,15 +2530,15 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>8000</cost>
-	  <bonus unique="microadaptation">
-		<coldarmor>2</coldarmor>
-	  </bonus>
-	  <forbidden>
-		<oneof>
-		  <bioware>Heat Adaptation</bioware>
-		</oneof>
-	  </forbidden>
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation">
+        <coldarmor>2</coldarmor>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <bioware>Heat Adaptation</bioware>
+        </oneof>
+      </forbidden>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2490,8 +2550,8 @@
       <capacity>0</capacity>
       <avail>18</avail>
       <cost>50000</cost>
-	  <bonus unique="microadaptation" />
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation" />
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2503,15 +2563,15 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>8000</cost>
-	  <bonus unique="microadaptation">
-		<firearmor>2</firearmor>
-	  </bonus>
-	  <forbidden>
-		<oneof>
-		  <bioware>Cold Adaptation</bioware>
-		</oneof>
-	  </forbidden>
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation">
+        <firearmor>2</firearmor>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <bioware>Cold Adaptation</bioware>
+        </oneof>
+      </forbidden>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2523,10 +2583,10 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>8000</cost>
-	  <bonus unique="microadaptation">
-		<lifestylecost>10</lifestylecost>
-	  </bonus>
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation">
+        <lifestylecost>10</lifestylecost>
+      </bonus>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2538,8 +2598,8 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>30000</cost>
-	  <bonus unique="microadaptation" />
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation" />
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2551,12 +2611,12 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>15000</cost>
-	  <bonus unique="microadaptation">
-		<toxincontactresist>2</toxincontactresist>
-		<toxiningestionresist>2</toxiningestionresist>
-		<toxininhalationresist>2</toxininhalationresist>
-	  </bonus>
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation">
+        <toxincontactresist>2</toxincontactresist>
+        <toxiningestionresist>2</toxiningestionresist>
+        <toxininhalationresist>2</toxininhalationresist>
+      </bonus>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
     </bioware>
@@ -2568,10 +2628,25 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>15000</cost>
-	  <bonus unique="microadaptation">
-		<radiationresist>2</radiationresist>
-	  </bonus>
-	  <forcegrade>None</forcegrade>
+      <bonus unique="microadaptation">
+        <radiationresist>2</radiationresist>
+      </bonus>
+      <forcegrade>None</forcegrade>
+      <source>CF</source>
+      <page>164</page>
+    </bioware>
+    <bioware>
+      <id>a950129b-00a6-4445-a1b6-d82f158e83dc</id>
+      <name>Transgenic Alteration</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>Variable(30000-1000000)</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>164</page>
     </bioware>
@@ -2583,8 +2658,8 @@
       <capacity>0</capacity>
       <avail>7</avail>
       <cost>4600</cost>
-	  <forcegrade>None</forcegrade>
-	  <required>
+      <forcegrade>None</forcegrade>
+      <required>
         <oneof>
           <cyberware>Control Rig</cyberware>
         </oneof>
@@ -2600,7 +2675,7 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>6600</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <initiative>1</initiative>
       </bonus>
@@ -2620,11 +2695,11 @@
       <capacity>0</capacity>
       <avail>11</avail>
       <cost>3800</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <reflexrecorderoptimization />
       </bonus>
-	  <required>
+      <required>
         <oneof>
           <bioware>Reflex Recorder</bioware>
         </oneof>
@@ -2640,8 +2715,8 @@
       <capacity>0</capacity>
       <avail>9R</avail>
       <cost>9000</cost>
-	  <forcegrade>None</forcegrade>
-	  <required>
+      <forcegrade>None</forcegrade>
+      <required>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
         </oneof>
@@ -2656,9 +2731,9 @@
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>7F</avail>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <cost>6000</cost>
-	  <required>
+      <required>
         <oneof>
           <bioware>Adrenaline Pump</bioware>
         </oneof>
@@ -2673,9 +2748,9 @@
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <cost>4000</cost>
-	  <required>
+      <required>
         <oneof>
           <bioware>Symbiotes</bioware>
         </oneof>
@@ -2684,29 +2759,29 @@
       <page>165</page>
     </bioware>
     <bioware>
-      <id>1aa7863d-a8f3-461e-8ce8-88c3b8e98ced</id>
+      <id>c0c9314e-1fa2-4bd7-a02d-70beaf99def2</id>
       <name>Genetic Optimization (Body)</name>
       <category>Genemods</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>BOD</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Body)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Body)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>70552613-23ca-4e53-bf8f-83f87f134b05</id>
       <name>Genetic Optimization (Agility)</name>
       <category>Genemods</category>
@@ -2714,22 +2789,22 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>AGI</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Agility)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Agility)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>da01f3fc-e77a-419f-8cad-907fe7e995d5</id>
       <name>Genetic Optimization (Reaction)</name>
       <category>Genemods</category>
@@ -2737,22 +2812,22 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>REA</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Reaction)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Reaction)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>4b10adbe-567f-4e7d-affd-70c312efdb22</id>
       <name>Genetic Optimization (Strength)</name>
       <category>Genemods</category>
@@ -2760,22 +2835,22 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>STR</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Strength)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Strength)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>aeab29b0-4ac1-47cc-980e-36cfb562ac17</id>
       <name>Genetic Optimization (Charisma)</name>
       <category>Genemods</category>
@@ -2783,22 +2858,22 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>CHA</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Charisma)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Charisma)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>5ec34679-27d6-4bb7-b408-1ca1b2f81bd0</id>
       <name>Genetic Optimization (Intuition)</name>
       <category>Genemods</category>
@@ -2806,22 +2881,22 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>INT</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Intuition)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Intuition)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>c388537e-e533-48c3-a101-c57be8426295</id>
       <name>Genetic Optimization (Logic)</name>
       <category>Genemods</category>
@@ -2829,22 +2904,22 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>LOG</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Logic)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Logic)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
-	<bioware>
+    <bioware>
       <id>19142a2e-1078-4b23-9996-313cb57daa07</id>
       <name>Genetic Optimization (Willpower)</name>
       <category>Genemods</category>
@@ -2852,34 +2927,34 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <specificattribute>
           <name>WIL</name>
           <max>1</max>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Phenotypic Variation - Genetic Optimization (Willpower)</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Phenotypic Variation - Genetic Optimization (Willpower)</quality>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
     <bioware>
       <id>da62e249-cb11-4907-98d3-edc50e7efc2a</id>
       <name>Cosmetic Alteration</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>35000</cost>
-	  <bonus>
-		<selecttext />
-	  </bonus>
-	  <forcegrade>None</forcegrade>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>158</page>
     </bioware>
@@ -2891,22 +2966,22 @@
       <capacity>0</capacity>
       <avail>10F</avail>
       <cost>18000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>158</page>
     </bioware>
     <bioware>
       <id>d23aac11-8e3c-4739-9da5-b8322f81d64c</id>
       <name>Metaposeur</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>38000</cost>
-	  <forcegrade>None</forcegrade>
-	  <bonus>
-        <selecttext />
+      <forcegrade>None</forcegrade>
+      <bonus>
+        <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
       <source>CF</source>
       <page>158</page>
@@ -2914,13 +2989,13 @@
     <bioware>
       <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
       <name>Immunization</name>
-	  <limit>{BODBase}</limit>
+      <limit>{BODBase}</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>20000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <selecttext />
       </bonus>
@@ -2932,13 +3007,13 @@
     <bioware>
       <id>9a3cf302-b2bb-402f-93e2-7872eca63d31</id>
       <name>Therapeutic Genetics</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>90000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <bonus>
         <selecttext />
       </bonus>
@@ -2948,78 +3023,78 @@
     <bioware>
       <id>669926ea-55ec-4365-adcf-f8028a464124</id>
       <name>Leónization</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>1</ess>
       <capacity>0</capacity>
       <avail>15</avail>
       <cost>2000000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>156</page>
     </bioware>
     <bioware>
       <id>78797e7f-020d-4e4a-a08b-207890f73fc5</id>
       <name>Lifespan Extension</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>300000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>157</page>
     </bioware>
     <bioware>
       <id>11e5627e-aeff-4910-bf06-b8817b46f786</id>
       <name>Physical Vigor</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>13</avail>
       <cost>250000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>156</page>
     </bioware>
     <bioware>
       <id>aa42b990-04db-4cae-81e3-a93bce93616f</id>
       <name>Augmented Healing</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>35000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>156</page>
     </bioware>
     <bioware>
       <id>3af9942f-6e6c-4c0d-a962-a6cf30504a00</id>
       <name>Cellular Repair</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>65000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>156</page>
     </bioware>
     <bioware>
       <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
       <name>Revitilization</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
-      <ess>0</ess>
+      <ess>-0.1</ess>
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>110000</cost>
-	  <forcegrade>None</forcegrade>
+      <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -3028,16 +3103,16 @@
     <bioware>
       <id>738c15f8-49ea-417e-9728-b4c78bc72c18</id>
       <name>Cleaner Leech</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>100</cost>
-	  <bonus>
-		<stuncmrecovery>1</stuncmrecovery>
-		<physicalcmrecovery>1</physicalcmrecovery>
-	  </bonus>
+      <bonus>
+        <stuncmrecovery>1</stuncmrecovery>
+        <physicalcmrecovery>1</physicalcmrecovery>
+      </bonus>
       <source>CF</source>
       <page>123</page>
     </bioware>
@@ -3060,9 +3135,9 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>10000</cost>
-	  <bonus>
-		<lifestylecost>-10</lifestylecost>
-	  </bonus>
+      <bonus>
+        <lifestylecost>-10</lifestylecost>
+      </bonus>
       <source>CF</source>
       <page>123</page>
     </bioware>
@@ -3080,7 +3155,7 @@
     <bioware>
       <id>c2700f31-a361-4ea2-974e-dd5bde62913a</id>
       <name>Mild Allergy Resistance</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3092,7 +3167,7 @@
     <bioware>
       <id>982290e5-2c21-41c0-9847-e47eb455c2f7</id>
       <name>Moderate Allergy Resistance</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3104,7 +3179,7 @@
     <bioware>
       <id>3d2ee994-be0c-4e07-a2ce-b616a37d8ee8</id>
       <name>Severe Allergy Resistance</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3132,9 +3207,9 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>30000</cost>
-	  <bonus>
-		<physicalcmrecovery>2</physicalcmrecovery>
-		<stuncmrecovery>1</stuncmrecovery>
+      <bonus>
+        <physicalcmrecovery>2</physicalcmrecovery>
+        <stuncmrecovery>1</stuncmrecovery>
       </bonus>
       <source>CF</source>
       <page>124</page>
@@ -3147,8 +3222,8 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>1000</cost>
-	  <bonus>
-		<toxiningestionresist>1</toxiningestionresist>
+      <bonus>
+        <toxiningestionresist>1</toxiningestionresist>
       </bonus>
       <source>CF</source>
       <page>124</page>
@@ -3184,7 +3259,7 @@
     <bioware>
       <id>5b2c4c5d-a037-4970-8fcb-b6d47b9e819a</id>
       <name>Bone Spike (No Bone Density)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3202,7 +3277,7 @@
     <bioware>
       <id>53d0d6b1-f5cd-4816-b772-7f50af81356a</id>
       <name>Bone Spike (Bone Density 2-3)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3220,7 +3295,7 @@
     <bioware>
       <id>f994b8ac-0314-43ad-969a-f07d2d3fc0d8</id>
       <name>Bone Spike (Bone Density 4)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3238,9 +3313,9 @@
     <bioware>
       <id>0f5b811f-a761-410a-b675-fca5c5821b31</id>
       <name>Spur Pocket</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -3274,7 +3349,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Escape Artist</condition>
+          <condition>LimitCondition_SkillsActiveEscapeArtist</condition>
         </limitmodifier>
         <specificskill>
           <name>Escape Artist</name>
@@ -3307,7 +3382,7 @@
           <val>1</val>
         </specificattribute>
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>1</val>
         </specificattribute>
       </bonus>
@@ -3345,7 +3420,7 @@
       <id>aa992c89-3fc0-47bf-9275-f31acf83a615</id>
       <name>Mnemonic Enhancer (2050)</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -3392,11 +3467,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Celerity</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Celerity</quality>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
@@ -3409,17 +3484,17 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 20000</cost>
-      <bonus>
+      <bonus unique="muscle">
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Celerity</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Celerity</quality>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
@@ -3433,10 +3508,18 @@
       <avail>4</avail>
       <cost>Rating * 24000</cost>
       <bonus>
-        <specificattribute>
-          <name precedence="0">STR</name>
-          <val>Rating</val>
-        </specificattribute>
+        <physiologicaladdictionfirsttime>Rating</physiologicaladdictionfirsttime>
+        <psychologicaladdictionfirsttime>Rating</psychologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>Rating</physiologicaladdictionalreadyaddicted>
+        <psychologicaladdictionalreadyaddicted>Rating</psychologicaladdictionalreadyaddicted>
+        <toxincontactresist>Rating</toxincontactresist>
+        <toxiningestionresist>Rating</toxiningestionresist>
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <toxininjectionresist>Rating</toxininjectionresist>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
       </bonus>
       <rating>6</rating>
       <source>2050</source>
@@ -3470,12 +3553,12 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>Rating * 10000</cost>
-	  <bonus>
-		<pathogencontactresist>Rating</pathogencontactresist>
-		<pathogeningestionresist>Rating</pathogeningestionresist>
-		<pathogeninhalationresist>Rating</pathogeninhalationresist>
-		<pathogeninjectionresist>Rating</pathogeninjectionresist>
-	  </bonus>
+      <bonus>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
+      </bonus>
       <rating>6</rating>
       <source>2050</source>
       <page>205</page>
@@ -3483,9 +3566,9 @@
     <bioware>
       <id>20658b19-28c0-4e38-8523-768636510c7b</id>
       <name>Reflex Recorder (2050)</name>
-	  <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>5</avail>
@@ -3493,7 +3576,7 @@
       <bonus>
         <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
         </selectskill>
       </bonus>
       <source>2050</source>
@@ -3503,30 +3586,30 @@
       <id>9300c974-1591-4dca-95d4-53755c27126e</id>
       <name>Damage Compensators (2050)</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>10F</avail>
       <cost>Rating * 50000</cost>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset>Rating</thresholdoffset>
+          <sharedthresholdoffset>Rating</sharedthresholdoffset>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
           <quality>High Pain Tolerance</quality>
         </oneof>
       </forbidden>
       <rating>12</rating>
       <source>2050</source>
-      <page>205</page>
+      <page>206</page>
     </bioware>
     <bioware>
       <id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>
       <name>Pain Editor (2050)</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>6F</avail>
@@ -3550,7 +3633,7 @@
       <id>418fc791-2ae8-4457-80ec-e89244f1497b</id>
       <name>Synaptic Accelerator (2050)</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.5</ess>
       <capacity>0</capacity>
       <avail>6R</avail>
@@ -3599,7 +3682,7 @@
       <id>773956b3-427b-4ed0-9510-8db622f01b66</id>
       <name>Cerebral Booster (2050)</name>
       <category>Cultured</category>
-	  <nosecondhand />
+      <nosecondhand />
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -3615,5 +3698,50 @@
       <page>205</page>
     </bioware>
     <!-- Ende SR5 2050 -->
+    <!-- Region Kill Code -->
+    <bioware>
+      <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
+      <name>MCT Biolink</name>
+      <category>Basic</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>15000</cost>
+      <source>KC</source>
+      <page>67</page>
+    </bioware>
+    <!-- End Region -->
+    <!-- Region No Future -->
+    <!-- Region Cybersenses -->
+    <bioware>
+      <id>ac03e91f-4a00-4df7-8ab8-cd840ac5c67f</id>
+      <name>Vocal Expansion</name>
+      <limit>1</limit>
+      <category>Basic</category>
+      <ess>0.1</ess>
+      <rating>3</rating>
+      <capacity>0</capacity>
+      <avail>Rating*6</avail>
+      <cost>Rating*8000</cost>
+      <source>NF</source>
+      <page>175</page>
+    </bioware>
+    <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <bioware>
+      <id>81b90755-de0b-42d5-a7c9-6c7c72a1db05</id>
+      <name>Adrenaline Filter</name>
+      <limit>1</limit>
+      <category>Basic</category>
+      <ess>(Rating)*0.5</ess>
+      <rating>3</rating>
+      <capacity>0</capacity>
+      <avail>(Rating*3)R</avail>
+      <cost>Rating*35000</cost>
+      <source>DTR</source>
+      <page>163</page>
+    </bioware>
+    <!-- End Region -->
+    <!-- End Region -->
   </biowares>
 </chummer>

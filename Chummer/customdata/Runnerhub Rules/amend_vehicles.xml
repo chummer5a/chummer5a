@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<chummer>
+	<vehicles>
+		<vehicle>
+			<name>F-B Bumblebee</name>
+			<hide />
+		</vehicle>
+		<vehicle>
+			<name>Ares Minotaurus</name>
+			<avail>14R</avail>
+		</vehicle>
+		<vehicle>
+			<name>BMW Luxus</name>
+			<avail>24F</avail>
+		</vehicle>
+		<vehicle xpathfilter="(category = 'Cars' or category = 'Bikes' or category = 'Trucks' or category = 'Boats' or category = 'Corpsec/Police/Military' or category='Fixed-Wing Aircraft' or category = 'LTAV' or category = 'Rotorcraft' or category = 'VTOL/VSTOL') and pilot > 0">
+			<mods xpathfilter="not(name = 'GridLink')">
+				<name amendoperation="addnode">GridLink</name>
+			</mods>
+		</vehicle>
+
+	</vehicles>
+	<mods>
+		<mod>
+			<name>Ram Plate</name>
+			<avail>8</avail>
+			<slots>2</slots>
+			<cost>1500</cost>
+		</mod>
+    <mod amendoperation="addnode">
+		  <!-- Has extras space in its name to differ from the others -->
+		  <id>fce1576c-2016-4a7c-af13-51f9949a3325</id>
+		  <name>Realistic Features (Drone)  </name>
+		  <page>125</page>
+		  <source>R5</source>
+		  <avail>FixedValues(2,4)</avail>
+		  <category>All</category>
+		  <cost>FixedValues(Body * Body * 100,Body * Body * 500)</cost>
+		  <rating>2</rating>
+		  <slots>0</slots>
+		  <optionaldrone />
+			<required>
+			  <vehicledetails>
+			  	<OR>
+	    			<name operation="contains">Cyberspace Designs Dragonfly</name>
+            <name operation="contains">Renraku Gerbil</name>
+            <name operation="contains">Proteus Krake</name>
+            <name operation="contains">Ares Cheetah</name>
+					</OR>
+			  </vehicledetails>
+			</required>
+		</mod>
+
+    <mod amendoperation="addnode">
+		  <!-- Has extras space in its name to differ from the others -->
+		  <id>9ec316d3-702c-4ddb-b8d5-d7c2936600c4</id>
+		  <name>Realistic Features (Drone) </name>
+		  <page>125</page>
+		  <source>R5</source>
+		  <avail>FixedValues(2,4,8)</avail>
+		  <category>All</category>
+		  <cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000)</cost>
+		  <rating>3</rating>
+		  <slots>0</slots>
+		  <optionaldrone />
+			<required>
+			  <vehicledetails>
+			  	<OR>
+            <name operation="contains">Festo Sewer Snake</name>
+            <name operation="contains">Ares Duelist</name>
+					</OR>
+			  </vehicledetails>
+			</required>
+		</mod>
+		<mod>
+			<name>Realistic Features (Drone)</name>
+			<required amendoperation="replace" addifnotfound="True">
+			  <vehicledetails>
+          <OR>
+            <name operation="contains">Sony Goldfish</name>
+            <name operation="contains">Festo Pigeon 2.0</name>
+				    <name operation="contains">Remote Cyberhand</name>
+				    <category operation="contains">Drones: Anthro</category>
+            <name operation="contains">Shiawase Kanmushi</name>
+            <name operation="contains">MCT Fly-Spy</name>
+					</OR>
+			  </vehicledetails>
+			</required>
+      <forbidden amendoperation="replace" addifnotfound="True">
+        <vehicledetails>
+	        <OR>
+            <name operation="contains">Cyberspace Designs Dragonfly</name>
+            <name operation="contains">Renraku Gerbil</name>
+            <name operation="contains">Proteus Krake</name>
+            <name operation="contains">Ares Cheetah</name>
+            <name operation="contains">Festo Sewer Snake</name>
+            <name operation="contains">Ares Duelist</name>
+	        </OR>
+        </vehicledetails>
+      </forbidden>
+		</mod>
+	</mods>
+</chummer>

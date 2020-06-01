@@ -16,8 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-﻿using System.Linq;
+ using System;
 ﻿using System.Windows.Forms;
 
 namespace Chummer
@@ -30,14 +29,14 @@ namespace Chummer
         public frmSelectText()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (PreventXPathErrors && txtValue.Text.Contains('"'))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -57,7 +56,7 @@ namespace Chummer
             {
                 txtValue.Text = DefaultString;
             }
-        }        
+        }
         #endregion
 
         #region Properties
@@ -66,14 +65,8 @@ namespace Chummer
         /// </summary>
         public string SelectedValue
         {
-            get
-            {
-                return _strReturnValue;
-            }
-            set
-            {
-                txtValue.Text = value;
-            }
+            get => _strReturnValue;
+            set => txtValue.Text = value;
         }
 
         /// <summary>
@@ -81,10 +74,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         public bool PreventXPathErrors { get; internal set; }

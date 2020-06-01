@@ -16,28 +16,41 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Globalization;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmExpense : Form
+    public sealed partial class frmExpense : Form
     {
         private ExpenseType _objMode = ExpenseType.Karma;
+        private readonly CharacterOptions _objCharacterOptions;
 
         #region Control Events
-        public frmExpense()
+        public frmExpense(CharacterOptions objCharacterOptions)
         {
+            _objCharacterOptions = objCharacterOptions;
+
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
-            DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
-            string strDatePattern = objDateTimeInfo.FullDateTimePattern.Replace(":ss", string.Empty);
-            if (!GlobalOptions.DatesIncludeTime)
-                strDatePattern = objDateTimeInfo.LongDatePattern;
-            datDate.CustomFormat = strDatePattern;
+
+            if (GlobalOptions.CustomDateTimeFormats)
+            {
+                datDate.CustomFormat = GlobalOptions.DatesIncludeTime
+                    ? GlobalOptions.CustomDateFormat+GlobalOptions.CustomTimeFormat
+                    : GlobalOptions.CustomDateFormat;
+            }
+            else
+            {
+                DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
+                datDate.CustomFormat = GlobalOptions.DatesIncludeTime
+                    ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss")
+                    : objDateTimeInfo.LongDatePattern;
+            }
+
             datDate.Value = DateTime.Now;
 
             txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
@@ -45,9 +58,9 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % 2000 != 0)
+            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -89,14 +102,8 @@ namespace Chummer
         /// </summary>
         public string Reason
         {
-            get
-            {
-                return txtDescription.Text;
-            }
-            set
-            {
-                txtDescription.Text = value;
-            }
+            get => txtDescription.Text;
+            set => txtDescription.Text = value;
         }
 
         /// <summary>
@@ -104,14 +111,17 @@ namespace Chummer
         /// </summary>
         public bool Refund
         {
-            get
-            {
-                return chkRefund.Checked;
-            }
-            set
-            {
-                chkRefund.Checked = value;
-            }
+            get => chkRefund.Checked;
+            set => chkRefund.Checked = value;
+        }
+
+        /// <summary>
+        /// Whether or not this is a Karma refund.
+        /// </summary>
+        public bool ForceCareerVisible
+        {
+            get => chkForceCareerVisible.Checked;
+            set => chkForceCareerVisible.Checked = value;
         }
 
         /// <summary>
@@ -119,14 +129,8 @@ namespace Chummer
         /// </summary>
         public DateTime SelectedDate
         {
-            get
-            {
-                return datDate.Value;
-            }
-            set
-            {
-                datDate.Value = value;
-            }
+            get => datDate.Value;
+            set => datDate.Value = value;
         }
 
         /// <summary>
@@ -156,7 +160,7 @@ namespace Chummer
         }
 
         public bool KarmaNuyenExchange { get; set; }
-        public string KarmaNuyenExchangeString { get; internal set; }
+        public string KarmaNuyenExchangeString { get; set; }
 
         #endregion
 
@@ -177,25 +181,33 @@ namespace Chummer
 
         private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkKarmaNuyenExchange.Checked)
+            if (chkKarmaNuyenExchange.Checked && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString))
             {
                 txtDescription.Text = KarmaNuyenExchangeString;
             }
             if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
             {
-                nudAmount.Increment = 2000;
-                nudAmount.Value = 2000;
+                nudAmount.Increment = _objCharacterOptions.NuyenPerBP;
+                nudAmount.Value = _objCharacterOptions.NuyenPerBP;
             }
             else
             {
                 nudAmount.Increment = 1;
+            }
+
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            if (!chkForceCareerVisible.Enabled)
+            {
+                chkForceCareerVisible.Checked = false;
             }
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
         private void frmExpanse_Load(object sender, EventArgs e)
         {
+            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
+            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
         }
     }
 }

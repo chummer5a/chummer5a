@@ -5,11 +5,14 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:include href="xs.fnx.xslt"/>
+  <xsl:include href="xs.fnxTests.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.Calendar.xslt"/>
+  <xsl:include href="xt.ComplexForms.xslt"/>
   <xsl:include href="xt.ConditionMonitor.xslt"/>
   <xsl:include href="xt.Contacts.xslt"/>
+  <xsl:include href="xt.CritterPowers.xslt"/>
   <xsl:include href="xt.Expenses.xslt"/>
   <xsl:include href="xt.Lifestyles.xslt"/>
   <xsl:include href="xt.MovementRate.xslt"/>
@@ -54,94 +57,7 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <style type="text/css">
-          * {
-          font-family: segoe, tahoma, 'trebuchet ms', arial;
-          font-size: 8.25pt;
-          margin: 0;
-          text-align: left;
-          vertical-align: top;
-          }
-          html {
-          height: 100%;
-          margin: 0em;  /* this affects the margin on the html before sending to printer */
-          }
-          .tablestyle {
-          border-collapse: collapse;
-          border-color: #1c4a2d;
-          border-style: solid;
-          border-width: 0.5mm;
-          cellpadding: 2;
-          cellspacing: 0;
-          width: 100%;
-          }
-          .attributecell p {
-          padding: 0.25em;
-          margin: 0.25em;
-          border: solid 0.0625em #1c4a2d;
-          text-transform: uppercase;
-          }
-          .indent {
-          padding-left: 2mm;
-          }
-          .notesrow {
-          text-align: justify;
-          }
-          .notesrow2 {
-          padding-left: 2mm;
-          padding-right: 2mm;
-          text-align: justify;
-          }
-          th {
-          text-align: center;
-          text-transform: uppercase;
-          }
-          .title {
-          font-weight: bold;
-          text-transform: uppercase;
-          }
-          .upper {
-          text-transform: uppercase;
-          }
-          .block {
-          bottom-padding: 0;
-          page-break-inside: avoid;
-          margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
-          }
-          .mugshot {
-          width: auto;
-          max-width: 100%;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-          .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          }
-        </style>
-        <!--[if IE]
-        <style type="text/css">
-        .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-        </style>
-        -->
-        <style media="print">
-          @page {
-          size: auto;
-          margin-top: 0.5in;
-          margin-left: 0.5in;
-          margin-right: 0.5in;
-          margin-bottom: 0.5in;
-          }
-        </style>
+        <xsl:call-template name="Shadowrun5CSS" />
       </head>
       <body>
         <div class="block" style="width: 100%; text-align: center; vertical-align: center; border-bottom: thick solid #1c4a2d; margin: 0; padding-top: 0.9em; padding-bottom: 0.1em; font-weight: bold; font-variant: small-caps; font-size: 17pt; letter-spacing: 0.05em; text-shadow: 0 0 0.05em #fffff, 0 0 0.1em #1c4a2d;">
@@ -167,7 +83,7 @@
               <div class="block" id="PersonalDataBlock" style="line-height: 12pt">
             <table class="tablestyle" style="max-width: 100%;">
               <tr>
-                <td width="10%" class="title">
+                <td width="16.67%" class="title">
                   <xsl:value-of select="$lang.Name"/>:
                 </td>
                 <td colspan="5">
@@ -184,123 +100,125 @@
                     </xsl:otherwise>
                   </xsl:choose>
                 </td>
-                <td width="10%" class="title">
+              </tr>
+              <xsl:if test="playername != ''">
+              <tr>
+                <td width="16.66%" class="title">
                   <xsl:value-of select="$lang.Player"/>:
                 </td>
-                <td colspan="3"><xsl:value-of select="playername"/></td>
+                <td colspan="5">
+                  <xsl:value-of select="playername"/>
+                </td>
               </tr>
+              </xsl:if>
               <tr>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Metatype"/>:
                 </td>
                 <td colspan="3">
                   <xsl:value-of select="metatype"/>
                   <xsl:if test="metavariant != ''"> (<xsl:value-of select="metavariant"/>)</xsl:if>
                 </td>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Age"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="age"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="age"/></td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Sex"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="sex"/></td>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Nuyen"/>:
-                </td>
-                <td width="10%">
-                  <xsl:call-template name="fnx-fmt-nmbr">
-                    <xsl:with-param name="nmbr" select="nuyen"/>
-                  </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
-                </td>
-              </tr>
-              <tr>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="sex"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Height"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="height"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="height"/></td>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Weight"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="weight"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="weight"/></td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Hair"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="hair"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="hair"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Eyes"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="eyes"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="eyes"/></td>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Skin"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="skin"/></td>
+                <td width="16.67%"><xsl:value-of select="skin"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Karma"/>:
-                </td>
-                <td width="10%"><xsl:value-of select="karma"/></td>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Career"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Karma"/>:
-                </td>
-                <td width="10%"><xsl:value-of select="totalkarma"/></td>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.StreetCred"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="totalstreetcred"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="totalstreetcred"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Notoriety"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="totalnotoriety"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="totalnotoriety"/></td>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.PublicAwareness"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="totalpublicawareness"/></td>
+                <td width="16.67%"><xsl:value-of select="totalpublicawareness"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Composure"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="composure"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="composure"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.JudgeIntentions"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="judgeintentions"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="judgeintentions"/></td>
+                <td width="16.66%" class="upper">
+                  <xsl:value-of select="$lang.Memory"/>:
+                </td>
+                <td width="16.67%"><xsl:value-of select="memory"/></td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.LiftCarry"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="liftandcarry"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="liftandcarry"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.LiftCarry"/>
                   <xsl:text> </xsl:text>
                   <xsl:value-of select="$lang.Weight"/>:
                 </td>
-                <td width="10%">
-                  <xsl:value-of select="liftweight"/> kg/<xsl:value-of
+                <td width="16.67%">
+                  <xsl:value-of select="liftweight"/> kg / <xsl:value-of
                     select="carryweight"/> kg
                 </td>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.PrimaryArm"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="primaryarm"/></td>
+                <td width="16.67%"><xsl:value-of select="primaryarm"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Memory"/>:
+                <xsl:call-template name="MovementRate"/>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
+                  <xsl:value-of select="$lang.Nuyen"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="memory"/></td>
-                <td width="10%"/>
-                <td width="10%"/>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Movement"/>:
+                <td width="16.67%" style="white-space: nowrap;">
+                  <xsl:value-of select="nuyen"/><xsl:value-of select="$lang.NuyenSymbol"/>
                 </td>
-                <td colspan="4">
-                  <xsl:call-template name="MovementRate"/>
+                <td width="16.67%" class="upper">
+                  <xsl:value-of select="$lang.Karma"/>:
                 </td>
-                <td width="10%"/>
+                <td width="16.67%"><xsl:value-of select="karma"/></td>
+                <td width="16.66%" class="upper">
+                  <xsl:value-of select="$lang.Career"/>
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="$lang.Karma"/>:
+                </td>
+                <td width="16.67%"><xsl:value-of select="totalkarma"/></td>
               </tr>
             </table>
           </div>
@@ -337,21 +255,9 @@
               <div class="block" id="AttributesBlock">
             <table class="tablestyle" style="max-width: 100%;">
               <tr>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Physical"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Mental"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
-                <th width="25%">
-                  <xsl:value-of select="$lang.Special"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Attributes"/>
-                </th>
+                <th width="25%"><xsl:value-of select="$lang.PhysicalAttributes"/></th>
+                <th width="25%"><xsl:value-of select="$lang.MentalAttributes"/></th>
+                <th width="25%"><xsl:value-of select="$lang.SpecialAttributes"/></th>
                 <th width="25%">
                   <xsl:value-of select="$lang.Initiative"/>
                 </th>
@@ -359,27 +265,27 @@
               <tr>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Body"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'BOD']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'BOD']/total != attributes/attribute[name_english = 'BOD']/base"
-                    > (<xsl:value-of select="attributes/attribute[name_english = 'BOD']/total"
+                    <xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base"
+                    > (<xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total"
                     />) </xsl:if>
                   </p>
                 </td>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Charisma"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'CHA']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'CHA']/total != attributes/attribute[name_english = 'CHA']/base"
+                    <xsl:value-of select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/base"
                     > (<xsl:value-of
-                      select="attributes/attribute[name_english = 'CHA']/total"
+                      select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total"
                     />) </xsl:if>
                   </p>
                 </td>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Edge"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'EDG']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'EDG']/total != attributes/attribute[name_english = 'EDG']/base"
+                    <xsl:value-of select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/base"
                     > (<xsl:value-of
-                      select="attributes/attribute[name_english = 'EDG']/total"
+                      select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total"
                     />) </xsl:if>
                   </p>
                 </td>
@@ -391,19 +297,19 @@
               <tr>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Agility"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'AGI']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'AGI']/total != attributes/attribute[name_english = 'AGI']/base"
+                    <xsl:value-of select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/base"
                     > (<xsl:value-of
-                      select="attributes/attribute[name_english = 'AGI']/total"
+                      select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total"
                     />) </xsl:if>
                   </p>
                 </td>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Intuition"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'INT']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'INT']/total != attributes/attribute[name_english = 'INT']/base"
+                    <xsl:value-of select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/base"
                     > (<xsl:value-of
-                      select="attributes/attribute[name_english = 'INT']/total"
+                      select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total"
                     />) </xsl:if>
                   </p>
                 </td>
@@ -428,17 +334,17 @@
               <tr>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Reaction"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'REA']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'REA']/total != attributes/attribute[name_english = 'REA']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'REA']/total"/>)
+                    <xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total"/>)
                     </xsl:if>
                   </p>
                 </td>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Logic"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'LOG']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'LOG']/total != attributes/attribute[name_english = 'LOG']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'LOG']/total"/>)
+                    <xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total"/>)
                     </xsl:if>
                   </p>
                 </td>
@@ -456,17 +362,17 @@
               <tr>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Strength"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'STR']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'STR']/total != attributes/attribute[name_english = 'STR']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'STR']/total"/>)
+                    <xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total"/>)
                     </xsl:if>
                   </p>
                 </td>
                 <td width="25%" class="attributecell">
                   <p> <xsl:value-of select="$lang.Willpower"/>:
-                    <xsl:value-of select="attributes/attribute[name_english = 'WIL']/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'WIL']/total != attributes/attribute[name_english = 'WIL']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'WIL']/total"/>)
+                    <xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/base"/>
+                    <xsl:if test="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total"/>)
                     </xsl:if>
                   </p>
                 </td>
@@ -475,23 +381,29 @@
                     <xsl:choose>
                       <xsl:when test="magenabled = 'True'">
                         <xsl:value-of select="$lang.Magic"/>:
-                        <xsl:value-of select="attributes/attribute[name_english = 'MAG']/base"/>
-                        <xsl:if test="attributes/attribute[name_english = 'MAG']/total != attributes/attribute[name_english = 'MAG']/base">
-                          (<xsl:value-of select="attributes/attribute[name_english = 'MAG']/total"/>)
+                        <xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base"/>
+                        <xsl:if test="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base">
+                          (<xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total"/>)
+                        </xsl:if>
+                        <xsl:if test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]">
+                          | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/base"/>
+                          <xsl:if test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/base">
+                            (<xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total"/>)
+                          </xsl:if>
                         </xsl:if>
                       </xsl:when>
                       <xsl:when test="resenabled = 'True'">
                         <xsl:value-of select="$lang.Resonance"/>:
-                        <xsl:value-of select="attributes/attribute[name_english = 'RES']/base"/>
-                        <xsl:if test="attributes/attribute[name_english = 'RES']/total != attributes/attribute[name_english = 'RES']/base">
-                          (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total"/>)
+                        <xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base"/>
+                        <xsl:if test="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base">
+                          (<xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total"/>)
                         </xsl:if>
                       </xsl:when>
                       <xsl:when test="depenabled = 'True'">
                         <xsl:value-of select="$lang.Depth"/>:
-                        <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base"/>
-                        <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
-                          (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total"/>)
+                        <xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/base"/>
+                        <xsl:if test="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/base">
+                          (<xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/total"/>)
                         </xsl:if>
                       </xsl:when>
                       <xsl:otherwise>
@@ -500,7 +412,7 @@
                     </xsl:choose>
                   </p>
                 </td>
-                <td width="25%" class="attributecell">
+                <td width="25%" rowspan="2" class="attributecell">
                   <p> <xsl:value-of select="$lang.MatrixAR"/>:
                     <xsl:value-of select="matrixarinit"/><br />
                     <xsl:value-of select="$lang.MatrixCold"/>:
@@ -509,6 +421,20 @@
                     <xsl:value-of select="matrixhotinit"/>
                   </p>
                 </td>
+              </tr>
+              <tr>
+                <xsl:choose>
+                  <xsl:when test="attributes/attribute[../attributecategory_english != metatypecategory]">
+                    <td width="75%" colspan="3" class="attributecell">
+                      <p>
+                        <xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/>
+                      </p>
+                    </td>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <td width="75%" colspan="3" />
+                  </xsl:otherwise>
+                </xsl:choose>
               </tr>
             </table>
           </div>
@@ -588,10 +514,10 @@
                       <th width="70%" style="text-align: left">
                         <xsl:value-of select="$lang.Skill"/>
                       </th>
-                      <th width="10%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Rtg"/>
                       </th>
-                      <th width="20%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Pool"/>
                       </th>
                     </tr>
@@ -609,10 +535,10 @@
                       <th width="70%" style="text-align: left">
                         <xsl:value-of select="$lang.Skill"/>
                       </th>
-                      <th width="10%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Rtg"/>
                       </th>
-                      <th width="20%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Pool"/>
                       </th>
                     </tr>
@@ -630,10 +556,10 @@
                       <th width="70%" style="text-align: left">
                         <xsl:value-of select="$lang.Skill"/>
                       </th>
-                      <th width="10%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Rtg"/>
                       </th>
-                      <th width="20%">
+                      <th width="15%">
                         <xsl:value-of select="$lang.Pool"/>
                       </th>
                     </tr>
@@ -649,9 +575,9 @@
           </xsl:call-template>
         </xsl:if>
 
-            <table width="100%" style="cellpadding: 0; margin: 0; padding: 0; border-width: 0; border-collapse: collapse; empty-cells: hide; page-break-inside: avoid;">
+            <table width="100%" style="cellpadding: 0; margin: 0; padding: 0; border-width: 0; border-collapse: collapse; empty-cells: hide;">
               <tr>
-                <td width="67%" style="text-align: center">
+                <td style="text-align: center;">
                   <xsl:if test="qualities/quality">
                     <div class="block" id="QualitiesBlock">
                     <table class="tablestyle">
@@ -671,15 +597,31 @@
                     </xsl:call-template>
                   </xsl:if>
                 </td>
-                <td width="33%">
+                <td style="width:33%; max-width:33%;">
                   <div class="block" id="CMBlock">
                     <table class="tablestyle">
                       <tr>
-                        <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
-                          <xsl:value-of select="$lang.PhysicalTrack"/>
+                        <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                          <xsl:choose>
+                            <xsl:when test="physicalcmiscorecm = 'True'">
+                              <xsl:value-of select="$lang.CoreTrack" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="$lang.PhysicalTrack" />
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </td>
-                        <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
-                          <xsl:value-of select="$lang.StunTrack"/>
+                        <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                          <xsl:choose>
+                            <xsl:when test="stuncmismatrixcm = 'True'">
+                              <xsl:value-of select="$lang.MatrixTrack" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:if test="physicalcmiscorecm != 'True'">
+                                <xsl:value-of select="$lang.StunTrack" />
+                              </xsl:if>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </td>
                       </tr>
                       <tr>
@@ -703,28 +645,35 @@
                           </xsl:call-template><br />
                           <xsl:value-of select="$lang.PhysicalNaturalRecovery"/>: <xsl:value-of select="physicalcmnaturalrecovery"/>
                         </td>
-                        <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
-                          <xsl:call-template name="ConditionMonitor">
-                            <xsl:with-param name="PenaltyBox">
-                              <xsl:value-of select="cmthreshold"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="Offset">
-                              <xsl:value-of select="stuncmthresholdoffset"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="TotalBoxes">
-                              <xsl:value-of select="stuncm"/>
-                            </xsl:with-param>
-                            <xsl:with-param name="DamageTaken">
-                              <xsl:value-of select="stuncmfilled"/>
-                            </xsl:with-param>
-                          </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
-                        </td>
+                        <xsl:choose>
+                          <xsl:when test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
+                            <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
+                              <xsl:call-template name="ConditionMonitor">
+                                <xsl:with-param name="PenaltyBox">
+                                  <xsl:value-of select="cmthreshold"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="Offset">
+                                  <xsl:value-of select="stuncmthresholdoffset"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="TotalBoxes">
+                                  <xsl:value-of select="stuncm"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="DamageTaken">
+                                  <xsl:value-of select="stuncmfilled"/>
+                                </xsl:with-param>
+                              </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
+                            </td>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <td style="padding: 0.5em 0.5em 0.5em 0.5em;" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </tr>
                     </table>
                   </div>
                   <xsl:call-template name="RowSummary">
                     <xsl:with-param name="text" select="$lang.ConditionMonitor"/>
-                    <xsl:with-param name="buttons" select="'CMBlock'"/>
+                    <xsl:with-param name="blockname" select="'CMBlock'"/>
                   </xsl:call-template>
                 </td>
               </tr>
@@ -798,12 +747,22 @@
           </xsl:call-template>
         </xsl:if>
 
+        <div class="block" id="ResistancesBlock">
+          <table class="tablestyle">
+            <xsl:call-template name="resistances"/>
+          </table>
+        </div>
+        <xsl:call-template name="RowSummary">
+          <xsl:with-param name="text" select="$lang.Resistances"/>
+          <xsl:with-param name="blockname" select="'ResistancesBlock'"/>
+        </xsl:call-template>
+
 <!--
-        *                      *
-        ***                      ***
+        *                                 *
+        ***                             ***
         *****       gear details      *****
-        ***                      ***
-        *                        *
+        ***                             ***
+        *                                 *
 -->
         <xsl:if test="cyberwares/cyberware">
           <div class="block" id="CyberwareBlock">
@@ -842,43 +801,38 @@
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
-              <xsl:call-template name="armor"/>
-              <xsl:variable name="sumarmor">
-                <xsl:value-of select="sum(armors/armor[equipped='True']/armor)"/>
-              </xsl:variable>
-              <xsl:variable name="otherarmor" select="armor - $sumarmor"/>
-              <xsl:if test="$otherarmor != 0">
+              <xsl:variable name="inarmor" select="armors/armor[equipped = 'True']"/>
+              <xsl:if test="$inarmor">
+                <xsl:for-each select="armors/armor[equipped = 'True']">
+                  <xsl:sort select="name"/>
+                  <xsl:call-template name="armor"/>
+                </xsl:for-each>
                 <tr>
-                  <td>
-                    <xsl:value-of select="$lang.Other"/>
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="$lang.Modifiers"/>
+                  <td style="font-weight: bold">
+                    <xsl:value-of select="$lang.TotalArmor"/>
                   </td>
-                  <td style="text-align: center">
-                    <xsl:call-template name="fnx-pad-l">
-                      <xsl:with-param name="string" select="$otherarmor"/>
-                      <xsl:with-param name="length" select="2"/>
-                    </xsl:call-template>
+                  <td style="font-weight: bold; text-align: center;">
+                    <xsl:value-of select="armor"/>
                   </td>
                   <td/>
                   <td/>
                   <td/>
                 </tr>
               </xsl:if>
-              <tr>
-                <td style="font-weight: bold">
-                  <xsl:value-of select="$lang.Total"/>
-                </td>
-                <td style="font-weight: bold; text-align: center; text-decoration: overline;">
-                  <xsl:call-template name="fnx-pad-l">
-                    <xsl:with-param name="string" select="armor"/>
-                    <xsl:with-param name="length" select="2"/>
+              <xsl:if test="armors/armor[equipped != 'True']">
+                <xsl:if test="$inarmor">
+                  <xsl:call-template name="Xline">
+                    <xsl:with-param name="height" select="'N'"/>
                   </xsl:call-template>
-                </td>
-                <td/>
-                <td/>
-                <td/>
-              </tr>
+                  <tr><td colspan="100%" style="font-weight: bold">
+                      <xsl:value-of select="$lang.OtherArmor"/>
+                  </td></tr>
+                </xsl:if>
+                <xsl:for-each select="armors/armor[equipped != 'True']">
+                  <xsl:sort select="name"/>
+                  <xsl:call-template name="armor"/>
+                </xsl:for-each>
+              </xsl:if>
             </table>
           </div>
           <xsl:call-template name="RowSummary">
@@ -949,12 +903,12 @@
               </tr>
               <xsl:variable name="sortedcopy">
                 <xsl:for-each select="weapons/weapon[type = 'Melee']">
-                  <xsl:sort select="name"/>
+                  <xsl:sort select="fullname"/>
                   <xsl:copy-of select="current()"/>
                 </xsl:for-each>
               </xsl:variable>
               <xsl:for-each select="msxsl:node-set($sortedcopy)/weapon">
-                <xsl:if test="position()=1 or name != preceding-sibling::weapon[1]/name">
+                <xsl:if test="position()=1 or fullname != preceding-sibling::weapon[1]/fullname">
                   <xsl:call-template name="meleeweapons">
                     <xsl:with-param name="weapon" select="weapons/weapon"/>
                   </xsl:call-template>
@@ -1080,14 +1034,14 @@
 <!-- ** ** ** end of gear ** ** ** -->
 
 <!--
-        *                      *
-        ***                      ***
+        *                                     *
+        ***                                 ***
         *****     magic user details      *****
-        ***                      ***
-        *                      *
+        ***                                 ***
+        *                                     *
 -->
       <xsl:if test="magenabled = 'True'">
-        <xsl:if test="tradition/name != ''">
+        <xsl:if test="tradition and tradition/istechnomancertradition = 'False'">
           <div class="block" id="TraditionBlock">
             <table class="tablestyle">
               <tr>
@@ -1144,29 +1098,41 @@
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
+              <xsl:call-template name="gradenotes"/>
               <xsl:if test="arts != ''">
                 <tr>
-                  <th width="100%"><xsl:value-of select="$lang.Arts"/></th>
+                  <td><strong><xsl:value-of select="$lang.Arts"/></strong></td>
+                  <td/>
+                  <td/>
                 </tr>
-                <tr><td>
-                  <xsl:for-each select="arts/art">
-                    <xsl:sort select="name"/>
-                    <xsl:value-of select="name"/>
-                    <xsl:value-of select="source"/>
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="page"/>
-                    <xsl:if test="notes !=''">
-                      <br><xsl:value-of select="notes"/></br>
-                    </xsl:if>
-                    <xsl:if test="last() &gt; 1">; </xsl:if>
-                  </xsl:for-each>
-                </td></tr>
+                <xsl:for-each select="arts/art">
+                  <xsl:sort select="name"/>
+                  <xsl:if test="position() != 1">
+                    <xsl:call-template name="Xline"/>
+                  </xsl:if>
+                  <tr>
+                    <td style="text-align: left">
+                      <xsl:value-of select="name"/>
+                    </td>
+                    <td/>
+                    <td style="text-align: center">
+                      <xsl:value-of select="source"/>
+                      <xsl:text> </xsl:text>
+                      <xsl:value-of select="page"/>
+                    </td>
+                  </tr>
+                  <xsl:if test="notes != '' and $ProduceNotes">
+                    <tr><td colspan="100%" class="notesrow2">
+                      <xsl:call-template name="PreserveLineBreaks">
+                        <xsl:with-param name="text" select="notes"/>
+                      </xsl:call-template>
+                    </td></tr>
+                  </xsl:if>
+                </xsl:for-each>
               </xsl:if>
               <xsl:if test="metamagics/metamagic">
                 <tr>
-                  <td width="80%">
-                    <strong><xsl:value-of select="$lang.Metamagics"/></strong>
-                  </td>
+                  <td><strong><xsl:value-of select="$lang.Metamagics"/></strong></td>
                   <td/>
                   <td/>
                 </tr>
@@ -1231,11 +1197,18 @@
               <xsl:for-each select="spirits/spirit">
                 <xsl:sort select="name"/>
                 <tr>
-                  <td><xsl:value-of select="name"/></td>
+                  <td>
+                    <xsl:value-of select="name"/>
+                    <xsl:if test="crittername != ''">: <xsl:value-of select="crittername"/></xsl:if>
+                  </td>
                   <td style="text-align: center"><xsl:value-of select="force"/></td>
                   <td style="text-align: center"><xsl:value-of select="services"/></td>
                   <td style="text-align: center">
                     <xsl:choose>
+                      <xsl:when test="fettered = 'True'">
+                        <xsl:value-of select="$lang.Bound"/>
+                        (<xsl:value-of select="$lang.Fettered"/>)
+                      </xsl:when>
                       <xsl:when test="bound = 'True'">
                         <xsl:value-of select="$lang.Bound"/>
                       </xsl:when>
@@ -1266,14 +1239,26 @@
           </xsl:call-template>
         </xsl:if>
       </xsl:if>
+
+        <xsl:if test="critterpowers/critterpower">
+          <div class="block" id="CritterBlock">
+            <table class="tablestyle">
+              <xsl:call-template name="CritterPowers"/>
+            </table>
+          </div>
+          <xsl:call-template name="RowSummary">
+            <xsl:with-param name="text" select="$lang.CritterPowers"/>
+            <xsl:with-param name="blockname" select="'CritterBlock'"/>
+          </xsl:call-template>
+        </xsl:if>
 <!-- ** ** ** end of magic user details ** ** ** -->
 
 <!--
-      *                      *
-      ***                      ***
+      *                                     *
+      ***                                 ***
       *****     Technomancer details    *****
-      ***                      ***
-      *                      *
+      ***                                 ***
+      *                                     *
 -->
       <xsl:if test="resenabled = 'True'">
         <div class="block" id="StreamBlock">
@@ -1282,15 +1267,17 @@
               <th width="25%" style="text-align: left">
                 <xsl:value-of select="$lang.Stream"/>
               </th>
-              <th width="10%">
+              <th width="20%">
                 <xsl:value-of select="$lang.Drain"/>
               </th>
-              <th width="55%"/>
+              <th width="45%"/>
               <th width="10%"/>
             </tr>
             <tr>
-              <td><xsl:value-of select="stream"/></td>
-              <td><xsl:value-of select="drain"/></td>
+              <td><xsl:value-of select="tradition/name"/></td>
+              <td style="text-align:center;">
+			    <xsl:value-of select="tradition/drainattributes"/> (<xsl:value-of select="tradition/drainvalue"/>)
+			  </td>
               <td/>
               <td style="text-align:center;">
                 <xsl:value-of select="tradition/source" />
@@ -1306,7 +1293,7 @@
         </xsl:call-template>
 
         <xsl:if test="submersiongrade > 0">
-          <div class="block" id="EchoesBlock">
+          <div class="block" id="SubmersionBlock">
             <table class="tablestyle">
               <tr>
                 <th style="text-align: left">
@@ -1316,10 +1303,11 @@
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
+              <xsl:call-template name="gradenotes"/>
               <xsl:if test="metamagics/metamagic">
                 <tr>
                   <td width="80%" style="text-align: left">
-                    <strong><xsl:value-of select="$lang.Echoes"/></strong>
+                    <strong><xsl:value-of select="$lang.Echo"/></strong>
                   </td>
                   <td width="10%"/>
                   <td width="10%"/>
@@ -1350,25 +1338,15 @@
             </table>
           </div>
           <xsl:call-template name="RowSummary">
-            <xsl:with-param name="text" select="$lang.Echoes"/>
-            <xsl:with-param name="blockname" select="'EchoesBlock'"/>
+            <xsl:with-param name="text" select="$lang.Submersion"/>
+            <xsl:with-param name="blockname" select="'SubmersionBlock'"/>
           </xsl:call-template>
         </xsl:if>
 
         <xsl:if test="complexforms/complexform">
           <div class="block" id="ComplexFormsBlock">
             <table class="tablestyle">
-              <tr>
-                <th width="40%" style="text-align: left">
-                  <xsl:value-of select="$lang.ComplexForm"/>
-                </th>
-                <th width="15%"><xsl:value-of select="$lang.Target"/></th>
-                <th width="15%"><xsl:value-of select="$lang.Duration"/></th>
-                <th width="15%"><xsl:value-of select="$lang.FV"/></th>
-                <th width="5%"/>
-                <th width="10%"/>
-              </tr>
-              <xsl:call-template name="complexforms"/>
+              <xsl:call-template name="ComplexForms"/>
             </table>
           </div>
           <xsl:call-template name="RowSummary">
@@ -1393,7 +1371,10 @@
               <xsl:for-each select="spirits/spirit">
                 <xsl:sort select="name"/>
                 <tr>
-                  <td><xsl:value-of select="name"/></td>
+                  <td>
+                    <xsl:value-of select="name"/>
+                    <xsl:if test="crittername != ''">: <xsl:value-of select="crittername"/></xsl:if>
+                  </td>
                   <td style="text-align: center"><xsl:value-of select="force"/></td>
                   <td style="text-align: center"><xsl:value-of select="services"/></td>
                   <td style="text-align: center">
@@ -1472,38 +1453,19 @@
           </xsl:call-template>
         </xsl:if>
 
-        <xsl:if test="critterpowers/critterpower">
-          <div class="block" id="CritterBlock">
-            <table class="tablestyle">
-              <tr>
-                <th width="50%" style="text-align: left">
-                  <xsl:value-of select="$lang.Critter"/>
-                </th>
-                <th width="30%"><xsl:value-of select="$lang.Rating"/></th>
-                <th width="20%"/>
-              </tr>
-              <xsl:call-template name="critterpowers"/>
-            </table>
-          </div>
-          <xsl:call-template name="RowSummary">
-            <xsl:with-param name="text" select="$lang.Critters"/>
-            <xsl:with-param name="blockname" select="'CritterBlock'"/>
-          </xsl:call-template>
-        </xsl:if>
-
 <!--
-        *                      *
-        ***                      ***
+        *                                  *
+        ***                              ***
         *****      notes and such      *****
-        ***                      ***
-        *                      *
+        ***                              ***
+        *                                  *
 -->
       <xsl:if test="$ProduceNotes">
         <xsl:if test="concat(concept,description,background,notes,gamenotes) != ''">
           <xsl:call-template name="notes"/>
         </xsl:if>
 
-        <xsl:if test="hasothermugshots = 'yes'">
+        <xsl:if test="hasothermugshots = 'True'">
           <div class="block" id="OtherMugshotsBlock">
             <xsl:call-template name="othermugshots"/>
           </div>
@@ -1654,8 +1616,6 @@
   </xsl:template>
 
   <xsl:template name="armor">
-    <xsl:for-each select="armors/armor">
-      <xsl:sort select="name"/>
       <tr>
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
@@ -1695,6 +1655,29 @@
               <xsl:if test="rating != 0">
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="rating"/>
+              </xsl:if>
+              <xsl:if test="gears/gear">
+                (
+                <xsl:for-each select="gears/gear">
+                  <xsl:sort select="name"/>
+                  <xsl:value-of select="name"/>
+                  <xsl:if test="rating != 0">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.Rating"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="rating"/>
+                  </xsl:if>
+                  <xsl:if test="children/gear">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.with"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="gearplugin">
+                      <xsl:with-param name="gear" select="."/>
+                    </xsl:call-template>
+                  </xsl:if>
+                  <xsl:if test="last() &gt; 1">; </xsl:if>
+                </xsl:for-each>
+                )
               </xsl:if>
               <xsl:if test="last() &gt; 1">; </xsl:if>
             </xsl:for-each>
@@ -1746,7 +1729,6 @@
       <xsl:call-template name="Xline">
         <xsl:with-param name="cntl" select="last()-position()"/>
       </xsl:call-template>
-    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="meleeweapons">
@@ -1840,6 +1822,7 @@
             <xsl:value-of select="rating"/>
           </xsl:if>
           <xsl:if test="location != ''"> (<xsl:value-of select="location"/>)</xsl:if>
+          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
         </td>
         <td style="text-align: center"><xsl:value-of select="ess"/></td>
         <td style="text-align: center"><xsl:value-of select="grade"/></td>
@@ -1861,17 +1844,29 @@
           </td>
         </tr>
       </xsl:if>
-      <xsl:if test="children/cyberware">
+      <xsl:if test="children/cyberware or gears/gear">
         <tr>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
           <td colspan="100%" class="indent">
-            <xsl:for-each select="children/cyberware">
+            <xsl:call-template name="cyberwareplugin">
+              <xsl:with-param name="cyberware" select="."/>
+            </xsl:call-template>
+            <xsl:for-each select="gears/gear">
+              <xsl:sort select="name"/>
               <xsl:value-of select="name"/>
               <xsl:if test="rating != 0">
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="rating"/>
+              </xsl:if>
+              <xsl:if test="children/gear">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$lang.with"/>
+                <xsl:text> </xsl:text>
+                <xsl:call-template name="gearplugin">
+                  <xsl:with-param name="gear" select="."/>
+                </xsl:call-template>
               </xsl:if>
               <xsl:if test="last() &gt; 1">; </xsl:if>
             </xsl:for-each>
@@ -1924,10 +1919,10 @@
         </xsl:for-each>
       </td></tr>
     </xsl:if>
-    <xsl:if test="cyberwares/cyberware/children/cyberwear/gears/gear[isprogram = 'True']">
+    <xsl:if test="cyberwares/cyberware/children/cyberware/gears/gear[isprogram = 'True']">
       <tr><td colspan="100%">
         <span class="title"><xsl:value-of select="Programs"/></span><br/>
-        <xsl:for-each select="cyberwares/cyberware/children/cyberwear/gears/gear[isprogram = 'True']">
+        <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[isprogram = 'True']">
           <xsl:sort select="name"/>
           <xsl:call-template name="programdetails"/>
         </xsl:for-each>
@@ -1951,6 +1946,7 @@
       </xsl:if>
       <td>
         <xsl:value-of select="name"/>
+        <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname"/>"</xsl:if>
         <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
       </td>
       <td style="text-align: center">
@@ -2042,7 +2038,7 @@
         </xsl:if>
       </td>
       <td style="vertical-align:top; text-align:center;">
-        <xsl:value-of select="tradition/drain" />
+        <xsl:value-of select="tradition/drainattributes" /> (<xsl:value-of select="tradition/drainvalue" />)
       </td>
       <td style="vertical-align:top; text-align:center;">
         <xsl:value-of select="tradition/spiritcombat" />
@@ -2225,6 +2221,31 @@
                     <xsl:text> </xsl:text>
                     <xsl:value-of select="rating"/>
                   </xsl:if>
+                  <xsl:if test="children/cyberware or gears/gear">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.with"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="cyberwareplugin">
+                      <xsl:with-param name="cyberware" select="."/>
+                    </xsl:call-template>
+                    <xsl:for-each select="gears/gear">
+                      <xsl:sort select="name"/>
+                      <xsl:value-of select="name"/>
+                      <xsl:if test="rating != 0">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="rating"/>
+                      </xsl:if>
+                      <xsl:if test="children/gear">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="$lang.with"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:call-template name="gearplugin">
+                          <xsl:with-param name="gear" select="."/>
+                        </xsl:call-template>
+                      </xsl:if>
+                      <xsl:if test="last() &gt; 1">; </xsl:if>
+                    </xsl:for-each>
+                  </xsl:if>
                   <xsl:if test="last() &gt; 1">; </xsl:if>
                 </xsl:for-each>
               </xsl:if>
@@ -2312,6 +2333,25 @@
     </xsl:call-template>
   </xsl:template>
 
+  <xsl:template name="gradenotes">
+    <xsl:if test="initiationgrades/initiationgrade/notes != '' and $ProduceNotes">
+      <tr><td colspan="100%"><strong><xsl:value-of select="$lang.Notes"/></strong></td></tr>
+      <xsl:for-each select="initiationgrades/initiationgrade">
+        <xsl:if test="notes != ''">
+          <tr><td colspan="100%" class="notesrow2">
+            <u><xsl:value-of select="$lang.Grade"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="grade"/></u>
+            <xsl:text> </xsl:text>
+            <xsl:call-template name="PreserveLineBreaks">
+               <xsl:with-param name="text" select="notes"/>
+            </xsl:call-template>
+          </td></tr>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template name="powers">
     <xsl:for-each select="powers/power">
       <xsl:sort select="name"/>
@@ -2374,101 +2414,6 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="critterpowers">
-    <xsl:for-each select="critterpowers/critterpower">
-      <xsl:sort select="name"/>
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td>
-          <xsl:value-of select="name"/>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="rating"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="source"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
-        </td>
-      </tr>
-      <xsl:if test="notes != '' and $ProduceNotes">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100%" class="notesrow2">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
-        </tr>
-      </xsl:if>
-      <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
-        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template name="complexforms">
-    <xsl:for-each select="complexforms/complexform">
-      <xsl:sort select="name"/>
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td>
-          <xsl:value-of select="name"/>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-          <xsl:if test="programoptions/programoption"> (<xsl:for-each select="programoptions/programoption">
-            <xsl:sort select="name"/>
-            <xsl:value-of select="name"/>
-            <xsl:if test="rating &gt; 0">
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="rating"/>
-            </xsl:if>
-            <xsl:if test="last() &gt; 1">; </xsl:if>
-          </xsl:for-each>)
-          </xsl:if>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="target"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="duration"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="fv"/>
-        </td>
-        <td/>
-        <td style="text-align: center">
-          <xsl:value-of select="source"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
-        </td>
-      </tr>
-      <xsl:if test="notes != '' and $ProduceNotes">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100%" class="notesrow2">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
-        </tr>
-      </xsl:if>
-      <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
-        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:template>
-
   <xsl:template name="martialarts">
     <xsl:for-each select="martialarts/martialart">
       <xsl:sort select="name"/>
@@ -2491,7 +2436,7 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td class="indent">
-          <xsl:for-each select="martialartadvantages/martialartadvantage">
+          <xsl:for-each select="martialarttechniques/martialarttechnique">
             <xsl:sort select="."/>
             <xsl:value-of select="name"/><xsl:if test="notes != ''"> - <xsl:value-of select="notes"/></xsl:if>
             <xsl:if test="position() != last()"><br /></xsl:if>
@@ -2530,6 +2475,389 @@
         </xsl:for-each>
       </td></tr>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="resistances">
+    <tr>
+      <td style="width: 50%;">
+        <table class="tablestyle">
+          <tr>
+            <th style="text-align: center; vertical-align: middle; width: 40%;">
+              <xsl:value-of select="$lang.Resistance"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 60%;">
+              <xsl:value-of select="$lang.Pool"/>
+            </th>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Radiation"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="radiationresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.JudgeIntentions"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="judgeintentionsresist"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td rowspan="4" style="width: 50%;">
+        <table class="tablestyle">
+          <tr>
+            <th colspan="2" style="text-align: center; vertical-align: middle; width: 70%;">
+              <xsl:value-of select="$lang.Resistance"/> - <xsl:value-of select="$lang.Spells"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 30%;">
+              <xsl:value-of select="$lang.Pool"/>
+            </th>
+          </tr>
+          <tr>
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="3">
+              <xsl:value-of select="$lang.CombatSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Direct"/>, <xsl:value-of select="$lang.Mana"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="directmanaresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Direct"/>, <xsl:value-of select="$lang.Physical"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="directphysicalresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Indirect"/>, <xsl:value-of select="$lang.Defense"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="indirectdefenseresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;">
+              <xsl:value-of select="$lang.DetectionSpells"/>
+            </td>
+            <td />
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="detectionspellresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="8">
+              <xsl:value-of select="$lang.HealthSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Body"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasebodresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Agility"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaseagiresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Reaction"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaserearesist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Strength"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasestrresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Charisma"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasecharesist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Intuition"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaseintresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Logic"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaselogresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Willpower"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasewilresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="2">
+              <xsl:value-of select="$lang.IllusionSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Mana"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="illusionmanaresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Physical"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="illusionphysicalresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="2">
+              <xsl:value-of select="$lang.ManipulationSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Mental"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="manipulationmentalresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Physical"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="manipulationphysicalresist"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <table class="tablestyle" style="margin-top:0.2em;">
+          <tr>
+            <th style="text-align: center; vertical-align: middle; width: 40%;">
+              <xsl:value-of select="$lang.Resistance"/> - <xsl:value-of select="$lang.DamageType"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 30%;">
+              <xsl:value-of select="$lang.Stun"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 30%;">
+              <xsl:value-of select="$lang.Physical"/>
+            </th>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Damage"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="armordicestun"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="armordicephysical"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Fire"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="firearmordicestun"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="firearmordicephysical"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Cold"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="coldarmordicestun"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="coldarmordicephysical"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Electricity"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="electricityarmordicestun"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="electricityarmordicephysical"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Acid"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="acidarmordicestun"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="acidarmordicephysical"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Falling"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="fallingarmordicestun"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="fallingarmordicephysical"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Fatigue"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="fatigueresist"/>
+            </td>
+            <td />
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Sonic"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="sonicresist"/>
+            </td>
+            <td />
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="tablestyle" style="margin-top:0.2em;">
+          <tr>
+            <th style="text-align: center; vertical-align: middle; width: 40%;">
+              <xsl:value-of select="$lang.Resistance"/> - <xsl:value-of select="$lang.ToxinsAndPathogens"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 15%;">
+              <xsl:value-of select="$lang.ContactDrug"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 15%;">
+              <xsl:value-of select="$lang.Ingestion"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 15%;">
+              <xsl:value-of select="$lang.Inhalation"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 15%;">
+              <xsl:value-of select="$lang.Injection"/>
+            </th>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Toxin"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="toxincontactresist"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="toxiningestionresist"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="toxininhalationresist"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="toxininjectionresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Pathogen"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="pathogencontactresist"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="pathogeningestionresist"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="pathogeninhalationresist"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="pathogeninjectionresist"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="tablestyle" style="margin-top:0.2em;">
+          <tr>
+            <th style="text-align: center; vertical-align: middle; width: 40%;">
+              <xsl:value-of select="$lang.Resistance"/> - <xsl:value-of select="$lang.Addiction"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 30%;">
+              <xsl:value-of select="$lang.NotAddictedYet"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 30%;">
+              <xsl:value-of select="$lang.AlreadyAddicted"/>
+            </th>
+          </tr>
+          <tr>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Physiological"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="physiologicaladdictionresistfirsttime"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="physiologicaladdictionresistalreadyaddicted"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="$lang.Psychological"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="psychologicaladdictionresistfirsttime"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="psychologicaladdictionresistalreadyaddicted"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
   </xsl:template>
 
   <xsl:template name="othermugshots">
@@ -2628,7 +2956,7 @@
             </tr>
             <xsl:call-template name="Expenses">
               <xsl:with-param name="type" select="'Nuyen'" />
-              <xsl:with-param name="sfx" select="' '" />
+              <xsl:with-param name="sfx" select="$lang.NuyenSymbol" />
             </xsl:call-template>
           </table>
           <xsl:call-template name="RowSummary">
@@ -2784,7 +3112,7 @@
       <xsl:if test="extra != '' and $xtra = 'A'">
         (<xsl:value-of select="extra"/>)
       </xsl:if>
-      <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty"/></xsl:if>
+      <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/></xsl:if>
       <xsl:choose>
         <xsl:when test="children/gear">
           <xsl:text> </xsl:text>
@@ -2792,6 +3120,75 @@
           <xsl:text> </xsl:text>
           <xsl:call-template name="gearplugin">
             <xsl:with-param name="gear" select="."/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:when test="position() != last()">, </xsl:when>
+        <xsl:otherwise>; </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="cyberwareplugin">
+    <xsl:param name="cyberware"/>
+    <xsl:param name="rtg" select="''"/>
+    <xsl:param name="xtra" select="'A'"/>
+    <xsl:for-each select="children/cyberware">
+      <xsl:sort select="name"/>
+      <xsl:value-of select="name"/>
+      <xsl:if test="extra != '' and $xtra = 'B'">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="rating != 0">
+        <xsl:value-of select="$rtg"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="rating"/>
+      </xsl:if>
+      <xsl:if test="extra != '' and $xtra = 'A'">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="gears/gear">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="$lang.with"/>
+        <xsl:text> </xsl:text>
+        <xsl:for-each select="gears/gear">
+          <xsl:sort select="name"/>
+          <xsl:value-of select="name"/>
+          <xsl:if test="gearname != ''">
+            "<xsl:value-of select="gearname"/>"
+          </xsl:if>
+          <xsl:if test="extra != '' and $xtra = 'B'">
+            (<xsl:value-of select="extra"/>)
+          </xsl:if>
+          <xsl:if test="rating != 0">
+            <xsl:value-of select="$rtg"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="rating"/>
+          </xsl:if>
+          <xsl:if test="extra != '' and $xtra = 'A'">
+            (<xsl:value-of select="extra"/>)
+          </xsl:if>
+          <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/></xsl:if>
+          <xsl:choose>
+            <xsl:when test="children/gear">
+              <xsl:text> </xsl:text>
+              <xsl:value-of select="$lang.with"/>
+              <xsl:text> </xsl:text>
+              <xsl:call-template name="gearplugin">
+                <xsl:with-param name="gear" select="."/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="position() != last()">, </xsl:when>
+            <xsl:otherwise>; </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="children/cyberware">
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="$lang.with"/>
+          <xsl:text> </xsl:text>
+          <xsl:call-template name="cyberwareplugin">
+            <xsl:with-param name="cyberware" select="."/>
           </xsl:call-template>
         </xsl:when>
         <xsl:when test="position() != last()">, </xsl:when>

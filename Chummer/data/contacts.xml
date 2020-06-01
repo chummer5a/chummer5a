@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+
   <contacts>
     <contact>Amerindian Tribesperson</contact>
     <contact>Antiquities and Oddities Dealer</contact>
@@ -28,7 +29,7 @@
     <contact>Blogger</contact>
     <contact>Bodyguard</contact>
     <contact>Bookie</contact>
-  <contact>Cleaner</contact>
+    <contact>Cleaner</contact>
     <contact>Club Hopper</contact>
     <contact>Club Owner</contact>
     <contact>Company Man</contact>
@@ -53,16 +54,16 @@
     <contact>Hermetic Academic</contact>
     <contact>High Stakes Negotiator</contact>
     <contact>ID Manufacturer</contact>
-  <contact>Infobroker</contact>
+    <contact>Infobroker</contact>
     <contact>Janitor</contact>
     <contact>Mafia Consiglieri</contact>
     <contact>Mechanic</contact>
-  <contact>Mercenary Alchemist</contact>
+    <contact>Mercenary Alchemist</contact>
     <contact>Mr. Johnson</contact>
     <contact>Nomad</contact>
     <contact>Ork Nation Organizer</contact>
-  <contact>Parabotanist</contact>
-  <contact>Parabiologist</contact>
+    <contact>Parabotanist</contact>
+    <contact>Parabiologist</contact>
     <contact>Paramed</contact>
     <contact>Paramed Shaman</contact>
     <contact>Parasecurity Expert</contact>
@@ -96,4 +97,79 @@
     <contact>Vory Shestiorka</contact>
     <contact>Wiz Kid Ganger</contact>
   </contacts>
+  <sexes>
+    <sex>Female</sex>
+    <sex>Male</sex>
+    <sex>Unknown</sex>
+  </sexes>
+  <ages>
+    <age>Young</age>
+    <age>Middle-Aged</age>
+    <age>Old</age>
+    <age>Unknown</age>
+  </ages>
+  <personallives>
+    <personallife>Divorced</personallife>
+    <personallife>Familial Relationship</personallife>
+    <personallife>In Relationship</personallife>
+    <personallife>None of Your Damn Business</personallife>
+    <personallife>Single</personallife>
+    <personallife>Widowed</personallife>
+    <personallife>Unknown</personallife>
+  </personallives>
+  <types>
+    <type>Legwork</type>
+    <type>Networking</type>
+    <type>Swag</type>
+    <type>Shadow Services</type>
+    <type>Personal Favors</type>
+    <type>Support</type>
+  </types>
+  <preferredpayments>
+    <preferredpayment>Barter (Easy-to-Sell Items)</preferredpayment>
+    <preferredpayment>Barter (Hobby/Vice Items)</preferredpayment>
+    <preferredpayment>Barter (Profession Items)</preferredpayment>
+    <preferredpayment>Cash (Corp Scrip)</preferredpayment>
+    <preferredpayment>Cash (Credstick)</preferredpayment>
+    <preferredpayment>Cash (Hard Currency)</preferredpayment>
+    <preferredpayment>Cash (ECC)</preferredpayment>
+    <preferredpayment>Service (Drek Jobs)</preferredpayment>
+    <preferredpayment>Service (Free-Labor Jobs)</preferredpayment>
+    <preferredpayment>Service (Shadowrunner Job)</preferredpayment>
+  </preferredpayments>
+  <hobbiesvices>
+    <hobbyvice>Animals (Paracritters)</hobbyvice>
+    <hobbyvice>Bad Habit (Dream Chips)</hobbyvice>
+    <hobbyvice>Bad Habit (Novacoke)</hobbyvice>
+    <hobbyvice>Bad Habit (Trip Chips)</hobbyvice>
+    <hobbyvice>Entertainment (Trid Shows)</hobbyvice>
+    <hobbyvice>Entertainment (Movies)</hobbyvice>
+    <hobbyvice>Entertainment (Music)</hobbyvice>
+    <hobbyvice>Entertainment (Trid Show 'Odd Coven')</hobbyvice>
+    <hobbyvice>Entertainment (Trid Reality Shows)</hobbyvice>
+    <hobbyvice>Entertainment (RPGs, ARLARP, Graphic Novels)</hobbyvice>
+    <hobbyvice>Entertainment (Artwork)</hobbyvice>
+    <hobbyvice>Entertainment (Action Trideos)</hobbyvice>
+    <hobbyvice>Family Obligations (Brother)</hobbyvice>
+    <hobbyvice>Family Obligations (Sister)</hobbyvice>
+    <hobbyvice>Family Obligations (Kids)</hobbyvice>
+    <hobbyvice>Family Obligations (Parents)</hobbyvice>
+    <hobbyvice>Gambling (Cards)</hobbyvice>
+    <hobbyvice>Gambling (Horses)</hobbyvice>
+    <hobbyvice>Nothing of Interest</hobbyvice>
+    <hobbyvice>Personal Grooming (Clothes)</hobbyvice>
+    <hobbyvice>Personal Grooming (Fashion)</hobbyvice>
+    <hobbyvice>Personal Grooming (Shoes)</hobbyvice>
+    <hobbyvice>Social Habit (Alcohol)</hobbyvice>
+    <hobbyvice>Social Habit (Cigarettes)</hobbyvice>
+    <hobbyvice>Social Habit (Cigars)</hobbyvice>
+    <hobbyvice>Social Habit (Elven Wines)</hobbyvice>
+    <hobbyvice>Vehicles (Cars)</hobbyvice>
+    <hobbyvice>Vehicles (Drones)</hobbyvice>
+    <hobbyvice>Vehicles (Antique Cars)</hobbyvice>
+    <hobbyvice>Vehicles (Sports Cars)</hobbyvice>
+    <hobbyvice>Weapons (Guns)</hobbyvice>
+    <hobbyvice>Weapons (Blades)</hobbyvice>
+    <hobbyvice>Weapons (Military)</hobbyvice>
+  </hobbiesvices>
 </chummer>

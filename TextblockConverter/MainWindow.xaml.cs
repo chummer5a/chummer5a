@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -24,21 +23,20 @@ namespace WpfApplication1
 
         private void ConvertString(bool critter = true)
         {
-	        Guid g;
-	        if (!Guid.TryParse(txtGUID.Text, out g))
+            if (!Guid.TryParse(txtGUID.Text, out Guid g))
             {
-	            txtGUID.Text = Guid.NewGuid().ToString();
+                txtGUID.Text = Guid.NewGuid().ToString("D");
             }
             var lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 	        if (lines.Length <= 1) return;
 	        var doc = new XmlDocument();
 	        // write the root chummer node.
-			
+
 	        XmlNode objHeader = doc.CreateElement(critter ? "critter" : "spirit");
 	        doc.AppendChild(objHeader);
 
 			XmlNode xmlNode = doc.CreateElement("id");
-			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString();
+			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString("D");
 			objHeader.AppendChild(xmlNode);
 
 			xmlNode = doc.CreateElement("name");
@@ -49,7 +47,7 @@ namespace WpfApplication1
 	        _attValues = new List<string>(lines[1].Split(' '));
 	        if (_attAbbrevs.Count != _attValues.Count)
 	        {
-		        MessageBox.Show("Mismatched attribute lengths!");
+                MessageBox.Show("Mismatched attribute lengths!");
 		        return;
 	        }
 
@@ -93,14 +91,14 @@ namespace WpfApplication1
 	        }
 
 
-	        //Skip the first two lines, since we know they're attributes. 
+	        //Skip the first two lines, since we know they're attributes.
 	        for (var i = 2; i < lines.Length; i++)
 	        {
-		        if (lines[i].StartsWith("Initiative"))
+		        if (lines[i].StartsWith("Initiative", StringComparison.Ordinal))
 		        {
-			        //Should probably be a handler for initiative dice here. 
+			        //Should probably be a handler for initiative dice here.
 		        }
-		        else if (lines[i].StartsWith("Movement"))
+		        else if (lines[i].StartsWith("Movement", StringComparison.Ordinal))
 		        {
 			        var rawMove = lines[i].Replace("Movement ",string.Empty);
 			        if (rawMove.Contains('('))
@@ -114,7 +112,7 @@ namespace WpfApplication1
 			        foreach (var movement in movements.Where(movement => movement != "Movement"))
 			        {
 				        var current = movement.Replace("x", string.Empty).Replace("+", string.Empty).TrimEnd();
-				        var position = 0; 
+				        var position = 0;
 				        if (current.ToLower().Contains("swimming"))
 				        {
 					        position = 1;
@@ -130,7 +128,7 @@ namespace WpfApplication1
 				        run[position] = currentMovement[1];
 				        sprint[position] = currentMovement[2];
 
-						// Set default swimming values if not present; based on metahuman values, may be incorrect. 
+						// Set default swimming values if not present; based on metahuman values, may be incorrect.
 				        if (position == 1)
 				        {
 					        walk[position] = Math.Max(Convert.ToInt32(walk[position]), 1).ToString();
@@ -150,15 +148,15 @@ namespace WpfApplication1
 			        xmlNode.InnerText = string.Join("/", sprint);
 			        objHeader.AppendChild(xmlNode);
 		        }
-		        else if (lines[i].StartsWith("Physical Skills") || (lines[i].StartsWith("Matrix Skills")) || (lines[i].StartsWith("Skills")) || (lines[i].StartsWith("Magic Skills")))
+		        else if (lines[i].StartsWith("Physical Skills", StringComparison.Ordinal) || (lines[i].StartsWith("Matrix Skills", StringComparison.Ordinal)) || (lines[i].StartsWith("Skills", StringComparison.Ordinal)) || (lines[i].StartsWith("Magic Skills", StringComparison.Ordinal)))
 		        {
 			        var line = lines[i].Replace("Physical Skills ", string.Empty).Replace("Matrix Skills ", string.Empty).Replace("Magic Skills ", string.Empty).Replace("Skills ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("skills");
-			        foreach (var s in split.Where(s => s != string.Empty))
+			        foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 			        {
-				        xmlNode = doc.CreateElement("skill"); 
-				        var index = s.LastIndexOf(" R");
+				        xmlNode = doc.CreateElement("skill");
+				        int index = s.LastIndexOf(" R", StringComparison.Ordinal);
 				        if (index != -1)
 						{
 							var attr = doc.CreateAttribute("rating");
@@ -174,12 +172,12 @@ namespace WpfApplication1
 			        }
 			        objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Complex Forms"))
+		        else if (lines[i].StartsWith("Complex Forms", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Complex Forms ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("complexforms");
-					foreach (var s in split.Where(s => s != string.Empty))
+					foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 					{
 						xmlNode = doc.CreateElement("complexform");
 						if (s.Contains('('))
@@ -194,12 +192,12 @@ namespace WpfApplication1
 					}
 					objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Powers"))
+		        else if (lines[i].StartsWith("Powers", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Powers ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("powers");
-					foreach (var s in split.Where(s => s != string.Empty))
+					foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 					{
 						xmlNode = doc.CreateElement("power");
 						if (s.Contains(':'))
@@ -225,12 +223,12 @@ namespace WpfApplication1
 					}
 					objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Programs"))
+		        else if (lines[i].StartsWith("Programs", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Programs ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("gears");
-					foreach (var s in split.Where(s => s != string.Empty))
+					foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 					{
 						xmlNode = doc.CreateElement("quality");
 						if (s.Contains('('))
@@ -245,12 +243,12 @@ namespace WpfApplication1
 					}
 					objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Qualities"))
+		        else if (lines[i].StartsWith("Qualities", StringComparison.Ordinal))
 		        {
 			        var line = lines[i].Replace("Qualities ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("qualities");
-			        foreach (var s in split.Where(s => s != string.Empty))
+			        foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 			        {
 				        xmlNode = doc.CreateElement("quality");
 				        if (s.Contains('('))
@@ -259,13 +257,13 @@ namespace WpfApplication1
 					        attr.Value = s.Split('(', ')')[1];
 					        xmlNode.Attributes?.Append(attr);
 				        }
-							
+
 				        xmlNode.InnerText = s.Split('(', ')')[0].Trim();
 				        xmlParentNode.AppendChild(xmlNode);
 			        }
 			        objHeader.AppendChild(xmlParentNode);
 		        }
-		        else if (lines[i].StartsWith("Armor"))
+		        else if (lines[i].StartsWith("Armor", StringComparison.Ordinal))
 				{
 					var line = lines[i].Replace("Armor ", string.Empty);
 					xmlNode = doc.CreateElement("armor");
@@ -274,7 +272,7 @@ namespace WpfApplication1
 				}
 	        }
 
-			// Create the default critter tab bonus. 
+			// Create the default critter tab bonus.
 			XmlNode xmlBonusNode = doc.CreateElement("bonus");
 			XmlNode xmlChildNode = doc.CreateElement("enabletab");
 			XmlNode xmlTabNode = doc.CreateElement("name");
@@ -312,7 +310,7 @@ namespace WpfApplication1
         }
 
         /// <summary>
-        /// Regex wrapper to replace whole words in a string only. 
+        /// Regex wrapper to replace whole words in a string only.
         /// </summary>
         /// <param name="original">Default string.</param>
         /// <param name="wordToFind">Text to replace.</param>

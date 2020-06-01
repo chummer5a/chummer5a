@@ -1,27 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CrashHandler
 {
-	public partial class frmCrashReporter : Form
+	public sealed partial class frmCrashReporter : Form
 	{
-
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
-		private string _strDefaultUserStory = string.Empty;
+		private readonly string _strDefaultUserStory;
+	    private static readonly MD5CryptoServiceProvider _md5provider = new MD5CryptoServiceProvider();
 
-		public frmCrashReporter(CrashDumper dumper)
+        public frmCrashReporter(CrashDumper dumper)
 		{
 			_dumper = dumper;
 			InitializeComponent();
@@ -48,7 +41,7 @@ namespace CrashHandler
 				Close();
 			}
 
-			statusCollectionProgess.Text = desc;
+            statusCollectionProgess.Text = desc;
 		}
 
 		private void llblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -62,7 +55,8 @@ namespace CrashHandler
 			timerRefreshTextFile.Stop();
 			timerRefreshTextFile.Start();
 			lblDescriptionWarning.Visible = txtUserStory.Text.Length == 0;
-		}
+            btnSend.Enabled = Md5Hash(txtUserStory.Text) != _strDefaultUserStory;
+        }
 
 		private void btnNo_Click(object sender, EventArgs e)
 		{
@@ -70,7 +64,7 @@ namespace CrashHandler
 			DialogResult = DialogResult.Cancel;
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 		    Environment.Exit(-1);
-			Close();
+			// Close();
 		}
 
 		private void btnSend_Click(object sender, EventArgs e)
@@ -81,14 +75,15 @@ namespace CrashHandler
 				timerRefreshTextFile_Tick(null, null);
 				fs.Close();
 			}
-			DialogResult = DialogResult.OK;
-			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+
+            _dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 			_dumper.AllowSending();
-			
-			Close();
+
+		    DialogResult = DialogResult.OK;
+            Close();
 		}
 
-		private FileStream fs = null;
+		private FileStream fs;
 		private void timerRefreshTextFile_Tick(object sender, EventArgs e)
 		{
 			timerRefreshTextFile.Stop();
@@ -98,7 +93,7 @@ namespace CrashHandler
 				fs = File.OpenWrite(Path.Combine(_dumper.WorkingDirectory, "userstory.txt"));
 			}
 			fs.Seek(0, SeekOrigin.Begin);
-			byte[] bytes = Encoding.UTF8.GetBytes("");
+			byte[] bytes = Encoding.UTF8.GetBytes(string.Empty);
 			if (Md5Hash(txtUserStory.Text) != _strDefaultUserStory)
 			{
 				bytes = Encoding.UTF8.GetBytes(txtUserStory.Text);
@@ -114,34 +109,44 @@ namespace CrashHandler
 
 		private void cmdSubmitIssue_Click(object sender, EventArgs e)
 		{
-			string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={0}&body={1}";
-			strSend = strSend.Replace("{0}",$" Issue: - PLEASE ENTER DESCRIPTION HERE");
-			string strBody = "### Environment\n";
+		    string strTitle = System.Net.WebUtility.HtmlEncode("Issue: - PLEASE ENTER DESCRIPTION HERE");
+		    strTitle = strTitle
+                .Replace(" ", "%20")
+		        .Replace("#", "%23")
+		        .Replace("\r\n", "%0D%0A")
+		        .Replace("\r", "%0D%0A")
+		        .Replace("\n", "%0D%0A");
+
+            string strBody = "### Environment\n";
 			strBody += $"Crash ID: {_dumper.Attributes["visible-crash-id"]}\n";
 			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
 			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";
 			strBody += $"Runtime: {Environment.Version}\n";
-			strBody += txtUserStory.Text;
+            strBody += $"Option upload logs set: {_dumper.Attributes["option-upload-logs-set"]}\n";
+            strBody += $"Installation ID: {_dumper.Attributes["installation-id"]}\n";
+            strBody += txtUserStory.Text;
 			strBody = System.Net.WebUtility.HtmlEncode(strBody);
-			strBody = strBody.Replace(" ", "%20");
-			strBody = strBody.Replace("#", "%23");
-			strBody = strBody.Replace("\n", "%0D%0A");
-			strSend = strSend.Replace("{1}", strBody);
+			strBody = strBody
+			    .Replace(" ", "%20")
+			    .Replace("#", "%23")
+			    .Replace("\r\n", "%0D%0A")
+			    .Replace("\r", "%0D%0A")
+			    .Replace("\n", "%0D%0A");
+
+			string strSend = $"https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={strTitle}&body={strBody}";
 
 			Process.Start(strSend);
 			btnSend_Click(sender, e);
 		}
-		private static string Md5Hash(string input)
+		private static string Md5Hash(string strInput)
 		{
-			StringBuilder hash = new StringBuilder();
-			MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
-			byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(input));
-
-			for (int i = 0; i < bytes.Length; i++)
+			StringBuilder strbldHash = new StringBuilder();
+			byte[] achrBytes = _md5provider.ComputeHash(new UTF8Encoding().GetBytes(strInput));
+			for (int i = 0; i < achrBytes.Length; i++)
 			{
-				hash.Append(bytes[i].ToString("x2"));
+			    strbldHash.Append(achrBytes[i].ToString("x2"));
 			}
-			return hash.ToString();
+			return strbldHash.ToString();
 		}
 	}
 }

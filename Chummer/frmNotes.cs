@@ -17,51 +17,45 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-﻿using System.IO;
-﻿using System.Text;
-﻿using System.Windows.Documents;
 ﻿using System.Windows.Forms;
 
 namespace Chummer
 {
 	public partial class frmNotes : Form
 	{
-		private static int _intWidth = 534;
-		private static int _intHeight = 278;
+		private static int s_IntWidth = 640;
+		private static int s_IntHeight = 360;
 	    private readonly bool _blnLoading;
-		private string _strNotes = "";
-		RichTextBoxExtended objExtended = new RichTextBoxExtended();
-		#region Control Events
+        private string _strNotes;
+        private string _strFormattedNotes;
+
+        #region Control Events
 		public frmNotes()
 		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            InitializeComponent();
+			LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 			_blnLoading = true;
-			Width = _intWidth;
-			Height = _intHeight;
-            objExtended.Dock = DockStyle.Fill;
-            this.Controls.Add(objExtended);
+			Width = s_IntWidth;
+			Height = s_IntHeight;
             _blnLoading = false;
 		}
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-            Notes = objExtended.RichTextBox.Text;
-            FormattedNotes = objExtended.RichTextBox.Rtf;
+            Notes = rtbNotes.Text;
+            FormattedNotes = rtbNotes.Rtf;
             DialogResult = DialogResult.OK;
 		}
 
-		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+		private void rtbNotes_KeyDown(object sender, KeyEventArgs e)
 		{
-            
-			if (e.KeyCode == Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
 				DialogResult = DialogResult.OK;
 
             if (e.Control && e.KeyCode == Keys.A)
             {
                 e.SuppressKeyPress = true;
-                if (sender != null)
-                    ((TextBox)sender).SelectAll();
+                ((RichTextBox) sender)?.SelectAll();
             }
         }
 
@@ -70,31 +64,44 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            _intWidth = Width;
-            _intHeight = Height;
+            s_IntWidth = Width;
+            s_IntHeight = Height;
         }
         #endregion
 
 		#region Properties
-		/// <summary>
-		/// Notes.
-		/// </summary>
-		public string Notes
-		{
-			get
-			{
-				return _strNotes;
-			}
-			set
-			{
-				_strNotes = value;
-			}
-		}
 
-		/// <summary>
-		/// RTF Formatted notes.
-		/// </summary>
-		public string FormattedNotes { get; set; }
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public string Notes
+        {
+            get => _strNotes;
+            set
+            {
+                if (_strNotes != value)
+                {
+                    _strNotes = value;
+                    rtbNotes.Text = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// RTF Formatted notes.
+        /// </summary>
+        public string FormattedNotes
+        {
+            get => _strFormattedNotes;
+            set
+            {
+                if (_strFormattedNotes != value)
+                {
+                    _strFormattedNotes = value;
+                    rtbNotes.Rtf = value;
+                }
+            }
+        }
 		#endregion
 	}
 }

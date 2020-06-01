@@ -8,6 +8,7 @@
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.ConditionMonitor.xslt"/>
+  <xsl:include href="xt.Nothing2Show.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
 
   <xsl:template match="/characters/character">
@@ -91,6 +92,18 @@
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
+        <xsl:choose>
+          <xsl:when test="gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
+          <xsl:when test="armors/armor/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
+          <xsl:when test="cyberwares/cyberware/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
+          <xsl:when test="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
+          <xsl:when test="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
+          <xsl:otherwise>
+            <xsl:call-template name="nothing2show">
+              <xsl:with-param name="namethesheet" select="$lang.Nothing2Show4Devices"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </body>
     </html>
   </xsl:template>

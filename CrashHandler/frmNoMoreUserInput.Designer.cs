@@ -1,6 +1,6 @@
-﻿namespace CrashHandler
+namespace CrashHandler
 {
-	partial class frmNoMoreUserInput
+	public sealed partial class frmNoMoreUserInput
 	{
 		/// <summary>
 		/// Required designer variable.

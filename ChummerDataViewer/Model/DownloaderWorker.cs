@@ -1,58 +1,51 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChummerDataViewer.Model
 {
-	class DownloaderWorker : INotifyThreadStatus
+	public sealed class DownloaderWorker : INotifyThreadStatus, IDisposable
 	{
 		public event StatusChangedEvent StatusChanged;
 		public string Name => "DownloaderWorker";
-		private Thread _thread;
-		private AutoResetEvent resetEvent = new AutoResetEvent(false);
-		private ConcurrentBag<DownloadTask> _queue = new ConcurrentBag<DownloadTask>();
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
+		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
+		private readonly ConcurrentBag<DownloadTask> _queue = new ConcurrentBag<DownloadTask>();
 
 		public DownloaderWorker()
 		{
-			_thread = new Thread(WorkerEntryPoint)
-			{
-				IsBackground = true,
-				Name = "DownloaderWorker"
-			};
-			_thread.Start();
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += WorkerEntryPoint;
+			_worker.RunWorkerAsync();
 		}
 
-		private void WorkerEntryPoint()
+		private void WorkerEntryPoint(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
-				WebClient client = new WebClient();
-				while (true)
-				{
-					DownloadTask task;
-					if (_queue.TryTake(out task))
-					{
-						OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
-						byte[] encrypted = client.DownloadData(task.Url);
-					    byte[] buffer;
-					    buffer = Decrypt(task.Key, encrypted);
-					    WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
-					}
+                using (WebClient client = new WebClient())
+                    while (true)
+                    {
+                        if (_queue.TryTake(out DownloadTask task))
+                        {
+                            OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
+                            byte[] encrypted = client.DownloadData(task.Url);
+                            byte[] buffer = Decrypt(task.Key, encrypted);
+                            WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
+                        }
 
-					if (_queue.IsEmpty)
-					{
-						OnStatusChanged(new StatusChangedEventArgs("Idle"));
-						resetEvent.WaitOne(15000);  //in case i fuck something up
-
-					}
-				}
+                        if (_queue.IsEmpty)
+                        {
+                            OnStatusChanged(new StatusChangedEventArgs("Idle"));
+                            resetEvent.WaitOne(15000);  //in case i fuck something up
+                        }
+                    }
 			}
 #if DEBUG
 			catch(StackOverflowException ex)
@@ -67,23 +60,29 @@ namespace ChummerDataViewer.Model
 	    public static byte[] Decrypt(string key, byte[] encrypted)
 	    {
 	        byte[] buffer;
-	        using (AesManaged managed = new AesManaged())
+            // Create the streams used for encryption.
+            AesManaged managed = null;
+            try
 	        {
-	            managed.IV = GetIv(key);
-	            managed.Key = GetKey(key);
-	            ICryptoTransform encryptor = managed.CreateDecryptor();
+                managed = new AesManaged
+                {
+                    IV = GetIv(key),
+                    Key = GetKey(key)
+                };
+                ICryptoTransform encryptor = managed.CreateDecryptor();
 
-	            // Create the streams used for encryption.
-	            using (MemoryStream msEncrypt = new MemoryStream())
-	            {
-	                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-	                {
-	                    csEncrypt.Write(encrypted, 0, encrypted.Length);
-	                }
-
-	                buffer = msEncrypt.ToArray();
-	            }
-	        }
+                MemoryStream msEncrypt = new MemoryStream();
+                // csEncrypt.Dispose() should call msEncrypt.Dispose()
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    csEncrypt.Write(encrypted, 0, encrypted.Length);
+                    buffer = msEncrypt.ToArray();
+                }
+            }
+            finally
+            {
+                managed?.Dispose();
+            }
 	        return buffer;
 	    }
 
@@ -91,7 +90,7 @@ namespace ChummerDataViewer.Model
 		{
 			ThreadPool.QueueUserWorkItem(a =>
 			{
-				Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+				Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? string.Empty);
 				File.WriteAllBytes(destinationPath, buffer);
 				OnStatusChanged(new StatusChangedEventArgs("Saving " + destinationPath + Queue(), new {destinationPath, guid}));
 			});
@@ -102,7 +101,7 @@ namespace ChummerDataViewer.Model
 			string keypart = key.Split(':')[1];
 
 			return Enumerable.Range(0, keypart.Length)
-					 .Where(x => x % 2 == 0)
+					 .Where(x => (x & 1) == 0)
 					 .Select(x => Convert.ToByte(keypart.Substring(x, 2), 16))
 					 .ToArray();
 		}
@@ -112,18 +111,18 @@ namespace ChummerDataViewer.Model
 			string ivpart = iv.Split(':')[0];
 
 			return Enumerable.Range(0, ivpart.Length)
-					 .Where(x => x % 2 == 0)
+					 .Where(x => (x & 1) == 0)
 					 .Select(x => Convert.ToByte(ivpart.Substring(x, 2), 16))
 					 .ToArray();
 
 		}
 
-		protected virtual void OnStatusChanged(StatusChangedEventArgs args)
+	    private void OnStatusChanged(StatusChangedEventArgs args)
 		{
 			StatusChanged?.Invoke(this, args);
 		}
 
-		public void Enqueue(Guid guid, string url, string key, string destinationPath)
+		public void Enqueue(Guid guid, Uri url, string key, string destinationPath)
 		{
 			_queue.Add(new DownloadTask(guid, url, key, destinationPath));
 			resetEvent.Set();
@@ -131,12 +130,12 @@ namespace ChummerDataViewer.Model
 
 		private struct DownloadTask
 		{
-			public Guid ReportGuid;
-			public string Url;
-			public string Key;
-			public string DestinationPath;
+			public Guid ReportGuid { get; }
+			public Uri Url { get; }
+            public string Key { get; }
+            public string DestinationPath { get; }
 
-			public DownloadTask(Guid reportGuid, string url, string key, string destinationPath)
+            public DownloadTask(Guid reportGuid, Uri url, string key, string destinationPath)
 			{
 				Url = url;
 				Key = key;
@@ -145,8 +144,28 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : string.Empty;
-	}
+		private string Queue() => _queue.Count > 0 ? _queue.Count.ToString() + " in queue" : string.Empty;
 
-	
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
+
+	    private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    resetEvent.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
 }

@@ -16,55 +16,60 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.ServiceModel;
-using System.Windows.Forms;
 using System.Xml;
 using Chummer.OmaeService;
 using Chummer.TranslationService;
 using System.IO.Packaging;
+ using System.Text;
 
 namespace Chummer
 {
-    class OmaeHelper
+    public static class OmaeHelper
     {
         /// <summary>
-        /// Set all of the BasicHttpBinding properties and configure the EndPoint. This is done to avoid the need for an app.config file to be shippped with the application.
+        /// Set all of the BasicHttpBinding properties and configure the EndPoint. This is done to avoid the need for an app.config file to be shipped with the application.
         /// </summary>
-        public omaeSoapClient GetOmaeService()
+        public static omaeSoapClient GetOmaeService()
         {
-            BasicHttpBinding objBinding = new BasicHttpBinding();
-            objBinding.Name = "omaeSoap";
-            objBinding.CloseTimeout = TimeSpan.FromMinutes(1);
-            objBinding.OpenTimeout = TimeSpan.FromMinutes(1);
-            objBinding.ReceiveTimeout = TimeSpan.FromMinutes(10);
-            objBinding.SendTimeout = TimeSpan.FromMinutes(1);
-            objBinding.AllowCookies = false;
-            objBinding.BypassProxyOnLocal = false;
-            objBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-            objBinding.MaxBufferSize = 5242880; // 5 MB
-            objBinding.MaxReceivedMessageSize = 5242880; // 5 MB
-            objBinding.MaxBufferPoolSize = 524288;
-            objBinding.MessageEncoding = WSMessageEncoding.Text;
-            objBinding.TextEncoding = System.Text.Encoding.UTF8;
-            objBinding.TransferMode = TransferMode.Buffered;
-            objBinding.UseDefaultWebProxy = true;
+            BasicHttpBinding objBinding = new BasicHttpBinding
+            {
+                Name = "omaeSoap",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferSize = 5242880, // 5 MB
+                MaxReceivedMessageSize = 5242880, // 5 MB
+                MaxBufferPoolSize = 524288,
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true,
+                ReaderQuotas =
+                {
+                    MaxDepth = 32,
+                    MaxStringContentLength = 8388608,
+                    MaxArrayLength = 5242880,
+                    MaxBytesPerRead = 4096,
+                    MaxNameTableCharCount = 32565
+                },
+                Security =
+                {
+                    Mode = BasicHttpSecurityMode.None,
+                    Transport = {ClientCredentialType = HttpClientCredentialType.None, ProxyCredentialType = HttpProxyCredentialType.None, Realm = string.Empty},
+                    Message = {ClientCredentialType = BasicHttpMessageCredentialType.UserName, AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default}
+                }
+            };
 
-            objBinding.ReaderQuotas.MaxDepth = 32;
-            objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
-            objBinding.ReaderQuotas.MaxArrayLength = 5242880;
-            objBinding.ReaderQuotas.MaxBytesPerRead = 4096;
-            objBinding.ReaderQuotas.MaxNameTableCharCount = 32565;
 
-            objBinding.Security.Mode = BasicHttpSecurityMode.None;
-            objBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-            objBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
-            objBinding.Security.Transport.Realm = string.Empty;
-            objBinding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-            objBinding.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default;
 
             const string strEndPoint = "http://www.chummergen.com/dev/chummer/omae/omae.asmx";
             EndpointAddress objEndPointAddress = new EndpointAddress(strEndPoint);
@@ -75,39 +80,44 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Set all of the BasicHttpBinding properties and configure the EndPoint. This is done to avoid the need for an app.config file to be shippped with the application.
+        /// Set all of the BasicHttpBinding properties and configure the EndPoint. This is done to avoid the need for an app.config file to be shipped with the application.
         /// </summary>
-        public translationSoapClient GetTranslationService()
+        public static translationSoapClient GetTranslationService()
         {
-            BasicHttpBinding objBinding = new BasicHttpBinding();
-            objBinding.Name = "translationSoap";
-            objBinding.CloseTimeout = TimeSpan.FromMinutes(1);
-            objBinding.OpenTimeout = TimeSpan.FromMinutes(1);
-            objBinding.ReceiveTimeout = TimeSpan.FromMinutes(10);
-            objBinding.SendTimeout = TimeSpan.FromMinutes(1);
-            objBinding.AllowCookies = false;
-            objBinding.BypassProxyOnLocal = false;
-            objBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-            objBinding.MaxBufferSize = 5242880; // 5 MB
-            objBinding.MaxReceivedMessageSize = 5242880; // 5 MB
-            objBinding.MaxBufferPoolSize = 524288;
-            objBinding.MessageEncoding = WSMessageEncoding.Text;
-            objBinding.TextEncoding = System.Text.Encoding.UTF8;
-            objBinding.TransferMode = TransferMode.Buffered;
-            objBinding.UseDefaultWebProxy = true;
+            BasicHttpBinding objBinding = new BasicHttpBinding
+            {
+                Name = "translationSoap",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferSize = 5242880, // 5 MB
+                MaxReceivedMessageSize = 5242880, // 5 MB
+                MaxBufferPoolSize = 524288,
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true,
+                ReaderQuotas =
+                {
+                    MaxDepth = 32,
+                    MaxStringContentLength = 8388608,
+                    MaxArrayLength = 5242880,
+                    MaxBytesPerRead = 4096,
+                    MaxNameTableCharCount = 32565
+                },
+                Security =
+                {
+                    Mode = BasicHttpSecurityMode.None,
+                    Transport = {ClientCredentialType = HttpClientCredentialType.None, ProxyCredentialType = HttpProxyCredentialType.None, Realm = string.Empty},
+                    Message = {ClientCredentialType = BasicHttpMessageCredentialType.UserName, AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default}
+                }
+            };
 
-            objBinding.ReaderQuotas.MaxDepth = 32;
-            objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
-            objBinding.ReaderQuotas.MaxArrayLength = 5242880;
-            objBinding.ReaderQuotas.MaxBytesPerRead = 4096;
-            objBinding.ReaderQuotas.MaxNameTableCharCount = 32565;
 
-            objBinding.Security.Mode = BasicHttpSecurityMode.None;
-            objBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-            objBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
-            objBinding.Security.Transport.Realm = string.Empty;
-            objBinding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-            objBinding.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default;
 
             const string strEndPoint = "http://www.chummergen.com/dev/chummer/omae/translation.asmx";
             EndpointAddress objEndPointAddress = new EndpointAddress(strEndPoint);
@@ -121,16 +131,18 @@ namespace Chummer
         /// Write the contents of a MemoryStream to an XmlDocument.
         /// </summary>
         /// <param name="objStream">MemoryStream to read.</param>
-        public XmlDocument XmlDocumentFromStream(MemoryStream objStream)
+        public static XmlDocument XmlDocumentFromStream(MemoryStream objStream)
         {
-            string strXml = string.Empty;
+            if (objStream == null)
+                return null;
             objStream.Position = 0;
-            StreamReader objReader = new StreamReader(objStream);
-            strXml = objReader.ReadToEnd();
-
-            XmlDocument objXmlDocument = new XmlDocument();
-            objXmlDocument.LoadXml(strXml);
-
+            XmlDocument objXmlDocument = new XmlDocument
+            {
+                XmlResolver = null
+            };
+            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                    objXmlDocument.Load(objXmlReader);
             return objXmlDocument;
         }
 
@@ -138,13 +150,11 @@ namespace Chummer
         /// <summary>
         /// Base64 encode a string.
         /// </summary>
-        public string Base64Encode(string data)
+        public static string Base64Encode(string data)
         {
             if (!string.IsNullOrEmpty(data))
             {
-                byte[] bytEncode = new byte[data.Length];
-                bytEncode = System.Text.Encoding.UTF8.GetBytes(data);
-                return Convert.ToBase64String(bytEncode);
+                return Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
             }
 
             return null;
@@ -153,18 +163,18 @@ namespace Chummer
         /// <summary>
         /// Decode a Base64 encoded string.
         /// </summary>
-        public string Base64Decode(string data)
+        public static string Base64Decode(string data)
         {
             if (!string.IsNullOrEmpty(data))
             {
-                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-                System.Text.Decoder utf8Decode = encoder.GetDecoder();
+                UTF8Encoding encoder = new UTF8Encoding();
+                Decoder utf8Decode = encoder.GetDecoder();
 
                 byte[] bytToDecode = Convert.FromBase64String(data);
                 int charCount = utf8Decode.GetCharCount(bytToDecode, 0, bytToDecode.Length);
                 char[] chrDecoded = new char[charCount];
                 utf8Decode.GetChars(bytToDecode, 0, bytToDecode.Length, chrDecoded, 0);
-                return new String(chrDecoded);
+                return new string(chrDecoded);
             }
 
             return null;
@@ -175,14 +185,15 @@ namespace Chummer
         /// <summary>
         /// Compresses byte array to new byte array.
         /// </summary>
-        public byte[] Compress(byte[] raw)
+        public static byte[] Compress(byte[] raw)
         {
+            if (raw == null)
+                throw new ArgumentNullException(nameof(raw));
             using (MemoryStream memory = new MemoryStream())
             {
+                // gzip.Dispose() should call memory.Dispose()
                 using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
-                {
                     gzip.Write(raw, 0, raw.Length);
-                }
                 return memory.ToArray();
             }
         }
@@ -190,17 +201,17 @@ namespace Chummer
         /// <summary>
         /// Decompress byte array to a new byte array.
         /// </summary>
-        public byte[] Decompress(byte[] gzip)
+        public static byte[] Decompress(byte[] gzip)
         {
             // Create a GZIP stream with decompression mode.
             // ... Then create a buffer and write into while reading from the GZIP stream.
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
+            const int size = 4096;
+            byte[] buffer = new byte[size];
+            using (MemoryStream memory = new MemoryStream())
             {
-                const int size = 4096;
-                byte[] buffer = new byte[size];
-                using (MemoryStream memory = new MemoryStream())
+                using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
                 {
-                    int count = 0;
+                    int count;
                     do
                     {
                         count = stream.Read(buffer, 0, size);
@@ -208,10 +219,10 @@ namespace Chummer
                         {
                             memory.Write(buffer, 0, count);
                         }
-                    }
-                    while (count > 0);
-                    return memory.ToArray();
+                    } while (count > 0);
                 }
+
+                return memory.ToArray();
             }
         }
 
@@ -219,21 +230,25 @@ namespace Chummer
         /// Compress multiple files to a byte array.
         /// </summary>
         /// <param name="lstFiles">List of files to compress.</param>
-        public byte[] CompressMutiple(List<string> lstFiles)
+        public static byte[] CompressMutiple(IEnumerable<string> lstFiles)
         {
-            MemoryStream objStream = new MemoryStream();
-            Package objPackage = Package.Open(objStream, FileMode.Create, FileAccess.ReadWrite);
-
-            foreach (string strFile in lstFiles)
+            if (lstFiles == null)
+                throw new ArgumentNullException(nameof(lstFiles));
+            using (MemoryStream objStream = new MemoryStream())
             {
-                Uri objUri = new Uri("/" + Path.GetFileName(strFile).Replace(' ', '_'), UriKind.Relative);
-                PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
-                byte[] bytBuffer = File.ReadAllBytes(strFile);
-                objPart.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
-            }
-            objPackage.Close();
+                using (Package objPackage = Package.Open(objStream, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    foreach (string strFile in lstFiles)
+                    {
+                        Uri objUri = new Uri("/" + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty), UriKind.Relative);
+                        PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
+                        byte[] bytBuffer = File.ReadAllBytes(strFile);
+                        objPart?.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
+                    }
+                }
 
-            return objStream.ToArray();
+                return objStream.ToArray();
+            }
         }
 
         /// <summary>
@@ -241,22 +256,23 @@ namespace Chummer
         /// </summary>
         /// <param name="lstFiles">List of files to compress.</param>
         /// <param name="strDestination">File to compress to.</param>
-        public void CompressMutipleToFile(List<string> lstFiles, string strDestination)
+        public static void CompressMutipleToFile(IEnumerable<string> lstFiles, string strDestination)
         {
-            Package objPackage = Package.Open(strDestination, FileMode.Create, FileAccess.ReadWrite);
-
-            foreach (string strFile in lstFiles)
+            if (lstFiles == null)
+                throw  new ArgumentNullException(nameof(lstFiles));
+            using (Package objPackage = Package.Open(strDestination, FileMode.Create, FileAccess.ReadWrite))
             {
-                string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split('\\');
-                string strPackFile = "/" + strPath[strPath.Length - 2] + "/" + strPath[strPath.Length - 1] + "/" + Path.GetFileName(strFile).Replace(' ', '_');
-                if (strPackFile.StartsWith("/saves"))
-                    strPackFile = strPackFile.Replace("/saves", string.Empty);
-                Uri objUri = new Uri(strPackFile, UriKind.Relative);
-                PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
-                byte[] bytBuffer = File.ReadAllBytes(strFile);
-                objPart.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
+                foreach (string strFile in lstFiles)
+                {
+                    string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar) ?? new string[] { };
+                    string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty);
+                    strPackFile = strPackFile.TrimStartOnce("/saves");
+                    Uri objUri = new Uri(strPackFile, UriKind.Relative);
+                    PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
+                    byte[] bytBuffer = File.ReadAllBytes(strFile);
+                    objPart?.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
+                }
             }
-            objPackage.Close();
         }
 
         /// <summary>
@@ -264,31 +280,37 @@ namespace Chummer
         /// </summary>
         /// <param name="bytBuffer">Byte array that contains the zip file.</param>
         /// <param name="strPrefix">Prefix to attach to the decompressed files.</param>
-        public void DecompressDataFile(byte[] bytBuffer, string strPrefix)
+        public static void DecompressDataFile(byte[] bytBuffer, string strPrefix)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "data");
-            MemoryStream objStream = new MemoryStream();
-            objStream.Write(bytBuffer, 0, bytBuffer.Length);
-            Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
-
-            foreach (PackagePart objPart in objPackage.GetParts())
+            if (bytBuffer == null)
+                return;
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "data");
+            using (MemoryStream objStream = new MemoryStream())
             {
-                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().FastEscape('/'));
-                strTarget = strTarget.Replace("\\override", Path.DirectorySeparatorChar + "override" + strPrefix);
-                strTarget = strTarget.Replace("\\custom", Path.DirectorySeparatorChar + "custom" + strPrefix);
-
-                Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
-                Stream objDestination = File.OpenWrite(strTarget);
-                byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
-                while (intRead > 0)
+                objStream.Write(bytBuffer, 0, bytBuffer.Length);
+                using (Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read))
                 {
-                    objDestination.Write(bytFileBuffer, 0, intRead);
-                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                    foreach (PackagePart objPart in objPackage.GetParts())
+                    {
+                        string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().FastEscape('/'))
+                            .Replace("\\override", Path.DirectorySeparatorChar + "override" + strPrefix)
+                            .Replace("\\custom", Path.DirectorySeparatorChar + "custom" + strPrefix);
+
+                        byte[] bytFileBuffer = new byte[100000];
+                        using (Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read))
+                        {
+                            using (Stream objDestination = File.OpenWrite(strTarget))
+                            {
+                                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                                while (intRead > 0)
+                                {
+                                    objDestination.Write(bytFileBuffer, 0, intRead);
+                                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                                }
+                            }
+                        }
+                    }
                 }
-                objDestination.Close();
-                objSource.Close();
             }
         }
 
@@ -296,29 +318,35 @@ namespace Chummer
         /// Decompress multiple files from a single zip file.
         /// </summary>
         /// /// <param name="bytBuffer">Byte array that contains the zip file.</param>
-        public void DecompressCharacterSheet(byte[] bytBuffer)
+        public static void DecompressCharacterSheet(byte[] bytBuffer)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "sheets", "omae");
-            MemoryStream objStream = new MemoryStream();
-            objStream.Write(bytBuffer, 0, bytBuffer.Length);
-            Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
-
-            foreach (PackagePart objPart in objPackage.GetParts())
+            if (bytBuffer == null)
+                return;
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
+            using (MemoryStream objStream = new MemoryStream())
             {
-                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().FastEscape('/').Replace('_', ' '));
-
-                Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
-                Stream objDestination = File.OpenWrite(strTarget);
-                byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
-                while (intRead > 0)
+                objStream.Write(bytBuffer, 0, bytBuffer.Length);
+                using (Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read))
                 {
-                    objDestination.Write(bytFileBuffer, 0, intRead);
-                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                    foreach (PackagePart objPart in objPackage.GetParts())
+                    {
+                        string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().FastEscape('/').Replace('_', ' '));
+
+                        byte[] bytFileBuffer = new byte[100000];
+                        using (Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read))
+                        {
+                            using (Stream objDestination = File.OpenWrite(strTarget))
+                            {
+                                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                                while (intRead > 0)
+                                {
+                                    objDestination.Write(bytFileBuffer, 0, intRead);
+                                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                                }
+                            }
+                        }
+                    }
                 }
-                objDestination.Close();
-                objSource.Close();
             }
         }
 
@@ -326,47 +354,53 @@ namespace Chummer
         /// Decompress multiple files from a single zip file.
         /// </summary>
         /// <param name="bytBuffer">Byte array that contains the zip file.</param>
-        public void DecompressNPCs(byte[] bytBuffer)
+        public static void DecompressNPCs(byte[] bytBuffer)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "saves");
+            if (bytBuffer == null)
+                throw new ArgumentNullException(nameof(bytBuffer));
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "saves");
 
             // If the directory does not exist, create it.
             if (!Directory.Exists(strFilePath))
                 Directory.CreateDirectory(strFilePath);
 
-            MemoryStream objStream = new MemoryStream();
-            objStream.Write(bytBuffer, 0, bytBuffer.Length);
-            Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
-
-            foreach (PackagePart objPart in objPackage.GetParts())
+            using (MemoryStream objStream = new MemoryStream())
             {
-                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace('_', ' '));
-
-                Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
-
-                string[] strDirectory = strTarget.Split('/');
-                if (!strDirectory[1].EndsWith(".chum5"))
+                objStream.Write(bytBuffer, 0, bytBuffer.Length);
+                using (Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read))
                 {
-                    if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
-                        Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1]));
-                }
-                if (!strDirectory[2].EndsWith(".chum5"))
-                {
-                    if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2])))
-                        Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2]));
-                }
+                    foreach (PackagePart objPart in objPackage.GetParts())
+                    {
+                        string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace('_', ' '));
 
-                Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar));
-                byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
-                while (intRead > 0)
-                {
-                    objDestination.Write(bytFileBuffer, 0, intRead);
-                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                        string[] strDirectory = strTarget.Split('/');
+                        if (!strDirectory[1].EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
+                                Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1]));
+                        }
+
+                        if (!strDirectory[2].EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2])))
+                                Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2]));
+                        }
+
+                        byte[] bytFileBuffer = new byte[100000];
+                        using (Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar)))
+                        {
+                            using (Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read))
+                            {
+                                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                                while (intRead > 0)
+                                {
+                                    objDestination.Write(bytFileBuffer, 0, intRead);
+                                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                                }
+                            }
+                        }
+                    }
                 }
-                objDestination.Close();
-                objSource.Close();
             }
         }
 
@@ -374,45 +408,46 @@ namespace Chummer
         /// Decompress multiple files from a single zip file.
         /// </summary>
         /// <param name="strExtract">Zip file to extract from.</param>
-        public void DecompressNPCs(string strExtract)
+        public static void DecompressNPCs(string strExtract)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "saves");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "saves");
 
             // If the directory does not exist, create it.
             if (!Directory.Exists(strFilePath))
                 Directory.CreateDirectory(strFilePath);
 
-            Package objPackage = Package.Open(strExtract, FileMode.Open, FileAccess.Read);
-
-            foreach (PackagePart objPart in objPackage.GetParts())
+            using (Package objPackage = Package.Open(strExtract, FileMode.Open, FileAccess.Read))
             {
-                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace('_', ' '));
-
-                Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
-
-                string[] strDirectory = strTarget.Split('/');
-                if (!strDirectory[1].EndsWith(".chum5"))
+                foreach (PackagePart objPart in objPackage.GetParts())
                 {
-                    if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
-                        Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1]));
-                }
-                if (!strDirectory[2].EndsWith(".chum5"))
-                {
-                    if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2])))
-                        Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2]));
-                }
+                    string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace('_', ' '));
 
-                Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar));
-                byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
-                while (intRead > 0)
-                {
-                    objDestination.Write(bytFileBuffer, 0, intRead);
-                    intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                    string[] strDirectory = strTarget.Split('/');
+                    if (!strDirectory[1].EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
+                            Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1]));
+                    }
+
+                    if (!strDirectory[2].EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2])))
+                            Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2]));
+                    }
+                    byte[] bytFileBuffer = new byte[100000];
+                    using (Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read))
+                    {
+                        using (Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar)))
+                        {
+                            int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                            while (intRead > 0)
+                            {
+                                objDestination.Write(bytFileBuffer, 0, intRead);
+                                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                            }
+                        }
+                    }
                 }
-                objDestination.Close();
-                objSource.Close();
             }
         }
         #endregion

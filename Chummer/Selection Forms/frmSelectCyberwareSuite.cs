@@ -19,34 +19,31 @@
  using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectCyberwareSuite : Form
+    public sealed partial class frmSelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
-        private double _dblCharacterESSModifier = 1.0;
-        private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
-        private string _strType = "cyberware";
-        private Character _objCharacter;
-        private decimal _decCost = 0;
+        private readonly Improvement.ImprovementSource _eSource;
+        private readonly string _strType;
+        private readonly Character _objCharacter;
+        private decimal _decCost;
 
-        List<Cyberware> _lstCyberware = new List<Cyberware>();
-
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control events
-        public frmSelectCyberwareSuite(Improvement.ImprovementSource objSource, Character objCharacter)
+        public frmSelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
-            _objSource = objSource;
-            LanguageManager.Load(GlobalOptions.Language, this);
+            _eSource = eSource;
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            if (_objSource == Improvement.ImprovementSource.Cyberware)
+            if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
@@ -56,13 +53,12 @@ namespace Chummer
             }
 
             _objCharacter = objCharacter;
-            _objXmlDocument = XmlManager.Load(_strType + ".xml", true);
+            _objXmlDocument = XmlManager.Load(_strType + ".xml", string.Empty, true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -72,112 +68,98 @@ namespace Chummer
 
         private void lstCyberware_DoubleClick(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = string.Empty;
-            }
-
-            if (_objCharacter.DEPEnabled)
+            if (_objCharacter.IsAI)
                 return;
 
-            XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
-            GradeList lstGrades = null;
-            if (_objSource == Improvement.ImprovementSource.Bioware)
-            {
-                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
-                lstGrades = GlobalOptions.BiowareGrades;
-            }
-            else
-            {
-                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
-                lstGrades = GlobalOptions.CyberwareGrades;
-            }
+            IList<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);
 
-            foreach (XmlNode objXmlSuite in objXmlSuiteList)
-            {
-                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                if (string.IsNullOrEmpty(strGrade) && (!lstGrades.Any(x => x.Name == strGrade) ||
-                    _objCharacter.Improvements.Any(x => ((_objSource == Improvement.ImprovementSource.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
-                    && strGrade.Contains(x.ImprovedName) && x.Enabled)))
-                    continue;
-                lstCyberware.Items.Add(objXmlSuite["name"].InnerText);
-            }
+            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
+                if (xmlSuiteList?.Count > 0)
+                    foreach (XmlNode objXmlSuite in xmlSuiteList)
+                    {
+                        string strName = objXmlSuite["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
+                            if (string.IsNullOrEmpty(strGrade) && (lstGrades.All(x => x.Name != strGrade) ||
+                                                                   _objCharacter.Improvements.Any(x =>
+                                                                       ((_eSource == Improvement.ImprovementSource.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) ||
+                                                                        (_eSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                                                                       && strGrade.Contains(x.ImprovedName) && x.Enabled)))
+                                continue;
+                            lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
+                        }
+                    }
+            lstCyberware.ValueMember = "Value";
+            lstCyberware.DisplayMember = "Name";
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstCyberware.Text))
+            string strSelectedSuite = lstCyberware.SelectedItem?.ToString();
+            XmlNode xmlSuite = null;
+            string strGrade;
+            Grade objGrade = null;
+            if (strSelectedSuite != null)
+            {
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\"]");
+                string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
+                if (!string.IsNullOrEmpty(strSuiteGradeEntry))
+                {
+                    strGrade = CyberwareGradeName(strSuiteGradeEntry);
+                    if (!string.IsNullOrEmpty(strGrade))
+                    {
+                        objGrade = _objCharacter.GetGradeList(_eSource).FirstOrDefault(x => x.Name == strGrade);
+                    }
+                }
+            }
+
+            if (objGrade == null)
+            {
+                lblCyberware.Text = string.Empty;
+                lblEssence.Text = string.Empty;
+                lblCost.Text = string.Empty;
+                lblGrade.Text = string.Empty;
                 return;
-
-            _lstCyberware.Clear();
-
-            XmlNode objXmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + lstCyberware.Text + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+            }
 
             decimal decTotalESS = 0.0m;
             decimal decTotalCost = 0;
 
-            // Retrieve the information for the selected Grade.
-            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
-            lblCyberware.Text = string.Empty;
-
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
-            ParseNode(objXmlSuite, objGrade, null);
-            foreach (Cyberware objCyberware in _lstCyberware)
+            List<Cyberware> lstSuiteCyberwares = new List<Cyberware>();
+            ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
+            StringBuilder sbdCyberwareLabelString = new StringBuilder();
+            foreach (Cyberware objCyberware in lstSuiteCyberwares)
             {
-                WriteList(objCyberware, 0);
+                WriteList(sbdCyberwareLabelString, objCyberware, 0);
                 decTotalCost += objCyberware.TotalCost;
-                decTotalESS += objCyberware.CalculatedESS();
+                decTotalESS += objCyberware.CalculatedESS;
             }
 
-            lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
-            lblCost.Text = $"{decTotalCost:###,###,##0.##¥}";
-            lblGrade.Text = objXmlSuite["grade"].InnerText;
+            lblCyberware.Text = sbdCyberwareLabelString.ToString();
+            lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
+            lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblGrade.Text = objGrade.CurrentDisplayName;
             _decCost = decTotalCost;
         }
         #endregion
 
         #region Properties
         /// <summary>
-        /// Essence cost multiplier from the character.
-        /// </summary>
-        public double CharacterESSMultiplier
-        {
-            set
-            {
-                _dblCharacterESSModifier = value;
-            }
-        }
-
-        /// <summary>
         /// Name of Suite that was selected in the dialogue.
         /// </summary>
-        public string SelectedSuite
-        {
-            get
-            {
-                return _strSelectedSuite;
-            }
-        }
+        public string SelectedSuite => _strSelectedSuite;
 
         /// <summary>
         /// Total cost of the Cyberware Suite. This is done to make it easier to obtain the actual cost in Career Mode.
         /// </summary>
-        public decimal TotalCost
-        {
-            get
-            {
-                return _decCost;
-            }
-        }
+        public decimal TotalCost => _decCost;
+
         #endregion
 
         #region Methods
@@ -186,15 +168,19 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedSuite = lstCyberware.Text;
-            DialogResult = DialogResult.OK;
+            string strSelectedId = lstCyberware.SelectedItem?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                _strSelectedSuite = strSelectedId;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         /// <summary>
         /// Convert the grade string found in the file to the name of the Grade found in the Cyberware.xml file.
         /// </summary>
         /// <param name="strValue">Grade from the Cyberware Suite.</param>
-        private string CyberwareGradeName(string strValue)
+        private static string CyberwareGradeName(string strValue)
         {
             switch (strValue)
             {
@@ -232,56 +218,51 @@ namespace Chummer
         /// <summary>
         /// Parse an XmlNode and create the Cyberware for it and its children, adding them to the list of Cyberware in the suite.
         /// </summary>
-        /// <param name="objXmlSuite">XmlNode to parse.</param>
+        /// <param name="xmlSuite">XmlNode to parse.</param>
         /// <param name="objGrade">Grade that the Cyberware should be created with.</param>
-        /// <param name="objParent">Parent that child items should be assigned to.</param>
-        private void ParseNode(XmlNode objXmlSuite, Grade objGrade, Cyberware objParent)
+        /// <param name="lstChildren">List for children to which child items should be assigned.</param>
+        private void ParseNode(XmlNode xmlSuite, Grade objGrade, IList<Cyberware> lstChildren)
         {
             // Run through all of the items in the Suite list.
-            foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(_strType + "s/" + _strType))
-            {
-                int intRating = 0;
-                if (objXmlItem["rating"] != null)
-                {
-                    intRating = Convert.ToInt32(objXmlItem["rating"].InnerText);
-                }
+            using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+                if (xmlChildrenList?.Count > 0)
+                    foreach (XmlNode xmlChildItem in xmlChildrenList)
+                    {
+                        int intRating = 0;
+                        xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
+                        string strName = string.Empty;
+                        xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
 
-                // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
-                XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
+                        // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
+                        XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = \"" + strName + "\"]");
 
-                TreeNode objTreeNode = new TreeNode();
-                List<Weapon> lstWeapons = new List<Weapon>();
-                List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                List<Vehicle> objVehicles = new List<Vehicle>();
-                List<TreeNode> objVehicleNodes = new List<TreeNode>();
-                Cyberware objCyberware = new Cyberware(_objCharacter);
-                objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, objTreeNode, lstWeapons, lstWeaponNodes, objVehicles, objVehicleNodes, false, false);
-                objCyberware.Suite = true;
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Vehicle> lstVehicles = new List<Vehicle>();
+                        Cyberware objCyberware = new Cyberware(_objCharacter);
+                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
+                        objCyberware.Suite = true;
 
-                if (objParent == null)
-                    _lstCyberware.Add(objCyberware);
-                else
-                    objParent.Children.Add(objCyberware);
+                        lstChildren.Add(objCyberware);
 
-                ParseNode(objXmlItem, objGrade, objCyberware);
-            }
+                        ParseNode(xmlChildItem, objGrade, objCyberware.Children);
+                    }
         }
 
         /// <summary>
         /// Write out the Cyberware in the list to the label.
         /// </summary>
+        /// <param name="objCyberwareLabelString">StringBuilder into which the cyberware list is written.</param>
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
-        private void WriteList(Cyberware objCyberware, int intDepth)
+        private void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
         {
-            string strSpace = string.Empty;
-            for (int i = 0; i <= intDepth; i++)
-                strSpace += "   ";
-                
-            lblCyberware.Text += strSpace + objCyberware.DisplayName + "\n";
+            for (int i = 0; i <= intDepth; ++i)
+                objCyberwareLabelString.Append("   ");
+
+            objCyberwareLabelString.AppendLine(objCyberware.CurrentDisplayName);
 
             foreach (Cyberware objPlugin in objCyberware.Children)
-                WriteList(objPlugin, intDepth + 1);
+                WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
         }
         #endregion
     }

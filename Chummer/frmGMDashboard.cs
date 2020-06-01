@@ -16,22 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using Chummer.Skills;
+ using System;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmGMDashboard : Form
     {
-        private frmInitiative frmInitative;
+        private readonly frmInitiative frmInitative;
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus }
 
         #region Singleton
@@ -40,21 +32,13 @@ namespace Chummer
         /// <summary>
         /// The singleton instance of this object.
         /// </summary>
-        public static frmGMDashboard Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new frmGMDashboard();
-                return _instance;
-            }
-        }
+        public static frmGMDashboard Instance => _instance ?? (_instance = new frmGMDashboard());
 
         protected frmGMDashboard()
         {
             InitializeComponent();
             UpdateTabs();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             frmInitative = new frmInitiative();
             frmInitative.Hide();
             VisibleChanged += frmGMDashboard_VisibleChanged;
@@ -82,10 +66,8 @@ namespace Chummer
         /// <summary>
         /// The dice roller for applying skill checks
         /// </summary>
-        public DiceRollerControl DiceRoller
-        {
-            get { return tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
-        }
+        public DiceRollerControl DiceRoller => tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
+
         #endregion
 
         #region Events
@@ -183,22 +165,27 @@ namespace Chummer
         {
             // tosses the character information relevant to each character
         #region Condition Monitor
-            ConditionMonitorUserControl uc = 
-                tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
-            uc.MaxPhysical = CurrentNPC.PhysicalCM;
-            uc.MaxStun = CurrentNPC.StunCM;
-            uc.Physical = uc.MaxPhysical;
-            uc.Stun = uc.MaxStun;
-        #endregion
+
+            if (tabControl.TabPages[(int) DashBoardPages.CM].Controls[0] is ConditionMonitorUserControl uc)
+            {
+                uc.MaxPhysical = CurrentNPC.PhysicalCM;
+                uc.MaxStun = CurrentNPC.StunCM;
+                uc.Physical = uc.MaxPhysical;
+                uc.Stun = uc.MaxStun;
+            }
+
+            #endregion
 
         #region Skill tab
             //TODO fix this
         #endregion
 
         #region Dice Roller
+            /*
             DiceRollerControl dice = 
                 tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
-            //dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
+            dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
+            */
         #endregion
         }
         #endregion

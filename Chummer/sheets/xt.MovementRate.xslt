@@ -8,22 +8,56 @@
         <xsl:with-param name="movrate" select="movementwalk"/>
       </xsl:call-template>
     </xsl:variable>
-
     <xsl:variable name="mv2">
       <xsl:call-template name="formatrate">
         <xsl:with-param name="movrate" select="movementswim"/>
-        <xsl:with-param name="pfx" select="concat($lang.Swim,': ')"/>
       </xsl:call-template>
     </xsl:variable>
-
     <xsl:variable name="mv3">
       <xsl:call-template name="formatrate">
         <xsl:with-param name="movrate" select="movementfly"/>
-        <xsl:with-param name="pfx" select="concat($lang.Fly,': ')"/>
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:value-of select="concat($mv1,$mv2,$mv3)"/>
+    <xsl:choose>
+      <xsl:when test="$mv1 != ''">
+        <td width="16.66%" class="upper">
+          <xsl:value-of select="$lang.Movement"/>:
+        </td>
+        <td width="16.67%">
+          <xsl:value-of select="$mv1"/>
+        </td>
+      </xsl:when>
+      <xsl:otherwise>
+        <td colspan="2" width="33.33%" />
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="$mv2 != ''">
+        <td width="16.67%" class="upper">
+          <xsl:value-of select="$lang.Swim"/>:
+        </td>
+        <td width="16.67%">
+          <xsl:value-of select="$mv2"/>
+        </td>
+      </xsl:when>
+      <xsl:otherwise>
+        <td colspan="2" width="33.34%" />
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="$mv3 != ''">
+        <td width="16.66%" class="upper">
+          <xsl:value-of select="$lang.Fly"/>:
+        </td>
+        <td width="16.67%">
+          <xsl:value-of select="$mv3"/>
+        </td>
+      </xsl:when>
+      <xsl:otherwise>
+        <td colspan="2" width="33.33%" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="formatrate">
@@ -44,11 +78,9 @@
           <xsl:with-param name="replace" select="', '"/>
           <xsl:with-param name="by" select="' ('"/>
         </xsl:call-template>
-        &#160;&#160;&#160;
       </xsl:when>
       <xsl:when test="$movrate != '0'">
         <xsl:value-of select="$movrate"/>
-        &#160;&#160;&#160;
       </xsl:when>
     </xsl:choose>
   </xsl:template>

@@ -16,20 +16,20 @@
         <xsl:with-param name="alias" select="alias"/>
       </xsl:call-template>
     </xsl:variable>
-    <title><xsl:value-of select="$TitleName"/></title>
 
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
+        <title><xsl:value-of select="$TitleName"/></title>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: tahoma, 'trebuchet ms', arial;
-            font-size: 8pt;
-            margin: 0;
+          font-family: tahoma, 'trebuchet ms', arial;
+          font-size: 8pt;
+          margin: 0;
           }
           .indent {
-            padding-left: 20px;
+          padding-left: 0.5em;
           }
         </style>
         <style media="print">
@@ -47,12 +47,34 @@
         <div id="GameMasterBlock">
           <table width="100%" cellspacing="0" cellpadding="2" border="0" style="border: solid 2px #000000;">
             <tr><td>
-              <strong><xsl:value-of select="name" /></strong> (<xsl:value-of select="metatype" />)
+              <strong><xsl:value-of select="name" /></strong>
+              <xsl:if test="alias != '' and alias != $lang.UnnamedCharacter">
+                <xsl:text> </xsl:text><xsl:value-of select="$lang.as"/><xsl:text> "</xsl:text><xsl:value-of select="alias"/><xsl:text>"</xsl:text>
+              </xsl:if>
+              <xsl:text> (</xsl:text><xsl:value-of select="metatype" /><xsl:text>)</xsl:text>
               &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-              <strong>
-                <xsl:value-of select="$lang.Movement" />:
-              </strong>
-              <xsl:call-template name="MovementRate"/>
+              <xsl:if test="movementwalk != '' and movementwalk != '0'">
+                <strong><xsl:value-of select="$lang.Movement"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementwalk"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="movementswim != '' and movementswim != '0'">
+                <strong><xsl:value-of select="$lang.Swim"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementswim"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="movementfly != '' and movementfly != '0'">
+                <strong><xsl:value-of select="$lang.Fly"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementfly"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory]">
+                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                  <strong><xsl:value-of select="$lang.CurrentForm"/>: </strong><xsl:value-of select="attributes/attributecategory"/>
+              </xsl:if>
               <table width="100%" cellspacing="0" cellpadding="2">
                 <tr>
                   <td width="9%" align="center"><strong><xsl:value-of select="$lang.BOD"/></strong></td>
@@ -74,80 +96,86 @@
                 </tr>
                 <tr>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'BOD']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'BOD']/total != attributes/attribute[name_english = 'BOD']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'BOD']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'AGI']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'AGI']/total != attributes/attribute[name_english = 'AGI']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'AGI']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'REA']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'REA']/total != attributes/attribute[name_english = 'REA']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'REA']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'STR']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'STR']/total != attributes/attribute[name_english = 'STR']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'STR']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'CHA']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'CHA']/total != attributes/attribute[name_english = 'CHA']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'CHA']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'INT']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'INT']/total != attributes/attribute[name_english = 'INT']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'INT']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'LOG']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'LOG']/total != attributes/attribute[name_english = 'LOG']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'LOG']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'WIL']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'WIL']/total != attributes/attribute[name_english = 'WIL']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'WIL']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'EDG']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'EDG']/total != attributes/attribute[name_english = 'EDG']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'EDG']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   <xsl:if test="magenabled = 'True'">
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'MAG']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'MAG']/total != attributes/attribute[name_english = 'MAG']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'MAG']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total" />)
+                    </xsl:if>
+                    <xsl:if test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]">
+                      | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/base"/>
+                      <xsl:if test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAGAdept']/base">
+                        (<xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total"/>)
+                      </xsl:if>
                     </xsl:if>
                   </td>
                   </xsl:if>
                   <xsl:if test="resenabled = 'True'">
                   <td width="9%" align="center">
-                    <xsl:value-of select="attributes/attribute[name_english = 'RES']/base" />
-                    <xsl:if test="attributes/attribute[name_english = 'RES']/total != attributes/attribute[name_english = 'RES']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total" />)
+                    <xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base" />
+                    <xsl:if test="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base">
+                      (<xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total" />)
                     </xsl:if>
                   </td>
                   </xsl:if>
                   <xsl:if test="depenabled = 'True'">
                     <td width="9%" align="center">
-                      <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base" />
-                      <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
-                        (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total" />)
+                      <xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/base" />
+                      <xsl:if test="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/base">
+                        (<xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/total" />)
                       </xsl:if>
                     </td>
                   </xsl:if>
@@ -162,27 +190,16 @@
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.Init"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.Rigger"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.Astral"/></strong></td>
-                  <td width="9%" align="center" valign="top">
-                    <strong>
-                      <xsl:value-of select="$lang.MatrixAR"/>
-                    </strong>
-                  </td>
-                  <td width="9%" align="center" valign="top">
-                    <strong>
-                      <xsl:value-of select="$lang.MatrixCold"/>
-                    </strong>
-                  </td>
-                  <td width="9%" align="center" valign="top">
-                    <strong>
-                      <xsl:value-of select="$lang.MatrixHot"/>
-                    </strong>
-                  </td>
+                  <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MatrixAR"/></strong></td>
+                  <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MatrixCold"/></strong></td>
+                  <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MatrixHot"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.CM"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.PhysicalLimit"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MentalLimit"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.SocialLimit"/></strong></td>
-                </tr>
-                <tr colspan="11">
+                  <xsl:if test="magenabled = 'True'">
+                    <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.AstralLimit"/></strong></td>
+                  </xsl:if>
                 </tr>
                 <tr colspan="11">
                   <td width="9%" align="center" valign="top">
@@ -215,6 +232,11 @@
                   <td width="9%" align="center" valign="top">
                     <xsl:value-of select="limitsocial" />
                   </td>
+                  <xsl:if test="magenabled = 'True'">
+                    <td width="9%" align="center" valign="top">
+                      <xsl:value-of select="limitastral" />
+                    </td>
+                  </xsl:if>
                 </tr>
               </table>
 
@@ -280,7 +302,7 @@
                         </tr>
                         <xsl:if test="accessories/accessory or mods/weaponmod">
                           <tr>
-                            <td colspan="5" class="indent">
+                            <td colspan="7" class="indent">
                               <xsl:if test="position() mod 2 != 1">
                                 <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
                               </xsl:if>
@@ -348,6 +370,7 @@
                               (<xsl:for-each select="armormods/armormod">
                                 <xsl:sort select="name" />
                                 <xsl:value-of select="name" />
+                                <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating"/></xsl:if>
                                 <xsl:if test="position() != last()">, </xsl:if>
                               </xsl:for-each>)
                             </td>
@@ -364,7 +387,7 @@
                                 <xsl:value-of select="name" />
                                 <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
                                 <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/> <xsl:value-of select="rating" /></xsl:if>
-                                <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty" /></xsl:if>
+                                <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                                 <xsl:if test="children/gear">
                                   (<xsl:for-each select="children/gear">
                                     <xsl:value-of select="name" />
@@ -381,6 +404,7 @@
                                     </xsl:if>
                                   </xsl:for-each>)
                                 </xsl:if>
+	                            <xsl:if test="position() != last()">, </xsl:if>
                               </xsl:for-each>
                             </td>
                           </tr>
@@ -396,9 +420,9 @@
                 <xsl:for-each select="martialarts/martialart">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
-                  <xsl:if test="martialartadvantages/martialartadvantage">
+                  <xsl:if test="martialarttechniques/martialarttechnique">
                   (
-                  <xsl:for-each select="martialartadvantages/martialartadvantage">
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
                     <xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
                   </xsl:for-each>
                   )
@@ -496,6 +520,7 @@
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
                   <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="$lang.Rating"/><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                   <xsl:if test="children/cyberware">
                     (<xsl:for-each select="children/cyberware">
                       <xsl:value-of select="name" />
@@ -512,7 +537,9 @@
                 <xsl:for-each select="gears/gear">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
-                  <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty" /></xsl:if>
+                  <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+                  <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                   <xsl:if test="children/gear">
                     [<xsl:call-template name="gearplugin">
                     <xsl:with-param name="gear" select="." />
@@ -523,9 +550,7 @@
               </xsl:if>
 
               <p><strong><xsl:value-of select="$lang.Nuyen"/>: </strong>
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                </xsl:call-template>
+                <xsl:value-of select="nuyen"/>
                 <xsl:value-of select="$lang.NuyenSymbol"/>
               </p>
 

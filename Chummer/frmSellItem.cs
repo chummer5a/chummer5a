@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -27,8 +27,7 @@ namespace Chummer
         public frmSellItem()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -42,28 +41,12 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
-        private void MoveControls()
-        {
-            nudPercent.Left = lblSellForLabel.Left + lblSellForLabel.Width + 6;
-            lblPercentLabel.Left = nudPercent.Left + nudPercent.Width + 6;
-            Width = lblPercentLabel.Left + lblPercentLabel.Width + 19;
-            if (Width < 185)
-                Width = 185;
-        }
-        #endregion
-
         #region Properties
         /// <summary>
         /// The percentage the item will be sold at.
         /// </summary>
-        public decimal SellPercent
-        {
-            get
-            {
-                return (nudPercent.Value / 100.0m);
-            }
-        }
+        public decimal SellPercent => (nudPercent.Value / 100.0m);
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,8 +18,9 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spells.xsd">
-  <version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spells.xsd">
+
   <categories>
     <category>Combat</category>
     <category>Detection</category>
@@ -29,6 +31,7 @@
     <category>Rituals</category>
   </categories>
   <spells>
+    <!-- Region SR5 -->
     <spell>
       <id>c78d91cc-fa02-48c3-a243-28823a2038ef</id>
       <name>Acid Stream</name>
@@ -127,7 +130,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F</dv>
       <range>LOS (A)</range>
@@ -429,7 +432,7 @@
       <source>SR5</source>
       <category>Detection</category>
       <damage>0</damage>
-      <descriptor>Active, Area</descriptor>
+      <descriptor>Active, Extended Area</descriptor>
       <duration>S</duration>
       <dv>F</dv>
       <range>T</range>
@@ -1015,7 +1018,7 @@
       <descriptor>Mental</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>M</type>
     </spell>
     <spell>
@@ -1264,6 +1267,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Watcher</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <spell>
       <id>f99ab85f-2cc7-4c09-8ea4-581f75e40487</id>
@@ -1277,7 +1285,47 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Fragile)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Cheap Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Average Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Heavy Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Reinforced Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Structural Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Heavy Structural Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Armored Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Hardened Material)</spirit>
+        </addspirit>
+      </bonus>
     </spell>
+    <!-- End Region -->
+    <!-- Region Street Grimoire -->
     <spell>
       <id>45d775c9-d12f-4416-a45a-88922ec3c2fd</id>
       <name>Corrode [Object]</name>
@@ -2800,6 +2848,19 @@
       <range>LOS</range>
       <type>P</type>
     </spell>
+	<spell>
+      <id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+      <name>Convince</name>
+      <page>132</page>
+      <source>SGG</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor />
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>P</type>
+    </spell>
     <spell>
       <id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
       <name>Aspect Mana Line</name>
@@ -2843,6 +2904,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Ally Spirit</spirit>
+        </addspirit>
+      </bonus>
       <required>
         <allof>
           <metamagicart>Invocation</metamagicart>
@@ -2890,6 +2956,12 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
     </spell>
     <spell>
       <id>a31197f4-c687-485b-a924-e88f2c76df76</id>
@@ -2906,6 +2978,15 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <allof>
+          <metamagicart>Advanced Ritual Casting</metamagicart>
+        </allof>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
     </spell>
     <spell>
       <id>b0bde155-75b7-4200-8656-8414e4ba746a</id>
@@ -3030,6 +3111,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Ally Spirit</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <spell>
       <id>d0a24ff2-ca52-4d76-856a-60c30bf0ecf0</id>
@@ -3097,6 +3183,18 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <required>
+        <allof>
+          <spell>Attune Animal</spell>
+        </allof>
+        <oneof>
+          <group>
+            <quality>Adept</quality>
+            <quality>Mystic Adept</quality>
+          </group>
+          <metamagicart>Advanced Ritual Casting</metamagicart>
+        </oneof>
+      </required>
     </spell>
     <spell>
       <id>884b16b4-dc92-4a32-8dde-197b37819b24</id>
@@ -3142,11 +3240,9 @@
       <range>Special</range>
       <type>M</type>
       <required>
-        <oneof>
+        <allof>
           <metamagicart>Advanced Ritual Casting</metamagicart>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
-        </oneof>
+        </allof>
       </required>
     </spell>
     <spell>
@@ -3431,7 +3527,7 @@
       <type>M</type>
       <required>
         <allof>
-          <metamagicart>Invocation</metamagicart>
+          <art>Invocation</art>
         </allof>
       </required>
     </spell>
@@ -3631,6 +3727,8 @@
         </allof>
       </required>
     </spell>
+    <!-- End Region -->
+    <!-- Region Stolen Souls -->
     <spell>
       <id>b683e8f4-ca91-4c64-932d-757754069a1f</id>
       <name>Convince</name>
@@ -3683,6 +3781,8 @@
       <range>T</range>
       <type>P</type>
     </spell>
+    <!-- End Region -->
+    <!-- Region Shadow Spells -->
     <spell>
       <id>3374e604-a947-43fa-a493-ea7c244e5559</id>
       <name>Chill</name>
@@ -4039,7 +4139,7 @@
       <dv>F-3</dv>
       <range>S</range>
       <type>M</type>
-    </spell>    
+    </spell>
     <spell>
       <id>df65b87a-e386-46f5-b8ad-21ce4b08dc09</id>
       <name>Air Filter</name>
@@ -4242,7 +4342,7 @@
       <source>SSP</source>
       <category>Rituals</category>
       <damage>0</damage>
-      <descriptor>Anchor</descriptor>
+      <descriptor>Anchored</descriptor>
       <duration>Special</duration>
       <dv>Special</dv>
       <range>Special</range>
@@ -4261,6 +4361,7 @@
       <range>Special</range>
       <type>M</type>
     </spell>
+    <!-- End Region -->
     <!-- Region Hard Targets -->
     <spell>
       <id>38c206bb-9ab5-48ad-b736-0a8a464f1f1e</id>
@@ -4308,7 +4409,7 @@
       <source>HT</source>
       <category>Manipulation</category>
       <damage>0</damage>
-      <descriptor/>
+      <descriptor />
       <duration>S</duration>
       <dv>F+1</dv>
       <range>T</range>
@@ -4321,7 +4422,7 @@
       <source>HT</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor/>
+      <descriptor />
       <duration>S</duration>
       <dv>F-2</dv>
       <range>Special</range>
@@ -4334,11 +4435,11 @@
       <source>HT</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor/>
+      <descriptor />
       <duration>S</duration>
       <dv>F-2</dv>
       <range>Special</range>
-      <type>M</type>
+      <type>P</type>
     </spell>
     <spell>
       <id>1f10cb4f-67d6-4193-b897-1a7f5ab67c2a</id>
@@ -4352,6 +4453,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Corpse Cadavre</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <spell>
       <id>bd2bfef0-9de4-4870-9822-cdd504f7560f</id>
@@ -4483,7 +4589,7 @@
       <damage>0</damage>
       <descriptor>Physical</descriptor>
       <duration>S</duration>
-      <dv>Special</dv>
+      <dv>F+3</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>
@@ -4518,7 +4624,7 @@
       <name>Claw</name>
       <page>50</page>
       <source>FA</source>
-      <category>Manipulation</category>
+      <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect</descriptor>
       <duration>I</duration>
@@ -4531,7 +4637,7 @@
       <name>Barrage</name>
       <page>50</page>
       <source>FA</source>
-      <category>Manipulation</category>
+      <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect, Area</descriptor>
       <duration>I</duration>
@@ -4560,8 +4666,8 @@
       <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect, Area, Elemental</descriptor>
-      <duration>S</duration>
-      <dv>Special</dv>
+      <duration>I</duration>
+      <dv>F</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>
@@ -4588,7 +4694,7 @@
       <descriptor>Physical, Area</descriptor>
       <duration>S</duration>
       <dv>F+3</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>P</type>
     </spell>
     <spell>
@@ -4647,6 +4753,15 @@
       <dv>Special</dv>
       <range>LOS</range>
       <type>P</type>
+      <bonus>
+        <addspirit>
+            <spirit>Carcass Spirit</spirit>
+            <spirit>Corpse Spirit</spirit>
+            <spirit>Rot Spirit</spirit>
+            <spirit>Palefire Spirit</spirit>
+            <spirit>Detritus Spirit</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <!-- Region Blood Magic Spells -->
     <spell>
@@ -4988,6 +5103,10 @@
           <metamagic>Sacrifice</metamagic>
           <metamagicart>Blood Magic</metamagicart>
         </allof>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
       </required>
     </spell>
     <spell>
@@ -5048,6 +5167,34 @@
       </required>
     </spell>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <spell>
+      <id>89046778-a77a-4f21-a448-a750af0898eb</id>
+      <name>Astral Disruption</name>
+      <page>158</page>
+      <source>BTB</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>M</type>
+    </spell>
+    <spell>
+      <id>4c595074-add0-40da-a707-598d2b94ae4f</id>
+      <name>Mass Astral Disruption</name>
+      <page>158</page>
+      <source>BTB</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Mana, Area</descriptor>
+      <duration>S</duration>
+      <dv>F</dv>
+      <range>LOS</range>
+      <type>M</type>
+    </spell>
     <!-- End Region -->
   </spells>
 </chummer>

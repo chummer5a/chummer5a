@@ -28,7 +28,7 @@ namespace Chummer
         public frmHistory()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmHistory_Load(object sender, EventArgs e)
@@ -36,11 +36,11 @@ namespace Chummer
             // Display the contents of the changelog.txt file in the TextBox.
             try
             {
-                txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"));
+                txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"));
             }
             catch
             {
-                MessageBox.Show(LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Close();
                 return;
             }

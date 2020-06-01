@@ -18,17 +18,16 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Xml;
+ using System.Windows.Forms;
+ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     public partial class frmNaturalWeapon : Form
     {
-        private readonly XmlDocument _objXmlPowersDocument = XmlManager.Load("critterpowers.xml");
-        private readonly XmlDocument _objXmlSkillsDocument = XmlManager.Load("skills.xml");
+        private readonly XPathNavigator _objXmlPowersDocument;
+        private readonly XPathNavigator _objXmlSkillsDocument;
 
         private readonly Character _objCharacter;
         private Weapon _objWeapon;
@@ -36,9 +35,12 @@ namespace Chummer
         #region Control Events
         public frmNaturalWeapon(Character objCharacter)
         {
-            InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            _objXmlPowersDocument = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _objXmlSkillsDocument = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
+
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -46,41 +48,28 @@ namespace Chummer
         {
             // Load the list of Combat Active Skills and populate the Skills list.
             List<ListItem> lstSkills = new List<ListItem>();
-            foreach (XmlNode objXmlSkill in _objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Combat Active\"]"))
+            foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.Select("skills/skill[category = \"Combat Active\"]"))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSkill["name"].InnerText;
-                objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
-                lstSkills.Add(objItem);
+                string strName = objXmlSkill.SelectSingleNode("name")?.Value;
+                if (!string.IsNullOrEmpty(strName))
+                    lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strName));
             }
 
-            List<ListItem> lstDVBase = new List<ListItem>();
-            ListItem objHalfStrength = new ListItem();
-            objHalfStrength.Value = "(STR/2)";
-            objHalfStrength.Name = "(" + _objCharacter.STR.DisplayAbbrev + "/2)";
-            lstDVBase.Add(objHalfStrength);
-            ListItem objStrength = new ListItem();
-            objStrength.Value = "(STR)";
-            objStrength.Name = $"({_objCharacter.STR.DisplayAbbrev})";
-            lstDVBase.Add(objStrength);
-            for (int i = 1; i <= 20; i++)
+            List<ListItem> lstDVBase = new List<ListItem>
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = i.ToString();
-                objItem.Name = i.ToString();
-                lstDVBase.Add(objItem);
+                new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"),
+                new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')')
+            };
+            for (int i = 1; i <= 20; ++i)
+            {
+                lstDVBase.Add(new ListItem(i.ToString(GlobalOptions.InvariantCultureInfo), i.ToString(GlobalOptions.CultureInfo)));
             }
 
-            List<ListItem> lstDVType = new List<ListItem>();
-            ListItem objDVPhysical = new ListItem();
-            objDVPhysical.Value = "P";
-            objDVPhysical.Name = LanguageManager.GetString("String_DamagePhysical");
-            lstDVType.Add(objDVPhysical);
-
-            ListItem objDVStun = new ListItem();
-            objDVStun.Value = "S";
-            objDVStun.Name = LanguageManager.GetString("String_DamageStun");
-            lstDVType.Add(objDVStun);
+            List<ListItem> lstDVType = new List<ListItem>
+            {
+                new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
+                new ListItem("S", LanguageManager.GetString("String_DamageStun"))
+            };
 
             // Bind the Lists to the ComboBoxes.
             cboSkill.BeginUpdate();
@@ -137,45 +126,50 @@ namespace Chummer
         {
             // Assemble the DV from the fields.
             string strDamage = cboDVBase.SelectedValue.ToString();
-            if (Convert.ToInt32(nudDVMod.Value) != 0)
+            if (decimal.ToInt32(nudDVMod.Value) != 0)
             {
                 if (nudDVMod.Value < 0)
                     strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
                 else
-                    strDamage += "+" + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
             // Create the AP value.
-            string strAP = string.Empty;
+            string strAP;
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)
-                strAP = "+" + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
             else
                 strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
-            XmlNode objPower = _objXmlPowersDocument.SelectSingleNode("/chummer/powers/power[name = \"Natural Weapon\"]");
+            XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");
 
-            // Create the Weapon.
-            _objWeapon = new Weapon(_objCharacter);
-            _objWeapon.Name = txtName.Text;
-            _objWeapon.Category = LanguageManager.GetString("Tab_Critter");
-            _objWeapon.WeaponType = "Melee";
-            _objWeapon.Reach = Convert.ToInt32(nudReach.Value);
-            _objWeapon.Damage = strDamage;
-            _objWeapon.AP = strAP;
-            _objWeapon.Mode = "0";
-            _objWeapon.RC = "0";
-            _objWeapon.Concealability = 0;
-            _objWeapon.Avail = "0";
-            _objWeapon.Cost = 0;
-            _objWeapon.UseSkill = cboSkill.SelectedValue.ToString();
-            _objWeapon.Source = objPower["source"].InnerText;
-            _objWeapon.Page = objPower["page"].InnerText;
+            if (objPower != null)
+            {
+                // Create the Weapon.
+                _objWeapon = new Weapon(_objCharacter)
+                {
+                    Name = txtName.Text,
+                    Category = LanguageManager.GetString("Tab_Critter"),
+                    WeaponType = "Melee",
+                    Reach = decimal.ToInt32(nudReach.Value),
+                    Damage = strDamage,
+                    AP = strAP,
+                    Mode = "0",
+                    RC = "0",
+                    Concealability = 0,
+                    Avail = "0",
+                    Cost = "0",
+                    UseSkill = cboSkill.SelectedValue.ToString(),
+                    Source = objPower.SelectSingleNode("source")?.Value,
+                    Page = objPower.SelectSingleNode("page")?.Value
+                };
 
-            DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
+            }
         }
         #endregion
 
@@ -183,13 +177,8 @@ namespace Chummer
         /// <summary>
         /// Weapon that was created as a result of the dialogue.
         /// </summary>
-        public Weapon SelectedWeapon
-        {
-            get
-            {
-                return _objWeapon;
-            }
-        }
+        public Weapon SelectedWeapon => _objWeapon;
+
         #endregion
     }
 }

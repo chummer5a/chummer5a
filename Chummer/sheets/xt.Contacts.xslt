@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Character contacts -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -67,7 +67,91 @@
         <td style="text-align: center"><xsl:value-of select="loyalty"/></td>
       </tr>
 
-      <xsl:if test="notes != '' and $ProduceNotes">
+      <xsl:if test="$ProduceNotes">
+      <xsl:if test="metatype != '' or sex != '' or age != '' or preferredpayment != '' or hobbiesvice != '' or personallife != '' or contacttype != ''">
+      <tr>
+        <xsl:if test="position() mod 2 != 1">
+          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+        </xsl:if>
+        <td/>
+        <td colspan="4">
+          <table>
+            <xsl:if test="metatype != ''">
+              <tr>
+                <td style="text-align: right; padding-right: 1em; width: 25%;">
+                  <xsl:value-of select="$lang.Metatype"/>: 
+                </td>
+                <td style="text-align: left;">
+                  <xsl:value-of select="metatype"/>
+                </td>
+              </tr>
+            </xsl:if>
+            <xsl:if test="sex != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <xsl:value-of select="$lang.Sex"/>: 
+              </td>
+              <td style="text-align: left;">
+                <xsl:value-of select="sex"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="age != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <xsl:value-of select="$lang.Age"/>: 
+              </td>
+              <td style="text-align: left;">
+                <xsl:value-of select="age"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="preferredpayment != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <xsl:value-of select="$lang.PreferredPayment"/>: 
+              </td>
+              <td style="text-align: left;">
+                <xsl:value-of select="preferredpayment"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="hobbiesvice != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <xsl:value-of select="$lang.HobbiesVice"/>: 
+              </td>
+              <td style="text-align: left;">
+                <xsl:value-of select="hobbiesvice"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="personallife != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <xsl:value-of select="$lang.PersonalLife"/>: 
+              </td>
+              <td style="text-align: left;">
+                <xsl:value-of select="personallife"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="contacttype != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <xsl:value-of select="$lang.Type"/>: 
+              </td>
+              <td style="text-align: left;">
+                <xsl:value-of select="contacttype"/>
+              </td>
+            </tr>
+            </xsl:if>
+          </table>
+        </td>
+      </tr>
+      </xsl:if>
+
+      <xsl:if test="notes != ''">
         <tr>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
@@ -79,6 +163,8 @@
           </td>
         </tr>
       </xsl:if>
+      </xsl:if>
+
       <xsl:call-template name="Xline">
         <xsl:with-param name="cntl" select="last()-position()"/>
         <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
@@ -96,6 +182,7 @@
         <xsl:when test="family">Family</xsl:when>
         <xsl:when test="group">Group</xsl:when>
   Note: if group is true connection is supplied as group(connection) -->
+        <xsl:when test="type='Pet'"><xsl:value-of select="$lang.Pets"/></xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$lang.Type"/>: <xsl:value-of select="type"/>
         </xsl:otherwise>

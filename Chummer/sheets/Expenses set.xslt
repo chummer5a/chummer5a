@@ -26,26 +26,29 @@
         <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-            font-size: 10pt;
-            margin: 0;
-            vertical-align: top;
+          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+          font-size: 10pt;
+          margin: 0;
+          vertical-align: top;
           }
           html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
+          height: 100%;
+          margin: 0px;  /* this affects the margin on the html before sending to printer */
           }
           .tablestyle {
-            border-collapse: collapse;
-            border-color: #1c4a2d;
-            border-style: solid;
-            border-width: 0.5mm;
-            cellpadding: 2;
-            cellspacing: 0;
-            width: 100%;
+          border-collapse: collapse;
+          border-color: #1c4a2d;
+          border-style: solid;
+          border-width: 0.5mm;
+          cellpadding: 2;
+          cellspacing: 0;
+          width: 100%;
+          }
+          .upper {
+          text-transform: uppercase;
           }
           th {
-            text-decoration: underline;
+          text-decoration: underline;
           }
         </style>
         <style media="print">
@@ -75,17 +78,14 @@
               </th>
             </tr>
             <xsl:call-template name="Expenses">
-              <xsl:with-param name="type" select="$lang.Karma"/>
+              <xsl:with-param name="type" select="'Karma'"/>
               <xsl:with-param name="sfx" select="'&#160;&#160;'"/>
             </xsl:call-template>
             <tr>
               <td><xsl:value-of select="$lang.RemainingAvailable"/></td>
               <td/>
               <td style="text-decoration: overline">
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="karma"/>
-                  <xsl:with-param name="wdth" select="3"/>
-                </xsl:call-template>
+                <xsl:value-of select="karma"/>
               </td>
               <td/>
               <td/>
@@ -116,16 +116,13 @@
               </th>
             </tr>
             <xsl:call-template name="Expenses">
-              <xsl:with-param name="type" select="$lang.Nuyen"/>
+              <xsl:with-param name="type" select="'Nuyen'"/>
             </xsl:call-template>
             <tr>
               <td><xsl:value-of select="$lang.RemainingAvailable"/></td>
               <td/>
               <td style="text-align: right; text-decoration: overline;">
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                  <xsl:with-param name="wdth" select="7"/>
-                </xsl:call-template>
+                <xsl:value-of select="nuyen"/>
               </td>
               <td/>
               <td/>

@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,22 +24,23 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.Backend;
+using NLog;
 
 namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
-        public PropertyChangedEventHandler ChildPropertyChanged;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
+        public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         public IComparer<TType> DefaultComparer => _indexComparer;
 
         private readonly BindingList<TType> _contents; //List of all items supposed to be displayed
         private readonly Func<TType, Control> _createFunc;  //Function to create a control out of a item
         private readonly bool _loadVisibleOnly;
-        private List<ControlWithMetaData> _contentList;
+        private readonly List<ControlWithMetaData> _contentList;
         private readonly List<int> _displayIndex = new List<int>();
-        private IndexComparer _indexComparer;
+        private readonly IndexComparer _indexComparer;
         private BitArray _rendered;
         private int _offScreenChunkSize = 1;
         private bool _allRendered;
@@ -29,48 +48,44 @@ namespace Chummer.UI.Shared
         private Predicate<TType> _visibleFilter = x => true;
         private IComparer<TType> _comparison;
 
-        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadFast = false, bool loadVisibleOnly = true)
+        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadVisibleOnly = true)
         {
             InitializeComponent();
-            _contents = contents;
+            _contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _createFunc = createFunc;
             _loadVisibleOnly = loadVisibleOnly;
-
-            if (loadFast)
+            pnlDisplay.SuspendLayout();
+            _contentList = new List<ControlWithMetaData>();
+            foreach (TType objLoopTType in _contents)
             {
-                InitialSetup();
+                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
             }
+            _indexComparer = new IndexComparer(_contents);
+            _comparison = _comparison ?? _indexComparer;
+            _contents.ListChanged += ContentsChanged;
+            ComptuteDisplayIndex();
+            LoadScreenContent();
+            BindingListDisplay_SizeChanged(null, null);
+            pnlDisplay.ResumeLayout();
         }
 
-        private void SkillsDisplay_Load(object sender, EventArgs e)
+        private void BindingListDisplay_Load(object sender, EventArgs e)
         {
             DoubleBuffered = true;
-
-            if (_contentList == null)
-            {
-                InitialSetup();
-            }
-
             Application.Idle += ApplicationOnIdle;
         }
 
         /// <summary>
         /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
         /// </summary>
-        public BindingList<TType> Contents
-        {
-            get
-            {
-                return _contents;
-            }
-        }
+        public BindingList<TType> Contents => _contents;
 
-        private void LoadRange(int min, int max, bool blnSuspend = true)
+        private void LoadRange(int min, int max)
         {
             min = Math.Max(0, min);
             max = Math.Min(_displayIndex.Count, max);
             if (_rendered.FirstMatching(false, min) > max) return;
-
+            SuspendLayout();
             for (int i = min; i < max; i++)
             {
                 if (_rendered[i]) continue;
@@ -81,28 +96,7 @@ namespace Chummer.UI.Shared
                 item.Control.Visible = true;
                 _rendered[i] = true;
             }
-        }
-
-        private void InitialSetup()
-        {
-            pnlDisplay.SuspendLayout();
-            SetupContentList();
-            ComptuteDisplayIndex();
-            LoadScreenContent();
-            BindingListDisplay_SizeChanged(null, null);
-            pnlDisplay.ResumeLayout();
-        }
-
-        private void SetupContentList()
-        {
-            _contentList = new List<ControlWithMetaData>();
-            foreach (TType objLoopTType in _contents)
-            {
-                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
-            }
-            _indexComparer = new IndexComparer(_contents);
-            if (_comparison == null) _comparison = _indexComparer;
-            _contents.ListChanged += ContentsChanged;
+            ResumeLayout();
         }
 
         private void ComptuteDisplayIndex()
@@ -203,7 +197,7 @@ namespace Chummer.UI.Shared
             else if (maxDelay > sw.Elapsed)
             {
                 _offScreenChunkSize++;
-                Log.Info("Offscreen chunck render size increased to " + _offScreenChunkSize);
+                Log.Info("Offscreen chunk render size increased to " + _offScreenChunkSize);
             }
         }
 
@@ -224,7 +218,7 @@ namespace Chummer.UI.Shared
 
         public void Sort(IComparer<TType> comparison)
         {
-            if (_comparison == comparison) return;
+            if (Equals(_comparison, comparison)) return;
             _comparison = comparison;
 
             pnlDisplay.SuspendLayout();
@@ -237,12 +231,23 @@ namespace Chummer.UI.Shared
         {
             int intNewIndex = eventArgs?.NewIndex ?? 0;
             List<ControlWithMetaData> lstToRedraw = null;
-            switch (eventArgs.ListChangedType)
+            switch (eventArgs?.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
                     break;
-                //case ListChangedType.Reset:
-                //    break;
+                case ListChangedType.Reset:
+                    foreach (ControlWithMetaData objLoopControl in _contentList)
+                    {
+                        objLoopControl.Cleanup();
+                    }
+                    _contentList.Clear();
+                    foreach (TType objLoopTType in _contents)
+                    {
+                        _contentList.Add(new ControlWithMetaData(objLoopTType, this));
+                    }
+                    _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList;
+                    break;
                 case ListChangedType.ItemAdded:
                     _contentList.Insert(intNewIndex, new ControlWithMetaData(_contents[intNewIndex], this));
                     _indexComparer.Reset(_contents);
@@ -252,7 +257,7 @@ namespace Chummer.UI.Shared
                     _contentList[intNewIndex].Cleanup();
                     _contentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(_contents);
-                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
+                    lstToRedraw = _contentList;
                     break;
                 //case ListChangedType.ItemMoved:
                 //    break;
@@ -298,7 +303,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class ControlWithMetaData
+        private sealed class ControlWithMetaData
         {
             public TType Item { get; }
 
@@ -326,8 +331,7 @@ namespace Chummer.UI.Shared
                 _parent = parent;
                 Item = item;
 
-                INotifyPropertyChanged prop = item as INotifyPropertyChanged;
-                if (prop != null)
+                if (item is INotifyPropertyChanged prop)
                 {
                     prop.PropertyChanged += item_ChangedEvent;
                 }
@@ -394,21 +398,26 @@ namespace Chummer.UI.Shared
             public void Cleanup()
             {
                 if (ControlCreated)
+                {
+                    if (Item is INotifyPropertyChanged prop)
+                    {
+                        prop.PropertyChanged -= item_ChangedEvent;
+                    }
                     _parent.pnlDisplay.Controls.Remove(Control);
+                    Control.Dispose();
+                }
             }
         }
 
-        private class IndexComparer : IComparer<TType>
+        private sealed class IndexComparer : IComparer<TType>
         {
             private Dictionary<TType, int> _index;
 
             public int Compare(TType x, TType y)
             {
-                int xindex;
-                if (_index.TryGetValue(x, out xindex))
+                if (x != null && _index.TryGetValue(x, out int xindex))
                 {
-                    int yindex;
-                    if (_index.TryGetValue(y, out yindex))
+                    if (y != null && _index.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }
@@ -421,7 +430,8 @@ namespace Chummer.UI.Shared
                 else
                 {
                     Utils.BreakIfDebug();
-                    if (_index.ContainsKey(y)) return -1;
+                    if (y != null && (x == null || _index.ContainsKey(y)))
+                        return -1;
 
                     return 0;
                 }

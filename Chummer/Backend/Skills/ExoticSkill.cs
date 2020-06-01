@@ -1,41 +1,29 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-using Chummer;
-using Chummer.Datastructures;
 
-namespace Chummer.Skills
-{ 
-    class ExoticSkill : Skill
+namespace Chummer.Backend.Skills
+{
+    public sealed class ExoticSkill : Skill
     {
-        private static readonly TranslatedField<string> _specificTranslator = new TranslatedField<string>();
-        private string _specific;
-        private string _translated;
-
-        static ExoticSkill()
-        {
-            XmlNodeList exotic = XmlManager.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
-
-            if (exotic != null)
-            {
-                List<Tuple<string, string>> elem = new List<Tuple<string, string>>();
-
-                foreach (XmlNode objLoopNode in exotic)
-                {
-                    string strLoopName = string.Empty;
-                    if (objLoopNode.TryGetStringFieldQuickly("name", ref strLoopName))
-                    {
-                        string strLoopTranslate = objLoopNode.Attributes?["translate"]?.InnerText ?? strLoopName;
-                        elem.Add(new Tuple<string, string>(strLoopName, strLoopTranslate));
-                    }
-                }
-
-                _specificTranslator.AddRange(elem);
-            }
-        }
-
+        private string _strSpecific;
 
         public ExoticSkill(Character character, XmlNode node) : base(character, node)
         {
@@ -43,70 +31,72 @@ namespace Chummer.Skills
 
         public void Load(XmlNode node)
         {
-            node.TryGetStringFieldQuickly("specific", ref _specific);
-            node.TryGetStringFieldQuickly("translated", ref _translated);
+            node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
-        public override bool AllowDelete
-        {
-            get
-            {
-                return !CharacterObject.Created;
-            }
-        }
+        public override bool AllowDelete => !CharacterObject.Created;
 
-        public override int CurrentSpCost()
-        {
-            return BasePoints;
-        }
+        public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
         /// <summary>
         /// How much karma this costs. Return value during career mode is undefined
         /// </summary>
         /// <returns></returns>
-        public override int CurrentKarmaCost()
-        {
-            return RangeCost(Base + FreeKarma(), TotalBaseRating);
-        }
+        public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
-        public override bool IsExoticSkill
+        public override void WriteTo(XmlTextWriter objWriter)
         {
-            get
+            objWriter.WriteStartElement("skill");
+            objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isknowledge", bool.FalseString);
+            objWriter.WriteElementString("skillcategory", SkillCategory);
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
+            objWriter.WriteElementString("notes", Notes);
+            if (!CharacterObject.Created)
             {
-                return true;
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
             }
-        }
 
-        /// <summary>
-        /// Called during save to allow derived classes to save additional infomation required to rebuild state
-        /// </summary>
-        /// <param name="writer"></param>
-        protected override void SaveExtendedData(XmlTextWriter writer)
-        {
-            writer.WriteElementString("specific", _specific);
-
-            if (!string.IsNullOrEmpty(_translated))
-                writer.WriteElementString("translated", _translated);
-        }
-
-        public string Specific {
-            get
+            if (Specializations.Count != 0)
             {
-                return _specificTranslator.Read(_specific, ref _translated);
+                objWriter.WriteStartElement("specs");
+                foreach (SkillSpecialization objSpecialization in Specializations)
+                {
+                    objSpecialization.Save(objWriter);
+                }
+                objWriter.WriteEndElement();
             }
+
+            objWriter.WriteElementString("specific", _strSpecific);
+
+            objWriter.WriteEndElement();
+
+        }
+
+        public string Specific
+        {
+            get => _strSpecific;
             set
             {
-                _specificTranslator.Write(value, ref _specific, ref _translated);
+                _strSpecific = value;
+
                 OnPropertyChanged();
             }
         }
 
-        public override string DisplaySpecialization
+        public string DisplaySpecific(string strLanguage)
         {
-            get
-            {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Specific;
-            }
+
+            return LanguageManager.TranslateExtra(Specific, strLanguage);
+        }
+
+        public override string DisplaySpecialization(string strLanguage)
+        {
+            return DisplaySpecific(strLanguage);
         }
     }
 }

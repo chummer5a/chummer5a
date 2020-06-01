@@ -25,23 +25,21 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-    public partial class frmOmaeUploadSheet : Form
+    public sealed partial class frmOmaeUploadSheet : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
-        private string _strUserName;
-        private int _intSheetID = 0;
-        private List<string> _lstFiles = new List<string>();
+        private readonly string _strUserName;
+        private readonly int _intSheetID = 0;
+        private readonly List<string> _lstFiles = new List<string>();
 
         #region Control Events
         public frmOmaeUploadSheet(string strUserName, int intSheetID = 0, string strDescription = "", string strName = "")
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _strUserName = strUserName;
             _intSheetID = intSheetID;
             txtDescription.Text = strDescription;
@@ -60,9 +58,11 @@ namespace Chummer
 
         private void cmdBrowse_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "XSL Files (*.xsl; *.xslt)|*.xsl;*.xslt";
-            openFileDialog.Multiselect = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "XSL Files (*.xsl; *.xslt)|*.xsl;*.xslt",
+                Multiselect = true
+            };
 
             if (openFileDialog.ShowDialog(this) != DialogResult.OK)
             {
@@ -78,7 +78,7 @@ namespace Chummer
             {
                 if (!strFile.EndsWith(".xsl") && !strFile.EndsWith(".xslt"))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CannotUploadSheet"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_CannotUploadSheet"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -97,40 +97,40 @@ namespace Chummer
         private void cmdUpload_Click(object sender, EventArgs e)
         {
             // Make sure a name has been entered.
-            if (string.IsNullOrEmpty(txtName.Text))
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SheetName"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_SheetName"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
-            if (string.IsNullOrEmpty(txtDescription.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OameUpload_SheetDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_SheetDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure at least 1 file was selected.
             if (string.IsNullOrEmpty(txtFilePath.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SheetSelectFiles"), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_SheetSelectFiles"), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             bool blnSuccess = false;
 
             // Compress the files.
-            byte[] bytFile = _objOmaeHelper.CompressMutiple(_lstFiles);
+            byte[] bytFile = OmaeHelper.CompressMutiple(_lstFiles);
 
             // Make sure the file doesn't exceed 250K in size (256,000 bytes).
             if (bytFile.Length > 256000)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge"), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge"), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Upload the file.
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
                 cmdUpload.Enabled = false;
@@ -139,16 +139,16 @@ namespace Chummer
                 if (objService.UploadSheet(_strUserName, _intSheetID, txtName.Text, txtDescription.Text, bytFile))
                 {
                     blnSuccess = true;
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_UploadComplete"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_UploadFailed"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (EndpointNotFoundException)
             {
-                MessageBox.Show(NO_CONNECTION_MESSAGE, NO_CONNECTION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(NO_CONNECTION_MESSAGE, NO_CONNECTION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             objService.Close();
             cmdUpload.Enabled = true;

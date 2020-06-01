@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -28,18 +28,18 @@ namespace Chummer
         private string _strSelectedOption = string.Empty;
         private string _strProgramName = string.Empty;
         private string _strProgramCategory = string.Empty;
-        private List<string> _lstTags = new List<string>();
+        private readonly List<string> _lstTags = new List<string>();
 
-        private bool _blnAddAgain = false;
+        private bool _blnAddAgain;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         #region Control Events
         public frmSelectProgramOption(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.
@@ -55,28 +55,23 @@ namespace Chummer
 
             foreach (XmlNode objXmlOption in objXmlOptionList)
             {
-                bool blnAdd = true;
                 // If the Option has Category requirements, make sure they are met before adding the item to the list.
                 if (objXmlOption["programtypes"] != null)
                 {
-                    blnAdd = false;
+                    bool blnAdd = false;
                     foreach (XmlNode objXmlCategory in objXmlOption.SelectNodes("programtypes/programtype"))
                     {
                         if (objXmlCategory.InnerText == _strProgramCategory)
                             blnAdd = true;
                     }
+                    if (!blnAdd)
+                        continue;
                 }
 
-                if (blnAdd)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlOption["name"].InnerText;
-                    objItem.Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
-                    lstOption.Add(objItem);
-                }
+                string strName = objXmlOption["name"].InnerText;
+                lstOption.Add(new ListItem(strName, objXmlOption["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstOption.Sort(objSort.Compare);
+            lstOption.Sort(CompareListItems.CompareNames);
             lstOptions.BeginUpdate();
             lstOptions.ValueMember = "Value";
             lstOptions.DisplayMember = "Name";
@@ -86,27 +81,43 @@ namespace Chummer
 
         private void lstOptions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Display the Program information.
-            XmlNode objXmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + lstOptions.SelectedValue + "\"]");
+            string strSelectedId = lstOptions.SelectedValue?.ToString();
+            XmlNode xmlOption = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + strSelectedId + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlOption["source"].InnerText);
-            string strPage = objXmlOption["page"].InnerText;
-            if (objXmlOption["altpage"] != null)
-                strPage = objXmlOption["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            if (xmlOption != null)
+            {
+                string strSource = xmlOption["source"].InnerText;
+                string strPage = xmlOption["altpage"]?.InnerText ?? xmlOption["page"].InnerText;
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlOption["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                ToolTipFactory.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = false;
                 AcceptForm();
+            }
         }
 
         private void lstOptions_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = false;
+                AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -116,8 +127,11 @@ namespace Chummer
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
-            _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstOptions.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
         }
         #endregion
 
@@ -125,23 +139,14 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of the Program the Option will be added to.
         /// </summary>
         public string ProgramName
         {
-            set
-            {
-                _strProgramName = value;
-            }
+            set => _strProgramName = value;
         }
 
         /// <summary>
@@ -149,37 +154,19 @@ namespace Chummer
         /// </summary>
         public string ProgramCategory
         {
-            set
-            {
-                _strProgramCategory = value;
-            }
+            set => _strProgramCategory = value;
         }
 
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public List<string> ProgramTags
-        {
-            get
-            {
-                return _lstTags;
-            }
-            set
-            {
-                _lstTags = value;
-            }
-        }
+        public IList<string> ProgramTags => _lstTags;
 
         /// <summary>
         /// Program Option that was selected in the dialogue.
         /// </summary>
-        public string SelectedOption
-        {
-            get
-            {
-                return _strSelectedOption;
-            }
-        }
+        public string SelectedOption => _strSelectedOption;
+
         #endregion
 
         #region Methods
@@ -198,10 +185,5 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

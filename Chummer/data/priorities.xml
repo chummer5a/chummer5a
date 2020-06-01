@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,8 +18,9 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema priorities.xsd">
-  <version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema priorities.xsd">
+
   <categories>
     <category>Heritage</category>
     <category>Talent</category>
@@ -66,7 +68,7 @@
               <value>8</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Elf</name>
@@ -77,7 +79,7 @@
               <name>Dryad</name>
               <value>8</value>
               <karma>0</karma>
-            </metavariant>    
+            </metavariant>
             <metavariant>
               <name>Nocturna</name>
               <value>8</value>
@@ -93,8 +95,8 @@
               <value>8</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
-        </metatype>                
+          </metavariants>
+        </metatype>
         <metatype>
           <name>Dwarf</name>
           <value>7</value>
@@ -120,7 +122,7 @@
               <value>7</value>
               <karma>2</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Ork</name>
@@ -131,7 +133,7 @@
               <name>Hobgoblin</name>
               <value>7</value>
               <karma>5</karma>
-            </metavariant>    
+            </metavariant>
             <metavariant>
               <name>Ogre</name>
               <value>7</value>
@@ -147,7 +149,7 @@
               <value>7</value>
               <karma>10</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Troll</name>
@@ -174,79 +176,1316 @@
               <value>5</value>
               <karma>2</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Centaur</name>
           <value>6</value>
-          <karma>25</karma>                    
-        </metatype>        
+          <karma>25</karma>
+        </metatype>
         <metatype>
           <name>Naga</name>
           <value>4</value>
-          <karma>25</karma>                    
+          <karma>25</karma>
         </metatype>
         <metatype>
           <name>Pixie</name>
-          <value>6</value>    
-          <karma>15</karma>                    
+          <value>6</value>
+          <karma>15</karma>
         </metatype>
         <metatype>
           <name>Sasquatch</name>
-          <value>5</value>    
+          <value>5</value>
           <karma>20</karma>
-          <metavariants />    
-        </metatype>    
+          <metavariants />
+        </metatype>
         <metatype>
           <name>Shapeshifter: Bovine</name>
-          <value>8</value>    
-          <karma>5</karma>          
+          <value>8</value>
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>8</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>8</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>8</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>8</value>
+              <karma>7</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>8</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>8</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>8</value>
+              <karma>8</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>8</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>8</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>8</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>8</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>8</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>8</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>8</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Vulpine</name>
           <value>8</value>
-          <karma>5</karma>          
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>8</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>8</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>8</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>8</value>
+              <karma>7</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>8</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>8</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>8</value>
+              <karma>8</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>8</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>8</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>8</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>8</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>8</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>8</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>8</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>8</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>8</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Canine</name>
-          <value>7</value>    
-          <karma>10</karma>          
+          <value>7</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>7</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>7</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>7</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>7</value>
+              <karma>12</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>7</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>7</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>7</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>7</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>7</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>7</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>7</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>7</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>7</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>7</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Falconine</name>
-          <value>7</value>    
-          <karma>10</karma>          
+          <value>7</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>7</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>7</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>7</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>7</value>
+              <karma>12</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>7</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>7</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>7</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>7</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>7</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>7</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>7</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>7</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>7</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>7</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>7</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>7</value>
+              <karma>30</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Lupine</name>
-          <value>6</value>        
-          <karma>15</karma>          
+          <value>6</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>6</value>
+              <karma>17</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>6</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>6</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>6</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>6</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Equine</name>
-          <value>6</value>        
-          <karma>15</karma>          
+          <value>6</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>6</value>
+              <karma>17</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>6</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>6</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>6</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>6</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Leonine</name>
-          <value>4</value>    
-          <karma>20</karma>          
+          <value>4</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Shapeshifter: Phocine</name>
+          <value>6</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>6</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>6</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>6</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>6</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>6</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>6</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>6</value>
+              <karma>60</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>6</value>
+              <karma>60</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>6</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>6</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>6</value>
+              <karma>60</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>6</value>
+              <karma>60</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Ursine</name>
-          <value>4</value>    
-          <karma>20</karma>          
+          <value>4</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Pantherine</name>
-          <value>4</value>          
+          <value>4</value>
           <karma>25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>27</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>43</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Tigrine</name>
-          <value>4</value>                  
+          <value>4</value>
           <karma>25</karma>
-        </metatype>                 
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>27</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>43</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>45</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
       </metatypes>
     </priority>
     <priority>
@@ -287,7 +1526,7 @@
               <value>6</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Elf</name>
@@ -314,8 +1553,8 @@
               <value>6</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
-        </metatype>                
+          </metavariants>
+        </metatype>
         <metatype>
           <name>Dwarf</name>
           <value>4</value>
@@ -341,7 +1580,7 @@
               <value>4</value>
               <karma>2</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Ork</name>
@@ -367,8 +1606,8 @@
               <name>Hobgoblin</name>
               <value>4</value>
               <karma>5</karma>
-            </metavariant>      
-          </metavariants>          
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Troll</name>
@@ -395,79 +1634,1316 @@
               <value>0</value>
               <karma>2</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Centaur</name>
           <value>3</value>
-          <karma>25</karma>                    
-        </metatype>        
+          <karma>25</karma>
+        </metatype>
         <metatype>
           <name>Naga</name>
           <value>2</value>
-          <karma>25</karma>                    
+          <karma>25</karma>
         </metatype>
         <metatype>
           <name>Pixie</name>
-          <value>3</value>    
-          <karma>15</karma>                    
+          <value>3</value>
+          <karma>15</karma>
         </metatype>
         <metatype>
           <name>Sasquatch</name>
-          <value>2</value>    
+          <value>2</value>
           <karma>20</karma>
-          <metavariants />                    
-        </metatype>    
+          <metavariants />
+        </metatype>
         <metatype>
           <name>Shapeshifter: Bovine</name>
-          <value>6</value>    
-          <karma>5</karma>          
+          <value>6</value>
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>6</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>6</value>
+              <karma>7</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>6</value>
+              <karma>3</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>6</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>6</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>6</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>6</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Vulpine</name>
           <value>6</value>
-          <karma>5</karma>          
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>6</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>6</value>
+              <karma>7</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>6</value>
+              <karma>3</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>6</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>6</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>6</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>6</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>6</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>6</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>6</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>6</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>6</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Canine</name>
-          <value>5</value>    
-          <karma>10</karma>          
+          <value>5</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>5</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>5</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>5</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>5</value>
+              <karma>12</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>5</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>5</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>5</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>5</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>5</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>5</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>5</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>5</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>5</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>5</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Falconine</name>
-          <value>5</value>    
-          <karma>10</karma>          
+          <value>5</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>5</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>5</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>5</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>5</value>
+              <karma>12</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>5</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>5</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>5</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>5</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>5</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>5</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>5</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>5</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>5</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>5</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>5</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>5</value>
+              <karma>30</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Lupine</name>
-          <value>4</value>        
-          <karma>15</karma>          
+          <value>4</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>17</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Equine</name>
-          <value>4</value>        
-          <karma>15</karma>          
+          <value>4</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>17</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Leonine</name>
-          <value>2</value>    
-          <karma>20</karma>          
+          <value>2</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Shapeshifter: Phocine</name>
+          <value>4</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Ursine</name>
-          <value>2</value>    
-          <karma>20</karma>          
+          <value>2</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Pantherine</name>
-          <value>2</value>          
+          <value>2</value>
           <karma>25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>27</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>43</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Tigrine</name>
-          <value>2</value>                  
+          <value>2</value>
           <karma>25</karma>
-        </metatype>                 
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>27</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>43</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>45</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
       </metatypes>
     </priority>
     <priority>
@@ -508,7 +2984,7 @@
               <value>4</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Elf</name>
@@ -535,7 +3011,7 @@
               <value>3</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Dwarf</name>
@@ -567,7 +3043,7 @@
               <value>1</value>
               <karma>27</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
         <metatype>
           <name>Ork</name>
@@ -593,80 +3069,1317 @@
               <name>Hobgoblin</name>
               <value>0</value>
               <karma>-5</karma>
-            </metavariant>          
-          </metavariants>          
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Centaur</name>
           <value>0</value>
-          <karma>25</karma>                    
-        </metatype>        
+          <karma>25</karma>
+        </metatype>
         <metatype>
           <name>Naga</name>
           <value>0</value>
-          <karma>25</karma>                    
+          <karma>25</karma>
         </metatype>
         <metatype>
           <name>Pixie</name>
-          <value>0</value>    
-          <karma>15</karma>                    
+          <value>0</value>
+          <karma>15</karma>
         </metatype>
         <metatype>
           <name>Sasquatch</name>
-          <value>0</value>    
+          <value>0</value>
           <karma>20</karma>
-          <metavariants />                        
-        </metatype>    
+          <metavariants />
+        </metatype>
         <metatype>
           <name>Shapeshifter: Bovine</name>
-          <value>4</value>    
-          <karma>5</karma>          
+          <value>4</value>
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>7</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>8</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Vulpine</name>
           <value>4</value>
-          <karma>5</karma>          
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>4</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>4</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>4</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>4</value>
+              <karma>7</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>4</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>4</value>
+              <karma>8</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>4</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>4</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>4</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>4</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>4</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>4</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>4</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>4</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>4</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Canine</name>
-          <value>3</value>    
-          <karma>10</karma>          
+          <value>3</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>3</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>3</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>3</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>3</value>
+              <karma>12</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>3</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>3</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>3</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>3</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>3</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>3</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>3</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>3</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>3</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>3</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Falconine</name>
-          <value>3</value>    
-          <karma>10</karma>          
+          <value>3</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>3</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>3</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>3</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>3</value>
+              <karma>12</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>3</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>3</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>3</value>
+              <karma>13</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>3</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>3</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>3</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>3</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>3</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>3</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>3</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>3</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>3</value>
+              <karma>30</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Lupine</name>
-          <value>2</value>        
-          <karma>15</karma>          
+          <value>2</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>17</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Equine</name>
-          <value>2</value>        
-          <karma>15</karma>          
+          <value>2</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>17</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>18</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Leonine</name>
-          <value>0</value>    
-          <karma>20</karma>          
+          <value>0</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>0</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Shapeshifter: Phocine</name>
+          <value>2</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>2</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>2</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>2</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>2</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>2</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>2</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>2</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>2</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>2</value>
+              <karma>20</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Ursine</name>
-          <value>0</value>    
-          <karma>20</karma>          
+          <value>0</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>22</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>23</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>0</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Pantherine</name>
-          <value>0</value>          
+          <value>0</value>
           <karma>25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>27</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>43</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Shapeshifter: Tigrine</name>
-          <value>0</value>                  
+          <value>0</value>
           <karma>25</karma>
-        </metatype>                 
+          <metavariants>
+            <metavariant>
+              <name>Human</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Elf</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>27</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>28</karma>
+            </metavariant>
+            <metavariant>
+              <name>Dwarf</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>33</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ork</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>38</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Troll</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>43</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>45</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
       </metatypes>
     </priority>
     <priority>
@@ -684,8 +4397,8 @@
               <name>Nartaki</name>
               <value>2</value>
               <karma>0</karma>
-            </metavariant>                
-          </metavariants>          
+            </metavariant>
+          </metavariants>
         </metatype>
         <metatype>
           <name>Elf</name>
@@ -711,8 +4424,8 @@
               <name>Dryad</name>
               <value>0</value>
               <karma>0</karma>
-            </metavariant>          
-          </metavariants>          
+            </metavariant>
+          </metavariants>
         </metatype>
       </metatypes>
     </priority>
@@ -732,7 +4445,7 @@
               <value>1</value>
               <karma>0</karma>
             </metavariant>
-          </metavariants>          
+          </metavariants>
         </metatype>
       </metatypes>
     </priority>
@@ -756,7 +4469,9 @@
           <skillval>5</skillval>
           <skilltype>magic</skilltype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -771,7 +4486,9 @@
           <skillval>5</skillval>
           <skilltype>magic</skilltype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -785,19 +4502,23 @@
           <skillqty>3</skillqty>
           <skillval>5</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
-          </forbidden>
+          <required>
+            <oneof>
+              <metatypecategory>Metahuman</metatypecategory>
+            </oneof>
+          </required>
         </talent>
         <talent>
-          <name>AI - 6 Depth</name>
+          <name>A.I. - 6 Depth</name>
           <value>A.I.</value>
           <depth>6</depth>
           <skillqty>2</skillqty>
           <skillval>5</skillval>
           <skilltype>matrix</skilltype>
           <required>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </required>
         </talent>
       </talents>
@@ -817,9 +4538,11 @@
           <magic>6</magic>
           <skillqty>1</skillqty>
           <skillval>4</skillval>
-          <skilltype>active</skilltype>
+          <skilltype xpath="not(attribute = 'RES' or attribute = 'DEP')">xpath</skilltype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -834,7 +4557,9 @@
           <skillval>4</skillval>
           <skilltype>magic</skilltype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -849,7 +4574,9 @@
           <skillval>4</skillval>
           <skilltype>magic</skilltype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -868,7 +4595,9 @@
           <skillgroupval>4</skillgroupval>
           <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -885,29 +4614,33 @@
           </forbidden>
         </talent>
         <talent>
-          <name>Technomancer - 4 Resonance/5 Complex Forms</name>
+          <name>Technomancer - 4 Resonance/4 Complex Forms</name>
           <value>Technomancer</value>
           <qualities>
             <quality>Technomancer</quality>
           </qualities>
           <resonance>4</resonance>
-          <cfp>5</cfp>
+          <cfp>4</cfp>
           <skillqty>3</skillqty>
           <skillval>4</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
-          </forbidden>
+          <required>
+            <oneof>
+              <metatypecategory>Metahuman</metatypecategory>
+            </oneof>
+          </required>
         </talent>
         <talent>
-          <name>AI - 4 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 4 Depth</name>
+          <value>A.I.</value>
           <depth>4</depth>
           <skillqty>2</skillqty>
           <skillval>4</skillval>
           <skilltype>matrix</skilltype>
           <required>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </required>
         </talent>
       </talents>
@@ -927,9 +4660,11 @@
           <magic>4</magic>
           <skillqty>1</skillqty>
           <skillval>2</skillval>
-          <skilltype>active</skilltype>
+          <skilltype xpath="not(attribute = 'RES' or attribute = 'DEP')">xpath</skilltype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -941,7 +4676,9 @@
           <magic>3</magic>
           <spells>5</spells>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -953,7 +4690,9 @@
           <magic>3</magic>
           <spells>5</spells>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -972,7 +4711,9 @@
           <skillgroupval>2</skillgroupval>
           <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -1036,22 +4777,26 @@
           </qualities>
           <resonance>3</resonance>
           <cfp>3</cfp>
-		  <skillqty>3</skillqty>
+          <skillqty>3</skillqty>
           <skillval>2</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
-          </forbidden>
+          <required>
+            <oneof>
+              <metatypecategory>Metahuman</metatypecategory>
+            </oneof>
+          </required>
         </talent>
         <talent>
-          <name>AI - 3 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 3 Depth</name>
+          <value>A.I.</value>
           <depth>3</depth>
           <skillqty>1</skillqty>
           <skillval>2</skillval>
           <skilltype>matrix</skilltype>
           <required>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </required>
         </talent>
       </talents>
@@ -1070,7 +4815,9 @@
           </qualities>
           <magic>2</magic>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -1089,7 +4836,9 @@
           <skillgroupval>0</skillgroupval>
           <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
@@ -1127,11 +4876,13 @@
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 2 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 2 Depth</name>
+          <value>A.I.</value>
           <depth>2</depth>
           <required>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </required>
         </talent>
       </talents>
@@ -1146,15 +4897,19 @@
           <name>Mundane</name>
           <value>Mundane</value>
           <forbidden>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </forbidden>
         </talent>
         <talent>
-          <name>AI - 2 Depth</name>
-          <value>AI</value>
+          <name>A.I. - 1 Depth</name>
+          <value>A.I.</value>
           <depth>1</depth>
           <required>
-            <oneof><metatype>A.I.</metatype></oneof>
+            <oneof>
+              <metatype>A.I.</metatype>
+            </oneof>
           </required>
         </talent>
       </talents>
@@ -1198,53 +4953,6 @@
     </priority>
     <!-- End Region -->
     <!-- Region Skills -->
-    <!-- Region Street Scum -->
-    <priority>
-      <id>3d9194a1-ea79-46e0-b209-3acf5cb9a995</id>
-      <name>A - 36 Skills/5 Skill Groups</name>
-      <value>A,4</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>36</skills>
-      <skillgroups>5</skillgroups>
-    </priority>
-    <priority>
-      <id>eb49bdef-4127-4634-bc9f-0922915522bf</id>
-      <name>B - 28 Skills/2 Skill Groups</name>
-      <value>B,3</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>28</skills>
-      <skillgroups>2</skillgroups>
-    </priority>
-    <priority>
-      <id>830a6c2f-ec3b-4fc7-b928-de4921ccb5ea</id>
-      <name>C - 22 Skills/0 Skill Groups</name>
-      <value>C,2</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>22</skills>
-      <skillgroups>0</skillgroups>
-    </priority>
-    <priority>
-      <id>c1b74a83-4874-400a-a4d5-2c810a312944</id>
-      <name>D - 18 Skills/0 Skill Groups</name>
-      <value>D,1</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>18</skills>
-      <skillgroups>0</skillgroups>
-    </priority>
-    <priority>
-      <id>ac15704e-30bf-4840-86d8-1da4cb133809</id>
-      <name>E - 18 Skills/0 Skill Groups</name>
-      <value>E,0</value>
-      <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
-      <skills>18</skills>
-      <skillgroups>0</skillgroups>
-    </priority>
-    <!-- End Region -->
     <!-- Region Default -->
     <priority>
       <id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
@@ -1294,7 +5002,6 @@
       <id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
       <name>A - 450,000¥</name>
       <value>A,4</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>450000</resources>
     </priority>
@@ -1302,7 +5009,6 @@
       <id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
       <name>B - 275,000¥</name>
       <value>B,3</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>275000</resources>
     </priority>
@@ -1310,7 +5016,6 @@
       <id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
       <name>C - 140,000¥</name>
       <value>C,2</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>140000</resources>
     </priority>
@@ -1318,7 +5023,6 @@
       <id>b977475b-9728-45a0-9873-a77bb036fb99</id>
       <name>D - 50,000¥</name>
       <value>D,1</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>50000</resources>
     </priority>
@@ -1326,7 +5030,6 @@
       <id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
       <name>E - 6,000¥</name>
       <value>E,0</value>
-      <gameplayoption>Standard</gameplayoption>
       <category>Resources</category>
       <resources>6000</resources>
     </priority>
@@ -1411,48 +5114,6 @@
       <name>E - 6,000¥</name>
       <value>E,0</value>
       <gameplayoption>Street Level</gameplayoption>
-      <category>Resources</category>
-      <resources>6000</resources>
-    </priority>
-    <!-- End Region    -->
-    <!-- Region Street Scum -->
-    <priority>
-      <id>242f38cb-7625-4cd2-9496-ce8895a5b485</id>
-      <name>A - 50,000¥</name>
-      <value>A,4</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>50000</resources>
-    </priority>
-    <priority>
-      <id>cae768c5-140d-43cf-8a80-f89abdd96a9a</id>
-      <name>B - 25,000¥</name>
-      <value>B,3</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>25000</resources>
-    </priority>
-    <priority>
-      <id>b80c5890-1cce-4f80-8599-bf543da818ae</id>
-      <name>C - 15,000¥</name>
-      <value>C,2</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>15000</resources>
-    </priority>
-    <priority>
-      <id>6d8d3a6f-80fd-4c5c-93fc-ee754f4a44f1</id>
-      <name>D - 15,000¥</name>
-      <value>D,1</value>
-      <gameplayoption>Street Scum</gameplayoption>
-      <category>Resources</category>
-      <resources>6000</resources>
-    </priority>
-    <priority>
-      <id>9e0f8c4d-5020-4efe-8f65-6d729ab7138c</id>
-      <name>E - 6,000¥</name>
-      <value>E,0</value>
-      <gameplayoption>Street Scum</gameplayoption>
       <category>Resources</category>
       <resources>6000</resources>
     </priority>

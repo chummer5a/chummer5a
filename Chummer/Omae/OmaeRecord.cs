@@ -22,12 +22,12 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class OmaeRecord : UserControl
+    public sealed partial class OmaeRecord : UserControl
     {
         // Events.
-        public Action<object> OmaeDownloadClicked;
-        public Action<object> OmaePostUpdateClicked;
-        public Action<object> OmaeDeleteClicked;
+        public Action<object> OmaeDownloadClicked { get; set; }
+        public Action<object> OmaePostUpdateClicked { get; set; }
+        public Action<object> OmaeDeleteClicked { get; set; }
 
         private readonly int _intCharacterID = 0;
         private readonly string _strCharacterName = string.Empty;
@@ -37,28 +37,27 @@ namespace Chummer
         public OmaeRecord(XmlNode objNode, int intTypeID, OmaeMode objMode)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Populate the basic information.
             _intCharacterID = Convert.ToInt32(objNode["id"].InnerText);
             _strCharacterName = objNode["name"].InnerText;
             lblCharacterName.Text = objNode["name"].InnerText;
             lblUser.Text = objNode["user"].InnerText;
-            if (string.IsNullOrEmpty(objNode["description"].InnerText))
-                lblDescription.Text = LanguageManager.GetString("Omae_NoDescription");
+            lblDescription.Text = objNode["description"]?.InnerText ?? LanguageManager.GetString("Omae_NoDescription");
+            if (DateTime.TryParse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datDate))
+                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate") + LanguageManager.GetString("String_Space") + datDate.ToShortDateString();
             else
-                lblDescription.Text = objNode["description"].InnerText;
-            DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo);
-            lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate") + " " + datDate.ToShortDateString();
-            lblCount.Text = LanguageManager.GetString("Omae_DownloadCount").Replace("{0}", objNode["count"].InnerText);
+                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate") + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_None");
+            lblCount.Text = string.Format(LanguageManager.GetString("Omae_DownloadCount"), objNode["count"].InnerText);
 
             if (objMode == OmaeMode.Character)
             {
                 // Character-specific information.
                 string strMetatype = objNode["metatype"].InnerText;
                 if (!string.IsNullOrEmpty(objNode["metavariant"].InnerText))
-                    strMetatype += "(" + objNode["metavariant"].InnerText;
-                lblMetatype.Text = LanguageManager.GetString("Label_Metatype") + " " + strMetatype;
+                    strMetatype += '(' + objNode["metavariant"].InnerText;
+                lblMetatype.Text = LanguageManager.GetString("Label_Metatype") + LanguageManager.GetString("String_Space") + strMetatype;
             }
             else if (objMode == OmaeMode.Data)
             {

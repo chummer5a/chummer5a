@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class OmaeRecord
+    public sealed partial class OmaeRecord
     {
         /// <summary> 
         /// Required designer variable.

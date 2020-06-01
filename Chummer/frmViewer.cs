@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
@@ -27,45 +27,132 @@ using System.ComponentModel;
  using System.Linq;
 using Codaxy.WkHtmlToPdf;
 using System.Diagnostics;
+using System.Globalization;
+using Microsoft.Win32;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmViewer : Form
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>();
-        private XmlDocument _objCharacterXML = new XmlDocument();
-        private string _strSelectedSheet = "Shadowrun 5";
-        private bool _blnLoading = false;
+        private XmlDocument _objCharacterXml = new XmlDocument {XmlResolver = null};
+        private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
+        private bool _blnLoading;
+        private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
+        private string _strPrintLanguage = GlobalOptions.Language;
+        private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
+        private bool _blnQueueRefresherRun;
+        private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
+        private bool _blnQueueOutputGeneratorRun;
+        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),Guid.NewGuid() + ".htm");
         #region Control Events
         public frmViewer()
         {
-            _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
-            if (_strSelectedSheet.StartsWith("Shadowrun 4"))
-                _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
+            _workerRefresher.WorkerSupportsCancellation = true;
+            _workerRefresher.WorkerReportsProgress = false;
+            _workerRefresher.DoWork += AsyncRefresh;
+            _workerRefresher.RunWorkerCompleted += FinishRefresh;
+            _workerOutputGenerator.WorkerSupportsCancellation = true;
+            _workerOutputGenerator.WorkerReportsProgress = false;
+            _workerOutputGenerator.DoWork += AsyncGenerateOutput;
+            _workerOutputGenerator.RunWorkerCompleted += FinishGenerateOutput;
+            if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
+            {
+                _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+            }
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
+                else if (!_strSelectedSheet.Contains(GlobalOptions.Language) && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
+                {
+                    _strSelectedSheet = _strSelectedSheet.Replace(GlobalOptions.Language.Substring(0, 2), GlobalOptions.Language);
+                }
+            }
+            else
+            {
+                int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
+                if (intLastIndexDirectorySeparator != -1 && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
+                    _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
+            }
 
-            Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
-            objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
-            objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
-            objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
+
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
 
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            ContextMenuStrip[] lstCMSToTranslate = {
+                cmsPrintButton,
+                cmsSaveButton
+            };
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    {
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    }
+                }
+            }
         }
 
         private void frmViewer_Load(object sender, EventArgs e)
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
+            cboLanguage  = PopulateLanguageList(cboLanguage, _strSelectedSheet);
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-            if (string.IsNullOrEmpty(cboXSLT.Text))
-                cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
-            cboXSLT.EndUpdate();
-            GenerateOutput();
+            if (cboXSLT.SelectedIndex == -1)
+            {
+                string strLanguage = cboLanguage.SelectedValue?.ToString();
+                int intNameIndex;
+                if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
+                else
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                if (intNameIndex != -1)
+                    cboXSLT.SelectedIndex = intNameIndex;
+                else if (cboXSLT.Items.Count > 0)
+                {
+                    if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                        _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    else
+                        _strSelectedSheet = Path.Combine(strLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    cboXSLT.SelectedValue = _strSelectedSheet;
+                    if (cboXSLT.SelectedIndex == -1)
+                    {
+                        cboXSLT.SelectedIndex = 0;
+                        _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
+                    }
+                }
+            }
             _blnLoading = false;
+            SetDocumentText(LanguageManager.GetString("String_Loading_Characters"));
+
+            Application.Idle += RunQueuedWorkers;
+        }
+
+        private void RunQueuedWorkers(object sender, EventArgs e)
+        {
+            if (_blnQueueRefresherRun)
+            {
+                if (!_workerRefresher.IsBusy)
+                    _workerRefresher.RunWorkerAsync();
+            }
+            else if (_blnQueueOutputGeneratorRun)
+            {
+                if (!_workerOutputGenerator.IsBusy)
+                    _workerOutputGenerator.RunWorkerAsync();
+            }
         }
 
         private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
@@ -73,8 +160,8 @@ namespace Chummer
             // Re-generate the output when a new sheet is selected.
             if (!_blnLoading)
             {
-                _strSelectedSheet = cboXSLT.SelectedValue.ToString();
-                GenerateOutput();
+                _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                RefreshSheet();
             }
         }
 
@@ -88,10 +175,10 @@ namespace Chummer
             webBrowser1.ShowPrintPreviewDialog();
         }
 
-        private void cmdSaveHTML_Click(object sender, EventArgs e)
+        private void tsSaveAsHTML_Click(object sender, EventArgs e)
         {
             // Save the generated output as HTML.
-            SaveFileDialog1.Filter = "HTML Page|*.htm";
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html") + '|' + LanguageManager.GetString("DialogFilter_All");
             SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
@@ -99,15 +186,14 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8);
-            objWriter.Write(webBrowser1.DocumentText);
-            objWriter.Close();
+            using (TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
+                objWriter.Write(webBrowser1.DocumentText);
         }
 
         private void tsSaveAsXml_Click(object sender, EventArgs e)
         {
             // Save the printout XML generated by the character.
-            SaveFileDialog1.Filter = "XML File|*.xml";
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml") + '|' + LanguageManager.GetString("DialogFilter_All");
             SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsXml");
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
@@ -117,22 +203,29 @@ namespace Chummer
 
             try
             {
-                _objCharacterXML.Save(strSaveFile);
+                _objCharacterXml.Save(strSaveFile);
             }
             catch (XmlException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
             }
-            catch (System.UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
             }
         }
 
         private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Application.Idle -= RunQueuedWorkers;
+
+            if (_workerRefresher.IsBusy)
+                _workerRefresher.CancelAsync();
+            if (_workerOutputGenerator.IsBusy)
+                _workerOutputGenerator.CancelAsync();
+
             // Remove the mugshots directory when the form closes.
-            string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+            string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
             if (Directory.Exists(mugshotsDirectoryPath))
             {
                 try
@@ -145,156 +238,258 @@ namespace Chummer
             }
 
             // Clear the reference to the character's Print window.
-            if (_lstCharacters.Count > 0)
-            {
-                foreach (Character objCharacter in _lstCharacters)
-                    objCharacter.PrintWindow = null;
-            }
+            foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
+                if (objCharacterShared.PrintWindow == this)
+                    objCharacterShared.PrintWindow = null;
         }
         #endregion
 
         #region Methods
         /// <summary>
+        /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
+        /// </summary>
+        private void SetDocumentText(string strText)
+        {
+            cmdPrint.Enabled = false;
+            tsPrintPreview.Enabled = false;
+            tsSaveAsHtml.Enabled = false;
+            cmdSaveAsPdf.Enabled = false;
+            webBrowser1.DocumentText =
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
+                "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
+                "<body style=\"width:100%;height:" + webBrowser1.Height.ToString(GlobalOptions.InvariantCultureInfo) + ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
+                strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").Replace("\r", string.Empty) +
+                "</body></html>";
+        }
+
+        /// <summary>
+        /// Asynchronously update the characters (and therefore content) of the Viewer window.
+        /// </summary>
+        public void RefreshCharacters()
+        {
+            Cursor = Cursors.AppStarting;
+            if (_workerOutputGenerator.IsBusy)
+                _workerOutputGenerator.CancelAsync();
+            if (_workerRefresher.IsBusy)
+                _workerRefresher.CancelAsync();
+            _blnQueueRefresherRun = true;
+        }
+
+        /// <summary>
+        /// Asynchronously update the sheet of the Viewer window.
+        /// </summary>
+        public void RefreshSheet()
+        {
+            Cursor = Cursors.AppStarting;
+            SetDocumentText(LanguageManager.GetString("String_Generating_Sheet"));
+            if (_workerOutputGenerator.IsBusy)
+                _workerOutputGenerator.CancelAsync();
+            _blnQueueOutputGeneratorRun = true;
+        }
+
+        /// <summary>
+        /// Update the internal XML of the Viewer window.
+        /// </summary>
+        private void AsyncRefresh(object sender, DoWorkEventArgs e)
+        {
+            _blnQueueRefresherRun = false;
+            // Write the Character information to a MemoryStream so we don't need to create any files.
+            using (MemoryStream objStream = new MemoryStream())
+            {
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+                {
+                    // Begin the document.
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("characters");
+
+                    foreach (Character objCharacter in _lstCharacters)
+                    {
+                        if (_workerRefresher.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+#if DEBUG
+                objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
+#else
+                        objCharacter.PrintToStream(objWriter, _objPrintCulture, _strPrintLanguage);
+#endif
+                    }
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+                    if (_workerRefresher.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+
+                    objStream.Position = 0;
+
+                    // Read the stream.
+                    XmlDocument objCharacterXml = new XmlDocument
+                    {
+                        XmlResolver = null
+                    };
+                    // Read it back in as an XmlDocument.
+                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                    {
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                        {
+                            if (_workerRefresher.CancellationPending)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            // Put the stream into an XmlDocument and send it off to the Viewer.
+                            objCharacterXml.Load(objXmlReader);
+                        }
+                    }
+
+                    if (_workerRefresher.CancellationPending)
+                        e.Cancel = true;
+                    else
+                        _objCharacterXml = objCharacterXml;
+                }
+            }
+        }
+
+        private void FinishRefresh(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (!e.Cancelled)
+            {
+                tsSaveAsXml.Enabled = _objCharacterXml != null;
+                RefreshSheet();
+            }
+        }
+
+        /// <summary>
         /// Run the generated XML file through the XSL transformation engine to create the file output.
         /// </summary>
-        private void GenerateOutput()
+        private void AsyncGenerateOutput(object sender, DoWorkEventArgs e)
         {
-            string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
+            _blnQueueOutputGeneratorRun = false;
+            string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
-                string strReturn = string.Format("File not found when attempting to load {0}\n", _strSelectedSheet);
-                Log.Enter(strReturn);
-                MessageBox.Show(strReturn);
+                string strReturn = "File not found when attempting to load " + _strSelectedSheet + Environment.NewLine;
+                Log.Debug(strReturn);
+                Program.MainForm.ShowMessageBox(strReturn);
                 return;
             }
 #if DEBUG
-            XslCompiledTransform objXSLTransform = new XslCompiledTransform(true);
+            XslCompiledTransform objXslTransform = new XslCompiledTransform(true);
 #else
-            XslCompiledTransform objXSLTransform = new XslCompiledTransform();
+            XslCompiledTransform objXslTransform = new XslCompiledTransform();
 #endif
             try
             {
-                objXSLTransform.Load(strXslPath);
+                objXslTransform.Load(strXslPath);
             }
             catch (Exception ex)
             {
-                string strReturn = string.Format("Error attempting to load {0}\n", _strSelectedSheet);
-                Log.Enter(strReturn);
+                string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
+                Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
-                MessageBox.Show(strReturn);
+                Program.MainForm.ShowMessageBox(strReturn);
                 return;
             }
 
-            MemoryStream objStream = new MemoryStream();
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
-
-            objXSLTransform.Transform(_objCharacterXML, null, objWriter);
-            objStream.Position = 0;
-
-            // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
-            //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
-            //webBrowser1.Navigate("D:\\temp\\output.htm");
-
-            if (!GlobalOptions.PrintToFileFirst)
+            if (_workerOutputGenerator.CancellationPending)
             {
-                // Populate the browser using the DocumentStream.
-                webBrowser1.DocumentStream = objStream;
+                e.Cancel = true;
+                return;
             }
-            else
+
+            using (MemoryStream objStream = new MemoryStream())
             {
-                // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-                // Read in the resulting code and pass it to the browser.
-                string strName = Guid.NewGuid().ToString() + ".htm";
-                StreamReader objReader = new StreamReader(objStream);
-                string strOutput = objReader.ReadToEnd();
-                File.WriteAllText(strName, strOutput);
-                string curDir = Directory.GetCurrentDirectory();
-                webBrowser1.Url = new Uri(String.Format("file:///{0}/" + strName, curDir));
-                File.Delete(strName);
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+                {
+                    objXslTransform.Transform(_objCharacterXml, objWriter);
+                    if (_workerOutputGenerator.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    objStream.Position = 0;
+
+                    // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
+                    //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
+                    //webBrowser1.Navigate("D:\\temp\\output.htm");
+
+                    if (!GlobalOptions.PrintToFileFirst)
+                    {
+                        // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
+                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                        {
+                            webBrowser1.DocumentText = objReader.ReadToEnd();
+                        }
+                    }
+                    else
+                    {
+                        // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+                        // Read in the resulting code and pass it to the browser.
+
+                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                        {
+                            string strOutput = objReader.ReadToEnd();
+                            File.WriteAllText(_strFilePathName, strOutput);
+                        }
+
+                        webBrowser1.Url = new Uri("file:///" + _strFilePathName);
+                    }
+                }
             }
         }
 
-        /// <summary>
-        /// Asynchronously update the contents of the Viewer window.
-        /// </summary>
-        public void RefreshView()
+        private void FinishGenerateOutput(object sender, RunWorkerCompletedEventArgs e)
         {
-            // Create a delegate to handle refreshing the window.
-            MethodInvoker objRefreshDelegate = AsyncRefresh;
-            objRefreshDelegate.BeginInvoke(null, null);
+            if (!e.Cancelled)
+            {
+                cmdPrint.Enabled = true;
+                tsPrintPreview.Enabled = true;
+                tsSaveAsHtml.Enabled = true;
+                cmdSaveAsPdf.Enabled = true;
+            }
+
+            if (GlobalOptions.PrintToFileFirst)
+            {
+                try
+                {
+                    File.Delete(_strFilePathName);
+                }
+                catch (IOException)
+                {
+                    Utils.BreakIfDebug();
+                }
+            }
+
+            Cursor = Cursors.Default;
         }
 
-        /// <summary>
-        /// Update the contents of the Viewer window.
-        /// </summary>
-        private void AsyncRefresh()
-        {
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            MemoryStream objStream = new MemoryStream();
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
-
-            // Being the document.
-            objWriter.WriteStartDocument();
-
-            // </characters>
-            objWriter.WriteStartElement("characters");
-
-            foreach (Character objCharacter in _lstCharacters)
-#if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter);
-#else
-                objCharacter.PrintToStream(objWriter);
-#endif
-
-            // </characters>
-            objWriter.WriteEndElement();
-
-            // Finish the document and flush the Writer and Stream.
-            objWriter.WriteEndDocument();
-            objWriter.Flush();
-            objStream.Flush();
-
-            // Read the stream.
-            StreamReader objReader = new StreamReader(objStream);
-            objStream.Position = 0;
-            XmlDocument objCharacterXML = new XmlDocument();
-
-            // Put the stream into an XmlDocument and send it off to the Viewer.
-            string strXML = objReader.ReadToEnd();
-            objCharacterXML.LoadXml(strXML);
-
-            objWriter.Close();
-            objStream.Close();
-
-            _objCharacterXML = objCharacterXML;
-            GenerateOutput();
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = cmdPrint.Width;
-            cmdPrint.AutoSize = false;
-            cmdPrint.Width = intWidth + 20;
-            cmdSaveHTML.Left = cmdPrint.Right + 6;
-        }
-
-        private void tsSaveAsPdf_Click(object sender, EventArgs e)
+        private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.
-            SaveFileDialog1.Filter = "PDF|*.pdf";
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' + LanguageManager.GetString("DialogFilter_All");
             SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsPdf");
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            //PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
-            //objpdf.Save(strSaveFile);
 
-            if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)))
+            if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                 return;
             }
             if (File.Exists(strSaveFile))
@@ -305,143 +500,118 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
             }
 
-            Dictionary<string, string> dicParams = new Dictionary<string, string>();
-            dicParams.Add("encoding", "UTF-8");
-            dicParams.Add("dpi", "300");
-            dicParams.Add("margin-top", "13");
-            dicParams.Add("margin-bottom", "19");
-            dicParams.Add("margin-left", "13");
-            dicParams.Add("margin-right", "13");
-            dicParams.Add("image-quality", "100");
-            dicParams.Add("print-media-type", "");
-            PdfConvert.ConvertHtmlToPdf(new PdfDocument
+            PdfDocument objPdfDocument = new PdfDocument
             {
-                Html = webBrowser1.DocumentText,
-                ExtraParams = dicParams
-            }, new PdfConvertEnvironment
+                Html = webBrowser1.DocumentText
+            };
+            objPdfDocument.ExtraParams.Add("encoding", "UTF-8");
+            objPdfDocument.ExtraParams.Add("dpi", "300");
+            objPdfDocument.ExtraParams.Add("margin-top", "13");
+            objPdfDocument.ExtraParams.Add("margin-bottom", "19");
+            objPdfDocument.ExtraParams.Add("margin-left", "13");
+            objPdfDocument.ExtraParams.Add("margin-right", "13");
+            objPdfDocument.ExtraParams.Add("image-quality", "100");
+            objPdfDocument.ExtraParams.Add("print-media-type", "");
+
+            try
             {
-                WkHtmlToPdfPath = Path.Combine(Application.StartupPath,"wkhtmltopdf.exe"),
-                Timeout = 60000,
-                TempFolderPath = Path.GetTempPath()
-            }, new PdfOutput
-            {
-                OutputFilePath = strSaveFile
-            });
-            if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
-            {
-                Uri uriPath = new Uri(strSaveFile);
-                string strParams = GlobalOptions.PDFParameters;
-                strParams = strParams.Replace("{page}", 1.ToString());
-                strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-                strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
-                ProcessStartInfo objProgress = new ProcessStartInfo
+                PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
                 {
-                    FileName = GlobalOptions.PDFAppPath,
-                    Arguments = strParams
-                };
-                Process.Start(objProgress);
+                    WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe"),
+                    Timeout = 60000,
+                    TempFolderPath = Path.GetTempPath()
+                }, new PdfOutput
+                {
+                    OutputFilePath = strSaveFile
+                });
+
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
+                {
+                    Uri uriPath = new Uri(strSaveFile);
+                    string strParams = GlobalOptions.PDFParameters;
+                    strParams = strParams
+                        .Replace("{page}", "1")
+                        .Replace("{localpath}", uriPath.LocalPath)
+                        .Replace("{absolutepath}", uriPath.AbsolutePath);
+                    ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
+                    {
+                        FileName = GlobalOptions.PDFAppPath,
+                        Arguments = strParams,
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    };
+                    Process.Start(objPdfProgramProcess);
+                }
             }
-        }
-        private List<ListItem> GetXslFilesFromSheetsDirectory()
-        {
-            var items = new List<ListItem>();
-
-            XmlDocument manifest = XmlManager.Load("sheets.xml");
-            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='en-us']/sheet");
-
-            foreach (XmlNode sheet in sheets)
+            catch (Exception ex)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = sheet["filename"].InnerText;
-                objItem.Name = sheet["name"].InnerText;
-
-                items.Add(objItem);
+                Program.MainForm.ShowMessageBox(ex.ToString());
             }
-
-            return items;
         }
 
-        private List<ListItem> GetXslFilesFromLanguageDirectory()
+        private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            var items = new List<ListItem>();
+            List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            if (GlobalOptions.Language != "en-us")
+            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
-                XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
-                XmlDocument manifest = XmlManager.Load("sheets.xml");
-                XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{GlobalOptions.Language}']/sheet");
-                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-
-                foreach (XmlNode sheet in sheets)
+                if (lstSheetNodes != null)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = Path.Combine(GlobalOptions.Language, sheet["filename"].InnerText);
-                    objItem.Name = strLanguage + ": " + sheet["name"].InnerText;
-
-                    items.Add(objItem);
+                    foreach (XmlNode xmlSheet in lstSheetNodes)
+                    {
+                        lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, xmlSheet["filename"]?.InnerText ?? string.Empty) : xmlSheet["filename"]?.InnerText ?? string.Empty,
+                            xmlSheet["name"]?.InnerText ?? string.Empty));
+                    }
                 }
             }
 
-            return items;
+            return lstSheets;
         }
 
-        private List<ListItem> GetXslFilesFromOmaeDirectory()
+        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
-            var items = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+            string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae");
 
-            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
+            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
             // (hidden because they are partial templates that cannot be used on their own).
-            List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath);
-
-            foreach (string fileName in fileNames)
+            foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.Combine("omae", fileName);
-                objItem.Name = menuMainOmae + ": " + fileName;
-
-                items.Add(objItem);
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space") + fileName));
             }
 
-            return items;
+            return lstItems;
         }
-        private List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
-            var names = new List<string>();
-
             if (Directory.Exists(path))
             {
-                names = Directory.GetFiles(path)
-                    .Where(s => s.EndsWith(".xsl"))
-                    .Select(Path.GetFileNameWithoutExtension).ToList();
+                return Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories).Select(Path.GetFileNameWithoutExtension).ToList();
             }
 
-            return names;
+            return new List<string>();
         }
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = new List<ListItem>();
-
-            lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
-            lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
+            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
-                lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+                foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
+                    lstFiles.Add(objFile);
             }
 
             cboXSLT.BeginUpdate();
@@ -450,59 +620,145 @@ namespace Chummer
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
-#endregion
 
-#region Properties
-        /// <summary>
-        /// Character's XmlDocument.
-        /// </summary>
-        public XmlDocument CharacterXML
+        public static ElasticComboBox PopulateLanguageList(ElasticComboBox myCboLanguage, string myStrSelectedSheet)
         {
-            set
+            if (myCboLanguage == null)
+                throw new ArgumentNullException(nameof(myCboLanguage));
+            string strDefaultSheetLanguage = GlobalOptions.Language;
+            int? intLastIndexDirectorySeparator = myStrSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && (intLastIndexDirectorySeparator != -1))
             {
-                _objCharacterXML = value;
+                string strSheetLanguage = myStrSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
+            myCboLanguage.BeginUpdate();
+            myCboLanguage.ValueMember = "Value";
+            myCboLanguage.DisplayMember = "Name";
+            myCboLanguage.DataSource = LstLanguages;
+            myCboLanguage.SelectedValue = strDefaultSheetLanguage;
+            if (myCboLanguage.SelectedIndex == -1)
+                myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+            myCboLanguage.EndUpdate();
+            return myCboLanguage;
+        }
+
+        private static List<ListItem> _lstLanguages;
+
+        public static List<ListItem> LstLanguages
+        {
+            get
+            {
+                if (_lstLanguages == null)
+                {
+                    _lstLanguages = new List<ListItem>();
+                    string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                    string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+                    foreach (string filePath in languageFilePaths)
+                    {
+                        XmlDocument xmlDocument = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+
+                        try
+                        {
+                            using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                    xmlDocument.Load(objXmlReader);
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+
+                        XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                        if (node == null)
+                            continue;
+
+                        string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
+                        if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
+                        {
+                            _lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
+                        }
+                    }
+                    _lstLanguages.Sort(CompareListItems.CompareNames);
+                }
+
+                return _lstLanguages;
             }
         }
 
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public string SelectedSheet
+        public void SetSelectedSheet(string strSheet)
         {
-            set
-            {
-                _strSelectedSheet = value;
-            }
+            _strSelectedSheet = strSheet;
         }
 
         /// <summary>
-        /// List of Characters to print.
+        /// Set List of Characters to print.
         /// </summary>
-        public List<Character> Characters
+        public void SetCharacters(params Character[] lstCharacters)
         {
-            set
-            {
-                _lstCharacters = value;
-            }
+            _lstCharacters = new List<Character>(lstCharacters);
         }
-#endregion
+        #endregion
 
-        private void ContextMenu_Opening(object sender, CancelEventArgs e)
+        private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
+            _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
+            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
+            try
             {
-                if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);
             }
-        }
+            catch (CultureNotFoundException)
+            {
+            }
+            if (_blnLoading)
+                return;
 
-        private void ContextMenu_DropDownOpening(object sender, EventArgs e)
-        {
-            foreach (ToolStripItem objItem in ((ToolStripDropDownItem)sender).DropDownItems)
+            string strOldSelected = _strSelectedSheet;
+            // Strip away the language prefix
+            if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+            _blnLoading = true;
+            PopulateXsltList();
+            string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
+            if (strNewLanguage == strOldSelected)
             {
-                if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                _strSelectedSheet = strNewLanguage == GlobalOptions.DefaultLanguage ? strOldSelected : Path.Combine(strNewLanguage, strOldSelected);
             }
+            cboXSLT.SelectedValue = _strSelectedSheet;
+            // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+            if (cboXSLT.SelectedIndex == -1)
+            {
+                var intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheet : GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                if (intNameIndex != -1)
+                    cboXSLT.SelectedIndex = intNameIndex;
+                else if (cboXSLT.Items.Count > 0)
+                {
+                    _strSelectedSheet = strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheetDefaultValue : Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    cboXSLT.SelectedValue = _strSelectedSheet;
+                    if (cboXSLT.SelectedIndex == -1)
+                    {
+                        cboXSLT.SelectedIndex = 0;
+                        _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
+                    }
+                }
+            }
+            _blnLoading = false;
+            RefreshCharacters();
         }
     }
 }

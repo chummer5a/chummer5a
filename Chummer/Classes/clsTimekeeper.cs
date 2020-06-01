@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,40 +16,46 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+ using System.Diagnostics;
+ using System.Text;
+ using NLog;
 
 namespace Chummer
 {
-    static class Timekeeper
+    public static class Timekeeper
     {
-        static Stopwatch time = new Stopwatch();
-        private static readonly Dictionary<String, TimeSpan> Starts = new Dictionary<string, TimeSpan>(); 
-        private static readonly Dictionary<string, Tuple<TimeSpan, int>> Statistics = new Dictionary<string, Tuple<TimeSpan, int>>();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Stopwatch s_Time = new Stopwatch();
+        private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
+        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
         static Timekeeper ()
         {
-            time.Start();
+            s_Time.Start();
         }
 
-        public static void Start(string taskname)
+        public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
         {
-            if (!Starts.ContainsKey(taskname))
-            {
-                Starts.Add(taskname, time.Elapsed);
-            }
+            var dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+            s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+            return dependencyActivity;
+        }
+
+        public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
+        {
+            var dependencyActivity = new CustomActivity(taskname, parentActivity);
+            s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+            return dependencyActivity;
         }
 
         public static TimeSpan Elapsed(string taskname)
         {
-            TimeSpan objStartTimeSpan;
-            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
+            if (s_DictionaryStarts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
             {
-                return time.Elapsed - objStartTimeSpan;
+                return s_Time.Elapsed - objStartTimeSpan;
             }
             else
             {
@@ -59,48 +65,46 @@ namespace Chummer
 
         public static TimeSpan Finish(string taskname)
         {
-            TimeSpan objStartTimeSpan;
-            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
+            TimeSpan final = TimeSpan.Zero;
+            if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
             {
-                TimeSpan final = time.Elapsed - objStartTimeSpan;
+                final = s_Time.Elapsed - objStartTimeSpan;
 
-                Starts.Remove(taskname);
-                string logentry = $"Task \"{taskname}\" finished in {final}";
-                Chummer.Log.Info(logentry);
+                string logentry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+                    taskname, final);
+                //Logger.Trace(logentry);
 
                 Debug.WriteLine(logentry);
 
-                Tuple<TimeSpan, int> existing;
-                if (Statistics.TryGetValue(taskname, out existing))
+                if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
                 {
-                    Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
+                    s_DictionaryStatistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
                 }
                 else
                 {
-                    Statistics.Add(taskname, new Tuple<TimeSpan, int>(final, 1));
+                    s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
-                
-                return final;
             }
             else
             {
                 Debug.WriteLine("Non started task \"" + taskname + "\" finished");
-                return TimeSpan.Zero;
             }
+            return final;
         }
 
         public static void Log()
         {
-            StringBuilder sb = new StringBuilder("Time statistics\n");
+            StringBuilder sb = new StringBuilder("Time statistics" + Environment.NewLine);
 
-            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in Statistics)
+            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
-                sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
+                sb.AppendLine(string.Format(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}",
+                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1));
             }
 
             string strined = sb.ToString();
             Debug.WriteLine(strined);
-            Chummer.Log.Info(strined);
+            Logger.Info(strined);
         }
 
     }

@@ -16,67 +16,86 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.IO;
 using System.Text;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
     public partial class frmSelectPACKSKit : Form
     {
         private string _strSelectedKit = string.Empty;
-        private bool _blnAddAgain = false;
-        private static string _strSelectCategory = string.Empty;
+        private bool _blnAddAgain;
+        private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
 
         // Not readonly because content can change while form is up
-        private XmlDocument _objXmlDocument = null;
+        private XPathNavigator _xmlBaseChummerNode;
+        private readonly XPathNavigator _xmlGearsBaseGearsNode;
+        private readonly XPathNavigator _xmlBiowareBaseChummerNode;
+        private readonly XPathNavigator _xmlCyberwareBaseChummerNode;
+        private readonly XPathNavigator _xmlWeaponsBaseChummerNode;
+        private readonly XPathNavigator _xmlArmorBaseChummerNode;
+        private readonly XPathNavigator _xmlQualitiesBaseQualitiesNode;
+        private readonly XPathNavigator _xmlSkillsBaseChummerNode;
+        private readonly XPathNavigator _xmlSpellsBaseSpellsNode;
+        private readonly XPathNavigator _xmlComplexFormsBaseChummerNode;
+        private readonly XPathNavigator _xmlVehiclesBaseChummerNode;
+        private readonly XPathNavigator _xmlPowersBasePowersNode;
+        private readonly XPathNavigator _xmlMartialArtsBaseChummerNode;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the PACKS information.
-            _objXmlDocument = XmlManager.Load("packs.xml");
+            _xmlBaseChummerNode = XmlManager.Load("packs.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlGearsBaseGearsNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer/gears");
+            _xmlWeaponsBaseChummerNode = XmlManager.Load("weapons.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlArmorBaseChummerNode = XmlManager.Load("armor.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlQualitiesBaseQualitiesNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer/qualities");
+            _xmlSkillsBaseChummerNode = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlSpellsBaseSpellsNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
+            _xmlComplexFormsBaseChummerNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlVehiclesBaseChummerNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBiowareBaseChummerNode = XmlManager.Load("bioware.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlCyberwareBaseChummerNode = XmlManager.Load("cyberware.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlPowersBasePowersNode = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer/powers");
+            _xmlMartialArtsBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectPACKSKit_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
+            // Populate the PACKS Category list.
+            foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.Select("categories/category[not(hide)]"))
             {
-                if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = string.Empty;
+                string strInnerText = objXmlCategory.Value;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+            }
+            _lstCategory.Sort(CompareListItems.CompareNames);
+
+            if (_lstCategory.Count > 0)
+            {
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
-            // Populate the PACKS Category list.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {
-                if (objXmlCategory["hide"] != null)
-                    continue;
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                _lstCategory.Add(objItem);
-            }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else
-                cboCategory.SelectedValue = _strSelectCategory;
+            if (!string.IsNullOrEmpty(s_StrSelectCategory))
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -88,19 +107,32 @@ namespace Chummer
             // Update the list of Kits based on the selected Category.
             List<ListItem> lstKit = new List<ListItem>();
 
-            // Retrieve the list of Kits for the selected Category.
-            XmlNodeList objXmlPacksList = _objXmlDocument.SelectNodes("/chummer/packs/pack[category = \"" + cboCategory.SelectedValue + "\"]");
-            foreach (XmlNode objXmlPack in objXmlPacksList)
+            string strFilter = "not(hide)";
+            string strCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
+                strFilter += " and category = \"" + cboCategory.SelectedValue + '\"';
+            else
             {
-                if (objXmlPack["hide"] != null)
-                    continue;
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlPack["name"].InnerText;
-                objItem.Name = objXmlPack["translate"]?.InnerText ?? objXmlPack["name"].InnerText;
-                lstKit.Add(objItem);
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strItem))
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                }
             }
-            SortListItem objSort = new SortListItem();
-            lstKit.Sort(objSort.Compare);
+
+            // Retrieve the list of Kits for the selected Category.
+            foreach (XPathNavigator objXmlPack in _xmlBaseChummerNode.Select("packs/pack[" + strFilter + "]"))
+            {
+                string strName = objXmlPack.SelectSingleNode("name")?.Value;
+                // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
+                lstKit.Add(new ListItem(strName + '<' + objXmlPack.SelectSingleNode("category")?.Value, objXmlPack.SelectSingleNode("translate")?.Value ?? strName));
+            }
+            lstKit.Sort(CompareListItems.CompareNames);
             lstKits.BeginUpdate();
             lstKits.DataSource = null;
             lstKits.ValueMember = "Value";
@@ -108,29 +140,34 @@ namespace Chummer
             lstKits.DataSource = lstKit;
             lstKits.EndUpdate();
 
-            if (lstKits.Items.Count == 0)
+            if (lstKit.Count == 0)
                 treContents.Nodes.Clear();
 
-            if (cboCategory.SelectedValue.ToString() == "Custom")
-                cmdDelete.Visible = true;
-            else
-                cmdDelete.Visible = false;
+            cmdDelete.Visible = false;
         }
 
         private void lstKits_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstKits.Text))
+            string strSelectedKit = lstKits.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedKit))
+            {
+                cmdDelete.Visible = false;
                 return;
+            }
 
             treContents.Nodes.Clear();
-            XmlNode objXmlPack = _objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + lstKits.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
-            XmlDocument objXmlItemDocument = null;
-
-            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-
-            foreach (XmlNode objXmlItem in objXmlPack.ChildNodes)
+            string[] strIdentifiers = strSelectedKit.Split('<');
+            cmdDelete.Visible = strIdentifiers[1] == "Custom";
+            XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = \"" + strIdentifiers[1] + "\"]");
+            if (objXmlPack == null)
             {
-                if (objXmlItem["hide"] != null)
+                return;
+            }
+
+            string strSpace = LanguageManager.GetString("String_Space");
+            foreach (XPathNavigator objXmlItem in objXmlPack.SelectChildren(XPathNodeType.Element))
+            {
+                if (objXmlItem.SelectSingleNode("hide") != null)
                     continue;
                 TreeNode objParent = new TreeNode();
                 switch (objXmlItem.Name)
@@ -138,52 +175,59 @@ namespace Chummer
                     case "attributes":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Attributes");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlAttribute in objXmlItem.ChildNodes)
+                        foreach (XPathNavigator objXmlAttribute in objXmlItem.SelectChildren(XPathNodeType.Element))
                         {
-                            if (objXmlAttribute["hide"] != null)
+                            if (objXmlAttribute.SelectSingleNode("hide") != null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = LanguageManager.GetString("String_Attribute" + objXmlAttribute.Name.ToUpper() + "Short") + " " + (Convert.ToInt32(objXmlAttribute.InnerText) - (6 - _objCharacter.GetAttribute(objXmlAttribute.Name.ToUpper()).MetatypeMaximum)).ToString();
+                            string strNameUpper = objXmlAttribute.Name.ToUpperInvariant();
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short") + strSpace + (Convert.ToInt32(objXmlAttribute.Value, GlobalOptions.InvariantCultureInfo) - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
+                            };
 
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         break;
                     case "qualities":
-                        objXmlItemDocument = XmlManager.Load("qualities.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Qualities");
                         treContents.Nodes.Add(objParent);
                         // Positive Qualities.
-                        foreach (XmlNode objXmlQuality in objXmlItem.SelectNodes("positive/quality"))
+                        foreach (XPathNavigator objXmlQuality in objXmlItem.Select("positive/quality"))
                         {
-                            if (objXmlQuality["hide"] != null)
+                            if (objXmlQuality.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlQuality.InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
+                            };
 
-                            if (objXmlQuality.Attributes["select"] != null)
-                                objChild.Text += $" ({LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText)})";
+                            string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                                objChild.Text += strSpace + '('+ LanguageManager.TranslateExtra(strSelect)+ ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
 
                         // Negative Qualities.
-                        foreach (XmlNode objXmlQuality in objXmlItem.SelectNodes("negative/quality"))
+                        foreach (XPathNavigator objXmlQuality in objXmlItem.Select("negative/quality"))
                         {
-                            if (objXmlQuality["hide"] != null)
+                            if (objXmlQuality.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlQuality.Value + "\"]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlQuality.InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
+                            };
 
-                            if (objXmlQuality.Attributes["select"] != null)
-                                objChild.Text += $" ({LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText)})";
+                            string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                                objChild.Text += strSpace + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -191,116 +235,128 @@ namespace Chummer
                     case "nuyenbp":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Nuyen");
                         treContents.Nodes.Add(objParent);
-                        TreeNode objNuyenChild = new TreeNode();
-                        objNuyenChild.Text = LanguageManager.GetString("String_SelectPACKSKit_StartingNuyenBP") + " " + objXmlItem.InnerText;
+                        TreeNode objNuyenChild = new TreeNode
+                        {
+                            Text = LanguageManager.GetString("String_SelectPACKSKit_StartingNuyenBP") + strSpace + objXmlItem.Value
+                        };
                         objParent.Nodes.Add(objNuyenChild);
                         objParent.Expand();
                         break;
                     case "skills":
-                        objXmlItemDocument = XmlManager.Load("skills.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Skills");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
+                        foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skill"))
                         {
-                            if (objXmlSkill["hide"] != null)
+                            if (objXmlSkill.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objXmlSkill["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlSkill.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skills/skill[name = " + strName.CleanXPath() + "]");
+                            if (objNode.SelectSingleNode("hide") != null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
-                            objChild.Text += " " + objXmlSkill["rating"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
+                            objChild.Text += strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
 
-                            if (objXmlSkill["spec"] != null)
-                                objChild.Text += " (" + objXmlSkill["spec"].InnerText + ")";
+                            string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
+                            if (!string.IsNullOrEmpty(strSpec))
+                                objChild.Text += strSpace + '(' + strSpec + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
-                        foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skillgroup"))
+                        foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skillgroup"))
                         {
-                            if (objXmlSkill["hide"] != null)
+                            if (objXmlSkill.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + objXmlSkill["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlSkill.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skillgroups/name[. = \"" + strName + "\"]");
+                            if (objNode.SelectSingleNode("hide") != null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode.Attributes["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
-                            objChild.Text += $" {LanguageManager.GetString("String_SelectPACKSKit_Group")} {objXmlSkill["rating"].InnerText}";
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("@translate")?.Value ?? strName
+                            };
+                            objChild.Text += strSpace + LanguageManager.GetString("String_SelectPACKSKit_Group")+ strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
 
-                            if (objXmlSkill["spec"] != null)
-                                objChild.Text += $" ({objXmlSkill["spec"].InnerText})";
+                            string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
+                            if (!string.IsNullOrEmpty(strSpec))
+                                objChild.Text += strSpace + '(' + strSpec + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         break;
                     case "knowledgeskills":
-                        objXmlItemDocument = XmlManager.Load("skills.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_KnowledgeSkills");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
+                        foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skill"))
                         {
-                            if (objXmlSkill["hide"] != null)
+                            if (objXmlSkill.SelectSingleNode("hide") != null)
                                 continue;
                             TreeNode objChild = new TreeNode();
-                            if (objXmlSkill["name"] != null)
+                            string strName = objXmlSkill.SelectSingleNode("name").Value;
+                            if (!string.IsNullOrEmpty(strName))
                             {
-                                XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + objXmlSkill["name"].InnerText + "\"]");
-                                if (objNode["hide"] != null)
+                                XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("knowledgeskills/skill[name = " + strName.CleanXPath() + "]");
+                                if (objNode.SelectSingleNode("hide") != null)
                                     continue;
-                                objChild.Text = objNode?["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+                                objChild.Text = objNode?.SelectSingleNode("translate")?.Value ?? strName;
                             }
-                            objChild.Text += " " + objXmlSkill["rating"].InnerText;
+                            objChild.Text += strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
 
-                            if (objXmlSkill["spec"] != null)
-                                objChild.Text += $" ({objXmlSkill["spec"].InnerText})";
+                            string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
+                            if (!string.IsNullOrEmpty(strSpec))
+                                objChild.Text += strSpace + '(' + strSpec + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         break;
                     case "selectmartialart":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
-                        treContents.Nodes.Add(objParent);
+                        {
+                            objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
+                            treContents.Nodes.Add(objParent);
 
-                        int intRating = 1;
-                        string strSelect = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
-                        if (objXmlItem.Attributes["select"] != null)
-                            strSelect = objXmlItem.Attributes["select"].InnerText;
-                        if (objXmlItem.Attributes["rating"] != null)
-                            intRating = Convert.ToInt32(objXmlItem.Attributes["rating"].InnerText);
+                            int intRating = Convert.ToInt32(objXmlItem.SelectSingleNode("@rating")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
+                            string strSelect = objXmlItem.SelectSingleNode("@select")?.Value ?? LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
 
-                        TreeNode objMartialArt = new TreeNode();
-                        objMartialArt.Text = strSelect + " " + LanguageManager.GetString("String_Rating") + " " + intRating.ToString();
-                        objParent.Nodes.Add(objMartialArt);
-                        objParent.Expand();
-                        break;
+                            TreeNode objMartialArt = new TreeNode
+                            {
+                                Text = strSelect + strSpace + LanguageManager.GetString("String_Rating") + strSpace + intRating.ToString(GlobalOptions.CultureInfo)
+                            };
+                            objParent.Nodes.Add(objMartialArt);
+                            objParent.Expand();
+                            break;
+                        }
                     case "martialarts":
-                        objXmlItemDocument = XmlManager.Load("martialarts.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_MartialArts");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlArt in objXmlItem.SelectNodes("martialart"))
+                        foreach (XPathNavigator objXmlArt in objXmlItem.Select("martialart"))
                         {
-                            if (objXmlArt["hide"] != null)
+                            if (objXmlArt.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + objXmlArt["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlArt.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlArt["name"].InnerText;
-                            objChild.Text += " " + objXmlArt["rating"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
+                            objChild.Text += strSpace + objXmlArt.SelectSingleNode("rating")?.Value;
 
                             // Check for Advantages.
-                            foreach (XmlNode objXmlAdvantage in objXmlArt.SelectNodes("techniques/technique"))
+                            foreach (XPathNavigator objXmlAdvantage in objXmlArt.Select("techniques/technique"))
                             {
-                                if (objXmlAdvantage["hide"] != null)
+                                if (objXmlAdvantage.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + objXmlArt["name"].InnerText + "\"]/techniques/technique[name = \"" + objXmlAdvantage.InnerText + "\"]");
-                                if (objNode["hide"] != null)
+                                string strAdvantageName = objXmlAdvantage.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + _objCharacter.Options.BookXPath() + ") and name = " + strAdvantageName.CleanXPath() + "]");
+                                if (objNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode.Attributes["translate"]?.InnerText ?? objXmlAdvantage["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("@translate")?.Value ?? strAdvantageName
+                                };
 
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
@@ -310,74 +366,86 @@ namespace Chummer
                             objParent.Expand();
                         }
 
-                        foreach (XmlNode objXmlManeuver in objXmlItem.SelectNodes("maneuver"))
+                        foreach (XPathNavigator objXmlManeuver in objXmlItem.Select("maneuver"))
                         {
-                            if (objXmlManeuver["hide"] != null)
+                            if (objXmlManeuver.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + objXmlManeuver.InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strAdvantageName = objXmlManeuver.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("maneuvers/maneuver[(" + _objCharacter.Options.BookXPath() + ") and name = " + strAdvantageName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlManeuver["name"].InnerText;
-                            objChild.Text += " " + objXmlManeuver["rating"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strAdvantageName
+                            };
+                            objChild.Text += strSpace + objXmlManeuver.SelectSingleNode("rating")?.Value;
 
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         break;
                     case "powers":
-                        objXmlItemDocument = XmlManager.Load("powers.xml");
-
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers");
-                        treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlPower in objXmlItem.SelectNodes("power"))
                         {
-                            if (objXmlPower["hide"] != null)
-                                continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
-                                continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                            objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers");
+                            treContents.Nodes.Add(objParent);
+                            foreach (XPathNavigator objXmlPower in objXmlItem.Select("power"))
+                            {
+                                if (objXmlPower.SelectSingleNode("hide") != null)
+                                    continue;
+                                string strName = objXmlPower.SelectSingleNode("name").Value;
+                                XPathNavigator objNode = _xmlPowersBasePowersNode.SelectSingleNode("power[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                if (objNode == null)
+                                    continue;
+                                TreeNode objChild = new TreeNode
+                                {
+                                    Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                                };
 
-                            if (objXmlPower["name"].Attributes["select"] != null)
-                                objChild.Text += " (" + objXmlPower["name"].Attributes["select"].InnerText + ")";
-                            if (objXmlPower["rating"] != null)
-                                objChild.Text += " " + objXmlPower["rating"].InnerText;
-                            objParent.Nodes.Add(objChild);
-                            objParent.Expand();
+                                string strSelect = objXmlPower.SelectSingleNode("name/@select")?.Value ?? string.Empty;
+                                if (!string.IsNullOrEmpty(strSelect))
+                                    objChild.Text += strSpace + '(' + strSelect + ')';
+                                string strRating = objXmlPower.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChild.Text += strSpace + strRating;
+                                objParent.Nodes.Add(objChild);
+                                objParent.Expand();
+                            }
+                            break;
                         }
-                        break;
                     case "programs":
-                        objXmlItemDocument = XmlManager.Load("complexforms.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Programs");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlProgram in objXmlItem.SelectNodes("program"))
+                        foreach (XPathNavigator objXmlProgram in objXmlItem.Select("program"))
                         {
-                            if (objXmlProgram["hide"] != null)
+                            if (objXmlProgram.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlProgram["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlProgram.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("complexforms/complexform[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                            objChild.Text += " " + objXmlProgram["rating"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
+                            objChild.Text += strSpace + objXmlProgram.SelectSingleNode("rating")?.Value;
 
                             // Check for Program Options.
-                            foreach (XmlNode objXmlOption in objXmlProgram.SelectNodes("options/option"))
+                            foreach (XPathNavigator objXmlOption in objXmlProgram.Select("options/option"))
                             {
-                                if (objXmlOption["hide"] != null)
+                                if (objXmlOption.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/options/option[name = \"" + objXmlOption["name"].InnerText + "\"]");
-                                if (objNode["hide"] != null)
+                                string strOptionName = objXmlOption.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[(" + _objCharacter.Options.BookXPath() + ") and name = " + strOptionName.CleanXPath() + "]");
+                                if (objNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strOptionName
+                                };
 
-                                objChildChild.Text = objXmlOption["name"].InnerText;
-                                if (objXmlOption["rating"] != null)
-                                    objChildChild.Text += " " + objXmlOption["rating"].InnerText;
+                                string strRating = objXmlOption.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChildChild.Text += strSpace + strRating;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -387,22 +455,24 @@ namespace Chummer
                         }
                         break;
                     case "spells":
-                        objXmlItemDocument = XmlManager.Load("spells.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spells");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlSpell in objXmlItem.SelectNodes("spell"))
+                        foreach (XPathNavigator objXmlSpell in objXmlItem.Select("spell"))
                         {
-                            if (objXmlSpell["hide"] != null)
+                            if (objXmlSpell.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + objXmlSpell.InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlSpell.Value;
+                            XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode.SelectSingleNode("hide") == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlSpell.InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
 
-                            if (objXmlSpell.Attributes["select"] != null)
-                                objChild.Text += " (" + objXmlSpell.Attributes["select"].InnerText + ")";
+                            string strSelect = objXmlSpell.SelectSingleNode("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                                objChild.Text += strSpace + '(' + strSelect + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -411,12 +481,16 @@ namespace Chummer
 
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spirits");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlSpirit in objXmlItem.SelectNodes("spirit"))
+                        foreach (XPathNavigator objXmlSpirit in objXmlItem.Select("spirit"))
                         {
-                            if (objXmlSpirit["hide"] != null)
+                            if (objXmlSpirit.SelectSingleNode("hide") != null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objXmlSpirit["name"].InnerText + " (" + LanguageManager.GetString("Label_Spirit_Force") + " " + objXmlSpirit["force"].InnerText + ", " + LanguageManager.GetString("Label_Spirit_ServicesOwed") + " " + objXmlSpirit["services"].InnerText + ")";
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objXmlSpirit.SelectSingleNode("name").Value + strSpace + '(' +
+                                       LanguageManager.GetString("Label_Spirit_Force") + strSpace + objXmlSpirit.SelectSingleNode("force").Value + ',' + strSpace +
+                                       LanguageManager.GetString("Label_Spirit_ServicesOwed") + strSpace + objXmlSpirit.SelectSingleNode("services").Value + ')'
+                            };
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -425,20 +499,50 @@ namespace Chummer
 
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Lifestyles");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlLifestyle in objXmlItem.SelectNodes("lifestyle"))
+                        foreach (XPathNavigator objXmlLifestyle in objXmlItem.Select("lifestyle"))
                         {
-                            if (objXmlLifestyle["hide"] != null)
+                            if (objXmlLifestyle.SelectSingleNode("hide") != null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = string.Format("{0} {1} {2}", objXmlLifestyle["name"].InnerText, objXmlLifestyle["months"].InnerText, LanguageManager.GetString("Label_LifestyleMonths"));
+
+                            string strIncrement = objXmlLifestyle.SelectSingleNode("increment")?.Value;
+                            if (objXmlLifestyle.SelectSingleNode("type")?.Value.ToUpperInvariant() == "SAFEHOUSE")
+                                strIncrement = "week";
+                            string strIncrementString;
+                            int intPermanentAmount;
+                            switch (strIncrement)
+                            {
+                                case "day":
+                                case "Day":
+                                    strIncrementString = LanguageManager.GetString("String_Days");
+                                    intPermanentAmount = 3044;
+                                    break;
+                                case "week":
+                                case "Week":
+                                    strIncrementString = LanguageManager.GetString("String_Weeks");
+                                    intPermanentAmount = 435;
+                                    break;
+                                default:
+                                    strIncrementString = LanguageManager.GetString("String_Months");
+                                    intPermanentAmount = 100;
+                                    break;
+                            }
+
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("baselifestyle")).Value
+                                       + strSpace + objXmlLifestyle.SelectSingleNode("months").Value
+                                       + strSpace + strIncrementString + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
+                            };
 
                             // Check for Qualities.
-                            foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
+                            foreach (XPathNavigator objXmlQuality in objXmlLifestyle.Select("qualities/quality"))
                             {
-                                if (objXmlQuality["hide"] != null)
+                                if (objXmlQuality.SelectSingleNode("hide") != null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objXmlQuality.InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objXmlQuality.Value
+                                };
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -448,48 +552,54 @@ namespace Chummer
                         }
                         break;
                     case "cyberwares":
-                        objXmlItemDocument = XmlManager.Load("cyberware.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Cyberware");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlCyberware in objXmlItem.SelectNodes("cyberware"))
+                        foreach (XPathNavigator objXmlCyberware in objXmlItem.Select("cyberware"))
                         {
-                            if (objXmlCyberware["hide"] != null)
+                            if (objXmlCyberware.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlCyberware["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlCyberware.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
 
-                            if (objXmlCyberware["rating"] != null)
-                                objChild.Text += " Rating " + objXmlCyberware["rating"].InnerText;
-                            objChild.Text += " (" + objXmlCyberware["grade"].InnerText + ")";
+                            string strRating = objXmlCyberware.SelectSingleNode("rating")?.Value;
+                            if (!string.IsNullOrEmpty(strRating))
+                                objChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                            objChild.Text += strSpace + '(' + objXmlCyberware.SelectSingleNode("grade").Value + ')';
 
                             // Check for children.
-                            foreach (XmlNode objXmlChild in objXmlCyberware.SelectNodes("cyberwares/cyberware"))
+                            foreach (XPathNavigator objXmlChild in objXmlCyberware.Select("cyberwares/cyberware"))
                             {
-                                if (objXmlChild["hide"] != null)
+                                if (objXmlChild.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlChild["name"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
+                                string strChildName = objXmlChild.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
+                                if (objChildNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlChild["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strChildName
+                                };
 
-                                if (objXmlChild["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlChild["rating"].InnerText;
+                                strRating = objXmlChild.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
 
-                                foreach (XmlNode objXmlGearNode in objXmlChild.SelectNodes("gears/gear"))
-                                    WriteGear(objXmlGearDocument, objXmlGearNode, objChildChild);
+                                foreach (XPathNavigator objXmlGearNode in objXmlChild.Select("gears/gear"))
+                                    WriteGear(objXmlGearNode, objChildChild);
                                 objChild.Expand();
 
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
 
-                            foreach (XmlNode objXmlGearNode in objXmlCyberware.SelectNodes("gears/gear"))
-                                WriteGear(objXmlGearDocument, objXmlGearNode, objChild);
+                            foreach (XPathNavigator objXmlGearNode in objXmlCyberware.Select("gears/gear"))
+                                WriteGear(objXmlGearNode, objChild);
                             objChild.Expand();
 
                             objParent.Nodes.Add(objChild);
@@ -497,26 +607,54 @@ namespace Chummer
                         }
                         break;
                     case "biowares":
-                        objXmlItemDocument = XmlManager.Load("bioware.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Bioware");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlBioware in objXmlItem.SelectNodes("bioware"))
+                        foreach (XPathNavigator objXmlBioware in objXmlItem.Select("bioware"))
                         {
-                            if (objXmlBioware["hide"] != null)
+                            if (objXmlBioware.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlBioware["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlBioware.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlBioware["name"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
 
-                            if (objXmlBioware["rating"] != null)
-                                objChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlBioware["rating"].InnerText;
-                            objChild.Text += " (" + objXmlBioware["grade"].InnerText + ")";
+                            string strRating = objXmlBioware.SelectSingleNode("rating")?.Value;
+                            if (!string.IsNullOrEmpty(strRating))
+                                objChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                            objChild.Text += strSpace + '(' + objXmlBioware.SelectSingleNode("grade").Value + ')';
 
-                            foreach (XmlNode objXmlGearNode in objXmlBioware.SelectNodes("gears/gear"))
-                                WriteGear(objXmlGearDocument, objXmlGearNode, objChild);
+                            // Check for children.
+                            foreach (XPathNavigator objXmlChild in objXmlBioware.Select("biowares/bioware"))
+                            {
+                                if (objXmlChild.SelectSingleNode("hide") != null)
+                                    continue;
+                                string strChildName = objXmlChild.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
+                                if (objChildNode == null)
+                                    continue;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strChildName
+                                };
+
+                                strRating = objXmlChild.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+
+                                foreach (XPathNavigator objXmlGearNode in objXmlChild.Select("gears/gear"))
+                                    WriteGear(objXmlGearNode, objChildChild);
+                                objChild.Expand();
+
+                                objChild.Nodes.Add(objChildChild);
+                                objChild.Expand();
+                            }
+
+                            foreach (XPathNavigator objXmlGearNode in objXmlBioware.Select("gears/gear"))
+                                WriteGear(objXmlGearNode, objChild);
                             objChild.Expand();
 
                             objParent.Nodes.Add(objChild);
@@ -524,39 +662,48 @@ namespace Chummer
                         }
                         break;
                     case "armors":
-                        objXmlItemDocument = XmlManager.Load("armor.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Armor");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlArmor in objXmlItem.SelectNodes("armor"))
+                        foreach (XPathNavigator objXmlArmor in objXmlItem.Select("armor"))
                         {
-                            if (objXmlArmor["hide"] != null)
+                            if (objXmlArmor.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + objXmlArmor["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlArmor.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlArmorBaseChummerNode.SelectSingleNode("armors/armor[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
 
                             // Check for children.
-                            foreach (XmlNode objXmlChild in objXmlArmor.SelectNodes("mods/mod"))
+                            foreach (XPathNavigator objXmlChild in objXmlArmor.Select("mods/mod"))
                             {
-                                if (objXmlChild["hide"] != null)
+                                if (objXmlChild.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlChild["name"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
+                                string strChildName = objXmlChild.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlArmorBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
+                                if (objChildNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlChild["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strChildName
+                                };
 
-                                if (objXmlChild["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlChild["rating"].InnerText;
+                                string strRating = objXmlChild.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+
+                                foreach (XPathNavigator objXmlGearNode in objXmlChild.Select("gears/gear"))
+                                    WriteGear(objXmlGearNode, objChildChild);
+
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
 
-                            foreach (XmlNode objXmlGearNode in objXmlArmor.SelectNodes("gears/gear"))
-                                WriteGear(objXmlGearDocument, objXmlGearNode, objChild);
+                            foreach (XPathNavigator objXmlGearNode in objXmlArmor.Select("gears/gear"))
+                                WriteGear(objXmlGearNode, objChild);
                             objChild.Expand();
 
                             objParent.Nodes.Add(objChild);
@@ -564,69 +711,61 @@ namespace Chummer
                         }
                         break;
                     case "weapons":
-                        objXmlItemDocument = XmlManager.Load("weapons.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Weapons");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlWeapon in objXmlItem.SelectNodes("weapon"))
+                        foreach (XPathNavigator objXmlWeapon in objXmlItem.Select("weapon"))
                         {
-                            if (objXmlWeapon["hide"] != null)
+                            if (objXmlWeapon.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlWeapon.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
 
                             // Check for Weapon Accessories.
-                            foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
+                            foreach (XPathNavigator objXmlAccessory in objXmlWeapon.Select("accessories/accessory"))
                             {
-                                if (objXmlAccessory["hide"] != null)
+                                if (objXmlAccessory.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
+                                strName = objXmlAccessory.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("accessories/accessory[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                if (objChildNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlAccessory["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
+                                };
 
-                                if (objXmlAccessory["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlAccessory["rating"].InnerText;
+                                string strRating = objXmlAccessory.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
 
-                                foreach (XmlNode objXmlGearNode in objXmlAccessory.SelectNodes("gears/gear"))
-                                    WriteGear(objXmlGearDocument, objXmlGearNode, objChildChild);
+                                foreach (XPathNavigator objXmlGearNode in objXmlAccessory.Select("gears/gear"))
+                                    WriteGear(objXmlGearNode, objChildChild);
                                 objChildChild.Expand();
 
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
 
-                            // Check for Weapon Mods.
-                            foreach (XmlNode objXmlMod in objXmlWeapon.SelectNodes("mods/mod"))
-                            {
-                                if (objXmlMod["hide"] != null)
-                                    continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
-                                    continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
-
-                                if (objXmlMod["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlMod["rating"].InnerText;
-                                objChild.Nodes.Add(objChildChild);
-                                objChild.Expand();
-                            }
-
+                            strName = objXmlWeapon.SelectSingleNode("underbarrel")?.Value;
                             // Check for Underbarrel Weapons.
-                            if (objXmlWeapon["underbarrel"] != null)
+                            if (!string.IsNullOrEmpty(strName))
                             {
-                                if (objXmlWeapon["hide"] != null)
+                                if (objXmlWeapon.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
+
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                if (objChildNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
+                                };
 
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
@@ -637,73 +776,76 @@ namespace Chummer
                         }
                         break;
                     case "gears":
-                        objXmlItemDocument = XmlManager.Load("gear.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Gear");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlGear in objXmlItem.SelectNodes("gear"))
+                        foreach (XPathNavigator objXmlGear in objXmlItem.Select("gear"))
                         {
-                            if (objXmlGear["hide"] != null)
+                            if (objXmlGear.SelectSingleNode("hide") != null)
                                 continue;
-                            WriteGear(objXmlItemDocument, objXmlGear, objParent);
+                            WriteGear(objXmlGear, objParent);
                             objParent.Expand();
                         }
                         break;
                     case "vehicles":
-                        objXmlItemDocument = XmlManager.Load("vehicles.xml");
-
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Vehicles");
                         treContents.Nodes.Add(objParent);
-                        foreach (XmlNode objXmlVehicle in objXmlItem.SelectNodes("vehicle"))
+                        foreach (XPathNavigator objXmlVehicle in objXmlItem.Select("vehicle"))
                         {
-                            if (objXmlVehicle["hide"] != null)
+                            if (objXmlVehicle.SelectSingleNode("hide") != null)
                                 continue;
-                            XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlVehicle["name"].InnerText + "\"]");
-                            if (objNode["hide"] != null)
+                            string strName = objXmlVehicle.SelectSingleNode("name").Value;
+                            XPathNavigator objNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode();
-                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlVehicle["name"].InnerText;
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = objNode.SelectSingleNode("translate")?.Value ?? strName
+                            };
 
                             // Check for children.
-                            foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
+                            foreach (XPathNavigator objXmlMod in objXmlVehicle.Select("mods/mod"))
                             {
-                                if (objXmlMod["hide"] != null)
+                                if (objXmlMod.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
+                                strName = objXmlMod.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                if (objChildNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
+                                };
 
-                                if (objXmlMod["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlMod["rating"].InnerText;
+                                string strRating = objXmlMod.SelectSingleNode("rating")?.Value;
+                                if (!string.IsNullOrEmpty(strRating))
+                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
 
                             // Check for children.
-                            foreach (XmlNode objXmlChild in objXmlVehicle.SelectNodes("gears/gear"))
+                            foreach (XPathNavigator objXmlChild in objXmlVehicle.Select("gears/gear"))
                             {
-                                if (objXmlChild["hide"] != null)
+                                if (objXmlChild.SelectSingleNode("hide") != null)
                                     continue;
-                                WriteGear(objXmlGearDocument, objXmlChild, objChild);
+                                WriteGear(objXmlChild, objChild);
                                 objChild.Expand();
                             }
 
                             // Check for children.
-                            foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
+                            foreach (XPathNavigator objXmlWeapon in objXmlVehicle.Select("weapons/weapon"))
                             {
-                                if (objXmlWeapon["hide"] != null)
+                                if (objXmlWeapon.SelectSingleNode("hide") != null)
                                     continue;
-                                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-                                XmlNode objChildNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                                if (objChildNode["hide"] != null)
+                                strName = objXmlWeapon.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                if (objChildNode == null)
                                     continue;
-                                TreeNode objChildChild = new TreeNode();
-                                objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
+                                TreeNode objChildChild = new TreeNode
+                                {
+                                    Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
+                                };
 
-                                if (objXmlWeapon["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlWeapon["rating"].InnerText;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -718,8 +860,8 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstKits.Text))
-                AcceptForm();
+            _blnAddAgain = false;
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -729,76 +871,94 @@ namespace Chummer
 
         private void lstKits_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            _blnAddAgain = false;
+            AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstKits.Text))
+            string strSelectedKit = lstKits.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (MessageBox.Show(LanguageManager.GetString("Message_DeletePACKSKit").Replace("{0}", lstKits.Text), LanguageManager.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit"), strSelectedKit),
+                    LanguageManager.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
-            // Delete the selectec custom PACKS Kit.
+            // Delete the selected custom PACKS Kit.
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
-            XmlDocument objXmlDocument = new XmlDocument();
-            string strCustomPath = Path.Combine(Application.StartupPath, "data");
+            string strCustomPath = Path.Combine(Utils.GetStartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
             {
-                objXmlDocument.Load(strFile);
-                XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + lstKits.SelectedValue + "\" and category = \"Custom\"]");
-                if (objXmlPACKSList.Count > 0)
+                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
+                try
                 {
-                    // Read in the entire file.
-                    XmlDocument objXmlCurrentDocument = new XmlDocument();
-                    objXmlCurrentDocument.Load(strFile);
+                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlDocument.Load(objXmlReader);
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
 
-                    FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-                    objWriter.Formatting = Formatting.Indented;
-                    objWriter.Indentation = 1;
-                    objWriter.IndentChar = '\t';
-                    objWriter.WriteStartDocument();
-
-                    // <chummer>
-                    objWriter.WriteStartElement("chummer");
-                    // <packs>
-                    objWriter.WriteStartElement("packs");
-
-                    // If this is not a new file, write out the current contents.
-                    XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/packs/*");
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                XmlNode xmlDocumentBasePacksNode = objXmlDocument.SelectSingleNode("/chummer/packs");
+                if (xmlDocumentBasePacksNode?.SelectSingleNode("pack[name = " + strSelectedKit.CleanXPath() + " and category = \"Custom\"]") != null)
+                {
+                    using (FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
-                        if (objXmlNode["name"].InnerText != lstKits.SelectedValue.ToString())
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
-                            // <pack>
-                            objWriter.WriteStartElement("pack");
-                            objXmlNode.WriteContentTo(objWriter);
-                            // </pack>
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        })
+                        {
+                            objWriter.WriteStartDocument();
+
+                            // <chummer>
+                            objWriter.WriteStartElement("chummer");
+                            // <packs>
+                            objWriter.WriteStartElement("packs");
+
+                            // If this is not a new file, write out the current contents.
+                            using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
+                                if (objXmlNodeList?.Count > 0)
+                                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                                    {
+                                        if (objXmlNode["name"]?.InnerText != strSelectedKit)
+                                        {
+                                            // <pack>
+                                            objWriter.WriteStartElement("pack");
+                                            objXmlNode.WriteContentTo(objWriter);
+                                            // </pack>
+                                            objWriter.WriteEndElement();
+                                        }
+                                    }
+
+                            // </packs>
                             objWriter.WriteEndElement();
+                            // </chummer>
+                            objWriter.WriteEndElement();
+
+                            objWriter.WriteEndDocument();
                         }
                     }
-
-                    // </packs>
-                    objWriter.WriteEndElement();
-                    // </chummer>
-                    objWriter.WriteEndElement();
-
-                    objWriter.WriteEndDocument();
-                    objWriter.Close();
-                    objStream.Close();
                 }
             }
 
             // Reload the PACKS files since they have changed.
-            _objXmlDocument = XmlManager.Load("packs.xml");
+            _xmlBaseChummerNode = XmlManager.Load("packs.xml").GetFastNavigator().SelectSingleNode("/chummer");
             cboCategory_SelectedIndexChanged(sender, e);
         }
         #endregion
@@ -807,35 +967,18 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Name of Kit that was selected in the dialogue.
         /// </summary>
-        public string SelectedKit
-        {
-            get
-            {
-                return _strSelectedKit;
-            }
-        }
+        public string SelectedKit => _strSelectedKit;
 
         /// <summary>
         /// Category that was selected in the dialogue.
         /// </summary>
-        public string SelectedCategory
-        {
-            get
-            {
-                return _strSelectCategory;
-            }
-        }
+        public static string SelectedCategory => s_StrSelectCategory;
+
         #endregion
 
         #region Methods
@@ -844,41 +987,52 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedKit = lstKits.SelectedValue.ToString();
-            _strSelectCategory = cboCategory.SelectedValue.ToString();
+            string strSelectedKit = lstKits.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedKit))
+                return;
+            string[] objSelectedKit = strSelectedKit.Split('<');
+            _strSelectedKit = objSelectedKit[0];
+            s_StrSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;
         }
 
-        private void WriteGear(XmlDocument objXmlItemDocument, XmlNode objXmlGear, TreeNode objParent)
+        private void WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
         {
-            XmlNode objNode;
+            string strSpace = LanguageManager.GetString("String_Space");
+            XPathNavigator xmlNameNode = objXmlGear.SelectSingleNode("name");
+            string strName = xmlNameNode?.Value ?? string.Empty;
+            string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
+            XPathNavigator objNode = !string.IsNullOrEmpty(strCategory)
+                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + " and category = \"" + strCategory + "\"]")
+                : _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
 
-            if (objXmlGear["category"] != null)
-                objNode = objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear["name"].InnerText + "\" and category = \"" + objXmlGear["category"].InnerText + "\"]");
-            else
-                objNode = objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear["name"].InnerText + "\"]");
-
-            TreeNode objChild = new TreeNode();
-            if (objNode != null) {
-            objChild.Text = objNode["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
-
-            if (objXmlGear["name"].Attributes["select"] != null)
-                objChild.Text += " (" + objXmlGear["name"].Attributes["select"].InnerText + ")";
-            if (objXmlGear["rating"] != null)
-                objChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlGear["rating"].InnerText;
-            if (objXmlGear["qty"] != null)
-                objChild.Text += " x" + objXmlGear["qty"].InnerText;
-
-            objParent.Nodes.Add(objChild);
-            }
-
-            // Check for children.
-            foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/gear"))
+            if (objNode != null)
             {
-                WriteGear(objXmlItemDocument, objXmlChild, objChild);
-            }
+                TreeNode objChild = new TreeNode
+                {
+                    Text = objNode.SelectSingleNode("@translate")?.Value ?? strName
+                };
 
-            objChild.Expand();
+                string strExtra = xmlNameNode?.SelectSingleNode("@select")?.Value;
+                if (!string.IsNullOrEmpty(strExtra))
+                    objChild.Text += strSpace + '(' + strExtra + ')';
+                strExtra = objXmlGear.SelectSingleNode("rating")?.Value;
+                if (!string.IsNullOrEmpty(strExtra))
+                    objChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strExtra;
+                strExtra = objXmlGear.SelectSingleNode("qty")?.Value;
+                if (!string.IsNullOrEmpty(strExtra))
+                    objChild.Text += strSpace + 'x' + strExtra;
+
+                objParent.Nodes.Add(objChild);
+
+                // Check for children.
+                foreach (XPathNavigator objXmlChild in objXmlGear.Select("gears/gear"))
+                {
+                    WriteGear(objXmlChild, objChild);
+                }
+
+                objChild.Expand();
+            }
         }
         #endregion
     }

@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectNexus(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objGear = new Gear(objCharacter);
             MoveControls();
@@ -122,12 +122,12 @@ namespace Chummer
         {
             decimal decCost = 0;
 
-            int intProcessor = Convert.ToInt32(nudProcessor.Value);
-            int intSystem = Convert.ToInt32(nudSystem.Value);
-            int intResponse = Convert.ToInt32(nudResponse.Value);
-            int intFirewall = Convert.ToInt32(nudFirewall.Value);
-            int intPersona = Convert.ToInt32(nudPersona.Value);
-            int intSignal = Convert.ToInt32(nudSignal.Value);
+            int intProcessor = decimal.ToInt32(nudProcessor.Value);
+            int intSystem = decimal.ToInt32(nudSystem.Value);
+            int intResponse = decimal.ToInt32(nudResponse.Value);
+            int intFirewall = decimal.ToInt32(nudFirewall.Value);
+            int intPersona = decimal.ToInt32(nudPersona.Value);
+            int intSignal = decimal.ToInt32(nudSignal.Value);
 
             // Determine the individual component costs and ratings.
             // Response.
@@ -222,62 +222,74 @@ namespace Chummer
                 decCost = 0;
 
             // Update the labels.
-            lblResponseAvail.Text = strResponseAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-            lblSystemAvail.Text = strSystemAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-            lblFirewallAvail.Text = strFirewallAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-            lblCost.Text = String.Format("{0:###,###,##0.##¥}", decCost);
+            lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-            Gear objNexus = new Gear(_objCharacter);
-            objNexus.Name = LanguageManager.GetString("String_SelectNexus_Nexus") + " (" + LanguageManager.GetString("String_SelectNexus_Processor") + " " + intProcessor.ToString() + ")";
-            objNexus.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
-            objNexus.Avail = "0";
-            objNexus.Category = "Nexus";
-            objNexus.Source = "UN";
-            objNexus.Page = "50";
+            Gear objNexus = new Gear(_objCharacter)
+            {
+                Name = LanguageManager.GetString("String_SelectNexus_Nexus") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_SelectNexus_Processor") + ' ' + intProcessor.ToString() + ')',
+                Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo),
+                Avail = "0",
+                Category = "Nexus",
+                Source = "UN",
+                Page = "50"
+            };
 
-            Gear objResponse = new Gear(_objCharacter);
-            objResponse.Name = LanguageManager.GetString("String_Response") + " (" + LanguageManager.GetString("String_Rating") + " " + intResponse.ToString() + ")";
-            objResponse.Category = "Nexus Module";
-            objResponse.Cost = "0";
-            objResponse.Avail = strResponseAvail;
-            objResponse.Source = "UN";
-            objResponse.Page = "50";
+            Gear objResponse = new Gear(_objCharacter)
+            {
+                Name = LanguageManager.GetString("String_Response") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Rating") + ' ' + intResponse.ToString() + ')',
+                Category = "Nexus Module",
+                Cost = "0",
+                Avail = strResponseAvail,
+                Source = "UN",
+                Page = "50"
+            };
             objNexus.Children.Add(objResponse);
 
-            Gear objSignal = new Gear(_objCharacter);
-            objSignal.Name = LanguageManager.GetString("String_Signal") + " (" + LanguageManager.GetString("String_Rating") + " " + intSignal.ToString() + ")";
-            objSignal.Category = "Nexus Module";
-            objSignal.Cost = "0";
-            objSignal.Avail = "0";
-            objSignal.Source = "UN";
-            objSignal.Page = "50";
+            Gear objSignal = new Gear(_objCharacter)
+            {
+                Name = LanguageManager.GetString("String_Signal") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Rating") + ' ' + intSignal.ToString() + ')',
+                Category = "Nexus Module",
+                Cost = "0",
+                Avail = "0",
+                Source = "UN",
+                Page = "50"
+            };
             objNexus.Children.Add(objSignal);
 
-            Gear objSystem = new Gear(_objCharacter);
-            objSystem.Name = LanguageManager.GetString("String_System") + " (" + LanguageManager.GetString("String_Rating") + " " + intSystem.ToString() + ")";
-            objSystem.Category = "Nexus Module";
-            objSystem.Cost = "0";
-            objSystem.Avail = strSystemAvail;
-            objSystem.Source = "UN";
-            objSystem.Page = "50";
+            Gear objSystem = new Gear(_objCharacter)
+            {
+                Name = LanguageManager.GetString("String_System") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Rating") + ' ' + intSystem.ToString() + ')',
+                Category = "Nexus Module",
+                Cost = "0",
+                Avail = strSystemAvail,
+                Source = "UN",
+                Page = "50"
+            };
             objNexus.Children.Add(objSystem);
 
-            Gear objFirewall = new Gear(_objCharacter);
-            objFirewall.Name = LanguageManager.GetString("String_Firewall") + " (" + LanguageManager.GetString("String_Rating") + " " + intFirewall.ToString() + ")";
-            objFirewall.Category = "Nexus Module";
-            objFirewall.Cost = "0";
-            objFirewall.Avail = strFirewallAvail;
-            objFirewall.Source = "UN";
-            objFirewall.Page = "50";
+            Gear objFirewall = new Gear(_objCharacter)
+            {
+                Name = LanguageManager.GetString("String_Firewall") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Rating") + ' ' + intFirewall.ToString() + ')',
+                Category = "Nexus Module",
+                Cost = "0",
+                Avail = strFirewallAvail,
+                Source = "UN",
+                Page = "50"
+            };
             objNexus.Children.Add(objFirewall);
 
-            Gear objPersona = new Gear(_objCharacter);
-            objPersona.Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit") + " (" + intPersona.ToString() + ")";
-            objPersona.Category = "Nexus Module";
-            objPersona.Cost = "0";
-            objPersona.Avail = "0";
-            objPersona.Source = "UN";
-            objPersona.Page = "50";
+            Gear objPersona = new Gear(_objCharacter)
+            {
+                Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit") + LanguageManager.GetString("String_Space") + '(' + intPersona.ToString() + ')',
+                Category = "Nexus Module",
+                Cost = "0",
+                Avail = "0",
+                Source = "UN",
+                Page = "50"
+            };
             objNexus.Children.Add(objPersona);
 
             _objGear = objNexus;

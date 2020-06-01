@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmOmaeUpload
+    public sealed partial class frmOmaeUpload
     {
         /// <summary>
         /// Required designer variable.

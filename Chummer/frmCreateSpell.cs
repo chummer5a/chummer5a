@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -26,37 +26,35 @@ namespace Chummer
 {
     public partial class frmCreateSpell : Form
     {
-        private readonly XmlDocument _objXmlDocument = null;
-        private bool _blnLoading = false;
-        private bool _blnSkipRefresh = false;
-        private Spell _objSpell;
+        private readonly XmlDocument _objXmlDocument;
+        private bool _blnLoading;
+        private bool _blnSkipRefresh;
+        private readonly Spell _objSpell;
 
         #region Control Events
         public frmCreateSpell(Character objCharacter)
         {
             _objSpell = new Spell(objCharacter);
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("spells.xml");
-            MoveControls();
         }
 
         private void frmCreateSpell_Load(object sender, EventArgs e)
         {
             _blnLoading = true;
-            lblDV.Text = "0";
+            lblDV.Text = 0.ToString(GlobalOptions.CultureInfo);
 
             List<ListItem> lstCategory = new List<ListItem>();
 
             // Populate the list of Spell Categories.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                lstCategory.Add(objItem);
-            }
+            using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                if (objXmlCategoryList != null)
+                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    {
+                        string strInnerText = objXmlCategory.InnerText;
+                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    }
             cboCategory.BeginUpdate();
             cboType.BeginUpdate();
             cboRange.BeginUpdate();
@@ -67,49 +65,34 @@ namespace Chummer
             cboCategory.SelectedIndex = 0;
 
             // Populate the list of Spell Types.
-            ListItem itmPhysical = new ListItem();
-            itmPhysical.Value = "P";
-            itmPhysical.Name = LanguageManager.GetString("String_DescPhysical");
-            ListItem itmMana = new ListItem();
-            itmMana.Value = "M";
-            itmMana.Name = LanguageManager.GetString("String_DescMana");
-            List<ListItem> lstTypes = new List<ListItem>();
-            lstTypes.Add(itmPhysical);
-            lstTypes.Add(itmMana);
+            List<ListItem> lstTypes = new List<ListItem>
+            {
+                new ListItem("P", LanguageManager.GetString("String_DescPhysical")),
+                new ListItem("M", LanguageManager.GetString("String_DescMana"))
+            };
             cboType.ValueMember = "Value";
             cboType.DisplayMember = "Name";
             cboType.DataSource = lstTypes;
             cboType.SelectedIndex = 0;
 
             // Populate the list of Ranges.
-            ListItem itmTouch = new ListItem();
-            itmTouch.Value = "T";
-            itmTouch.Name = LanguageManager.GetString("String_SpellRangeTouchLong");
-            ListItem itmLOS = new ListItem();
-            itmLOS.Value = "LOS";
-            itmLOS.Name = LanguageManager.GetString("String_SpellRangeLineOfSight");
-            List<ListItem> lstRanges = new List<ListItem>();
-            lstRanges.Add(itmTouch);
-            lstRanges.Add(itmLOS);
+            List<ListItem> lstRanges = new List<ListItem>
+            {
+                new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")),
+                new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"))
+            };
             cboRange.ValueMember = "Value";
             cboRange.DisplayMember = "Name";
             cboRange.DataSource = lstRanges;
             cboRange.SelectedIndex = 0;
 
             // Populate the list of Durations.
-            ListItem itmInstant = new ListItem();
-            itmInstant.Value = "I";
-            itmInstant.Name = LanguageManager.GetString("String_SpellDurationInstantLong");
-            ListItem itmPermanent = new ListItem();
-            itmPermanent.Value = "P";
-            itmPermanent.Name = LanguageManager.GetString("String_SpellDurationPermanentLong");
-            ListItem itmSustained = new ListItem();
-            itmSustained.Value = "S";
-            itmSustained.Name = LanguageManager.GetString("String_SpellDurationSustainedLong");
-            List<ListItem> lstDurations = new List<ListItem>();
-            lstDurations.Add(itmInstant);
-            lstDurations.Add(itmPermanent);
-            lstDurations.Add(itmSustained);
+            List<ListItem> lstDurations = new List<ListItem>
+            {
+                new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")),
+                new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")),
+                new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong"))
+            };
             cboDuration.ValueMember = "Value";
             cboDuration.DisplayMember = "Name";
             cboDuration.DataSource = lstDurations;
@@ -391,10 +374,7 @@ namespace Chummer
 
         private void chkRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkRestricted.Checked)
-                chkVeryRestricted.Enabled = false;
-            else
-                chkVeryRestricted.Enabled = true;
+            chkVeryRestricted.Enabled = !chkRestricted.Checked;
 
             CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
@@ -404,10 +384,7 @@ namespace Chummer
 
         private void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkVeryRestricted.Checked)
-                chkRestricted.Enabled = false;
-            else
-                chkRestricted.Enabled = true;
+            chkRestricted.Enabled = !chkVeryRestricted.Checked;
 
             CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
@@ -442,13 +419,24 @@ namespace Chummer
         /// </summary>
         private void ChangeModifiers()
         {
-            foreach (CheckBox chkCheckbox in panModifiers.Controls.OfType<CheckBox>())
+            foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
             {
                 chkCheckbox.Enabled = true;
                 chkCheckbox.Checked = false;
                 chkCheckbox.Text = string.Empty;
                 chkCheckbox.Tag = string.Empty;
                 chkCheckbox.Visible = false;
+            }
+            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
+            {
+                foreach (CheckBox chkCheckbox in panChild.Controls.OfType<CheckBox>())
+                {
+                    chkCheckbox.Enabled = true;
+                    chkCheckbox.Checked = false;
+                    chkCheckbox.Text = string.Empty;
+                    chkCheckbox.Tag = string.Empty;
+                    chkCheckbox.Visible = false;
+                }
             }
             nudNumberOfEffects.Visible = false;
             nudNumberOfEffects.Enabled = true;
@@ -542,12 +530,23 @@ namespace Chummer
                     break;
             }
 
-            foreach (CheckBox chkCheckbox in panModifiers.Controls.OfType<CheckBox>())
+            foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
             {
                 if (!string.IsNullOrEmpty(chkCheckbox.Text))
                 {
                     chkCheckbox.Visible = true;
-                    chkCheckbox.Text += " (" + chkCheckbox.Tag + ")";
+                    chkCheckbox.Text += LanguageManager.GetString("String_Space") + '(' + chkCheckbox.Tag + ')';
+                }
+            }
+            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
+            {
+                foreach (CheckBox chkCheckbox in panChild.Controls.OfType<CheckBox>())
+                {
+                    if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                    {
+                        chkCheckbox.Visible = true;
+                        chkCheckbox.Text += LanguageManager.GetString("String_Space") + '(' + chkCheckbox.Tag + ')';
+                    }
                 }
             }
 
@@ -609,24 +608,39 @@ namespace Chummer
                 intDV += 0;
 
             // Include any checked modifiers.
-            foreach (CheckBox chkModifier in panModifiers.Controls.OfType<CheckBox>())
+            foreach (CheckBox chkModifier in flpModifiers.Controls.OfType<CheckBox>())
             {
                 if (chkModifier.Visible && chkModifier.Checked)
                 {
                     if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
-                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * Convert.ToInt32(nudNumberOfEffects.Value));
+                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
                     else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
-                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * Convert.ToInt32(nudNumberOfEffects.Value));
+                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
                     else
-                        intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                        intDV += Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo);
+                }
+            }
+            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
+            {
+                foreach (CheckBox chkModifier in panChild.Controls.OfType<CheckBox>())
+                {
+                    if (chkModifier.Visible && chkModifier.Checked)
+                    {
+                        if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        else
+                            intDV += Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo);
+                    }
                 }
             }
 
-            string strBase = string.Empty;
+            string strBase;
             if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = "(" + LanguageManager.GetString("String_SpellDamageValue") + ")";
+                strBase = '(' + LanguageManager.GetString("String_SpellDamageValue") + ')';
             }
             else
             {
@@ -634,14 +648,14 @@ namespace Chummer
                 strBase = "(F/2)";
             }
 
-            string strDV = intDV.ToString();
+            string strDV = intDV.ToString(GlobalOptions.InvariantCultureInfo);
             if (intDV > 0)
-                strDV = "+" + strDV;
+                strDV = '+' + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
-            lblDV.Text = (strBase + strDV).Replace("/", "÷");
-            lblDV.Text = lblDV.Text.Replace("F", LanguageManager.GetString("String_SpellForce"));
-            lblDV.Text = lblDV.Text.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
+            lblDV.Text = (strBase + strDV).Replace('/', '÷')
+                .CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"))
+                .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
 
             return strBase + strDV;
         }
@@ -653,18 +667,18 @@ namespace Chummer
         {
             string strMessage = string.Empty;
             // Make sure a name has been provided.
-            if (string.IsNullOrEmpty(txtName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 if (!string.IsNullOrEmpty(strMessage))
-                    strMessage += '\n';
+                    strMessage += Environment.NewLine;
                 strMessage += LanguageManager.GetString("Message_SpellName");
             }
 
             // Make sure a Restricted value if the field is enabled.
-            if (txtRestriction.Enabled && string.IsNullOrEmpty(txtRestriction.Text.Trim()))
+            if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(txtRestriction.Text))
             {
                 if (!string.IsNullOrEmpty(strMessage))
-                    strMessage += '\n';
+                    strMessage += Environment.NewLine;
                 strMessage += LanguageManager.GetString("Message_SpellRestricted");
             }
 
@@ -675,7 +689,7 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
                 }
 
@@ -683,7 +697,7 @@ namespace Chummer
                 if (!chkModifier4.Checked && !chkModifier5.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
                 }
             }
@@ -693,7 +707,7 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
                 }
 
@@ -701,7 +715,7 @@ namespace Chummer
                 if (!chkModifier4.Checked && !chkModifier5.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
                 }
             }
@@ -715,7 +729,7 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
                 }
 
@@ -723,7 +737,7 @@ namespace Chummer
                 if (!chkModifier3.Checked && !chkModifier4.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
                 }
             }
@@ -733,7 +747,7 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
                 }
 
@@ -741,7 +755,7 @@ namespace Chummer
                 if (!chkModifier4.Checked && !chkModifier5.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += '\n';
+                        strMessage += Environment.NewLine;
                     strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
                 }
             }
@@ -749,7 +763,7 @@ namespace Chummer
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                MessageBox.Show(strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -833,10 +847,7 @@ namespace Chummer
             _objSpell.Limited = chkLimited.Checked;
             if (cboCategory.SelectedValue.ToString() == "Combat")
             {
-                if (chkModifier4.Checked)
-                    _objSpell.Damage = "P";
-                else
-                    _objSpell.Damage = "S";
+                _objSpell.Damage = chkModifier4.Checked ? "P" : "S";
             }
             _objSpell.DV = CalculateDrain();
             if (!string.IsNullOrEmpty(txtRestriction.Text))
@@ -845,39 +856,14 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblCategory.Width, lblType.Width);
-            intWidth = Math.Max(intWidth, lblRange.Width);
-            intWidth = Math.Max(intWidth, lblDuration.Width);
-            intWidth = Math.Max(intWidth, lblSpellOptions.Width);
-            intWidth = Math.Max(intWidth, lblName.Width);
-            txtName.Left = lblName.Left + intWidth + 6;
-            cboCategory.Left = lblCategory.Left + intWidth + 6;
-            cboType.Left = lblType.Left + intWidth + 6;
-            cboRange.Left = lblRange.Left + intWidth + 6;
-            cboDuration.Left = lblDuration.Left + intWidth + 6;
-            panModifiers.Left = lblSpellOptions.Left + intWidth + 6;
-
-            chkVeryRestricted.Left = chkRestricted.Left + chkRestricted.Width + 6;
-            txtRestriction.Left = chkVeryRestricted.Left + chkVeryRestricted.Width + 6;
-
-            chkArea.Left = cboRange.Left + cboRange.Width + 6;
-        }
         #endregion
 
         #region Properties
         /// <summary>
         /// Spell that was created in the dialogue.
         /// </summary>
-        public Spell SelectedSpell
-        {
-            get
-            {
-                return _objSpell;
-            }
-        }
+        public Spell SelectedSpell => _objSpell;
+
         #endregion
     }
 }

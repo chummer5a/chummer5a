@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -32,30 +33,36 @@ namespace Chummer
         public frmSelectSetting()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmSelectSetting_Load(object sender, EventArgs e)
         {
             // Build the list of XML files found in the settings directory.
             List<ListItem> lstSettings = new List<ListItem>();
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
             {
                 // Load the file so we can get the Setting name.
-                XmlDocument objXmlDocument = new XmlDocument();
-                objXmlDocument.Load(strFileName);
-                string strSettingsName = objXmlDocument.SelectSingleNode("/settings/name").InnerText;
+                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlDocument.Load(objXmlReader);
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
 
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.GetFileName(strFileName);
-                objItem.Name = strSettingsName;
-
-                lstSettings.Add(objItem);
+                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown")));
             }
-            SortListItem objSort = new SortListItem();
-            lstSettings.Sort(objSort.Compare);
+            lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
             cboSetting.ValueMember = "Value";
             cboSetting.DisplayMember = "Name";
@@ -80,24 +87,12 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
-        private void MoveControls()
-        {
-            cboSetting.Left = lblSetting.Left + lblSetting.Width + 6;
-        }
-        #endregion
-
         #region Properties
         /// <summary>
         /// Settings file that was selected in the dialogue.
         /// </summary>
-        public string SettingsFile
-        {
-            get
-            {
-                return _strSettingsFile;
-            }
-        }
+        public string SettingsFile => _strSettingsFile;
+
         #endregion
     }
 }

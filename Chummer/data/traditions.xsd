@@ -1,143 +1,145 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element name="chummer">
-        <xs:complexType>
+  <xs:include schemaLocation="bonuses.xsd" />
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="version" type="xs:unsignedByte" />
+        <xs:element name="traditions">
+          <xs:complexType>
             <xs:sequence>
-                <xs:element name="version" type="xs:unsignedByte" />
-                <xs:element name="traditions">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element maxOccurs="unbounded" name="tradition">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="id" type="xs:string" />
-                                        <xs:element name="name" type="xs:string" />
-										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="drain" type="xs:string" />
-                                        <xs:element name="source" type="xs:string" />
-                                        <xs:element name="page" type="xs:unsignedShort" />
-                                        <xs:element minOccurs="0" name="spiritform" type="xs:string" />
-                                        <xs:element name="spirits">
-                                            <xs:complexType>
-                                                <xs:sequence minOccurs="0">
-                                                    <xs:element name="spiritcombat" type="xs:string" />
-                                                    <xs:element name="spiritdetection" type="xs:string" />
-                                                    <xs:element name="spirithealth" type="xs:string" />
-                                                    <xs:element name="spiritillusion" type="xs:string" />
-                                                    <xs:element name="spiritmanipulation" type="xs:string" />
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
+              <xs:element maxOccurs="unbounded" name="tradition">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="xs:string" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="drain" type="xs:string" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="source" type="xs:string" />
+                    <xs:element name="page" type="xs:unsignedShort" />
+                    <xs:element minOccurs="0" name="spiritform" type="xs:string" />
+                    <xs:element name="spirits">
+                      <xs:complexType>
+                        <xs:sequence minOccurs="0">
+                          <xs:element name="spiritcombat" type="xs:string" />
+                          <xs:element name="spiritdetection" type="xs:string" />
+                          <xs:element name="spirithealth" type="xs:string" />
+                          <xs:element name="spiritillusion" type="xs:string" />
+                          <xs:element name="spiritmanipulation" type="xs:string" />
                         </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="spirits">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element maxOccurs="unbounded" name="spirit">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="id" type="xs:string" />
-                                        <xs:element name="name" type="xs:string" />
-										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="bod" type="xs:string" />
-                                        <xs:element name="agi" type="xs:string" />
-                                        <xs:element name="rea" type="xs:string" />
-                                        <xs:element name="str" type="xs:string" />
-                                        <xs:element name="cha" type="xs:string" />
-                                        <xs:element name="int" type="xs:string" />
-                                        <xs:element name="log" type="xs:string" />
-                                        <xs:element name="wil" type="xs:string" />
-                                        <xs:element name="ini" type="xs:string" />
-                                        <xs:element minOccurs="0" name="edg" type="xs:string" />
-                                        <xs:element minOccurs="0" name="mag" type="xs:string" />
-                                        <xs:element minOccurs="0" name="res" type="xs:unsignedByte" />
-                                        <xs:element minOccurs="0" name="dep" type="xs:unsignedByte" />
-                                        <xs:element minOccurs="0" name="ess" type="xs:string" />
-                                        <xs:element name="source" type="xs:string" />
-                                        <xs:element name="page" type="xs:unsignedShort" />
-                                        <xs:element minOccurs="0" name="bonus">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element name="enabletab">
-                                                        <xs:complexType>
-                                                            <xs:sequence>
-                                                                <xs:element name="name" type="xs:string" />
-                                                            </xs:sequence>
-                                                        </xs:complexType>
-                                                    </xs:element>
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                        <xs:element minOccurs="0" name="optionalpowers">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element maxOccurs="unbounded" name="power" type="xs:string" />
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                        <xs:element name="powers">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element maxOccurs="unbounded" name="power">
-                                                        <xs:complexType>
-                                                            <xs:simpleContent>
-                                                                <xs:extension base="xs:string">
-                                                                    <xs:attribute name="select" type="xs:string" use="optional" />
-                                                                </xs:extension>
-                                                            </xs:simpleContent>
-                                                        </xs:complexType>
-                                                    </xs:element>
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                        <xs:element name="skills">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element maxOccurs="unbounded" name="skill">
-                                                        <xs:complexType>
-                                                            <xs:simpleContent>
-                                                                <xs:extension base="xs:string">
-                                                                    <xs:attribute name="attr" type="xs:string" use="optional" />
-                                                                </xs:extension>
-                                                            </xs:simpleContent>
-                                                        </xs:complexType>
-                                                    </xs:element>
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                        <xs:element minOccurs="0" name="weaknesses">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element maxOccurs="unbounded" name="weakness" type="xs:string" />
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="drainattributes">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element maxOccurs="unbounded" name="drainattribute">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="id" type="xs:string" />
-                                        <xs:element name="name" type="xs:string" />
-										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
             </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="spirits">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="spirit">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="xs:string" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="bod" type="xs:string" />
+                    <xs:element name="agi" type="xs:string" />
+                    <xs:element name="rea" type="xs:string" />
+                    <xs:element name="str" type="xs:string" />
+                    <xs:element name="cha" type="xs:string" />
+                    <xs:element name="int" type="xs:string" />
+                    <xs:element name="log" type="xs:string" />
+                    <xs:element name="wil" type="xs:string" />
+                    <xs:element name="ini" type="xs:string" />
+                    <xs:element minOccurs="0" name="edg" type="xs:string" />
+                    <xs:element minOccurs="0" name="mag" type="xs:string" />
+                    <xs:element minOccurs="0" name="res" type="xs:unsignedByte" />
+                    <xs:element minOccurs="0" name="dep" type="xs:unsignedByte" />
+                    <xs:element minOccurs="0" name="ess" type="xs:string" />
+                    <xs:element name="source" type="xs:string" />
+                    <xs:element name="page" type="xs:unsignedShort" />
+                    <xs:element minOccurs="0" name="bonus">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="enabletab">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="name" type="xs:string" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="optionalpowers">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="power" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="powers">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="power">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="select" type="xs:string" use="optional" />
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="skills">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="skill">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="attr" type="xs:string" use="optional" />
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="weaknesses">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="weakness" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="drainattributes">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="drainattribute">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="xs:string" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

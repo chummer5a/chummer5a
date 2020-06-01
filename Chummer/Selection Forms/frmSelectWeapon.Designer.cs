@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,14 +29,11 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -44,90 +41,94 @@ namespace Chummer
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.dgvWeapons = new System.Windows.Forms.DataGridView();
-            this.Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvc_Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvc_Name = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Dice = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Accuracy = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Damage = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_AP = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_RC = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Ammo = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Mode = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Reach = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Accessories = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Label_Avail = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Label_Source = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
-            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
-            this.lblWeaponAccuracy = new System.Windows.Forms.Label();
-            this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
-            this.lblTest = new System.Windows.Forms.Label();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
-            this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new System.Windows.Forms.CheckBox();
-            this.lblSource = new System.Windows.Forms.Label();
-            this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblIncludedAccessories = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lblTestLabel = new System.Windows.Forms.Label();
-            this.lblMarkupLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAmmo = new System.Windows.Forms.Label();
-            this.lblWeaponAmmoLabel = new System.Windows.Forms.Label();
-            this.lblWeaponMode = new System.Windows.Forms.Label();
-            this.lblWeaponModeLabel = new System.Windows.Forms.Label();
-            this.lblWeaponReach = new System.Windows.Forms.Label();
-            this.lblWeaponReachLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAP = new System.Windows.Forms.Label();
-            this.lblWeaponAPLabel = new System.Windows.Forms.Label();
-            this.lblWeaponCost = new System.Windows.Forms.Label();
-            this.lblWeaponCostLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAvail = new System.Windows.Forms.Label();
-            this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
+            this.tlpWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lstWeapon = new System.Windows.Forms.ListBox();
             this.lblWeaponRC = new System.Windows.Forms.Label();
             this.lblWeaponRCLabel = new System.Windows.Forms.Label();
-            this.lblWeaponDamage = new System.Windows.Forms.Label();
+            this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
+            this.lblWeaponAccuracy = new System.Windows.Forms.Label();
+            this.lblWeaponAmmo = new System.Windows.Forms.Label();
+            this.lblWeaponAmmoLabel = new System.Windows.Forms.Label();
+            this.lblTest = new System.Windows.Forms.Label();
+            this.lblWeaponMode = new System.Windows.Forms.Label();
+            this.lblWeaponModeLabel = new System.Windows.Forms.Label();
+            this.lblTestLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
-            this.lstWeapon = new System.Windows.Forms.ListBox();
+            this.lblWeaponAPLabel = new System.Windows.Forms.Label();
+            this.lblWeaponReachLabel = new System.Windows.Forms.Label();
+            this.lblWeaponReach = new System.Windows.Forms.Label();
+            this.lblWeaponDamage = new System.Windows.Forms.Label();
+            this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
+            this.lblWeaponCostLabel = new System.Windows.Forms.Label();
+            this.lblWeaponCost = new System.Windows.Forms.Label();
+            this.lblWeaponAP = new System.Windows.Forms.Label();
+            this.lblWeaponAvail = new System.Windows.Forms.Label();
+            this.lblMarkupLabel = new System.Windows.Forms.Label();
+            this.lblSourceLabel = new System.Windows.Forms.Label();
+            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
+            this.lblSource = new System.Windows.Forms.Label();
+            this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
+            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
+            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkFreeItem = new System.Windows.Forms.CheckBox();
+            this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
+            this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
+            this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
+            this.lblIncludedAccessories = new System.Windows.Forms.Label();
             this.tabBrowse = new System.Windows.Forms.TabPage();
-            this.WeaponName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Dice = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Damage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AP = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RC = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Ammo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Reach = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Accessories = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Avail = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Source = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Cost = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.Accuracy = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabListView.SuspendLayout();
+            this.tlpWeapon.SuspendLayout();
+            this.flpMarkup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
+            this.flpCheckBoxes.SuspendLayout();
+            this.gpbIncludedAccessories.SuspendLayout();
+            this.pnlIncludedAccessories.SuspendLayout();
             this.tabBrowse.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboCategory
             // 
+            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(70, 6);
+            this.cboCategory.Location = new System.Drawing.Point(61, 3);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(182, 21);
+            this.cboCategory.Size = new System.Drawing.Size(243, 21);
             this.cboCategory.TabIndex = 30;
+            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // lblCategory
             // 
+            this.lblCategory.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCategory.AutoSize = true;
-            this.lblCategory.Location = new System.Drawing.Point(12, 9);
+            this.lblCategory.Location = new System.Drawing.Point(3, 7);
+            this.lblCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
             this.lblCategory.TabIndex = 29;
@@ -136,8 +137,10 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(486, 437);
+            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.Location = new System.Drawing.Point(162, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 31;
@@ -148,9 +151,11 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(324, 437);
+            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 33;
@@ -161,9 +166,10 @@ namespace Chummer
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(332, 6);
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(360, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(228, 20);
+            this.txtSearch.Size = new System.Drawing.Size(243, 20);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
@@ -171,8 +177,10 @@ namespace Chummer
             // 
             // lblSearchLabel
             // 
+            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(282, 9);
+            this.lblSearchLabel.Location = new System.Drawing.Point(310, 7);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSearchLabel.TabIndex = 0;
@@ -181,8 +189,10 @@ namespace Chummer
             // 
             // cmdOKAdd
             // 
-            this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOKAdd.Location = new System.Drawing.Point(405, 437);
+            this.cmdOKAdd.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdOKAdd.AutoSize = true;
+            this.cmdOKAdd.Location = new System.Drawing.Point(81, 0);
+            this.cmdOKAdd.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 32;
@@ -195,24 +205,24 @@ namespace Chummer
             // 
             this.dgvWeapons.AllowUserToAddRows = false;
             this.dgvWeapons.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle33;
             this.dgvWeapons.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvWeapons.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Guid,
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5,
-            this.dataGridViewTextBoxColumn6,
-            this.dataGridViewTextBoxColumn7,
-            this.dataGridViewTextBoxColumn8,
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewTextBoxColumn10,
-            this.dataGridViewTextBoxColumn11,
-            this.dataGridViewTextBoxColumn12,
-            this.dataGridViewTextBoxColumn13});
+            this.dgvc_Guid,
+            this.dgvc_Name,
+            this.dgvc_Dice,
+            this.dgvc_Accuracy,
+            this.dgvc_Damage,
+            this.dgvc_AP,
+            this.dgvc_RC,
+            this.dgvc_Ammo,
+            this.dgvc_Mode,
+            this.dgvc_Reach,
+            this.dgvc_Accessories,
+            this.Label_Avail,
+            this.Label_Source,
+            this.dgvc_Cost});
             this.dgvWeapons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvWeapons.Location = new System.Drawing.Point(3, 3);
             this.dgvWeapons.MultiSelect = false;
@@ -222,213 +232,535 @@ namespace Chummer
             this.dgvWeapons.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
             this.dgvWeapons.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvWeapons.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvWeapons.Size = new System.Drawing.Size(532, 366);
+            this.dgvWeapons.Size = new System.Drawing.Size(592, 334);
             this.dgvWeapons.TabIndex = 36;
             this.dgvWeapons.DoubleClick += new System.EventHandler(this.dgvWeapons_DoubleClick);
             // 
-            // Guid
+            // dgvc_Guid
             // 
-            this.Guid.DataPropertyName = "WeaponGuid";
-            this.Guid.HeaderText = "Guid";
-            this.Guid.Name = "Guid";
-            this.Guid.ReadOnly = true;
-            this.Guid.Visible = false;
+            this.dgvc_Guid.DataPropertyName = "WeaponGuid";
+            this.dgvc_Guid.HeaderText = "dgvc_Guid";
+            this.dgvc_Guid.Name = "dgvc_Guid";
+            this.dgvc_Guid.ReadOnly = true;
+            this.dgvc_Guid.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Guid.Visible = false;
             // 
-            // dataGridViewTextBoxColumn1
+            // dgvc_Name
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "WeaponName";
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle9;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Name";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 60;
+            this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Name.DataPropertyName = "WeaponName";
+            dataGridViewCellStyle34.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle34;
+            this.dgvc_Name.HeaderText = "Name";
+            this.dgvc_Name.Name = "dgvc_Name";
+            this.dgvc_Name.ReadOnly = true;
+            this.dgvc_Name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.TranslationTag = "String_Name";
+            this.dgvc_Name.Width = 60;
             // 
-            // dataGridViewTextBoxColumn2
+            // dgvc_Dice
             // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "Dice";
-            this.dataGridViewTextBoxColumn2.FillWeight = 30F;
-            this.dataGridViewTextBoxColumn2.HeaderText = "Dice";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 54;
+            this.dgvc_Dice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Dice.DataPropertyName = "Dice";
+            this.dgvc_Dice.FillWeight = 30F;
+            this.dgvc_Dice.HeaderText = "Dice Pool";
+            this.dgvc_Dice.Name = "dgvc_Dice";
+            this.dgvc_Dice.ReadOnly = true;
+            this.dgvc_Dice.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Dice.TranslationTag = "String_Dicepool";
+            this.dgvc_Dice.Width = 78;
             // 
-            // dataGridViewTextBoxColumn3
+            // dgvc_Accuracy
             // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Accuracy";
-            this.dataGridViewTextBoxColumn3.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn3.HeaderText = "Accuracy";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 77;
+            this.dgvc_Accuracy.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Accuracy.DataPropertyName = "Accuracy";
+            this.dgvc_Accuracy.FillWeight = 50F;
+            this.dgvc_Accuracy.HeaderText = "Accuracy";
+            this.dgvc_Accuracy.Name = "dgvc_Accuracy";
+            this.dgvc_Accuracy.ReadOnly = true;
+            this.dgvc_Accuracy.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accuracy.TranslationTag = "String_Accuracy";
+            this.dgvc_Accuracy.Width = 77;
             // 
-            // dataGridViewTextBoxColumn4
+            // dgvc_Damage
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "Damage";
-            this.dataGridViewTextBoxColumn4.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn4.HeaderText = "Damage";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Width = 72;
+            this.dgvc_Damage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Damage.DataPropertyName = "Damage";
+            this.dgvc_Damage.FillWeight = 50F;
+            this.dgvc_Damage.HeaderText = "Damage";
+            this.dgvc_Damage.Name = "dgvc_Damage";
+            this.dgvc_Damage.ReadOnly = true;
+            this.dgvc_Damage.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Damage.TranslationTag = "String_Damage";
+            this.dgvc_Damage.Width = 72;
             // 
-            // dataGridViewTextBoxColumn5
+            // dgvc_AP
             // 
-            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "AP";
-            this.dataGridViewTextBoxColumn5.FillWeight = 30F;
-            this.dataGridViewTextBoxColumn5.HeaderText = "AP";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.Width = 46;
+            this.dgvc_AP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_AP.DataPropertyName = "AP";
+            this.dgvc_AP.FillWeight = 30F;
+            this.dgvc_AP.HeaderText = "AP";
+            this.dgvc_AP.Name = "dgvc_AP";
+            this.dgvc_AP.ReadOnly = true;
+            this.dgvc_AP.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_AP.TranslationTag = "String_AP";
+            this.dgvc_AP.Width = 46;
             // 
-            // dataGridViewTextBoxColumn6
+            // dgvc_RC
             // 
-            this.dataGridViewTextBoxColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "RC";
-            this.dataGridViewTextBoxColumn6.FillWeight = 30F;
-            this.dataGridViewTextBoxColumn6.HeaderText = "RC";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            this.dataGridViewTextBoxColumn6.Width = 47;
+            this.dgvc_RC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_RC.DataPropertyName = "RC";
+            this.dgvc_RC.FillWeight = 30F;
+            this.dgvc_RC.HeaderText = "RC";
+            this.dgvc_RC.Name = "dgvc_RC";
+            this.dgvc_RC.ReadOnly = true;
+            this.dgvc_RC.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_RC.TranslationTag = "String_RC";
+            this.dgvc_RC.Width = 47;
             // 
-            // dataGridViewTextBoxColumn7
+            // dgvc_Ammo
             // 
-            this.dataGridViewTextBoxColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn7.DataPropertyName = "Ammo";
-            this.dataGridViewTextBoxColumn7.FillWeight = 60F;
-            this.dataGridViewTextBoxColumn7.HeaderText = "Ammo";
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            this.dataGridViewTextBoxColumn7.ReadOnly = true;
-            this.dataGridViewTextBoxColumn7.Width = 61;
+            this.dgvc_Ammo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Ammo.DataPropertyName = "Ammo";
+            this.dgvc_Ammo.FillWeight = 60F;
+            this.dgvc_Ammo.HeaderText = "Ammo";
+            this.dgvc_Ammo.Name = "dgvc_Ammo";
+            this.dgvc_Ammo.ReadOnly = true;
+            this.dgvc_Ammo.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Ammo.TranslationTag = "String_Ammo";
+            this.dgvc_Ammo.Width = 61;
             // 
-            // dataGridViewTextBoxColumn8
+            // dgvc_Mode
             // 
-            this.dataGridViewTextBoxColumn8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn8.DataPropertyName = "Mode";
-            this.dataGridViewTextBoxColumn8.FillWeight = 60F;
-            this.dataGridViewTextBoxColumn8.HeaderText = "Mode";
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            this.dataGridViewTextBoxColumn8.ReadOnly = true;
-            this.dataGridViewTextBoxColumn8.Width = 59;
+            this.dgvc_Mode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Mode.DataPropertyName = "Mode";
+            this.dgvc_Mode.FillWeight = 60F;
+            this.dgvc_Mode.HeaderText = "Mode";
+            this.dgvc_Mode.Name = "dgvc_Mode";
+            this.dgvc_Mode.ReadOnly = true;
+            this.dgvc_Mode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Mode.TranslationTag = "String_Mode";
+            this.dgvc_Mode.Width = 59;
             // 
-            // dataGridViewTextBoxColumn9
+            // dgvc_Reach
             // 
-            this.dataGridViewTextBoxColumn9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "Reach";
-            this.dataGridViewTextBoxColumn9.FillWeight = 40F;
-            this.dataGridViewTextBoxColumn9.HeaderText = "Reach";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            this.dataGridViewTextBoxColumn9.Width = 64;
+            this.dgvc_Reach.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Reach.DataPropertyName = "Reach";
+            this.dgvc_Reach.FillWeight = 40F;
+            this.dgvc_Reach.HeaderText = "Reach";
+            this.dgvc_Reach.Name = "dgvc_Reach";
+            this.dgvc_Reach.ReadOnly = true;
+            this.dgvc_Reach.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Reach.TranslationTag = "String_Reach";
+            this.dgvc_Reach.Width = 64;
             // 
-            // dataGridViewTextBoxColumn10
+            // dgvc_Accessories
             // 
-            this.dataGridViewTextBoxColumn10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn10.DataPropertyName = "Accessories";
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle10;
-            this.dataGridViewTextBoxColumn10.HeaderText = "Accessories";
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.ReadOnly = true;
-            this.dataGridViewTextBoxColumn10.Width = 89;
+            this.dgvc_Accessories.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Accessories.DataPropertyName = "Accessories";
+            dataGridViewCellStyle35.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle35;
+            this.dgvc_Accessories.HeaderText = "Accessories";
+            this.dgvc_Accessories.Name = "dgvc_Accessories";
+            this.dgvc_Accessories.ReadOnly = true;
+            this.dgvc_Accessories.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accessories.TranslationTag = "String_Accessories";
+            this.dgvc_Accessories.Width = 89;
             // 
-            // dataGridViewTextBoxColumn11
+            // Label_Avail
             // 
-            this.dataGridViewTextBoxColumn11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn11.DataPropertyName = "Avail";
-            this.dataGridViewTextBoxColumn11.FillWeight = 30F;
-            this.dataGridViewTextBoxColumn11.HeaderText = "Avail";
-            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            this.dataGridViewTextBoxColumn11.ReadOnly = true;
-            this.dataGridViewTextBoxColumn11.Width = 55;
+            this.Label_Avail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Label_Avail.DataPropertyName = "Avail";
+            this.Label_Avail.FillWeight = 30F;
+            this.Label_Avail.HeaderText = "Avail";
+            this.Label_Avail.Name = "Label_Avail";
+            this.Label_Avail.ReadOnly = true;
+            this.Label_Avail.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Label_Avail.TranslationTag = "String_Avail";
+            this.Label_Avail.Width = 55;
             // 
-            // dataGridViewTextBoxColumn12
+            // Label_Source
             // 
-            this.dataGridViewTextBoxColumn12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn12.DataPropertyName = "Source";
-            this.dataGridViewTextBoxColumn12.HeaderText = "Source";
-            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            this.dataGridViewTextBoxColumn12.ReadOnly = true;
-            this.dataGridViewTextBoxColumn12.Width = 66;
+            this.Label_Source.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Label_Source.DataPropertyName = "Source";
+            this.Label_Source.HeaderText = "Source";
+            this.Label_Source.Name = "Label_Source";
+            this.Label_Source.ReadOnly = true;
+            this.Label_Source.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Label_Source.TranslationTag = "String_Source";
+            this.Label_Source.Width = 66;
             // 
-            // dataGridViewTextBoxColumn13
+            // dgvc_Cost
             // 
-            this.dataGridViewTextBoxColumn13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn13.DataPropertyName = "Cost";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle11.Format = "#,###,##0.##¥";
-            dataGridViewCellStyle11.NullValue = null;
-            this.dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewCellStyle11;
-            this.dataGridViewTextBoxColumn13.FillWeight = 60F;
-            this.dataGridViewTextBoxColumn13.HeaderText = "Cost";
-            this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
-            this.dataGridViewTextBoxColumn13.ReadOnly = true;
-            this.dataGridViewTextBoxColumn13.Width = 53;
+            this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Cost.DataPropertyName = "Cost";
+            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle36.Format = "#,0.##¥";
+            dataGridViewCellStyle36.NullValue = null;
+            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle36;
+            this.dgvc_Cost.FillWeight = 60F;
+            this.dgvc_Cost.HeaderText = "Cost";
+            this.dgvc_Cost.Name = "dgvc_Cost";
+            this.dgvc_Cost.ReadOnly = true;
+            this.dgvc_Cost.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Cost.TranslationTag = "String_Cost";
+            this.dgvc_Cost.Width = 53;
             // 
             // tabControl
             // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.SetColumnSpan(this.tabControl, 4);
             this.tabControl.Controls.Add(this.tabListView);
             this.tabControl.Controls.Add(this.tabBrowse);
-            this.tabControl.Location = new System.Drawing.Point(15, 33);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Location = new System.Drawing.Point(0, 27);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(546, 398);
+            this.tabControl.Size = new System.Drawing.Size(606, 366);
             this.tabControl.TabIndex = 38;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tmrSearch_Tick);
             // 
             // tabListView
             // 
-            this.tabListView.Controls.Add(this.chkHideOverAvailLimit);
-            this.tabListView.Controls.Add(this.chkBlackMarketDiscount);
-            this.tabListView.Controls.Add(this.lblWeaponAccuracy);
-            this.tabListView.Controls.Add(this.lblWeaponAccuracyLabel);
-            this.tabListView.Controls.Add(this.lblTest);
-            this.tabListView.Controls.Add(this.nudMarkup);
-            this.tabListView.Controls.Add(this.lblMarkupPercentLabel);
-            this.tabListView.Controls.Add(this.chkFreeItem);
-            this.tabListView.Controls.Add(this.lblSource);
-            this.tabListView.Controls.Add(this.lblSourceLabel);
-            this.tabListView.Controls.Add(this.lblIncludedAccessories);
-            this.tabListView.Controls.Add(this.label2);
-            this.tabListView.Controls.Add(this.lblTestLabel);
-            this.tabListView.Controls.Add(this.lblMarkupLabel);
-            this.tabListView.Controls.Add(this.lblWeaponAmmo);
-            this.tabListView.Controls.Add(this.lblWeaponAmmoLabel);
-            this.tabListView.Controls.Add(this.lblWeaponMode);
-            this.tabListView.Controls.Add(this.lblWeaponModeLabel);
-            this.tabListView.Controls.Add(this.lblWeaponReach);
-            this.tabListView.Controls.Add(this.lblWeaponReachLabel);
-            this.tabListView.Controls.Add(this.lblWeaponAP);
-            this.tabListView.Controls.Add(this.lblWeaponAPLabel);
-            this.tabListView.Controls.Add(this.lblWeaponCost);
-            this.tabListView.Controls.Add(this.lblWeaponCostLabel);
-            this.tabListView.Controls.Add(this.lblWeaponAvail);
-            this.tabListView.Controls.Add(this.lblWeaponAvailLabel);
-            this.tabListView.Controls.Add(this.lblWeaponRC);
-            this.tabListView.Controls.Add(this.lblWeaponRCLabel);
-            this.tabListView.Controls.Add(this.lblWeaponDamage);
-            this.tabListView.Controls.Add(this.lblWeaponDamageLabel);
-            this.tabListView.Controls.Add(this.lstWeapon);
+            this.tabListView.Controls.Add(this.tlpWeapon);
             this.tabListView.Location = new System.Drawing.Point(4, 22);
             this.tabListView.Name = "tabListView";
             this.tabListView.Padding = new System.Windows.Forms.Padding(3);
-            this.tabListView.Size = new System.Drawing.Size(538, 372);
+            this.tabListView.Size = new System.Drawing.Size(598, 340);
             this.tabListView.TabIndex = 1;
+            this.tabListView.Tag = "Title_ListView";
             this.tabListView.Text = "List View";
-            this.tipTooltip.SetToolTip(this.tabListView, "Title_ListView");
             this.tabListView.UseVisualStyleBackColor = true;
+            // 
+            // tlpWeapon
+            // 
+            this.tlpWeapon.ColumnCount = 5;
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpWeapon.Controls.Add(this.lstWeapon, 0, 0);
+            this.tlpWeapon.Controls.Add(this.lblWeaponRC, 4, 0);
+            this.tlpWeapon.Controls.Add(this.lblWeaponRCLabel, 3, 0);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAccuracyLabel, 3, 4);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAccuracy, 4, 4);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAmmo, 4, 1);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAmmoLabel, 3, 1);
+            this.tlpWeapon.Controls.Add(this.lblTest, 4, 3);
+            this.tlpWeapon.Controls.Add(this.lblWeaponMode, 4, 2);
+            this.tlpWeapon.Controls.Add(this.lblWeaponModeLabel, 3, 2);
+            this.tlpWeapon.Controls.Add(this.lblTestLabel, 3, 3);
+            this.tlpWeapon.Controls.Add(this.lblWeaponDamageLabel, 1, 0);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAPLabel, 1, 1);
+            this.tlpWeapon.Controls.Add(this.lblWeaponReachLabel, 1, 2);
+            this.tlpWeapon.Controls.Add(this.lblWeaponReach, 2, 2);
+            this.tlpWeapon.Controls.Add(this.lblWeaponDamage, 2, 0);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAvailLabel, 1, 3);
+            this.tlpWeapon.Controls.Add(this.lblWeaponCostLabel, 1, 4);
+            this.tlpWeapon.Controls.Add(this.lblWeaponCost, 2, 4);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAP, 2, 1);
+            this.tlpWeapon.Controls.Add(this.lblWeaponAvail, 2, 3);
+            this.tlpWeapon.Controls.Add(this.lblMarkupLabel, 1, 6);
+            this.tlpWeapon.Controls.Add(this.lblSourceLabel, 1, 7);
+            this.tlpWeapon.Controls.Add(this.chkHideOverAvailLimit, 1, 8);
+            this.tlpWeapon.Controls.Add(this.chkShowOnlyAffordItems, 1, 9);
+            this.tlpWeapon.Controls.Add(this.lblSource, 2, 7);
+            this.tlpWeapon.Controls.Add(this.flpMarkup, 2, 6);
+            this.tlpWeapon.Controls.Add(this.flpCheckBoxes, 1, 5);
+            this.tlpWeapon.Controls.Add(this.gpbIncludedAccessories, 1, 10);
+            this.tlpWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpWeapon.Location = new System.Drawing.Point(3, 3);
+            this.tlpWeapon.Name = "tlpWeapon";
+            this.tlpWeapon.RowCount = 11;
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpWeapon.Size = new System.Drawing.Size(592, 334);
+            this.tlpWeapon.TabIndex = 71;
+            // 
+            // lstWeapon
+            // 
+            this.lstWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstWeapon.FormattingEnabled = true;
+            this.lstWeapon.Location = new System.Drawing.Point(3, 9);
+            this.lstWeapon.Margin = new System.Windows.Forms.Padding(3, 9, 3, 9);
+            this.lstWeapon.Name = "lstWeapon";
+            this.tlpWeapon.SetRowSpan(this.lstWeapon, 11);
+            this.lstWeapon.Size = new System.Drawing.Size(295, 316);
+            this.lstWeapon.TabIndex = 66;
+            this.lstWeapon.SelectedIndexChanged += new System.EventHandler(this.lstWeapon_SelectedIndexChanged);
+            this.lstWeapon.DoubleClick += new System.EventHandler(this.cmdOK_Click);
+            // 
+            // lblWeaponRC
+            // 
+            this.lblWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponRC.AutoSize = true;
+            this.lblWeaponRC.Location = new System.Drawing.Point(508, 6);
+            this.lblWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponRC.Name = "lblWeaponRC";
+            this.lblWeaponRC.Size = new System.Drawing.Size(28, 13);
+            this.lblWeaponRC.TabIndex = 43;
+            this.lblWeaponRC.Text = "[RC]";
+            // 
+            // lblWeaponRCLabel
+            // 
+            this.lblWeaponRCLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponRCLabel.AutoSize = true;
+            this.lblWeaponRCLabel.Location = new System.Drawing.Point(477, 6);
+            this.lblWeaponRCLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponRCLabel.Name = "lblWeaponRCLabel";
+            this.lblWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
+            this.lblWeaponRCLabel.TabIndex = 42;
+            this.lblWeaponRCLabel.Tag = "Label_RC";
+            this.lblWeaponRCLabel.Text = "RC:";
+            // 
+            // lblWeaponAccuracyLabel
+            // 
+            this.lblWeaponAccuracyLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAccuracyLabel.AutoSize = true;
+            this.lblWeaponAccuracyLabel.Location = new System.Drawing.Point(447, 106);
+            this.lblWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAccuracyLabel.Name = "lblWeaponAccuracyLabel";
+            this.lblWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
+            this.lblWeaponAccuracyLabel.TabIndex = 67;
+            this.lblWeaponAccuracyLabel.Tag = "Label_Accuracy";
+            this.lblWeaponAccuracyLabel.Text = "Accuracy:";
+            // 
+            // lblWeaponAccuracy
+            // 
+            this.lblWeaponAccuracy.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAccuracy.AutoSize = true;
+            this.lblWeaponAccuracy.Location = new System.Drawing.Point(508, 106);
+            this.lblWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAccuracy.Name = "lblWeaponAccuracy";
+            this.lblWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
+            this.lblWeaponAccuracy.TabIndex = 68;
+            this.lblWeaponAccuracy.Text = "[Accuracy]";
+            // 
+            // lblWeaponAmmo
+            // 
+            this.lblWeaponAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAmmo.AutoSize = true;
+            this.lblWeaponAmmo.Location = new System.Drawing.Point(508, 31);
+            this.lblWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAmmo.Name = "lblWeaponAmmo";
+            this.lblWeaponAmmo.Size = new System.Drawing.Size(42, 13);
+            this.lblWeaponAmmo.TabIndex = 47;
+            this.lblWeaponAmmo.Text = "[Ammo]";
+            // 
+            // lblWeaponAmmoLabel
+            // 
+            this.lblWeaponAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAmmoLabel.AutoSize = true;
+            this.lblWeaponAmmoLabel.Location = new System.Drawing.Point(463, 31);
+            this.lblWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAmmoLabel.Name = "lblWeaponAmmoLabel";
+            this.lblWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
+            this.lblWeaponAmmoLabel.TabIndex = 46;
+            this.lblWeaponAmmoLabel.Tag = "Label_Ammo";
+            this.lblWeaponAmmoLabel.Text = "Ammo:";
+            // 
+            // lblTest
+            // 
+            this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTest.AutoSize = true;
+            this.lblTest.Location = new System.Drawing.Point(508, 81);
+            this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTest.Name = "lblTest";
+            this.lblTest.Size = new System.Drawing.Size(19, 13);
+            this.lblTest.TabIndex = 55;
+            this.lblTest.Text = "[0]";
+            // 
+            // lblWeaponMode
+            // 
+            this.lblWeaponMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponMode.AutoSize = true;
+            this.lblWeaponMode.Location = new System.Drawing.Point(508, 56);
+            this.lblWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponMode.Name = "lblWeaponMode";
+            this.lblWeaponMode.Size = new System.Drawing.Size(40, 13);
+            this.lblWeaponMode.TabIndex = 51;
+            this.lblWeaponMode.Text = "[Mode]";
+            // 
+            // lblWeaponModeLabel
+            // 
+            this.lblWeaponModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponModeLabel.AutoSize = true;
+            this.lblWeaponModeLabel.Location = new System.Drawing.Point(465, 56);
+            this.lblWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponModeLabel.Name = "lblWeaponModeLabel";
+            this.lblWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblWeaponModeLabel.TabIndex = 50;
+            this.lblWeaponModeLabel.Tag = "Label_Mode";
+            this.lblWeaponModeLabel.Text = "Mode:";
+            // 
+            // lblTestLabel
+            // 
+            this.lblTestLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTestLabel.AutoSize = true;
+            this.lblTestLabel.Location = new System.Drawing.Point(471, 81);
+            this.lblTestLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTestLabel.Name = "lblTestLabel";
+            this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
+            this.lblTestLabel.TabIndex = 54;
+            this.lblTestLabel.Tag = "Label_Test";
+            this.lblTestLabel.Text = "Test:";
+            // 
+            // lblWeaponDamageLabel
+            // 
+            this.lblWeaponDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponDamageLabel.AutoSize = true;
+            this.lblWeaponDamageLabel.Location = new System.Drawing.Point(304, 6);
+            this.lblWeaponDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponDamageLabel.Name = "lblWeaponDamageLabel";
+            this.lblWeaponDamageLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblWeaponDamageLabel.TabIndex = 40;
+            this.lblWeaponDamageLabel.Tag = "Label_Damage";
+            this.lblWeaponDamageLabel.Text = "Damage:";
+            // 
+            // lblWeaponAPLabel
+            // 
+            this.lblWeaponAPLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAPLabel.AutoSize = true;
+            this.lblWeaponAPLabel.Location = new System.Drawing.Point(330, 31);
+            this.lblWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAPLabel.Name = "lblWeaponAPLabel";
+            this.lblWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblWeaponAPLabel.TabIndex = 44;
+            this.lblWeaponAPLabel.Tag = "Label_AP";
+            this.lblWeaponAPLabel.Text = "AP:";
+            // 
+            // lblWeaponReachLabel
+            // 
+            this.lblWeaponReachLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponReachLabel.AutoSize = true;
+            this.lblWeaponReachLabel.Location = new System.Drawing.Point(312, 56);
+            this.lblWeaponReachLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponReachLabel.Name = "lblWeaponReachLabel";
+            this.lblWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblWeaponReachLabel.TabIndex = 48;
+            this.lblWeaponReachLabel.Tag = "Label_Reach";
+            this.lblWeaponReachLabel.Text = "Reach:";
+            // 
+            // lblWeaponReach
+            // 
+            this.lblWeaponReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponReach.AutoSize = true;
+            this.lblWeaponReach.Location = new System.Drawing.Point(360, 56);
+            this.lblWeaponReach.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponReach.Name = "lblWeaponReach";
+            this.lblWeaponReach.Size = new System.Drawing.Size(45, 13);
+            this.lblWeaponReach.TabIndex = 49;
+            this.lblWeaponReach.Text = "[Reach]";
+            // 
+            // lblWeaponDamage
+            // 
+            this.lblWeaponDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponDamage.AutoSize = true;
+            this.lblWeaponDamage.Location = new System.Drawing.Point(360, 6);
+            this.lblWeaponDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponDamage.Name = "lblWeaponDamage";
+            this.lblWeaponDamage.Size = new System.Drawing.Size(53, 13);
+            this.lblWeaponDamage.TabIndex = 41;
+            this.lblWeaponDamage.Text = "[Damage]";
+            // 
+            // lblWeaponAvailLabel
+            // 
+            this.lblWeaponAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAvailLabel.AutoSize = true;
+            this.lblWeaponAvailLabel.Location = new System.Drawing.Point(321, 81);
+            this.lblWeaponAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAvailLabel.Name = "lblWeaponAvailLabel";
+            this.lblWeaponAvailLabel.Size = new System.Drawing.Size(33, 13);
+            this.lblWeaponAvailLabel.TabIndex = 52;
+            this.lblWeaponAvailLabel.Tag = "Label_Avail";
+            this.lblWeaponAvailLabel.Text = "Avail:";
+            // 
+            // lblWeaponCostLabel
+            // 
+            this.lblWeaponCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponCostLabel.AutoSize = true;
+            this.lblWeaponCostLabel.Location = new System.Drawing.Point(323, 106);
+            this.lblWeaponCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponCostLabel.Name = "lblWeaponCostLabel";
+            this.lblWeaponCostLabel.Size = new System.Drawing.Size(31, 13);
+            this.lblWeaponCostLabel.TabIndex = 56;
+            this.lblWeaponCostLabel.Tag = "Label_Cost";
+            this.lblWeaponCostLabel.Text = "Cost:";
+            // 
+            // lblWeaponCost
+            // 
+            this.lblWeaponCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponCost.AutoSize = true;
+            this.lblWeaponCost.Location = new System.Drawing.Point(360, 106);
+            this.lblWeaponCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponCost.Name = "lblWeaponCost";
+            this.lblWeaponCost.Size = new System.Drawing.Size(34, 13);
+            this.lblWeaponCost.TabIndex = 57;
+            this.lblWeaponCost.Text = "[Cost]";
+            // 
+            // lblWeaponAP
+            // 
+            this.lblWeaponAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAP.AutoSize = true;
+            this.lblWeaponAP.Location = new System.Drawing.Point(360, 31);
+            this.lblWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAP.Name = "lblWeaponAP";
+            this.lblWeaponAP.Size = new System.Drawing.Size(27, 13);
+            this.lblWeaponAP.TabIndex = 45;
+            this.lblWeaponAP.Text = "[AP]";
+            // 
+            // lblWeaponAvail
+            // 
+            this.lblWeaponAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAvail.AutoSize = true;
+            this.lblWeaponAvail.Location = new System.Drawing.Point(360, 81);
+            this.lblWeaponAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAvail.Name = "lblWeaponAvail";
+            this.lblWeaponAvail.Size = new System.Drawing.Size(36, 13);
+            this.lblWeaponAvail.TabIndex = 53;
+            this.lblWeaponAvail.Text = "[Avail]";
+            // 
+            // lblMarkupLabel
+            // 
+            this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMarkupLabel.AutoSize = true;
+            this.lblMarkupLabel.Location = new System.Drawing.Point(308, 154);
+            this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMarkupLabel.Name = "lblMarkupLabel";
+            this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblMarkupLabel.TabIndex = 59;
+            this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
+            this.lblMarkupLabel.Text = "Markup:";
+            // 
+            // lblSourceLabel
+            // 
+            this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSourceLabel.AutoSize = true;
+            this.lblSourceLabel.Location = new System.Drawing.Point(310, 180);
+            this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSourceLabel.Name = "lblSourceLabel";
+            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSourceLabel.TabIndex = 64;
+            this.lblSourceLabel.Tag = "Label_Source";
+            this.lblSourceLabel.Text = "Source:";
             // 
             // chkHideOverAvailLimit
             // 
+            this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(252, 199);
+            this.tlpWeapon.SetColumnSpan(this.chkHideOverAvailLimit, 4);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 203);
+            this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 70;
@@ -437,10 +769,108 @@ namespace Chummer
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
+            // chkShowOnlyAffordItems
+            // 
+            this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkShowOnlyAffordItems.AutoSize = true;
+            this.tlpWeapon.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 228);
+            this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
+            this.chkShowOnlyAffordItems.TabIndex = 71;
+            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.chkShowOnlyAffordItems_CheckedChanged);
+            // 
+            // lblSource
+            // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSource.AutoSize = true;
+            this.lblSource.Location = new System.Drawing.Point(360, 180);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSource.TabIndex = 65;
+            this.lblSource.Text = "[Source]";
+            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
+            // 
+            // flpMarkup
+            // 
+            this.flpMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpMarkup.AutoSize = true;
+            this.tlpWeapon.SetColumnSpan(this.flpMarkup, 3);
+            this.flpMarkup.Controls.Add(this.nudMarkup);
+            this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
+            this.flpMarkup.Location = new System.Drawing.Point(357, 148);
+            this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMarkup.Name = "flpMarkup";
+            this.flpMarkup.Size = new System.Drawing.Size(127, 26);
+            this.flpMarkup.TabIndex = 72;
+            // 
+            // nudMarkup
+            // 
+            this.nudMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMarkup.DecimalPlaces = 2;
+            this.nudMarkup.Location = new System.Drawing.Point(3, 3);
+            this.nudMarkup.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudMarkup.Minimum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            -2147352576});
+            this.nudMarkup.Name = "nudMarkup";
+            this.nudMarkup.Size = new System.Drawing.Size(100, 20);
+            this.nudMarkup.TabIndex = 60;
+            this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
+            // 
+            // lblMarkupPercentLabel
+            // 
+            this.lblMarkupPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMarkupPercentLabel.AutoSize = true;
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(109, 6);
+            this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
+            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
+            this.lblMarkupPercentLabel.TabIndex = 61;
+            this.lblMarkupPercentLabel.Text = "%";
+            // 
+            // flpCheckBoxes
+            // 
+            this.flpCheckBoxes.AutoSize = true;
+            this.tlpWeapon.SetColumnSpan(this.flpCheckBoxes, 4);
+            this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
+            this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
+            this.flpCheckBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpCheckBoxes.Location = new System.Drawing.Point(301, 125);
+            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpCheckBoxes.Name = "flpCheckBoxes";
+            this.flpCheckBoxes.Size = new System.Drawing.Size(291, 23);
+            this.flpCheckBoxes.TabIndex = 73;
+            // 
+            // chkFreeItem
+            // 
+            this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkFreeItem.AutoSize = true;
+            this.chkFreeItem.Location = new System.Drawing.Point(3, 3);
+            this.chkFreeItem.Name = "chkFreeItem";
+            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeItem.TabIndex = 58;
+            this.chkFreeItem.Tag = "Checkbox_Free";
+            this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.UseVisualStyleBackColor = true;
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
+            // 
             // chkBlackMarketDiscount
             // 
+            this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBlackMarketDiscount.AutoSize = true;
-            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(252, 161);
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 3);
             this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
             this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
             this.chkBlackMarketDiscount.TabIndex = 69;
@@ -450,295 +880,41 @@ namespace Chummer
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
             // 
-            // lblWeaponAccuracy
+            // gpbIncludedAccessories
             // 
-            this.lblWeaponAccuracy.AutoSize = true;
-            this.lblWeaponAccuracy.Location = new System.Drawing.Point(427, 110);
-            this.lblWeaponAccuracy.Name = "lblWeaponAccuracy";
-            this.lblWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
-            this.lblWeaponAccuracy.TabIndex = 68;
-            this.lblWeaponAccuracy.Text = "[Accuracy]";
+            this.tlpWeapon.SetColumnSpan(this.gpbIncludedAccessories, 4);
+            this.gpbIncludedAccessories.Controls.Add(this.pnlIncludedAccessories);
+            this.gpbIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbIncludedAccessories.Location = new System.Drawing.Point(304, 252);
+            this.gpbIncludedAccessories.Name = "gpbIncludedAccessories";
+            this.gpbIncludedAccessories.Size = new System.Drawing.Size(285, 79);
+            this.gpbIncludedAccessories.TabIndex = 74;
+            this.gpbIncludedAccessories.TabStop = false;
+            this.gpbIncludedAccessories.Tag = "Label_SelectWeapon_IncludedItems";
+            this.gpbIncludedAccessories.Text = "Included Accessories and Modifications:";
             // 
-            // lblWeaponAccuracyLabel
+            // pnlIncludedAccessories
             // 
-            this.lblWeaponAccuracyLabel.AutoSize = true;
-            this.lblWeaponAccuracyLabel.Location = new System.Drawing.Point(366, 110);
-            this.lblWeaponAccuracyLabel.Name = "lblWeaponAccuracyLabel";
-            this.lblWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
-            this.lblWeaponAccuracyLabel.TabIndex = 67;
-            this.lblWeaponAccuracyLabel.Tag = "Label_Accuracy";
-            this.lblWeaponAccuracyLabel.Text = "Accuracy:";
-            // 
-            // lblTest
-            // 
-            this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(427, 87);
-            this.lblTest.Name = "lblTest";
-            this.lblTest.Size = new System.Drawing.Size(19, 13);
-            this.lblTest.TabIndex = 55;
-            this.lblTest.Text = "[0]";
-            // 
-            // nudMarkup
-            // 
-            this.nudMarkup.Location = new System.Drawing.Point(312, 137);
-            this.nudMarkup.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            -2147483648});
-            this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
-            this.nudMarkup.TabIndex = 60;
-            this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
-            // 
-            // lblMarkupPercentLabel
-            // 
-            this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(367, 139);
-            this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
-            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
-            this.lblMarkupPercentLabel.TabIndex = 61;
-            this.lblMarkupPercentLabel.Text = "%";
-            // 
-            // chkFreeItem
-            // 
-            this.chkFreeItem.AutoSize = true;
-            this.chkFreeItem.Location = new System.Drawing.Point(406, 138);
-            this.chkFreeItem.Name = "chkFreeItem";
-            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
-            this.chkFreeItem.TabIndex = 58;
-            this.chkFreeItem.Tag = "Checkbox_Free";
-            this.chkFreeItem.Text = "Free!";
-            this.chkFreeItem.UseVisualStyleBackColor = true;
-            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
-            // 
-            // lblSource
-            // 
-            this.lblSource.AutoSize = true;
-            this.lblSource.Location = new System.Drawing.Point(300, 183);
-            this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSource.TabIndex = 65;
-            this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
-            // 
-            // lblSourceLabel
-            // 
-            this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(252, 183);
-            this.lblSourceLabel.Name = "lblSourceLabel";
-            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSourceLabel.TabIndex = 64;
-            this.lblSourceLabel.Tag = "Label_Source";
-            this.lblSourceLabel.Text = "Source:";
+            this.pnlIncludedAccessories.AutoScroll = true;
+            this.pnlIncludedAccessories.AutoScrollMinSize = new System.Drawing.Size(0, 60);
+            this.pnlIncludedAccessories.AutoSize = true;
+            this.pnlIncludedAccessories.Controls.Add(this.lblIncludedAccessories);
+            this.pnlIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlIncludedAccessories.Location = new System.Drawing.Point(3, 16);
+            this.pnlIncludedAccessories.Name = "pnlIncludedAccessories";
+            this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            this.pnlIncludedAccessories.Size = new System.Drawing.Size(279, 60);
+            this.pnlIncludedAccessories.TabIndex = 0;
             // 
             // lblIncludedAccessories
             // 
             this.lblIncludedAccessories.AutoSize = true;
-            this.lblIncludedAccessories.Location = new System.Drawing.Point(270, 242);
+            this.lblIncludedAccessories.Location = new System.Drawing.Point(0, 0);
             this.lblIncludedAccessories.Name = "lblIncludedAccessories";
-            this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 13);
+            this.lblIncludedAccessories.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 19);
             this.lblIncludedAccessories.TabIndex = 63;
             this.lblIncludedAccessories.Text = "[None]";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(252, 219);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(197, 13);
-            this.label2.TabIndex = 62;
-            this.label2.Tag = "Label_SelectWeapon_IncludedItems";
-            this.label2.Text = "Included Accessories and Modifications:";
-            // 
-            // lblTestLabel
-            // 
-            this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(366, 87);
-            this.lblTestLabel.Name = "lblTestLabel";
-            this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
-            this.lblTestLabel.TabIndex = 54;
-            this.lblTestLabel.Tag = "Label_Test";
-            this.lblTestLabel.Text = "Test:";
-            // 
-            // lblMarkupLabel
-            // 
-            this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(252, 139);
-            this.lblMarkupLabel.Name = "lblMarkupLabel";
-            this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
-            this.lblMarkupLabel.TabIndex = 59;
-            this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
-            this.lblMarkupLabel.Text = "Markup:";
-            // 
-            // lblWeaponAmmo
-            // 
-            this.lblWeaponAmmo.AutoSize = true;
-            this.lblWeaponAmmo.Location = new System.Drawing.Point(427, 41);
-            this.lblWeaponAmmo.Name = "lblWeaponAmmo";
-            this.lblWeaponAmmo.Size = new System.Drawing.Size(42, 13);
-            this.lblWeaponAmmo.TabIndex = 47;
-            this.lblWeaponAmmo.Text = "[Ammo]";
-            // 
-            // lblWeaponAmmoLabel
-            // 
-            this.lblWeaponAmmoLabel.AutoSize = true;
-            this.lblWeaponAmmoLabel.Location = new System.Drawing.Point(366, 41);
-            this.lblWeaponAmmoLabel.Name = "lblWeaponAmmoLabel";
-            this.lblWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
-            this.lblWeaponAmmoLabel.TabIndex = 46;
-            this.lblWeaponAmmoLabel.Tag = "Label_Ammo";
-            this.lblWeaponAmmoLabel.Text = "Ammo:";
-            // 
-            // lblWeaponMode
-            // 
-            this.lblWeaponMode.AutoSize = true;
-            this.lblWeaponMode.Location = new System.Drawing.Point(427, 64);
-            this.lblWeaponMode.Name = "lblWeaponMode";
-            this.lblWeaponMode.Size = new System.Drawing.Size(40, 13);
-            this.lblWeaponMode.TabIndex = 51;
-            this.lblWeaponMode.Text = "[Mode]";
-            // 
-            // lblWeaponModeLabel
-            // 
-            this.lblWeaponModeLabel.AutoSize = true;
-            this.lblWeaponModeLabel.Location = new System.Drawing.Point(366, 64);
-            this.lblWeaponModeLabel.Name = "lblWeaponModeLabel";
-            this.lblWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblWeaponModeLabel.TabIndex = 50;
-            this.lblWeaponModeLabel.Tag = "Label_Mode";
-            this.lblWeaponModeLabel.Text = "Mode:";
-            // 
-            // lblWeaponReach
-            // 
-            this.lblWeaponReach.AutoSize = true;
-            this.lblWeaponReach.Location = new System.Drawing.Point(309, 64);
-            this.lblWeaponReach.Name = "lblWeaponReach";
-            this.lblWeaponReach.Size = new System.Drawing.Size(45, 13);
-            this.lblWeaponReach.TabIndex = 49;
-            this.lblWeaponReach.Text = "[Reach]";
-            // 
-            // lblWeaponReachLabel
-            // 
-            this.lblWeaponReachLabel.AutoSize = true;
-            this.lblWeaponReachLabel.Location = new System.Drawing.Point(252, 64);
-            this.lblWeaponReachLabel.Name = "lblWeaponReachLabel";
-            this.lblWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblWeaponReachLabel.TabIndex = 48;
-            this.lblWeaponReachLabel.Tag = "Label_Reach";
-            this.lblWeaponReachLabel.Text = "Reach:";
-            // 
-            // lblWeaponAP
-            // 
-            this.lblWeaponAP.AutoSize = true;
-            this.lblWeaponAP.Location = new System.Drawing.Point(309, 41);
-            this.lblWeaponAP.Name = "lblWeaponAP";
-            this.lblWeaponAP.Size = new System.Drawing.Size(27, 13);
-            this.lblWeaponAP.TabIndex = 45;
-            this.lblWeaponAP.Text = "[AP]";
-            // 
-            // lblWeaponAPLabel
-            // 
-            this.lblWeaponAPLabel.AutoSize = true;
-            this.lblWeaponAPLabel.Location = new System.Drawing.Point(252, 41);
-            this.lblWeaponAPLabel.Name = "lblWeaponAPLabel";
-            this.lblWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
-            this.lblWeaponAPLabel.TabIndex = 44;
-            this.lblWeaponAPLabel.Tag = "Label_AP";
-            this.lblWeaponAPLabel.Text = "AP:";
-            // 
-            // lblWeaponCost
-            // 
-            this.lblWeaponCost.AutoSize = true;
-            this.lblWeaponCost.Location = new System.Drawing.Point(309, 110);
-            this.lblWeaponCost.Name = "lblWeaponCost";
-            this.lblWeaponCost.Size = new System.Drawing.Size(34, 13);
-            this.lblWeaponCost.TabIndex = 57;
-            this.lblWeaponCost.Text = "[Cost]";
-            // 
-            // lblWeaponCostLabel
-            // 
-            this.lblWeaponCostLabel.AutoSize = true;
-            this.lblWeaponCostLabel.Location = new System.Drawing.Point(252, 110);
-            this.lblWeaponCostLabel.Name = "lblWeaponCostLabel";
-            this.lblWeaponCostLabel.Size = new System.Drawing.Size(31, 13);
-            this.lblWeaponCostLabel.TabIndex = 56;
-            this.lblWeaponCostLabel.Tag = "Label_Cost";
-            this.lblWeaponCostLabel.Text = "Cost:";
-            // 
-            // lblWeaponAvail
-            // 
-            this.lblWeaponAvail.AutoSize = true;
-            this.lblWeaponAvail.Location = new System.Drawing.Point(309, 87);
-            this.lblWeaponAvail.Name = "lblWeaponAvail";
-            this.lblWeaponAvail.Size = new System.Drawing.Size(36, 13);
-            this.lblWeaponAvail.TabIndex = 53;
-            this.lblWeaponAvail.Text = "[Avail]";
-            // 
-            // lblWeaponAvailLabel
-            // 
-            this.lblWeaponAvailLabel.AutoSize = true;
-            this.lblWeaponAvailLabel.Location = new System.Drawing.Point(252, 87);
-            this.lblWeaponAvailLabel.Name = "lblWeaponAvailLabel";
-            this.lblWeaponAvailLabel.Size = new System.Drawing.Size(33, 13);
-            this.lblWeaponAvailLabel.TabIndex = 52;
-            this.lblWeaponAvailLabel.Tag = "Label_Avail";
-            this.lblWeaponAvailLabel.Text = "Avail:";
-            // 
-            // lblWeaponRC
-            // 
-            this.lblWeaponRC.AutoSize = true;
-            this.lblWeaponRC.Location = new System.Drawing.Point(460, 18);
-            this.lblWeaponRC.Name = "lblWeaponRC";
-            this.lblWeaponRC.Size = new System.Drawing.Size(28, 13);
-            this.lblWeaponRC.TabIndex = 43;
-            this.lblWeaponRC.Text = "[RC]";
-            // 
-            // lblWeaponRCLabel
-            // 
-            this.lblWeaponRCLabel.AutoSize = true;
-            this.lblWeaponRCLabel.Location = new System.Drawing.Point(403, 18);
-            this.lblWeaponRCLabel.Name = "lblWeaponRCLabel";
-            this.lblWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
-            this.lblWeaponRCLabel.TabIndex = 42;
-            this.lblWeaponRCLabel.Tag = "Label_RC";
-            this.lblWeaponRCLabel.Text = "RC:";
-            // 
-            // lblWeaponDamage
-            // 
-            this.lblWeaponDamage.AutoSize = true;
-            this.lblWeaponDamage.Location = new System.Drawing.Point(309, 18);
-            this.lblWeaponDamage.Name = "lblWeaponDamage";
-            this.lblWeaponDamage.Size = new System.Drawing.Size(53, 13);
-            this.lblWeaponDamage.TabIndex = 41;
-            this.lblWeaponDamage.Text = "[Damage]";
-            // 
-            // lblWeaponDamageLabel
-            // 
-            this.lblWeaponDamageLabel.AutoSize = true;
-            this.lblWeaponDamageLabel.Location = new System.Drawing.Point(252, 18);
-            this.lblWeaponDamageLabel.Name = "lblWeaponDamageLabel";
-            this.lblWeaponDamageLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblWeaponDamageLabel.TabIndex = 40;
-            this.lblWeaponDamageLabel.Tag = "Label_Damage";
-            this.lblWeaponDamageLabel.Text = "Damage:";
-            // 
-            // lstWeapon
-            // 
-            this.lstWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lstWeapon.FormattingEnabled = true;
-            this.lstWeapon.Location = new System.Drawing.Point(6, 6);
-            this.lstWeapon.Name = "lstWeapon";
-            this.lstWeapon.Size = new System.Drawing.Size(240, 355);
-            this.lstWeapon.TabIndex = 66;
-            this.lstWeapon.SelectedIndexChanged += new System.EventHandler(this.lstWeapon_SelectedIndexChanged);
-            this.lstWeapon.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // tabBrowse
             // 
@@ -746,171 +922,70 @@ namespace Chummer
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
             this.tabBrowse.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBrowse.Size = new System.Drawing.Size(538, 372);
+            this.tabBrowse.Size = new System.Drawing.Size(598, 340);
             this.tabBrowse.TabIndex = 0;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
             this.tabBrowse.UseVisualStyleBackColor = true;
             // 
-            // WeaponName
-            // 
-            this.WeaponName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.WeaponName.DataPropertyName = "WeaponName";
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.WeaponName.DefaultCellStyle = dataGridViewCellStyle12;
-            this.WeaponName.Frozen = true;
-            this.WeaponName.HeaderText = "Name";
-            this.WeaponName.Name = "WeaponName";
-            this.WeaponName.ReadOnly = true;
-            // 
-            // Dice
-            // 
-            this.Dice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Dice.DataPropertyName = "Dice";
-            this.Dice.FillWeight = 30F;
-            this.Dice.HeaderText = "Dice";
-            this.Dice.Name = "Dice";
-            this.Dice.ReadOnly = true;
-            // 
-            // Damage
-            // 
-            this.Damage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Damage.DataPropertyName = "Damage";
-            this.Damage.FillWeight = 50F;
-            this.Damage.HeaderText = "Damage";
-            this.Damage.Name = "Damage";
-            this.Damage.ReadOnly = true;
-            // 
-            // AP
-            // 
-            this.AP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.AP.DataPropertyName = "AP";
-            this.AP.FillWeight = 30F;
-            this.AP.HeaderText = "AP";
-            this.AP.Name = "AP";
-            this.AP.ReadOnly = true;
-            // 
-            // RC
-            // 
-            this.RC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.RC.DataPropertyName = "RC";
-            this.RC.FillWeight = 30F;
-            this.RC.HeaderText = "RC";
-            this.RC.Name = "RC";
-            this.RC.ReadOnly = true;
-            // 
-            // Ammo
-            // 
-            this.Ammo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Ammo.DataPropertyName = "Ammo";
-            this.Ammo.FillWeight = 60F;
-            this.Ammo.HeaderText = "Ammo";
-            this.Ammo.Name = "Ammo";
-            this.Ammo.ReadOnly = true;
-            // 
-            // Mode
-            // 
-            this.Mode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Mode.DataPropertyName = "Mode";
-            this.Mode.FillWeight = 60F;
-            this.Mode.HeaderText = "Mode";
-            this.Mode.Name = "Mode";
-            this.Mode.ReadOnly = true;
-            // 
-            // Reach
-            // 
-            this.Reach.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Reach.DataPropertyName = "Reach";
-            this.Reach.FillWeight = 40F;
-            this.Reach.HeaderText = "Reach";
-            this.Reach.Name = "Reach";
-            this.Reach.ReadOnly = true;
-            // 
-            // Accessories
-            // 
-            this.Accessories.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Accessories.DataPropertyName = "Accessories";
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.Accessories.DefaultCellStyle = dataGridViewCellStyle13;
-            this.Accessories.HeaderText = "Accessories";
-            this.Accessories.Name = "Accessories";
-            this.Accessories.ReadOnly = true;
-            // 
-            // Avail
-            // 
-            this.Avail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Avail.DataPropertyName = "Avail";
-            this.Avail.FillWeight = 30F;
-            this.Avail.HeaderText = "Avail";
-            this.Avail.Name = "Avail";
-            this.Avail.ReadOnly = true;
-            // 
-            // Source
-            // 
-            this.Source.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Source.DataPropertyName = "Source";
-            this.Source.HeaderText = "Source";
-            this.Source.Name = "Source";
-            this.Source.ReadOnly = true;
-            // 
-            // Cost
-            // 
-            this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle14.Format = "#,###,##0.##¥";
-            dataGridViewCellStyle14.NullValue = null;
-            this.Cost.DefaultCellStyle = dataGridViewCellStyle14;
-            this.Cost.FillWeight = 60F;
-            this.Cost.HeaderText = "Cost";
-            this.Cost.Name = "Cost";
-            this.Cost.ReadOnly = true;
-            // 
             // tmrSearch
             // 
             this.tmrSearch.Interval = 250;
             // 
-            // Accuracy
+            // tableLayoutPanel2
             // 
-            this.Accuracy.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Accuracy.DataPropertyName = "Accuracy";
-            this.Accuracy.FillWeight = 50F;
-            this.Accuracy.HeaderText = "Accuracy";
-            this.Accuracy.Name = "Accuracy";
-            this.Accuracy.ReadOnly = true;
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel2.ColumnCount = 4;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.tabControl, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.lblCategory, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.txtSearch, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.lblSearchLabel, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 0, 2);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 9);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(606, 423);
+            this.tableLayoutPanel2.TabIndex = 39;
             // 
-            // tipTooltip
+            // flowLayoutPanel1
             // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel2.SetColumnSpan(this.flowLayoutPanel1, 4);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
+            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(366, 397);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
+            this.flowLayoutPanel1.TabIndex = 39;
             // 
             // frmSelectWeapon
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(573, 472);
-            this.Controls.Add(this.tabControl);
-            this.Controls.Add(this.cmdOKAdd);
-            this.Controls.Add(this.txtSearch);
-            this.Controls.Add(this.lblSearchLabel);
-            this.Controls.Add(this.cmdCancel);
-            this.Controls.Add(this.cmdOK);
-            this.Controls.Add(this.lblCategory);
-            this.Controls.Add(this.cboCategory);
+            this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.tableLayoutPanel2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSelectWeapon";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeapon";
@@ -919,16 +994,29 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabListView.ResumeLayout(false);
-            this.tabListView.PerformLayout();
+            this.tlpWeapon.ResumeLayout(false);
+            this.tlpWeapon.PerformLayout();
+            this.flpMarkup.ResumeLayout(false);
+            this.flpMarkup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
+            this.flpCheckBoxes.ResumeLayout(false);
+            this.flpCheckBoxes.PerformLayout();
+            this.gpbIncludedAccessories.ResumeLayout(false);
+            this.gpbIncludedAccessories.PerformLayout();
+            this.pnlIncludedAccessories.ResumeLayout(false);
+            this.pnlIncludedAccessories.PerformLayout();
             this.tabBrowse.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
         #endregion
 
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
@@ -949,7 +1037,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblIncludedAccessories;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblTestLabel;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblWeaponAmmo;
@@ -969,35 +1056,29 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponDamage;
         private System.Windows.Forms.Label lblWeaponDamageLabel;
         private System.Windows.Forms.ListBox lstWeapon;
-        private System.Windows.Forms.DataGridViewTextBoxColumn WeaponName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Dice;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Damage;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AP;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RC;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Ammo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Mode;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Reach;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Accessories;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Avail;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Source;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Cost;
         private System.Windows.Forms.Timer tmrSearch;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Accuracy;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Guid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvc_Guid;
+        private DataGridViewTextBoxColumnTranslated dgvc_Name;
+        private DataGridViewTextBoxColumnTranslated dgvc_Dice;
+        private DataGridViewTextBoxColumnTranslated dgvc_Accuracy;
+        private DataGridViewTextBoxColumnTranslated dgvc_Damage;
+        private DataGridViewTextBoxColumnTranslated dgvc_AP;
+        private DataGridViewTextBoxColumnTranslated dgvc_RC;
+        private DataGridViewTextBoxColumnTranslated dgvc_Ammo;
+        private DataGridViewTextBoxColumnTranslated dgvc_Mode;
+        private DataGridViewTextBoxColumnTranslated dgvc_Reach;
+        private DataGridViewTextBoxColumnTranslated dgvc_Accessories;
+        private DataGridViewTextBoxColumnTranslated Label_Avail;
+        private DataGridViewTextBoxColumnTranslated Label_Source;
+        private DataGridViewTextBoxColumnTranslated dgvc_Cost;
+        private Chummer.BufferedTableLayoutPanel tlpWeapon;
+        private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flpMarkup;
+        private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
+        private System.Windows.Forms.GroupBox gpbIncludedAccessories;
+        private System.Windows.Forms.Panel pnlIncludedAccessories;
     }
 }

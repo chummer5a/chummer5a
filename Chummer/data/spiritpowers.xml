@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,8 +19,9 @@
     https://github.com/chummer5a/chummer5a
 -->
 
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
-  <version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
+
   <powers>
     <!--spirit powers corebook-->
     <power>
@@ -414,5 +416,52 @@
       <source>SR5</source>
       <page>257</page>
     </power>
+    <!-- Region Kill Code -->
+    <power>
+      <name>Bodyguard</name>
+      <source>KC</source>
+      <page>100</page>
+    </power>
+    <power>
+      <name>Shield</name>
+      <source>KC</source>
+      <page>100</page>
+    </power>
+    <power>
+      <name>Active Analytics</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Borrowed IP</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Decompiling Resistance</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Enhance</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Navi</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Resilient Code</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Resonance Spooling</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <!-- End Region -->
   </powers>
 </chummer>

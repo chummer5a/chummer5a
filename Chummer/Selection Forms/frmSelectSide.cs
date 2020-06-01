@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -30,20 +30,14 @@ namespace Chummer
         public frmSelectSide()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Create a list for the sides.
-            List<ListItem> lstSides = new List<ListItem>();
-            ListItem objLeft = new ListItem();
-            objLeft.Value = "Left";
-            objLeft.Name = LanguageManager.GetString("String_Improvement_SideLeft");
-
-            ListItem objRight = new ListItem();
-            objRight.Value = "Right";
-            objRight.Name = LanguageManager.GetString("String_Improvement_SideRight");
-
-            lstSides.Add(objLeft);
-            lstSides.Add(objRight);
+            List<ListItem> lstSides = new List<ListItem>
+            {
+                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
+                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
+            };
 
             cboSide.BeginUpdate();
             cboSide.ValueMember = "Value";
@@ -54,7 +48,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strSelectedSide = cboSide.Text;
+            _strSelectedSide = cboSide.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 
@@ -69,22 +63,14 @@ namespace Chummer
         // Description to show in the window.
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
         /// Side that was selected in the dialogue.
         /// </summary>
-        public string SelectedSide
-        {
-            get
-            {
-                return _strSelectedSide;
-            }
-        }
+        public string SelectedSide => _strSelectedSide;
+
         #endregion
 
         #region Methods
@@ -99,5 +85,10 @@ namespace Chummer
             cmdOK_Click(this, null);
         }
         #endregion
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
     }
 }

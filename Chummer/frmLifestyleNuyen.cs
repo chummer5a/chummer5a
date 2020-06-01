@@ -23,12 +23,20 @@ namespace Chummer
 {
     public partial class frmLifestyleNuyen : Form
     {
+        readonly Character _objCharacter;
+
         #region Control Events
+        public frmLifestyleNuyen(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+        }
+
+        [Obsolete("This constructor is for use by form designers only.", true)]
         public frmLifestyleNuyen()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -38,16 +46,18 @@ namespace Chummer
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
+            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice.ToString(GlobalOptions.CultureInfo));
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
-            MoveControls();
+            nudDiceResult_ValueChanged(sender, e);
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
+                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion
 
@@ -55,31 +65,23 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice { get; set; } = 0;
+        public int Dice { get; set; }
 
         /// <summary>
         /// Extra number that is added to the dice roll.
         /// </summary>
-        public decimal Extra { get; set; } = 0;
+        public decimal Extra { get; set; }
 
         /// <summary>
         /// D6 multiplier for the Lifestyle.
         /// </summary>
-        public decimal Multiplier { get; set; } = 0;
+        public decimal Multiplier { get; set; }
 
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.
         /// </summary>
         public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * Multiplier);
 
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDiceResult.Left = lblDice.Left + lblDice.Width + 6;
-            lblResult.Left = nudDiceResult.Left + nudDiceResult.Width + 6;
-        }
         #endregion
     }
 }

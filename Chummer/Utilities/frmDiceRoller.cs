@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -25,42 +25,29 @@ namespace Chummer
 {
     public partial class frmDiceRoller : Form
     {
-        private readonly frmMain _frmMain;
-        private List<ListItem> _lstResults = new List<ListItem>(40);
-        private Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp = 0;
+        private readonly frmChummerMain _frmMain;
+        private readonly List<ListItem> _lstResults = new List<ListItem>(40);
 
         #region Control Events
-        public frmDiceRoller(frmMain frmMainForm, List<Quality> lstQualities = null, int intDice = 1)
+        public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _frmMain = frmMainForm;
             nudDice.Value = intDice;
             if (lstQualities != null)
             {
-                int intGremlinsRating = lstQualities.Where(x => x.Name == "Gremlins").Count();
+                int intGremlinsRating = lstQualities.Count(x => x.Name == "Gremlins");
                 if (intGremlinsRating > 0)
                     nudGremlins.Value = intGremlinsRating;
             }
-            MoveControls();
 
-            List<ListItem> lstMethod = new List<ListItem>();
-            ListItem itmStandard = new ListItem();
-            itmStandard.Value = "Standard";
-            itmStandard.Name = LanguageManager.GetString("String_DiceRoller_Standard");
-
-            ListItem itmLarge = new ListItem();
-            itmLarge.Value = "Large";
-            itmLarge.Name = LanguageManager.GetString("String_DiceRoller_Large");
-
-            ListItem itmReallyLarge = new ListItem();
-            itmReallyLarge.Value = "ReallyLarge";
-            itmReallyLarge.Name = LanguageManager.GetString("String_DiceRoller_ReallyLarge");
-
-            lstMethod.Add(itmStandard);
-            lstMethod.Add(itmLarge);
-            lstMethod.Add(itmReallyLarge);
+            List<ListItem> lstMethod = new List<ListItem>
+            {
+                new ListItem("Standard", LanguageManager.GetString("String_DiceRoller_Standard")),
+                new ListItem("Large", LanguageManager.GetString("String_DiceRoller_Large")),
+                new ListItem("ReallyLarge", LanguageManager.GetString("String_DiceRoller_ReallyLarge"))
+            };
 
             cboMethod.BeginUpdate();
             cboMethod.ValueMember = "Value";
@@ -68,6 +55,9 @@ namespace Chummer
             cboMethod.DataSource = lstMethod;
             cboMethod.SelectedIndex = 0;
             cboMethod.EndUpdate();
+
+            lblResultsLabel.Visible = false;
+            lblResults.Text = string.Empty;
         }
 
         private void cmdRollDice_Click(object sender, EventArgs e)
@@ -75,14 +65,7 @@ namespace Chummer
             List<int> lstRandom = new List<int>();
             int intHitCount = 0;
             int intGlitchCount = 0;
-            int intGlitchThreshold = 0;
             int intGlitchMin = 1;
-
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
-            // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
-            if (intGlitchThreshold < 1)
-                intGlitchThreshold = 1;
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             if (chkRushJob.Checked)
@@ -92,26 +75,16 @@ namespace Chummer
             {
                 if (chkRuleOf6.Checked)
                 {
-                    int intResult = 0;
+                    int intResult;
                     do
                     {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intResult = 1 + _intModuloTemp % 6;
+                        intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                         lstRandom.Add(intResult);
                     } while (intResult == 6);
                 }
                 else
                 {
-                    do
-                    {
-                        _intModuloTemp = _objRandom.Next();
-                    }
-                    while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                    int intResult = 1 + _intModuloTemp % 6;
+                    int intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     lstRandom.Add(intResult);
                 }
             }
@@ -119,8 +92,7 @@ namespace Chummer
             _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                ListItem objBubbleDieItem = new ListItem(intResult.ToString(), intResult.ToString());
-                _lstResults.Add(objBubbleDieItem);
+                _lstResults.Add(new ListItem(intResult.ToString(GlobalOptions.InvariantCultureInfo), intResult.ToString(GlobalOptions.CultureInfo)));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -146,54 +118,58 @@ namespace Chummer
                     intHitCount += intResult;
                 }
             }
-            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && Convert.ToInt32(nudDice.Value) % 2 == 0)
+
+            int intGlitchThreshold = chkVariableGlitch.Checked
+                ? intHitCount + 1
+                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            // Deduct the Gremlins Rating from the Glitch Threshold.
+            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
+            if (intGlitchThreshold < 1)
+                intGlitchThreshold = 1;
+
+            string strSpace = LanguageManager.GetString("String_Space");
+
+            if (chkBubbleDie.Checked)
             {
-                do
+                if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
-                    _intModuloTemp = _objRandom.Next();
-                }
-                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
-                _lstResults.Add(objBubbleDieItem);
-                if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
-                {
-                    if (intBubbleDieResult <= intGlitchMin)
-                        intGlitchCount++;
+                    int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie") +
+                                                                                                                  strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+                    if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                    {
+                        if (intBubbleDieResult <= intGlitchMin)
+                            intGlitchCount++;
+                    }
                 }
             }
 
-            lblResults.Text = LanguageManager.GetString("Label_DiceRoller_Result") + " ";
+            lblResultsLabel.Visible = true;
+            lblResults.Text = string.Empty;
             if (intGlitchCount >= intGlitchThreshold)
             {
                 if (intHitCount > 0)
                 {
                     if (nudThreshold.Value > 0)
                     {
-                        if (intHitCount >= nudThreshold.Value)
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
-                        else
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
+                        lblResults.Text += LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure") +
+                                           strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
                     }
                     else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString());
+                        lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount);
                 }
                 else
                     lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch");
             }
-            else
+            else if (nudThreshold.Value > 0)
             {
-                if (nudThreshold.Value > 0)
-                {
-                    if (intHitCount >= nudThreshold.Value)
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
-                    else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
-                }
-                else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
+                lblResults.Text += LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure") +
+                                   strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
             }
-            lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum") + " " + lstRandom.Sum().ToString();
+            else
+                lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
+
+            lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + lstRandom.Sum().ToString(GlobalOptions.CultureInfo);
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
             lstResults.ValueMember = "Value";
@@ -230,11 +206,11 @@ namespace Chummer
             }
 
             int intKeepSum = 0;
-            int intResult = 0;
+            int intResult;
             // Remove everything that is not a hit
             for (int i = _lstResults.Count - 1; i >= 0; --i)
             {
-                if (!int.TryParse(_lstResults[i].Value, out intResult) || intResult < intKeepThreshold)
+                if (!int.TryParse(_lstResults[i].Value.ToString(), out intResult) || intResult < intKeepThreshold)
                 {
                     _lstResults.RemoveAt(i);
                 }
@@ -247,13 +223,6 @@ namespace Chummer
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
             int intGlitchCount = 0;
-            int intGlitchThreshold = 0;
-
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
-            // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
-            if (intGlitchThreshold < 1)
-                intGlitchThreshold = 1;
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;
@@ -264,43 +233,26 @@ namespace Chummer
             {
                 if (chkRuleOf6.Checked)
                 {
-                    intResult = 0;
                     do
                     {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intResult = 1 + _intModuloTemp % 6;
+                        intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                         lstRandom.Add(intResult);
                     } while (intResult == 6);
                 }
                 else
                 {
-                    do
-                    {
-                        _intModuloTemp = _objRandom.Next();
-                    }
-                    while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                    intResult = 1 + _intModuloTemp % 6;
+                    intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     lstRandom.Add(intResult);
                 }
             }
 
             foreach (int intLoopResult in lstRandom)
             {
-                ListItem objBubbleDieItem = new ListItem(intLoopResult.ToString(), intLoopResult.ToString());
-                _lstResults.Add(objBubbleDieItem);
+                _lstResults.Add(new ListItem(intLoopResult.ToString(GlobalOptions.InvariantCultureInfo), intLoopResult.ToString(GlobalOptions.CultureInfo)));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
-                    int intTarget = 5;
-                    // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-                    if (chkCinematicGameplay.Checked)
-                        intTarget = 4;
-
-                    if (intLoopResult >= intTarget)
+                    if (intLoopResult >= intKeepThreshold)
                         intHitCount++;
                     if (intLoopResult <= intGlitchMin)
                         intGlitchCount++;
@@ -317,24 +269,36 @@ namespace Chummer
                     intHitCount += intLoopResult;
                 }
             }
-            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && Convert.ToInt32(nudDice.Value) % 2 == 0)
+
+            int intGlitchThreshold = chkVariableGlitch.Checked
+                ? intHitCount + 1
+                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            // Deduct the Gremlins Rating from the Glitch Threshold.
+            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
+            if (intGlitchThreshold < 1)
+                intGlitchThreshold = 1;
+
+            string strSpace = LanguageManager.GetString("String_Space");
+
+            if (chkBubbleDie.Checked)
             {
-                do
+                if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
-                    _intModuloTemp = _objRandom.Next();
-                }
-                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
-                _lstResults.Add(objBubbleDieItem);
-                if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
-                {
-                    if (intBubbleDieResult <= intGlitchMin)
-                        intGlitchCount++;
+                    int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie")
+                                                                                                           + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+
+                    if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                    {
+                        if (intBubbleDieResult <= intGlitchMin)
+                            intGlitchCount++;
+                    }
                 }
             }
 
-            lblResults.Text = LanguageManager.GetString("Label_DiceRoller_Result") + " ";
+
+            lblResultsLabel.Visible = true;
+            lblResults.Text = string.Empty;
             if (intGlitchCount >= intGlitchThreshold)
             {
                 if (intHitCount > 0)
@@ -342,29 +306,27 @@ namespace Chummer
                     if (nudThreshold.Value > 0)
                     {
                         if (intHitCount >= nudThreshold.Value)
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
+                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
                         else
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
+                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
                     }
                     else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString());
+                        lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount);
                 }
                 else
                     lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch");
             }
-            else
+            else if (nudThreshold.Value > 0)
             {
-                if (nudThreshold.Value > 0)
-                {
-                    if (intHitCount >= nudThreshold.Value)
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
-                    else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
-                }
+                if (intHitCount >= nudThreshold.Value)
+                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
                 else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
+                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
             }
-            lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum") + " " + (lstRandom.Sum() + intKeepSum).ToString();
+            else
+                lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
+
+            lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + (lstRandom.Sum() + intKeepSum).ToString(GlobalOptions.CultureInfo);
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
             lstResults.ValueMember = "Value";
@@ -380,16 +342,13 @@ namespace Chummer
         /// </summary>
         public int Dice
         {
-            set
-            {
-                nudDice.Value = value;
-            }
+            set => nudDice.Value = value;
         }
 
         /// <summary>
         /// List of Qualities the character has to determine whether or not they have Gremlins and at which Rating.
         /// </summary>
-        public List<Quality> Qualities
+        public IEnumerable<Quality> Qualities
         {
             set
             {
@@ -398,30 +357,14 @@ namespace Chummer
                 {
                     foreach (Quality objQuality in value)
                     {
-                        if (objQuality.Name.StartsWith("Gremlins"))
+                        if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
                         {
-                            int intRating = Convert.ToInt32(objQuality.Name.Substring(objQuality.Name.Length - 2, 1));
+                            int intRating = Convert.ToInt32(objQuality.Name.Substring(objQuality.Name.Length - 2, 1), GlobalOptions.InvariantCultureInfo);
                             nudGremlins.Value = intRating;
                         }
                     }
                 }
             }
-        }
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDice.Left = lblRoll.Left + lblRoll.Width + 6;
-            lblD6.Left = nudDice.Left + nudDice.Width + 6;
-            cboMethod.Left = lblD6.Left + lblD6.Width + 6;
-            cmdRollDice.Left = cboMethod.Left + cboMethod.Width + 6;
-            cmdReroll.Left = cmdRollDice.Left;
-
-            int intMax = Math.Max(lblThreshold.Width, lblGremlins.Width);
-            nudThreshold.Left = lblThreshold.Left + intMax + 6;
-            nudGremlins.Left = lblGremlins.Left + intMax + 6;
-            Width = Math.Max(cmdReroll.Left + cmdReroll.Width + 16, chkBubbleDie.Left + chkBubbleDie.Width + 16);
         }
         #endregion
     }

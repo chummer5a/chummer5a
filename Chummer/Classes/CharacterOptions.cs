@@ -1,99 +1,100 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Microsoft.Win32;
-using Chummer.Backend;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
-    public class CharacterOptions
+    public class CharacterOptions : INotifyPropertyChanged
     {
         private readonly Character _character;
         private string _strFileName = "default.xml";
         private string _strName = "Default Settings";
         private string _strImageFolder = string.Empty;
-        private readonly RegistryKey _objBaseChummerKey;
 
         // Settings.
+        // ReSharper disable once InconsistentNaming
         private bool _blnAllow2ndMaxAttribute;
-        private bool _blnAllowAttributePointsOnExceptional;
         private bool _blnAllowBiowareSuites;
-        private bool _blnAllowCustomTransgenics;
         private bool _blnAllowCyberwareESSDiscounts;
         private bool _blnAllowEditPartOfBaseWeapon;
-        private bool _blnAllowExceedAttributeBP;
         private bool _blnAllowHigherStackedFoci;
         private bool _blnAllowInitiationInCreateMode;
         private bool _blnAllowObsolescentUpgrade;
         private bool _blnAllowSkillDiceRolling;
         private bool _blnDontUseCyberlimbCalculation;
         private bool _blnAllowSkillRegrouping = true;
-        private bool _blnAlternateArmorEncumbrance;
-        private bool _blnAlternateComplexFormCost;
-        private bool _blnAlternateMatrixAttribute;
         private bool _blnAlternateMetatypeAttributeKarma;
         private bool _blnArmorDegradation;
-        private bool _blnArmorSuitCapacity;
-        private bool _blnAutomaticCopyProtection = true;
-        private bool _blnAutomaticRegistration = true;
         private bool _blnStrictSkillGroupsInCreateMode;
-        private bool _blnAllowPointBuySpecializationsOnKarmaSkills = false;
+        private bool _blnAllowPointBuySpecializationsOnKarmaSkills;
         private bool _blnCalculateCommlinkResponse = true;
-        private bool _blnCapSkillRating;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
-        private bool _blnCreateBackupOnCareer;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
         private bool _blnEnforceCapacity = true;
-        private bool _blnEnforceSkillMaximumModifiedRating;
-        private bool _blnErgonomicProgramsLimit = true;
         private bool _blnESSLossReducesMaximumOnly;
         private bool _blnExceedNegativeQualities;
         private bool _blnExceedNegativeQualitiesLimit;
         private bool _blnExceedPositiveQualities;
+        private bool _blnExceedPositiveQualitiesCostDoubled;
         private bool _blnExtendAnyDetectionSpell;
         private bool _blnFreeContactsMultiplierEnabled;
         private bool _blnDroneArmorMultiplierEnabled;
         private bool _blnFreeKnowledgeMultiplierEnabled;
         private bool _blnFreeSpiritPowerPointsMAG;
-        private bool _blnIgnoreArmorEncumbrance = true;
+        private bool _blnNoArmorEncumbrance;
         private bool _blnIgnoreArt;
+        private bool _blnIgnoreComplexFormLimit;
         private bool _blnUnarmedImprovementsApplyToWeapons;
         private bool _blnLicenseRestrictedItems;
         private bool _blnMaximumArmorModifications;
-        private bool _blnMayBuyQualities;
         private bool _blnMetatypeCostsKarma = true;
         private bool _blnMoreLethalGameplay;
         private bool _blnMultiplyForbiddenCost;
         private bool _blnMultiplyRestrictedCost;
         private bool _blnNoSingleArmorEncumbrance;
-        private bool _blnPrintArcanaAlternates;
         private bool _blnPrintExpenses;
-        private bool _blnPrintLeadershipAlternates;
+        private bool _blnPrintFreeExpenses = true;
         private bool _blnPrintNotes;
         private bool _blnPrintSkillsWithZeroRating = true;
         private bool _blnRestrictRecoil = true;
-        private bool _blnSkillDefaultingIncludesModifiers;
-        private bool _blnSpecialAttributeKarmaLimit;
         private bool _blnSpecialKarmaCostBasedOnShownValue;
         private bool _blnSpiritForceBasedOnTotalMAG;
-        private bool _blnStrengthAffectsRecoil;
-        private bool _blnTechnomancerAllowAutosoft;
         private bool _blnUnrestrictedNuyen;
         private bool _blnUseCalculatedPublicAwareness;
-        private bool _blnUseContactPoints;
         private bool _blnUsePointsOnBrokenGroups;
         private bool _blnUseTotalValueForFreeContacts;
         private bool _blnUseTotalValueForFreeKnowledge;
-        private int _intEssenceDecimals = 2;
+        private bool _blnDoNotRoundEssenceInternally;
+        private bool _blnEnemyKarmaQualityLimit = true;
+        private string _strEssenceFormat = "#,0.00";
         private int _intForbiddenCostMultiplier = 1;
-        private int _intFreeContactsFlatNumber = 0;
+        private readonly int _intFreeContactsFlatNumber = 0;
         private int _intFreeContactsMultiplier = 3;
         private int _intDroneArmorMultiplier = 2;
         private int _intFreeKnowledgeMultiplier = 2;
@@ -101,30 +102,25 @@ namespace Chummer
         private int _intMetatypeCostMultiplier = 1;
         private decimal _decNuyenPerBP = 2000.0m;
         private int _intRestrictedCostMultiplier = 1;
-        private bool _automaticBackstory = true;
+        private bool _blnAutomaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
-        private bool _blnEducationQualitiesApplyOnChargenKarma;
-
-        private readonly XmlDocument _objBookDoc = null;
+        private bool _blnMysAdeptAllowPPCareer;
+        private bool _blnMysAdeptSecondMAGAttribute;
+        private bool _blnReverseAttributePriorityOrder;
+        private bool _blnHideItemsOverAvailLimit = true;
+        private bool _blnAllowHoverIncrement;
+        private bool _blnSearchInCategoryOnly = true;
+        private string _strNuyenFormat = "#,0.##";
+        private bool _blnCompensateSkillGroupKarmaDifference;
+        private bool _cyberwareRounding;
+        private bool _increasedImprovedAbilityMultiplier;
+        private bool _allowFreeGrids;
+        private bool _blnAllowTechnomancerSchooling;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
-
-        // BP variables.
-        private int _intBPActiveSkill = 4;
-        private int _intBPActiveSkillSpecialization = 2;
-        private int _intBPAttributeMax = 15;
-        private int _intBPComplexForm = 1;
-        private int _intBPComplexFormOption = 1;
-        private int _intBPContact = 1;
-        private int _intBPFocus = 1;
-        private int _intBPKnowledgeSkill = 2;
-        private int _intBPMartialArt = 5;
-        private int _intBPMartialArtManeuver = 2;
-        private int _intBPSkillGroup = 10;
-        private int _intBPSpell = 3;
-        private int _intBPSpirit = 1;
-        private int _intBPAttribute = 10;
+        private int _intCyberlimbAttributeBonusCap = 4;
+        private bool _blnUnclampAttributeMinimum;
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
@@ -139,6 +135,7 @@ namespace Chummer
         private int _intKarmaImproveKnowledgeSkill = 1;
         private int _intKarmaImproveSkillGroup = 5;
         private int _intKarmaInitiation = 3;
+        private int _intKarmaInitiationFlat = 10;
         private int _intKarmaJoinGroup = 5;
         private int _intKarmaLeaveGroup = 1;
         private int _intKarmaManeuver = 5;
@@ -155,23 +152,31 @@ namespace Chummer
         private int _intKarmaSpirit = 1;
         private int _intKarmaNewAIProgram = 5;
         private int _intKarmaNewAIAdvancedProgram = 8;
+        private int _intKarmaMysticAdeptPowerPoint = 5;
 
         // Karma Foci variables.
+        // Enchanting
         private int _intKarmaAlchemicalFocus = 3;
-        private int _intKarmaBanishingFocus = 2;
-        private int _intKarmaBindingFocus = 2;
-        private int _intKarmaCenteringFocus = 3;
-        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaDisenchantingFocus = 3;
+        // Metamagic
+        private int _intKarmaCenteringFocus = 3;
         private int _intKarmaFlexibleSignatureFocus = 3;
         private int _intKarmaMaskingFocus = 3;
+        private int _intKarmaSpellShapingFocus = 3;
+        // Power
         private int _intKarmaPowerFocus = 6;
+        // Qi
         private int _intKarmaQiFocus = 2;
+        // Spell
+        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaRitualSpellcastingFocus = 2;
         private int _intKarmaSpellcastingFocus = 2;
-        private int _intKarmaSpellShapingFocus = 3;
-        private int _intKarmaSummoningFocus = 2;
         private int _intKarmaSustainingFocus = 2;
+        // Spirit
+        private int _intKarmaBanishingFocus = 2;
+        private int _intKarmaBindingFocus = 2;
+        private int _intKarmaSummoningFocus = 2;
+        // Weapon
         private int _intKarmaWeaponFocus = 3;
 
         // Default build settings.
@@ -184,18 +189,19 @@ namespace Chummer
 
         // Sourcebook list.
         private readonly HashSet<string> _lstBooks = new HashSet<string>();
-        private bool _mysaddPpCareer;
-        private bool _blnReverseAttributePriorityOrder;
-        private bool _blnHhideItemsOverAvailLimit = true;
-        private bool _blnAllowHoverIncrement;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
         {
             _character = character;
-            _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+
+            if (Utils.IsRunningInVisualStudio)
+                return;
+
             // Create the settings directory if it does not exist.
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
@@ -204,25 +210,18 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                 }
             }
 
             // If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
             string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
-            if (!File.Exists(strFilePath))
+            if (!File.Exists(strFilePath) || !Load("default.xml"))
             {
                 _strFileName = "default.xml";
                 LoadFromRegistry();
                 Save();
             }
-            else
-                Load("default.xml");
-            // Load the language file.
-            LanguageManager.Load(GlobalOptions.Language, this);
-
-            // Load the book information.
-            _objBookDoc = XmlManager.Load("books.xml");
         }
 
         /// <summary>
@@ -230,366 +229,328 @@ namespace Chummer
         /// </summary>
         public void Save()
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
-            FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
-            objWriter.WriteStartDocument();
-
-            // <settings>
-            objWriter.WriteStartElement("settings");
-
-            // <name />
-            objWriter.WriteElementString("name", _strName);
-            // <recentimagefolder />
-            if (!String.IsNullOrEmpty(_strImageFolder))
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+            using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                objWriter.WriteElementString("recentimagefolder", _strImageFolder);
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                {
+                    Formatting = Formatting.Indented,
+                    Indentation = 1,
+                    IndentChar = '\t'
+                })
+                {
+                    objWriter.WriteStartDocument();
+
+                    // <settings>
+                    objWriter.WriteStartElement("settings");
+
+                    // <name />
+                    objWriter.WriteElementString("name", _strName);
+                    // <recentimagefolder />
+                    if (!string.IsNullOrEmpty(_strImageFolder))
+                    {
+                        objWriter.WriteElementString("recentimagefolder", _strImageFolder);
+                    }
+
+                    // <confirmdelete />
+                    objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <licenserestricted />
+                    objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <confirmkarmaexpense />
+                    objWriter.WriteElementString("confirmkarmaexpense", _blnConfirmKarmaExpense.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printzeroratingskills />
+                    objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <morelethalgameplay />
+                    objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <spiritforcebasedontotalmag />
+                    objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printexpenses />
+                    objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printfreeexpenses />
+                    objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenperbp />
+                    objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <hideitemsoveravaillimit />
+                    objWriter.WriteElementString("hideitemsoveravaillimit", _blnHideItemsOverAvailLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <UnarmedImprovementsApplyToWeapons />
+                    objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowinitiationincreatemode />
+                    objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usepointsonbrokengroups />
+                    objWriter.WriteElementString("usepointsonbrokengroups", _blnUsePointsOnBrokenGroups.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dontdoublequalities />
+                    objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityPurchaseCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dontdoublequalities />
+                    objWriter.WriteElementString("dontdoublequalityrefunds", _blnDontDoubleQualityRefundCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <ignoreart />
+                    objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cyberlegmovement />
+                    objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allow2ndmaxattribute />
+                    objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freekarmacontactsmultiplier />
+                    objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freekarmaknowledgemultiplier />
+                    objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freekarmaknowledgemultiplierenabled />
+                    objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freecontactsmultiplierenabled />
+                    objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freecontactsflatnumber />
+                    objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dronearmormultiplierenabled />
+                    objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dronearmorflatnumber />
+                    objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usetotalvalueforknowledge />
+                    objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usetotalvalueforcontacts />
+                    objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nosinglearmorencumbrance />
+                    objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <ignorecomplexformlimit />
+                    objWriter.WriteElementString("ignorecomplexformlimit", _blnIgnoreComplexFormLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <NoArmorEncumbrance />
+                    objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <esslossreducesmaximumonly />
+                    objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowskillregrouping />
+                    objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <metatypecostskarma />
+                    objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <metatypecostskarmamultiplier />
+                    objWriter.WriteElementString("metatypecostskarmamultiplier", _intMetatypeCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <limbcount />
+                    objWriter.WriteElementString("limbcount", _intLimbCount.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <excludelimbslot />
+                    objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
+                    // <allowcyberwareessdiscounts />
+                    objWriter.WriteElementString("allowcyberwareessdiscounts", _blnAllowCyberwareESSDiscounts.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <maximumarmormodifications />
+                    objWriter.WriteElementString("maximumarmormodifications", _blnMaximumArmorModifications.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <armordegredation />
+                    objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <specialkarmacostbasedonshownvalue />
+                    objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <exceedpositivequalities />
+                    objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <exceedpositivequalitiescostdoubled />
+                    objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPPCareer.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <mysadeptsecondmagattribute />
+                    objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <exceednegativequalities />
+                    objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <exceednegativequalitieslimit />
+                    objWriter.WriteElementString("exceednegativequalitieslimit", _blnExceedNegativeQualitiesLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <multiplyrestrictedcost />
+                    objWriter.WriteElementString("multiplyrestrictedcost", _blnMultiplyRestrictedCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <multiplyforbiddencost />
+                    objWriter.WriteElementString("multiplyforbiddencost", _blnMultiplyForbiddenCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <restrictedcostmultiplier />
+                    objWriter.WriteElementString("restrictedcostmultiplier", _intRestrictedCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <forbiddencostmultiplier />
+                    objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <donotroundessenceinternally />
+                    objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <donotroundessenceinternally />
+                    objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenformat />
+                    objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
+                    // <essencedecimals />
+                    objWriter.WriteElementString("essenceformat", _strEssenceFormat);
+                    // <enforcecapacity />
+                    objWriter.WriteElementString("enforcecapacity", _blnEnforceCapacity.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <restrictrecoil />
+                    objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <unrestrictednuyen />
+                    objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <calculatecommlinkresponse />
+                    objWriter.WriteElementString("calculatecommlinkresponse", _blnCalculateCommlinkResponse.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowhigherstackedfoci />
+                    objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <alloweditpartofbaseweapon />
+                    objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <breakskillgroupsincreatemode />
+                    objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowpointbuyspecializationsonkarmaskills />
+                    objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <extendanydetectionspell />
+                    objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowskilldicerolling />
+                    objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString(GlobalOptions.InvariantCultureInfo));
+                    //<dontusecyberlimbcalculation />
+                    objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <alternatemetatypeattributekarma />
+                    objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <reversekarmapriorityorder />
+                    objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <printnotes />
+                    objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowobsolescentupgrade />
+                    objWriter.WriteElementString("allowobsolescentupgrade", _blnAllowObsolescentUpgrade.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowbiowaresuites />
+                    objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freespiritpowerpointsmag />
+                    objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowhoverincrement />
+                    objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <searchincategoryonly />
+                    objWriter.WriteElementString("searchincategoryonly", SearchInCategoryOnly.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <compensateskillgroupkarmadifference />
+                    objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <autobackstory />
+                    objWriter.WriteElementString("autobackstory", _blnAutomaticBackstory.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <freemartialartspecialization />
+                    objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <priorityspellsasadeptpowers />
+                    objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <usecalculatedpublicawareness />
+                    objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <increasedimprovedabilitymodifier />
+                    objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowfreegrids />
+                    objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <allowtechnomancerschooling />
+                    objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cyberlimbattributebonuscap />
+                    objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <clampattributeminimum />
+                    objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <karmacost>
+                    objWriter.WriteStartElement("karmacost");
+                    // <karmaattribute />
+                    objWriter.WriteElementString("karmaattribute", _intKarmaAttribute.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaquality />
+                    objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspecialization />
+                    objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaknospecialization />
+                    objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewknowledgeskill />
+                    objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewactiveskill />
+                    objWriter.WriteElementString("karmanewactiveskill", _intKarmaNewActiveSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewskillgroup />
+                    objWriter.WriteElementString("karmanewskillgroup", _intKarmaNewSkillGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimproveknowledgeskill />
+                    objWriter.WriteElementString("karmaimproveknowledgeskill", _intKarmaImproveKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimproveactiveskill />
+                    objWriter.WriteElementString("karmaimproveactiveskill", _intKarmaImproveActiveSkill.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimproveskillgroup />
+                    objWriter.WriteElementString("karmaimproveskillgroup", _intKarmaImproveSkillGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspell />
+                    objWriter.WriteElementString("karmaspell", _intKarmaSpell.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaenhancement />
+                    objWriter.WriteElementString("karmaenhancement", _intKarmaEnhancement.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewcomplexform />
+                    objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaimprovecomplexform />
+                    objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewaiprogram />
+                    objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanewaiadvancedprogram />
+                    objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmanuyenper />
+                    objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacontact />
+                    objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaenemy />
+                    objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacarryover />
+                    objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspirit />
+                    objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmamaneuver />
+                    objWriter.WriteElementString("karmamaneuver", _intKarmaManeuver.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmainitiation />
+                    objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmainitiationflat />
+                    objWriter.WriteElementString("karmainitiationflat", _intKarmaInitiationFlat.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmametamagic />
+                    objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacomplexformoption />
+                    objWriter.WriteElementString("karmacomplexformoption", _intKarmaComplexFormOption.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacomplexformskillsoft />
+                    objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillfot.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmajoingroup />
+                    objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaleavegroup />
+                    objWriter.WriteElementString("karmaleavegroup", _intKarmaLeaveGroup.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaalchemicalfocus />
+                    objWriter.WriteElementString("karmaalchemicalfocus", _intKarmaAlchemicalFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmabanishingfocus />
+                    objWriter.WriteElementString("karmabanishingfocus", _intKarmaBanishingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmabindingfocus />
+                    objWriter.WriteElementString("karmabindingfocus", _intKarmaBindingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacenteringfocus />
+                    objWriter.WriteElementString("karmacenteringfocus", _intKarmaCenteringFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmacounterspellingfocus />
+                    objWriter.WriteElementString("karmacounterspellingfocus", _intKarmaCounterspellingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmadisenchantingfocus />
+                    objWriter.WriteElementString("karmadisenchantingfocus", _intKarmaDisenchantingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaflexiblesignaturefocus />
+                    objWriter.WriteElementString("karmaflexiblesignaturefocus", _intKarmaFlexibleSignatureFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmamaskingfocus />
+                    objWriter.WriteElementString("karmamaskingfocus", _intKarmaMaskingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmapowerfocus />
+                    objWriter.WriteElementString("karmapowerfocus", _intKarmaPowerFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaqifocus />
+                    objWriter.WriteElementString("karmaqifocus", _intKarmaQiFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaritualspellcastingfocus />
+                    objWriter.WriteElementString("karmaritualspellcastingfocus", _intKarmaRitualSpellcastingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspellcastingfocus />
+                    objWriter.WriteElementString("karmaspellcastingfocus", _intKarmaSpellcastingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspellshapingfocus />
+                    objWriter.WriteElementString("karmaspellshapingfocus", _intKarmaSpellShapingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmasummoningfocus />
+                    objWriter.WriteElementString("karmasummoningfocus", _intKarmaSummoningFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmasustainingfocus />
+                    objWriter.WriteElementString("karmasustainingfocus", _intKarmaSustainingFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaweaponfocus />
+                    objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaweaponfocus />
+                    objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalOptions.InvariantCultureInfo));
+                    // </karmacost>
+                    objWriter.WriteEndElement();
+
+                    // <books>
+                    objWriter.WriteStartElement("books");
+                    foreach (string strBook in _lstBooks)
+                        objWriter.WriteElementString("book", strBook);
+                    // </books>
+                    objWriter.WriteEndElement();
+
+
+                    // <customdatadirectorynames>
+                    objWriter.WriteStartElement("customdatadirectorynames");
+                    foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
+                        objWriter.WriteElementString("directoryname", strDirectoryName);
+                    // </customdatadirectorynames>
+                    objWriter.WriteEndElement();
+                    // <hascustomdirectories>
+
+                    // <defaultbuild>
+                    objWriter.WriteStartElement("defaultbuild");
+                    // <buildmethod />
+                    objWriter.WriteElementString("buildmethod", _strBuildMethod);
+                    // <buildpoints />
+                    objWriter.WriteElementString("buildpoints", _intBuildPoints.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <availability />
+                    objWriter.WriteElementString("availability", _intAvailability.ToString(GlobalOptions.InvariantCultureInfo));
+                    // </defaultbuild>
+                    objWriter.WriteEndElement();
+
+                    // </settings>
+                    objWriter.WriteEndElement();
+
+                    objWriter.WriteEndDocument();
+                }
             }
-            // <confirmdelete />
-            objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString());
-            // <licenserestricted />
-            objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString());
-            // <confirmkarmaexpense />
-            objWriter.WriteElementString("confirmkarmaexpense", _blnConfirmKarmaExpense.ToString());
-            // <printzeroratingskills />
-            objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString());
-            // <morelethalgameplay />
-            objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString());
-            // <spiritforcebasedontotalmag />
-            objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString());
-            // <skilldefaultingincludesmodifiers />
-            objWriter.WriteElementString("skilldefaultingincludesmodifiers", _blnSkillDefaultingIncludesModifiers.ToString());
-            // <enforceskillmaximummodifiedrating />
-            objWriter.WriteElementString("enforceskillmaximummodifiedrating", _blnEnforceSkillMaximumModifiedRating.ToString());
-            // <capskillrating />
-            objWriter.WriteElementString("capskillrating", _blnCapSkillRating.ToString());
-            // <printexpenses />
-            objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
-            // <nuyenperbp />
-            objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
-            // <hideitemsoveravaillimit />
-            objWriter.WriteElementString("hideitemsoveravaillimit", _blnHhideItemsOverAvailLimit.ToString());
-            // <UnarmedImprovementsApplyToWeapons />
-            objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString());
-            // <allowinitiationincreatemode />
-            objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString());
-            // <usepointsonbrokengroups />
-            objWriter.WriteElementString("usepointsonbrokengroups", _blnUsePointsOnBrokenGroups.ToString());
-            // <dontdoublequalities />
-            objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityPurchaseCost.ToString());
-            // <dontdoublequalities />
-            objWriter.WriteElementString("dontdoublequalityrefunds", _blnDontDoubleQualityRefundCost.ToString());
-            // <ignoreart />
-            objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString());
-            // <cyberlegmovement />
-            objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString());
-            // <allow2ndmaxattribute />
-            objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString());
-            // <allowattributepointsonexceptional />
-            objWriter.WriteElementString("allowattributepointsonexceptional", _blnAllowAttributePointsOnExceptional.ToString());
-            // <freekarmacontactsmultiplier />
-            objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString());
-            // <freekarmaknowledgemultiplier />
-            objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString());
-            // <freekarmaknowledgemultiplierenabled />
-            objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString());
-            // <freecontactsmultiplierenabled />
-            objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
-            // <freecontactsflatnumber />
-            objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
-            // <dronearmormultiplierenabled />
-            objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString());
-            // <dronearmorflatnumber />
-            objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString());
-            // <usetotalvalueforknowledge />
-            objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
-            // <usetotalvalueforcontacts />
-            objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
-            // <nosinglearmorencumbrance />
-            objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
-            // <ignorearmorencumbrance />
-            objWriter.WriteElementString("ignorearmorencumbrance", _blnIgnoreArmorEncumbrance.ToString());
-            // <alternatearmorencumbrance />
-            objWriter.WriteElementString("alternatearmorencumbrance", _blnAlternateArmorEncumbrance.ToString());
-            // <esslossreducesmaximumonly />
-            objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString());
-            // <allowskillregrouping />
-            objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString());
-            // <metatypecostskarma />
-            objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString());
-            // <metatypecostskarmamultiplier />
-            objWriter.WriteElementString("metatypecostskarmamultiplier", _intMetatypeCostMultiplier.ToString());
-            // <limbcount />
-            objWriter.WriteElementString("limbcount", _intLimbCount.ToString());
-            // <excludelimbslot />
-            objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
-            // <allowcyberwareessdiscounts />
-            objWriter.WriteElementString("allowcyberwareessdiscounts", _blnAllowCyberwareESSDiscounts.ToString());
-            // <strengthaffectsrecoil />
-            objWriter.WriteElementString("strengthaffectsrecoil", _blnStrengthAffectsRecoil.ToString());
-            // <maximumarmormodifications />
-            objWriter.WriteElementString("maximumarmormodifications", _blnMaximumArmorModifications.ToString());
-            // <armorsuitcapacity />
-            objWriter.WriteElementString("armorsuitcapacity", _blnArmorSuitCapacity.ToString());
-            // <armordegredation />
-            objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString());
-            // <automaticcopyprotection />
-            objWriter.WriteElementString("automaticcopyprotection", _blnAutomaticCopyProtection.ToString());
-            // <automaticregistration />
-            objWriter.WriteElementString("automaticregistration", _blnAutomaticRegistration.ToString());
-            // <ergonomicprogramlimit />
-            objWriter.WriteElementString("ergonomicprogramlimit", _blnErgonomicProgramsLimit.ToString());
-            // <specialkarmacostbasedonshownvalue />
-            objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString());
-            // <exceedpositivequalities />
-            objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString());
-
-            objWriter.WriteElementString("mysaddppcareer", MysaddPPCareer.ToString());
-
-            // <exceednegativequalities />
-            objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString());
-            // <exceednegativequalitieslimit />
-            objWriter.WriteElementString("exceednegativequalitieslimit", _blnExceedNegativeQualitiesLimit.ToString());
-            // <multiplyrestrictedcost />
-            objWriter.WriteElementString("multiplyrestrictedcost", _blnMultiplyRestrictedCost.ToString());
-            // <multiplyforbiddencost />
-            objWriter.WriteElementString("multiplyforbiddencost", _blnMultiplyForbiddenCost.ToString());
-            // <restrictedcostmultiplier />
-            objWriter.WriteElementString("restrictedcostmultiplier", _intRestrictedCostMultiplier.ToString());
-            // <forbiddencostmultiplier />
-            objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString());
-            // <essencedecimals />
-            objWriter.WriteElementString("essencedecimals", _intEssenceDecimals.ToString());
-            // <enforcecapacity />
-            objWriter.WriteElementString("enforcecapacity", _blnEnforceCapacity.ToString());
-            // <restrictrecoil />
-            objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString());
-            // <allowexceedattributebp />
-            objWriter.WriteElementString("allowexceedattributebp", _blnAllowExceedAttributeBP.ToString());
-            // <unrestrictednuyen />
-            objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString());
-            // <calculatecommlinkresponse />
-            objWriter.WriteElementString("calculatecommlinkresponse", _blnCalculateCommlinkResponse.ToString());
-            // <allowhigherstackedfoci />
-            objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString());
-            // <alternatecomplexformcost />
-            objWriter.WriteElementString("alternatecomplexformcost", _blnAlternateComplexFormCost.ToString());
-            // <alternatematrixattribute />
-            objWriter.WriteElementString("alternatematrixattribute", _blnAlternateMatrixAttribute.ToString());
-            // <alloweditpartofbaseweapon />
-            objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString());
-            // <allowcustomtransgenics />
-            objWriter.WriteElementString("allowcustomtransgenics", _blnAllowCustomTransgenics.ToString());
-            // <maybuyqualities />
-            objWriter.WriteElementString("maybuyqualities", _blnMayBuyQualities.ToString());
-            // <usecontactpoints />
-            objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
-            // <breakskillgroupsincreatemode />
-            objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
-            // <allowpointbuyspecializationsonkarmaskills />
-            objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString());
-            // <extendanydetectionspell />
-            objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
-            // <allowskilldicerolling />
-            objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString());
-            //<dontusecyberlimbcalculation />
-            objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString());
-            // <alternatemetatypeattributekarma />
-            objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
-            // <reversekarmapriorityorder />
-            objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
-            // <createbackuponcareer />
-            objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
-            // <printleadershipalternates />
-            objWriter.WriteElementString("printleadershipalternates", _blnPrintLeadershipAlternates.ToString());
-            // <printarcanaalternates />
-            objWriter.WriteElementString("printarcanaalternates", _blnPrintArcanaAlternates.ToString());
-            // <printnotes />
-            objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString());
-            // <allowobsolescentupgrade />
-            objWriter.WriteElementString("allowobsolescentupgrade", _blnAllowObsolescentUpgrade.ToString());
-            // <allowbiowaresuites />
-            objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString());
-            // <freespiritpowerpointsmag />
-            objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString());
-            // <specialattributekarmalimit />
-            objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
-            // <technomancerallowautosoft />
-            objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
-            // <allowhoverincrement />
-            objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
-            // <autobackstory />
-            objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
-            // <freemartialartspecialization />
-            objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
-            // <priorityspellsasadeptpowers />
-            objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
-            // <educationqualitiesapplyonchargenkarma />
-            objWriter.WriteElementString("educationqualitiesapplyonchargenkarma", _blnEducationQualitiesApplyOnChargenKarma.ToString());
-            // <usecalculatedpublicawareness />
-            objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
-            // <bpcost>
-            objWriter.WriteStartElement("bpcost");
-            // <bpattribute />
-            objWriter.WriteElementString("bpattribute", _intBPAttribute.ToString());
-            // <bpattributemax />
-            objWriter.WriteElementString("bpattributemax", _intBPAttributeMax.ToString());
-            // <bpcontact />
-            objWriter.WriteElementString("bpcontact", _intBPContact.ToString());
-            // <bpmartialart />
-            objWriter.WriteElementString("bpmartialart", _intBPMartialArt.ToString());
-            // <bpmartialartmaneuver />
-            objWriter.WriteElementString("bpmartialartmaneuver", _intBPMartialArtManeuver.ToString());
-            // <bpskillgroup />
-            objWriter.WriteElementString("bpskillgroup", _intBPSkillGroup.ToString());
-            // <bpactiveskill />
-            objWriter.WriteElementString("bpactiveskill", _intBPActiveSkill.ToString());
-            // <bpactiveskillspecialization />
-            objWriter.WriteElementString("bpactiveskillspecialization", _intBPActiveSkillSpecialization.ToString());
-            // <bpknowledgeskill />
-            objWriter.WriteElementString("bpknowledgeskill", _intBPKnowledgeSkill.ToString());
-            // <bpspell />
-            objWriter.WriteElementString("bpspell", _intBPSpell.ToString());
-            // <bpfocus />
-            objWriter.WriteElementString("bpfocus", _intBPFocus.ToString());
-            // <bpspirit />
-            objWriter.WriteElementString("bpspirit", _intBPSpirit.ToString());
-            // <bpcomplexform />
-            objWriter.WriteElementString("bpcomplexform", _intBPComplexForm.ToString());
-            // <bpcomplexformoption />
-            objWriter.WriteElementString("bpcomplexformoption", _intBPComplexFormOption.ToString());
-            // </bpcost>
-            objWriter.WriteEndElement();
-
-            // <karmacost>
-            objWriter.WriteStartElement("karmacost");
-            // <karmaattribute />
-            objWriter.WriteElementString("karmaattribute", _intKarmaAttribute.ToString());
-            // <karmaquality />
-            objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString());
-            // <karmaspecialization />
-            objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString());
-            // <karmaknospecialization />
-            objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString());
-            // <karmanewknowledgeskill />
-            objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString());
-            // <karmanewactiveskill />
-            objWriter.WriteElementString("karmanewactiveskill", _intKarmaNewActiveSkill.ToString());
-            // <karmanewskillgroup />
-            objWriter.WriteElementString("karmanewskillgroup", _intKarmaNewSkillGroup.ToString());
-            // <karmaimproveknowledgeskill />
-            objWriter.WriteElementString("karmaimproveknowledgeskill", _intKarmaImproveKnowledgeSkill.ToString());
-            // <karmaimproveactiveskill />
-            objWriter.WriteElementString("karmaimproveactiveskill", _intKarmaImproveActiveSkill.ToString());
-            // <karmaimproveskillgroup />
-            objWriter.WriteElementString("karmaimproveskillgroup", _intKarmaImproveSkillGroup.ToString());
-            // <karmaspell />
-            objWriter.WriteElementString("karmaspell", _intKarmaSpell.ToString());
-            // <karmaenhancement />
-            objWriter.WriteElementString("karmaenhancement", _intKarmaEnhancement.ToString());
-            // <karmanewcomplexform />
-            objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString());
-            // <karmaimprovecomplexform />
-            objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString());
-            // <karmanewaiprogram />
-            objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString());
-            // <karmanewaiadvancedprogram />
-            objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString());
-            // <karmanuyenper />
-            objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
-            // <karmacontact />
-            objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString());
-            // <karmaenemy />
-            objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString());
-            // <karmacarryover />
-            objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString());
-            // <karmaspirit />
-            objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString());
-            // <karmamaneuver />
-            objWriter.WriteElementString("karmamaneuver", _intKarmaManeuver.ToString());
-            // <karmainitiation />
-            objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString());
-            // <karmametamagic />
-            objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString());
-            // <karmacomplexformoption />
-            objWriter.WriteElementString("karmacomplexformoption", _intKarmaComplexFormOption.ToString());
-            // <karmacomplexformskillsoft />
-            objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillfot.ToString());
-            // <karmajoingroup />
-            objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString());
-            // <karmaleavegroup />
-            objWriter.WriteElementString("karmaleavegroup", _intKarmaLeaveGroup.ToString());
-            // <karmaalchemicalfocus />
-            objWriter.WriteElementString("karmaalchemicalfocus", _intKarmaAlchemicalFocus.ToString());
-            // <karmabanishingfocus />
-            objWriter.WriteElementString("karmabanishingfocus", _intKarmaBanishingFocus.ToString());
-            // <karmabindingfocus />
-            objWriter.WriteElementString("karmabindingfocus", _intKarmaBindingFocus.ToString());
-            // <karmacenteringfocus />
-            objWriter.WriteElementString("karmacenteringfocus", _intKarmaCenteringFocus.ToString());
-            // <karmacounterspellingfocus />
-            objWriter.WriteElementString("karmacounterspellingfocus", _intKarmaCounterspellingFocus.ToString());
-            // <karmadisenchantingfocus />
-            objWriter.WriteElementString("karmadisenchantingfocus", _intKarmaDisenchantingFocus.ToString());
-            // <karmaflexiblesignaturefocus />
-            objWriter.WriteElementString("karmaflexiblesignaturefocus", _intKarmaFlexibleSignatureFocus.ToString());
-            // <karmamaskingfocus />
-            objWriter.WriteElementString("karmamaskingfocus", _intKarmaMaskingFocus.ToString());
-            // <karmapowerfocus />
-            objWriter.WriteElementString("karmapowerfocus", _intKarmaPowerFocus.ToString());
-            // <karmaqifocus />
-            objWriter.WriteElementString("karmaqifocus", _intKarmaQiFocus.ToString());
-            // <karmaritualspellcastingfocus />
-            objWriter.WriteElementString("karmaritualspellcastingfocus", _intKarmaRitualSpellcastingFocus.ToString());
-            // <karmaspellcastingfocus />
-            objWriter.WriteElementString("karmaspellcastingfocus", _intKarmaSpellcastingFocus.ToString());
-            // <karmaspellshapingfocus />
-            objWriter.WriteElementString("karmaspellshapingfocus", _intKarmaSpellShapingFocus.ToString());
-            // <karmasummoningfocus />
-            objWriter.WriteElementString("karmasummoningfocus", _intKarmaSummoningFocus.ToString());
-            // <karmasustainingfocus />
-            objWriter.WriteElementString("karmasustainingfocus", _intKarmaSustainingFocus.ToString());
-            // <karmaweaponfocus />
-            objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString());
-            // </karmacost>
-            objWriter.WriteEndElement();
-
-            // <books>
-            objWriter.WriteStartElement("books");
-            foreach (string strBook in _lstBooks)
-                objWriter.WriteElementString("book", strBook);
-            // </books>
-            objWriter.WriteEndElement();
-
-
-            // <customdatadirectorynames>
-            objWriter.WriteStartElement("customdatadirectorynames");
-            foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
-                objWriter.WriteElementString("directoryname", strDirectoryName);
-            // </customdatadirectorynames>
-            objWriter.WriteEndElement();
-            // <hascustomdirectories>
-
-            // <defaultbuild>
-            objWriter.WriteStartElement("defaultbuild");
-            // <buildmethod />
-            objWriter.WriteElementString("buildmethod", _strBuildMethod);
-            // <buildpoints />
-            objWriter.WriteElementString("buildpoints", _intBuildPoints.ToString());
-            // <availability />
-            objWriter.WriteElementString("availability", _intAvailability.ToString());
-            // </defaultbuild>
-            objWriter.WriteEndElement();
-
-            // </settings>
-            objWriter.WriteEndElement();
-
-            objWriter.WriteEndDocument();
-            objWriter.Close();
-            objStream.Close();
         }
 
         /// <summary>
@@ -599,35 +560,61 @@ namespace Chummer
         public bool Load(string strFileName)
         {
             _strFileName = strFileName;
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
-            XmlDocument objXmlDocument = new XmlDocument();
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+            XmlDocument objXmlDocument = new XmlDocument
+            {
+                XmlResolver = null
+            };
             // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
             if (File.Exists(strFilePath))
             {
                 try
                 {
-                    objXmlDocument.Load(strFilePath);
+                    using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            objXmlDocument.Load(objXmlReader);
                 }
-                catch (NotSupportedException)
+                catch (IOException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                catch (XmlException)
+                {
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
                 {
                     _strFileName = "default.xml";
-                    objXmlDocument.Load(strFilePath);
+                    strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                objXmlDocument.Load(objXmlReader);
+                    }
+                    catch (IOException)
+                    {
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (XmlException)
+                    {
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
                 }
             }
-            
+
             XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
             // Setting name.
             _strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
@@ -637,7 +624,7 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("confirmdelete", ref _blnConfirmDelete);
             // License Restricted items.
             objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
-            // Confirm Karama ExpenseTryGetField
+            // Confirm Karma ExpenseTryGetField
             objXmlNode.TryGetBoolFieldQuickly("confirmkarmaexpense", ref _blnConfirmKarmaExpense);
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
             objXmlNode.TryGetBoolFieldQuickly("printzeroratingskills", ref _blnPrintSkillsWithZeroRating);
@@ -645,18 +632,14 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
             // Spirit Force Based on Total MAG.
             objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
-            // Skill Defaulting Includes Modifers.
-            objXmlNode.TryGetBoolFieldQuickly("skilldefaultingincludesmodifiers", ref _blnSkillDefaultingIncludesModifiers);
-            // Enforce Skill Maximum Modified Rating.
-            objXmlNode.TryGetBoolFieldQuickly("enforceskillmaximummodifiedrating", ref _blnEnforceSkillMaximumModifiedRating);
-            // Cap Skill Rating.
-            objXmlNode.TryGetBoolFieldQuickly("capskillrating", ref _blnCapSkillRating);
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
+            // Print Free Expenses.
+            objXmlNode.TryGetBoolFieldQuickly("printfreeexpenses", ref _blnPrintFreeExpenses);
             // Nuyen per Build Point
             objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Hide Items Over Avail Limit in Create Mode
-            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHhideItemsOverAvailLimit);
+            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHideItemsOverAvailLimit);
             // Knucks use Unarmed
             objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
             // Allow Initiation in Create Mode
@@ -673,8 +656,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
             // Allow a 2nd Max Attribute
             objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref _blnAllow2ndMaxAttribute);
-            // Allow using Attribute Points with Exceptional Attribute
-            objXmlNode.TryGetBoolFieldQuickly("allowattributepointsonexceptional", ref _blnAllowAttributePointsOnExceptional);
             // Free Contacts Multiplier
             objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
             // Free Contacts use Total Value instead of Value
@@ -695,9 +676,9 @@ namespace Chummer
             // No Single Armor Encumbrance
             objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
             // Ignore Armor Encumbrance
-            objXmlNode.TryGetBoolFieldQuickly("ignorearmorencumbrance", ref _blnIgnoreArmorEncumbrance);
-            // Alternate Armor Encumbrance (BOD+STR)
-            objXmlNode.TryGetBoolFieldQuickly("alternatearmorencumbrance", ref _blnAlternateArmorEncumbrance);
+            objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+            // Ignore Complex Form Limit
+            objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
             // Essence Loss Reduces Maximum Only.
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
@@ -714,33 +695,26 @@ namespace Chummer
             objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
             // Allow Cyberware Essence Cost Discounts.
             objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
-            // Strength Affects Recoil.
-            objXmlNode.TryGetBoolFieldQuickly("strengthaffectsrecoil", ref _blnStrengthAffectsRecoil);
             // Use Maximum Armor Modifications.
             objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
-            // Use Armor Suit Capacity.
-            objXmlNode.TryGetBoolFieldQuickly("armorsuitcapacity", ref _blnArmorSuitCapacity);
-            // Allow Armor Degredation.
+            // Allow Armor Degradation.
             objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-            // Automatically add Copy Protection Program Option.
-            objXmlNode.TryGetBoolFieldQuickly("automaticcopyprotection", ref _blnAutomaticCopyProtection);
-            // Automatically add Registration Program Option.
-            objXmlNode.TryGetBoolFieldQuickly("automaticregistration", ref _blnAutomaticRegistration);
-            // Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-            objXmlNode.TryGetBoolFieldQuickly("ergonomicprogramlimit", ref _blnErgonomicProgramsLimit);
             // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
             objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue", ref _blnSpecialKarmaCostBasedOnShownValue);
             // Allow more than 35 BP in Positive Qualities.
             objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
+            // Double all positive qualities in excess of the limit
+            objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled", ref _blnExceedPositiveQualitiesCostDoubled);
 
-            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _mysaddPpCareer);
+            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPPCareer);
+
+            // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+            objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
 
             // Grant a free specialization when taking a martial art.
             objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
             // Can spend spells from Magic priority as power points
             objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
-            // Education qualities apply to karma costs at chargen
-            objXmlNode.TryGetBoolFieldQuickly("educationqualitiesapplyonchargenkarma", ref _blnEducationQualitiesApplyOnChargenKarma);
             // Allow more than 35 BP in Negative Qualities.
             objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
             // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
@@ -753,32 +727,32 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
             // Forbidden cost multiplier.
             objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
-            // Number of decimal places to round to when calculating Essence.
-            objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref _intEssenceDecimals);
+            // Only round essence when its value is displayed
+            objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+            // Only round essence when its value is displayed
+            objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
+            // Format in which nuyen values are displayed
+            objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
+            // Format in which essence values should be displayed (and to which they should be rounded)
+            if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
+            {
+                int intTemp = 2;
+                // Number of decimal places to round to when calculating Essence.
+                objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
+                EssenceDecimals = intTemp;
+            }
             // Whether or not Capacity limits should be enforced.
             objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
             // Whether or not Recoil modifiers are restricted (AR 148).
             objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-            // Whether or not characters can exceed putting 50% of their points into Attributes.
-            objXmlNode.TryGetBoolFieldQuickly("allowexceedattributebp", ref _blnAllowExceedAttributeBP);
             // Whether or not character are not restricted to the number of points they can invest in Nuyen.
             objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-            // Whether or not a Commlink's Response should be calculated based on the number of programms it has running.
+            // Whether or not a Commlink's Response should be calculated based on the number of programs it has running.
             objXmlNode.TryGetBoolFieldQuickly("calculatecommlinkresponse", ref _blnCalculateCommlinkResponse);
             // Whether or not Stacked Foci can go a combined Force higher than 6.
             objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-            // Whether or not Complex Forms are treated as Spell for BP/Karma costs.
-            objXmlNode.TryGetBoolFieldQuickly("alternatecomplexformcost", ref _blnAlternateComplexFormCost);
-            // Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-            objXmlNode.TryGetBoolFieldQuickly("alternatematrixattribute", ref _blnAlternateMatrixAttribute);
             // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
             objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-            // Whether or not the user can mark any piece of Bioware as being Transgenic.
-            objXmlNode.TryGetBoolFieldQuickly("allowcustomtransgenics", ref _blnAllowCustomTransgenics);
-            // Whether or not the user may buy qualities.
-            objXmlNode.TryGetBoolFieldQuickly("maybuyqualities", ref _blnMayBuyQualities);
-            // Whether or not contact points are used instead of fixed contacts.
-            objXmlNode.TryGetBoolFieldQuickly("usecontactpoints", ref _blnUseContactPoints);
             // Whether or not the user can break Skill Groups while in Create Mode.
             objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
             // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
@@ -787,16 +761,10 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
             // Whether or not dice rolling id allowed for Skills.
             objXmlNode.TryGetBoolFieldQuickly("allowskilldicerolling", ref _blnAllowSkillDiceRolling);
-            // Whether or not cyberlimbs are used for augmeneted attribute calculation.
+            // Whether or not cyberlimbs are used for augmented attribute calculation.
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-            objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
-            // Whether or not the alternate uses for the Leadership Skill should be printed.
-            objXmlNode.TryGetBoolFieldQuickly("printleadershipalternates", ref _blnPrintLeadershipAlternates);
-            // Whether or not the alternate uses for the Arcana Skill should be printed.
-            objXmlNode.TryGetBoolFieldQuickly("printarcanaalternates", ref _blnPrintArcanaAlternates);
             // Whether or not Notes should be printed.
             objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
@@ -805,99 +773,103 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
             // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
             objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
-            // House rule: Whether or not Special Attributes count towards the maximum 50% Karma allowed for Attributes during karma gen.
-            objXmlNode.TryGetBoolFieldQuickly("specialattributekarmalimit", ref _blnSpecialAttributeKarmaLimit);
-            // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
-            objXmlNode.TryGetBoolFieldQuickly("technomancerallowautosoft", ref _blnTechnomancerAllowAutosoft);
             // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
             objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
+            // Optional Rule: Whether searching in a selection form will limit itself to the current Category that's selected.
+            objXmlNode.TryGetBoolFieldQuickly("searchincategoryonly", ref _blnSearchInCategoryOnly);
+            // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+            objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference", ref _blnCompensateSkillGroupKarmaDifference);
             // Optional Rule: Whether Life Modules should automatically create a character back story.
-            objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
+            objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
-
-            objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
-            // Attempt to populate the BP vlaues.
-            objXmlNode.TryGetInt32FieldQuickly("bpattribute", ref _intBPAttribute);
-            objXmlNode.TryGetInt32FieldQuickly("bpattributemax", ref _intBPAttributeMax);
-            objXmlNode.TryGetInt32FieldQuickly("bpcontact", ref _intBPContact);
-            objXmlNode.TryGetInt32FieldQuickly("bpmartialart", ref _intBPMartialArt);
-            objXmlNode.TryGetInt32FieldQuickly("bpmartialartmaneuver", ref _intBPMartialArtManeuver);
-            objXmlNode.TryGetInt32FieldQuickly("bpskillgroup", ref _intBPSkillGroup);
-            objXmlNode.TryGetInt32FieldQuickly("bpactiveskill", ref _intBPActiveSkill);
-            objXmlNode.TryGetInt32FieldQuickly("bpactiveskillspecialization", ref _intBPActiveSkillSpecialization);
-            objXmlNode.TryGetInt32FieldQuickly("bpknowledgeskill", ref _intBPKnowledgeSkill);
-            objXmlNode.TryGetInt32FieldQuickly("bpspell", ref _intBPSpell);
-            objXmlNode.TryGetInt32FieldQuickly("bpfocus", ref _intBPFocus);
-            objXmlNode.TryGetInt32FieldQuickly("bpspirit", ref _intBPSpirit);
-            objXmlNode.TryGetInt32FieldQuickly("bpcomplexform", ref _intBPComplexForm);
-            objXmlNode.TryGetInt32FieldQuickly("bpcomplexformoption", ref _intBPComplexFormOption);
-
+            // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
+            objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _increasedImprovedAbilityMultiplier);
+            // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
+            objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _allowFreeGrids);
+            // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
+            objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
+            // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
+            objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+            // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
+            objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
-            objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
-            objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-            objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
-            objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
-            objXmlNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
-            objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
-            objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-            objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
-            objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
-            objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-            objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
-            objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
-            objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
-            
-            // Attempt to load the Karma costs for Foci.
-            objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+            if (objXmlNode != null)
+            {
+                objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
+                objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
+                objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
+                objXmlNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
+                objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
+                objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
+                objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
+                objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+                objXmlNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
+                objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
+                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
+                objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
+                objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
+                objXmlNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+
+                // Attempt to load the Karma costs for Foci.
+                objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+            }
 
             // Load Books.
             _lstBooks.Clear();
-            foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/settings/books/book"))
-                _lstBooks.Add(objXmlBook.InnerText);
+            using (XmlNodeList xmlBookList = objXmlDocument.SelectNodes("/settings/books/book"))
+                if (xmlBookList != null)
+                    foreach (XmlNode objXmlBook in xmlBookList)
+                        _lstBooks.Add(objXmlBook.InnerText);
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
             _lstCustomDataDirectoryNames.Clear();
-            foreach (XmlNode objXmlDirectoryName in objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
-                _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
+            using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                if (xmlDirectoryList != null)
+                    foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
+                        _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
 
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
-            objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
-            objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
-            objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+            if (objXmlNode != null)
+            {
+                objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
+                objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+            }
 
             return true;
         }
@@ -905,141 +877,95 @@ namespace Chummer
 
         #region Properties and Methods
         /// <summary>
-        /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName)
-        {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
-            if (objRegistryResult != null)
-            {
-                bool blnTemp;
-                if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
-                    blnStorage = blnTemp;
-                _objBaseChummerKey.DeleteValue(strBoolName);
-            }
-        }
-
-        /// <summary>
-        /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private void LoadInt32FromRegistry(ref int intStorage, string strIntName)
-        {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
-            if (objRegistryResult != null)
-            {
-                int intTemp;
-                if (int.TryParse(objRegistryResult.ToString(), out intTemp))
-                    intStorage = intTemp;
-                _objBaseChummerKey.DeleteValue(strIntName);
-            }
-        }
-
-        /// <summary>
-        /// Load a Decimal Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        private void LoadDecFromRegistry(ref decimal decStorage, string strDecName)
-        {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
-            if (objRegistryResult != null)
-            {
-                decimal decTemp;
-                if (decimal.TryParse(objRegistryResult.ToString(), out decTemp))
-                    decStorage = decTemp;
-                _objBaseChummerKey.DeleteValue(strDecName);
-            }
-        }
-
-        /// <summary>
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private void LoadFromRegistry()
+        public void LoadFromRegistry()
         {
-            if (_objBaseChummerKey == null)
+            if (GlobalOptions.ChummerRegistryKey == null)
                 return;
             // Confirm delete.
-            LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete", string.Empty, true);
 
-            // Confirm Karama Expense.
-            LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense");
+            // Confirm Karma Expense.
+            GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense", string.Empty, true);
 
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-            LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills", string.Empty, true);
 
             // More Lethal Gameplay.
-            LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay", string.Empty, true);
 
             // Spirit Force Based on Total MAG.
-            LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
-            // Skill Defaulting Includes Modifers.
-            LoadBoolFromRegistry(ref _blnSkillDefaultingIncludesModifiers, "skilldefaultingincludesmodifiers");
-
-            // Enforce Skill Maximum Modified Rating.
-            LoadBoolFromRegistry(ref _blnEnforceSkillMaximumModifiedRating, "enforceskillmaximummodifiedrating");
-
-            // Cap Skill Rating.
-            LoadBoolFromRegistry(ref _blnCapSkillRating, "capskillrating");
+            // Skill Defaulting Includes modifiers.
+            bool blnTemp = false;
+            GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 
             // Print Expenses.
-            LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses", string.Empty, true);
+
+            // Print Free Expenses.
+            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses", string.Empty, true);
 
             // Nuyen per Build Point
-            LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp");
+            GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp", string.Empty, true);
 
             // Free Contacts Multiplier Enabled
-            LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled", string.Empty, true);
 
             // Free Contacts Multiplier Value
-            LoadInt32FromRegistry(ref _intFreeContactsMultiplier, "freekarmacontactsmultiplier");
+            GlobalOptions.LoadInt32FromRegistry(ref _intFreeContactsMultiplier, "freekarmacontactsmultiplier", string.Empty, true);
 
             // Free Knowledge Multiplier Enabled
-            LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freekarmaknowledgemultiplierenabled");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freekarmaknowledgemultiplierenabled", string.Empty, true);
 
             // Free Knowledge Multiplier Value
-            LoadInt32FromRegistry(ref _intFreeKnowledgeMultiplier, "freekarmaknowledgemultiplier");
+            GlobalOptions.LoadInt32FromRegistry(ref _intFreeKnowledgeMultiplier, "freekarmaknowledgemultiplier", string.Empty, true);
 
             // Karma Free Knowledge Multiplier Enabled
-            LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled", string.Empty, true);
 
             // No Single Armor Encumbrance
-            LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance", string.Empty, true);
 
             // Essence Loss Reduces Maximum Only.
-            LoadBoolFromRegistry(ref _blnESSLossReducesMaximumOnly, "esslossreducesmaximumonly");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnESSLossReducesMaximumOnly, "esslossreducesmaximumonly", string.Empty, true);
 
             // Allow Skill Regrouping.
-            LoadBoolFromRegistry(ref _blnAllowSkillRegrouping, "allowskillregrouping");
+            GlobalOptions.LoadBoolFromRegistry(ref _blnAllowSkillRegrouping, "allowskillregrouping", string.Empty, true);
 
             // Attempt to populate the Karma values.
-            LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute");
-            LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality");
-            LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization");
-            LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization");
-            LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill");
-            LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill");
-            LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup");
-            LoadInt32FromRegistry(ref _intKarmaImproveKnowledgeSkill, "karmaimproveknowledgeskill");
-            LoadInt32FromRegistry(ref _intKarmaImproveActiveSkill, "karmaimproveactiveskill");
-            LoadInt32FromRegistry(ref _intKarmaImproveSkillGroup, "karmaimproveskillgroup");
-            LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell");
-            LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement");
-            LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform");
-            LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform");
-            LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram");
-            LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram");
-            LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper");
-            LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact");
-            LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy");
-            LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover");
-            LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit");
-            LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver");
-            LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation");
-            LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic");
-            LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption");
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveKnowledgeSkill, "karmaimproveknowledgeskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveActiveSkill, "karmaimproveactiveskill", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveSkillGroup, "karmaimproveskillgroup", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaInitiationFlat, "karmainitiationflat", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption", string.Empty, true);
 
             // Retrieve the sourcebooks that are in the Registry.
             string strBookList;
-            object objBooksKeyValue = _objBaseChummerKey.GetValue("books");
+            object objBooksKeyValue = GlobalOptions.ChummerRegistryKey.GetValue("books");
             if (objBooksKeyValue != null)
             {
                 strBookList = objBooksKeyValue.ToString();
@@ -1048,96 +974,24 @@ namespace Chummer
             {
                 // We were unable to get the Registry key which means the book options have not been saved yet, so create the default values.
                 strBookList = "Shadowrun 5th Edition";
-                _objBaseChummerKey.SetValue("books", strBookList);
+                GlobalOptions.ChummerRegistryKey.SetValue("books", strBookList);
             }
             string[] strBooks = strBookList.Split(',');
 
             XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
-            foreach (string strBookCode in strBooks)
+            foreach (string strBookName in strBooks)
             {
-                XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-                if (objXmlBook?["code"] != null && objXmlBook["hide"] == null)
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
+                if (!string.IsNullOrEmpty(strCode))
                 {
-                    _lstBooks.Add(objXmlBook["code"].InnerText);
+                    _lstBooks.Add(strCode);
                 }
             }
             RecalculateBookXPath();
 
             // Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-            _objBaseChummerKey.DeleteValue("books");
-        }
-
-        /// <summary>
-        /// Convert a book code into the full name.
-        /// </summary>
-        /// <param name="strCode">Book code to convert.</param>
-        public string BookFromCode(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["name"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Book code (using the translated version if applicable).
-        /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookShort(string strCode = "")
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["altcode"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Determine the book's original code by using the alternate code.
-        /// </summary>
-        /// <param name="strCode">Alternate code to look for.</param>
-        public string BookFromAltCode(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["code"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Book name (using the translated version if applicable).
-        /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookLong(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                if (objXmlBook != null)
-                {
-                    string strReturn = objXmlBook["translate"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                    strReturn = objXmlBook["name"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                }
-            }
-            return string.Empty;
+            GlobalOptions.ChummerRegistryKey.DeleteValue("books");
         }
 
         /// <summary>
@@ -1146,34 +1000,43 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         public bool BookEnabled(string strCode)
         {
-            foreach (string strBook in _lstBooks)
-            {
-                if (strBook == strCode)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _lstBooks.Contains(strCode);
         }
 
         /// <summary>
-        /// XPath query used to filter items based on the user's selected source books.
+        /// XPath query used to filter items based on the user's selected source books and optional rules.
         /// </summary>
-        public string BookXPath()
+        public string BookXPath(bool excludeHidden = true)
         {
-            string strPath = "not(hide)";
-            if (!string.IsNullOrEmpty(_strBookXPath))
+            string strPath = string.Empty;
+
+            if (excludeHidden)
+            {
+                strPath = "not(hide)";
+            }
+            if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
+            {
+                RecalculateBookXPath();
+            }
+            if (string.IsNullOrWhiteSpace(strPath))
+            {
+                strPath = _strBookXPath;
+            }
+            else if (!string.IsNullOrEmpty(_strBookXPath))
             {
                 strPath += " and " + _strBookXPath;
             }
-            if (GlobalOptions.MissionsOnly)
+            else
             {
-                strPath += " and not(nomission)";
+                // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
+                Utils.BreakIfDebug();
             }
-
             if (!GlobalOptions.Dronemods)
             {
-                strPath += " and not(optionaldrone)";
+                if (string.IsNullOrEmpty(strPath))
+                    strPath = "not(optionaldrone)";
+                else
+                    strPath += " and not(optionaldrone)";
             }
             return strPath;
         }
@@ -1183,15 +1046,24 @@ namespace Chummer
         /// </summary>
         public void RecalculateBookXPath()
         {
-            _strBookXPath = "(";
+            StringBuilder strBookXPath = new StringBuilder("(");
+            _strBookXPath = string.Empty;
 
             foreach (string strBook in _lstBooks)
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
-                    _strBookXPath += "source = \"" + strBook + "\" or ";
+                {
+                    strBookXPath.Append("source = \"");
+                    strBookXPath.Append(strBook);
+                    strBookXPath.Append("\" or ");
+                }
             }
-            if (_strBookXPath.Length >= 4)
-                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+            if (strBookXPath.Length >= 4)
+            {
+                strBookXPath.Length -= 4;
+                strBookXPath.Append(')');
+                _strBookXPath = strBookXPath.ToString();
+            }
             else
                 _strBookXPath = string.Empty;
         }
@@ -1201,14 +1073,8 @@ namespace Chummer
         /// </summary>
         public bool PrintSkillsWithZeroRating
         {
-            get
-            {
-                return _blnPrintSkillsWithZeroRating;
-            }
-            set
-            {
-                _blnPrintSkillsWithZeroRating = value;
-            }
+            get => _blnPrintSkillsWithZeroRating;
+            set => _blnPrintSkillsWithZeroRating = value;
         }
 
         /// <summary>
@@ -1216,14 +1082,8 @@ namespace Chummer
         /// </summary>
         public bool MoreLethalGameplay
         {
-            get
-            {
-                return _blnMoreLethalGameplay;
-            }
-            set
-            {
-                _blnMoreLethalGameplay = value;
-            }
+            get => _blnMoreLethalGameplay;
+            set => _blnMoreLethalGameplay = value;
         }
 
         /// <summary>
@@ -1231,14 +1091,8 @@ namespace Chummer
         /// </summary>
         public bool LicenseRestricted
         {
-            get
-            {
-                return _blnLicenseRestrictedItems;
-            }
-            set
-            {
-                _blnLicenseRestrictedItems = value;
-            }
+            get => _blnLicenseRestrictedItems;
+            set => _blnLicenseRestrictedItems = value;
         }
 
         /// <summary>
@@ -1246,74 +1100,26 @@ namespace Chummer
         /// </summary>
         public bool SpiritForceBasedOnTotalMAG
         {
-            get
-            {
-                return _blnSpiritForceBasedOnTotalMAG;
-            }
-            set
-            {
-                _blnSpiritForceBasedOnTotalMAG = value;
-            }
+            get => _blnSpiritForceBasedOnTotalMAG;
+            set => _blnSpiritForceBasedOnTotalMAG = value;
         }
 
         /// <summary>
-        /// Whether or not Defaulting on a Skill should include any Modifiers.
-        /// </summary>
-        public bool SkillDefaultingIncludesModifiers
-        {
-            get
-            {
-                return _blnSkillDefaultingIncludesModifiers;
-            }
-            set
-            {
-                _blnSkillDefaultingIncludesModifiers = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the maximum Skill rating modifiers are set.
-        /// </summary>
-        public bool EnforceMaximumSkillRatingModifier
-        {
-            get
-            {
-                return _blnEnforceSkillMaximumModifiedRating;
-            }
-            set
-            {
-                _blnEnforceSkillMaximumModifiedRating = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
-        /// </summary>
-        public bool CapSkillRating
-        {
-            get
-            {
-                return _blnCapSkillRating;
-            }
-            set
-            {
-                _blnCapSkillRating = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
+        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
         /// </summary>
         public bool PrintExpenses
         {
-            get
-            {
-                return _blnPrintExpenses;
-            }
-            set
-            {
-                _blnPrintExpenses = value;
-            }
+            get => _blnPrintExpenses;
+            set => _blnPrintExpenses = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// </summary>
+        public bool PrintFreeExpenses
+        {
+            get => _blnPrintFreeExpenses;
+            set => _blnPrintFreeExpenses = value;
         }
 
         /// <summary>
@@ -1321,29 +1127,17 @@ namespace Chummer
         /// </summary>
         public decimal NuyenPerBP
         {
-            get
-            {
-                return _decNuyenPerBP;
-            }
-            set
-            {
-                _decNuyenPerBP = value;
-            }
+            get => _decNuyenPerBP;
+            set => _decNuyenPerBP = value;
         }
 
         /// <summary>
-        /// Whether or not UnarmedAP and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
         public bool UnarmedImprovementsApplyToWeapons
         {
-            get
-            {
-                return _blnUnarmedImprovementsApplyToWeapons;
-            }
-            set
-            {
-                _blnUnarmedImprovementsApplyToWeapons = value;
-            }
+            get => _blnUnarmedImprovementsApplyToWeapons;
+            set => _blnUnarmedImprovementsApplyToWeapons = value;
         }
 
         /// <summary>
@@ -1351,13 +1145,14 @@ namespace Chummer
         /// </summary>
         public bool AllowInitiationInCreateMode
         {
-            get
-            {
-                return _blnAllowInitiationInCreateMode;
-            }
+            get => _blnAllowInitiationInCreateMode;
             set
             {
-                _blnAllowInitiationInCreateMode = value;
+                if (_blnAllowInitiationInCreateMode != value)
+                {
+                    _blnAllowInitiationInCreateMode = value;
+                    _character?.OnPropertyChanged(nameof(Character.AddInitiationsAllowed));
+                }
             }
         }
 
@@ -1366,14 +1161,8 @@ namespace Chummer
         /// </summary>
         public bool UsePointsOnBrokenGroups
         {
-            get
-            {
-                return _blnUsePointsOnBrokenGroups;
-            }
-            set
-            {
-                _blnUsePointsOnBrokenGroups = value;
-            }
+            get => _blnUsePointsOnBrokenGroups;
+            set => _blnUsePointsOnBrokenGroups = value;
         }
 
         /// <summary>
@@ -1381,14 +1170,8 @@ namespace Chummer
         /// </summary>
         public bool DontDoubleQualityPurchases
         {
-            get
-            {
-                return _blnDontDoubleQualityPurchaseCost;
-            }
-            set
-            {
-                _blnDontDoubleQualityPurchaseCost = value;
-            }
+            get => _blnDontDoubleQualityPurchaseCost;
+            set => _blnDontDoubleQualityPurchaseCost = value;
         }
 
         /// <summary>
@@ -1396,14 +1179,8 @@ namespace Chummer
         /// </summary>
         public bool DontDoubleQualityRefunds
         {
-            get
-            {
-                return _blnDontDoubleQualityRefundCost;
-            }
-            set
-            {
-                _blnDontDoubleQualityRefundCost = value;
-            }
+            get => _blnDontDoubleQualityRefundCost;
+            set => _blnDontDoubleQualityRefundCost = value;
         }
 
         /// <summary>
@@ -1411,14 +1188,17 @@ namespace Chummer
         /// </summary>
         public bool IgnoreArt
         {
-            get
-            {
-                return _blnIgnoreArt;
-            }
-            set
-            {
-                _blnIgnoreArt = value;
-            }
+            get => _blnIgnoreArt;
+            set => _blnIgnoreArt = value;
+        }
+
+        /// <summary>
+        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// </summary>
+        public bool IgnoreComplexFormLimit
+        {
+            get => _blnIgnoreComplexFormLimit;
+            set => _blnIgnoreComplexFormLimit = value;
         }
 
         /// <summary>
@@ -1426,53 +1206,50 @@ namespace Chummer
         /// </summary>
         public bool CyberlegMovement
         {
-            get
-            {
-                return _blnCyberlegMovement;
-            }
-            set
-            {
-                _blnCyberlegMovement = value;
-            }
+            get => _blnCyberlegMovement;
+            set => _blnCyberlegMovement = value;
         }
 
         /// <summary>
         /// Allow Mystic Adepts to increase their power points during career mode
         /// </summary>
-        public bool MysaddPPCareer
+        public bool MysAdeptAllowPPCareer
         {
-            get { return _mysaddPpCareer; }
-            set { _mysaddPpCareer = value; }
+            get => _blnMysAdeptAllowPPCareer;
+            set
+            {
+                if (_blnMysAdeptAllowPPCareer != value)
+                {
+                    _blnMysAdeptAllowPPCareer = value;
+                    _character?.OnPropertyChanged(nameof(Character.MysAdeptAllowPPCareer));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+        /// </summary>
+        public bool MysAdeptSecondMAGAttribute
+        {
+            get => _blnMysAdeptSecondMAGAttribute;
+            set
+            {
+                if (_blnMysAdeptSecondMAGAttribute != value)
+                {
+                    _blnMysAdeptSecondMAGAttribute = value;
+                    _character?.OnPropertyChanged(nameof(Character.UseMysticAdeptPPs));
+                }
+            }
         }
 
         /// <summary>
         /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public bool Allow2ndMaxAttribute
         {
-            get
-            {
-                return _blnAllow2ndMaxAttribute;
-            }
-            set
-            {
-                _blnAllow2ndMaxAttribute = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not to allow using Attribute points on the bonus point from Exceptional Attribute
-        /// </summary>
-        public bool AllowAttributePointsOnExceptional
-        {
-            get
-            {
-                return _blnAllowAttributePointsOnExceptional;
-            }
-            set
-            {
-                _blnAllowAttributePointsOnExceptional = value;
-            }
+            get => _blnAllow2ndMaxAttribute;
+            set => _blnAllow2ndMaxAttribute = value;
         }
 
         /// <summary>
@@ -1487,8 +1264,8 @@ namespace Chummer
             }
             set
             {
-                //As this is a hack, not quite sure how this is glued together. 
-                //If i understand it right (COMUNICATING TROUGHT FUCKING FILES?) this should never happen. 
+                //As this is a hack, not quite sure how this is glued together.
+                //If i understand it right (COMMUNICATING THROUGH FUCKING FILES?) this should never happen.
                 //Keyword should
                 if (_character == null)
                 {
@@ -1496,8 +1273,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
+                    Utils.BreakIfDebug();
                 }
             }
         }
@@ -1507,14 +1283,8 @@ namespace Chummer
         /// </summary>
         public bool FreeContactsMultiplierEnabled
         {
-            get
-            {
-                return _blnFreeContactsMultiplierEnabled;
-            }
-            set
-            {
-                _blnFreeContactsMultiplierEnabled = value;
-            }
+            get => _blnFreeContactsMultiplierEnabled;
+            set => _blnFreeContactsMultiplierEnabled = value;
         }
 
         /// <summary>
@@ -1522,14 +1292,8 @@ namespace Chummer
         /// </summary>
         public int DroneArmorMultiplier
         {
-            get
-            {
-                return _intDroneArmorMultiplier;
-            }
-            set
-            {
-                _intDroneArmorMultiplier = value;
-            }
+            get => _intDroneArmorMultiplier;
+            set => _intDroneArmorMultiplier = value;
         }
 
         /// <summary>
@@ -1537,14 +1301,8 @@ namespace Chummer
         /// </summary>
         public bool DroneArmorMultiplierEnabled
         {
-            get
-            {
-                return _blnDroneArmorMultiplierEnabled;
-            }
-            set
-            {
-                _blnDroneArmorMultiplierEnabled = value;
-            }
+            get => _blnDroneArmorMultiplierEnabled;
+            set => _blnDroneArmorMultiplierEnabled = value;
         }
 
         /// <summary>
@@ -1552,14 +1310,8 @@ namespace Chummer
         /// </summary>
         public bool FreeKnowledgeMultiplierEnabled
         {
-            get
-            {
-                return _blnFreeKnowledgeMultiplierEnabled;
-            }
-            set
-            {
-                _blnFreeKnowledgeMultiplierEnabled = value;
-            }
+            get => _blnFreeKnowledgeMultiplierEnabled;
+            set => _blnFreeKnowledgeMultiplierEnabled = value;
         }
 
         /// <summary>
@@ -1567,59 +1319,17 @@ namespace Chummer
         /// </summary>
         public int FreeKnowledgeMultiplier
         {
-            get
-            {
-                return _intFreeKnowledgeMultiplier;
-            }
-            set
-            {
-                _intFreeKnowledgeMultiplier = value;
-            }
-        }
-
-        /// <summary>
-        /// Optional Rule: Whether or not Armor Encumbrance is ignored if only a single piece of Armor is worn.
-        /// </summary>
-        public bool NoSingleArmorEncumbrance
-        {
-            get
-            {
-                return _blnNoSingleArmorEncumbrance;
-            }
-            set
-            {
-                _blnNoSingleArmorEncumbrance = value;
-            }
+            get => _intFreeKnowledgeMultiplier;
+            set => _intFreeKnowledgeMultiplier = value;
         }
 
         /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
-        public bool IgnoreArmorEncumbrance
+        public bool NoArmorEncumbrance
         {
-            get
-            {
-                return _blnIgnoreArmorEncumbrance;
-            }
-            set
-            {
-                _blnIgnoreArmorEncumbrance = value;
-            }
-        }
-
-        /// <summary>
-        /// House Rule: Alternate Armor Encumbrance (BOD+STR) instead of (BOD*2).
-        /// </summary>
-        public bool AlternateArmorEncumbrance
-        {
-            get
-            {
-                return _blnAlternateArmorEncumbrance;
-            }
-            set
-            {
-                _blnAlternateArmorEncumbrance = value;
-            }
+            get => _blnNoArmorEncumbrance;
+            set => _blnNoArmorEncumbrance = value;
         }
 
         /// <summary>
@@ -1627,14 +1337,8 @@ namespace Chummer
         /// </summary>
         public bool ESSLossReducesMaximumOnly
         {
-            get
-            {
-                return _blnESSLossReducesMaximumOnly;
-            }
-            set
-            {
-                _blnESSLossReducesMaximumOnly = value;
-            }
+            get => _blnESSLossReducesMaximumOnly;
+            set => _blnESSLossReducesMaximumOnly = value;
         }
 
         /// <summary>
@@ -1642,14 +1346,8 @@ namespace Chummer
         /// </summary>
         public bool AllowSkillRegrouping
         {
-            get
-            {
-                return _blnAllowSkillRegrouping;
-            }
-            set
-            {
-                _blnAllowSkillRegrouping = value;
-            }
+            get => _blnAllowSkillRegrouping;
+            set => _blnAllowSkillRegrouping = value;
         }
 
         /// <summary>
@@ -1657,66 +1355,36 @@ namespace Chummer
         /// </summary>
         public bool ConfirmDelete
         {
-            get
-            {
-                return _blnConfirmDelete;
-            }
-            set
-            {
-                _blnConfirmDelete = value;
-            }
+            get => _blnConfirmDelete;
+            set => _blnConfirmDelete = value;
         }
 
         /// <summary>
-        /// Wehther or not confirmation messages are shown for Karma Expenses.
+        /// Whether or not confirmation messages are shown for Karma Expenses.
         /// </summary>
         public bool ConfirmKarmaExpense
         {
-            get
-            {
-                return _blnConfirmKarmaExpense;
-            }
-            set
-            {
-                _blnConfirmKarmaExpense = value;
-            }
+            get => _blnConfirmKarmaExpense;
+            set => _blnConfirmKarmaExpense = value;
         }
 
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> Books
-        {
-            get
-            {
-                return _lstBooks;
-            }
-        }
+        public ICollection<string> Books => _lstBooks;
 
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public List<string> CustomDataDirectoryNames
-        {
-            get
-            {
-                return _lstCustomDataDirectoryNames;
-            }
-        }
+        public IList<string> CustomDataDirectoryNames => _lstCustomDataDirectoryNames;
 
         /// <summary>
         /// Setting name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -1724,29 +1392,17 @@ namespace Chummer
         /// </summary>
         public bool MetatypeCostsKarma
         {
-            get
-            {
-                return _blnMetatypeCostsKarma;
-            }
-            set
-            {
-                _blnMetatypeCostsKarma = value;
-            }
+            get => _blnMetatypeCostsKarma;
+            set => _blnMetatypeCostsKarma = value;
         }
 
         /// <summary>
-        /// Mutiplier for Metatype Karma Costs when converting from BP to Karma.
+        /// Multiplier for Metatype Karma Costs when converting from BP to Karma.
         /// </summary>
         public int MetatypeCostsKarmaMultiplier
         {
-            get
-            {
-                return _intMetatypeCostMultiplier;
-            }
-            set
-            {
-                _intMetatypeCostMultiplier = value;
-            }
+            get => _intMetatypeCostMultiplier;
+            set => _intMetatypeCostMultiplier = value;
         }
 
         /// <summary>
@@ -1754,14 +1410,8 @@ namespace Chummer
         /// </summary>
         public int LimbCount
         {
-            get
-            {
-                return _intLimbCount;
-            }
-            set
-            {
-                _intLimbCount = value;
-            }
+            get => _intLimbCount;
+            set => _intLimbCount = value;
         }
 
         /// <summary>
@@ -1769,14 +1419,8 @@ namespace Chummer
         /// </summary>
         public string ExcludeLimbSlot
         {
-            get
-            {
-                return _strExcludeLimbSlot;
-            }
-            set
-            {
-                _strExcludeLimbSlot = value;
-            }
+            get => _strExcludeLimbSlot;
+            set => _strExcludeLimbSlot = value;
         }
 
         /// <summary>
@@ -1784,133 +1428,39 @@ namespace Chummer
         /// </summary>
         public bool AllowCyberwareESSDiscounts
         {
-            get
-            {
-                return _blnAllowCyberwareESSDiscounts;
-            }
-            set
-            {
-                _blnAllowCyberwareESSDiscounts = value;
-            }
+            get => _blnAllowCyberwareESSDiscounts;
+            set => _blnAllowCyberwareESSDiscounts = value;
         }
 
         /// <summary>
-        /// Whether or not a character's Strength affects Weapon Recoil.
-        /// </summary>
-        public bool StrengthAffectsRecoil
-        {
-            get
-            {
-                return _blnStrengthAffectsRecoil;
-            }
-            set
-            {
-                _blnStrengthAffectsRecoil = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Maximum Armor Modifications is in use.
-        /// </summary>
-        public bool MaximumArmorModifications
-        {
-            get
-            {
-                return _blnMaximumArmorModifications;
-            }
-            set
-            {
-                _blnMaximumArmorModifications = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Armor Suit Capacity is in use.
-        /// </summary>
-        public bool ArmorSuitCapacity
-        {
-            get
-            {
-                return _blnArmorSuitCapacity;
-            }
-            set
-            {
-                _blnArmorSuitCapacity = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Armor Degredation is allowed.
+        /// Whether or not Armor Degradation is allowed.
         /// </summary>
         public bool ArmorDegradation
         {
-            get
-            {
-                return _blnArmorDegradation;
-            }
+            get => _blnArmorDegradation;
             set
             {
-                _blnArmorDegradation = value;
+                if (_blnArmorDegradation != value)
+                {
+                    _blnArmorDegradation = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ArmorDegradation)));
+                }
             }
         }
 
         /// <summary>
-        /// Whether or not the Copy Protection Program Option should automatically be added.
-        /// </summary>
-        public bool AutomaticCopyProtection
-        {
-            get
-            {
-                return _blnAutomaticCopyProtection;
-            }
-            set
-            {
-                _blnAutomaticCopyProtection = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Registration Program Option should automatically be added.
-        /// </summary>
-        public bool AutomaticRegistration
-        {
-            get
-            {
-                return _blnAutomaticRegistration;
-            }
-            set
-            {
-                _blnAutomaticRegistration = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-        /// </summary>
-        public bool ErgonomicProgramLimit
-        {
-            get
-            {
-                return _blnErgonomicProgramsLimit;
-            }
-            set
-            {
-                _blnErgonomicProgramsLimit = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Karma cost for increasing Special Attributes is based on the shown value instead of actual value.
+        /// If true, karma costs will not decrease from reductions due to essence loss. Effectively, essence loss becomes an augmented modifier, not one that alters minima and maxima.
         /// </summary>
         public bool SpecialKarmaCostBasedOnShownValue
         {
-            get
-            {
-                return _blnSpecialKarmaCostBasedOnShownValue;
-            }
+            get => _blnSpecialKarmaCostBasedOnShownValue;
             set
             {
-                _blnSpecialKarmaCostBasedOnShownValue = value;
+                if (_blnSpecialKarmaCostBasedOnShownValue != value)
+                {
+                    _blnSpecialKarmaCostBasedOnShownValue = value;
+                    _character?.RefreshEssenceLossImprovements();
+                }
             }
         }
 
@@ -1919,14 +1469,17 @@ namespace Chummer
         /// </summary>
         public bool ExceedPositiveQualities
         {
-            get
-            {
-                return _blnExceedPositiveQualities;
-            }
-            set
-            {
-                _blnExceedPositiveQualities = value;
-            }
+            get => _blnExceedPositiveQualities;
+            set => _blnExceedPositiveQualities = value;
+        }
+
+        /// <summary>
+        /// If true, the karma cost of qualities is doubled after the initial 25.
+        /// </summary>
+        public bool ExceedPositiveQualitiesCostDoubled
+        {
+            get => _blnExceedPositiveQualitiesCostDoubled;
+            set => _blnExceedPositiveQualitiesCostDoubled = value;
         }
 
         /// <summary>
@@ -1934,14 +1487,8 @@ namespace Chummer
         /// </summary>
         public bool ExceedNegativeQualities
         {
-            get
-            {
-                return _blnExceedNegativeQualities;
-            }
-            set
-            {
-                _blnExceedNegativeQualities = value;
-            }
+            get => _blnExceedNegativeQualities;
+            set => _blnExceedNegativeQualities = value;
         }
 
         /// <summary>
@@ -1949,29 +1496,17 @@ namespace Chummer
         /// </summary>
         public bool ExceedNegativeQualitiesLimit
         {
-            get
-            {
-                return _blnExceedNegativeQualitiesLimit;
-            }
-            set
-            {
-                _blnExceedNegativeQualitiesLimit = value;
-            }
+            get => _blnExceedNegativeQualitiesLimit;
+            set => _blnExceedNegativeQualitiesLimit = value;
         }
-        
+
         /// <summary>
         /// Whether or not Restricted items have their cost multiplied.
         /// </summary>
         public bool MultiplyRestrictedCost
         {
-            get
-            {
-                return _blnMultiplyRestrictedCost;
-            }
-            set
-            {
-                _blnMultiplyRestrictedCost = value;
-            }
+            get => _blnMultiplyRestrictedCost;
+            set => _blnMultiplyRestrictedCost = value;
         }
 
         /// <summary>
@@ -1979,14 +1514,8 @@ namespace Chummer
         /// </summary>
         public bool MultiplyForbiddenCost
         {
-            get
-            {
-                return _blnMultiplyForbiddenCost;
-            }
-            set
-            {
-                _blnMultiplyForbiddenCost = value;
-            }
+            get => _blnMultiplyForbiddenCost;
+            set => _blnMultiplyForbiddenCost = value;
         }
 
         /// <summary>
@@ -1994,14 +1523,8 @@ namespace Chummer
         /// </summary>
         public int RestrictedCostMultiplier
         {
-            get
-            {
-                return _intRestrictedCostMultiplier;
-            }
-            set
-            {
-                _intRestrictedCostMultiplier = value;
-            }
+            get => _intRestrictedCostMultiplier;
+            set => _intRestrictedCostMultiplier = value;
         }
 
         /// <summary>
@@ -2009,15 +1532,87 @@ namespace Chummer
         /// </summary>
         public int ForbiddenCostMultiplier
         {
+            get => _intForbiddenCostMultiplier;
+            set => _intForbiddenCostMultiplier = value;
+        }
+
+        private int _intCachedNuyenDecimals = -1;
+        /// <summary>
+        /// Number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public int NuyenDecimals
+        {
             get
             {
-                return _intForbiddenCostMultiplier;
+                if (_intCachedNuyenDecimals >= 0)
+                    return _intCachedNuyenDecimals;
+                string strNuyenFormat = NuyenFormat;
+                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    intDecimalPlaces = 0;
+                else
+                    intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+
+                return _intCachedNuyenDecimals = intDecimalPlaces;
             }
             set
             {
-                _intForbiddenCostMultiplier = value;
+                int intCurrentNuyenDecimals = NuyenDecimals;
+                int intNewNuyenDecimals = Math.Max(value, 0);
+                if (intNewNuyenDecimals < intCurrentNuyenDecimals)
+                {
+                    if (intNewNuyenDecimals > 0)
+                        NuyenFormat = NuyenFormat.Substring(0, NuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals));
+                    else
+                    {
+                        int intDecimalPlaces = NuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces != -1)
+                            NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
+                    }
+                }
+                else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
+                {
+                    StringBuilder objNuyenFormat = string.IsNullOrEmpty(NuyenFormat) ? new StringBuilder("#,0") : new StringBuilder(NuyenFormat);
+                    if (intCurrentNuyenDecimals == 0)
+                    {
+                        objNuyenFormat.Append(".");
+                        for (int i = 0; i < intNewNuyenDecimals; ++i)
+                        {
+                            objNuyenFormat.Append("0");
+                        }
+                    }
+                    else
+                    {
+                        string strDecimalTypeToAdd = string.IsNullOrEmpty(NuyenFormat) ? "0" : NuyenFormat[NuyenFormat.Length - 1].ToString(GlobalOptions.InvariantCultureInfo);
+                        intNewNuyenDecimals -= intCurrentNuyenDecimals;
+                        for (int i = 0; i < intNewNuyenDecimals; ++i)
+                        {
+                            objNuyenFormat.Append(strDecimalTypeToAdd);
+                        }
+                    }
+                    NuyenFormat = objNuyenFormat.ToString();
+                }
             }
         }
+
+        /// <summary>
+        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
+        /// </summary>
+        public string NuyenFormat
+        {
+            get => _strNuyenFormat;
+            set
+            {
+                if (_strNuyenFormat != value)
+                {
+                    _strNuyenFormat = value;
+                    _intCachedNuyenDecimals = -1;
+                    _character?.OnMultiplePropertyChanged(nameof(Character.DisplayNuyen), nameof(Character.DisplayCareerNuyen));
+                }
+            }
+        }
+
+        private int _intCachedEssenceDecimals = -1;
 
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
@@ -2026,12 +1621,93 @@ namespace Chummer
         {
             get
             {
-                return _intEssenceDecimals;
+                if (_intCachedEssenceDecimals >= 0)
+                    return _intCachedEssenceDecimals;
+                string strEssenceFormat = EssenceFormat;
+                int intDecimalPlaces = strEssenceFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    intDecimalPlaces = 0;
+                else
+                    intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
+
+                return _intCachedEssenceDecimals = intDecimalPlaces;
             }
             set
             {
-                _intEssenceDecimals = value;
+                int intCurrentEssenceDecimals = EssenceDecimals;
+                int intNewEssenceDecimals = Math.Max(value, 0);
+                if (intNewEssenceDecimals < intCurrentEssenceDecimals)
+                {
+                    if (intNewEssenceDecimals > 0)
+                    {
+                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
+                        if (length < 3) length = 3;
+                        EssenceFormat = EssenceFormat.Substring(0, length);
+                    }
+                    else
+                    {
+                        int intDecimalPlaces = EssenceFormat.IndexOf('.');
+                        if (intDecimalPlaces != -1)
+                            EssenceFormat = EssenceFormat.Substring(0, intDecimalPlaces);
+                    }
+                }
+                else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
+                {
+                    StringBuilder objEssenceFormat = string.IsNullOrEmpty(EssenceFormat) ? new StringBuilder("#,0") : new StringBuilder(EssenceFormat);
+                    if (intCurrentEssenceDecimals == 0)
+                    {
+                        objEssenceFormat.Append(".");
+                    }
+                    intNewEssenceDecimals -= intCurrentEssenceDecimals;
+                    for (int i = 0; i < intNewEssenceDecimals; ++i)
+                    {
+                        objEssenceFormat.Append("0");
+                    }
+                    EssenceFormat = objEssenceFormat.ToString();
+                }
             }
+        }
+
+        /// <summary>
+        /// Display format for Essence.
+        /// </summary>
+        public string EssenceFormat
+        {
+            get => _strEssenceFormat;
+            set
+            {
+                if (_strEssenceFormat != value)
+                {
+                    _strEssenceFormat = value;
+                    _intCachedEssenceDecimals = -1;
+                    _character?.OnMultiplePropertyChanged(nameof(Character.PrototypeTranshumanEssenceUsed), nameof(Character.Essence));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Only round essence when its value is displayed
+        /// </summary>
+        public bool DontRoundEssenceInternally
+        {
+            get => _blnDoNotRoundEssenceInternally;
+            set
+            {
+                if (_blnDoNotRoundEssenceInternally != value)
+                {
+                    _blnDoNotRoundEssenceInternally = value;
+                    _character?.OnMultiplePropertyChanged(nameof(Character.PrototypeTranshumanEssenceUsed), nameof(Character.Essence));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public bool EnemyKarmaQualityLimit
+        {
+            get => _blnEnemyKarmaQualityLimit;
+            set => _blnEnemyKarmaQualityLimit = value;
         }
 
         /// <summary>
@@ -2039,14 +1715,8 @@ namespace Chummer
         /// </summary>
         public bool EnforceCapacity
         {
-            get
-            {
-                return _blnEnforceCapacity;
-            }
-            set
-            {
-                _blnEnforceCapacity = value;
-            }
+            get => _blnEnforceCapacity;
+            set => _blnEnforceCapacity = value;
         }
 
         /// <summary>
@@ -2054,58 +1724,23 @@ namespace Chummer
         /// </summary>
         public bool RestrictRecoil
         {
-            get
-            {
-                return _blnRestrictRecoil;
-            }
-            set
-            {
-                _blnRestrictRecoil = value;
-            }
+            get => _blnRestrictRecoil;
+            set => _blnRestrictRecoil = value;
         }
 
         /// <summary>
-        /// Whether or not characters can exceed putting 50% of their points into Attributes.
-        /// </summary>
-        public bool AllowExceedAttributeBP
-        {
-            get
-            {
-                return _blnAllowExceedAttributeBP;
-            }
-            set
-            {
-                _blnAllowExceedAttributeBP = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not characters are unresicted in the number of points they can invest in Nuyen.
+        /// Whether or not characters are unrestricted in the number of points they can invest in Nuyen.
         /// </summary>
         public bool UnrestrictedNuyen
         {
-            get
-            {
-                return _blnUnrestrictedNuyen;
-            }
+            get => _blnUnrestrictedNuyen;
             set
             {
-                _blnUnrestrictedNuyen = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not a Commlink's Response should be calculated based on the number of programs running on it.
-        /// </summary>
-        public bool CalculateCommlinkResponse
-        {
-            get
-            {
-                return _blnCalculateCommlinkResponse;
-            }
-            set
-            {
-                _blnCalculateCommlinkResponse = value;
+                if (_blnUnrestrictedNuyen != value)
+                {
+                    _blnUnrestrictedNuyen = value;
+                    _character?.OnPropertyChanged(nameof(Character.TotalNuyenMaximumBP));
+                }
             }
         }
 
@@ -2114,44 +1749,8 @@ namespace Chummer
         /// </summary>
         public bool AllowHigherStackedFoci
         {
-            get
-            {
-                return _blnAllowHigherStackedFoci;
-            }
-            set
-            {
-                _blnAllowHigherStackedFoci = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Coplex Forms have the same BP/Karma cost as Spells.
-        /// </summary>
-        public bool AlternateComplexFormCost
-        {
-            get
-            {
-                return _blnAlternateComplexFormCost;
-            }
-            set
-            {
-                _blnAlternateComplexFormCost = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-        /// </summary>
-        public bool AlternateMatrixAttribute
-        {
-            get
-            {
-                return _blnAlternateMatrixAttribute;
-            }
-            set
-            {
-                _blnAlternateMatrixAttribute = value;
-            }
+            get => _blnAllowHigherStackedFoci;
+            set => _blnAllowHigherStackedFoci = value;
         }
 
         /// <summary>
@@ -2159,59 +1758,8 @@ namespace Chummer
         /// </summary>
         public bool AllowEditPartOfBaseWeapon
         {
-            get
-            {
-                return _blnAllowEditPartOfBaseWeapon;
-            }
-            set
-            {
-                _blnAllowEditPartOfBaseWeapon = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the user can mark any piece of Bioware as being Transgenic.
-        /// </summary>
-        public bool AllowCustomTransgenics
-        {
-            get
-            {
-                return _blnAllowCustomTransgenics;
-            }
-            set
-            {
-                _blnAllowCustomTransgenics = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the user can buy qualities.
-        /// </summary>
-        public bool MayBuyQualities
-        {
-            get
-            {
-                return _blnMayBuyQualities;
-            }
-            set
-            {
-                _blnMayBuyQualities = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not to use contact points instead of fixed contacts.
-        /// </summary>
-        public bool UseContactPoints
-        {
-            get
-            {
-                return _blnUseContactPoints;
-            }
-            set
-            {
-                _blnUseContactPoints = value;
-            }
+            get => _blnAllowEditPartOfBaseWeapon;
+            set => _blnAllowEditPartOfBaseWeapon = value;
         }
 
         /// <summary>
@@ -2219,14 +1767,8 @@ namespace Chummer
         /// </summary>
         public bool StrictSkillGroupsInCreateMode
         {
-            get
-            {
-                return _blnStrictSkillGroupsInCreateMode;
-            }
-            set
-            {
-                _blnStrictSkillGroupsInCreateMode = value;
-            }
+            get => _blnStrictSkillGroupsInCreateMode;
+            set => _blnStrictSkillGroupsInCreateMode = value;
         }
 
         /// <summary>
@@ -2234,14 +1776,8 @@ namespace Chummer
         /// </summary>
         public bool AllowPointBuySpecializationsOnKarmaSkills
         {
-            get
-            {
-                return _blnAllowPointBuySpecializationsOnKarmaSkills;
-            }
-            set
-            {
-                _blnAllowPointBuySpecializationsOnKarmaSkills = value;
-            }
+            get => _blnAllowPointBuySpecializationsOnKarmaSkills;
+            set => _blnAllowPointBuySpecializationsOnKarmaSkills = value;
         }
 
         /// <summary>
@@ -2249,14 +1785,8 @@ namespace Chummer
         /// </summary>
         public bool ExtendAnyDetectionSpell
         {
-            get
-            {
-                return _blnExtendAnyDetectionSpell;
-            }
-            set
-            {
-                _blnExtendAnyDetectionSpell = value;
-            }
+            get => _blnExtendAnyDetectionSpell;
+            set => _blnExtendAnyDetectionSpell = value;
         }
 
         /// <summary>
@@ -2264,14 +1794,8 @@ namespace Chummer
         /// </summary>
         public bool AllowSkillDiceRolling
         {
-            get
-            {
-                return _blnAllowSkillDiceRolling;
-            }
-            set
-            {
-                _blnAllowSkillDiceRolling = value;
-            }
+            get => _blnAllowSkillDiceRolling;
+            set => _blnAllowSkillDiceRolling = value;
         }
 
         /// <summary>
@@ -2279,14 +1803,8 @@ namespace Chummer
         /// </summary>
         public bool DontUseCyberlimbCalculation
         {
-            get
-            {
-                return _blnDontUseCyberlimbCalculation;
-            }
-            set
-            {
-                _blnDontUseCyberlimbCalculation = value;
-            }
+            get => _blnDontUseCyberlimbCalculation;
+            set => _blnDontUseCyberlimbCalculation = value;
         }
 
         /// <summary>
@@ -2294,59 +1812,17 @@ namespace Chummer
         /// </summary>
         public bool AlternateMetatypeAttributeKarma
         {
-            get
-            {
-                return _blnAlternateMetatypeAttributeKarma;
-            }
-            set
-            {
-                _blnAlternateMetatypeAttributeKarma = value;
-            }
+            get => _blnAlternateMetatypeAttributeKarma;
+            set => _blnAlternateMetatypeAttributeKarma = value;
         }
 
         /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
+        /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
         /// </summary>
-        public bool CreateBackupOnCareer
+        public bool CompensateSkillGroupKarmaDifference
         {
-            get
-            {
-                return _blnCreateBackupOnCareer;
-            }
-            set
-            {
-                _blnCreateBackupOnCareer = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the alternate uses for the Leadership Skill should be printed.
-        /// </summary>
-        public bool PrintLeadershipAlternates
-        {
-            get
-            {
-                return _blnPrintLeadershipAlternates;
-            }
-            set
-            {
-                _blnPrintLeadershipAlternates = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-        /// </summary>
-        public bool PrintArcanaAlternates
-        {
-            get
-            {
-                return _blnPrintArcanaAlternates;
-            }
-            set
-            {
-                _blnPrintArcanaAlternates = value;
-            }
+            get => _blnCompensateSkillGroupKarmaDifference;
+            set => _blnCompensateSkillGroupKarmaDifference = value;
         }
 
         /// <summary>
@@ -2354,14 +1830,8 @@ namespace Chummer
         /// </summary>
         public bool PrintNotes
         {
-            get
-            {
-                return _blnPrintNotes;
-            }
-            set
-            {
-                _blnPrintNotes = value;
-            }
+            get => _blnPrintNotes;
+            set => _blnPrintNotes = value;
         }
 
         /// <summary>
@@ -2369,14 +1839,8 @@ namespace Chummer
         /// </summary>
         public bool AllowObsolescentUpgrade
         {
-            get
-            {
-                return _blnAllowObsolescentUpgrade;
-            }
-            set
-            {
-                _blnAllowObsolescentUpgrade = value;
-            }
+            get => _blnAllowObsolescentUpgrade;
+            set => _blnAllowObsolescentUpgrade = value;
         }
 
         /// <summary>
@@ -2384,14 +1848,8 @@ namespace Chummer
         /// </summary>
         public bool AllowBiowareSuites
         {
-            get
-            {
-                return _blnAllowBiowareSuites;
-            }
-            set
-            {
-                _blnAllowBiowareSuites = value;
-            }
+            get => _blnAllowBiowareSuites;
+            set => _blnAllowBiowareSuites = value;
         }
 
         /// <summary>
@@ -2399,256 +1857,17 @@ namespace Chummer
         /// </summary>
         public bool FreeSpiritPowerPointsMAG
         {
-            get
-            {
-                return _blnFreeSpiritPowerPointsMAG;
-            }
-            set
-            {
-                _blnFreeSpiritPowerPointsMAG = value;
-            }
+            get => _blnFreeSpiritPowerPointsMAG;
+            set => _blnFreeSpiritPowerPointsMAG = value;
         }
 
         /// <summary>
-        /// House rule: Whether or not Special Attributes count towards the max 50% karma spent on Attributes.
+        /// House rule: Attribute values are clamped to 0 or are allowed to go below 0 due to Essence Loss.
         /// </summary>
-        public bool SpecialAttributeKarmaLimit
+        public bool UnclampAttributeMinimum
         {
-            get
-            {
-                return _blnSpecialAttributeKarmaLimit;
-            }
-            set
-            {
-                _blnSpecialAttributeKarmaLimit = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Technomancers can select Autosofts as Complex Forms.
-        /// </summary>
-        public bool TechnomancerAllowAutosoft
-        {
-            get
-            {
-                return _blnTechnomancerAllowAutosoft;
-            }
-            set
-            {
-                _blnTechnomancerAllowAutosoft = value;
-            }
-        }
-        #endregion
-
-        #region BP
-        /// <summary>
-        /// BP cost for each Attribute = this value.
-        /// </summary>
-        public int BPAttribute
-        {
-            get
-            {
-                return _intBPAttribute;
-            }
-            set
-            {
-                _intBPAttribute = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost to raise an Attribute to its Metatype Maximum = this value.
-        /// </summary>
-        public int BPAttributeMax
-        {
-            get
-            {
-                return _intBPAttributeMax;
-            }
-            set
-            {
-                _intBPAttributeMax = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Loyalty, Connection, and Group point = this value.
-        /// </summary>
-        public int BPContact
-        {
-            get
-            {
-                return _intBPContact;
-            }
-            set
-            {
-                _intBPContact = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Martial Arts Rating = this value.
-        /// </summary>
-        public int BPMartialArt
-        {
-            get
-            {
-                return _intBPMartialArt;
-            }
-            set
-            {
-                _intBPMartialArt = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Martial Art Maneuver = this value.
-        /// </summary>
-        public int BPMartialArtManeuver
-        {
-            get
-            {
-                return _intBPMartialArtManeuver;
-            }
-            set
-            {
-                _intBPMartialArtManeuver = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Skill Group Rating = this value.
-        /// </summary>
-        public int BPSkillGroup
-        {
-            get
-            {
-                return _intBPSkillGroup;
-            }
-            set
-            {
-                _intBPSkillGroup = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Active Skill Rating = this value.
-        /// </summary>
-        public int BPActiveSkill
-        {
-            get
-            {
-                return _intBPActiveSkill;
-            }
-            set
-            {
-                _intBPActiveSkill = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Active Skill Specialization = this value.
-        /// </summary>
-        public int BPActiveSkillSpecialization
-        {
-            get
-            {
-                return _intBPActiveSkillSpecialization;
-            }
-            set
-            {
-                _intBPActiveSkillSpecialization = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Knowledge Skill Rating = this value.
-        /// </summary>
-        public int BPKnowledgeSkill
-        {
-            get
-            {
-                return _intBPKnowledgeSkill;
-            }
-            set
-            {
-                _intBPKnowledgeSkill = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Spell = this value.
-        /// </summary>
-        public int BPSpell
-        {
-            get
-            {
-                return _intBPSpell;
-            }
-            set
-            {
-                _intBPSpell = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Rating of Foci.
-        /// </summary>
-        public int BPFocus
-        {
-            get
-            {
-                return _intBPFocus;
-            }
-            set
-            {
-                _intBPFocus = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each service a Sprit owes = this value.
-        /// </summary>
-        public int BPSpirit
-        {
-            get
-            {
-                return _intBPSpirit;
-            }
-            set
-            {
-                _intBPSpirit = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Complex Form Rating = this value.
-        /// </summary>
-        public int BPComplexForm
-        {
-            get
-            {
-                return _intBPComplexForm;
-            }
-            set
-            {
-                _intBPComplexForm = value;
-            }
-        }
-
-        /// <summary>
-        /// BP cost for each Complex Form Option Rating = this value.
-        /// </summary>
-        public int BPComplexFormOption
-        {
-            get
-            {
-                return _intBPComplexFormOption;
-            }
-            set
-            {
-                _intBPComplexFormOption = value;
-            }
+            get => _blnUnclampAttributeMinimum;
+            set => _blnUnclampAttributeMinimum = value;
         }
         #endregion
 
@@ -2658,14 +1877,8 @@ namespace Chummer
         /// </summary>
         public int KarmaAttribute
         {
-            get
-            {
-                return _intKarmaAttribute;
-            }
-            set
-            {
-                _intKarmaAttribute = value;
-            }
+            get => _intKarmaAttribute;
+            set => _intKarmaAttribute = value;
         }
 
         /// <summary>
@@ -2673,14 +1886,8 @@ namespace Chummer
         /// </summary>
         public int KarmaQuality
         {
-            get
-            {
-                return _intKarmaQuality;
-            }
-            set
-            {
-                _intKarmaQuality = value;
-            }
+            get => _intKarmaQuality;
+            set => _intKarmaQuality = value;
         }
 
         /// <summary>
@@ -2688,14 +1895,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpecialization
         {
-            get
-            {
-                return _intKarmaSpecialization;
-            }
-            set
-            {
-                _intKarmaSpecialization = value;
-            }
+            get => _intKarmaSpecialization;
+            set => _intKarmaSpecialization = value;
         }
 
         /// <summary>
@@ -2703,16 +1904,8 @@ namespace Chummer
         /// </summary>
         public int KarmaKnowledgeSpecialization
         {
-            get
-            {
-                // TODO: Once new options have been merged, get this implemented
-                return _intKarmaSpecialization;
-                //return _intKarmaKnoSpecialization;
-            }
-            set
-            {
-                _intKarmaKnoSpecialization = value;
-            }
+            get => _intKarmaKnoSpecialization;
+            set => _intKarmaKnoSpecialization = value;
         }
 
         /// <summary>
@@ -2720,14 +1913,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewKnowledgeSkill
         {
-            get
-            {
-                return _intKarmaNewKnowledgeSkill;
-            }
-            set
-            {
-                _intKarmaNewKnowledgeSkill = value;
-            }
+            get => _intKarmaNewKnowledgeSkill;
+            set => _intKarmaNewKnowledgeSkill = value;
         }
 
         /// <summary>
@@ -2735,14 +1922,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewActiveSkill
         {
-            get
-            {
-                return _intKarmaNewActiveSkill;
-            }
-            set
-            {
-                _intKarmaNewActiveSkill = value;
-            }
+            get => _intKarmaNewActiveSkill;
+            set => _intKarmaNewActiveSkill = value;
         }
 
         /// <summary>
@@ -2750,14 +1931,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewSkillGroup
         {
-            get
-            {
-                return _intKarmaNewSkillGroup;
-            }
-            set
-            {
-                _intKarmaNewSkillGroup = value;
-            }
+            get => _intKarmaNewSkillGroup;
+            set => _intKarmaNewSkillGroup = value;
         }
 
         /// <summary>
@@ -2765,14 +1940,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveKnowledgeSkill
         {
-            get
-            {
-                return _intKarmaImproveKnowledgeSkill;
-            }
-            set
-            {
-                _intKarmaImproveKnowledgeSkill = value;
-            }
+            get => _intKarmaImproveKnowledgeSkill;
+            set => _intKarmaImproveKnowledgeSkill = value;
         }
 
         /// <summary>
@@ -2780,14 +1949,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveActiveSkill
         {
-            get
-            {
-                return _intKarmaImproveActiveSkill;
-            }
-            set
-            {
-                _intKarmaImproveActiveSkill = value;
-            }
+            get => _intKarmaImproveActiveSkill;
+            set => _intKarmaImproveActiveSkill = value;
         }
 
         /// <summary>
@@ -2795,14 +1958,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveSkillGroup
         {
-            get
-            {
-                return _intKarmaImproveSkillGroup;
-            }
-            set
-            {
-                _intKarmaImproveSkillGroup = value;
-            }
+            get => _intKarmaImproveSkillGroup;
+            set => _intKarmaImproveSkillGroup = value;
         }
 
         /// <summary>
@@ -2810,14 +1967,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpell
         {
-            get
-            {
-                return _intKarmaSpell;
-            }
-            set
-            {
-                _intKarmaSpell = value;
-            }
+            get => _intKarmaSpell;
+            set => _intKarmaSpell = value;
         }
 
         /// <summary>
@@ -2825,14 +1976,8 @@ namespace Chummer
         /// </summary>
         public int KarmaEnhancement
         {
-            get
-            {
-                return _intKarmaEnhancement;
-            }
-            set
-            {
-                _intKarmaEnhancement = value;
-            }
+            get => _intKarmaEnhancement;
+            set => _intKarmaEnhancement = value;
         }
 
         /// <summary>
@@ -2840,14 +1985,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewComplexForm
         {
-            get
-            {
-                return _intKarmaNewComplexForm;
-            }
-            set
-            {
-                _intKarmaNewComplexForm = value;
-            }
+            get => _intKarmaNewComplexForm;
+            set => _intKarmaNewComplexForm = value;
         }
 
         /// <summary>
@@ -2855,14 +1994,8 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveComplexForm
         {
-            get
-            {
-                return _intKarmaImproveComplexForm;
-            }
-            set
-            {
-                _intKarmaImproveComplexForm = value;
-            }
+            get => _intKarmaImproveComplexForm;
+            set => _intKarmaImproveComplexForm = value;
         }
 
         /// <summary>
@@ -2870,14 +2003,8 @@ namespace Chummer
         /// </summary>
         public int KarmaComplexFormOption
         {
-            get
-            {
-                return _intKarmaComplexFormOption;
-            }
-            set
-            {
-                _intKarmaComplexFormOption = value;
-            }
+            get => _intKarmaComplexFormOption;
+            set => _intKarmaComplexFormOption = value;
         }
 
         /// <summary>
@@ -2885,14 +2012,8 @@ namespace Chummer
         /// </summary>
         public int KarmaComplexFormSkillsoft
         {
-            get
-            {
-                return _intKarmaComplexFormSkillfot;
-            }
-            set
-            {
-                _intKarmaComplexFormSkillfot = value;
-            }
+            get => _intKarmaComplexFormSkillfot;
+            set => _intKarmaComplexFormSkillfot = value;
         }
 
         /// <summary>
@@ -2900,14 +2021,8 @@ namespace Chummer
         /// </summary>
         public int KarmaNewAIProgram
         {
-            get
-            {
-                return _intKarmaNewAIProgram;
-            }
-            set
-            {
-                _intKarmaNewAIProgram = value;
-            }
+            get => _intKarmaNewAIProgram;
+            set => _intKarmaNewAIProgram = value;
         }
 
         /// <summary>
@@ -2915,29 +2030,17 @@ namespace Chummer
         /// </summary>
         public int KarmaNewAIAdvancedProgram
         {
-            get
-            {
-                return _intKarmaNewAIAdvancedProgram;
-            }
-            set
-            {
-                _intKarmaNewAIAdvancedProgram = value;
-            }
+            get => _intKarmaNewAIAdvancedProgram;
+            set => _intKarmaNewAIAdvancedProgram = value;
         }
 
         /// <summary>
-        /// Amount of Nueyn objtained per Karma point.
+        /// Amount of Nuyen obtained per Karma point.
         /// </summary>
         public int KarmaNuyenPer
         {
-            get
-            {
-                return _intKarmaNuyenPer;
-            }
-            set
-            {
-                _intKarmaNuyenPer = value;
-            }
+            get => _intKarmaNuyenPer;
+            set => _intKarmaNuyenPer = value;
         }
 
         /// <summary>
@@ -2945,14 +2048,8 @@ namespace Chummer
         /// </summary>
         public int KarmaContact
         {
-            get
-            {
-                return _intKarmaContact;
-            }
-            set
-            {
-                _intKarmaContact = value;
-            }
+            get => _intKarmaContact;
+            set => _intKarmaContact = value;
         }
 
         /// <summary>
@@ -2960,14 +2057,8 @@ namespace Chummer
         /// </summary>
         public int KarmaEnemy
         {
-            get
-            {
-                return _intKarmaEnemy;
-            }
-            set
-            {
-                _intKarmaEnemy = value;
-            }
+            get => _intKarmaEnemy;
+            set => _intKarmaEnemy = value;
         }
 
         /// <summary>
@@ -2975,29 +2066,17 @@ namespace Chummer
         /// </summary>
         public int KarmaCarryover
         {
-            get
-            {
-                return _intKarmaCarryover;
-            }
-            set
-            {
-                _intKarmaCarryover = value;
-            }
+            get => _intKarmaCarryover;
+            set => _intKarmaCarryover = value;
         }
 
         /// <summary>
-        /// Karma cost for a Spirit = this value.regis
+        /// Karma cost for a Spirit = this value.
         /// </summary>
         public int KarmaSpirit
         {
-            get
-            {
-                return _intKarmaSpirit;
-            }
-            set
-            {
-                _intKarmaSpirit = value;
-            }
+            get => _intKarmaSpirit;
+            set => _intKarmaSpirit = value;
         }
 
         /// <summary>
@@ -3005,29 +2084,26 @@ namespace Chummer
         /// </summary>
         public int KarmaManeuver
         {
-            get
-            {
-                return _intKarmaManeuver;
-            }
-            set
-            {
-                _intKarmaManeuver = value;
-            }
+            get => _intKarmaManeuver;
+            set => _intKarmaManeuver = value;
         }
 
         /// <summary>
-        /// Karma cost for a Initiation = 10 + (New Rating x this value).
+        /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
         public int KarmaInitiation
         {
-            get
-            {
-                return _intKarmaInitiation;
-            }
-            set
-            {
-                _intKarmaInitiation = value;
-            }
+            get => _intKarmaInitiation;
+            set => _intKarmaInitiation = value;
+        }
+
+        /// <summary>
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
+        /// </summary>
+        public int KarmaInitiationFlat
+        {
+            get => _intKarmaInitiationFlat;
+            set => _intKarmaInitiationFlat = value;
         }
 
         /// <summary>
@@ -3035,14 +2111,8 @@ namespace Chummer
         /// </summary>
         public int KarmaMetamagic
         {
-            get
-            {
-                return _intKarmaMetamagic;
-            }
-            set
-            {
-                _intKarmaMetamagic = value;
-            }
+            get => _intKarmaMetamagic;
+            set => _intKarmaMetamagic = value;
         }
 
         /// <summary>
@@ -3050,14 +2120,8 @@ namespace Chummer
         /// </summary>
         public int KarmaJoinGroup
         {
-            get
-            {
-                return _intKarmaJoinGroup;
-            }
-            set
-            {
-                _intKarmaJoinGroup = value;
-            }
+            get => _intKarmaJoinGroup;
+            set => _intKarmaJoinGroup = value;
         }
 
         /// <summary>
@@ -3065,14 +2129,8 @@ namespace Chummer
         /// </summary>
         public int KarmaLeaveGroup
         {
-            get
-            {
-                return _intKarmaLeaveGroup;
-            }
-            set
-            {
-                _intKarmaLeaveGroup = value;
-            }
+            get => _intKarmaLeaveGroup;
+            set => _intKarmaLeaveGroup = value;
         }
 
         /// <summary>
@@ -3080,14 +2138,8 @@ namespace Chummer
         /// </summary>
         public int KarmaAlchemicalFocus
         {
-            get
-            {
-                return _intKarmaAlchemicalFocus;
-            }
-            set
-            {
-                _intKarmaAlchemicalFocus = value;
-            }
+            get => _intKarmaAlchemicalFocus;
+            set => _intKarmaAlchemicalFocus = value;
         }
 
         /// <summary>
@@ -3095,14 +2147,8 @@ namespace Chummer
         /// </summary>
         public int KarmaBanishingFocus
         {
-            get
-            {
-                return _intKarmaBanishingFocus;
-            }
-            set
-            {
-                _intKarmaBanishingFocus = value;
-            }
+            get => _intKarmaBanishingFocus;
+            set => _intKarmaBanishingFocus = value;
         }
 
         /// <summary>
@@ -3110,14 +2156,8 @@ namespace Chummer
         /// </summary>
         public int KarmaBindingFocus
         {
-            get
-            {
-                return _intKarmaBindingFocus;
-            }
-            set
-            {
-                _intKarmaBindingFocus = value;
-            }
+            get => _intKarmaBindingFocus;
+            set => _intKarmaBindingFocus = value;
         }
 
         /// <summary>
@@ -3125,14 +2165,8 @@ namespace Chummer
         /// </summary>
         public int KarmaCenteringFocus
         {
-            get
-            {
-                return _intKarmaCenteringFocus;
-            }
-            set
-            {
-                _intKarmaCenteringFocus = value;
-            }
+            get => _intKarmaCenteringFocus;
+            set => _intKarmaCenteringFocus = value;
         }
 
         /// <summary>
@@ -3140,14 +2174,8 @@ namespace Chummer
         /// </summary>
         public int KarmaCounterspellingFocus
         {
-            get
-            {
-                return _intKarmaCounterspellingFocus;
-            }
-            set
-            {
-                _intKarmaCounterspellingFocus = value;
-            }
+            get => _intKarmaCounterspellingFocus;
+            set => _intKarmaCounterspellingFocus = value;
         }
 
         /// <summary>
@@ -3155,14 +2183,8 @@ namespace Chummer
         /// </summary>
         public int KarmaDisenchantingFocus
         {
-            get
-            {
-                return _intKarmaDisenchantingFocus;
-            }
-            set
-            {
-                _intKarmaDisenchantingFocus = value;
-            }
+            get => _intKarmaDisenchantingFocus;
+            set => _intKarmaDisenchantingFocus = value;
         }
 
         /// <summary>
@@ -3170,14 +2192,8 @@ namespace Chummer
         /// </summary>
         public int KarmaFlexibleSignatureFocus
         {
-            get
-            {
-                return _intKarmaFlexibleSignatureFocus;
-            }
-            set
-            {
-                _intKarmaFlexibleSignatureFocus = value;
-            }
+            get => _intKarmaFlexibleSignatureFocus;
+            set => _intKarmaFlexibleSignatureFocus = value;
         }
 
         /// <summary>
@@ -3185,14 +2201,8 @@ namespace Chummer
         /// </summary>
         public int KarmaMaskingFocus
         {
-            get
-            {
-                return _intKarmaMaskingFocus;
-            }
-            set
-            {
-                _intKarmaMaskingFocus = value;
-            }
+            get => _intKarmaMaskingFocus;
+            set => _intKarmaMaskingFocus = value;
         }
 
         /// <summary>
@@ -3200,14 +2210,8 @@ namespace Chummer
         /// </summary>
         public int KarmaPowerFocus
         {
-            get
-            {
-                return _intKarmaPowerFocus;
-            }
-            set
-            {
-                _intKarmaPowerFocus = value;
-            }
+            get => _intKarmaPowerFocus;
+            set => _intKarmaPowerFocus = value;
         }
 
         /// <summary>
@@ -3215,14 +2219,8 @@ namespace Chummer
         /// </summary>
         public int KarmaQiFocus
         {
-            get
-            {
-                return _intKarmaQiFocus;
-            }
-            set
-            {
-                _intKarmaQiFocus = value;
-            }
+            get => _intKarmaQiFocus;
+            set => _intKarmaQiFocus = value;
         }
 
         /// <summary>
@@ -3230,14 +2228,8 @@ namespace Chummer
         /// </summary>
         public int KarmaRitualSpellcastingFocus
         {
-            get
-            {
-                return _intKarmaRitualSpellcastingFocus;
-            }
-            set
-            {
-                _intKarmaRitualSpellcastingFocus = value;
-            }
+            get => _intKarmaRitualSpellcastingFocus;
+            set => _intKarmaRitualSpellcastingFocus = value;
         }
 
         /// <summary>
@@ -3245,14 +2237,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpellcastingFocus
         {
-            get
-            {
-                return _intKarmaSpellcastingFocus;
-            }
-            set
-            {
-                _intKarmaSpellcastingFocus = value;
-            }
+            get => _intKarmaSpellcastingFocus;
+            set => _intKarmaSpellcastingFocus = value;
         }
 
         /// <summary>
@@ -3260,14 +2246,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSpellShapingFocus
         {
-            get
-            {
-                return _intKarmaSpellShapingFocus;
-            }
-            set
-            {
-                _intKarmaSpellShapingFocus = value;
-            }
+            get => _intKarmaSpellShapingFocus;
+            set => _intKarmaSpellShapingFocus = value;
         }
 
         /// <summary>
@@ -3275,14 +2255,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSummoningFocus
         {
-            get
-            {
-                return _intKarmaSummoningFocus;
-            }
-            set
-            {
-                _intKarmaSummoningFocus = value;
-            }
+            get => _intKarmaSummoningFocus;
+            set => _intKarmaSummoningFocus = value;
         }
 
         /// <summary>
@@ -3290,14 +2264,8 @@ namespace Chummer
         /// </summary>
         public int KarmaSustainingFocus
         {
-            get
-            {
-                return _intKarmaSustainingFocus;
-            }
-            set
-            {
-                _intKarmaSustainingFocus = value;
-            }
+            get => _intKarmaSustainingFocus;
+            set => _intKarmaSustainingFocus = value;
         }
 
         /// <summary>
@@ -3305,70 +2273,36 @@ namespace Chummer
         /// </summary>
         public int KarmaWeaponFocus
         {
-            get
-            {
-                return _intKarmaWeaponFocus;
-            }
+            get => _intKarmaWeaponFocus;
+            set => _intKarmaWeaponFocus = value;
+        }
+
+        /// <summary>
+        /// How much Karma a single Power Point costs for a Mystic Adept.
+        /// </summary>
+        public int KarmaMysticAdeptPowerPoint
+        {
+            get => _intKarmaMysticAdeptPowerPoint;
             set
             {
-                _intKarmaWeaponFocus = value;
+                if (_intKarmaMysticAdeptPowerPoint != value)
+                {
+                    _intKarmaMysticAdeptPowerPoint = value;
+                    _character?.OnPropertyChanged(nameof(Character.CanAffordCareerPP));
+                }
             }
         }
+
         #endregion
 
         #region Default Build
-        /// <summary>
-        /// Default build method.
-        /// </summary>
-        public string BuildMethod
-        {
-            get
-            {
-                return _strBuildMethod;
-            }
-            set
-            {
-                _strBuildMethod = value;
-            }
-        }
-
-        /// <summary>
-        /// Default number of build points.
-        /// </summary>
-        public int BuildPoints
-        {
-            get
-            {
-                return _intBuildPoints;
-            }
-            set
-            {
-                _intBuildPoints = value;
-            }
-        }
-
-        /// <summary>
-        /// Default Availability.
-        /// </summary>
-        public int Availability
-        {
-            get
-            {
-                return _intAvailability;
-            }
-            set
-            {
-                _intAvailability = value;
-            }
-        }
-
         /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>
         public bool AutomaticBackstory
         {
-            get { return _automaticBackstory; }
-            internal set { _automaticBackstory = value; }
+            get => _blnAutomaticBackstory;
+            set => _blnAutomaticBackstory = value;
         }
 
         /// <summary>
@@ -3376,14 +2310,8 @@ namespace Chummer
         /// </summary>
         public bool UseCalculatedPublicAwareness
         {
-            get
-            {
-                return _blnUseCalculatedPublicAwareness;
-            }
-            set
-            {
-                _blnUseCalculatedPublicAwareness = value;
-            }
+            get => _blnUseCalculatedPublicAwareness;
+            set => _blnUseCalculatedPublicAwareness = value;
         }
 
         /// <summary>
@@ -3391,13 +2319,14 @@ namespace Chummer
         /// </summary>
         public bool UseTotalValueForFreeContacts
         {
-            get
-            {
-                return _blnUseTotalValueForFreeContacts;
-            }
+            get => _blnUseTotalValueForFreeContacts;
             set
             {
-                _blnUseTotalValueForFreeContacts = value;
+                if (_blnUseTotalValueForFreeContacts != value)
+                {
+                    _blnUseTotalValueForFreeContacts = value;
+                    _character?.OnPropertyChanged(nameof(Character.ContactPoints));
+                }
             }
         }
 
@@ -3406,74 +2335,35 @@ namespace Chummer
         /// </summary>
         public bool UseTotalValueForFreeKnowledge
         {
-            get
-            {
-                return _blnUseTotalValueForFreeKnowledge;
-            }
-            set
-            {
-                _blnUseTotalValueForFreeKnowledge = value;
-            }
+            get => _blnUseTotalValueForFreeKnowledge;
+            set => _blnUseTotalValueForFreeKnowledge = value;
         }
 
         /// <summary>
-        /// Whether Martial Arts grant a free specialisation in a skill. 
+        /// Whether Martial Arts grant a free specialization in a skill.
         /// </summary>
         public bool FreeMartialArtSpecialization
         {
-            get
-            {
-                return _blnFreeMartialArtSpecialization;
-            }
-            set
-            {
-                _blnFreeMartialArtSpecialization = value;
-            }
+            get => _blnFreeMartialArtSpecialization;
+            set => _blnFreeMartialArtSpecialization = value;
         }
 
         /// <summary>
-        /// Whether Spells from Magic Priority can also be spent on power points. 
+        /// Whether Spells from Magic Priority can also be spent on power points.
         /// </summary>
         public bool PrioritySpellsAsAdeptPowers
         {
-            get
-            {
-                return _blnPrioritySpellsAsAdeptPowers;
-            }
-            set
-            {
-                _blnPrioritySpellsAsAdeptPowers = value;
-            }
+            get => _blnPrioritySpellsAsAdeptPowers;
+            set => _blnPrioritySpellsAsAdeptPowers = value;
         }
 
         /// <summary>
-        /// Whether education qualities like Linguist also apply their cost halving discount to karma spent at chargen. 
-        /// </summary>
-        public bool EducationQualitiesApplyOnChargenKarma
-        {
-            get
-            {
-                return _blnEducationQualitiesApplyOnChargenKarma;
-            }
-            set
-            {
-                _blnEducationQualitiesApplyOnChargenKarma = value;
-            }
-        }
-
-        /// <summary>
-        /// 
+        /// Last folder from which a mugshot was added
         /// </summary>
         public string RecentImageFolder
         {
-            get
-            {
-                return _strImageFolder;
-            }
-            set
-            {
-                _strImageFolder = value;
-            }
+            get => _strImageFolder;
+            set => _strImageFolder = value;
         }
 
         /// <summary>
@@ -3481,17 +2371,17 @@ namespace Chummer
         /// </summary>
         public bool ReverseAttributePriorityOrder
         {
-            get { return _blnReverseAttributePriorityOrder; }
-            internal set { _blnReverseAttributePriorityOrder = value; }
+            get => _blnReverseAttributePriorityOrder;
+            internal set => _blnReverseAttributePriorityOrder = value;
         }
 
         /// <summary>
-        /// Whether items that exceed the Availability Limit should be shown in Create Mode. 
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
         /// </summary>
         public bool HideItemsOverAvailLimit
         {
-            get { return _blnHhideItemsOverAvailLimit; }
-            set { _blnHhideItemsOverAvailLimit = value; }
+            get => _blnHideItemsOverAvailLimit;
+            set => _blnHideItemsOverAvailLimit = value;
         }
 
         /// <summary>
@@ -3499,13 +2389,101 @@ namespace Chummer
         /// </summary>
         public bool AllowHoverIncrement
         {
-            get { return _blnAllowHoverIncrement; }
-            internal set { _blnAllowHoverIncrement = value; }
+            get => _blnAllowHoverIncrement;
+            internal set => _blnAllowHoverIncrement = value;
+        }
+        /// <summary>
+        /// Whether searching in a selection form will limit itself to the current Category that's selected.
+        /// </summary>
+        public bool SearchInCategoryOnly
+        {
+            get => _blnSearchInCategoryOnly;
+            internal set => _blnSearchInCategoryOnly = value;
         }
 
-        public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+        /// <summary>
+        /// Whether to use floor-based rounding for Cyberware. If enabled,
+        /// </summary>
+        public bool CyberwareRounding
+        {
+            get => _cyberwareRounding;
+            set => _cyberwareRounding = value;
+        }
+
+        /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating.
+        /// </summary>
+        public bool IncreasedImprovedAbilityMultiplier
+        {
+            get => _increasedImprovedAbilityMultiplier;
+            set => _increasedImprovedAbilityMultiplier = value;
+        }
+        /// <summary>
+        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
+        /// </summary>
+        public bool AllowFreeGrids
+        {
+            get => _allowFreeGrids;
+            set => _allowFreeGrids = value;
+        }
+
+        /// <summary>
+        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened.
+        /// </summary>
+        public bool AllowTechnomancerSchooling
+        {
+            get => _blnAllowTechnomancerSchooling;
+            set => _blnAllowTechnomancerSchooling = value;
+        }
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public int CyberlimbAttributeBonusCap
+        {
+            get => _intCyberlimbAttributeBonusCap;
+            set => _intCyberlimbAttributeBonusCap = value;
+        }
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
+        public decimal KarmaMAGInitiationGroupPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
+        /// </summary>
+        public decimal KarmaRESInitiationGroupPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaMAGInitiationOrdealPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaRESInitiationOrdealPercent { get; set; } = 0.2m;
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaMAGInitiationSchoolingPercent { get; set; } = 0.1m;
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public decimal KarmaRESInitiationSchoolingPercent { get; set; } = 0.1m;
 
         #endregion
 
+        #region Constant Values
+        /// <summary>
+        /// The value by which Specializations add to dicepool.
+        /// </summary>
+        public int SpecializationBonus { get; } = 2;
+
+        #endregion
     }
 }

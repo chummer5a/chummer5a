@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+
+  <metatypes>
+    <!-- Region Metahuman -->
+    <metatype>
+      <name>Human</name>
+      <edgmin>3</edgmin>
+      <edgmax>8</edgmax>
+      <edgaug>8</edgaug>
+      <metavariants>
+        <metavariant xpathfilter="name = 'Nartaki'">
+          <karma>5</karma>
+          <edgmin>3</edgmin>
+          <edgmax>8</edgmax>
+          <edgaug>8</edgaug>
+        </metavariant>
+      </metavariants>
+    </metatype>
+    <metatype>
+      <name>Elf</name>
+      <karma>50</karma>
+      <edgmin>2</edgmin>
+      <edgmax>7</edgmax>
+      <edgaug>7</edgaug>
+      <bonus>
+        <skillgroup amendoperation="addnode">
+          <name>Athletics</name>
+          <bonus>2</bonus>
+        </skillgroup>
+        <limitmodifier amendoperation="addnode">
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>LimitCondition_AttribAGI</condition>
+        </limitmodifier>
+      </bonus>
+      <metavariants>
+        <metavariant xpathfilter="name = 'Dryad'">
+          <karma>50</karma>
+          <edgmin>2</edgmin>
+          <edgmax>7</edgmax>
+          <edgaug>7</edgaug>
+          <bonus>
+            <skillgroup amendoperation="addnode">
+              <name>Athletics</name>
+              <bonus>2</bonus>
+            </skillgroup>
+            <limitmodifier amendoperation="addnode">
+              <limit>Physical</limit>
+              <value>1</value>
+              <condition>LimitCondition_AttribAGI</condition>
+            </limitmodifier>
+          </bonus>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Nocturna'">
+          <karma>50</karma>
+          <edgmin>2</edgmin>
+          <edgmax>7</edgmax>
+          <edgaug>7</edgaug>
+          <qualities>
+            <negative>
+              <quality xpathfilter="text() = 'Allergy (Common, Mild)'" amendoperation="remove" />
+            </negative>
+          </qualities>
+          <bonus>
+            <skillgroup amendoperation="addnode">
+              <name>Athletics</name>
+              <bonus>2</bonus>
+            </skillgroup>
+            <limitmodifier amendoperation="addnode">
+              <limit>Physical</limit>
+              <value>1</value>
+              <condition>LimitCondition_AttribAGI</condition>
+            </limitmodifier>
+          </bonus>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Xapiri Thëpë'">
+          <chamin>3</chamin>
+          <chamax>8</chamax>
+          <chaaug>12</chaaug>
+          <edgmin>2</edgmin>
+          <edgmax>7</edgmax>
+          <edgaug>7</edgaug>
+          <bonus>
+            <skillgroup amendoperation="addnode">
+              <name>Athletics</name>
+              <bonus>2</bonus>
+            </skillgroup>
+            <limitmodifier amendoperation="addnode">
+              <limit>Physical</limit>
+              <value>1</value>
+              <condition>LimitCondition_AttribAGI</condition>
+            </limitmodifier>
+          </bonus>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Wakyambi'">
+          <edgmin>2</edgmin>
+          <edgmax>7</edgmax>
+          <edgaug>7</edgaug>
+          <bonus>
+            <skillgroup amendoperation="addnode">
+              <name>Athletics</name>
+              <bonus>2</bonus>
+            </skillgroup>
+            <limitmodifier amendoperation="addnode">
+              <limit>Physical</limit>
+              <value>1</value>
+              <condition>LimitCondition_AttribAGI</condition>
+            </limitmodifier>
+          </bonus>
+        </metavariant>
+      </metavariants>
+    </metatype>
+    <metatype>
+      <name>Dwarf</name>
+      <karma>50</karma>
+      <metavariants>
+        <metavariant xpathfilter="name = 'Gnome'">
+          <karma>50</karma>
+          <qualities>
+            <positive>
+              <quality amendoperation="addnode">Resistance to Pathogens/Toxins</quality>
+            </positive>
+          </qualities>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Hanuman'">
+          <karma>50</karma>
+          <bodmin>2</bodmin>
+          <bodmax>7</bodmax>
+          <bodaug>11</bodaug>
+          <qualities>
+            <positive>
+              <quality amendoperation="addnode">Resistance to Pathogens/Toxins</quality>
+            </positive>
+          </qualities>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Koborokuru'">
+          <karma>50</karma>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Menehune'">
+          <karma>50</karma>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
+          <qualities>
+            <positive>
+              <quality xpathfilter="text() = 'Resistance to Pathogens'" amendoperation="remove" />
+              <quality amendoperation="addnode">Resistance to Pathogens/Toxins</quality>
+              <quality amendoperation="addnode">Dermal Alteration (Blubber)</quality>
+            </positive>
+          </qualities>
+        </metavariant>
+      </metavariants>
+    </metatype>
+    <metatype>
+      <name>Ork</name>
+      <karma>50</karma>
+      <metavariants>
+        <metavariant xpathfilter="name = 'Hobgoblin'">
+          <karma>50</karma>
+          <bodmin>4</bodmin>
+          <bodmax>9</bodmax>
+          <bodaug>13</bodaug>
+          <strmin>3</strmin>
+          <strmax>8</strmax>
+          <straug>12</straug>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Ogre'">
+          <karma>65</karma>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Oni'">
+          <karma>50</karma>
+          <strmin>3</strmin>
+          <strmax>8</strmax>
+          <straug>12</straug>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Satyr'">
+          <karma>50</karma>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
+          <strmin>3</strmin>
+          <strmax>8</strmax>
+          <straug>12</straug>
+        </metavariant>
+      </metavariants>
+    </metatype>
+    <metatype>
+      <name>Troll</name>
+      <karma>100</karma>
+      <metavariants>
+        <metavariant xpathfilter="name = 'Cyclops'">
+          <karma>120</karma>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Fomorian'">
+          <karma>100</karma>
+          <qualities>
+            <positive>
+              <!-- Coupled with existing Arcane Arrester, will become Arcane Arrester II -->
+              <quality amendoperation="addnode">Arcane Arrester</quality>
+            </positive>
+          </qualities>
+          <bonus>
+            <lifestylecost amendoperation="replace">80</lifestylecost>
+          </bonus>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Giant'">
+          <karma>100</karma>
+        </metavariant>
+        <metavariant xpathfilter="name = 'Minotaur'">
+          <karma>130</karma>
+        </metavariant>
+      </metavariants>
+    </metatype>
+    <!-- End Region -->
+    <!-- Region Metasapient -->
+    <metatype>
+      <name>Centaur</name>
+      <karma>60</karma>
+      <bodmin>4</bodmin>
+      <bodmax>9</bodmax>
+      <bodaug>13</bodaug>
+    </metatype>
+    <metatype>
+      <name>Naga</name>
+      <karma>90</karma>
+    </metatype>
+    <metatype>
+      <name>Pixie</name>
+      <karma>115</karma>
+    </metatype>
+    <metatype>
+      <name>Sasquatch</name>
+      <karma>125</karma>
+    </metatype>
+    <!-- End Region -->
+    <!-- Region Shapeshifter -->
+    <metatype xpathfilter="contains(name,'Shapeshifter')" amendoperation="remove" />
+    <!-- Shapeshifters are now handled by qualities -->
+    <!-- End Region -->
+  </metatypes>
+</chummer>

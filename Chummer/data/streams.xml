@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,8 +18,9 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema streams.xsd">
-  <version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema streams.xsd">
+
   <traditions>
     <tradition>
       <id>7a3ecfbe-616e-425d-b204-329de37ffdbb</id>
@@ -30,6 +32,8 @@
         <spirit>Data Sprite</spirit>
         <spirit>Fault Sprite</spirit>
         <spirit>Machine Sprite</spirit>
+        <spirit>Companion Sprite</spirit>
+        <spirit>Generalist Sprite</spirit>
       </spirits>
       <source>SR5</source>
       <page>258</page>
@@ -56,8 +60,8 @@
         <power>Hash</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Hacking</skill>
+        <skill>Computer</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
     <spirit>
@@ -78,9 +82,9 @@
         <power>Suppression</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
-        <skill attr="log">Hacking</skill>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
     <spirit>
@@ -98,12 +102,12 @@
       <wil>F+1</wil>
       <ini>(F*2)+4</ini>
       <powers>
-        <power>Camoulage</power>
+        <power>Camouflage</power>
         <power>Watermark</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
       </skills>
     </spirit>
     <spirit>
@@ -124,9 +128,9 @@
         <power>Electron Storm</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Cyber Combat</skill>
-        <skill attr="log">Hacking</skill>
+        <skill>Computer</skill>
+        <skill>Cybercombat</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
     <spirit>
@@ -149,9 +153,65 @@
         <power>Stability</power>
       </powers>
       <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
-        <skill attr="log">Hardware</skill>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
+        <skill>Hardware</skill>
+      </skills>
+    </spirit>
+    <spirit>
+      <id>74db183e-2fef-4e6d-84a3-63e641d93bf0</id>
+      <name>Companion Sprite</name>
+      <page>100</page>
+      <source>KC</source>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F-1</cha>
+      <int>F+1</int>
+      <log>F</log>
+      <wil>F+4</wil>
+      <ini>(F*2)</ini>
+      <powers>
+        <power>Bodyguard</power>
+        <power>Shield</power>
+      </powers>
+      <skills>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
+      </skills>
+    </spirit>
+    <spirit>
+      <id>80788abc-4b14-40b0-8ffd-e36fe60653cb</id>
+      <name>Generalist Sprite</name>
+      <page>100</page>
+      <source>KC</source>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F+1</cha>
+      <int>F+1</int>
+      <log>F+1</log>
+      <wil>F+1</wil>
+      <ini>(F*2)+1</ini>
+      <optionalpowers>
+        <power>Cookie</power>
+        <power>Hash</power>
+        <power>Suppression</power>
+        <power>Camouflage</power>
+        <power>Watermark</power>
+        <power>Electron Storm</power>
+        <power>Diagnostics</power>
+        <power>Gremlins</power>
+        <power>Stability</power>
+        <power>Bodyguard</power>
+        <power>Shield</power>
+      </optionalpowers>
+      <skills>
+        <skill>Computer</skill>
+        <skill>Electronic Warfare</skill>
+        <skill>Hacking</skill>
       </skills>
     </spirit>
   </spirits>

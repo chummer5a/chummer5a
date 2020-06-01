@@ -38,32 +38,23 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             // Load the Martial Art information.
             _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
 
         private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith("["))
-                    objLabel.Text = string.Empty;
-            }
-
             List<ListItem> lstManeuver = new List<ListItem>();
 
             // Populate the Martial Art Maneuver list.
             XmlNodeList objManeuverList = _objXmlDocument.SelectNodes("/chummer/maneuvers/maneuver[" + _objCharacter.Options.BookXPath() + "]");
             foreach (XmlNode objXmlManeuver in objManeuverList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlManeuver["name"].InnerText;
-                objItem.Name = objXmlManeuver["translate"]?.InnerText ?? objXmlManeuver["name"].InnerText;
-                lstManeuver.Add(objItem);
+                string strName = objXmlManeuver["name"].InnerText;
+                lstManeuver.Add(new ListItem(strName, objXmlManeuver["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstManeuver.Sort(objSort.Compare);
+            lstManeuver.Sort(CompareListItems.CompareNames);
             lstManeuvers.BeginUpdate();
             lstManeuvers.DataSource = null;
             lstManeuvers.ValueMember = "Value";
@@ -75,7 +66,10 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = false;
                 AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -90,22 +84,34 @@ namespace Chummer
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Populate the Maneuvers list.
-            XmlNode objXmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + lstManeuvers.SelectedValue + "\"]");
+            string strSelectedId = lstManeuvers.SelectedValue?.ToString();
+            XmlNode xmlManeuver = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + strSelectedId + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlManeuver["source"].InnerText);
-            string strPage = objXmlManeuver["page"].InnerText;
-            if (objXmlManeuver["altpage"] != null)
-                strPage = objXmlManeuver["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            if (xmlManeuver != null)
+            {
+                string strSource = xmlManeuver["source"].InnerText;
+                string strPage = xmlManeuver["altpage"]?.InnerText ?? xmlManeuver["page"].InnerText;
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                ToolTipFactory.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
-            _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
         }
         #endregion
 
@@ -142,11 +148,11 @@ namespace Chummer
             _strSelectedManeuver = lstManeuvers.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
-        #endregion
 
-        private void lblSource_Click(object sender, EventArgs e)
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
+        #endregion
     }
 }

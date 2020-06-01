@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -24,21 +24,20 @@ namespace Chummer
 {
     public partial class frmSelectContactConnection : Form
     {
-        private int _intMembership = 0;
-        private int _intAreaOfInfluence = 0;
-        private int _intMagicalResources = 0;
-        private int _intMatrixResources = 0;
+        private int _intMembership;
+        private int _intAreaOfInfluence;
+        private int _intMagicalResources;
+        private int _intMatrixResources;
         private string _strGroupName = string.Empty;
         private Color _objColour;
-        private bool _blnFree = false;
-        private bool _blnSkipUpdate = false;
+        private bool _blnFree;
+        private bool _blnSkipUpdate;
 
         #region Control Events
         public frmSelectContactConnection()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
@@ -86,10 +85,10 @@ namespace Chummer
             // Populate the fields with their data.
             // Membership.
             cboMembership.Items.Add("+0: " + LanguageManager.GetString("String_None"));
-            cboMembership.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "2-19"));
-            cboMembership.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "20-99"));
-            cboMembership.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "100-1000"));
-            cboMembership.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "1000+"));
+            cboMembership.Items.Add("+1: " + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "2-19"));
+            cboMembership.Items.Add("+2: " + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "20-99"));
+            cboMembership.Items.Add("+4: " + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "100-1000"));
+            cboMembership.Items.Add("+6: " + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "1000+"));
 
             // Area of Influence.
             cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.GetString("String_None"));
@@ -112,53 +111,35 @@ namespace Chummer
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;
-            cboMembership.SelectedIndex = cboMembership.FindString("+" + _intMembership.ToString());
-            cboAreaOfInfluence.SelectedIndex = cboAreaOfInfluence.FindString("+" + _intAreaOfInfluence.ToString());
-            cboMagicalResources.SelectedIndex = cboMagicalResources.FindString("+" + _intMagicalResources.ToString());
-            cboMatrixResources.SelectedIndex = cboMatrixResources.FindString("+" + _intMatrixResources.ToString());
+            cboMembership.SelectedIndex = cboMembership.FindString('+' + _intMembership.ToString(GlobalOptions.InvariantCultureInfo));
+            cboAreaOfInfluence.SelectedIndex = cboAreaOfInfluence.FindString('+' + _intAreaOfInfluence.ToString(GlobalOptions.InvariantCultureInfo));
+            cboMagicalResources.SelectedIndex = cboMagicalResources.FindString('+' + _intMagicalResources.ToString(GlobalOptions.InvariantCultureInfo));
+            cboMatrixResources.SelectedIndex = cboMatrixResources.FindString('+' + _intMatrixResources.ToString(GlobalOptions.InvariantCultureInfo));
             txtGroupName.Text = _strGroupName;
             cmdChangeColour.BackColor = _objColour;
             chkFreeContact.Checked = _blnFree;
             _blnSkipUpdate = false;
 
-            lblTotalConnectionModifier.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString();
+            lblTotalConnectionModifier.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalOptions.CultureInfo);
         }
 
         private void cmdChangeColour_Click(object sender, EventArgs e)
         {
-            ColorDialog dlgColour = new ColorDialog();
-            dlgColour.ShowDialog(this);
+            using (ColorDialog dlgColour = new ColorDialog())
+            {
+                dlgColour.ShowDialog(this);
 
-            if (dlgColour.Color.Name == "White" || dlgColour.Color.Name == "Black")
-            {
-                cmdChangeColour.BackColor = SystemColors.Control;
-                _objColour = SystemColors.Control;
-            }
-            else
-            {
-                cmdChangeColour.BackColor = dlgColour.Color;
-                _objColour = dlgColour.Color;
-            }
-        }
-
-        private void cboField_DropDown(object sender, EventArgs e)
-        {
-            // Resize the width of the DropDown so that the longest name fits.
-            ComboBox objSender = (ComboBox)sender;
-            int intWidth = objSender.DropDownWidth;
-            Graphics objGraphics = objSender.CreateGraphics();
-            Font objFont = objSender.Font;
-            int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
-            foreach (string strItem in ((ComboBox)sender).Items)
-            {
-                intNewWidth = (int)objGraphics.MeasureString(strItem, objFont).Width + intScrollWidth;
-                if (intWidth < intNewWidth)
+                if (dlgColour.Color.Name == "White" || dlgColour.Color.Name == "Black")
                 {
-                    intWidth = intNewWidth;
+                    cmdChangeColour.BackColor = SystemColors.Control;
+                    _objColour = SystemColors.Control;
+                }
+                else
+                {
+                    cmdChangeColour.BackColor = dlgColour.Color;
+                    _objColour = dlgColour.Color;
                 }
             }
-            objSender.DropDownWidth = intWidth;
         }
         #endregion
 
@@ -168,14 +149,8 @@ namespace Chummer
         /// </summary>
         public int Membership
         {
-            get
-            {
-                return _intMembership;
-            }
-            set
-            {
-                _intMembership = value;
-            }
+            get => _intMembership;
+            set => _intMembership = value;
         }
 
         /// <summary>
@@ -183,14 +158,8 @@ namespace Chummer
         /// </summary>
         public int AreaOfInfluence
         {
-            get
-            {
-                return _intAreaOfInfluence;
-            }
-            set
-            {
-                _intAreaOfInfluence = value;
-            }
+            get => _intAreaOfInfluence;
+            set => _intAreaOfInfluence = value;
         }
 
         /// <summary>
@@ -198,14 +167,8 @@ namespace Chummer
         /// </summary>
         public int MagicalResources
         {
-            get
-            {
-                return _intMagicalResources;
-            }
-            set
-            {
-                _intMagicalResources = value;
-            }
+            get => _intMagicalResources;
+            set => _intMagicalResources = value;
         }
 
         /// <summary>
@@ -213,14 +176,8 @@ namespace Chummer
         /// </summary>
         public int MatrixResources
         {
-            get
-            {
-                return _intMatrixResources;
-            }
-            set
-            {
-                _intMatrixResources = value;
-            }
+            get => _intMatrixResources;
+            set => _intMatrixResources = value;
         }
 
         /// <summary>
@@ -228,14 +185,8 @@ namespace Chummer
         /// </summary>
         public string GroupName
         {
-            get
-            {
-                return _strGroupName;
-            }
-            set
-            {
-                _strGroupName = value;
-            }
+            get => _strGroupName;
+            set => _strGroupName = value;
         }
 
         /// <summary>
@@ -243,14 +194,8 @@ namespace Chummer
         /// </summary>
         public Color Colour
         {
-            get
-            {
-                return _objColour;
-            }
-            set
-            {
-                _objColour = value;
-            }
+            get => _objColour;
+            set => _objColour = value;
         }
 
         /// <summary>
@@ -258,14 +203,8 @@ namespace Chummer
         /// </summary>
         public bool Free
         {
-            get
-            {
-                return _blnFree;
-            }
-            set
-            {
-                _blnFree = value;
-            }
+            get => _blnFree;
+            set => _blnFree = value;
         }
         #endregion
 
@@ -278,19 +217,14 @@ namespace Chummer
             if (_blnSkipUpdate)
                 return;
 
-            _intMembership = Convert.ToInt32(cboMembership.Text.Substring(0, 2));
-            _intAreaOfInfluence = Convert.ToInt32(cboAreaOfInfluence.Text.Substring(0, 2));
-            _intMagicalResources = Convert.ToInt32(cboMagicalResources.Text.Substring(0, 2));
-            _intMatrixResources = Convert.ToInt32(cboMatrixResources.Text.Substring(0, 2));
+            _intMembership = Convert.ToInt32(cboMembership.Text.Substring(0, 2), GlobalOptions.InvariantCultureInfo);
+            _intAreaOfInfluence = Convert.ToInt32(cboAreaOfInfluence.Text.Substring(0, 2), GlobalOptions.InvariantCultureInfo);
+            _intMagicalResources = Convert.ToInt32(cboMagicalResources.Text.Substring(0, 2), GlobalOptions.InvariantCultureInfo);
+            _intMatrixResources = Convert.ToInt32(cboMatrixResources.Text.Substring(0, 2), GlobalOptions.InvariantCultureInfo);
             _strGroupName = txtGroupName.Text;
             _blnFree = chkFreeContact.Checked;
 
-            lblTotalConnectionModifier.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString();
-        }
-
-        private void MoveControls()
-        {
-            lblTotalConnectionModifier.Left = lblTotalConnectionModifierLabel.Left + lblTotalConnectionModifierLabel.Width + 6;
+            lblTotalConnectionModifier.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalOptions.CultureInfo);
         }
         #endregion
     }

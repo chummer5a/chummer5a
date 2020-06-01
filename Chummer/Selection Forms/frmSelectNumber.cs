@@ -16,24 +16,21 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmSelectNumber : Form
     {
-        private decimal _decReturnValue = 0;
+        private decimal _decReturnValue;
 
         #region Control Events
-        public frmSelectNumber(bool blnCurrency = true)
+        public frmSelectNumber(int intDecimalPlaces = 2)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            if (blnCurrency)
-            {
-                nudNumber.DecimalPlaces = 2;
-            }
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 
         private void frmSelectNumber_Shown(object sender, EventArgs e)
@@ -59,14 +56,8 @@ namespace Chummer
         /// </summary>
         public decimal SelectedValue
         {
-            get
-            {
-                return _decReturnValue;
-            }
-            set
-            {
-                nudNumber.Value = value;
-            }
+            get => _decReturnValue;
+            set => nudNumber.Value = value;
         }
 
         /// <summary>
@@ -74,10 +65,7 @@ namespace Chummer
         /// </summary>
         public decimal Minimum
         {
-            set
-            {
-                nudNumber.Minimum = value;
-            }
+            set => nudNumber.Minimum = value;
         }
 
         /// <summary>
@@ -85,10 +73,7 @@ namespace Chummer
         /// </summary>
         public decimal Maximum
         {
-            set
-            {
-                nudNumber.Maximum = value;
-            }
+            set => nudNumber.Maximum = value;
         }
 
         /// <summary>
@@ -96,10 +81,7 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>

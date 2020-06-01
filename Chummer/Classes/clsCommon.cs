@@ -16,136 +16,151 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
- using System.Text;
- using System.Windows.Forms;
- using System.Drawing;
- using System.Linq;
- using Chummer.Backend.Equipment;
-using Chummer.Backend.Extensions;
+using System.Windows.Forms;
+using System.IO;
+using System.Linq;
+using Chummer.Backend.Equipment;
 using System.Xml;
+using System.Xml.XPath;
+using System.Runtime.CompilerServices;
+using Chummer.Annotations;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 
 namespace Chummer
 {
     public static class CommonFunctions
     {
-        #region Enums
-        public enum LogType
+        #region XPath Evaluators
+        // TODO: implement a sane expression evaluator
+        // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
+        private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
+
+        private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
-            Message = 0,
-            Alert = 1,
-            Error = 2,
-            Content = 3,
-            Entering = 4,
-            Exiting = 5,
+            if (string.IsNullOrWhiteSpace(strXPath))
+            {
+                blnIsSuccess = false;
+                return null;
+            }
+            if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
+            {
+                blnIsSuccess = false;
+                return strXPath;
+            }
+
+            object objReturn;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
+                blnIsSuccess = true;
+            }
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            return objReturn;
         }
-        public enum MentorType
+
+        /// <summary>
+        /// Evaluate an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
         {
-            Mentor = 0,
-            Paragon = 1
+            object objReturn;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                blnIsSuccess = true;
+            }
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = objXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = objXPath;
+                blnIsSuccess = false;
+            }
+            return objReturn;
         }
         #endregion
 
         #region Find Functions
         /// <summary>
-        /// Locate an object (Needle) within a list (Haystack) based on only a GUID match.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Needle to Find.</param>
-        /// <param name="lstHaystack">Haystack to search.</param>
-        public static T FindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IItemWithGuid
-        {
-            if (strGuid == Guid.Empty.ToString())
-            {
-                return default(T);
-            }
-            
-            return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);
-        }
-
-        /// <summary>
-        /// Locate an object (Needle) within a list (Haystack) based on GUID match and non-zero name.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Needle to Find.</param>
-        /// <param name="lstHaystack">Haystack to search.</param>
-        public static T FindByIdWithNameCheck<T>(string strGuid, IEnumerable<T> lstHaystack) where T : INamedItemWithGuid
-        {
-            if (strGuid == Guid.Empty.ToString())
-            {
-                return default(T);
-            }
-
-            return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid && !string.IsNullOrEmpty(x.Name));
-        }
-
-        /// <summary>
-        /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match and non-zero name.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Needle to Find.</param>
-        /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : INamedParentWithGuid<T>
-        {
-            if (strGuid == Guid.Empty.ToString())
-            {
-                return default(T);
-            }
-
-            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid && !string.IsNullOrEmpty(x.Name));
-        }
-
-        /// <summary>
-        /// Locate an object (Needle) within a list and its children (Haystack) based on name match and non-zero guid.
-        /// </summary>
-        /// <param name="strName">Name of the Needle to Find.</param>
-        /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindByName<T>(string strName, IEnumerable<T> lstHaystack) where T : INamedParentWithGuid<T>
-        {
-            if (string.IsNullOrEmpty(strName))
-            {
-                return default(T);
-            }
-
-            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.Name == strName && x.InternalId != Guid.Empty.ToString());
-        }
-
-        /// <summary>
-        /// Locate a Commlink.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Gear to find.</param>
-        /// <param name="lstCommlink">List of Commlinks to search.</param>
-        public static Commlink FindCommlink(string strGuid, IEnumerable<Gear> lstCommlink)
-        {
-            return DeepFindById(strGuid, lstCommlink) as Commlink;
-        }
-
-        /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static Gear FindVehicleGear(string strGuid, IEnumerable<Vehicle> lstVehicles)
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            Vehicle objFoundVehicle = null;
-            WeaponAccessory objFoundWeaponAccessory = null;
-            Cyberware objFoundCyberware = null;
-            return FindVehicleGear(strGuid,lstVehicles, out objFoundVehicle, out objFoundWeaponAccessory, out objFoundCyberware);
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
         }
 
+        /// <summary>
+        /// Locate a piece of Gear by matching on its Weapon ID.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
+        /// <param name="lstGear">List of Gear to search.</param>
+        public static Drug FindDrug(string strGuid, List<Drug> lstGear)
+        {
+            if (lstGear == null)
+                throw new ArgumentNullException(nameof(lstGear));
+            foreach (Drug objDrug in lstGear)
+            {
+                if (objDrug.InternalId == strGuid)
+                    return objDrug;
+            }
+
+            return null;
+        }
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
-        public static Gear FindVehicleGear(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    objReturn = DeepFindById(strGuid, objVehicle.Gear);
+                    Gear objReturn = objVehicle.Gear.DeepFindById(strGuid);
                     if (!string.IsNullOrEmpty(objReturn?.Name))
                     {
                         objFoundVehicle = objVehicle;
@@ -158,8 +173,7 @@ namespace Chummer
                     foreach (VehicleMod objMod in objVehicle.Mods)
                     {
                         // Weapon Accessories.
-                        WeaponAccessory objAccessory;
-                        objReturn = FindWeaponGear(strGuid, objMod.Weapons, out objAccessory);
+                        objReturn = objMod.Weapons.FindWeaponGear(strGuid, out WeaponAccessory objAccessory);
 
                         if (!string.IsNullOrEmpty(objReturn?.Name))
                         {
@@ -170,8 +184,7 @@ namespace Chummer
                         }
 
                         // Cyberware.
-                        Cyberware objCyberware;
-                        objReturn = FindCyberwareGear(strGuid, objMod.Cyberware, out objCyberware);
+                        objReturn = objMod.Cyberware.FindCyberwareGear(strGuid, out Cyberware objCyberware);
 
                         if (!string.IsNullOrEmpty(objReturn?.Name))
                         {
@@ -193,205 +206,264 @@ namespace Chummer
         /// <summary>
         /// Locate a VehicleMod within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the VehicleMod to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles)
+        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate)
         {
-            Vehicle objFoundVehicle = null;
-            return FindVehicleMod(strGuid, lstVehicles, out objFoundVehicle);
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle _, out WeaponMount _);
         }
 
         /// <summary>
         /// Locate a VehicleMod within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the VehicleMod to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
-        public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle)
+        /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
+        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            foreach (Vehicle objVehicle in lstVehicles)
             {
-                foreach (Vehicle objVehicle in lstVehicles)
+                VehicleMod objMod = objVehicle.FindVehicleMod(funcPredicate, out objFoundWeaponMount);
+                if (objMod != null)
                 {
-                    if (!string.IsNullOrEmpty(objVehicle.Name))
-                    {
-                        foreach (VehicleMod objMod in objVehicle.Mods)
-                        {
-                            if (objMod.InternalId == strGuid && !string.IsNullOrEmpty(objMod.Name))
-                            {
-                                objFoundVehicle = objVehicle;
-                                return objMod;
-                            }
-                        }
-                    }
+                    objFoundVehicle = objVehicle;
+                    return objMod;
                 }
             }
 
             objFoundVehicle = null;
+            objFoundWeaponMount = null;
             return null;
         }
 
         /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles)
+        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            Vehicle objFoundVehicle = null;
-            VehicleMod objFoundVehicleMod = null;
-            return FindVehicleWeapon(strGuid, lstVehicles, out objFoundVehicle, out objFoundVehicleMod);
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out VehicleMod objFoundVehicleMod)
-        {
-            Vehicle objFoundVehicle = null;
-            return FindVehicleWeapon(strGuid, lstVehicles, out objFoundVehicle, out objFoundVehicleMod);
-        }
-
-        /// <summary>
-        /// Locate a Weapon within the character's Vehicles.
-        /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle)
+        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
-            VehicleMod objFoundVehicleMod = null;
-            return FindVehicleWeapon(strGuid, lstVehicles, out objFoundVehicle, out objFoundVehicleMod);
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleWeapon(strGuid, out objFoundVehicle, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InteralId of the Weapon to find.</param>
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle, out VehicleMod objFoundVehicleMod)
+        /// <param name="objFoundWeaponMount">Weapon Mount that the Weapon was found in.</param>
+        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Weapon objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    if (!string.IsNullOrEmpty(objVehicle.Name))
+                    Weapon objReturn = objVehicle.Weapons.DeepFindById(strGuid);
+                    if (objReturn != null)
                     {
-                        objReturn = DeepFindById(strGuid, objVehicle.Weapons);
-                        if (!string.IsNullOrEmpty(objReturn?.Name))
+                        objFoundVehicle = objVehicle;
+                        objFoundWeaponMount = null;
+                        objFoundVehicleMod = null;
+                        return objReturn;
+                    }
+
+                    foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                    {
+                        objReturn = objWeaponMount.Weapons.DeepFindById(strGuid);
+                        if (objReturn != null)
                         {
                             objFoundVehicle = objVehicle;
+                            objFoundWeaponMount = objWeaponMount;
                             objFoundVehicleMod = null;
                             return objReturn;
                         }
 
-                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        foreach (VehicleMod objMod in objWeaponMount.Mods)
                         {
-                            objReturn = DeepFindById(strGuid, objMod.Weapons);
-                            if (!string.IsNullOrEmpty(objReturn?.Name))
+                            objReturn = objMod.Weapons.DeepFindById(strGuid);
+                            if (objReturn != null)
                             {
                                 objFoundVehicle = objVehicle;
                                 objFoundVehicleMod = objMod;
+                                objFoundWeaponMount = objWeaponMount;
                                 return objReturn;
                             }
+                        }
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        objReturn = objMod.Weapons.DeepFindById(strGuid);
+                        if (objReturn != null)
+                        {
+                            objFoundVehicle = objVehicle;
+                            objFoundVehicleMod = objMod;
+                            objFoundWeaponMount = null;
+                            return objReturn;
                         }
                     }
                 }
             }
 
             objFoundVehicle = null;
+            objFoundWeaponMount = null;
             objFoundVehicleMod = null;
             return null;
         }
-
         /// <summary>
-        /// Locate a Weapon Accessory within the character's Vehicles.
+        /// Locate a Weapon Mount within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Weapon Accessory to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static WeaponAccessory FindVehicleWeaponAccessory(string strGuid, IEnumerable<Vehicle> lstVehicles)
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="objFoundVehicle">Vehicle in which the Weapon Mount was found.</param>
+        /// <returns></returns>
+        public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
-            Weapon objFoundWeapon = null;
-            return FindVehicleWeaponAccessory(strGuid, lstVehicles, out objFoundWeapon);
-        }
-
-        /// <summary>
-        /// Locate a Weapon Accessory within the character's Vehicles.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Weapon Accessory to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static WeaponAccessory FindVehicleWeaponAccessory(string strGuid, IEnumerable<Vehicle> lstVehicles, out Weapon objFoundWeapon)
-        {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                WeaponAccessory objReturn;
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    if (!string.IsNullOrEmpty(objVehicle.Name))
+                    foreach (WeaponMount objMod in objVehicle.WeaponMounts)
                     {
-                        objReturn = FindWeaponAccessory(strGuid, objVehicle.Weapons, out objFoundWeapon);
-                        if (!string.IsNullOrEmpty(objReturn?.Name))
-                            return objReturn;
-
-                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        if (objMod.InternalId == strGuid)
                         {
-                            objReturn = FindWeaponAccessory(strGuid, objMod.Weapons, out objFoundWeapon);
-                            if (!string.IsNullOrEmpty(objReturn?.Name))
+                            objFoundVehicle = objVehicle;
+                            return objMod;
+                        }
+                    }
+                }
+            }
+            objFoundVehicle = null;
+            return null;
+        }
+        /// <summary>
+        /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
+        /// </summary>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="outMount">Weapon Mount in which the Vehicle Mod was found.</param>
+        /// <returns></returns>
+        public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out WeaponMount outMount)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (VehicleMod objVehicleMod in objWeaponMount.Mods)
+                        {
+                            if (objVehicleMod.InternalId == strGuid)
                             {
-                                return objReturn;
+                                outMount = objWeaponMount;
+                                return objVehicleMod;
                             }
                         }
                     }
                 }
             }
+            outMount = null;
+            return null;
+        }
 
-            objFoundWeapon = null;
+        /// <summary>
+        /// Locate a Weapon Accessory within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Weapon Accessory to find.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        public static WeaponAccessory FindVehicleWeaponAccessory(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    WeaponAccessory objReturn = objVehicle.Weapons.FindWeaponAccessory(strGuid);
+                    if (objReturn != null)
+                    {
+                        return objReturn;
+                    }
+
+                    foreach (WeaponMount objMod in objVehicle.WeaponMounts)
+                    {
+                        objReturn = objMod.Weapons.FindWeaponAccessory(strGuid);
+                        if (objReturn != null)
+                        {
+                            return objReturn;
+                        }
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        objReturn = objMod.Weapons.FindWeaponAccessory(strGuid);
+                        if (objReturn != null)
+                        {
+                            return objReturn;
+                        }
+                    }
+                }
+            }
+
             return null;
         }
 
         /// <summary>
         /// Locate a piece of Cyberware within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Cyberware to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
-        public static Cyberware FindVehicleCyberware(string strGuid, IEnumerable<Vehicle> lstVehicles)
+        public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate)
         {
-            VehicleMod objFoundVehicleMod = null;
-            return FindVehicleCyberware(strGuid, lstVehicles, out objFoundVehicleMod);
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleCyberware(funcPredicate, out VehicleMod _);
         }
 
         /// <summary>
         /// Locate a piece of Cyberware within the character's Vehicles.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Cyberware to find.</param>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
-        public static Cyberware FindVehicleCyberware(string strGuid, IEnumerable<Vehicle> lstVehicles, out VehicleMod objFoundVehicleMod)
+        public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate, out VehicleMod objFoundVehicleMod)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            foreach (Vehicle objVehicle in lstVehicles)
             {
-                Cyberware objReturn;
-                foreach (Vehicle objVehicle in lstVehicles)
+                Cyberware objReturn = objVehicle.FindVehicleCyberware(funcPredicate, out objFoundVehicleMod);
+                if (objReturn != null)
                 {
-                    if (!string.IsNullOrEmpty(objVehicle.Name))
-                    {
-                        foreach (VehicleMod objMod in objVehicle.Mods)
-                        {
-                            objReturn = DeepFindById(strGuid, objMod.Cyberware);
-                            if (!string.IsNullOrEmpty(objReturn?.Name))
-                            {
-                                objFoundVehicleMod = objMod;
-                                return objReturn;
-                            }
-                        }
-                    }
+                    return objReturn;
                 }
             }
 
@@ -404,10 +476,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
-        public static Gear FindArmorGear(string strGuid, IEnumerable<Armor> lstArmors)
+        public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid)
         {
-            Armor objFoundArmor = null;
-            return FindArmorGear(strGuid, lstArmors, out objFoundArmor);
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
+            return lstArmors.FindArmorGear(strGuid, out Armor _, out ArmorMod _);
         }
 
         /// <summary>
@@ -416,20 +489,30 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
         /// <param name="objFoundArmor">Armor that the Gear was found in.</param>
-        public static Gear FindArmorGear(string strGuid, IEnumerable<Armor> lstArmors, out Armor objFoundArmor)
+        /// <param name="objFoundArmorMod">Armor mod that the Gear was found in.</param>
+        public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Armor objArmor in lstArmors)
                 {
-                    if (!string.IsNullOrEmpty(objArmor.Name))
+                    Gear objReturn = objArmor.Gear.DeepFindById(strGuid);
+                    if (objReturn != null)
                     {
-                        objReturn = DeepFindById(strGuid, objArmor.Gear);
+                        objFoundArmor = objArmor;
+                        objFoundArmorMod = null;
+                        return objReturn;
+                    }
 
-                        if (!string.IsNullOrEmpty(objReturn?.Name))
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        objReturn = objMod.Gear.DeepFindById(strGuid);
+                        if (objReturn != null)
                         {
                             objFoundArmor = objArmor;
+                            objFoundArmorMod = objMod;
                             return objReturn;
                         }
                     }
@@ -437,6 +520,7 @@ namespace Chummer
             }
 
             objFoundArmor = null;
+            objFoundArmorMod = null;
             return null;
         }
 
@@ -445,16 +529,19 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the ArmorMod to Find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
-        public static ArmorMod FindArmorMod(string strGuid, IEnumerable<Armor> lstArmors)
+        public static ArmorMod FindArmorMod(this IEnumerable<Armor> lstArmors, string strGuid)
         {
-            if (strGuid == Guid.Empty.ToString())
-                return null;
-            foreach (Armor objArmor in lstArmors)
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                foreach (Armor objArmor in lstArmors)
                 {
-                    if (objMod.InternalId == strGuid)
-                        return objMod;
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        if (objMod.InternalId == strGuid)
+                            return objMod;
+                    }
                 }
             }
 
@@ -466,10 +553,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
-        public static Gear FindCyberwareGear(string strGuid, IEnumerable<Cyberware> lstCyberware)
+        public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid)
         {
-            Cyberware objFoundCyberware = null;
-            return FindCyberwareGear(strGuid, lstCyberware, out objFoundCyberware);
+            if (lstCyberware == null)
+                throw new ArgumentNullException(nameof(lstCyberware));
+            return lstCyberware.FindCyberwareGear(strGuid, out Cyberware _);
         }
 
         /// <summary>
@@ -478,16 +566,17 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-        public static Gear FindCyberwareGear(string strGuid, IEnumerable<Cyberware> lstCyberware, out Cyberware objFoundCyberware)
+        public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, out Cyberware objFoundCyberware)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstCyberware == null)
+                throw new ArgumentNullException(nameof(lstCyberware));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                 {
-                    objReturn = DeepFindById(strGuid, objCyberware.Gear);
+                    Gear objReturn = objCyberware.Gear.DeepFindById(strGuid);
 
-                    if (!string.IsNullOrEmpty(objReturn?.Name))
+                    if (objReturn != null)
                     {
                         objFoundCyberware = objCyberware;
                         return objReturn;
@@ -504,21 +593,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the WeaponAccessory to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
-        public static WeaponAccessory FindWeaponAccessory(string strGuid, IEnumerable<Weapon> lstWeapons)
+        public static WeaponAccessory FindWeaponAccessory(this IEnumerable<Weapon> lstWeapons, string strGuid)
         {
-            Weapon objFoundWeapon = null;
-            return FindWeaponAccessory(strGuid, lstWeapons, out objFoundWeapon);
-        }
-
-        /// <summary>
-        /// Locate a WeaponAccessory within the character's Weapons.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the WeaponAccessory to find.</param>
-        /// <param name="lstWeapons">List of Weapons to search.</param>
-        /// <param name="objFoundWeapon">Weapon in which the Accesory was found.</param>
-        public static WeaponAccessory FindWeaponAccessory(string strGuid, IEnumerable<Weapon> lstWeapons, out Weapon objFoundWeapon)
-        {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0))
                 {
@@ -526,14 +605,12 @@ namespace Chummer
                     {
                         if (objAccessory.InternalId == strGuid)
                         {
-                            objFoundWeapon = objWeapon;
                             return objAccessory;
                         }
                     }
                 }
             }
 
-            objFoundWeapon = null;
             return null;
         }
 
@@ -542,10 +619,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
-        public static Gear FindWeaponGear(string strGuid, IEnumerable<Weapon> lstWeapons)
+        public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid)
         {
-            WeaponAccessory objFoundAccessory = null;
-            return FindWeaponGear(strGuid, lstWeapons, out objFoundAccessory);
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
+            return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory _);
         }
 
         /// <summary>
@@ -554,16 +632,17 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
         /// <param name="objFoundAccessory">WeaponAccessory that the Gear was found in.</param>
-        public static Gear FindWeaponGear(string strGuid, IEnumerable<Weapon> lstWeapons, out WeaponAccessory objFoundAccessory)
+        public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, out WeaponAccessory objFoundAccessory)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn;
                 foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        objReturn = DeepFindById(strGuid, objAccessory.Gear);
+                        Gear objReturn = objAccessory.Gear.DeepFindById(strGuid);
 
                         if (objReturn != null)
                         {
@@ -583,9 +662,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Art to find.</param>
         /// <param name="objCharacter">The character to search.</param>
-        public static Enhancement FindEnhancement(string strGuid, Character objCharacter)
+        public static Enhancement FindEnhancement(this Character objCharacter, string strGuid)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Enhancement objEnhancement in objCharacter.Enhancements)
                 {
@@ -605,34 +686,37 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate a Martial Art Advantage within the character's Martial Arts.
+        /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
+        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        public static MartialArtAdvantage FindMartialArtAdvantage(string strGuid, IEnumerable<MartialArt> lstMartialArts)
+        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
         {
-            MartialArt objFoundMartialArt = null;
-            return FindMartialArtAdvantage(strGuid, lstMartialArts, out objFoundMartialArt);
+            if (lstMartialArts == null)
+                throw new ArgumentNullException(nameof(lstMartialArts));
+            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt _);
         }
 
         /// <summary>
-        /// Locate a Martial Art Advantage within the character's Martial Arts.
+        /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
         /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        /// <param name="objFoundMartialArt">MartialArt the Advantage was found in.</param>
-        public static MartialArtAdvantage FindMartialArtAdvantage(string strGuid, IEnumerable<MartialArt> lstMartialArts, out MartialArt objFoundMartialArt)
+        /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
+        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
         {
-            if (strGuid != Guid.Empty.ToString())
+            if (lstMartialArts == null)
+                throw new ArgumentNullException(nameof(lstMartialArts));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (MartialArt objArt in lstMartialArts)
                 {
-                    foreach (MartialArtAdvantage objAdvantage in objArt.Advantages)
+                    foreach (MartialArtTechnique objTechnique in objArt.Techniques)
                     {
-                        if (objAdvantage.InternalId == strGuid)
+                        if (objTechnique.InternalId == strGuid)
                         {
                             objFoundMartialArt = objArt;
-                            return objAdvantage;
+                            return objTechnique;
                         }
                     }
                 }
@@ -641,2034 +725,192 @@ namespace Chummer
             objFoundMartialArt = null;
             return null;
         }
-
-        /// <summary>
-        /// Find a TreeNode in a TreeView based on its Tag.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Node to find.</param>
-        /// <param name="treTree">TreeView to search.</param>
-        public static TreeNode FindNode(string strGuid, TreeView treTree)
-        {
-            if (strGuid != Guid.Empty.ToString())
-            {
-                TreeNode objFound;
-                foreach (TreeNode objNode in treTree.Nodes)
-                {
-                    if (objNode.Tag.ToString() == strGuid)
-                        return objNode;
-
-                    objFound = FindNode(strGuid, objNode);
-                    if (objFound != null)
-                        return objFound;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Find a TreeNode in a TreeNode based on its Tag.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Node to find.</param>
-        /// <param name="objNode">TreeNode to search.</param>
-        public static TreeNode FindNode(string strGuid, TreeNode objNode)
-        {
-            if (strGuid != Guid.Empty.ToString())
-            {
-                TreeNode objFound;
-                foreach (TreeNode objChild in objNode.Nodes)
-                {
-                    if (objChild.Tag.ToString() == strGuid)
-                        return objChild;
-
-                    objFound = FindNode(strGuid, objChild);
-                    if (objFound != null)
-                        return objFound;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Find all of the Commlinks carried by the character.
-        /// </summary>
-        /// <param name="lstGear">List of Gear to search within for Commlinks.</param>
-        public static HashSet<Commlink> FindCharacterCommlinks(IEnumerable<Gear> lstGear)
-        {
-            HashSet<Commlink> lstReturn = new HashSet<Commlink>();
-            foreach (Gear objGear in lstGear.DeepWhere(x => x.Children, x => x.GetType() == typeof(Commlink)))
-            {
-                lstReturn.Add(objGear as Commlink);
-            }
-
-            return lstReturn;
-        }
-
-        /// <summary>
-        /// Change the active Commlink for the Character.
-        /// </summary>
-        /// <param name="objCommlink">Current commlink to process.</param>
-        /// <param name="blnActivateCommlink">Mark current commlink as active.</param>
-        public static void ChangeActiveCommlink(Character objCharacter, Commlink objCommlink, bool blnActivateCommlink = true)
-        {
-            List<Gear> lstGearToSearch = new List<Gear>(objCharacter.Gear);
-            foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
-            {
-                lstGearToSearch.AddRange(objCyberware.Gear);
-            }
-            foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
-            {
-                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                {
-                    lstGearToSearch.AddRange(objAccessory.Gear);
-                }
-            }
-            foreach (Armor objArmor in objCharacter.Armor)
-            {
-                lstGearToSearch.AddRange(objArmor.Gear);
-            }
-            foreach (Vehicle objVehicle in objCharacter.Vehicles)
-            {
-                lstGearToSearch.AddRange(objVehicle.Gear);
-                foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
-                {
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                    {
-                        lstGearToSearch.AddRange(objAccessory.Gear);
-                    }
-                }
-                foreach (VehicleMod objVehicleMod in objVehicle.Mods.Where(x => x.Cyberware.Count > 0 || x.Weapons.Count > 0))
-                {
-                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
-                    {
-                        lstGearToSearch.AddRange(objCyberware.Gear);
-                    }
-                    foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
-                    {
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            lstGearToSearch.AddRange(objAccessory.Gear);
-                        }
-                    }
-                }
-            }
-            HashSet<Commlink> lstCommlinks = FindCharacterCommlinks(lstGearToSearch);
-
-            bool blnHasNoActive = true;
-            foreach (Commlink objLoopCommlink in lstCommlinks)
-            {
-                objLoopCommlink.IsActive = (blnActivateCommlink && objLoopCommlink.InternalId == objCommlink.InternalId) ||
-                        (!blnActivateCommlink && objLoopCommlink.InternalId != objCommlink.InternalId && blnHasNoActive);
-                if (blnHasNoActive && objLoopCommlink.IsActive)
-                    blnHasNoActive = false;
-            }
-        }
-
-        /// <summary>
-        /// Replace a character's active home node.
-        /// </summary>
-        /// <param name="objCharacter">Character whose home node needs replacing.</param>
-        /// <param name="objNewCommlinkHomeNode">New commlink home node. Null if new home node is not a commlink.</param>
-        /// <param name="objNewVehicleHomeNode">New vehicle home node. Null if new home node is not a vehicle.</param>
-        public static void ReplaceHomeNode(Character objCharacter, Commlink objNewCommlinkHomeNode, Vehicle objNewVehicleHomeNode)
-        {
-            if (objCharacter.HomeNodeVehicle != null)
-            {
-                objCharacter.HomeNodeVehicle.HomeNode = false;
-                objCharacter.HomeNodeVehicle = null;
-            }
-            if (objCharacter.HomeNodeCommlink != null)
-            {
-                objCharacter.HomeNodeCommlink.HomeNode = false;
-                objCharacter.HomeNodeCommlink = null;
-            }
-            if (objNewVehicleHomeNode != null)
-            {
-                objCharacter.HomeNodeVehicle = objNewVehicleHomeNode;
-                objNewVehicleHomeNode.HomeNode = true;
-            }
-            else if (objNewCommlinkHomeNode != null)
-            {
-                objCharacter.HomeNodeCommlink = objNewCommlinkHomeNode;
-                objNewCommlinkHomeNode.HomeNode = true;
-            }
-        }
-        #endregion
-
-        #region Delete Functions
-        /// <summary>
-        /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
-        /// </summary>
-        /// <param name="objGear">Gear to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
-        /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public static decimal DeleteGear(Character objCharacter, Gear objGear, TreeView treWeapons)
-        {
-            decimal decReturn = 0;
-            // Remove any children the Gear may have.
-            foreach (Gear objChild in objGear.Children)
-                decReturn += DeleteGear(objCharacter, objChild, treWeapons);
-
-            // Remove the Gear Weapon created by the Gear if applicable.
-            if (objGear.WeaponID != Guid.Empty.ToString())
-            {
-                List<string> lstNodesToRemoveIds = new List<string>();
-                List<Weapon> lstWeaponsToDelete = new List<Weapon>();
-                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                {
-                    if (objWeapon.ParentID == objGear.InternalId)
-                    {
-                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        lstWeaponsToDelete.Add(objWeapon);
-                    }
-                }
-                // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Weapon objWeapon in lstWeaponsToDelete)
-                {
-                    decReturn += objWeapon.TotalCost;
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else
-                        objCharacter.Weapons.Remove(objWeapon);
-
-                    foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
-                    {
-                        foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                        {
-                            decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                        }
-                    }
-                }
-                foreach (string strNodeId in lstNodesToRemoveIds)
-                {
-                    // Remove the Weapons from the TreeView.
-                    FindNode(strNodeId, treWeapons)?.Remove();
-                }
-            }
-
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-
-            // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
-            if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
-            {
-                HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
-                foreach (Focus objFocus in objCharacter.Foci)
-                {
-                    if (objFocus.GearId == objGear.InternalId)
-                        lstRemoveFoci.Add(objFocus);
-                }
-                foreach (Focus objFocus in lstRemoveFoci)
-                {
-                    /*
-                    foreach (Power objPower in objCharacter.Powers)
-                    {
-                        if (objPower.BonusSource == objFocus.GearId)
-                        {
-                            //objPower.FreeLevels -= (objFocus.Rating / 4);
-                        }
-                    }
-                    */
-                    objCharacter.Foci.Remove(objFocus);
-                }
-            }
-            // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
-            else if (objGear.Category == "Stacked Focus")
-            {
-                StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
-                if (objStack != null)
-                {
-                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                    objCharacter.StackedFoci.Remove(objStack);
-                }
-            }
-
-            Commlink objCommlink = (objGear as Commlink);
-            if (objCommlink?.IsActive == true)
-            {
-                ChangeActiveCommlink(objCharacter, objCommlink, false);
-            }
-            return decReturn;
-        }
-
-        /// <summary>
-        /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
-        /// </summary>
-        /// <param name="objGear">Gear to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
-        /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public static decimal DeleteCyberware(Character objCharacter, Cyberware objCyberware, TreeView treWeapons, TreeView treVehicles)
-        {
-            decimal decReturn = 0;
-            // Remove any children the Gear may have.
-            foreach (Cyberware objChild in objCyberware.Children)
-                decReturn += DeleteCyberware(objCharacter, objChild, treWeapons, treVehicles);
-
-            // Remove the Gear Weapon created by the Gear if applicable.
-            if (objCyberware.WeaponID != Guid.Empty.ToString())
-            {
-                List<string> lstNodesToRemoveIds = new List<string>();
-                List<Weapon> lstWeaponsToDelete = new List<Weapon>();
-                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                {
-                    if (objWeapon.ParentID == objCyberware.InternalId)
-                    {
-                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        lstWeaponsToDelete.Add(objWeapon);
-                    }
-                }
-                // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Weapon objWeapon in lstWeaponsToDelete)
-                {
-                    decReturn += objWeapon.TotalCost;
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else
-                        objCharacter.Weapons.Remove(objWeapon);
-
-                    foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
-                    {
-                        foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                        {
-                            decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                        }
-                    }
-                }
-                foreach (string strNodeId in lstNodesToRemoveIds)
-                {
-                    // Remove the Weapons from the TreeView.
-                    FindNode(strNodeId, treWeapons)?.Remove();
-                }
-            }
-
-            // Remove any Vehicle that the Cyberware created.
-            if (objCyberware.VehicleID != Guid.Empty.ToString())
-            {
-                List<string> lstNodesToRemoveIds = new List<string>();
-                List<Vehicle> lstVehiclesToRemove = new List<Vehicle>();
-                foreach (Vehicle objLoopVehicle in objCharacter.Vehicles)
-                {
-                    if (objLoopVehicle.ParentID == objCyberware.InternalId)
-                    {
-                        lstNodesToRemoveIds.Add(objLoopVehicle.InternalId);
-                        lstVehiclesToRemove.Add(objLoopVehicle);
-                    }
-                }
-                foreach (Vehicle objLoopVehicle in lstVehiclesToRemove)
-                {
-                    decReturn += objLoopVehicle.TotalCost;
-                    objCharacter.Vehicles.Remove(objLoopVehicle);
-                    foreach (Gear objLoopGear in objLoopVehicle.Gear)
-                    {
-                        decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                    }
-                    foreach (Weapon objLoopWeapon in objLoopVehicle.Weapons)
-                    {
-                        foreach (WeaponAccessory objLoopAccessory in objLoopWeapon.WeaponAccessories)
-                        {
-                            foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                            {
-                                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                            }
-                        }
-                    }
-                    foreach (VehicleMod objLoopMod in objLoopVehicle.Mods)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                        {
-                            foreach (WeaponAccessory objLoopAccessory in objLoopWeapon.WeaponAccessories)
-                            {
-                                foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                                {
-                                    decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                                }
-                            }
-                        }
-                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                        {
-                            decReturn += DeleteCyberware(objCharacter, objLoopCyberware, treWeapons, treVehicles);
-                        }
-                    }
-                }
-                foreach (string strNodeId in lstNodesToRemoveIds)
-                {
-                    // Remove the Weapons from the TreeView.
-                    FindNode(strNodeId, treVehicles)?.Remove();
-                }
-            }
-
-            ImprovementManager.RemoveImprovements(objCharacter, objCyberware.SourceType, objCyberware.InternalId);
-            if (objCyberware.PairBonus != null)
-            {
-                List<Cyberware> lstPairableCyberwares = objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped).ToList();
-                int intCyberwaresCount = lstPairableCyberwares.Count - 1;
-                if (!string.IsNullOrEmpty(objCyberware.Location))
-                {
-                    intCyberwaresCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == objCyberware.Location) - 1, lstPairableCyberwares.Count(x => x.Location != objCyberware.Location));
-                }
-                foreach (Cyberware objLoopCyberware in lstPairableCyberwares.Where(x => x.InternalId != objCyberware.InternalId))
-                {
-                    ImprovementManager.RemoveImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
-                    if (objLoopCyberware.Bonus != null)
-                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
-                    if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
-                    if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
-                    {
-                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
-                    }
-                    intCyberwaresCount -= 1;
-                }
-            }
-
-            foreach (Gear objLoopGear in objCyberware.Gear)
-            {
-                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-            }
-
-            return decReturn;
-        }
-
-        /// <summary>
-        /// Method to delete an Armor object. Returns total extra cost removed unrelated to children.
-        /// </summary>
-        /// <param name="treArmor"></param>
-        /// <param name="treWeapons"></param>
-        /// <param name="_objImprovementManager"></param>
-        public static decimal DeleteArmor(Character objCharacter, TreeView treArmor, TreeView treWeapons)
-        {
-            if (!ConfirmDelete(objCharacter, LanguageManager.GetString("Message_DeleteArmor")))
-                return 0.0m;
-
-            TreeNode objSelectedNode = treArmor.SelectedNode;
-            TreeNodeCollection objWeaponNodes = treWeapons.Nodes;
-            if (objSelectedNode == null)
-                return 0.0m;
-            decimal decReturn = 0.0m;
-            if (objSelectedNode.Level == 1)
-            {
-                Armor objArmor = FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), objCharacter.Armor);
-                if (objArmor == null)
-                    return 0.0m;
-                // Remove any Improvements created by the Armor and its children.
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
-                {
-                    // Remove the Cyberweapon created by the Mod if applicable.
-                    if (objMod.WeaponID != Guid.Empty.ToString())
-                    {
-                        List<string> lstNodesToRemoveIds = new List<string>();
-                        foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                        {
-                            if (objWeapon.ParentID == objMod.InternalId)
-                            {
-                                lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                decReturn += objWeapon.TotalCost;
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else
-                                    objCharacter.Weapons.Remove(objWeapon);
-                            }
-                        }
-                        foreach (string strNodeId in lstNodesToRemoveIds)
-                        {
-                            // Remove the Weapons from the TreeView.
-                            FindNode(strNodeId, treWeapons)?.Remove();
-                        }
-                    }
-
-                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-                }
-                ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
-
-                // Remove any Improvements created by the Armor's Gear.
-                foreach (Gear objGear in objArmor.Gear)
-                    decReturn += DeleteGear(objCharacter, objGear, treWeapons);
-
-                // Remove the Cyberweapon created by the Mod if applicable.
-                if (objArmor.WeaponID != Guid.Empty.ToString())
-                {
-                    List<string> lstNodesToRemoveIds = new List<string>();
-                    foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                    {
-                        if (objWeapon.ParentID == objArmor.InternalId)
-                        {
-                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                            decReturn += objWeapon.TotalCost;
-                            // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                            if (objWeapon.Parent != null)
-                                objWeapon.Parent.Children.Remove(objWeapon);
-                            else
-                                objCharacter.Weapons.Remove(objWeapon);
-                        }
-                    }
-                    foreach (string strNodeId in lstNodesToRemoveIds)
-                    {
-                        // Remove the Weapons from the TreeView.
-                        FindNode(strNodeId, treWeapons)?.Remove();
-                    }
-                }
-
-                objCharacter.Armor.Remove(objArmor);
-            }
-            else if (objSelectedNode.Level == 2)
-            {
-                ArmorMod objMod = FindArmorMod(objSelectedNode.Tag.ToString(), objCharacter.Armor);
-                if (objMod != null)
-                {
-                    // Remove the Cyberweapon created by the Mod if applicable.
-                    if (objMod.WeaponID != Guid.Empty.ToString())
-                    {
-                        List<string> lstNodesToRemoveIds = new List<string>();
-                        foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                        {
-                            if (objWeapon.ParentID == objMod.InternalId)
-                            {
-                                lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                decReturn += objWeapon.TotalCost;
-                                // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else
-                                    objCharacter.Weapons.Remove(objWeapon);
-                            }
-                        }
-                        foreach (string strNodeId in lstNodesToRemoveIds)
-                        {
-                            // Remove the Weapons from the TreeView.
-                            FindNode(strNodeId, treWeapons)?.Remove();
-                        }
-                    }
-
-                    // Remove any Improvements created by the ArmorMod.
-                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-                    objMod.Parent.ArmorMods.Remove(objMod);
-                }
-                else
-                {
-                    Armor objSelectedArmor;
-                    Gear objGear = FindArmorGear(objSelectedNode.Tag.ToString(), objCharacter.Armor, out objSelectedArmor);
-                    if (objGear != null)
-                    {
-                        decReturn += DeleteGear(objCharacter, objGear, treWeapons);
-                        objSelectedArmor.Gear.Remove(objGear);
-                    }
-                }
-            }
-            else if (objSelectedNode.Level > 2)
-            {
-                Armor objSelectedArmor;
-                Gear objGear = FindArmorGear(objSelectedNode.Tag.ToString(), objCharacter.Armor, out objSelectedArmor);
-                if (objGear != null)
-                {
-                    objGear.Parent.Children.Remove(objGear);
-                    Commlink objCommlink = objGear.Parent as Commlink;
-                    if (objCommlink?.CanSwapAttributes == true)
-                    {
-                        objCommlink.RefreshCyberdeckArray();
-                    }
-                    decReturn += DeleteGear(objCharacter, objGear, treWeapons);
-                    objSelectedArmor.Gear.Remove(objGear);
-                }
-            }
-            objSelectedNode.Remove();
-            return decReturn;
-        }
-
-        /// <summary>
-        /// Verify that the user wants to delete an item.
-        /// </summary>
-        public static bool ConfirmDelete(Character objCharacter, string strMessage)
-        {
-            return !objCharacter.Options.ConfirmDelete ||
-                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
-                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-        }
-        #endregion
-
-        #region Add Improvements Functions
-        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears)
-        {
-            XmlNode objNode = objGear.MyXmlNode;
-            if (objNode?["bonus"] != null)
-            {
-                ImprovementManager.ForcedValue = objGear.Extra;
-                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                {
-                    objGear.Extra = ImprovementManager.SelectedValue;
-                    TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
-                    if (objGearNode != null)
-                        objGearNode.Text = objGear.DisplayName;
-                }
-            }
-            foreach (Gear objChild in objGear.Children)
-                ReaddGearImprovements(objCharacter, objChild, treGears);
-        }
-        #endregion
-
-        #region Tree Functions
-
-
-        /// <summary>
-        /// Build up the Tree for the current piece of Gear and all of its children.
-        /// </summary>
-        /// <param name="objGear">Gear to iterate through.</param>
-        /// <param name="objNode">TreeNode to append to.</param>
-        /// <param name="objMenu">ContextMenuStrip that the new TreeNodes should use.</param>
-        public static void BuildGearTree(Gear objGear, TreeNode objNode, ContextMenuStrip objMenu)
-        {
-            foreach (Gear objChild in objGear.Children)
-            {
-                TreeNode objChildNode = new TreeNode();
-                objChildNode.Text = objChild.DisplayName;
-                objChildNode.Tag = objChild.InternalId;
-                objChildNode.ContextMenuStrip = objMenu;
-                if (!string.IsNullOrEmpty(objChild.Notes))
-                    objChildNode.ForeColor = Color.SaddleBrown;
-                else if (objChild.IncludedInParent)
-                    objChildNode.ForeColor = SystemColors.GrayText;
-                objChildNode.ToolTipText = objChild.Notes;
-
-                objNode.Nodes.Add(objChildNode);
-                objNode.Expand();
-
-                // Set the Gear's Parent.
-                objChild.Parent = objGear;
-
-                BuildGearTree(objChild, objChildNode, objMenu);
-            }
-        }
-
-        /// <summary>
-        /// Build up the Tree for the current piece of Cyberware and all of its children.
-        /// </summary>
-        /// <param name="objCyberware">Cyberware to iterate through.</param>
-        /// <param name="objParentNode">TreeNode to append to.</param>
-        /// <param name="objMenu">ContextMenuStrip that the new Cyberware TreeNodes should use.</param>
-        /// <param name="objGearMenu">ContextMenuStrip that the new Gear TreeNodes should use.</param>
-        public static void BuildCyberwareTree(Cyberware objCyberware, TreeNode objParentNode, ContextMenuStrip objMenu, ContextMenuStrip objGearMenu)
-        {
-            TreeNode objNode = new TreeNode();
-            objNode.Text = objCyberware.DisplayName;
-            objNode.Tag = objCyberware.InternalId;
-            if (!string.IsNullOrEmpty(objCyberware.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (!string.IsNullOrEmpty(objCyberware.ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = objCyberware.Notes;
-            objNode.ContextMenuStrip = objMenu;
-
-            objParentNode.Nodes.Add(objNode);
-            objParentNode.Expand();
-
-            foreach (Cyberware objChild in objCyberware.Children)
-                BuildCyberwareTree(objChild, objNode, objMenu, objGearMenu);
-
-            foreach (Gear objGear in objCyberware.Gear)
-            {
-                TreeNode objGearNode = new TreeNode();
-                objGearNode.Text = objGear.DisplayName;
-                objGearNode.Tag = objGear.InternalId;
-                if (!string.IsNullOrEmpty(objGear.Notes))
-                    objGearNode.ForeColor = Color.SaddleBrown;
-                else if (objGear.IncludedInParent)
-                    objGearNode.ForeColor = SystemColors.GrayText;
-                objGearNode.ToolTipText = objGear.Notes;
-                objGearNode.ContextMenuStrip = objGearMenu;
-
-                BuildGearTree(objGear, objGearNode, objGearMenu);
-
-                objNode.Nodes.Add(objGearNode);
-                objNode.Expand();
-            }
-
-        }
-
-        #endregion
-
-        #region TreeNode Creation Methods
-        /// <summary>
-        /// Add a piece of Armor to the Armor TreeView.
-        /// </summary>
-        /// <param name="objArmor">Armor to add.</param>
-        /// <param name="treArmor">Armor TreeView.</param>
-        /// <param name="cmsArmor">ContextMenuStrip for the Armor Node.</param>
-        /// <param name="cmsArmorMod">ContextMenuStrip for Armor Mod Nodes.</param>
-        /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>
-        public static void CreateArmorTreeNode(Armor objArmor, TreeView treArmor, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
-        {
-            TreeNode objNode = new TreeNode();
-            objNode.Text = objArmor.DisplayName;
-            objNode.Tag = objArmor.InternalId;
-            if (!string.IsNullOrEmpty(objArmor.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            objNode.ToolTipText = objArmor.Notes;
-
-            foreach (ArmorMod objMod in objArmor.ArmorMods)
-            {
-                TreeNode objChild = new TreeNode();
-                objChild.Text = objMod.DisplayName;
-                objChild.Tag = objMod.InternalId;
-                objChild.ContextMenuStrip = cmsArmorMod;
-                if (!string.IsNullOrEmpty(objMod.Notes))
-                    objChild.ForeColor = Color.SaddleBrown;
-                else if (objMod.IncludedInArmor)
-                    objChild.ForeColor = SystemColors.GrayText;
-                objChild.ToolTipText = objMod.Notes;
-                objNode.Nodes.Add(objChild);
-                objNode.Expand();
-            }
-
-            foreach (Gear objGear in objArmor.Gear)
-            {
-                TreeNode objChild = new TreeNode();
-                objChild.Text = objGear.DisplayName;
-                objChild.Tag = objGear.InternalId;
-                if (!string.IsNullOrEmpty(objGear.Notes))
-                    objChild.ForeColor = Color.SaddleBrown;
-                else if (objGear.IncludedInParent)
-                    objChild.ForeColor = SystemColors.GrayText;
-                objChild.ToolTipText = objGear.Notes;
-
-                BuildGearTree(objGear, objChild, cmsArmorGear);
-
-                objChild.ContextMenuStrip = cmsArmorGear;
-                objNode.Nodes.Add(objChild);
-                objNode.Expand();
-            }
-
-            TreeNode objParent = new TreeNode();
-            if (string.IsNullOrEmpty(objArmor.Location))
-                objParent = treArmor.Nodes[0];
-            else
-            {
-                foreach (TreeNode objFind in treArmor.Nodes)
-                {
-                    if (objFind.Text == objArmor.Location)
-                    {
-                        objParent = objFind;
-                        break;
-                    }
-                }
-            }
-
-            objNode.ContextMenuStrip = cmsArmor;
-            objParent.Nodes.Add(objNode);
-            objParent.Expand();
-        }
-
-        /// <summary>
-        /// Add a Vehicle to the TreeView.
-        /// </summary>
-        /// <param name="objVehicle">Vehicle to add.</param>
-        /// <param name="treVehicles">Vehicle TreeView.</param>
-        /// <param name="cmsVehicle">ContextMenuStrip for the Vehicle Node.</param>
-        /// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
-        /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
-        /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
-        /// <param name="cmsWeaponAccessoryGear"></param>
-        /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
-        public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
-        {
-            TreeNode objNode = new TreeNode();
-            objNode.Text = objVehicle.DisplayName;
-            objNode.Tag = objVehicle.InternalId;
-            if (!string.IsNullOrEmpty(objVehicle.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (!string.IsNullOrEmpty(objVehicle.ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = objVehicle.Notes;
-
-            // Populate the list of Vehicle Locations.
-            foreach (string strLocation in objVehicle.Locations)
-            {
-                TreeNode objLocation = new TreeNode();
-                objLocation.Tag = strLocation;
-                objLocation.Text = strLocation;
-                objLocation.ContextMenuStrip = cmsVehicleLocation;
-                objNode.Nodes.Add(objLocation);
-            }
-
-            // VehicleMods.
-            foreach (VehicleMod objMod in objVehicle.Mods)
-            {
-                TreeNode objChildNode = new TreeNode();
-                objChildNode.Text = objMod.DisplayName;
-                objChildNode.Tag = objMod.InternalId;
-                if (!string.IsNullOrEmpty(objMod.Notes))
-                    objChildNode.ForeColor = Color.SaddleBrown;
-                else if (objMod.IncludedInVehicle)
-                    objChildNode.ForeColor = SystemColors.GrayText;
-                objChildNode.ToolTipText = objMod.Notes;
-
-                // Cyberware.
-                foreach (Cyberware objCyberware in objMod.Cyberware)
-                {
-                    TreeNode objCyberwareNode = new TreeNode();
-                    objCyberwareNode.Text = objCyberware.DisplayName;
-                    objCyberwareNode.Tag = objCyberware.InternalId;
-                    if (!string.IsNullOrEmpty(objCyberware.Notes))
-                        objCyberwareNode.ForeColor = Color.SaddleBrown;
-                    else if (!string.IsNullOrEmpty(objCyberware.ParentID))
-                        objCyberwareNode.ForeColor = SystemColors.GrayText;
-                    objCyberwareNode.ToolTipText = objCyberware.Notes;
-                    objChildNode.Nodes.Add(objCyberwareNode);
-                    objChildNode.Expand();
-                }
-
-                // VehicleWeapons.
-                foreach (Weapon objWeapon in objMod.Weapons)
-                    CreateWeaponTreeNode(objWeapon, objChildNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
-                // Attach the ContextMenuStrip.
-                objChildNode.ContextMenuStrip = cmsVehicle;
-
-                objNode.Nodes.Add(objChildNode);
-                objNode.Expand();
-            }
-
-            // Vehicle Weapons (not attached to a mount).
-            foreach (Weapon objWeapon in objVehicle.Weapons)
-                CreateWeaponTreeNode(objWeapon, objNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
-            // Vehicle Gear.
-            foreach (Gear objGear in objVehicle.Gear)
-            {
-                TreeNode objGearNode = new TreeNode();
-                objGearNode.Text = objGear.DisplayName;
-                objGearNode.Tag = objGear.InternalId;
-                if (!string.IsNullOrEmpty(objGear.Notes))
-                    objGearNode.ForeColor = Color.SaddleBrown;
-                else if (objGear.IncludedInParent)
-                    objGearNode.ForeColor = SystemColors.GrayText;
-                objGearNode.ToolTipText = objGear.Notes;
-
-                BuildGearTree(objGear, objGearNode, cmsVehicleGear);
-
-                objGearNode.ContextMenuStrip = cmsVehicleGear;
-
-                TreeNode objParent = new TreeNode();
-                if (string.IsNullOrEmpty(objGear.Location))
-                    objParent = objNode;
-                else
-                {
-                    foreach (TreeNode objFind in objNode.Nodes)
-                    {
-                        if (objFind.Text == objGear.Location)
-                        {
-                            objParent = objFind;
-                            break;
-                        }
-                    }
-                }
-
-                objParent.Nodes.Add(objGearNode);
-                objParent.Expand();
-            }
-
-            objNode.ContextMenuStrip = cmsVehicle;
-            treVehicles.Nodes[0].Nodes.Add(objNode);
-            treVehicles.Nodes[0].Expand();
-        }
-
-        /// <summary>
-        /// Add a Weapon to the TreeView.
-        /// </summary>
-        /// <param name="objWeapon">Weapon to add.</param>
-        /// <param name="objWeaponsNode">Node to append the Weapon Node to.</param>
-        /// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
-        /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
-        /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>
-        /// <param name="WeaponID">The weapon </param>
-        public static void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, string WeaponID = null)
-        {
-            TreeNode objNode = new TreeNode();
-            objNode.Text = objWeapon.DisplayName;
-            objNode.Tag = WeaponID ?? objWeapon.InternalId;
-            if (!string.IsNullOrEmpty(objWeapon.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || WeaponID != null || !string.IsNullOrEmpty(objWeapon.ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-
-            objNode.ToolTipText = objWeapon.Notes;
-
-            // Add attached Weapon Accessories.
-            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-            {
-                TreeNode objChild = new TreeNode();
-                objChild.Text = objAccessory.DisplayName;
-                objChild.Tag = objAccessory.InternalId;
-                objChild.ContextMenuStrip = cmsWeaponAccessory;
-                if (!string.IsNullOrEmpty(objAccessory.Notes))
-                    objChild.ForeColor = Color.SaddleBrown;
-                else if (objAccessory.IncludedInWeapon)
-                    objChild.ForeColor = SystemColors.GrayText;
-                objChild.ToolTipText = objAccessory.Notes;
-
-                // Add any Gear attached to the Weapon Accessory.
-                foreach (Gear objGear in objAccessory.Gear)
-                {
-                    TreeNode objGearChild = new TreeNode();
-                    objGearChild.Text = objGear.DisplayName;
-                    objGearChild.Tag = objGear.InternalId;
-                    if (!string.IsNullOrEmpty(objGear.Notes))
-                        objGearChild.ForeColor = Color.SaddleBrown;
-                    else if (objGear.IncludedInParent)
-                        objGearChild.ForeColor = SystemColors.GrayText;
-                    objGearChild.ToolTipText = objGear.Notes;
-
-                    BuildGearTree(objGear, objGearChild, cmsWeaponAccessoryGear);
-
-                    objGearChild.ContextMenuStrip = cmsWeaponAccessoryGear;
-                    objChild.Nodes.Add(objGearChild);
-                    objChild.Expand();
-                }
-
-                objNode.Nodes.Add(objChild);
-                objNode.Expand();
-            }
-
-            // Add Underbarrel Weapons.
-            if (objWeapon.UnderbarrelWeapons.Count > 0)
-            {
-                foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-                    CreateWeaponTreeNode(objUnderbarrelWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            }
-
-            // If this is not an Underbarrel Weapon and it has a Location, find the Location Node that this should be attached to instead.
-            if (!objWeapon.IsUnderbarrelWeapon && !string.IsNullOrEmpty(objWeapon.Location))
-            {
-                foreach (TreeNode objLocationNode in objWeaponsNode.TreeView.Nodes)
-                {
-                    if (objLocationNode.Text == objWeapon.Location)
-                    {
-                        objWeaponsNode = objLocationNode;
-                        break;
-                    }
-                }
-            }
-
-            objNode.ContextMenuStrip = cmsWeapon;
-            objWeaponsNode.Nodes.Add(objNode);
-            objWeaponsNode.Expand();
-        }
-        #endregion
-
-        #region Move TreeNodes
-        /// <summary>
-        /// Move a Gear TreeNode after Drag and Drop, changing its parent.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new idnex.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveGearParent(Character objCharacter, TreeNode objDestination, TreeView treGear, ContextMenuStrip cmsGear)
-        {
-            // The item cannot be dropped onto itself.
-            if (objDestination == treGear.SelectedNode)
-                return;
-            // The item cannot be dropped onto one of its children.
-            foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
-            {
-                if (objNode == objDestination)
-                    return;
-            }
-
-            // Locate the currently selected piece of Gear.
-            Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), objCharacter.Gear);
-
-            // Gear cannot be moved to one if its children.
-            bool blnAllowMove = true;
-            TreeNode objFindNode = objDestination;
-            if (objDestination.Level > 0)
-            {
-                do
-                {
-                    objFindNode = objFindNode.Parent;
-                    if (objFindNode.Tag.ToString() == objGear.InternalId)
-                    {
-                        blnAllowMove = false;
-                        break;
-                    }
-                } while (objFindNode.Level > 0);
-            }
-
-            if (!blnAllowMove)
-                return;
-
-            // Remove the Gear from the character.
-            if (objGear.Parent == null)
-                objCharacter.Gear.Remove(objGear);
-            else
-            {
-                objGear.Parent.Children.Remove(objGear);
-                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
-                {
-                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
-                }
-            }
-
-            if (objDestination.Level == 0)
-            {
-                // The Gear was moved to a location, so add it to the character instead.
-                objCharacter.Gear.Add(objGear);
-                objGear.Location = objDestination.Text;
-                objGear.Parent = null;
-            }
-            else
-            {
-                // Locate the Gear that the item was dropped on.
-                Gear objParent = CommonFunctions.DeepFindById(objDestination.Tag.ToString(), objCharacter.Gear);
-
-                // Add the Gear as a child of the destination Node and clear its location.
-                objParent.Children.Add(objGear);
-                objGear.Location = string.Empty;
-                objGear.Parent = objParent;
-                Commlink objCommlink = objParent as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
-            }
-
-            TreeNode objClone = treGear.SelectedNode;
-            objClone.ContextMenuStrip = cmsGear;
-
-            // Remove the current Node.
-            treGear.SelectedNode.Remove();
-
-            // Add the new Node to the new parent.
-            objDestination.Nodes.Add(objClone);
-            objDestination.Expand();
-        }
-
-        /// <summary>
-        /// Move a Gear TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveGearNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treGear)
-        {
-            Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == treGear.SelectedNode.Tag.ToString());
-            objCharacter.Gear.Remove(objGear);
-            if (intNewIndex > objCharacter.Gear.Count)
-                objCharacter.Gear.Add(objGear);
-            else
-                objCharacter.Gear.Insert(intNewIndex, objGear);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treGear.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            // Change the Location on the Gear item.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedGear"))
-                objGear.Location = string.Empty;
-            else
-                objGear.Location = objNewParent.Text;
-
-            TreeNode objClone = treGear.SelectedNode;
-
-            objOldParent.Nodes.Remove(treGear.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move a Gear Location TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveGearRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treGear)
-        {
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-            }
-
-            if (intNewIndex == 0)
-                return;
-
-            string strLocation = string.Empty;
-            // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.Locations)
-            {
-                if (strCharacterLocation == treGear.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterLocation;
-                    break;
-                }
-            }
-            objCharacter.Locations.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.Locations.Count)
-                objCharacter.Locations.Add(strLocation);
-            else
-                objCharacter.Locations.Insert(intNewIndex - 1, strLocation);
-
-            TreeNode nodOldNode = treGear.SelectedNode;
-            treGear.Nodes.Remove(nodOldNode);
-            treGear.Nodes.Insert(intNewIndex, nodOldNode);
-        }
-
-        /// <summary>
-        /// Move a Lifestyle TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveLifestyleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treLifestyles)
-        {
-            Lifestyle objLifestyle = objCharacter.Lifestyles.FirstOrDefault(x => x.Name == treLifestyles.SelectedNode.Tag.ToString());
-            objCharacter.Lifestyles.Remove(objLifestyle);
-            if (intNewIndex > objCharacter.Lifestyles.Count)
-                objCharacter.Lifestyles.Add(objLifestyle);
-            else
-                objCharacter.Lifestyles.Insert(intNewIndex, objLifestyle);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treLifestyles.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            TreeNode objClone = treLifestyles.SelectedNode;
-
-            objOldParent.Nodes.Remove(treLifestyles.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move an Armor TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveArmorNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treArmor)
-        {
-            // Locate the currently selected Armor.
-            Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), objCharacter.Armor);
-
-            objCharacter.Armor.Remove(objArmor);
-            if (intNewIndex > objCharacter.Armor.Count)
-                objCharacter.Armor.Add(objArmor);
-            else
-                objCharacter.Armor.Insert(intNewIndex, objArmor);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treArmor.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            // Change the Location on the Armor item.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedArmor"))
-                objArmor.Location = string.Empty;
-            else
-                objArmor.Location = objNewParent.Text;
-
-            TreeNode objClone = treArmor.SelectedNode;
-
-            objOldParent.Nodes.Remove(treArmor.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move an Armor Location TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveArmorRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treArmor)
-        {
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-            }
-
-            if (intNewIndex == 0)
-                return;
-
-            string strLocation = string.Empty;
-            // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.ArmorBundles)
-            {
-                if (strCharacterLocation == treArmor.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterLocation;
-                    break;
-                }
-            }
-            objCharacter.ArmorBundles.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.ArmorBundles.Count)
-                objCharacter.ArmorBundles.Add(strLocation);
-            else
-                objCharacter.ArmorBundles.Insert(intNewIndex - 1, strLocation);
-
-            TreeNode nodOldNode = treArmor.SelectedNode;
-            treArmor.Nodes.Remove(nodOldNode);
-            treArmor.Nodes.Insert(intNewIndex, nodOldNode);
-        }
-
-        /// <summary>
-        /// Move a Weapon TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveWeaponNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treWeapons)
-        {
-            Weapon objWeapon = objCharacter.Weapons.FirstOrDefault(x => x.InternalId == treWeapons.SelectedNode.Tag.ToString());
-            objCharacter.Weapons.Remove(objWeapon);
-            if (intNewIndex > objCharacter.Weapons.Count)
-                objCharacter.Weapons.Add(objWeapon);
-            else
-                objCharacter.Weapons.Insert(intNewIndex, objWeapon);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treWeapons.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            // Change the Location of the Weapon.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedWeapons"))
-                objWeapon.Location = string.Empty;
-            else
-                objWeapon.Location = objNewParent.Text;
-
-            TreeNode objClone = treWeapons.SelectedNode;
-
-            objOldParent.Nodes.Remove(treWeapons.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move a Weapon Location TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveWeaponRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treWeapons)
-        {
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-            }
-
-            if (intNewIndex == 0)
-                return;
-
-            string strLocation = string.Empty;
-            // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.WeaponLocations)
-            {
-                if (strCharacterLocation == treWeapons.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterLocation;
-                    break;
-                }
-            }
-            objCharacter.Locations.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.WeaponLocations.Count)
-                objCharacter.WeaponLocations.Add(strLocation);
-            else
-                objCharacter.WeaponLocations.Insert(intNewIndex - 1, strLocation);
-
-            TreeNode nodOldNode = treWeapons.SelectedNode;
-            treWeapons.Nodes.Remove(nodOldNode);
-            treWeapons.Nodes.Insert(intNewIndex, nodOldNode);
-        }
-
-        /// <summary>
-        /// Move a Cyberware TreeNode after Drag and Drop or changing mount.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="lstNewList">New list to which the Cyberware is being moved.</param>
-        /// <param name="objDestination">New parent node.</param>
-        /// <param name="treOldTreeView">Old tree view from which we are moving the Cyberware.</param>
-        public static void MoveCyberwareNode(Character objCharacter, int intNewIndex, List<Cyberware> lstNewList, TreeNode objDestination, TreeView treOldTreeView)
-        {
-            TreeNode objCyberwareNode = treOldTreeView.SelectedNode;
-            Cyberware objCyberware = CommonFunctions.DeepFindById(objCyberwareNode.Tag.ToString(), objCharacter.Cyberware);
-            VehicleMod objOldParentVehicleMod = null;
-            if (objCyberware == null)
-            {
-                objCyberware = CommonFunctions.FindVehicleCyberware(objCyberwareNode.Tag.ToString(), objCharacter.Vehicles, out objOldParentVehicleMod);
-            }
-            Cyberware objOldParentCyberware = objCyberware.Parent;
-            if (objOldParentCyberware != null)
-                objOldParentCyberware.Children.Remove(objCyberware);
-            else if (objOldParentVehicleMod != null)
-                objOldParentVehicleMod.Cyberware.Remove(objCyberware);
-            else
-                objCharacter.Cyberware.Remove(objCyberware);
-
-            if (intNewIndex > lstNewList.Count)
-                lstNewList.Add(objCyberware);
-            else
-                lstNewList.Insert(intNewIndex, objCyberware);
-
-            TreeNode objNewParent = objDestination;
-
-            TreeNode objOldParent = treOldTreeView.SelectedNode.Parent;
-
-            objOldParent.Nodes.Remove(treOldTreeView.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objCyberwareNode);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move a Vehicle TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveVehicleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treVehicles)
-        {
-            Vehicle objVehicle = objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == treVehicles.SelectedNode.Tag.ToString());
-            objCharacter.Vehicles.Remove(objVehicle);
-            if (intNewIndex > objCharacter.Vehicles.Count)
-                objCharacter.Vehicles.Add(objVehicle);
-            else
-                objCharacter.Vehicles.Insert(intNewIndex, objVehicle);
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treVehicles.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            TreeNode objClone = treVehicles.SelectedNode;
-
-            objOldParent.Nodes.Remove(treVehicles.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-        }
-
-        /// <summary>
-        /// Move a Vehicle Gear TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveVehicleGearParent(Character objCharacter, TreeNode objDestination, TreeView treVehicles, ContextMenuStrip cmsVehicleGear)
-        {
-            // The item cannot be dropped onto itself.
-            if (objDestination == treVehicles.SelectedNode)
-                return;
-            // The item cannot be dropped onton one of its children.
-            foreach (TreeNode objNode in treVehicles.SelectedNode.Nodes)
-            {
-                if (objNode == objDestination)
-                    return;
-            }
-
-            // Determine if this is a Location.
-            TreeNode objVehicleNode = objDestination;
-            do
-            {
-                objVehicleNode = objVehicleNode.Parent;
-            } while (objVehicleNode.Level > 1);
-
-            // Get a reference to the destination Vehicle.
-            Vehicle objDestinationVehicle = FindById(objVehicleNode.Tag.ToString(), objCharacter.Vehicles);
-
-            // Make sure the destination is another piece of Gear or a Location.
-            bool blnDestinationGear = true;
-            bool blnDestinationLocation = false;
-            Gear objDestinationGear = FindVehicleGear(objDestination.Tag.ToString(), objCharacter.Vehicles);
-            if (objDestinationGear == null)
-                blnDestinationGear = false;
-
-            // Determine if this is a Location in the destination Vehicle.
-            string strDestinationLocation = string.Empty;
-            foreach (string strLocation in objDestinationVehicle.Locations)
-            {
-                if (strLocation == objDestination.Tag.ToString())
-                {
-                    strDestinationLocation = strLocation;
-                    blnDestinationLocation = true;
-                    break;
-                }
-            }
-
-            if (!blnDestinationLocation && !blnDestinationGear)
-                return;
-
-            // Locate the currently selected piece of Gear.
-            Vehicle objVehicle = null;
-            WeaponAccessory objWeaponAccessory = null;
-            Cyberware objCyberware = null;
-            Gear objGear = FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), objCharacter.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
-
-            // Gear cannot be moved to one of its children.
-            bool blnAllowMove = true;
-            TreeNode objFindNode = objDestination;
-            if (objDestination.Level > 0)
-            {
-                do
-                {
-                    objFindNode = objFindNode.Parent;
-                    if (objFindNode.Tag.ToString() == objGear.InternalId)
-                    {
-                        blnAllowMove = false;
-                        break;
-                    }
-                } while (objFindNode.Level > 0);
-            }
-
-            if (!blnAllowMove)
-                return;
-
-            // Remove the Gear from the Vehicle.
-            if (objGear.Parent == null)
-            {
-                if (objCyberware != null)
-                    objCyberware.Gear.Remove(objGear);
-                else if (objWeaponAccessory != null)
-                    objWeaponAccessory.Gear.Remove(objGear);
-                else
-                    objVehicle.Gear.Remove(objGear);
-            }
-            else
-            {
-                objGear.Parent.Children.Remove(objGear);
-                Commlink objCommlink = objGear.Parent as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
-            }
-
-            if (blnDestinationLocation)
-            {
-                // Add the Gear to the Vehicle and set its Location.
-                objDestinationVehicle.Gear.Add(objGear);
-                objGear.Location = strDestinationLocation;
-                objGear.Parent = null;
-            }
-            else
-            {
-                // Add the Gear to its new parent.
-                objDestinationGear.Children.Add(objGear);
-                objGear.Location = string.Empty;
-                objGear.Parent = objDestinationGear;
-                Commlink objCommlink = objDestinationGear as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
-            }
-
-            TreeNode objClone = treVehicles.SelectedNode;
-            objClone.ContextMenuStrip = cmsVehicleGear;
-
-            // Remove the current Node.
-            treVehicles.SelectedNode.Remove();
-
-            // Add the new Node to its parent.
-            objDestination.Nodes.Add(objClone);
-            objDestination.Expand();
-        }
-
-        /// <summary>
-        /// Move an Improvement TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveImprovementNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treImprovements)
-        {
-            Improvement objImprovement = objCharacter.Improvements.FirstOrDefault(x => x.SourceName == treImprovements.SelectedNode.Tag.ToString());
-
-            TreeNode objNewParent = objDestination;
-            while (objNewParent.Level > 0)
-                objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treImprovements.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            // Change the Group on the Custom Improvement.
-            objImprovement.CustomGroup = objNewParent.Text;
-
-            TreeNode objClone = treImprovements.SelectedNode;
-
-            objOldParent.Nodes.Remove(treImprovements.SelectedNode);
-            objNewParent.Nodes.Insert(intNewIndex, objClone);
-            objNewParent.Expand();
-
-            // Change the sort order for all of the Improvements in the TreeView.
-            foreach (TreeNode objNode in treImprovements.Nodes[0].Nodes)
-            {
-                foreach (Improvement objCharacterImprovement in objCharacter.Improvements)
-                {
-                    if (objCharacterImprovement.SourceName == objNode.Tag.ToString())
-                    {
-                        objCharacterImprovement.SortOrder = objNode.Index;
-                        break;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Move an Improvement Group TreeNode after Drag and Drop.
-        /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
-        /// <param name="objDestination">Destination Node.</param>
-        public static void MoveImprovementRoot(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treImprovements)
-        {
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-            }
-
-            if (intNewIndex == 0)
-                return;
-
-            string strLocation = string.Empty;
-            // Locate the currently selected Group.
-            foreach (string strCharacterGroup in objCharacter.ImprovementGroups)
-            {
-                if (strCharacterGroup == treImprovements.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterGroup;
-                }
-            }
-            objCharacter.ImprovementGroups.Remove(strLocation);
-
-            if (intNewIndex - 1 > objCharacter.ImprovementGroups.Count)
-                objCharacter.ImprovementGroups.Add(strLocation);
-            else
-                objCharacter.ImprovementGroups.Insert(intNewIndex - 1, strLocation);
-
-            TreeNode nodOldNode = treImprovements.SelectedNode;
-            treImprovements.Nodes.Remove(nodOldNode);
-            treImprovements.Nodes.Insert(intNewIndex, nodOldNode);
-        }
-        #endregion
-
-        #region Tab clearing
-        /// <summary>
-        /// Clear all Spell tab elements from the character.
-        /// </summary>
-        /// <param name="treSpells"></param>
-        public static void ClearSpellTab(Character objCharacter, TreeView treSpells)
-        {
-            // Run through all of the Spells and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell);
-
-            // Clear the list of Spells.
-            foreach (TreeNode objNode in treSpells.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.Spells.Clear();
-            objCharacter.Spirits.RemoveAll(x => x.EntityType == SpiritType.Spirit);
-
-        }
-
-        /// <summary>
-        /// Clear all Adept tab elements from the character.
-        /// </summary>
-        public static void ClearAdeptTab(Character objCharacter)
-        {
-            // Run through all of the Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Power);
-
-            objCharacter.Powers.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Technomancer tab elements from the character.
-        /// </summary>
-        public static void ClearTechnomancerTab(Character objCharacter, TreeView treComplexForms)
-        {
-            // Run through all of the Complex Forms and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm);
-
-            // Clear the list of Complex Forms.
-            foreach (TreeNode objNode in treComplexForms.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.Spirits.RemoveAll(x => x.EntityType == SpiritType.Sprite);
-            objCharacter.ComplexForms.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Advanced Programs tab elements from the character.
-        /// </summary>
-        public static void ClearAdvancedProgramsTab(Character objCharacter, TreeView treAIPrograms)
-        {
-            // Run through all of the Advanced Programs and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram);
-
-            // Clear the list of Advanced Programs.
-            foreach (TreeNode objNode in treAIPrograms.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.AIPrograms.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Cyberware tab elements from the character.
-        /// </summary>
-        public static void ClearCyberwareTab(Character objCharacter, TreeView treCyberware, TreeView treWeapons, TreeView treVehicles)
-        {
-            foreach (Cyberware objCyberware in objCharacter.Cyberware)
-            {
-                DeleteCyberware(objCharacter, objCyberware, treWeapons, treVehicles);
-            }
-            objCharacter.Cyberware.Clear();
-
-            // Clear the list of Advanced Programs.
-            // Remove the item from the TreeView.
-            foreach (TreeNode objNode in treCyberware.Nodes)
-                objNode.Nodes.Clear();
-            treCyberware.Nodes.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Critter tab elements from the character.
-        /// </summary>
-        public static void ClearCritterTab(Character objCharacter, TreeView treCritterPowers)
-        {
-            // Run through all of the Critter Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower);
-
-            // Clear the list of Critter Powers.
-            foreach (TreeNode objNode in treCritterPowers.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.CritterPowers.Clear();
-        }
-
-        /// <summary>
-        /// Clera all Initiation tab elements from the character.
-        /// </summary>
-        public static void ClearInitiationTab(Character objCharacter, TreeView treMetamagic)
-        {
-            // Remove any Metamagic/Echo Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Echo);
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Metamagic);
-
-            objCharacter.InitiateGrade = 0;
-            objCharacter.SubmersionGrade = 0;
-            objCharacter.Metamagics.Clear();
-            objCharacter.InitiationGrades.Clear();
-
-            treMetamagic.Nodes.Clear();
-        }
         #endregion
 
         /// <summary>
-        /// Populate the list of Bonded Foci.
+        /// Book code (using the translated version if applicable).
         /// </summary>
-        public static void PopulateFocusList(Character objCharacter, TreeView treFoci)
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
         {
-            treFoci.Nodes.Clear();
-            int intFociTotal = 0;
-            bool blnWarned = false;
-
-            foreach (Gear objGear in objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
+            if (!string.IsNullOrWhiteSpace(strAltCode))
             {
-                List<Focus> removeFoci = new List<Focus>();
-                TreeNode objNode = new TreeNode();
-                objNode.Text = objGear.DisplayName.Replace(LanguageManager.GetString("String_Rating"), LanguageManager.GetString("String_Force"));
-                objNode.Tag = objGear.InternalId;
-                foreach (Focus objFocus in objCharacter.Foci)
-                {
-                    if (objFocus.GearId == objGear.InternalId)
-                    {
-                        objNode.Checked = true;
-                        objFocus.Rating = objGear.Rating;
-                        intFociTotal += objFocus.Rating;
-                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                        if (intFociTotal > objCharacter.MAG.TotalValue * 5 && !objCharacter.IgnoreRules)
-                        {
-                            // Mark the Gear a Bonded.
-                            foreach (Gear objCharacterGear in objCharacter.Gear)
-                            {
-                                if (objCharacterGear.InternalId == objFocus.GearId)
-                                    objCharacterGear.Bonded = false;
-                            }
-                            removeFoci.Add(objFocus);
-                            if (!blnWarned)
-                            {
-                                objNode.Checked = false;
-                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                blnWarned = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                foreach (Focus f in removeFoci)
-                {
-                    objCharacter.Foci.Remove(f);
-                }
-                treFoci.Nodes.Add(objNode);
+                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
+                return xmlOriginalCode?.InnerText ?? strAltCode;
             }
-
-            // Add Stacked Foci.
-            foreach (Gear objGear in objCharacter.Gear)
-            {
-                if (objGear.Category == "Stacked Focus")
-                {
-                    foreach (StackedFocus objStack in objCharacter.StackedFoci)
-                    {
-                        if (objStack.GearId == objGear.InternalId)
-                        {
-                            TreeNode objNode = new TreeNode();
-                            objNode.Text = LanguageManager.GetString("String_StackedFocus") + ": " + objStack.Name;
-                            objNode.Tag = objStack.InternalId;
-
-                            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-
-                            if (objStack.Bonded)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
-                                    if (objFociGear.WirelessOn)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
-                                }
-                                objNode.Checked = true;
-                            }
-
-                            treFoci.Nodes.Add(objNode);
-                        }
-                    }
-                }
-            }
+            return string.Empty;
         }
 
         /// <summary>
-        /// Calculate the number of Free Spirit Power Points used.
+        /// Book code (using the translated version if applicable).
         /// </summary>
-        public static string CalculateFreeSpiritPowerPoints(Character objCharacter)
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static string LanguageBookShort(string strCode, string strLanguage = "")
         {
-            string strReturn;
-
-            if (objCharacter.Metatype == "Free Spirit" && !objCharacter.IsCritter)
+            if (!string.IsNullOrWhiteSpace(strCode))
             {
-                // PC Free Spirit.
-                double dblPowerPoints = 0;
-
-                foreach (CritterPower objPower in objCharacter.CritterPowers)
-                {
-                    if (objPower.CountTowardsLimit)
-                        dblPowerPoints += objPower.PowerPoints;
-                }
-
-                int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
-
-                // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
-                if (objCharacter.Options.FreeSpiritPowerPointsMAG)
-                    intPowerPoints = objCharacter.MAG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
-
-                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+                XmlNode xmlAltCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
+                return xmlAltCode?.InnerText ?? strCode;
             }
-            else
-            {
-                int intPowerPoints;
-
-                if (objCharacter.Metatype == "Free Spirit")
-                {
-                    // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-                    intPowerPoints = objCharacter.EDG.Value + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
-                }
-                else if (objCharacter.Metatype == "Ally Spirit")
-                {
-                    // Ally Spirits get a number of Power Points equal to their MAG.
-                    intPowerPoints = objCharacter.MAG.TotalValue;
-                }
-                else
-                {
-                    // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
-                    double dblMAG = Convert.ToDouble(objCharacter.MAG.TotalValue, GlobalOptions.InvariantCultureInfo);
-                    intPowerPoints = Convert.ToInt32(Math.Floor(dblMAG / 3.0));
-                }
-
-                int intUsed = 0;// _objCharacter.CritterPowers.Count - intExisting;
-                foreach (CritterPower objPower in objCharacter.CritterPowers)
-                {
-                    if (objPower.Category != "Weakness" && objPower.CountTowardsLimit)
-                        intUsed++;
-                }
-
-                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - intUsed, intPowerPoints);
-            }
-
-            return strReturn;
+            return string.Empty;
         }
 
         /// <summary>
-        /// Calculate the number of Free Sprite Power Points used.
+        /// Book name (using the translated version if applicable).
         /// </summary>
-        public static string CalculateFreeSpritePowerPoints(Character objCharacter)
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static string LanguageBookLong(string strCode, string strLanguage = "")
         {
-            // Free Sprite Power Points.
-            double dblPowerPoints = 0;
-
-            foreach (CritterPower objPower in objCharacter.CritterPowers)
+            if (!string.IsNullOrWhiteSpace(strCode))
             {
-                if (objPower.CountTowardsLimit)
-                    dblPowerPoints += 1;
-            }
-
-            int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
-
-            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
-        }
-
-        /// <summary>
-        /// Retrieve the information for the Mentor Spirit or Paragon the character might have.
-        /// </summary>
-        /// <param name="mentorType">Type of feature to check for, either Mentor Spirit or Paragon.</param>
-        public static MentorSpirit MentorInformation(Character objCharacter, Improvement.ImprovementType mentorType = Improvement.ImprovementType.MentorSpirit)
-        {
-            //TODO: STORE ALL THIS IN THE ACTUAL CLASS. SCROUNGING IT UP EVERY TIME IS STUPID. 
-            string strMentorSpirit = string.Empty;
-
-            // Look for the Mentor Spirit or Paragon Quality based on the type chosen.
-            Improvement imp = objCharacter.Improvements.FirstOrDefault(i => i.ImproveType == mentorType);
-            if (imp == null)
-                return null;
-            MentorSpirit objReturn = new MentorSpirit(mentorType, imp.UniqueName);
-            // Load the appropriate XML document.
-            XmlNode objXmlMentor = objReturn.MyXmlNode;
-
-            Quality source = objCharacter.Qualities.FirstOrDefault(q => q.InternalId == imp.SourceName);
-            string strAdvantage = string.Empty;
-            string strDisadvantage = string.Empty;
-
-            if (objXmlMentor == null) return null;
-            // Build the list of advantages gained through the Mentor Spirit.
-            if (!objXmlMentor.TryGetStringFieldQuickly("altadvantage", ref strAdvantage))
-            {
-                objXmlMentor.TryGetStringFieldQuickly("advantage", ref strAdvantage);
-            }
-            if (!objXmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref strDisadvantage))
-            {
-                objXmlMentor.TryGetStringFieldQuickly("disadvantage", ref strDisadvantage);
-            }
-
-            if (source != null)
-            {
-                foreach (Improvement qualityImp in objCharacter.Improvements.Where(i => i.SourceName == source.InternalId))
+                XmlNode xmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                if (xmlBook != null)
                 {
-                    if (qualityImp.SourceName != source.InternalId) continue;
-                    if (!string.IsNullOrEmpty(qualityImp.Notes))
-                        strAdvantage += " " + LanguageManager.TranslateExtra(qualityImp.Notes) + ".";
+                    string strReturn = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
                 }
             }
-
-            // Populate the Mentor Spirit object.
-            objReturn.Name = objXmlMentor["name"]?.Attributes["translate"]?.InnerText ?? objXmlMentor["name"]?.InnerText;
-            objReturn.Advantages = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + " " +
-                                   strAdvantage + "\n\n" +
-                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + " " +
-                                   strDisadvantage;
-
-            return objReturn;
+            return string.Empty;
         }
 
         /// <summary>
-        /// Change the Equipped status of a piece of Gear and all of its children.
+        /// Returns an XPath Expression's string that searches an item's name for a string.
         /// </summary>
-        /// <param name="objGear">Gear object to change.</param>
-        /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
-        public static void ChangeGearEquippedStatus(Character objCharacter, Gear objGear, bool blnEquipped)
-        {
-            if (blnEquipped)
-            {
-                // Add any Improvements from the Gear.
-                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
-                {
-                    bool blnAddImprovement = true;
-                    // If this is a Focus which is not bonded, don't do anything.
-                    if (objGear.Category != "Stacked Focus")
-                    {
-                        if (objGear.Category.EndsWith("Foci"))
-                            blnAddImprovement = objGear.Bonded;
-
-                        if (blnAddImprovement)
-                        {
-                            if (!string.IsNullOrEmpty(objGear.Extra))
-                                ImprovementManager.ForcedValue = objGear.Extra;
-                            if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            objGear.Extra = ImprovementManager.SelectedValue;
-                        }
-                    }
-                    else
-                    {
-                        // Stacked Foci need to be handled a little differently.
-                        foreach (StackedFocus objStack in objCharacter.StackedFoci)
-                        {
-                            if (objStack.GearId == objGear.InternalId && objStack.Bonded)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    if (objGear.Bonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
-                                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // Remove any Improvements from the Gear.
-                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
-                {
-                    if (objGear.Category != "Stacked Focus")
-                        ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                    else
-                    {
-                        // Stacked Foci need to be handled a little differetnly.
-                        foreach (StackedFocus objStack in objCharacter.StackedFoci)
-                        {
-                            if (objStack.GearId == objGear.InternalId)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (objGear.Children.Count > 0)
-                ChangeGearEquippedStatus(objCharacter, objGear.Children, blnEquipped);
-        }
-
-        /// <summary>
-        /// Change the Equipped status of all Gear plugins. This should only be called from the other ChangeGearEquippedStatus and never used directly.
-        /// </summary>
-        /// <param name="lstGear">List of child Gear to change.</param>
-        /// <param name="blnEquipped">Whether or not the children should be marked as Equipped.</param>
-        public static void ChangeGearEquippedStatus(Character objCharacter, List<Gear> lstGear, bool blnEquipped)
-        {
-            foreach (Gear objGear in lstGear)
-            {
-                ChangeGearEquippedStatus(objCharacter, objGear, blnEquipped);
-            }
-        }
-
-        /// <summary>
-        /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
-        /// </summary>
-        /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
+        /// <param name="strNeedle">String to look for</param>
+        /// <param name="strNameElement">Name of the element that corresponds to the item's untranslated name.</param>
+        /// <param name="strTranslateElement">Name of the element that corresponds to the item's translated name.</param>
+        /// <param name="blnAddAnd">Whether to add " and " to the beginning of the search XPath</param>
         /// <returns></returns>
-        public static List<ListItem> ConstructModularCyberlimbList(Character objCharacter, Cyberware objModularCyberware)
+        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate", bool blnAddAnd = true)
         {
-            List<ListItem> lstReturn = new List<ListItem>();
+            if (string.IsNullOrEmpty(strNeedle))
+                return string.Empty;
+            string strSearchText = strNeedle.ToUpperInvariant();
+            // Treat everything as being uppercase so the search is case-insensitive.
+            return string.Concat(
+                blnAddAnd ? " and ((not(" : "((not(",
+                strTranslateElement,
+                ") and contains(translate(",
+                strNameElement,
+                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
+                strSearchText,
+                "\")) or contains(translate(",
+                strTranslateElement,
+                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
+                strSearchText,
+                "\"))");
+        }
 
-            ListItem liMount = new ListItem();
-            liMount.Value = "None";
-            liMount.Name = LanguageManager.GetString("String_None");
-            lstReturn.Add(liMount);
+        /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="intOffset">Dice offset.</param>
+        /// <returns></returns>
+        public static int ExpressionToInt(string strIn, int intForce, int intOffset)
+        {
+            if (string.IsNullOrWhiteSpace(strIn))
+                return intOffset;
+            int intValue = 1;
+            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess), GlobalOptions.InvariantCultureInfo);
+            }
+            catch (OverflowException) { } // Result is text and not a double
+            catch (InvalidCastException) { }
 
-            foreach (Cyberware objLoopCyberware in objCharacter.Cyberware.GetAllDescendants(x => x.Children))
+            intValue += intOffset;
+            if (intForce > 0)
             {
-                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && objLoopCyberware.Location == objModularCyberware.Location &&
-                    objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
-                {
-                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                    if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
-                    {
-                        liMount = new ListItem();
-                        liMount.Value = objLoopCyberware.InternalId;
-                        string strName = string.Empty;
-                        if (objLoopCyberware.Parent != null)
-                            strName = objLoopCyberware.Parent.DisplayName;
-                        else
-                            strName = objLoopCyberware.DisplayName;
-                        liMount.Name = strName;
-                        lstReturn.Add(liMount);
-                    }
-                }
+                if (intValue < 1)
+                    return 1;
             }
-            foreach (Vehicle objLoopVehicle in objCharacter.Vehicles)
-            {
-                foreach (VehicleMod objLoopVehicleMod in objLoopVehicle.Mods)
-                {
-                    foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
-                    {
-                        // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                        if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && objLoopCyberware.Location == objModularCyberware.Location &&
-                            objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
-                        {
-                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
-                            {
-                                liMount = new ListItem();
-                                liMount.Value = objLoopCyberware.InternalId;
-                                string strName = objLoopVehicle.DisplayName + " ";
-                                if (objLoopCyberware.Parent != null)
-                                    strName += objLoopCyberware.Parent.DisplayName;
-                                else
-                                    strName += objLoopVehicleMod.DisplayName;
-                                liMount.Name = strName;
-                                lstReturn.Add(liMount);
-                            }
-                        }
-                    }
-                }
-            }
-            return lstReturn;
+            else if (intValue < 0)
+                return 0;
+            return intValue;
+        }
+
+        /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="intOffset">Dice offset.</param>
+        /// <returns></returns>
+        public static string ExpressionToString(string strIn, int intForce, int intOffset)
+        {
+            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
 
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
-        /// <param name="strSource">Book coode and page number to open.</param>
-        /// <param name="objCharacter">Character from which alternate sources should be fetched.</param>
-        public static void OpenPDF(string strSource, Character objCharacter = null)
+        /// <param name="sender">Control from which this method was called.</param>
+        /// <param name="e">EventArgs used when this method was called.</param>
+        public static void OpenPDFFromControl(object sender, EventArgs e)
         {
+            if (sender is Control objControl)
+                OpenPDF(objControl.Text);
+        }
+        /// <summary>
+        /// Opens a PDF file using the provided source information.
+        /// </summary>
+        /// <param name="strSource">Book code and page number to open.</param>
+        /// <param name="strPDFParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
+        /// <param name="strPDFAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
+        public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
+        {
+            if (string.IsNullOrEmpty(strSource))
+                return;
+            if (string.IsNullOrEmpty(strPDFParamaters))
+                strPDFParamaters = GlobalOptions.PDFParameters;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters))
+            if (string.IsNullOrWhiteSpace(strPDFParamaters))
                 return;
 
+            if (string.IsNullOrEmpty(strPDFAppPath))
+                strPDFAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
+            if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
-            string[] strTemp = strSource.Split(' ');
-            if (strTemp.Length < 2)
+            string strSpace = LanguageManager.GetString("String_Space");
+            string[] astrSourceParts;
+            if (!string.IsNullOrEmpty(strSpace))
+                astrSourceParts = strSource.Split(strSpace[0]);
+            else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+            {
+                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+            }
+            else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+            {
+                astrSourceParts = new [] { "R5", strSource.Substring(3) };
+            }
+            else
+            {
+                int i = strSource.Length - 1;
+                for (; i >= 0; --i)
+                {
+                    if (!char.IsNumber(strSource, i))
+                    {
+                        break;
+                    }
+                }
+                astrSourceParts = new [] { strSource.Substring(0, i), strSource.Substring(i) };
+            }
+            if (astrSourceParts.Length < 2)
                 return;
-            int intPage;
-            if (!int.TryParse(strTemp[1], out intPage))
+            if (!int.TryParse(astrSourceParts[1], out int intPage))
                 return;
 
             // Make sure the page is actually a number that we can use as well as being 1 or higher.
@@ -2676,118 +918,320 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = strTemp[0];
-            if (objCharacter != null)
-                strBook = objCharacter.Options.LanguageBookShort(strBook);
+            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            Uri uriPath;
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(
-                objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
-            if (objBookInfo != null)
-            {
-                uriPath = new Uri(objBookInfo.Path);
-                intPage += objBookInfo.Offset;
-            }
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
             // If the sourcebook was not found, we can't open anything.
-            else
+            if (objBookInfo == null)
                 return;
 
-            string strParams = GlobalOptions.PDFParameters;
-            strParams = strParams.Replace("{page}", intPage.ToString());
+            Uri uriPath = new Uri(objBookInfo.Path);
+            // Check if the file actually exists.
+            if (!File.Exists(uriPath.LocalPath))
+                return;
+            intPage += objBookInfo.Offset;
+
+            string strParams = strPDFParamaters;
+            strParams = strParams.Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo));
             strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
             strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
-                FileName = GlobalOptions.PDFAppPath,
+                FileName = strPDFAppPath,
                 Arguments = strParams
             };
             Process.Start(objProgress);
         }
-        #endregion
 
-        #region Logging Functions
-        [Obsolete("Use Log.Info()")]
-        public static void LogWrite(LogType logType, string strClass, string strLine)
-        {
-            Log.Info(new object[] {logType, strLine}, "LEGACY_LOG_CALL", strClass);
-        }
-        #endregion
-
-        #region Text Functions
         /// <summary>
-        /// Word wraps the given text to fit within the specified width.
+        /// Gets a textblock from a given PDF document.
         /// </summary>
-        /// <param name="text">Text to be word wrapped</param>
-        /// <param name="width">Width, in characters, to which the text
-        /// should be word wrapped</param>
-        /// <returns>The modified text</returns>
-        public static string WordWrap(string text, int width)
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <returns></returns>
+        public static string GetTextFromPDF(string strSource, string strText)
         {
-            int pos, next;
-            StringBuilder sb = new StringBuilder();
+            if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
+                return strText;
 
-            // Lucidity check
-            if (width < 1)
-                return text;
+            string[] strTemp = strSource.Split(' ');
+            if (strTemp.Length < 2)
+                return string.Empty;
+            if (!int.TryParse(strTemp[1], out int intPage))
+                return string.Empty;
 
-            // Parse each line of text
-            for (pos = 0; pos < text.Length; pos = next)
+            // Make sure the page is actually a number that we can use as well as being 1 or higher.
+            if (intPage < 1)
+                return string.Empty;
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0]);
+
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            // If the sourcebook was not found, we can't open anything.
+            if (objBookInfo == null)
+                return string.Empty;
+
+            Uri uriPath = new Uri(objBookInfo.Path);
+            // Check if the file actually exists.
+            if (!File.Exists(uriPath.LocalPath))
+                return string.Empty;
+            intPage += objBookInfo.Offset;
+
+            // due to the tag <nameonpage> for the qualities those variants are no longer needed,
+            // as such the code would run at most half of the comparisons with the variants
+            // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
+            // PS: does any qualities have numbers on them? Or is that a chummer thing?
+            string strTextToSearch = strText;
+            int intPos = strTextToSearch.IndexOf(':');
+            if (intPos != -1)
+                strTextToSearch = strTextToSearch.Substring(0, intPos);
+            strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
+
+            PdfReader reader = objBookInfo.CachedPdfReader;
+            List<string> lstStringFromPDF = new List<string>();
+            int intTitleIndex = -1;
+            int intBlockEndIndex = -1;
+            int intExtraAllCapsInfo = 0;
+            bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
+            int intMaxPagesToRead = 3;  // parse at most 3 pages of content
+            // Loop through each page, starting at the listed page + offset.
+            for (; intPage <= reader.NumberOfPages; ++intPage)
             {
-                // Find end of line
-                int eol = text.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
-                if (eol == -1)
-                    next = eol = text.Length;
-                else
-                    next = eol + Environment.NewLine.Length;
+                // failsafe if something goes wrong, I guess no description takes more than two full pages?
+                if (intMaxPagesToRead-- == 0)
+                    break;
 
-                // Copy this line of text, breaking into smaller lines as needed
-                if (eol > pos)
+                int intProcessedStrings = lstStringFromPDF.Count;
+                // each page should have its own text extraction strategy for it to work properly
+                // this way we don't need to check for previous page appearing in the current page
+                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
+
+                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
+
+                for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
                 {
-                    do
-                    {
-                        int len = eol - pos;
-                        if (len > width)
-                            len = BreakLine(text, pos, width);
-                        sb.Append(text, pos, len);
-                        sb.Append(Environment.NewLine);
+                    // failsafe for languages that don't have case distinction (chinese, japanese, etc)
+                    // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
+                    if (intExtraAllCapsInfo > 10)
+                        break;
 
-                        // Trim whitespace following break
-                        pos += len;
-                        while (pos < eol && Char.IsWhiteSpace(text[pos]))
-                            pos++;
-                    } while (eol > pos);
+                    string strCurrentLine = lstStringFromPDF[i];
+                    // we still haven't found anything
+                    if (intTitleIndex == -1)
+                    {
+                        int intTextToSearchLength = strTextToSearch.Length;
+                        int intTitleExtraLines = 0;
+                        if (strCurrentLine.Length < intTextToSearchLength)
+                        {
+                            // if the line is smaller first check if it contains the start of the text, before parsing the rest
+                            if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // now just add more lines to it until it is enough
+                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
+                                {
+                                    intTitleExtraLines++;
+                                    // add the content plus a space
+                                    strCurrentLine += ' ' + lstStringFromPDF[i + intTitleExtraLines];
+                                }
+                            }
+                            else
+                            {
+                                // just go to the next line
+                                continue;
+                            }
+                        }
+                        // now either we have enough text to search or the page doesn't have anymore stuff and must give up
+                        if (strCurrentLine.Length < intTextToSearchLength)
+                            break;
+
+                        if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // WE FOUND SOMETHING! lets check what kind block we have
+                            // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
+                            if (strCurrentLine.Length > intTextToSearchLength)
+                            {
+                                if (strCurrentLine[intTextToSearchLength] == ':')
+                                {
+                                    intTitleIndex = i;
+                                    blnTitleWithColon = true;
+                                }
+                            }
+                            else // if it is not bigger it is the same length
+                            {
+                                // this must be an upper case title
+                                if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
+                                {
+                                    intTitleIndex = i;
+                                    blnTitleWithColon = false;
+                                }
+                            }
+                            // if we found the tile lets finish some things before finding the text block
+                            if (intTitleIndex != -1)
+                            {
+                                // if we had to concatenate stuff lets fix the list of strings before continuing
+                                if (intTitleExtraLines > 0)
+                                {
+                                    lstStringFromPDF[i] = strCurrentLine;
+                                    lstStringFromPDF.RemoveRange(i + 1, intTitleExtraLines);
+                                }
+                            }
+                        }
+                    }
+                    else // we already found our title, just go to the end of the block
+                    {
+                        // it is something in all caps we need to verify what it is
+                        if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
+                        {
+                            // if it is header or footer information just remove it
+                            // do we also include lines with just numbers as probably page numbers??
+                            if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") || strCurrentLine.Contains("<<"))
+                            {
+                                lstStringFromPDF.RemoveAt(i);
+                                // rewind and go again
+                                i--;
+                                continue;
+                            }
+                            // if it is a line in all caps following the all caps title just skip it
+                            if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
+                            {
+                                intExtraAllCapsInfo++;
+                                continue;
+                            }
+                            // if we are here it is the end of the block we found our end, mark it and be done
+                            intBlockEndIndex = i;
+                            break;
+                        }
+                        // if it is a title with colon we stop in the next line that has a colon
+                        // this is not perfect, if we had bold information we could do more about that
+                        if (blnTitleWithColon && strCurrentLine.Contains(':'))
+                        {
+                            intBlockEndIndex = i;
+                            break;
+                        }
+                    }
                 }
-                else sb.Append(Environment.NewLine); // Empty line
+                // we scanned the first page and found nothing, just give up
+                if (intTitleIndex == -1)
+                    return string.Empty;
+                // already have our end, quit searching here
+                if (intBlockEndIndex != -1)
+                    break;
             }
-            return sb.ToString();
+
+            // we have our textblock, lets format it and be done with it
+            if (intBlockEndIndex != -1)
+            {
+                string[] strArray = lstStringFromPDF.ToArray();
+                // if it is a "paragraph title" just concatenate everything
+                if (blnTitleWithColon)
+                    return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
+                // add the title
+                string strResultContent = strArray[intTitleIndex] + Environment.NewLine;
+                // if we have extra info add it keeping the line breaks
+                if (intExtraAllCapsInfo > 0)
+                    strResultContent += string.Join(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo) + Environment.NewLine;
+                int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
+                // this is the best we can do for now, it will still mangle spell blocks a bit
+                for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
+                {
+                    string strContentString = strArray[i];
+                    if (strContentString.Length > 0)
+                    {
+                        char chrLastChar = strContentString[strContentString.Length - 1];
+                        if (char.IsPunctuation(chrLastChar))
+                        {
+                            if (chrLastChar == '-')
+                                strResultContent += strContentString.Substring(0, strContentString.Length - 1);
+                            else
+                                strResultContent += strContentString + Environment.NewLine;
+                        }
+                        else
+                        {
+                            strResultContent += strContentString + ' ';
+                        }
+                    }
+                }
+                return strResultContent;
+            }
+            return string.Empty;
+        }
+        #endregion
+
+        #region Timescale
+        public enum Timescale
+        {
+            Instant = 0,
+            Seconds = 1,
+            CombatTurns = 2,
+            Minutes = 3,
+            Hours = 4,
+            Days = 5
+        }
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static Timescale ConvertStringToTimescale(string strValue)
+        {
+            switch (strValue)
+            {
+                case "Instant":
+                    return Timescale.Instant;
+                case "Seconds":
+                    return Timescale.Seconds;
+                case "CombatTurns":
+                    return Timescale.CombatTurns;
+                case "Minutes":
+                    return Timescale.Minutes;
+                case "Hours":
+                    return Timescale.Hours;
+                case "Days":
+                    return Timescale.Days;
+                default:
+                    return Timescale.Instant;
+            }
         }
 
         /// <summary>
-        /// Locates position to break the given line so as to avoid
-        /// breaking words.
+        /// Convert a string to a Timescale.
         /// </summary>
-        /// <param name="text">String that contains line of text</param>
-        /// <param name="pos">Index where line of text starts</param>
-        /// <param name="max">Maximum line length</param>
-        /// <returns>The modified line length</returns>
-        private static int BreakLine(string text, int pos, int max)
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
+        /// <param name="strLanguage">Language to use. If left empty, will use current program language.</param>
+        public static string GetTimescaleString(Timescale strValue, bool blnSingle, string strLanguage = "")
         {
-            // Find last whitespace in line
-            int i = max;
-            while (i >= 0 && !char.IsWhiteSpace(text[pos + i]))
-                i--;
-
-            // If no whitespace found, break at maximum length
-            if (i < 0)
-                return max;
-
-            // Find start of whitespace
-            while (i >= 0 && char.IsWhiteSpace(text[pos + i]))
-                i--;
-
-            // Return length of text before whitespace
-            return i + 1;
+            switch (strValue)
+            {
+                case Timescale.Seconds when blnSingle:
+                    return LanguageManager.GetString("String_Second", strLanguage);
+                case Timescale.Seconds:
+                    return LanguageManager.GetString("String_Seconds", strLanguage);
+                case Timescale.CombatTurns when blnSingle:
+                    return LanguageManager.GetString("String_CombatTurn", strLanguage);
+                case Timescale.CombatTurns:
+                    return LanguageManager.GetString("String_CombatTurns", strLanguage);
+                case Timescale.Minutes when blnSingle:
+                    return LanguageManager.GetString("String_Minute", strLanguage);
+                case Timescale.Minutes:
+                    return LanguageManager.GetString("String_Minutes", strLanguage);
+                case Timescale.Hours when blnSingle:
+                    return LanguageManager.GetString("String_Hour", strLanguage);
+                case Timescale.Hours:
+                    return LanguageManager.GetString("String_Hours", strLanguage);
+                case Timescale.Days when blnSingle:
+                    return LanguageManager.GetString("String_Day", strLanguage);
+                case Timescale.Days:
+                    return LanguageManager.GetString("String_Days", strLanguage);
+                case Timescale.Instant:
+                    return LanguageManager.GetString("String_Immediate", strLanguage);
+                default:
+                    return LanguageManager.GetString("String_Immediate", strLanguage);
+            }
         }
         #endregion
     }

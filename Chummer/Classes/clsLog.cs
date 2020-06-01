@@ -16,70 +16,78 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+ using System;
+ using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
+ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Chummer
 {
-    static class Log
+    [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+    public static class Log
     {
-        private static StreamWriter logWriter;
-        private static StringBuilder stringBuilder;  //This will break in case of multithreading
-        private static bool logEnabled = false;
+        private static StreamWriter s_LogWriter;
+        private static readonly object s_LogWriterLock = new object();
         static Log()
         {
             Stopwatch sw = Stopwatch.StartNew();
-            if (GlobalOptions.UseLogging)
-            {
-                //TODO: Add listner to UseLogging to be able to start it mid run
-                string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
-                logWriter = new StreamWriter(strFile);
-                stringBuilder = new StringBuilder();
-                logEnabled = true;
-            }
+            IsLoggerEnabled = GlobalOptions.UseLogging;
             sw.TaskEnd("log open");
         }
 
-        /// <summary>
-        /// This will disabled logging and free any resources used by it
-        /// </summary>
-        public static void Kill()
+        private static bool s_blnIsLoggerEnabled;
+        public static bool IsLoggerEnabled
         {
-            logWriter.Flush();
-            logWriter.Close();
-            logEnabled = false;
+            get => s_blnIsLoggerEnabled;
+            set
+            {
+                lock (s_LogWriterLock)
+                {
+                    if (s_blnIsLoggerEnabled != value)
+                    {
+                        // Sets up logging information
+                        if (value)
+                        {
+                            s_LogWriter = new StreamWriter(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+                        }
+                        // This will disabled logging and free any resources used by it
+                        else if (s_LogWriter != null)
+                        {
+                            s_LogWriter.Flush();
+                            s_LogWriter.Close();
+                        }
+
+                        s_blnIsLoggerEnabled = value;
+                    }
+                }
+            }
         }
 
-        /// <summary>
-        /// Log that the execution path is entering a method
-        /// </summary>
-        /// <param name="info">An optional array of objects providing additional data</param>
-        /// <param name="file">Do not use this</param>
-        /// <param name="method">Do not use this</param>
-        /// <param name="line">Do not use this</param>
-        public static void Enter
-        (
-            object[] info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
-            [CallerFilePath] string file = "",
-            [CallerMemberName] string method = "",
-            [CallerLineNumber] int line = 0
-#endif
-        )
-        {
-            writeLog(info, file, method, line, "Entering ");
-        }
+        //        /// <summary>
+        //        /// Log that the execution path is entering a method
+        //        /// </summary>
+        //        /// <param name="info">An optional array of objects providing additional data</param>
+        //        /// <param name="file">Do not use this</param>
+        //        /// <param name="method">Do not use this</param>
+        //        /// <param name="line">Do not use this</param>
+        //        public static void Enter
+        //        (
+        //            object[] info = null,
+        //#if LEGACY
+        //            string file = "LEGACY",
+        //            string method = "LEGACY",
+        //            int line = 0
+        //#else
+        //            [CallerFilePath] string file = "",
+        //            [CallerMemberName] string method = "",
+        //            [CallerLineNumber] int line = 0
+        //#endif
+        //        )
+        //        {
+        //            writeLog(info, file, method, line, "Entering ");
+        //        }
 
         /// <summary>
         /// Log that the execution path is entering a method
@@ -88,7 +96,9 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
-        public static void Enter
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
+        public static void Entering
         (
             string info = null,
 #if LEGACY
@@ -102,7 +112,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[] {info}, file, method, line, "Entering ");
+            writeLog(new object[] {"Entering " + info}, file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -112,6 +122,8 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Exit
         (
             string info = null,
@@ -126,7 +138,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[]{info},file, method, line, "Exiting   ");
+            writeLog(new object[]{ "Exiting " + info}, file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -136,6 +148,8 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Error
             (
             object[] info = null,
@@ -150,16 +164,18 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info,file, method, line, "Error     ");
+            writeLog(info, file ?? String.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
-        /// Log that an error occoured
+        /// Log that an error occured
         /// </summary>
         /// <param name="info">An optional array of objects providing additional data</param>
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Error
             (
             object info = null,
@@ -174,30 +190,108 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Error     ");
+            writeLog(new[]{info}, file ?? string.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
-        /// Log an exception has occoured
+        /// Log something that could help with debug
         /// </summary>
         /// <param name="info">An optional array of objects providing additional data</param>
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
-        public static void Exception
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
+        public static void Debug
         (
-            Exception exception
+            object info = null,
+#if LEGACY
+            string file = "LEGACY",
+            string method = "LEGACY",
+            int line = 0
+#else
+            [CallerFilePath] string file = "",
+            [CallerMemberName] string method = "",
+            [CallerLineNumber] int line = 0
+#endif
         )
         {
-            if(!logEnabled)
-                return;
+            writeLog(new[] { info }, file ?? string.Empty, method, line, LogLevel.Debug);
+        }
 
+        /// <summary>
+        /// Log a trace message (this should be off by default)
+        /// </summary>
+        /// <param name="info">An optional array of objects providing additional data</param>
+        /// <param name="file">Do not use this</param>
+        /// <param name="method">Do not use this</param>
+        /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
+        public static void Trace
+        (
+            string info = null,
+#if LEGACY
+            string file = "LEGACY",
+            string method = "LEGACY",
+            int line = 0
+#else
+            [CallerFilePath] string file = "",
+            [CallerMemberName] string method = "",
+            [CallerLineNumber] int line = 0
+#endif
+        )
+        {
+            writeLog(new object[] { info }, file ?? string.Empty, method, line, LogLevel.Trace);
+        }
+
+        /// <summary>
+        /// Log a trace message (this should be off by default)
+        /// </summary>
+        /// <param name="exception">the actual exception</param>
+        /// <param name="info">An optional array of objects providing additional data</param>
+        /// <param name="file">Do not use this</param>
+        /// <param name="method">Do not use this</param>
+        /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
+        public static void Trace
+        (
+            Exception exception,
+            object info = null,
+#if LEGACY
+            string file = "LEGACY",
+            string method = "LEGACY",
+            int line = 0
+#else
+            [CallerFilePath] string file = "",
+            [CallerMemberName] string method = "",
+            [CallerLineNumber] int line = 0
+#endif
+        )
+        {
+            writeLog(new[] { exception, info }, file ?? string.Empty, method, line, LogLevel.Trace);
+        }
+
+        /// <summary>
+        /// Log an exception has occured
+        /// </summary>
+        /// <param name="exception">Exception to log.</param>
+        /// <param name="message">Message of Exception</param>
+        [Obsolete("Use NLog instead: private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
+        public static void Exception(Exception exception, string message = "")
+        {
+            if(!IsLoggerEnabled)
+                return;
+            if (exception == null)
+                throw new ArgumentNullException(nameof(exception));
             writeLog(
-                new object[]{exception, exception.StackTrace},
-                exception.Source, 
-                exception.TargetSite.Name, 
-                (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(), 
-                "Exception ");
+                string.IsNullOrEmpty(message) ? new object[] {exception, exception.StackTrace} : new object[] {message, exception, exception.StackTrace},
+                exception.Source,
+                exception.TargetSite.Name,
+                (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
+                LogLevel.Fatal);
         }
 
         /// <summary>
@@ -207,6 +301,8 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Warning
             (
             object[] info= null,
@@ -221,7 +317,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info, file, method, line, "Warning   ");
+            writeLog(info, file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -231,6 +327,8 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Warning
             (
             object info = null,
@@ -245,7 +343,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Warning   ");
+            writeLog(new[]{info}, file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -255,6 +353,8 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Info
             (
             object[] info = null,
@@ -269,7 +369,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info,file, method, line, "Info      ");
+            writeLog(info, file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         /// <summary>
@@ -279,9 +379,11 @@ namespace Chummer
         /// <param name="file">Do not use this</param>
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void Info
             (
-            String info = null,
+            string info = null,
 #if LEGACY
             string file = "LEGACY",
             string method = "LEGACY",
@@ -293,51 +395,66 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Info      ");
+            writeLog(new object[]{info}, file ?? string.Empty, method, line, LogLevel.Info);
         }
 
-        private static void writeLog(object[] info, string file, string method, int line, string pre)
+        public enum LogLevel
         {
-            if (!logEnabled)
+            Off = -1,
+            Trace,
+            Debug,
+            Info,
+            Warn,
+            Error,
+            Fatal
+        }
+
+        private static void writeLog(object[] info, string file, string method, int line, LogLevel loglevel)
+        {
+            if (!IsLoggerEnabled)
                 return;
 
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
 
-            stringBuilder.Clear();
-            stringBuilder.Append(pre);
-            string[] classPath = file.Split(new char[] {'\\', '/'});
-            stringBuilder.Append(classPath[classPath.Length - 1]);
-            stringBuilder.Append(".");
-            stringBuilder.Append(method);
-            stringBuilder.Append(":");
-            stringBuilder.Append(line);
+            StringBuilder objTimeStamper = new StringBuilder(loglevel.ToString() + "\t");
+            string[] classPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            objTimeStamper.Append(classPath[classPath.Length - 1]);
+            objTimeStamper.Append('.');
+            objTimeStamper.Append(method);
+            objTimeStamper.Append(':');
+            objTimeStamper.Append(line);
 
-            if (info != null)
+            if (info?.Length > 0)
             {
-                stringBuilder.Append(" ");
-                foreach (object o in info)
+                objTimeStamper.Append(' ');
+                for (int i = 0; i < info.Length; ++i)
                 {
-                    stringBuilder.Append(o);
-                    stringBuilder.Append(", ");
+                    objTimeStamper.Append(info[i]);
+                    objTimeStamper.Append(", ");
                 }
 
-                stringBuilder.Length -= 2;
+                objTimeStamper.Length -= 2;
             }
 
             sw.TaskEnd("makeentry");
 
-            logWriter.WriteLine(stringBuilder.ToString());
+            string strTimeStamp = objTimeStamper.ToString();
+            lock (s_LogWriterLock)
+                s_LogWriter?.WriteLine(strTimeStamp);
             sw.TaskEnd("filewrite");
-            Trace.WriteLine(stringBuilder.ToString());
+            System.Diagnostics.Trace.WriteLine(strTimeStamp);
             sw.TaskEnd("screenwrite");
         }
 
+        [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
+
         public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {
-            if (logEnabled)
+            if (IsLoggerEnabled)
             {
-                logWriter?.WriteLine("First chance exception: " + e?.Exception);
+                lock (s_LogWriterLock)
+                    s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
             }
         }
     }
