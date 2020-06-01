@@ -160,6 +160,7 @@ namespace Chummer
             if (_blnLoading || _blnSkipUpdate)
                 return;
             _blnSkipUpdate = true;
+            SuspendLayout();
             if (_objSelectedWeapon != null)
             {
                 chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
@@ -222,7 +223,7 @@ namespace Chummer
                     strAccessories.Length -= Environment.NewLine.Length;
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None") : strAccessories.ToString();
-                lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
+                gpbIncludedAccessories.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
             else
             {
@@ -251,14 +252,16 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSourceLabel.Visible = false;
                 lblIncludedAccessories.Text = string.Empty;
-                lblIncludedAccessoriesLabel.Visible = false;
+                gpbIncludedAccessories.Visible = false;
                 lblSource.SetToolTip(string.Empty);
             }
+            ResumeLayout();
             _blnSkipUpdate = false;
         }
 
         private void BuildWeaponList(XmlNodeList objNodeList)
         {
+            SuspendLayout();
             if (tabControl.SelectedIndex == 1)
             {
                 DataTable tabWeapons = new DataTable("weapons");
@@ -479,6 +482,7 @@ namespace Chummer
                     lstWeapon.SelectedIndex = -1;
                 lstWeapon.EndUpdate();
             }
+            ResumeLayout();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
