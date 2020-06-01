@@ -17,95 +17,141 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media;
 using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 
 namespace Chummer.UI.Charts
 {
     public partial class ExpenseChart : UserControl
     {
-        private ChartValues<decimal> _karma = new ChartValues<decimal>();
-        private ChartValues<decimal> _nuyen = new ChartValues<decimal>();
-        private ChartValues<string> _date = new ChartValues<string>();
+        private Character _objCharacter;
+        private readonly Series _objMainSeries;
+        private readonly Axis _objYAxis;
+        private static readonly Brush _objKarmaFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0, 0, 0xFF));
+        private static readonly Brush _objNuyenFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0xFF, 0, 0));
 
         public ExpenseChart()
         {
             InitializeComponent();
-            cartesianChart1.Series = new SeriesCollection
+            _objMainSeries = new LineSeries
             {
-                new LineSeries
-                {
-                    Title = LanguageManager.GetString("String_KarmaRemaining"),
-                    Values = Karma,
-                    LineSmoothness = 1
-                },
-                new LineSeries
-                {
-                    Title = LanguageManager.GetString("String_NuyenRemaining"),
-                    Values = Nuyen,
-                    LineSmoothness = 1
-                }
-                /*,
-                new LineSeries
-                {
-                    Title = "Series 2",
-                    Values = new ChartValues<double> {5, 2, 8, 3},
-                    PointGeometry = DefaultGeometries.Square,
-                    PointGeometrySize = 15
-                }*/
+                Title = LanguageManager.GetString("String_KarmaRemaining"),
+                Values = ExpenseValues,
+                LineSmoothness = 1,
+                Stroke = Brushes.Blue,
+                Fill = _objKarmaFillBrush,
+                PointGeometrySize = 8
             };
-            /*
-            cartesianChart1.AxisX.Add(new Axis
+            chtCartesian.Series = new SeriesCollection
             {
-                Title = "Month",
-                Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May" }
+                _objMainSeries
+            };
+            chtCartesian.AxisX.Add(new Axis
+            {
+                LabelFormatter = val => new DateTime((long)val).ToString(GlobalOptions.CustomDateTimeFormats
+                    ? GlobalOptions.CustomDateFormat
+                      + ' ' + GlobalOptions.CustomTimeFormat
+                    : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
+                      + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
             });
+            _objYAxis = new Axis
+            {
+                Title = LanguageManager.GetString("String_Karma"),
+                LabelFormatter = val => val.ToString("#,0.##", GlobalOptions.CultureInfo)
+            };
+            chtCartesian.AxisY.Add(_objYAxis);
+        }
 
-            cartesianChart1.AxisY.Add(new Axis
+        private void ExpenseChart_Load(object sender, EventArgs e)
+        {
+            if (_objCharacter == null)
             {
-                Title = "Sales",
-                LabelFormatter = value => value.ToString("C")
-            });
+                if (ParentForm is CharacterShared frmParent)
+                    _objCharacter = frmParent.CharacterObject;
+                else
+                {
+                    _objCharacter = new Character();
+                    Utils.BreakIfDebug();
+                }
+                if (NuyenMode)
+                {
+                    _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Options.NuyenFormat ?? "#,0.##") + '¥', GlobalOptions.CultureInfo);
+                }
+            }
+        }
 
-            //modifying the series collection will animate and update the chart
-            cartesianChart1.Series.Add(new LineSeries
+        public void NormalizeYAxis()
+        {
+            if (ExpenseValues.Count <= 0)
+                return;
+            double dblActualMin = ExpenseValues[0].Value;
+            double dblActualMax = dblActualMin;
+            foreach (double dblValue in ExpenseValues.Select(x => x.Value))
             {
-                Values = new ChartValues<double> { 5, 3, 2, 4, 5 },
-                LineSmoothness = 0, //straight lines, 1 really smooth lines
-                PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
-                PointGeometrySize = 50,
-                PointForeground = Brushes.Gray
-            });
-
-            //modifying any series values will also animate and update the chart
-            cartesianChart1.Series[2].Values.Add(5d);*/
-            cartesianChart1.AxisX.Add(new Axis
+                if (dblActualMax < dblValue)
+                    dblActualMax = dblValue;
+                else if (dblActualMin > dblValue)
+                    dblActualMin = dblValue;
+            }
+            if (dblActualMin.Equals(dblActualMax))
             {
-                Title = "Month",
-                Labels = Date
-            });
+                _objYAxis.MinValue = double.NaN;
+                _objYAxis.MaxValue = double.NaN;
+            }
+            else
+            {
+                if (NuyenMode)
+                {
+                    dblActualMin = Math.Floor(dblActualMin / 5000.0) * 5000.0;
+                    dblActualMax = Math.Ceiling(dblActualMax / 5000.0) * 5000.0;
+                }
+                else
+                {
+                    dblActualMin = Math.Floor(dblActualMin / 5.0) * 5.0;
+                    dblActualMax = Math.Ceiling(dblActualMax / 5.0) * 5.0;
+                }
+                _objYAxis.MinValue = dblActualMin;
+                _objYAxis.MaxValue = dblActualMax;
+            }
         }
 
         #region Properties
 
-        public ChartValues<decimal> Karma
-        {
-            get => _karma;
-            set => _karma = value;
-        }
+        public ChartValues<DateTimePoint> ExpenseValues { get; } = new ChartValues<DateTimePoint>();
 
-        public ChartValues<decimal> Nuyen
+        private bool _blnNuyenMode;
+        public bool NuyenMode
         {
-            get => _nuyen;
-            set => _nuyen = value;
-        }
-
-        public ChartValues<string> Date
-        {
-            get => _date;
-            set => _date = value;
+            get => _blnNuyenMode;
+            set
+            {
+                if (_blnNuyenMode != value)
+                {
+                    _blnNuyenMode = value;
+                    chtCartesian.SuspendLayout();
+                    if (value)
+                    {
+                        _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
+                        _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Options.NuyenFormat ?? "#,0.##") + '¥', GlobalOptions.CultureInfo);
+                        _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
+                        _objMainSeries.Stroke = Brushes.Red;
+                        _objMainSeries.Fill = _objNuyenFillBrush;
+                    }
+                    else
+                    {
+                        _objYAxis.Title = LanguageManager.GetString("String_Karma");
+                        _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalOptions.CultureInfo);
+                        _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
+                        _objMainSeries.Stroke = Brushes.Blue;
+                        _objMainSeries.Fill = _objKarmaFillBrush;
+                    }
+                    chtCartesian.ResumeLayout();
+                }
+            }
         }
 
         #endregion

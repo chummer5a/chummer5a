@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Charts
+namespace Chummer.UI.Charts
 {
     partial class ExpenseChart
     {
@@ -13,9 +13,11 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                if (!(ParentForm is CharacterShared frmParent) || frmParent.CharacterObject != _objCharacter)
+                    _objCharacter?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,31 +30,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.cartesianChart1 = new LiveCharts.WinForms.CartesianChart();
-			this.SuspendLayout();
-			// 
-			// cartesianChart1
-			// 
-			this.cartesianChart1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.cartesianChart1.Location = new System.Drawing.Point(0, 0);
-			this.cartesianChart1.Name = "cartesianChart1";
-			this.cartesianChart1.Size = new System.Drawing.Size(284, 261);
-			this.cartesianChart1.TabIndex = 0;
-			this.cartesianChart1.Text = "cartesianChart1";
-			// 
-			// ExpenseChart
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.cartesianChart1);
-			this.Name = "ExpenseChart";
-			this.Size = new System.Drawing.Size(284, 261);
-			this.ResumeLayout(false);
+            this.chtCartesian = new LiveCharts.WinForms.CartesianChart();
+            this.SuspendLayout();
+            // 
+            // chtCartesian
+            // 
+            this.chtCartesian.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chtCartesian.Location = new System.Drawing.Point(0, 0);
+            this.chtCartesian.Name = "chtCartesian";
+            this.chtCartesian.Size = new System.Drawing.Size(284, 261);
+            this.chtCartesian.TabIndex = 0;
+            // 
+            // ExpenseChart
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.chtCartesian);
+            this.Name = "ExpenseChart";
+            this.Size = new System.Drawing.Size(284, 261);
+            this.Load += new System.EventHandler(this.ExpenseChart_Load);
+            this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private LiveCharts.WinForms.CartesianChart cartesianChart1;
+        private LiveCharts.WinForms.CartesianChart chtCartesian;
     }
 }
