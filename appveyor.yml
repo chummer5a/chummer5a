@@ -1,5 +1,4 @@
 version: "5.212.{build}"
-APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 branches:
   only:
   - master
