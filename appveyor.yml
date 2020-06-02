@@ -1,4 +1,5 @@
 version: "5.212.{build}"
+APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 branches:
   only:
   - master
@@ -101,6 +102,8 @@ build:
   verbosity: normal
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
+on_failure:
+- ps: Update-AppveyorBuild -Version "$($Major.$Minor.$env:appveyor_build_number)-$(Get-Date -format HHmmss)-failed"
 artifacts:
 - path: Chummer.Nightly.zip
   name: Chummer
