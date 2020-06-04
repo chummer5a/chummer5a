@@ -35,22 +35,26 @@ namespace Chummer.UI.Editor
             this.tsbBold = new System.Windows.Forms.ToolStripButton();
             this.tsbItalic = new System.Windows.Forms.ToolStripButton();
             this.tsbUnderline = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tss2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbForeColor = new System.Windows.Forms.ToolStripButton();
+            this.tss3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbImage = new System.Windows.Forms.ToolStripButton();
+            this.tsbHyperlink = new System.Windows.Forms.ToolStripButton();
+            this.tss4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbAlignLeft = new System.Windows.Forms.ToolStripButton();
+            this.tsbAlignCenter = new System.Windows.Forms.ToolStripButton();
+            this.tsbAlignRight = new System.Windows.Forms.ToolStripButton();
+            this.tsbAlignJustify = new System.Windows.Forms.ToolStripButton();
+            this.tss5 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbUnorderedList = new System.Windows.Forms.ToolStripButton();
             this.tsbOrderedList = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
+            this.tsbIncreaseIndent = new System.Windows.Forms.ToolStripButton();
+            this.tsbDecreaseIndent = new System.Windows.Forms.ToolStripButton();
+            this.tsbBackColor = new System.Windows.Forms.ToolStripButton();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.cboFont = new System.Windows.Forms.ToolStripComboBox();
+            this.tss1 = new System.Windows.Forms.ToolStripSeparator();
+            this.cboFontSize = new System.Windows.Forms.ToolStripComboBox();
             this.tsControls.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -66,30 +70,35 @@ namespace Chummer.UI.Editor
             this.webContent.Size = new System.Drawing.Size(640, 329);
             this.webContent.TabIndex = 0;
             this.webContent.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webContent_DocumentCompleted);
+            this.webContent.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webContent_Navigated);
             this.webContent.GotFocus += new System.EventHandler(this.webContent_GotFocus);
             // 
             // tsControls
             // 
             this.tsControls.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.tsControls.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cboFont,
+            this.cboFontSize,
+            this.tss1,
             this.tsbBold,
             this.tsbItalic,
             this.tsbUnderline,
-            this.toolStripSeparator1,
-            this.toolStripButton7,
-            this.toolStripButton8,
-            this.toolStripButton9,
-            this.toolStripSeparator2,
-            this.toolStripButton1,
-            this.toolStripButton2,
-            this.toolStripButton3,
-            this.toolStripButton4,
-            this.toolStripSeparator3,
+            this.tss2,
+            this.tsbForeColor,
+            this.tsbBackColor,
+            this.tss3,
+            this.tsbHyperlink,
+            this.tsbImage,
+            this.tss4,
+            this.tsbAlignLeft,
+            this.tsbAlignCenter,
+            this.tsbAlignRight,
+            this.tsbAlignJustify,
+            this.tss5,
             this.tsbUnorderedList,
             this.tsbOrderedList,
-            this.toolStripButton5,
-            this.toolStripButton6,
-            this.toolStripSeparator4});
+            this.tsbIncreaseIndent,
+            this.tsbDecreaseIndent});
             this.tsControls.Location = new System.Drawing.Point(0, 0);
             this.tsControls.Name = "tsControls";
             this.tsControls.Size = new System.Drawing.Size(646, 25);
@@ -104,7 +113,6 @@ namespace Chummer.UI.Editor
             this.tsbBold.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBold.Name = "tsbBold";
             this.tsbBold.Size = new System.Drawing.Size(23, 22);
-            this.tsbBold.Text = "B";
             this.tsbBold.Click += new System.EventHandler(this.tsbBold_Click);
             // 
             // tsbItalic
@@ -115,8 +123,6 @@ namespace Chummer.UI.Editor
             this.tsbItalic.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbItalic.Name = "tsbItalic";
             this.tsbItalic.Size = new System.Drawing.Size(23, 22);
-            this.tsbItalic.Text = "I";
-            this.tsbItalic.ToolTipText = "I";
             this.tsbItalic.Click += new System.EventHandler(this.tsbItalic_Click);
             // 
             // tsbUnderline
@@ -127,77 +133,91 @@ namespace Chummer.UI.Editor
             this.tsbUnderline.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnderline.Name = "tsbUnderline";
             this.tsbUnderline.Size = new System.Drawing.Size(23, 22);
-            this.tsbUnderline.Text = "U";
             this.tsbUnderline.Click += new System.EventHandler(this.tsbUnderline_Click);
             // 
-            // toolStripSeparator1
+            // tss2
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.tss2.Name = "tss2";
+            this.tss2.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton7
+            // tsbForeColor
             // 
-            this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton7.Image = global::Chummer.Properties.Resources.picture;
-            this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton7.Text = "toolStripButton7";
+            this.tsbForeColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbForeColor.Image = global::Chummer.Properties.Resources.font;
+            this.tsbForeColor.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbForeColor.Name = "tsbForeColor";
+            this.tsbForeColor.Size = new System.Drawing.Size(23, 22);
+            this.tsbForeColor.Click += new System.EventHandler(this.tsbForeColor_Click);
             // 
-            // toolStripButton8
+            // tss3
             // 
-            this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton8.Image = global::Chummer.Properties.Resources.link;
-            this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton8.Name = "toolStripButton8";
-            this.toolStripButton8.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton8.Text = "toolStripButton8";
+            this.tss3.Name = "tss3";
+            this.tss3.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripSeparator2
+            // tsbImage
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.tsbImage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbImage.Image = global::Chummer.Properties.Resources.picture;
+            this.tsbImage.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbImage.Name = "tsbImage";
+            this.tsbImage.Size = new System.Drawing.Size(23, 22);
+            this.tsbImage.Click += new System.EventHandler(this.tsbImage_Click);
             // 
-            // toolStripButton1
+            // tsbHyperlink
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = global::Chummer.Properties.Resources.text_align_left;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
+            this.tsbHyperlink.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbHyperlink.Image = global::Chummer.Properties.Resources.link;
+            this.tsbHyperlink.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbHyperlink.Name = "tsbHyperlink";
+            this.tsbHyperlink.Size = new System.Drawing.Size(23, 22);
+            this.tsbHyperlink.Click += new System.EventHandler(this.tsbHyperlink_Click);
             // 
-            // toolStripButton2
+            // tss4
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = global::Chummer.Properties.Resources.text_align_center;
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "toolStripButton2";
+            this.tss4.Name = "tss4";
+            this.tss4.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton3
+            // tsbAlignLeft
             // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton3.Image = global::Chummer.Properties.Resources.text_align_right;
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton3.Text = "toolStripButton3";
+            this.tsbAlignLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbAlignLeft.Image = global::Chummer.Properties.Resources.text_align_left;
+            this.tsbAlignLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAlignLeft.Name = "tsbAlignLeft";
+            this.tsbAlignLeft.Size = new System.Drawing.Size(23, 22);
+            this.tsbAlignLeft.Click += new System.EventHandler(this.tsbAlignLeft_Click);
             // 
-            // toolStripButton4
+            // tsbAlignCenter
             // 
-            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton4.Image = global::Chummer.Properties.Resources.text_align_justify;
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton4.Text = "toolStripButton4";
+            this.tsbAlignCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbAlignCenter.Image = global::Chummer.Properties.Resources.text_align_center;
+            this.tsbAlignCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAlignCenter.Name = "tsbAlignCenter";
+            this.tsbAlignCenter.Size = new System.Drawing.Size(23, 22);
+            this.tsbAlignCenter.Click += new System.EventHandler(this.tsbAlignCenter_Click);
             // 
-            // toolStripSeparator3
+            // tsbAlignRight
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.tsbAlignRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbAlignRight.Image = global::Chummer.Properties.Resources.text_align_right;
+            this.tsbAlignRight.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAlignRight.Name = "tsbAlignRight";
+            this.tsbAlignRight.Size = new System.Drawing.Size(23, 22);
+            this.tsbAlignRight.Click += new System.EventHandler(this.tsbAlignRight_Click);
+            // 
+            // tsbAlignJustify
+            // 
+            this.tsbAlignJustify.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbAlignJustify.Image = global::Chummer.Properties.Resources.text_align_justify;
+            this.tsbAlignJustify.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAlignJustify.Name = "tsbAlignJustify";
+            this.tsbAlignJustify.Size = new System.Drawing.Size(23, 22);
+            this.tsbAlignJustify.Text = "toolStripButton4";
+            this.tsbAlignJustify.Click += new System.EventHandler(this.tsbAlignJustify_Click);
+            // 
+            // tss5
+            // 
+            this.tss5.Name = "tss5";
+            this.tss5.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbUnorderedList
             // 
@@ -206,7 +226,6 @@ namespace Chummer.UI.Editor
             this.tsbUnorderedList.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnorderedList.Name = "tsbUnorderedList";
             this.tsbUnorderedList.Size = new System.Drawing.Size(23, 22);
-            this.tsbUnorderedList.Text = "UList";
             this.tsbUnorderedList.Click += new System.EventHandler(this.tsbUnorderedList_Click);
             // 
             // tsbOrderedList
@@ -216,41 +235,35 @@ namespace Chummer.UI.Editor
             this.tsbOrderedList.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbOrderedList.Name = "tsbOrderedList";
             this.tsbOrderedList.Size = new System.Drawing.Size(23, 22);
-            this.tsbOrderedList.Text = "OList";
             this.tsbOrderedList.ToolTipText = "OList";
             this.tsbOrderedList.Click += new System.EventHandler(this.tsbOrderedList_Click);
             // 
-            // toolStripButton5
+            // tsbIncreaseIndent
             // 
-            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton5.Image = global::Chummer.Properties.Resources.text_indent;
-            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton5.Text = "toolStripButton5";
+            this.tsbIncreaseIndent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbIncreaseIndent.Image = global::Chummer.Properties.Resources.text_indent;
+            this.tsbIncreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbIncreaseIndent.Name = "tsbIncreaseIndent";
+            this.tsbIncreaseIndent.Size = new System.Drawing.Size(23, 22);
+            this.tsbIncreaseIndent.Click += new System.EventHandler(this.tsbIncreaseIndent_Click);
             // 
-            // toolStripButton6
+            // tsbDecreaseIndent
             // 
-            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton6.Image = global::Chummer.Properties.Resources.text_indent_remove;
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton6.Text = "toolStripButton6";
+            this.tsbDecreaseIndent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbDecreaseIndent.Image = global::Chummer.Properties.Resources.text_indent_remove;
+            this.tsbDecreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbDecreaseIndent.Name = "tsbDecreaseIndent";
+            this.tsbDecreaseIndent.Size = new System.Drawing.Size(23, 22);
+            this.tsbDecreaseIndent.Click += new System.EventHandler(this.tsbDecreaseIndent_Click);
             // 
-            // toolStripSeparator4
+            // tsbBackColor
             // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButton9
-            // 
-            this.toolStripButton9.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton9.Image = global::Chummer.Properties.Resources.table;
-            this.toolStripButton9.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton9.Name = "toolStripButton9";
-            this.toolStripButton9.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton9.Text = "toolStripButton9";
+            this.tsbBackColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbBackColor.Image = global::Chummer.Properties.Resources.color_wheel;
+            this.tsbBackColor.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbBackColor.Name = "tsbBackColor";
+            this.tsbBackColor.Size = new System.Drawing.Size(23, 22);
+            this.tsbBackColor.Click += new System.EventHandler(this.tsbBackColor_Click);
             // 
             // tlpMain
             // 
@@ -270,6 +283,34 @@ namespace Chummer.UI.Editor
             this.tlpMain.Size = new System.Drawing.Size(640, 360);
             this.tlpMain.TabIndex = 1;
             // 
+            // cboFont
+            // 
+            this.cboFont.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cboFont.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.cboFont.Name = "cboFont";
+            this.cboFont.Size = new System.Drawing.Size(125, 25);
+            this.cboFont.Leave += new System.EventHandler(this.cboFont_Leave);
+            // 
+            // tss1
+            // 
+            this.tss1.Name = "tss1";
+            this.tss1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // cboFontSize
+            // 
+            this.cboFontSize.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"});
+            this.cboFontSize.Name = "cboFontSize";
+            this.cboFontSize.Size = new System.Drawing.Size(75, 25);
+            this.cboFontSize.Leave += new System.EventHandler(this.cboFontSize_Leave);
+            this.cboFontSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cboFontSize_KeyPress);
+            // 
             // HtmlEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,6 +318,8 @@ namespace Chummer.UI.Editor
             this.Controls.Add(this.tlpMain);
             this.Name = "HtmlEditor";
             this.Size = new System.Drawing.Size(640, 360);
+            this.Enter += new System.EventHandler(this.HtmlEditor_Enter);
+            this.Leave += new System.EventHandler(this.HtmlEditor_Leave);
             this.tsControls.ResumeLayout(false);
             this.tsControls.PerformLayout();
             this.tlpMain.ResumeLayout(false);
@@ -292,21 +335,25 @@ namespace Chummer.UI.Editor
         private System.Windows.Forms.ToolStripButton tsbBold;
         private System.Windows.Forms.ToolStripButton tsbItalic;
         private System.Windows.Forms.ToolStripButton tsbUnderline;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator tss3;
         private System.Windows.Forms.ToolStripButton tsbUnorderedList;
         private System.Windows.Forms.ToolStripButton tsbOrderedList;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
-        private System.Windows.Forms.ToolStripButton toolStripButton4;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripButton toolStripButton5;
-        private System.Windows.Forms.ToolStripButton toolStripButton6;
-        private System.Windows.Forms.ToolStripButton toolStripButton7;
-        private System.Windows.Forms.ToolStripButton toolStripButton8;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripButton toolStripButton9;
+        private System.Windows.Forms.ToolStripSeparator tss4;
+        private System.Windows.Forms.ToolStripButton tsbAlignLeft;
+        private System.Windows.Forms.ToolStripButton tsbAlignCenter;
+        private System.Windows.Forms.ToolStripButton tsbAlignRight;
+        private System.Windows.Forms.ToolStripButton tsbAlignJustify;
+        private System.Windows.Forms.ToolStripSeparator tss5;
+        private System.Windows.Forms.ToolStripButton tsbIncreaseIndent;
+        private System.Windows.Forms.ToolStripButton tsbDecreaseIndent;
+        private System.Windows.Forms.ToolStripButton tsbImage;
+        private System.Windows.Forms.ToolStripButton tsbHyperlink;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.ToolStripButton tsbForeColor;
+        private System.Windows.Forms.ToolStripSeparator tss2;
+        private System.Windows.Forms.ToolStripButton tsbBackColor;
+        private System.Windows.Forms.ToolStripComboBox cboFont;
+        private System.Windows.Forms.ToolStripComboBox cboFontSize;
+        private System.Windows.Forms.ToolStripSeparator tss1;
     }
 }

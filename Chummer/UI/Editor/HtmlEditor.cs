@@ -1,12 +1,28 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using mshtml;
 
@@ -40,18 +56,9 @@ namespace Chummer.UI.Editor
         Complete
     }
 
-    public enum Headings
-    {
-        H1 = 1,
-        H2,
-        H3,
-        H4,
-        H5,
-        H6
-    }
-
     public partial class HtmlEditor : UserControl
     {
+        private bool _blnSkipUpdate;
         private readonly IHTMLDocument2 _domDocument;
 
         public HtmlEditor()
@@ -62,27 +69,115 @@ namespace Chummer.UI.Editor
             if (_domDocument == null)
                 throw new ArgumentNullException(nameof(webContent.Document));
             _domDocument.designMode = "On";
-            if (Document.Body != null)
+            AutoCompleteStringCollection lstFontsAutoComplete = new AutoCompleteStringCollection();
+            foreach (FontFamily objFontFamily in FontFamily.Families)
             {
-                Document.Body.GotFocus += BodyOnGotFocus;
-                Document.Body.LostFocus += BodyOnLostFocus;
+                cboFont.Items.Add(objFontFamily.Name);
+                lstFontsAutoComplete.Add(objFontFamily.Name);
             }
+            cboFont.AutoCompleteCustomSource = lstFontsAutoComplete;
         }
 
-        private void BodyOnLostFocus(object sender, HtmlElementEventArgs e)
+        private void UpdateButtons(object sender, EventArgs e)
         {
-            tsControls.Visible = false;
+            if (ReadyState != ReadyState.Complete)
+                return;
+            _blnSkipUpdate = true;
+            if (!cboFont.Focused)
+            {
+                string strFontName = FontName.Name;
+                if (!string.IsNullOrEmpty(strFontName) && strFontName != cboFont.Text)
+                {
+                    cboFont.Text = strFontName;
+                }
+            }
+            if (!cboFontSize.Focused)
+            {
+                int intFontSize;
+                switch (FontSize)
+                {
+                    case FontSize.One:
+                        intFontSize = 1;
+                        break;
+                    case FontSize.Two:
+                        intFontSize = 2;
+                        break;
+                    case FontSize.Three:
+                        intFontSize = 3;
+                        break;
+                    case FontSize.Four:
+                        intFontSize = 4;
+                        break;
+                    case FontSize.Five:
+                        intFontSize = 5;
+                        break;
+                    case FontSize.Six:
+                        intFontSize = 6;
+                        break;
+                    case FontSize.Seven:
+                        intFontSize = 7;
+                        break;
+                    case FontSize.NA:
+                        intFontSize = 0;
+                        break;
+                    default:
+                        intFontSize = 7;
+                        break;
+                }
+                string strFontSize = Convert.ToString(intFontSize);
+                if (strFontSize != cboFontSize.Text)
+                {
+                    cboFontSize.Text = strFontSize;
+                }
+            }
+            tsbBold.Checked = IsBold;
+            tsbItalic.Checked = IsItalic;
+            tsbUnderline.Checked = IsUnderline;
+            tsbHyperlink.Enabled = CanInsertLink;
+            tsbAlignLeft.Checked = IsJustifyLeft;
+            tsbAlignCenter.Checked = IsJustifyCenter;
+            tsbAlignRight.Checked = IsJustifyRight;
+            tsbAlignJustify.Checked = IsJustifyFull;
+            tsbOrderedList.Checked = IsOrderedList;
+            tsbUnorderedList.Checked = IsUnorderedList;
+            foreach (HTMLImg imgLoop in _domDocument.images.Cast<HTMLImg>().Where(x => x != null))
+            {
+                if (imgLoop.height != imgLoop.style.pixelHeight && imgLoop.style.pixelHeight != 0)
+                    imgLoop.height = imgLoop.style.pixelHeight;
+                if (imgLoop.width != imgLoop.style.pixelWidth && imgLoop.style.pixelWidth != 0)
+                    imgLoop.width = imgLoop.style.pixelWidth;
+            }
+            _blnSkipUpdate = false;
         }
 
-        private void BodyOnGotFocus(object sender, HtmlElementEventArgs e)
+        private string ReplaceFileSystemImages(string strHtml)
         {
-            tsControls.Visible = true;
+            MatchCollection lstImagesToHandle = Regex.Matches(strHtml,
+                @"<img[^>]*?src\s*=\s*([""']?[^'"">]+?['""])[^>]*?>",
+                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+            foreach (string strImagePath in lstImagesToHandle.Cast<Match>().Select(x => x.Groups[1].Value))
+            {
+                string strImagePathTrimmed = strImagePath.Trim('\"');
+                if (!string.IsNullOrEmpty(strImagePathTrimmed) && File.Exists(strImagePathTrimmed))
+                {
+                    string strExtension = Path.GetExtension(strImagePathTrimmed);
+                    if (!string.IsNullOrEmpty(strExtension))
+                    {
+                        strHtml = strHtml.Replace(strImagePath,
+                            string.Format(GlobalOptions.InvariantCultureInfo, "'data:image/{0};base64,{1}'",
+                                strExtension,
+                                Convert.ToBase64String(File.ReadAllBytes(strImagePathTrimmed))));
+                    }
+                    else
+                        strHtml = strHtml.Replace(strImagePath, string.Empty);
+                }
+                else
+                    strHtml = strHtml.Replace(strImagePath, string.Empty);
+            }
+            return strHtml;
         }
 
-        /// <summary>
-        /// Get the ready state of the internal browser component.
-        /// </summary>
-        public ReadyState ReadyState
+        private ReadyState ReadyState
         {
             get
             {
@@ -102,7 +197,103 @@ namespace Chummer.UI.Editor
             }
         }
 
-        public HtmlDocument Document => webContent.Document;
+        private SelectionType SelectionType
+        {
+            get
+            {
+                switch (_domDocument.selection.type.ToUpperInvariant())
+                {
+                    case "TEXT":
+                        return SelectionType.Text;
+                    case "CONTROL":
+                        return SelectionType.Control;
+                    default:
+                        return SelectionType.None;
+                }
+            }
+        }
+
+        [Browsable(false)]
+        private FontSize FontSize
+        {
+            get
+            {
+                if (ReadyState != ReadyState.Complete)
+                    return FontSize.NA;
+                switch (_domDocument.queryCommandValue("FontSize").ToString())
+                {
+                    case "1":
+                        return FontSize.One;
+                    case "2":
+                        return FontSize.Two;
+                    case "3":
+                        return FontSize.Three;
+                    case "4":
+                        return FontSize.Four;
+                    case "5":
+                        return FontSize.Five;
+                    case "6":
+                        return FontSize.Six;
+                    case "7":
+                        return FontSize.Seven;
+                    default:
+                        return FontSize.NA;
+                }
+            }
+            set
+            {
+                int intSize;
+                switch (value)
+                {
+                    case FontSize.One:
+                        intSize = 1;
+                        break;
+                    case FontSize.Two:
+                        intSize = 2;
+                        break;
+                    case FontSize.Three:
+                        intSize = 3;
+                        break;
+                    case FontSize.Four:
+                        intSize = 4;
+                        break;
+                    case FontSize.Five:
+                        intSize = 5;
+                        break;
+                    case FontSize.Six:
+                        intSize = 6;
+                        break;
+                    case FontSize.Seven:
+                        intSize = 7;
+                        break;
+                    default:
+                        intSize = 7;
+                        break;
+                }
+                Document.ExecCommand("FontSize", false, intSize.ToString(GlobalOptions.InvariantCultureInfo));
+            }
+        }
+
+        [Browsable(false)]
+        private FontFamily FontName
+        {
+            get
+            {
+                if (ReadyState != ReadyState.Complete)
+                    return null;
+                return _domDocument.queryCommandValue("FontName") is string strName
+                    ? new FontFamily(strName)
+                    : null;
+            }
+            set
+            {
+                string strName = value?.Name;
+                if (!string.IsNullOrEmpty(strName))
+                    Document.ExecCommand("FontName", false, strName);
+            }
+        }
+
+        private HtmlDocument Document => webContent.Document;
 
         public string DocumentTitle => webContent.DocumentTitle;
 
@@ -116,7 +307,15 @@ namespace Chummer.UI.Editor
         [Browsable(false)]
         public string BodyText
         {
-            get => webContent.Document?.Body?.InnerHtml ?? string.Empty;
+            get
+            {
+                string strReturn = Document?.Body?.InnerText ?? string.Empty;
+                if (!string.IsNullOrEmpty(strReturn))
+                {
+                    strReturn = ReplaceFileSystemImages(strReturn);
+                }
+                return strReturn;
+            }
             set
             {
                 Document?.OpenNew(false);
@@ -128,7 +327,15 @@ namespace Chummer.UI.Editor
         [Browsable(false)]
         public string Html
         {
-            get => Document?.Body?.InnerHtml ?? string.Empty;
+            get
+            {
+                string strReturn = Document?.Body?.InnerHtml ?? string.Empty;
+                if (!string.IsNullOrEmpty(strReturn))
+                {
+                    strReturn = ReplaceFileSystemImages(strReturn);
+                }
+                return strReturn;
+            }
             set
             {
                 Document?.OpenNew(false);
@@ -173,317 +380,300 @@ namespace Chummer.UI.Editor
                 Document.Body.Style = "background-color: " + objColor.Name;
         }
 
-        /// <summary>
-        /// Determine the status of the Undo command in the document editor.
-        /// </summary>
-        /// <returns>whether or not an undo operation is currently valid</returns>
-        public bool CanUndo()
+        [Browsable(false)]
+        private Color EditorForeColor
         {
-            return _domDocument.queryCommandEnabled("Undo");
+            get => ReadyState == ReadyState.Complete
+                ? ConvertToColor(_domDocument.queryCommandValue("ForeColor").ToString())
+                : SystemColors.WindowText;
+            set => Document.ExecCommand("ForeColor", false,
+                string.Format(GlobalOptions.InvariantCultureInfo, "#{0:X2}{1:X2}{2:X2}",
+                    value.R, value.G, value.B));
         }
 
-        /// <summary>
-        /// Determine the status of the Redo command in the document editor.
-        /// </summary>
-        /// <returns>whether or not a redo operation is currently valid</returns>
-        public bool CanRedo()
+        [Browsable(false)]
+        private Color EditorBackColor
         {
-            return _domDocument.queryCommandEnabled("Redo");
+            get => ReadyState == ReadyState.Complete
+                ? ConvertToColor(_domDocument.queryCommandValue("BackColor").ToString())
+                : SystemColors.Window;
+            set => Document.ExecCommand("BackColor", false,
+                string.Format(GlobalOptions.InvariantCultureInfo, "#{0:X2}{1:X2}{2:X2}",
+                    value.R, value.G, value.B));
         }
 
-        /// <summary>
-        /// Determine the status of the Cut command in the document editor.
-        /// </summary>
-        /// <returns>whether or not a cut operation is currently valid</returns>
-        public bool CanCut()
+        private void SelectForeColor()
         {
-            return _domDocument.queryCommandEnabled("Cut");
+            Color objColor = EditorForeColor;
+            if (ShowColorDialog(ref objColor))
+                EditorForeColor = objColor;
         }
 
-        /// <summary>
-        /// Determine the status of the Copy command in the document editor.
-        /// </summary>
-        /// <returns>whether or not a copy operation is currently valid</returns>
-        public bool CanCopy()
+        private void SelectBackColor()
         {
-            return _domDocument.queryCommandEnabled("Copy");
+            Color objColor = EditorBackColor;
+            if (ShowColorDialog(ref objColor))
+                EditorBackColor = objColor;
         }
 
-        /// <summary>
-        /// Determine the status of the Paste command in the document editor.
-        /// </summary>
-        /// <returns>whether or not a copy operation is currently valid</returns>
-        public bool CanPaste()
+        private bool ShowColorDialog(ref Color objColor)
         {
-            return _domDocument.queryCommandEnabled("Paste");
+            using (ColorDialog dlgChooseColor = new ColorDialog
+            {
+                SolidColorOnly = true,
+                AllowFullOpen = false,
+                AnyColor = false,
+                FullOpen = false,
+                CustomColors = null,
+                Color = objColor
+            })
+            {
+                if (dlgChooseColor.ShowDialog(this) == DialogResult.OK)
+                {
+                    objColor = dlgChooseColor.Color;
+                    return true;
+                }
+            }
+            return false;
         }
 
-        /// <summary>
-        /// Determine the status of the Delete command in the document editor.
-        /// </summary>
-        /// <returns>whether or not a copy operation is currently valid</returns>
-        public bool CanDelete()
+        private static Color ConvertToColor(string strColor)
         {
-            return _domDocument.queryCommandEnabled("Delete");
+            int intR, intG, intB;
+            if (strColor.StartsWith("#")) // HEX organized as RGB
+            {
+                int intColor = Convert.ToInt32(strColor.Substring(1), 16);
+                intR = (intColor >> 16) & 255;
+                intG = (intColor >> 8) & 255;
+                intB = intColor & 255;
+            }
+            else // DECIMAL organized as BGR
+            {
+                int intColor = Convert.ToInt32(strColor);
+                intR = intColor & 255;
+                intG = (intColor >> 8) & 255;
+                intB = (intColor >> 16) & 255;
+            }
+            return Color.FromArgb(intR, intG, intB);
         }
 
-        /// <summary>
-        /// Determine whether the current block is left justified.
-        /// </summary>
-        /// <returns>true if left justified, otherwise false</returns>
-        public bool IsJustifyLeft()
-        {
-            return _domDocument.queryCommandState("JustifyLeft");
-        }
-
-        /// <summary>
-        /// Determine whether the current block is right justified.
-        /// </summary>
-        /// <returns>true if right justified, otherwise false</returns>
-        public bool IsJustifyRight()
-        {
-            return _domDocument.queryCommandState("JustifyRight");
-        }
-
-        /// <summary>
-        /// Determine whether the current block is center justified.
-        /// </summary>
-        /// <returns>true if center justified, false otherwise</returns>
-        public bool IsJustifyCenter()
-        {
-            return _domDocument.queryCommandState("JustifyCenter");
-        }
-
-        /// <summary>
-        /// Determine whether the current block is full justified.
-        /// </summary>
-        /// <returns>true if full justified, false otherwise</returns>
-        public bool IsJustifyFull()
-        {
-            return _domDocument.queryCommandState("JustifyFull");
-        }
-
-        /// <summary>
-        /// Determine whether the current selection is in Bold mode.
-        /// </summary>
-        /// <returns>whether or not the current selection is Bold</returns>
-        public bool IsBold()
-        {
-            return _domDocument.queryCommandState("Bold");
-        }
-
-        /// <summary>
-        /// Determine whether the current selection is in Italic mode.
-        /// </summary>
-        /// <returns>whether or not the current selection is Italicized</returns>
-        public bool IsItalic()
-        {
-            return _domDocument.queryCommandState("Italic");
-        }
-
-        /// <summary>
-        /// Determine whether the current selection is in Underline mode.
-        /// </summary>
-        /// <returns>whether or not the current selection is Underlined</returns>
-        public bool IsUnderline()
-        {
-            return _domDocument.queryCommandState("Underline");
-        }
-
-        /// <summary>
-        /// Determine whether the current paragraph is an ordered list.
-        /// </summary>
-        /// <returns>true if current paragraph is ordered, false otherwise</returns>
-        public bool IsOrderedList()
-        {
-            return _domDocument.queryCommandState("InsertOrderedList");
-        }
-
-        /// <summary>
-        /// Determine whether the current paragraph is an unordered list.
-        /// </summary>
-        /// <returns>true if current paragraph is ordered, false otherwise</returns>
-        public bool IsUnorderedList()
-        {
-            return _domDocument.queryCommandState("InsertUnorderedList");
-        }
-
-        /// <summary>
-        /// Insert a paragraph break
-        /// </summary>
         public void InsertParagraph()
         {
             _domDocument.execCommand("InsertParagraph");
         }
 
-        /// <summary>
-        /// Insert a horizontal rule
-        /// </summary>
         public void InsertBreak()
         {
             _domDocument.execCommand("InsertHorizontalRule");
         }
 
-        /// <summary>
-        /// Select all text in the document.
-        /// </summary>
         public void SelectAll()
         {
             _domDocument.execCommand("SelectAll");
         }
 
-        /// <summary>
-        /// Undo the last operation
-        /// </summary>
-        public void Undo()
+        private bool CanUndo => _domDocument.queryCommandEnabled("Undo");
+
+        private void Undo()
         {
             _domDocument.execCommand("Undo");
         }
 
-        /// <summary>
-        /// Redo based on the last Undo
-        /// </summary>
-        public void Redo()
+        private bool CanRedo => _domDocument.queryCommandEnabled("Redo");
+
+        private void Redo()
         {
             _domDocument.execCommand("Redo");
         }
 
-        /// <summary>
-        /// Cut the current selection and place it in the clipboard.
-        /// </summary>
-        public void Cut()
+        private bool CanCut => _domDocument.queryCommandEnabled("Cut");
+
+        private void Cut()
         {
             _domDocument.execCommand("Cut");
         }
 
-        /// <summary>
-        /// Paste the contents of the clipboard into the current selection.
-        /// </summary>
-        public void Paste()
+        private bool CanPaste => _domDocument.queryCommandEnabled("Paste");
+
+        private void Paste()
         {
             _domDocument.execCommand("Paste");
         }
 
-        /// <summary>
-        /// Copy the current selection into the clipboard.
-        /// </summary>
-        public void Copy()
+        private bool CanCopy => _domDocument.queryCommandEnabled("Copy");
+
+        private void Copy()
         {
             _domDocument.execCommand("Copy");
         }
 
-        /// <summary>
-        /// Toggle the ordered list property for the current paragraph.
-        /// </summary>
-        public void OrderedList()
+        private bool IsOrderedList => _domDocument.queryCommandState("InsertOrderedList");
+
+        private void OrderedList()
         {
             _domDocument.execCommand("InsertOrderedList");
         }
 
-        /// <summary>
-        /// Toggle the unordered list property for the current paragraph.
-        /// </summary>
-        public void UnorderedList()
+        private bool IsUnorderedList => _domDocument.queryCommandState("InsertUnorderedList");
+
+        private void UnorderedList()
         {
             _domDocument.execCommand("InsertUnorderedList");
         }
 
-        /// <summary>
-        /// Toggle the left justify property for the current block.
-        /// </summary>
-        public void JustifyLeft()
+        private bool IsJustifyLeft => _domDocument.queryCommandState("JustifyLeft");
+
+        private void JustifyLeft()
         {
             _domDocument.execCommand("JustifyLeft");
         }
 
-        /// <summary>
-        /// Toggle the right justify property for the current block.
-        /// </summary>
-        public void JustifyRight()
+        private bool IsJustifyRight => _domDocument.queryCommandState("JustifyRight");
+
+        private void JustifyRight()
         {
             _domDocument.execCommand("JustifyRight");
         }
 
-        /// <summary>
-        /// Toggle the center justify property for the current block.
-        /// </summary>
-        public void JustifyCenter()
+        private bool IsJustifyCenter => _domDocument.queryCommandState("JustifyCenter");
+
+        private void JustifyCenter()
         {
             _domDocument.execCommand("JustifyCenter");
         }
 
-        /// <summary>
-        /// Toggle the full justify property for the current block.
-        /// </summary>
-        public void JustifyFull()
+        private bool IsJustifyFull => _domDocument.queryCommandState("JustifyFull");
+
+        private void JustifyFull()
         {
             _domDocument.execCommand("JustifyFull");
         }
 
-        /// <summary>
-        /// Toggle bold formatting on the current selection.
-        /// </summary>
-        public void Bold()
+        private bool IsBold => _domDocument.queryCommandState("Bold");
+
+        private void Bold()
         {
             _domDocument.execCommand("Bold");
         }
 
-        /// <summary>
-        /// Toggle italic formatting on the current selection.
-        /// </summary>
-        public void Italic()
+        private bool IsItalic => _domDocument.queryCommandState("Italic");
+
+        private void Italic()
         {
             _domDocument.execCommand("Italic");
         }
 
-        /// <summary>
-        /// Toggle underline formatting on the current selection.
-        /// </summary>
-        public void Underline()
+        private bool IsUnderline => _domDocument.queryCommandState("Underline");
+
+        private void Underline()
         {
             _domDocument.execCommand("Underline");
         }
 
-        /// <summary>
-        /// Delete the current selection.
-        /// </summary>
+        public bool CanDelete => _domDocument.queryCommandEnabled("Delete");
+
         public void Delete()
         {
             _domDocument.execCommand("Delete");
         }
 
-        /// <summary>
-        /// Insert an image.
-        /// </summary>
-        public void InsertImage()
+        private void InsertImage()
         {
             _domDocument.execCommand("InsertImage", true);
         }
 
-        /// <summary>
-        /// Indent the current paragraph.
-        /// </summary>
-        public void Indent()
+        private void Indent()
         {
             _domDocument.execCommand("Indent");
         }
 
-        /// <summary>
-        /// Outdent the current paragraph.
-        /// </summary>
-        public void Outdent()
+        private void Outdent()
         {
             _domDocument.execCommand("Outdent");
         }
 
-        /// <summary>
-        /// Insert a link at the current selection.
-        /// </summary>
-        /// <param name="url">The link url</param>
-        public void InsertLink(string url)
+        private bool CanInsertLink
+        {
+            get
+            {
+                if (SelectionType != SelectionType.Text)
+                    return false;
+                if (_domDocument.selection.createRange() is IHTMLTxtRange txtRange
+                    && !string.IsNullOrEmpty(txtRange.htmlText))
+                {
+                    MatchCollection lstMatches = Regex.Matches(txtRange.htmlText,
+                        "<a href=\"[^\"]+\">[^<]+</a>",
+                        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+                    return lstMatches.Count <= 1;
+                }
+                return true;
+            }
+        }
+
+        private void CreateLink(string url)
         {
             _domDocument.execCommand("CreateLink", false, url);
         }
+
+        private void SelectLink()
+        {
+            string strUrl = string.Empty;
+            switch (SelectionType)
+            {
+                case SelectionType.Control:
+                    {
+                        if (_domDocument.selection.createRange() is IHTMLControlRange objRange
+                            && objRange.length > 0)
+                        {
+                            IHTMLElement eleSelected = objRange.item(0);
+                            if (eleSelected != null
+                                && string.Equals(eleSelected.tagName, "img", StringComparison.OrdinalIgnoreCase))
+                            {
+                                eleSelected = eleSelected.parentElement;
+                                if (eleSelected != null
+                                    && string.Equals(eleSelected.tagName, "a", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    strUrl = eleSelected.getAttribute("href") as string;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case SelectionType.Text:
+                    {
+                        if (_domDocument.selection.createRange() is IHTMLTxtRange txtRange
+                            && !string.IsNullOrEmpty(txtRange.htmlText))
+                        {
+                            Match match = Regex.Match(txtRange.htmlText,
+                                "^\\s*<a href=\"([^\"]+)\">[^<]+</a>\\s*$",
+                                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+                            if (match.Success)
+                                strUrl = match.Groups[1].Value;
+                        }
+                    }
+                    break;
+            }
+            using (frmSelectText frmLink = new frmSelectText
+            {
+                Description = "Enter a URL",
+                DefaultString = strUrl
+            })
+            {
+                frmLink.ShowDialog(ParentForm);
+                if (frmLink.DialogResult == DialogResult.Cancel)
+                    return;
+                if (!Uri.TryCreate(frmLink.SelectedValue, UriKind.Absolute, out Uri _))
+                {
+                    MessageBox.Show(this.ParentForm, "Invalid URL");
+                    return;
+                }
+                CreateLink(frmLink.SelectedValue);
+            }
+        }
+
+        #region Control Methods
 
         private void tsbBold_Click(object sender, EventArgs e)
         {
@@ -513,11 +703,145 @@ namespace Chummer.UI.Editor
         private void webContent_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             _domDocument.body?.setAttribute("contentEditable", "true");
+            Document.AttachEventHandler("onkeyup", UpdateButtons);
+            Document.AttachEventHandler("onmouseup", UpdateButtons);
         }
 
         private void webContent_GotFocus(object sender, EventArgs e)
         {
             Document?.Body?.Focus();
         }
+
+        private void webContent_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            SetBackgroundColor(BackColor);
+        }
+
+        private void tsbIncreaseIndent_Click(object sender, EventArgs e)
+        {
+            Indent();
+        }
+
+        private void tsbDecreaseIndent_Click(object sender, EventArgs e)
+        {
+            Outdent();
+        }
+
+        private void tsbImage_Click(object sender, EventArgs e)
+        {
+            InsertImage();
+        }
+
+        private void tsbAlignLeft_Click(object sender, EventArgs e)
+        {
+            JustifyLeft();
+        }
+
+        private void tsbAlignCenter_Click(object sender, EventArgs e)
+        {
+            JustifyCenter();
+        }
+
+        private void tsbAlignRight_Click(object sender, EventArgs e)
+        {
+            JustifyRight();
+        }
+
+        private void tsbAlignJustify_Click(object sender, EventArgs e)
+        {
+            JustifyFull();
+        }
+
+        private void tsbForeColor_Click(object sender, EventArgs e)
+        {
+            SelectForeColor();
+        }
+
+        private void tsbBackColor_Click(object sender, EventArgs e)
+        {
+            SelectBackColor();
+        }
+
+        private void cboFont_Leave(object sender, EventArgs e)
+        {
+            if (_blnSkipUpdate)
+                return;
+            FontFamily objNewFont;
+            try
+            {
+                objNewFont = new FontFamily(cboFont.Text);
+            }
+            catch (Exception)
+            {
+                _blnSkipUpdate = true;
+                cboFont.Text = FontName.GetName(0);
+                _blnSkipUpdate = false;
+                return;
+            }
+            FontName = objNewFont;
+        }
+
+        private void cboFontSize_Leave(object sender, EventArgs e)
+        {
+            if (_blnSkipUpdate)
+                return;
+            switch (cboFontSize.Text.Trim())
+            {
+                case "1":
+                    FontSize = FontSize.One;
+                    break;
+                case "2":
+                    FontSize = FontSize.Two;
+                    break;
+                case "3":
+                    FontSize = FontSize.Three;
+                    break;
+                case "4":
+                    FontSize = FontSize.Four;
+                    break;
+                case "5":
+                    FontSize = FontSize.Five;
+                    break;
+                case "6":
+                    FontSize = FontSize.Six;
+                    break;
+                case "7":
+                    FontSize = FontSize.Seven;
+                    break;
+                default:
+                    FontSize = FontSize.Seven;
+                    break;
+            }
+        }
+
+        private void HtmlEditor_Enter(object sender, EventArgs e)
+        {
+            tsControls.Visible = true;
+        }
+
+        private void HtmlEditor_Leave(object sender, EventArgs e)
+        {
+            tsControls.Visible = false;
+        }
+
+        private void tsbHyperlink_Click(object sender, EventArgs e)
+        {
+            SelectLink();
+        }
+
+        private void cboFontSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsNumber(e.KeyChar))
+            {
+                e.Handled = true;
+                if (e.KeyChar <= '7' && e.KeyChar > '0')
+                    cboFontSize.Text = e.KeyChar.ToString();
+            }
+            else if (!char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+        #endregion
     }
 }
