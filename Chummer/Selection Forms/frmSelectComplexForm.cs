@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectComplexForm(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");

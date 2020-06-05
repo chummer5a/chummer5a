@@ -45,7 +45,7 @@ namespace Chummer.UI.Skills
         {
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstDropDownActiveSkills = GenerateDropdownFilter();
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter();

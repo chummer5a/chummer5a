@@ -140,7 +140,7 @@ namespace Chummer
 
             _blnLoading = false;
             UpdateInfo();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)

@@ -36,7 +36,7 @@ namespace Chummer
         {
             InitializeComponent();
             _objSource = objSource;
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
 
             if (_objSource == Improvement.ImprovementSource.Cyberware)

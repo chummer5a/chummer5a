@@ -47,11 +47,11 @@ namespace Chummer.UI.Skills
             InitializeComponent();
             SuspendLayout();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
-            foreach (ToolStripItem objItem in cmsSkillLabel.Items)
+            foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
 
             this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));

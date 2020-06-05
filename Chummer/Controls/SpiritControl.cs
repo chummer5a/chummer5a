@@ -42,10 +42,10 @@ namespace Chummer
         {
             _objSpirit = objSpirit;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            foreach (ToolStripItem objItem in cmsSpirit.Items)
+            this.TranslateWinForm();
+            foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 

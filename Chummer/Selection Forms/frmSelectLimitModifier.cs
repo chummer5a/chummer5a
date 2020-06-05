@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Build the list of Limits.
             List<ListItem> lstLimitItems = new List<ListItem>();

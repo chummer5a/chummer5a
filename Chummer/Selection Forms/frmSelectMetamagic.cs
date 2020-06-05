@@ -52,7 +52,7 @@ namespace Chummer
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMode = objMode;
 

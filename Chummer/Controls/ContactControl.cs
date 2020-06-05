@@ -49,14 +49,14 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             MoveControls();
 
             _objContact = objContact;
 
-            foreach (ToolStripItem objItem in cmsContact.Items)
+            foreach (ToolStripItem tssItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 

@@ -38,7 +38,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             // Load the Martial Art information.
             _objXmlDocument = XmlManager.Load("martialarts.xml");
         }

@@ -37,7 +37,7 @@ namespace Chummer
         public frmHeroLabImporter()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void cmdSelectFile_Click(object sender, EventArgs e)

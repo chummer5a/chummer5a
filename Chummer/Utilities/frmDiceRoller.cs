@@ -32,7 +32,7 @@ namespace Chummer
         public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _frmMain = frmMainForm;
             nudDice.Value = intDice;
             if (lstQualities != null)

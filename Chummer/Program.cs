@@ -299,7 +299,7 @@ namespace Chummer
                 //              /plugin:SINners:RegisterUriScheme:0
                 bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
+                LanguageManager.LoadLanguage(GlobalOptions.Language);
                 MainForm = new frmChummerMain();
                 try
                 {

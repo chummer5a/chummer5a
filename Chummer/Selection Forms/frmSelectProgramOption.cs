@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectProgramOption(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.

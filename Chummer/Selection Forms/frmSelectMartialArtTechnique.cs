@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.

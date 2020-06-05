@@ -39,7 +39,7 @@ namespace Chummer
         public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strCustomGroup = strCustomGroup;
             _objDocument = XmlManager.Load("improvements.xml");

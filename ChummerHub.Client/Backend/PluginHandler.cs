@@ -85,9 +85,9 @@ namespace Chummer.Plugins
             };
             tsShowMySINners.Click += ShowMySINnersOnClick;
             cmsRoster.Items.Add(tsShowMySINners);
-            LanguageManager.TranslateToolStripItemsRecursively(tsShowMySINners, GlobalOptions.Language);
+            tsShowMySINners.TranslateToolStripItemsRecursively();
             objNode.ContextMenuStrip = cmsRoster;
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+            objNode.ContextMenuStrip.TranslateWinForm();
             if (objNode.Tag is CharacterCache member)
             {
                 ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
@@ -100,7 +100,7 @@ namespace Chummer.Plugins
                 };
                 newShare.Click += NewShareOnClick;
                 objNode.ContextMenuStrip.Items.Add(newShare);
-                LanguageManager.TranslateToolStripItemsRecursively(newShare, GlobalOptions.Language);
+                newShare.TranslateToolStripItemsRecursively();
 
                 //is it a favorite sinner?
                 if (member.MyPluginDataDic.TryGetValue("IsSINnerFavorite", out object objFavorite))
@@ -131,7 +131,7 @@ namespace Chummer.Plugins
                         newFavorite.Click += AddPinnedOnClick;
                     }
                     objNode.ContextMenuStrip.Items.Add(newFavorite);
-                    LanguageManager.TranslateToolStripItemsRecursively(newFavorite, GlobalOptions.Language);
+                    newFavorite.TranslateToolStripItemsRecursively();
                 }
                 ToolStripMenuItem newDelete = new ToolStripMenuItem("DeleteFromSINners")
                 {
@@ -143,8 +143,8 @@ namespace Chummer.Plugins
                 };
                 newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                 objNode.ContextMenuStrip.Items.Add(newDelete);
-                LanguageManager.TranslateToolStripItemsRecursively(newDelete, GlobalOptions.Language);
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                newDelete.TranslateToolStripItemsRecursively();
+                objNode.ContextMenuStrip.TranslateWinForm();
             }
 
 
@@ -188,7 +188,7 @@ namespace Chummer.Plugins
                         };
                         newFavorite.Click += RemovePinnedOnClick;
                         objNode.ContextMenuStrip.Items.Add(newFavorite);
-                        LanguageManager.TranslateToolStripItemsRecursively(newShare);
+                        newShare.TranslateToolStripItemsRecursively();
                     }
                     else
                     {
@@ -203,8 +203,8 @@ namespace Chummer.Plugins
                         newFavorite.Click += AddPinnedOnClick;
                     }
                     objNode.ContextMenuStrip.Items.Add(newFavorite);
-                    LanguageManager.TranslateToolStripItemsRecursively(newFavorite);
-                    LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                    newFavorite.TranslateToolStripItemsRecursively();
+                    objNode.ContextMenuStrip.TranslateWinForm();
                 });
             }
 
@@ -222,7 +222,7 @@ namespace Chummer.Plugins
                         ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
                         newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                         objNode.ContextMenuStrip.Items.Add(newDelete);
-                        LanguageManager.TranslateToolStripItemsRecursively(newDelete);
+                        newDelete.TranslateToolStripItemsRecursively();
                         break;
                 }
             }
@@ -544,7 +544,7 @@ namespace Chummer.Plugins
                     Tag = "Menu_Tools_SINnerSearch"
                 };
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
-                LanguageManager.TranslateToolStripItemsRecursively(mnuSINnerSearchs);
+                mnuSINnerSearchs.TranslateToolStripItemsRecursively();
                 yield return mnuSINnerSearchs;
             }
 #endif
@@ -558,7 +558,7 @@ namespace Chummer.Plugins
                 Tag = "Menu_Tools_SINnersArchetypes"
             };
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
-            LanguageManager.TranslateToolStripItemsRecursively(mnuSINnersArchetypes);
+            mnuSINnersArchetypes.TranslateToolStripItemsRecursively();
             yield return mnuSINnersArchetypes;
 
             if (Settings.Default.UserModeRegistered)
@@ -573,7 +573,7 @@ namespace Chummer.Plugins
                     Tag = "Menu_Tools_SINners"
                 };
                 mnuSINners.Click += mnuSINners_Click;
-                LanguageManager.TranslateToolStripItemsRecursively(mnuSINners);
+                mnuSINners.TranslateToolStripItemsRecursively();
                 yield return mnuSINners;
             }
         }

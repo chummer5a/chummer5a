@@ -92,7 +92,7 @@ namespace Chummer
                     break;
             }
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceIDString;

@@ -39,10 +39,10 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            foreach (ToolStripItem objItem in cmsContact.Items)
+            this.TranslateWinForm();
+            foreach (ToolStripItem tssItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
             MoveControls();
         }

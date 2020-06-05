@@ -88,7 +88,7 @@ namespace Chummer
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsAdvancedLifestyle,
                 cmsAdvancedProgram,
@@ -132,17 +132,17 @@ namespace Chummer
             };
 
             // Update the text in the Menus so they can be merged with frmMain properly.
-            foreach (ToolStripMenuItem objItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
+            foreach (ToolStripMenuItem tssItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
             foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
             {
                 if (objCMS != null)
                 {
-                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
             }

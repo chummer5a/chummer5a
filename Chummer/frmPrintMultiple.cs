@@ -34,7 +34,7 @@ namespace Chummer
         public frmPrintMultiple()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All");
 
             _workerPrinter.WorkerReportsProgress = true;

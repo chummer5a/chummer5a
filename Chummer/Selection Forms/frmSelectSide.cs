@@ -30,7 +30,7 @@ namespace Chummer
         public frmSelectSide()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Create a list for the sides.
             List<ListItem> lstSides = new List<ListItem>

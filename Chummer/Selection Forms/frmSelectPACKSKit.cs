@@ -55,7 +55,7 @@ namespace Chummer
         public frmSelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the PACKS information.
             _xmlBaseChummerNode = XmlManager.Load("packs.xml").GetFastNavigator().SelectSingleNode("/chummer");

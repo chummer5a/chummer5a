@@ -85,7 +85,7 @@ namespace Chummer
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
@@ -94,9 +94,9 @@ namespace Chummer
             {
                 if (objCMS != null)
                 {
-                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
             }

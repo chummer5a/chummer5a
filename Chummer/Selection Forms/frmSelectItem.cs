@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectItem()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmSelectItem_Load(object sender, EventArgs e)

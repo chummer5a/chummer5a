@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectSetting()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmSelectSetting_Load(object sender, EventArgs e)

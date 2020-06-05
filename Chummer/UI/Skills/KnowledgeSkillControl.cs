@@ -36,7 +36,7 @@ namespace Chummer.UI.Skills
             _skill = skill;
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             //Display
             lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));

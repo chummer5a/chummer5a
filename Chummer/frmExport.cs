@@ -39,7 +39,7 @@ namespace Chummer
         {
             _objCharacterXML = objCharacterXML;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             MoveControls();
         }
 

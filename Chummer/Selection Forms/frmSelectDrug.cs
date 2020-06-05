@@ -62,7 +62,7 @@ namespace Chummer
 
             _xmlBaseDrugDataNode = XmlManager.Load("drugcomponents.xml").GetFastNavigator().SelectSingleNode("/chummer");
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);

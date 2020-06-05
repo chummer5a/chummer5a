@@ -62,7 +62,7 @@ namespace Chummer
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;

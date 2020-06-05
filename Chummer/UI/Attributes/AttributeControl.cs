@@ -45,7 +45,7 @@ namespace Chummer.UI.Attributes
             _objCharacter = attribute.CharacterObject;
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
             _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;

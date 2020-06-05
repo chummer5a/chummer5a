@@ -52,7 +52,7 @@ namespace Chummer
         public frmSelectVehicleMod(Character objCharacter, IEnumerable<VehicleMod> lstExistingMods)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");

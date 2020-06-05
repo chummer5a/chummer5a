@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectLifestyle(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
             // Load the Lifestyles information.

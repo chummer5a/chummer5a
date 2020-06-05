@@ -39,7 +39,7 @@ namespace Chummer
         public frmOmaeUploadSheet(string strUserName, int intSheetID = 0, string strDescription = "", string strName = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _strUserName = strUserName;
             _intSheetID = intSheetID;
             txtDescription.Text = strDescription;

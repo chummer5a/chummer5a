@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {

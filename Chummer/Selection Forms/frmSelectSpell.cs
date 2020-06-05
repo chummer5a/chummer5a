@@ -47,7 +47,7 @@ namespace Chummer
         public frmSelectSpell(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             chkLimited.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_LimitedSpell"));
             chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell"));
