@@ -788,8 +788,7 @@ namespace Chummer.Backend.Equipment
                                 Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
                             .Aggregate(decMultiplier,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                     }
 
@@ -801,7 +800,7 @@ namespace Chummer.Backend.Equipment
                             Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive))
                         {
                             _decExtraESSMultiplicativeMultiplier *=
-                                (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m);
+                                objImprovement.Value / 100m;
                         }
                     }
                 }
@@ -819,8 +818,7 @@ namespace Chummer.Backend.Equipment
                                 Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
                             .Aggregate(decMultiplier,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                     }
 
@@ -832,7 +830,7 @@ namespace Chummer.Backend.Equipment
                             Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive))
                         {
                             _decExtraESSMultiplicativeMultiplier *=
-                                (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m);
+                                objImprovement.Value / 100m;
                         }
                     }
                 }
@@ -3149,12 +3147,12 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 if (SourceID == EssenceHoleGUID) // Essence hole
                 {
-                    return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
+                    return Rating / 100m;
                 }
 
                 if (SourceID == EssenceAntiHoleGUID) // Essence anti-hole
                 {
-                    return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m * -1;
+                    return Rating / -100m;
                 }
 
                 decimal decReturn;
@@ -3196,7 +3194,7 @@ namespace Chummer.Backend.Equipment
 
                 if (ESSDiscount != 0)
                 {
-                    decimal decDiscount = Convert.ToDecimal(ESSDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
+                    decimal decDiscount = ESSDiscount * 0.01m;
                     decTotalESSMultiplier *= 1.0m - decDiscount;
                 }
 
@@ -3210,8 +3208,7 @@ namespace Chummer.Backend.Equipment
                                 objImprovement.Enabled)
                             .Aggregate(decMultiplier,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                        GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
                     }
 
@@ -3222,8 +3219,7 @@ namespace Chummer.Backend.Equipment
                             .Where(x => x.Enabled && x.ImproveType == totalMultiplier)
                             .Aggregate(decTotalESSMultiplier,
                                 (current, objImprovement) =>
-                                    current * (Convert.ToDecimal(objImprovement.Value,
-                                        GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current * (objImprovement.Value / 100m));
                     }
                 }
 
@@ -3262,8 +3258,7 @@ namespace Chummer.Backend.Equipment
                                 objImprovement.Enabled)
                             .Aggregate<Improvement, decimal>(1,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                        GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         decESSMultiplier -= 1.0m - decBasicMultiplier;
                     }
                 }
@@ -3524,8 +3519,7 @@ namespace Chummer.Backend.Equipment
                         if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier &&
                             objImprovement.Enabled)
                             decMultiplier -=
-                                (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) /
-                                         100.0m));
+                                1.0m - (objImprovement.Value / 100.0m);
                     }
 
                     decReturn *= decMultiplier;

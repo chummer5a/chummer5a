@@ -9574,11 +9574,11 @@ namespace Chummer
                 }
                 else
                 {
-                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
-                    nudCyberwareRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.CultureInfo);
-                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Maximum = objCyberware.MaxRating;
+                    nudCyberwareRating.Minimum = objCyberware.MinRating;
+                    nudCyberwareRating.Value = objCyberware.Rating;
                     nudCyberwareRating.Visible = true;
-                    nudCyberwareRating.Enabled = true;
+                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum == nudCyberwareRating.Minimum;
                     lblCyberwareRatingLabel.Visible = true;
                 }
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
@@ -10610,7 +10610,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                                decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
@@ -10622,7 +10622,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier && objImprovement.Enabled)
-                                decMultiplier *= Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier *= objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
@@ -10634,7 +10634,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                                decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
@@ -10646,7 +10646,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                                decMultiplier *= Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier *= objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
@@ -10660,7 +10660,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                                decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterESSMultiplier = decMultiplier;
@@ -10672,7 +10672,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
-                                decMultiplier *= Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier *= objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
@@ -10684,7 +10684,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                                decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterESSMultiplier = decMultiplier;
@@ -10696,7 +10696,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {
                             if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                                decMultiplier *= Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                                decMultiplier *= objImprovement.Value / 100.0m;
                         }
 
                         frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
@@ -10710,7 +10710,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                            decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                     }
 
                     frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
@@ -10723,7 +10723,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements
                         .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.GenetechEssMultiplier && objImprovement.Enabled))
                     {
-                        decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                     }
 
                     frmPickCyberware.GenetechEssMultiplier = decMultiplier;
@@ -10736,7 +10736,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            decMultiplier -= 1.0m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                     }
 
                     frmPickCyberware.GenetechCostMultiplier = decMultiplier;
@@ -11131,7 +11131,7 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
+            nudLifestyleMonths.Value = objLifestyle.Increments;
             lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6") + strSpace + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             objLifestyle.SetSourceDetail(lblLifestyleSource);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -11741,9 +11741,10 @@ namespace Chummer
                 }
                 else
                 {
-                    nudVehicleRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
-                    nudVehicleRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.CultureInfo);
-                    nudVehicleRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
+                    nudVehicleRating.Maximum = objCyberware.MaxRating;
+                    nudVehicleRating.Minimum = objCyberware.MinRating;
+                    nudVehicleRating.Value = objCyberware.Rating;
+                    nudVehicleRating.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum;
                     nudVehicleRating.Visible = true;
                     lblVehicleRatingLabel.Visible = true;
                 }
@@ -13437,7 +13438,7 @@ namespace Chummer
                     decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationOrdealPercent;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
+                intAmount = decimal.ToInt32(decimal.Ceiling((CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation) * decMultiplier));
 
                 strInitTip = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveInitiateGrade")
                     , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
@@ -13451,7 +13452,7 @@ namespace Chummer
                     decMultiplier -= CharacterObjectOptions.KarmaRESInitiationOrdealPercent;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= CharacterObjectOptions.KarmaRESInitiationSchoolingPercent;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
+                intAmount = decimal.ToInt32(decimal.Ceiling((CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation) * decMultiplier));
 
                 strInitTip = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveSubmersionGrade")
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)
