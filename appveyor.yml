@@ -103,7 +103,9 @@ build:
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
 on_failure:
-- ps: Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+- ps: |
+iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed
 artifacts:
 - path: Chummer.Nightly.zip
   name: Chummer
@@ -116,7 +118,6 @@ deploy:
   draft: false
   prerelease: true
 test:
-- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # all except assemblies to test
   assemblies:
     except:
