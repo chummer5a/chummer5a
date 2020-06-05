@@ -10,6 +10,7 @@
   <xsl:output method="html" indent="yes" version="4.0"/>
 
   <xsl:template match="/characters/character">
+    <xsl:variable name="ImageFormat" select="imageformat" />
     <xsl:variable name="TitleName">
       <xsl:call-template name="TitleName">
         <xsl:with-param name="name" select="name"/>
@@ -223,7 +224,9 @@
               <xsl:call-template name="print_attributes" />
             </td>
             <td class="fill33">
-              <xsl:call-template name="print_mugshot_and_priorities" />
+              <xsl:call-template name="print_mugshot_and_priorities">
+                <xsl:with-param name="ImageFormat" select="$ImageFormat" />
+              </xsl:call-template>
             </td>
           </tr>
           <xsl:call-template name="page_breaker" />
@@ -363,7 +366,9 @@
           <xsl:call-template name="page_breaker" />
           <tr>
             <td class="fill100" colspan="3">
-              <xsl:call-template name="print_description" />
+              <xsl:call-template name="print_description">
+                <xsl:with-param name="ImageFormat" select="$ImageFormat" />
+              </xsl:call-template>
             </td>
           </tr>
         </table>
@@ -616,11 +621,12 @@
   </xsl:template>
 
   <xsl:template name="print_mugshot_and_priorities">
+    <xsl:param name="ImageFormat" />
     <table class="stats general">
       <xsl:if test="mainmugshotbase64 != ''">
         <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Mugshot" />]</div></td></tr>
         <tr><td colspan="2" style="text-align:center; width: 100%;">
-          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
+          <img src="data:image/{$ImageFormat};base64,{mainmugshotbase64}" class="mugshot" />
         </td></tr>
       </xsl:if>
       <xsl:if test="prioritymetatype != ''">
@@ -2121,6 +2127,7 @@
   </xsl:template>
 
   <xsl:template name="print_description">
+    <xsl:param name="ImageFormat" />
     <xsl:if test="description!=''">
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Description"/>]</div></td></tr>
@@ -2169,7 +2176,7 @@
                     <tr><td width="100%" style="text-align:center; width: 100%;">
                       <img class="mugshot">
                         <xsl:attribute name="src">
-                          data:image/png;base64,<xsl:value-of select='stringbase64' />
+                          data:image/<xsl:value-of select="$ImageFormat" />;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
                       </img>
                     </td></tr>
@@ -2185,7 +2192,7 @@
                     <tr><td width="100%" style="text-align:center; width: 100%;">
                       <img class="mugshot">
                         <xsl:attribute name="src">
-                          data:image/png;base64,<xsl:value-of select='stringbase64' />
+                          data:image/<xsl:value-of select="$ImageFormat" />;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
                       </img>
                     </td></tr>
@@ -2201,7 +2208,7 @@
                     <tr><td width="100%" style="text-align:center; width: 100%;">
                       <img class="mugshot">
                         <xsl:attribute name="src">
-                          data:image/png;base64,<xsl:value-of select='stringbase64' />
+                          data:image/<xsl:value-of select="$ImageFormat" />;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
                       </img>
                     </td></tr>
