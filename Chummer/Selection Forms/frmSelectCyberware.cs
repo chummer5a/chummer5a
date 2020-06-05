@@ -1114,20 +1114,24 @@ namespace Chummer
                         }
                     }
                 }
-                if (chkHideOverAvailLimit.Checked && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+
+                if (blnDoUIUpdate)
                 {
-                    ++intOverLimit;
-                    continue;
-                }
-                if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
-                {
-                    decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
-                        decCostMultiplier *= 0.9m;
-                    if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                    if (chkHideOverAvailLimit.Checked && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
                     {
                         ++intOverLimit;
                         continue;
+                    }
+                    if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
+                            decCostMultiplier *= 0.9m;
+                        if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                        {
+                            ++intOverLimit;
+                            continue;
+                        }
                     }
                 }
 
@@ -1368,7 +1372,7 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 // Make sure the category contains items that we can actually display
-                if (RefreshList(objXmlCategory.Value, false, true).Count > 0)
+                if (RefreshList(objXmlCategory.Value, false, true)?.Count > 0)
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
