@@ -1626,7 +1626,14 @@ namespace Chummer
                 Properties.Settings.Default.Size = RestoreBounds.Size;
             }
 
-            Properties.Settings.Default.Save();
+            try
+            {
+                Properties.Settings.Default.Save();
+            }
+            catch (IOException ex)
+            {
+                Log.Warn(ex, ex.Message);
+            }
         }
 
         private void mnuHeroLabImporter_Click(object sender, EventArgs e)

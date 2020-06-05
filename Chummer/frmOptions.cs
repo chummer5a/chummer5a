@@ -2119,13 +2119,27 @@ namespace Chummer
 
         private void txtDateFormat_TextChanged(object sender, EventArgs e)
         {
-            txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
+            try
+            {
+                txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
+            }
+            catch (Exception)
+            {
+                txtDateFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+            }
             OptionsChanged(sender, e);
         }
 
         private void txtTimeFormat_TextChanged(object sender, EventArgs e)
         {
-            txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
+            try
+            {
+                txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
+            }
+            catch (Exception)
+            {
+                txtTimeFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+            }
             OptionsChanged(sender, e);
         }
 
