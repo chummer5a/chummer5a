@@ -133,7 +133,12 @@ namespace Chummer
             if (_workerPrinter.CancellationPending)
                 e.Cancel = true;
             else
+            {
+                if (_lstCharacters?.Count > 0)
+                    foreach (Character objCharacter in _lstCharacters)
+                        objCharacter.Dispose();
                 _lstCharacters = new List<Character>(lstCharacters);
+            }
         }
 
         private frmViewer _frmPrintView;
@@ -154,7 +159,7 @@ namespace Chummer
                 {
                     _frmPrintView = new frmViewer();
                     _frmPrintView.SetSelectedSheet("Game Master Summary");
-                    _frmPrintView.SetCharacters(_lstCharacters.ToArray());
+                    _frmPrintView.SetCharacters(_lstCharacters?.ToArray());
                     _frmPrintView.Show();
                 }
                 else

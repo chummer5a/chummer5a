@@ -49,11 +49,12 @@ namespace Chummer
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
-        public frmSelectVehicleMod(Character objCharacter, IEnumerable<VehicleMod> lstExistingMods)
+        public frmSelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
         {
             InitializeComponent();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             if (_xmlBaseVehicleDataNode != null)
@@ -234,14 +235,6 @@ namespace Chummer
         public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
-        /// Vehicle's Cost.
-        /// </summary>
-        public Vehicle SelectedVehicle
-        {
-            set => _objVehicle = value;
-        }
-
-        /// <summary>
         /// The slots taken up by a weapon mount to which the vehicle mod might be being added
         /// </summary>
         public int WeaponMountSlots
@@ -379,8 +372,8 @@ namespace Chummer
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter)) &&
-                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
+                if ((!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter)) &&
+                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
@@ -535,7 +528,7 @@ namespace Chummer
                 {
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckAvailRestriction(xmlVehicleMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -546,7 +539,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckNuyenRestriction(xmlVehicleMod, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }

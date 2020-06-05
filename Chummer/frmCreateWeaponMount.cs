@@ -552,10 +552,9 @@ namespace Chummer
             TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
             do
             {
-                frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, _objMount?.Mods)
+                frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
                 {
                     // Pass the selected vehicle on to the form.
-                    SelectedVehicle = _objVehicle,
                     VehicleMountMods = true,
                     WeaponMountSlots = intSlots
                 };
