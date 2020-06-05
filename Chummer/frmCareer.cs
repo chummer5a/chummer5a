@@ -201,10 +201,8 @@ namespace Chummer
                     {
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
-                        txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false,
-                            DataSourceUpdateMode.OnPropertyChanged);
-                        txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false,
-                            DataSourceUpdateMode.OnPropertyChanged);
+                        txtGroupName.DoDatabinding("Text", CharacterObject, nameof(Character.GroupName));
+                        txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
 
                         txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
                         txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
