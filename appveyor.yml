@@ -5,7 +5,8 @@ branches:
 skip_tags: true
 image: Visual Studio 2017
 configuration: Release
-platform: x86
+platform: Any CPU
+
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -115,6 +116,7 @@ deploy:
   draft: false
   prerelease: true
 test:
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # all except assemblies to test
   assemblies:
     except:
