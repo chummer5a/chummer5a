@@ -242,17 +242,13 @@ namespace Chummer
             if (objNotes == null)
                 return;
             string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes())
+            using (frmNotes frmItemNotes = new frmNotes{ Notes = strOldValue })
             {
-                if (strOldValue.ContainsHtmlTags())
-                    frmItemNotes.HtmlNotes = strOldValue;
-                else
-                    frmItemNotes.Notes = strOldValue;
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
 
-                objNotes.Notes = frmItemNotes.HtmlNotes;
+                objNotes.Notes = frmItemNotes.Notes;
                 if (objNotes.Notes != strOldValue)
                 {
                     IsDirty = true;

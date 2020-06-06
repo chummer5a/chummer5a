@@ -386,16 +386,12 @@ namespace Chummer.UI.Powers
             })
             {
                 ClickHandler = p => {
-                    using (frmNotes frmPowerNotes = new frmNotes())
+                    using (frmNotes frmPowerNotes = new frmNotes { Notes = p.Notes })
                     {
-                        if (p.Notes.ContainsHtmlTags())
-                            frmPowerNotes.HtmlNotes = p.Notes;
-                        else
-                            frmPowerNotes.Notes = p.Notes;
                         frmPowerNotes.ShowDialog(this);
 
                         if (frmPowerNotes.DialogResult == DialogResult.OK)
-                            p.Notes = frmPowerNotes.HtmlNotes;
+                            p.Notes = frmPowerNotes.Notes;
                     }
                 },
                 Alignment = Alignment.Center
@@ -406,7 +402,7 @@ namespace Chummer.UI.Powers
                 ToolTipExtractor = (p => {
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
+                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
                     return strTooltip.WordWrap(100);
                 })
             };

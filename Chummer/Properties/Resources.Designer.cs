@@ -2424,6 +2424,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap paintcan {
+            get {
+                object obj = ResourceManager.GetObject("paintcan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap pe {
             get {
                 object obj = ResourceManager.GetObject("pe", resourceCulture);
@@ -3057,6 +3067,16 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap text_list_numbers {
             get {
                 object obj = ResourceManager.GetObject("text_list_numbers", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_strikethrough {
+            get {
+                object obj = ResourceManager.GetObject("text_strikethrough", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

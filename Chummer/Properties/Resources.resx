@@ -127,9 +127,6 @@
   <data name="kr" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\kr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="jp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\jp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="hm" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\hm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -144,6 +141,9 @@
   </data>
   <data name="mt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\mt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="award_star_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\award_star_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\mh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -187,6 +187,9 @@
   <data name="ee" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\ee.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="kg" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\kg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="sz" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\sz.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -199,9 +202,6 @@
   <data name="rw" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\rw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pencil" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\pencil.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="table" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\table.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -213,9 +213,6 @@
   </data>
   <data name="gy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ly" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\ly.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -237,9 +234,6 @@
   </data>
   <data name="lk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\lk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="il" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\il.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="text_align_justify" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\text_align_justify.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -292,9 +286,6 @@
   <data name="kh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\kh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="house_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\house_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="mx" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\mx.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -346,11 +337,14 @@
   <data name="text_indent_remove" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\text_indent_remove.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="possession" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\possession.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="user_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\user_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="text_underline" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\text_underline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="mp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\mp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="me" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\me.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -391,14 +385,14 @@
   <data name="cf" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\cf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sd" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\sd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ph" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\ph.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="hr" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\hr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="us" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\us.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gf" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -489,6 +483,9 @@
   <data name="gn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="qa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\qa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="cc" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\cc.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -501,8 +498,8 @@
   <data name="basket_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\basket_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="lv" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\lv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="sl" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\sl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="zw" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\zw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -527,9 +524,6 @@
   </data>
   <data name="briefcase_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\briefcase_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ca" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\ca.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ng" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\ng.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -651,17 +645,17 @@
   <data name="gm" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="us" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\us.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="il" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\il.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gr" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="disk" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\disk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="asterisk_orange" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\asterisk_orange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="text_underline" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\text_underline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="printer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\printer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -672,8 +666,11 @@
   <data name="brick_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\brick_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ir" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\ir.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="vi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\vi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="za" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\za.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="shield_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\shield_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -695,6 +692,9 @@
   </data>
   <data name="nr" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\nr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lv" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\lv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="nc" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\nc.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -726,6 +726,9 @@
   <data name="link_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\link_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="fr" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\fr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -741,8 +744,11 @@
   <data name="an" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\an.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="kp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\kp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="sd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\sd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ir" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\ir.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="text_indent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\text_indent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -762,8 +768,8 @@
   <data name="HeroLab_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\HeroLab_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="by" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\by.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ca" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\ca.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="group" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\group.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -773,6 +779,9 @@
   </data>
   <data name="be" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\be.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ga" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\ga.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="table_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\table_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -785,6 +794,9 @@
   </data>
   <data name="pt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\pt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="kp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\kp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="money_yen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\money_yen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -807,20 +819,14 @@
   <data name="application_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\application_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sn" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\sn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ci" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\ci.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="export" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\bs.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="bf" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\bf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="dj" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\dj.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\bh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="al" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\al.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -873,9 +879,6 @@
   <data name="bug_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\bug_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sl" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\sl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="so" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\so.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -897,17 +900,23 @@
   <data name="io" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\io.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="paintcan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\paintcan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="in" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tv" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\tv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="color_wheel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\color_wheel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ad" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\ad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="award_star_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\award_star_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="disk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\disk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="printer_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\printer_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -915,8 +924,8 @@
   <data name="gt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\gt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="vi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\vi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="house_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\house_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="eh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\eh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -924,20 +933,14 @@
   <data name="fj" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\fj.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="bs" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\bs.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ci" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\ci.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="bm" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\bm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tl" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\tl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="mp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\mp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="td" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\td.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\cy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -965,6 +968,9 @@
   </data>
   <data name="page_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\page_copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="iq" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\iq.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="um" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\um.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1005,9 +1011,6 @@
   <data name="no" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\no.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="arrow_redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\arrow_redo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="cg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\cg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1044,14 +1047,14 @@
   <data name="mm" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\mm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="za" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\za.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="dj" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\dj.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="li" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\li.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="bh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\bh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="by" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\by.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ie" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\ie.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1059,8 +1062,8 @@
   <data name="sj" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\sj.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="kg" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\kg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ly" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\ly.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ve" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\ve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1077,8 +1080,8 @@
   <data name="np" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\np.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="fr" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\fr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="td" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\td.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="bz" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\bz.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1095,14 +1098,14 @@
   <data name="emoticon_waii" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\emoticon_waii.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="qa" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\qa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="arrow_redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\arrow_redo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mq" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\mq.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ga" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\ga.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pencil" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\pencil.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="nf" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\nf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1125,8 +1128,11 @@
   <data name="die" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\die.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="iq" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\iq.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\ch.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\sn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="computer_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\computer_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1143,8 +1149,8 @@
   <data name="printer_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\printer_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ch" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\flags\ch.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="export" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1152,10 +1158,10 @@
   <data name="mv" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\flags\mv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="possession" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\possession.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="jp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\flags\jp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="color_wheel" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\color_wheel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="text_strikethrough" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\text_strikethrough.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

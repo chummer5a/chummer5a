@@ -40,17 +40,13 @@ namespace Chummer
             if (objNotes == null || treNode == null)
                 return false;
             string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes())
+            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
             {
-                if (strOldValue.ContainsHtmlTags())
-                    frmItemNotes.HtmlNotes = strOldValue;
-                else
-                    frmItemNotes.Notes = strOldValue;
                 frmItemNotes.ShowDialog();
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return false;
 
-                objNotes.Notes = frmItemNotes.HtmlNotes;
+                objNotes.Notes = frmItemNotes.Notes;
             }
             if (objNotes.Notes != strOldValue)
             {

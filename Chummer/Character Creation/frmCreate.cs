@@ -4797,17 +4797,13 @@ namespace Chummer
             if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 string strOldValue = objGear.Notes;
-                using (frmNotes frmItemNotes = new frmNotes())
+                using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
                 {
-                    if (strOldValue.ContainsHtmlTags())
-                        frmItemNotes.HtmlNotes = strOldValue;
-                    else
-                        frmItemNotes.Notes = strOldValue;
                     frmItemNotes.ShowDialog(this);
                     if (frmItemNotes.DialogResult != DialogResult.OK)
                         return;
 
-                    objGear.Notes = frmItemNotes.HtmlNotes;
+                    objGear.Notes = frmItemNotes.Notes;
                     if (objGear.Notes != strOldValue)
                     {
                         IsDirty = true;

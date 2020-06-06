@@ -303,18 +303,14 @@ namespace Chummer
         private void imgNotes_Click(object sender, EventArgs e)
         {
             string strOldValue = _objContact.Notes;
-            using (frmNotes frmContactNotes = new frmNotes())
+            using (frmNotes frmContactNotes = new frmNotes { Notes = strOldValue })
             {
-                if (strOldValue.ContainsHtmlTags())
-                    frmContactNotes.HtmlNotes = strOldValue;
-                else
-                    frmContactNotes.Notes = strOldValue;
                 frmContactNotes.ShowDialog(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
                 frmContactNotes.ShowDialog(this);
 
-                _objContact.Notes = frmContactNotes.HtmlNotes;
+                _objContact.Notes = frmContactNotes.Notes;
                 if (strOldValue == _objContact.Notes)
                     return;
             }

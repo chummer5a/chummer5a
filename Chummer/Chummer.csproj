@@ -137,9 +137,6 @@
       <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.14.0\lib\net45\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.21\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
@@ -157,6 +154,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RtfPipe, Version=1.0.7388.1242, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RtfPipe.1.0.7388.1242\lib\net45\RtfPipe.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll</HintPath>
@@ -542,11 +542,11 @@
     <Compile Include="UI\Charts\ExpenseChart.Designer.cs">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Editor\HtmlEditor.cs">
+    <Compile Include="UI\Editor\RtfEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Editor\HtmlEditor.Designer.cs">
-      <DependentUpon>HtmlEditor.cs</DependentUpon>
+    <Compile Include="UI\Editor\RtfEditor.Designer.cs">
+      <DependentUpon>RtfEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Shared\Components\DicePoolControl.cs">
       <SubType>UserControl</SubType>
@@ -1296,8 +1296,8 @@
     <EmbeddedResource Include="UI\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Editor\HtmlEditor.resx">
-      <DependentUpon>HtmlEditor.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Editor\RtfEditor.resx">
+      <DependentUpon>RtfEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
       <DependentUpon>DicePoolControl.cs</DependentUpon>

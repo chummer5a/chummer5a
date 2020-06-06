@@ -273,18 +273,14 @@ namespace Chummer
         private void imgNotes_Click(object sender, EventArgs e)
         {
             string strOldValue = _objSpirit.Notes;
-            using (frmNotes frmSpritNotes = new frmNotes())
+            using (frmNotes frmSpritNotes = new frmNotes { Notes = strOldValue })
             {
-                if (strOldValue.ContainsHtmlTags())
-                    frmSpritNotes.HtmlNotes = strOldValue;
-                else
-                    frmSpritNotes.Notes = strOldValue;
                 frmSpritNotes.ShowDialog(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)
                     return;
                 frmSpritNotes.ShowDialog(this);
 
-                _objSpirit.Notes = frmSpritNotes.HtmlNotes;
+                _objSpirit.Notes = frmSpritNotes.Notes;
                 if (strOldValue == _objSpirit.Notes)
                     return;
             }

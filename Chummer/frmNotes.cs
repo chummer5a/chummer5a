@@ -16,8 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-﻿using System.Windows.Forms;
+
+using System;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -27,14 +28,13 @@ namespace Chummer
 		private static int s_IntHeight = 360;
 	    private readonly bool _blnLoading;
         private string _strNotes;
-        private string _strHtmlNotes;
 
         #region Control Events
         public frmNotes()
 		{
             InitializeComponent();
+            rtfNotes.ContentKeyDown += rtfNotes_KeyDown;
             this.TranslateWinForm();
-            htmNotes.OnBodyKeyDown += htmNotes_OnBodyKeyDown;
             _blnLoading = true;
 			Width = s_IntWidth;
 			Height = s_IntHeight;
@@ -43,15 +43,14 @@ namespace Chummer
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-            Notes = htmNotes.BodyText;
-            HtmlNotes = htmNotes.Html;
+            Notes = rtfNotes.Text;
             DialogResult = DialogResult.OK;
 		}
 
-		private void htmNotes_OnBodyKeyDown(object sender, KeyEventArgs e)
-		{
+        private void rtfNotes_KeyDown(object sender, KeyEventArgs e)
+        {
             if (e.KeyCode == Keys.Escape)
-				DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -62,9 +61,14 @@ namespace Chummer
             s_IntWidth = Width;
             s_IntHeight = Height;
         }
+
+        private void frmNotes_Shown(object sender, EventArgs e)
+        {
+            rtfNotes.FocusContent();
+        }
         #endregion
 
-		#region Properties
+        #region Properties
 
         /// <summary>
         /// Notes.
@@ -77,26 +81,10 @@ namespace Chummer
                 if (_strNotes != value)
                 {
                     _strNotes = value;
-                    htmNotes.BodyText = value;
+                    rtfNotes.Text = value;
                 }
             }
         }
-
-        /// <summary>
-        /// Notes including Html tags
-        /// </summary>
-        public string HtmlNotes
-        {
-            get => _strHtmlNotes;
-            set
-            {
-                if (_strHtmlNotes != value)
-                {
-                    _strHtmlNotes = value;
-                    htmNotes.Html = value;
-                }
-            }
-        }
-		#endregion
-	}
+        #endregion
+    }
 }
