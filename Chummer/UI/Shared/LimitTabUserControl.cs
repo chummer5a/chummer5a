@@ -131,16 +131,17 @@ namespace Chummer.UI.Shared
                         objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
                         continue;
                     string strOldValue = objImprovement.Notes;
-                    using (frmNotes frmItemNotes = new frmNotes
+                    using (frmNotes frmItemNotes = new frmNotes())
                     {
-                        Notes = strOldValue
-                    })
-                    {
+                        if (strOldValue.ContainsHtmlTags())
+                            frmItemNotes.HtmlNotes = strOldValue;
+                        else
+                            frmItemNotes.Notes = strOldValue;
                         frmItemNotes.ShowDialog(this);
-
                         if (frmItemNotes.DialogResult != DialogResult.OK)
                             continue;
-                        objImprovement.Notes = frmItemNotes.Notes;
+
+                        objImprovement.Notes = frmItemNotes.HtmlNotes;
                     }
 
                     if (objImprovement.Notes == strOldValue)
@@ -169,16 +170,17 @@ namespace Chummer.UI.Shared
         private void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes
+            using (frmNotes frmItemNotes = new frmNotes())
             {
-                Notes = strOldValue
-            })
-            {
+                if (strOldValue.ContainsHtmlTags())
+                    frmItemNotes.HtmlNotes = strOldValue;
+                else
+                    frmItemNotes.Notes = strOldValue;
                 frmItemNotes.ShowDialog(this);
-
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-                objNotes.Notes = frmItemNotes.Notes;
+
+                objNotes.Notes = frmItemNotes.HtmlNotes;
             }
 
             if (objNotes.Notes == strOldValue)

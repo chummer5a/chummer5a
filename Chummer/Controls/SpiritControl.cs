@@ -273,26 +273,30 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmSpritNotes = new frmNotes
+            string strOldValue = _objSpirit.Notes;
+            using (frmNotes frmSpritNotes = new frmNotes())
             {
-                Notes = _objSpirit.Notes
-            })
-            {
+                if (strOldValue.ContainsHtmlTags())
+                    frmSpritNotes.HtmlNotes = strOldValue;
+                else
+                    frmSpritNotes.Notes = strOldValue;
+                frmSpritNotes.ShowDialog(this);
+                if (frmSpritNotes.DialogResult != DialogResult.OK)
+                    return;
                 frmSpritNotes.ShowDialog(this);
 
-                if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
-                {
-                    _objSpirit.Notes = frmSpritNotes.Notes;
-
-                    string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
-
-                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                    imgNotes.SetToolTip(strTooltip.WordWrap(100));
-
-                    ContactDetailChanged?.Invoke(this, e);
-                }
+                _objSpirit.Notes = frmSpritNotes.HtmlNotes;
+                if (strOldValue == _objSpirit.Notes)
+                    return;
             }
+
+            string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
+
+            if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+            imgNotes.SetToolTip(strTooltip.WordWrap(100));
+
+            ContactDetailChanged?.Invoke(this, e);
         }
         #endregion
 

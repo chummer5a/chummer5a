@@ -27,14 +27,15 @@ namespace Chummer
 		private static int s_IntHeight = 360;
 	    private readonly bool _blnLoading;
         private string _strNotes;
-        private string _strFormattedNotes;
+        private string _strHtmlNotes;
 
         #region Control Events
-		public frmNotes()
+        public frmNotes()
 		{
             InitializeComponent();
 			LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-			_blnLoading = true;
+            htmNotes.OnBodyKeyDown += htmNotes_OnBodyKeyDown;
+            _blnLoading = true;
 			Width = s_IntWidth;
 			Height = s_IntHeight;
             _blnLoading = false;
@@ -42,21 +43,15 @@ namespace Chummer
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-            Notes = rtbNotes.Text;
-            FormattedNotes = rtbNotes.Rtf;
+            Notes = htmNotes.BodyText;
+            HtmlNotes = htmNotes.Html;
             DialogResult = DialogResult.OK;
 		}
 
-		private void rtbNotes_KeyDown(object sender, KeyEventArgs e)
+		private void htmNotes_OnBodyKeyDown(object sender, KeyEventArgs e)
 		{
             if (e.KeyCode == Keys.Escape)
 				DialogResult = DialogResult.OK;
-
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                e.SuppressKeyPress = true;
-                ((RichTextBox) sender)?.SelectAll();
-            }
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -82,23 +77,23 @@ namespace Chummer
                 if (_strNotes != value)
                 {
                     _strNotes = value;
-                    rtbNotes.Text = value;
+                    htmNotes.BodyText = value;
                 }
             }
         }
 
         /// <summary>
-        /// RTF Formatted notes.
+        /// Notes including Html tags
         /// </summary>
-        public string FormattedNotes
+        public string HtmlNotes
         {
-            get => _strFormattedNotes;
+            get => _strHtmlNotes;
             set
             {
-                if (_strFormattedNotes != value)
+                if (_strHtmlNotes != value)
                 {
-                    _strFormattedNotes = value;
-                    rtbNotes.Rtf = value;
+                    _strHtmlNotes = value;
+                    htmNotes.Html = value;
                 }
             }
         }

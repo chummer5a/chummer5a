@@ -61,6 +61,8 @@ namespace Chummer.UI.Editor
         private bool _blnSkipUpdate;
         private readonly IHTMLDocument2 _domDocument;
 
+        public KeyEventHandler OnBodyKeyDown;
+
         public HtmlEditor()
         {
             InitializeComponent();
@@ -78,7 +80,7 @@ namespace Chummer.UI.Editor
             cboFont.AutoCompleteCustomSource = lstFontsAutoComplete;
         }
 
-        private void UpdateButtons(object sender, EventArgs e)
+        private void UpdateButtons(object sender, HtmlElementEventArgs e)
         {
             if (ReadyState != ReadyState.Complete)
                 return;
@@ -703,8 +705,27 @@ namespace Chummer.UI.Editor
         private void webContent_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             _domDocument.body?.setAttribute("contentEditable", "true");
-            Document.AttachEventHandler("onkeyup", UpdateButtons);
-            Document.AttachEventHandler("onmouseup", UpdateButtons);
+            if (Document.Body != null)
+            {
+                Document.Body.KeyDown += Body_KeyDown;
+                Document.Body.KeyDown += UpdateButtons;
+                Document.Body.MouseDown += UpdateButtons;
+            }
+        }
+
+        private void Body_KeyDown(object sender, HtmlElementEventArgs e)
+        {
+            if (OnBodyKeyDown != null)
+            {
+                Keys eKeyPressed = (Keys)e.KeyPressedCode;
+                if (eKeyPressed != Keys.Alt && e.AltKeyPressed)
+                    eKeyPressed |= Keys.Alt;
+                if (eKeyPressed != Keys.Control && e.CtrlKeyPressed)
+                    eKeyPressed |= Keys.Control;
+                if (eKeyPressed != Keys.Shift && e.ShiftKeyPressed)
+                    eKeyPressed |= Keys.Shift;
+                OnBodyKeyDown(this, new KeyEventArgs(eKeyPressed));
+            }
         }
 
         private void webContent_GotFocus(object sender, EventArgs e)

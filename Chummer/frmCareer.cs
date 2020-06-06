@@ -5618,20 +5618,20 @@ namespace Chummer
             if (objWeek != null)
             {
                 string strOldValue = objWeek.Notes;
-                using (frmNotes frmItemNotes = new frmNotes
+                using (frmNotes frmItemNotes = new frmNotes())
                 {
-                    Notes = strOldValue
-                })
-                {
+                    if (strOldValue.ContainsHtmlTags())
+                        frmItemNotes.HtmlNotes = strOldValue;
+                    else
+                        frmItemNotes.Notes = strOldValue;
                     frmItemNotes.ShowDialog(this);
+                    if (frmItemNotes.DialogResult != DialogResult.OK)
+                        return;
 
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objWeek.Notes = frmItemNotes.HtmlNotes;
+                    if (objWeek.Notes != strOldValue)
                     {
-                        objWeek.Notes = frmItemNotes.Notes;
-                        if (objWeek.Notes != strOldValue)
-                        {
-                            IsDirty = true;
-                        }
+                        IsDirty = true;
                     }
                 }
             }

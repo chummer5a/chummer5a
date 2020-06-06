@@ -28,25 +28,27 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.rtbNotes = new System.Windows.Forms.RichTextBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmNotes));
+            this.htmNotes = new Chummer.UI.Editor.HtmlEditor();
             this.SuspendLayout();
             // 
-            // rtbNotes
+            // htmNotes
             // 
-            this.rtbNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbNotes.Location = new System.Drawing.Point(0, 0);
-            this.rtbNotes.Name = "rtbNotes";
-            this.rtbNotes.Size = new System.Drawing.Size(624, 321);
-            this.rtbNotes.TabIndex = 0;
-            this.rtbNotes.Text = "";
-            this.rtbNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtbNotes_KeyDown);
+            this.htmNotes.BodyText = "";
+            this.htmNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.htmNotes.DocumentText = resources.GetString("htmNotes.DocumentText");
+            this.htmNotes.Html = "";
+            this.htmNotes.Location = new System.Drawing.Point(0, 0);
+            this.htmNotes.Name = "htmNotes";
+            this.htmNotes.Size = new System.Drawing.Size(624, 321);
+            this.htmNotes.TabIndex = 0;
             // 
             // frmNotes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 321);
-            this.Controls.Add(this.rtbNotes);
+            this.Controls.Add(this.htmNotes);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MinimumSize = new System.Drawing.Size(640, 360);
             this.Name = "frmNotes";
@@ -63,6 +65,6 @@
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox rtbNotes;
+        private UI.Editor.HtmlEditor htmNotes;
     }
 }

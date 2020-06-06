@@ -34,6 +34,7 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
@@ -241,25 +242,25 @@ namespace Chummer
             if (objNotes == null)
                 return;
             string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes
+            using (frmNotes frmItemNotes = new frmNotes())
             {
-                Notes = strOldValue
-            })
-            {
+                if (strOldValue.ContainsHtmlTags())
+                    frmItemNotes.HtmlNotes = strOldValue;
+                else
+                    frmItemNotes.Notes = strOldValue;
                 frmItemNotes.ShowDialog(this);
+                if (frmItemNotes.DialogResult != DialogResult.OK)
+                    return;
 
-                if (frmItemNotes.DialogResult == DialogResult.OK)
+                objNotes.Notes = frmItemNotes.HtmlNotes;
+                if (objNotes.Notes != strOldValue)
                 {
-                    objNotes.Notes = frmItemNotes.Notes;
-                    if (objNotes.Notes != strOldValue)
-                    {
-                        IsDirty = true;
+                    IsDirty = true;
 
-                        if (treNode != null)
-                        {
-                            treNode.ForeColor = objNotes.PreferredColor;
-                            treNode.ToolTipText = objNotes.Notes.WordWrap(100);
-                        }
+                    if (treNode != null)
+                    {
+                        treNode.ForeColor = objNotes.PreferredColor;
+                        treNode.ToolTipText = objNotes.Notes.WordWrap(100);
                     }
                 }
             }

@@ -19,6 +19,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Chummer
 {
@@ -905,5 +906,20 @@ namespace Chummer
                 .Replace("\n", "<br />")
                 .Replace("\r", "<br />");
         }
+
+        /// <summary>
+        /// Checks if a string contains any HTML tags
+        /// </summary>
+        /// <param name="strInput">The string to check.</param>
+        /// <returns>True if the string contains HTML tags, False otherwise.</returns>
+        public static bool ContainsHtmlTags(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            return rgxHtmlTagExpression.IsMatch(strInput);
+        }
+
+        private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
     }
 }

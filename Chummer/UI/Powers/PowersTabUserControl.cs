@@ -386,14 +386,17 @@ namespace Chummer.UI.Powers
             })
             {
                 ClickHandler = p => {
-                    frmNotes frmPowerNotes = new frmNotes
+                    using (frmNotes frmPowerNotes = new frmNotes())
                     {
-                        Notes = p.Notes
-                    };
-                    frmPowerNotes.ShowDialog(this);
+                        if (p.Notes.ContainsHtmlTags())
+                            frmPowerNotes.HtmlNotes = p.Notes;
+                        else
+                            frmPowerNotes.Notes = p.Notes;
+                        frmPowerNotes.ShowDialog(this);
 
-                    if (frmPowerNotes.DialogResult == DialogResult.OK)
-                        p.Notes = frmPowerNotes.Notes;
+                        if (frmPowerNotes.DialogResult == DialogResult.OK)
+                            p.Notes = frmPowerNotes.HtmlNotes;
+                    }
                 },
                 Alignment = Alignment.Center
             })
