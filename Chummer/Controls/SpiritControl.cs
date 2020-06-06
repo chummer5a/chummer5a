@@ -42,10 +42,10 @@ namespace Chummer
         {
             _objSpirit = objSpirit;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            foreach (ToolStripItem objItem in cmsSpirit.Items)
+            this.TranslateWinForm();
+            foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 
@@ -61,8 +61,7 @@ namespace Chummer
             txtCritterName.DoDatabinding("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter));
             nudForce.DoDatabinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
             nudServices.DoDatabinding("Value", _objSpirit, nameof(_objSpirit.ServicesOwed));
-            nudForce.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.Force), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            nudForce.DoDatabinding("Value", _objSpirit, nameof(_objSpirit.Force));
             Width = cmdDelete.Left + cmdDelete.Width;
             chkFettered.DoDatabinding("Enabled",_objSpirit.CharacterObject, nameof(Character.AllowSpriteFettering));
             chkFettered.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Fettered));

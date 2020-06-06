@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.

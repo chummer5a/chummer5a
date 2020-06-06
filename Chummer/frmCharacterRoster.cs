@@ -48,7 +48,7 @@ namespace Chummer
         public frmCharacterRoster()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
@@ -930,9 +930,9 @@ namespace Chummer
                 tsDelete
             });
 
-            LanguageManager.TranslateToolStripItemsRecursively(tsToggleFav);
-            LanguageManager.TranslateToolStripItemsRecursively(tsSort);
-            LanguageManager.TranslateToolStripItemsRecursively(tsDelete);
+            tsToggleFav.TranslateToolStripItemsRecursively();
+            tsSort.TranslateToolStripItemsRecursively();
+            tsDelete.TranslateToolStripItemsRecursively();
 
             if (blnIncludeCloseOpenCharacter)
             {
@@ -948,7 +948,7 @@ namespace Chummer
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
                 cmsRoster.Items.Add(tsCloseOpenCharacter);
-                LanguageManager.TranslateToolStripItemsRecursively(tsCloseOpenCharacter);
+                tsCloseOpenCharacter.TranslateToolStripItemsRecursively();
             }
 
             return cmsRoster;

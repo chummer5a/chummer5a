@@ -47,11 +47,11 @@ namespace Chummer.UI.Skills
             InitializeComponent();
             SuspendLayout();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
-            foreach (ToolStripItem objItem in cmsSkillLabel.Items)
+            foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
 
             this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
@@ -92,60 +92,55 @@ namespace Chummer.UI.Skills
             {
                 lblModifiedRating.Location = new Point(256 - 13, 4);
 
-                lblCareerRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerRating.DoDatabinding("Text", skill, nameof(Skill.Rating));
 
-                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnCareerIncrease.DataBindings.Add("ToolTipText", skill, nameof(Skill.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DoDatabinding("Enabled", skill, nameof(Skill.CanUpgradeCareer));
+                btnCareerIncrease.DoDatabinding("ToolTipText", skill, nameof(Skill.UpgradeToolTip));
+                btnAddSpec.DoDatabinding("Enabled", skill, nameof(Skill.CanAffordSpecialization));
+                btnAddSpec.DoDatabinding("Visible", skill, nameof(Skill.CanHaveSpecs));
+                btnAddSpec.DoDatabinding("ToolTipText", skill, nameof(Skill.AddSpecToolTip));
 
-                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerSpec.DoDatabinding("Text", skill, nameof(Skill.CurrentDisplaySpecialization));
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
 
-                btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
+                btnAttribute.DoDatabinding("Text", skill, nameof(Skill.DisplayAttribute));
                 btnAttribute.Visible = true;
 
                 SetupDropdown();
             }
             else
             {
-                lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
+                lblAttribute.DoDatabinding("Text", skill, nameof(Skill.DisplayAttribute));
                 //Up down boxes
-                nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DoDatabinding("Value", skill, nameof(Skill.Karma));
+                nudSkill.DoDatabinding("Value", skill, nameof(Skill.Base));
 
-                nudSkill.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DoDatabinding("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints));
+                nudSkill.DoDatabinding("Enabled", skill, nameof(Skill.BaseUnlocked));
+                nudSkill.DoDatabinding("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoDatabinding("Enabled", skill, nameof(Skill.KarmaUnlocked));
+                nudKarma.DoDatabinding("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
-                chkKarma.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false, DataSourceUpdateMode.OnPropertyChanged);
-                chkKarma.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                chkKarma.DoDatabinding("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints));
+                chkKarma.DoDatabinding("Checked", skill, nameof(Skill.BuyWithKarma));
+                chkKarma.DoDatabinding("Enabled", skill, nameof(Skill.CanHaveSpecs));
 
                 cboSpec.BeginUpdate();
                 if (skill.IsExoticSkill)
                 {
                     cboSpec.Enabled = false;
-                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DoDatabinding("Text", skill, nameof(Skill.CurrentDisplaySpecialization));
                 }
                 else
                 {
                     //dropdown/spec
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DoDatabinding("Enabled", skill, nameof(Skill.CanHaveSpecs));
                     cboSpec.DataSource = skill.CGLSpecializations;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
                     cboSpec.SelectedIndex = -1;
-                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DoDatabinding("Text", skill, nameof(Skill.Specialization));
                 }
                 cboSpec.EndUpdate();
             }

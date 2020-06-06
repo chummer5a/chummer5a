@@ -55,7 +55,7 @@ namespace Chummer
             // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
-            LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
+            this.TranslateWinForm(_strSelectedLanguage);
 
             _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();
             foreach(CustomDataDirectoryInfo objInfo in GlobalOptions.CustomDataDirectoryInfo)
@@ -543,7 +543,7 @@ namespace Chummer
         #region Methods
         private void TranslateForm()
         {
-            LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
+            this.TranslateWinForm(_strSelectedLanguage);
             PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
 
@@ -2119,13 +2119,27 @@ namespace Chummer
 
         private void txtDateFormat_TextChanged(object sender, EventArgs e)
         {
-            txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
+            try
+            {
+                txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
+            }
+            catch (Exception)
+            {
+                txtDateFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+            }
             OptionsChanged(sender, e);
         }
 
         private void txtTimeFormat_TextChanged(object sender, EventArgs e)
         {
-            txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
+            try
+            {
+                txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
+            }
+            catch (Exception)
+            {
+                txtTimeFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+            }
             OptionsChanged(sender, e);
         }
 

@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectLifestyle(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
             // Load the Lifestyles information.
@@ -357,8 +357,7 @@ namespace Chummer
                         }
 
                         // Check for modifiers in the improvements
-                        decimal decModifier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
-                        decMod += decModifier / 100.0m;
+                        decMod += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost) / 100.0m;
                     }
 
                     decBaseCost += decBaseCost * decBaseMultiplier;
@@ -367,7 +366,7 @@ namespace Chummer
                         decimal d = nudRoommates.Value * 10;
                         d += 100M;
                         d = Math.Max(d / 100, 0);
-                        decBaseCost *= (d);
+                        decBaseCost *= d;
                     }
                 }
             }
@@ -375,13 +374,13 @@ namespace Chummer
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            if (nudPercentage.Value != 100 || (nudRoommates.Value != 0 && !chkPrimaryTenant.Checked))
+            if (nudPercentage.Value != 100 || nudRoommates.Value != 0 && !chkPrimaryTenant.Checked)
             {
                 decimal decDiscount = decNuyen;
-                decDiscount *= (nudPercentage.Value / 100);
+                decDiscount *= nudPercentage.Value / 100;
                 if (nudRoommates.Value != 0)
                 {
-                    decDiscount /= (nudRoommates.Value);
+                    decDiscount /= nudRoommates.Value;
                 }
 
                 lblCost.Text += LanguageManager.GetString("String_Space") + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";

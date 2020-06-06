@@ -599,7 +599,7 @@ namespace Chummer.Backend.Equipment
                 decimal decMultiplier = 1;
                 decMultiplier = _objCharacter.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DrugDurationMultiplier && objImprovement.Enabled)
-                    .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                    .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - objImprovement.Value / 100m));
                 _intCachedDuration *= Convert.ToInt32(1.0m - decMultiplier);
                 return _intCachedDuration;
             }

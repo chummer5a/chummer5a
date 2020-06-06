@@ -27,7 +27,7 @@ namespace Chummer
         public frmDiceHits()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmDiceHits_Load(object sender, EventArgs e)

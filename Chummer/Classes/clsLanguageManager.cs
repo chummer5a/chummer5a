@@ -102,10 +102,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
-        public static void TranslateWinForm(string strIntoLanguage, Control objObject)
+        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "")
         {
             if (!Utils.IsDesignerMode)
             {
+                if (string.IsNullOrEmpty(strIntoLanguage))
+                    strIntoLanguage = GlobalOptions.Language;
                 if (LoadLanguage(strIntoLanguage))
                 {
                     RightToLeft eIntoRightToLeft = RightToLeft.No;
@@ -121,7 +123,7 @@ namespace Chummer
             }
         }
 
-        private static bool LoadLanguage(string strLanguage)
+        public static bool LoadLanguage(string strLanguage)
         {
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
@@ -285,7 +287,7 @@ namespace Chummer
         /// <param name="tssItem">Given ToolStripItem to translate.</param>
         /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
-        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage = "", RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
+        public static void TranslateToolStripItemsRecursively(this ToolStripItem tssItem, string strIntoLanguage = "", RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
         {
             if (tssItem == null)
                 return;

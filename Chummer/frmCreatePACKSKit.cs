@@ -36,7 +36,7 @@ namespace Chummer
         public frmCreatePACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
         }
 

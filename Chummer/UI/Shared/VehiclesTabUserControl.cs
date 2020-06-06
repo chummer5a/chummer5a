@@ -43,7 +43,7 @@ namespace Chummer.UI.Shared
         {
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void VehiclesTabUserControl_Load(object sender, EventArgs e)

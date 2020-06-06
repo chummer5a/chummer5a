@@ -45,7 +45,7 @@ namespace Chummer.UI.Skills
         {
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstDropDownActiveSkills = GenerateDropdownFilter();
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter();
@@ -281,18 +281,18 @@ namespace Chummer.UI.Skills
                 lblGroupKarma.Visible = true;
 
                 lblGroupsSp.Visible = _objCharacter.BuildMethodHasSkillPoints;
-                lblGroupsSp.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblGroupsSp.DoDatabinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
                 lblActiveSp.Visible = _objCharacter.BuildMethodHasSkillPoints;
-                lblActiveSp.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblActiveSp.DoDatabinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
                 lblBuyWithKarma.Visible = _objCharacter.BuildMethodHasSkillPoints;
-                lblBuyWithKarma.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblBuyWithKarma.DoDatabinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
 
                 //Because visible is broken in databindings
                 _objCharacter.SkillsSection.PropertyChanged += RefreshKnowledgePointsLabels;
                 lblKnoSp.Visible = true;
-                lblKnoSp.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoSp.DoDatabinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 lblKnoBwk.Visible = true;
-                lblKnoBwk.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoBwk.DoDatabinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 UpdateKnoSkillRemaining();
             }
             else

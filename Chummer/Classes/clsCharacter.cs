@@ -4278,6 +4278,8 @@ namespace Chummer
             // <character>
             objWriter.WriteStartElement("character");
 
+            // <imageformat />
+            objWriter.WriteElementString("imageformat", GlobalOptions.SavedImageQuality == int.MaxValue ? "png" : "jpeg");
             // <metatype />
             objWriter.WriteElementString("metatype", DisplayMetatype(strLanguageToPrint));
             // <metatype_english />

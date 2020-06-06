@@ -33,7 +33,7 @@ namespace Chummer
         public frmNotes()
 		{
             InitializeComponent();
-			LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             htmNotes.OnBodyKeyDown += htmNotes_OnBodyKeyDown;
             _blnLoading = true;
 			Width = s_IntWidth;

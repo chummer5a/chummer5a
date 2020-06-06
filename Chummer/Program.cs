@@ -146,12 +146,11 @@ namespace Chummer
                             ExceptionTelemetry et = new ExceptionTelemetry(myException)
                             {
                                 SeverityLevel = SeverityLevel.Critical
-
                             };
                             //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                             foreach (DictionaryEntry d in myException.Data)
                             {
-                                if ((d.Key != null) && (d.Value != null))
+                                if (d.Key != null && d.Value != null)
                                     et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                             }
                             ChummerTelemetryClient.TrackException(myException);
@@ -299,7 +298,7 @@ namespace Chummer
                 //              /plugin:SINners:RegisterUriScheme:0
                 bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
+                LanguageManager.LoadLanguage(GlobalOptions.Language);
                 MainForm = new frmChummerMain();
                 try
                 {

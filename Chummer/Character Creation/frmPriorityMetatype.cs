@@ -50,7 +50,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
             XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile);

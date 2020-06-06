@@ -35,15 +35,15 @@ namespace Chummer.UI.Shared
         {
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
-            foreach (ToolStripMenuItem objItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())
+            foreach (ToolStripMenuItem tssItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
-            foreach (ToolStripMenuItem objItem in cmsLimitModifierNotesOnly.Items.OfType<ToolStripMenuItem>())
+            foreach (ToolStripMenuItem tssItem in cmsLimitModifierNotesOnly.Items.OfType<ToolStripMenuItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 

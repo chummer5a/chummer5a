@@ -32,7 +32,7 @@ namespace Chummer
         public frmReload()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmReload_Load(object sender, EventArgs e)

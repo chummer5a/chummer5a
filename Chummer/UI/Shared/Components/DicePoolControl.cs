@@ -31,7 +31,7 @@ namespace Chummer.UI.Shared.Components
         public DicePoolControl()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void DicePoolControl_Load(object sender, EventArgs e)

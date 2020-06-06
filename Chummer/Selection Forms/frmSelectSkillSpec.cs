@@ -37,7 +37,7 @@ namespace Chummer
             _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 

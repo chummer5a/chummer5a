@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _intStage = intStage;
         }

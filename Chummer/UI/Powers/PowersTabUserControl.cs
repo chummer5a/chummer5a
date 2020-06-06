@@ -42,7 +42,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _dropDownList = GenerateDropdownFilter();
 
@@ -101,7 +101,7 @@ namespace Chummer.UI.Powers
             SuspendLayout();
             DoubleBuffered = true;
 
-            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPowerPoints.DoDatabinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
 
             parts.TaskEnd("MakePowerDisplay()");
 
@@ -448,7 +448,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
+            _table.TranslateWinForm();
 
             pnlPowers.Controls.Add(_table);
         }

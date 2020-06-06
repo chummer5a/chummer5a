@@ -41,7 +41,7 @@ namespace Chummer
         {
             InitializeComponent();
             _eSource = eSource;
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";

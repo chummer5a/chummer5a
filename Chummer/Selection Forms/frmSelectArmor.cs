@@ -52,7 +52,7 @@ namespace Chummer
         public frmSelectArmor(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");

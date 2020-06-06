@@ -47,7 +47,7 @@ namespace Chummer
         public frmOmaeUpload(string strUserName, List<ListItem> lstCharacterTypes, int intCharacterType, int intCharacterID = 0, string strDescription = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _strUserName = strUserName;
 
             // Remove the items that cannot actually be uploaded through this window.

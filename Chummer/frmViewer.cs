@@ -85,7 +85,7 @@ namespace Chummer
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
@@ -94,9 +94,9 @@ namespace Chummer
             {
                 if (objCMS != null)
                 {
-                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
             }
@@ -293,6 +293,11 @@ namespace Chummer
         private void AsyncRefresh(object sender, DoWorkEventArgs e)
         {
             _blnQueueRefresherRun = false;
+            if (_lstCharacters.Count <= 0)
+            {
+                _objCharacterXml = null;
+                return;
+            }
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
             {
@@ -312,7 +317,7 @@ namespace Chummer
                             return;
                         }
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
+                        objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
 #else
                         objCharacter.PrintToStream(objWriter, _objPrintCulture, _strPrintLanguage);
 #endif
@@ -710,7 +715,7 @@ namespace Chummer
         /// </summary>
         public void SetCharacters(params Character[] lstCharacters)
         {
-            _lstCharacters = new List<Character>(lstCharacters);
+            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>();
         }
         #endregion
 

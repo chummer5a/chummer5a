@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectExoticSkill(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
         }
 

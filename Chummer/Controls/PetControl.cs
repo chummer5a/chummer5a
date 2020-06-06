@@ -39,10 +39,10 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            foreach (ToolStripItem objItem in cmsContact.Items)
+            this.TranslateWinForm();
+            foreach (ToolStripItem tssItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
             MoveControls();
         }
@@ -257,18 +257,13 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
+            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
+            this.DoDatabinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
-            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboMetatype.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboMetatype.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
         #endregion
 

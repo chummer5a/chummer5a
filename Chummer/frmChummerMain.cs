@@ -114,7 +114,7 @@ namespace Chummer
 
 
 
-                    LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+                    this.TranslateWinForm();
 
                     //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
@@ -309,9 +309,9 @@ namespace Chummer
                     Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
 
                     // Set the Tag for each ToolStrip item so it can be translated.
-                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                    foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
                 catch (Exception ex)
@@ -1001,9 +1001,9 @@ namespace Chummer
         private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             // Translate the items in the menu by finding their Tags in the translation file.
-            foreach(ToolStripItem objItem in menuStrip.Items.OfType<ToolStripItem>())
+            foreach(ToolStripItem tssItem in menuStrip.Items.OfType<ToolStripItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 
@@ -1012,9 +1012,9 @@ namespace Chummer
             // ToolStrip Items.
             foreach(ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
             {
-                foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
+                foreach(ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                    tssItem.TranslateToolStripItemsRecursively();
                 }
             }
         }
@@ -1024,9 +1024,9 @@ namespace Chummer
             // ToolStrip Items.
             foreach(ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
             {
-                foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
+                foreach(ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                    tssItem.TranslateToolStripItemsRecursively();
                 }
             }
         }
@@ -1626,7 +1626,14 @@ namespace Chummer
                 Properties.Settings.Default.Size = RestoreBounds.Size;
             }
 
-            Properties.Settings.Default.Save();
+            try
+            {
+                Properties.Settings.Default.Save();
+            }
+            catch (IOException ex)
+            {
+                Log.Warn(ex, ex.Message);
+            }
         }
 
         private void mnuHeroLabImporter_Click(object sender, EventArgs e)

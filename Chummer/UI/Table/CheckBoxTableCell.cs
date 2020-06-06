@@ -30,7 +30,7 @@ namespace Chummer.UI.Table
             contentField = _checkBox;
             _checkBox.Text = text;
             _checkBox.Tag = tag;
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             Size = _checkBox.Size;
         }
 

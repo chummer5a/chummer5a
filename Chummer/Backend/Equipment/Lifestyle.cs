@@ -1059,15 +1059,11 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
-                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true), GlobalOptions.InvariantCultureInfo);
+                d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true);
                 if (_eType == LifestyleType.Standard)
                 {
-                    d += Convert.ToDecimal(
-                        ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost),
-                        GlobalOptions.InvariantCultureInfo);
-                    d += Convert.ToDecimal(
-                        ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false,
-                            BaseLifestyle), GlobalOptions.InvariantCultureInfo);
+                    d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost);
+                    d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false, BaseLifestyle);
                 }
 
                 d += LifestyleQualities.Sum(lq => lq.Multiplier);
@@ -1113,7 +1109,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100.0m, GlobalOptions.InvariantCultureInfo);
+        public decimal BaseCostMultiplier => LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100.0m;
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.

@@ -36,7 +36,7 @@ namespace Chummer
         protected frmPlayerDashboard()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             CenterToParent();
             // auto hide the form at creation
             Hide();

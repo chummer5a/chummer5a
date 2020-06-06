@@ -32,7 +32,7 @@ namespace Chummer.UI.Table
             button.Click += ((sender, evt) => ClickHandler?.Invoke(Value as T));
             SuspendLayout();
             Controls.Add(button);
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             button.PerformLayout();
             ResumeLayout(false);
         }
