@@ -346,17 +346,13 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmItemNotes = new frmNotes
-            {
-                Notes = _skill.Notes
-            })
+            using (frmNotes frmItemNotes = new frmNotes { Notes = _skill.Notes })
             {
                 frmItemNotes.ShowDialog(this);
+                if (frmItemNotes.DialogResult != DialogResult.OK)
+                    return;
 
-                if (frmItemNotes.DialogResult == DialogResult.OK)
-                {
-                    _skill.Notes = frmItemNotes.Notes.WordWrap(100);
-                }
+                _skill.Notes = frmItemNotes.Notes;
             }
         }
 

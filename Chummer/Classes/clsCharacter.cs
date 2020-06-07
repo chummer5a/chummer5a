@@ -4386,19 +4386,19 @@ namespace Chummer
                 LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Hair),
                     strLanguageToPrint));
             // <description />
-            objWriter.WriteElementString("description", Description);
+            objWriter.WriteElementString("description", Description.RtfToHtml());
             // <background />
-            objWriter.WriteElementString("background", Background);
+            objWriter.WriteElementString("background", Background.RtfToHtml());
             // <concept />
-            objWriter.WriteElementString("concept", Concept);
+            objWriter.WriteElementString("concept", Concept.RtfToHtml());
             // <notes />
-            objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteElementString("notes", Notes.RtfToHtml());
             // <alias />
             objWriter.WriteElementString("alias", Alias);
             // <playername />
             objWriter.WriteElementString("playername", PlayerName);
             // <gamenotes />
-            objWriter.WriteElementString("gamenotes", GameNotes);
+            objWriter.WriteElementString("gamenotes", GameNotes.RtfToHtml());
 
             // <limitphysical />
             objWriter.WriteElementString("limitphysical", LimitPhysical.ToString(objCulture));

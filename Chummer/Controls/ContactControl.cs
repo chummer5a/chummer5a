@@ -302,16 +302,17 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmContactNotes = new frmNotes
-            {
-                Notes = _objContact.Notes
-            })
+            string strOldValue = _objContact.Notes;
+            using (frmNotes frmContactNotes = new frmNotes { Notes = strOldValue })
             {
                 frmContactNotes.ShowDialog(this);
-
-                if (frmContactNotes.DialogResult != DialogResult.OK || _objContact.Notes == frmContactNotes.Notes)
+                if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
+                frmContactNotes.ShowDialog(this);
+
                 _objContact.Notes = frmContactNotes.Notes;
+                if (strOldValue == _objContact.Notes)
+                    return;
             }
 
             string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");

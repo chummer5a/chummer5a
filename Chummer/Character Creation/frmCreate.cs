@@ -254,10 +254,10 @@ namespace Chummer
                         txtWeight.DoDatabinding("Text", CharacterObject, nameof(Character.Weight));
                         txtSkin.DoDatabinding("Text", CharacterObject, nameof(Character.Skin));
                         txtHair.DoDatabinding("Text", CharacterObject, nameof(Character.Hair));
-                        txtDescription.DoDatabinding("Text", CharacterObject, nameof(Character.Description));
-                        txtBackground.DoDatabinding("Text", CharacterObject, nameof(Character.Background));
-                        txtConcept.DoDatabinding("Text", CharacterObject, nameof(Character.Concept));
-                        txtNotes.DoDatabinding("Text", CharacterObject, nameof(Character.Notes));
+                        rtfDescription.DoDatabinding("Rtf", CharacterObject, nameof(Character.Description));
+                        rtfBackground.DoDatabinding("Rtf", CharacterObject, nameof(Character.Background));
+                        rtfConcept.DoDatabinding("Rtf", CharacterObject, nameof(Character.Concept));
+                        rtfNotes.DoDatabinding("Rtf", CharacterObject, nameof(Character.Notes));
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
@@ -4797,15 +4797,12 @@ namespace Chummer
             if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 string strOldValue = objGear.Notes;
-                using (frmNotes frmItemNotes = new frmNotes
-                {
-                    Notes = strOldValue
-                })
+                using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
                 {
                     frmItemNotes.ShowDialog(this);
-
                     if (frmItemNotes.DialogResult != DialogResult.OK)
                         return;
+
                     objGear.Notes = frmItemNotes.Notes;
                     if (objGear.Notes != strOldValue)
                     {
@@ -14286,15 +14283,14 @@ namespace Chummer
             WriteNotes(objNotes, treMartialArts.SelectedNode);
         }
 
-        private void txtBackground_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            btnCreateBackstory.Enabled = _objStoryBuilder == null;
-        }
-
         private void btnCreateBackstory_Click(object sender, EventArgs e)
         {
             if (_objStoryBuilder == null)
+            {
                 _objStoryBuilder = new StoryBuilder(CharacterObject);
+                btnCreateBackstory.Enabled = false;
+            }
+
             CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Language);
         }
 

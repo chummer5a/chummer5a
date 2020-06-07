@@ -188,23 +188,24 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmContactNotes = new frmNotes
-            {
-                Notes = _objContact.Notes
-            })
+            string strOldValue = _objContact.Notes;
+            using (frmNotes frmContactNotes = new frmNotes { Notes = strOldValue })
             {
                 frmContactNotes.ShowDialog(this);
-
-                if (frmContactNotes.DialogResult != DialogResult.OK || _objContact.Notes == frmContactNotes.Notes)
+                if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
-                _objContact.Notes = frmContactNotes.Notes;
+                frmContactNotes.ShowDialog(this);
 
-                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
-                if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
+                _objContact.Notes = frmContactNotes.Notes;
+                if (strOldValue == _objContact.Notes)
+                    return;
             }
+
+            string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+            if (!string.IsNullOrEmpty(_objContact.Notes))
+                strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+            imgNotes.SetToolTip(strTooltip.WordWrap(100));
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
         #endregion
 

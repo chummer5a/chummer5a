@@ -212,11 +212,11 @@ namespace Chummer
                         txtWeight.DoDatabinding("Text", CharacterObject, nameof(Character.Weight));
                         txtSkin.DoDatabinding("Text", CharacterObject, nameof(Character.Skin));
                         txtHair.DoDatabinding("Text", CharacterObject, nameof(Character.Hair));
-                        txtDescription.DoDatabinding("Text", CharacterObject, nameof(Character.Description));
-                        txtBackground.DoDatabinding("Text", CharacterObject, nameof(Character.Background));
-                        txtConcept.DoDatabinding("Text", CharacterObject, nameof(Character.Concept));
-                        txtNotes.DoDatabinding("Text", CharacterObject, nameof(Character.Notes));
-                        txtGameNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GameNotes));
+                        rtfDescription.DoDatabinding("Rtf", CharacterObject, nameof(Character.Description));
+                        rtfBackground.DoDatabinding("Rtf", CharacterObject, nameof(Character.Background));
+                        rtfConcept.DoDatabinding("Rtf", CharacterObject, nameof(Character.Concept));
+                        rtfNotes.DoDatabinding("Rtf", CharacterObject, nameof(Character.Notes));
+                        rtfGameNotes.DoDatabinding("Rtf", CharacterObject, nameof(Character.GameNotes));
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
@@ -5616,20 +5616,16 @@ namespace Chummer
             if (objWeek != null)
             {
                 string strOldValue = objWeek.Notes;
-                using (frmNotes frmItemNotes = new frmNotes
-                {
-                    Notes = strOldValue
-                })
+                using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
                 {
                     frmItemNotes.ShowDialog(this);
+                    if (frmItemNotes.DialogResult != DialogResult.OK)
+                        return;
 
-                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    objWeek.Notes = frmItemNotes.Notes;
+                    if (objWeek.Notes != strOldValue)
                     {
-                        objWeek.Notes = frmItemNotes.Notes;
-                        if (objWeek.Notes != strOldValue)
-                        {
-                            IsDirty = true;
-                        }
+                        IsDirty = true;
                     }
                 }
             }
@@ -12441,14 +12437,6 @@ namespace Chummer
                 CharacterObject.ImprovementGroups.Add(strLocation);
             }
 
-            IsDirty = true;
-        }
-#endregion
-
-#region Notes Tab Events
-        private void txtGameNotes_TextChanged(object sender, EventArgs e)
-        {
-            CharacterObject.GameNotes = txtGameNotes.Text;
             IsDirty = true;
         }
 #endregion

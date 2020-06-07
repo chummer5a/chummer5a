@@ -9785,6 +9785,60 @@
       <text>Suppressed by {0}</text>
     </string>
     <!-- End Region -->
+    <!-- Region Text Editor -->
+    <string>
+      <key>String_Bold</key>
+      <text>Bold</text>
+    </string>
+    <string>
+      <key>String_Italic</key>
+      <text>Italic</text>
+    </string>
+    <string>
+      <key>String_Underline</key>
+      <text>Underline</text>
+    </string>
+    <string>
+      <key>String_Strikethrough</key>
+      <text>Strikethrough</text>
+    </string>
+    <string>
+      <key>String_Font</key>
+      <text>Font</text>
+    </string>
+    <string>
+      <key>String_ForeColor</key>
+      <text>Foreground Color</text>
+    </string>
+    <string>
+      <key>String_BackColor</key>
+      <text>Background Color</text>
+    </string>
+    <string>
+      <key>String_AlignLeft</key>
+      <text>Align Left</text>
+    </string>
+    <string>
+      <key>String_AlignCenter</key>
+      <text>Align Center</text>
+    </string>
+    <string>
+      <key>String_AlignRight</key>
+      <text>Align Right</text>
+    </string>
+    <string>
+      <key>String_UnorderedList</key>
+      <text>Toggle List</text>
+    </string>
+    <string>
+      <key>String_IncreaseIndent</key>
+      <text>Increase Indent</text>
+    </string>
+    <string>
+      <key>String_DecreaseIndent</key>
+      <text>Decrease Indent</text>
+    </string>
+    <!-- End Region -->
     <!-- Region Loading Form -->
     <string>
       <key>String_Loading</key>

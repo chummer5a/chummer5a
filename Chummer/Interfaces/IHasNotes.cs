@@ -40,25 +40,21 @@ namespace Chummer
             if (objNotes == null || treNode == null)
                 return false;
             string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes
-            {
-                Notes = strOldValue
-            })
+            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
             {
                 frmItemNotes.ShowDialog();
-
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return false;
+
                 objNotes.Notes = frmItemNotes.Notes;
-                if (objNotes.Notes != strOldValue)
-                {
-                    treNode.ForeColor = objNotes.PreferredColor;
-                    treNode.ToolTipText = objNotes.Notes.WordWrap(100);
-
-                    return true;
-                }
             }
+            if (objNotes.Notes != strOldValue)
+            {
+                treNode.ForeColor = objNotes.PreferredColor;
+                treNode.ToolTipText = objNotes.Notes.WordWrap(100);
 
+                return true;
+            }
             return false;
         }
     }

@@ -19,6 +19,7 @@ Application Fixes:
 - Weapon ratings are now saved and loaded properly.
 - Added an option that lets users choose the method by which mugshots are saved in save files and when exporting the sheet as an HTML or PDF file. The program can use lossless compression (PNG) or lossy compression (JPEG), with the latter also having an additional setting where the user can choose the JPEG quality at which their mugshot will be saved. Switching from lossless to lossy and/or lowering JPEG image quality can dramatically reduce the size of .chum5 save files at a loss in image quality of each mugshot (a fairly small loss at high JPEG quality).
 - The program will no longer crash if an incorrectly formatted time and/or date format is entered into the Custom Time or Custom Date fields in the Options screen, respectively.
+- The Description, Concept, Background, Character Notes, and Game Notes sections of characters now support rudimentary formatting. 
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -31,6 +32,19 @@ Changed/New Strings:
 - Label_Options_ImageQuality
 - String_Lossless_Compression_Option
 - String_Lossy_Compression_Option
+- String_Bold
+- String_Italic
+- String_Underline
+- String_Strikethrough
+- String_Font
+- String_ForeColor
+- String_BackColor
+- String_AlignLeft
+- String_AlignCenter
+- String_AlignRight
+- String_UnorderedList
+- String_IncreaseIndent
+- String_DecreaseIndent
 
 Build 212
 Application Changes:
