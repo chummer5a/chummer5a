@@ -27,7 +27,7 @@ namespace Chummer
         public frmSellItem()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -40,7 +40,6 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
         #endregion
-        
 
         #region Properties
         /// <summary>

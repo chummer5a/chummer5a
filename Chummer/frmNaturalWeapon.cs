@@ -40,7 +40,7 @@ namespace Chummer
             _objXmlSkillsDocument = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             MoveControls();
         }
 
@@ -62,13 +62,13 @@ namespace Chummer
             };
             for (int i = 1; i <= 20; ++i)
             {
-                lstDVBase.Add(new ListItem(i.ToString(), i.ToString()));
+                lstDVBase.Add(new ListItem(i.ToString(GlobalOptions.InvariantCultureInfo), i.ToString(GlobalOptions.CultureInfo)));
             }
 
             List<ListItem> lstDVType = new List<ListItem>
             {
-                new ListItem("P", LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Language)),
-                new ListItem("S", LanguageManager.GetString("String_DamageStun", GlobalOptions.Language))
+                new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
+                new ListItem("S", LanguageManager.GetString("String_DamageStun"))
             };
 
             // Bind the Lists to the ComboBoxes.
@@ -153,7 +153,7 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
+                    Category = LanguageManager.GetString("Tab_Critter"),
                     WeaponType = "Melee",
                     Reach = decimal.ToInt32(nudReach.Value),
                     Damage = strDamage,

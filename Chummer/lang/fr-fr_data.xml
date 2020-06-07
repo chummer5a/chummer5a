@@ -450,7 +450,7 @@
 			</armor>
 			<armor translated="True">
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
+				<name>Ares FlaShield</name>
 				<translate>Bouclier flash Ares</translate>
 				<altpage>72</altpage>
 			</armor>
@@ -558,7 +558,7 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
+				<name>Evo HEL Suit</name>
 				<translate>Combinaison Evo HEL</translate>
 				<altpage>81</altpage>
 			</armor>
@@ -1584,17 +1584,17 @@
 				<translate>Micro-emplacement</translate>
 				<altpage>73</altpage>
 			</mod>
-			<mod>
-				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
-				<name>Personal Drone Rack</name>
-				<translate>Rack de drone personnel PI-Tac</translate>
-				<altpage>73</altpage>
-			</mod>
 			<mod translated="True">
 				<id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
 				<name>Internal Air Tank (5 Minutes)</name>
 				<translate>Réservoir d'air interne (5 minutes)</translate>
 				<altpage>173</altpage>
+			</mod>
+			<mod>
+				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<name>Grey Mana Integration</name>
+				<translate>Intégration Grey Mana</translate>
+				<altpage>162</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -1896,7 +1896,7 @@
 				<altpage>113</altpage>
 			</bioware>
 			<bioware>
-				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+				<id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
 				<name>Hand and Foot Webbing (Feet)</name>
 				<translate>Pieds palmés</translate>
 				<altpage>113</altpage>
@@ -2964,7 +2964,7 @@
 			<book>
 				<id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
 				<name>Street Grimoire</name>
-				<translate>Street Grimoire</translate>
+				<translate>Grimoire des Ombres</translate>
 				<altcode>SG</altcode>
 			</book>
 			<book>
@@ -2982,7 +2982,7 @@
 			<book>
 				<id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
 				<name>Stolen Souls</name>
-				<translate>Stolen Souls</translate>
+				<translate>Âmes volées</translate>
 				<altcode>SS</altcode>
 			</book>
 			<book>
@@ -2994,7 +2994,7 @@
 			<book>
 				<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
 				<name>Street Grimoire (German-exclusive Content)</name>
-				<translate>Street Grimoire (Contenu exclusif allemand)</translate>
+				<translate>Grimoire des Ombres (Contenu exclusif allemand)</translate>
 				<altcode>SGG</altcode>
 			</book>
 			<book>
@@ -3080,12 +3080,6 @@
 				<name>Howling Shadows</name>
 				<translate>Howling Shadows</translate>
 				<altcode>HS</altcode>
-			</book>
-			<book>
-				<id>9b88873f-61fa-4419-b733-49b96997bd42</id>
-				<name>Battle Of Manhattan</name>
-				<translate>Battle Of Manhattan</translate>
-				<altcode>BOM</altcode>
 			</book>
 			<book>
 				<id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
@@ -3207,6 +3201,30 @@
 				<translate>Hamburg (exclusivement allemand)</translate>
 				<altcode>HAMG</altcode>
 			</book>
+			<book>
+				<id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+				<name>Better Than Bad</name>
+				<translate>Better Than Bad</translate>
+				<altcode>BTB</altcode>
+			</book>
+			<book>
+				<id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+				<name>Aetherology</name>
+				<translate>Aetherology</translate>
+				<altcode>AET</altcode>
+			</book>
+			<book>
+				<id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+				<name>Datapuls SOTA 2080 (German-exclusive)</name>
+				<translate>Datapuls SOTA 2080 (Livret allemand)</translate>
+				<altcode>SOTG</altcode>
+			</book>
+			<book>
+				<id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+				<name>Datapuls Verschlusssache (German-exclusive)</name>
+				<translate>Datapuls Verschlusssache (Livret allemand)</translate>
+				<altcode>DPVG</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -3218,6 +3236,7 @@
 			<category translate="Pouvoirs paranormaux">Paranormal</category>
 			<category translate="Pouvoirs des Zoocanthropes">Shapeshifter</category>
 			<category translate="Pouvoirs des Toxiques">Toxic Critter Powers</category>
+			<category translate="Infectée">Infected</category>
 			<category translate="Faiblesses">Weakness</category>
 			<category translate="Echos">Echoes</category>
 			<category translate="Drakes">Drake</category>
@@ -3873,7 +3892,7 @@
 			</power>
 			<power>
 				<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
-				<name>Cozenage</name>
+				<name>Cozenge</name>
 				<translate>Tromperie</translate>
 				<altpage>252</altpage>
 			</power>
@@ -4239,7 +4258,7 @@
 			</power>
 			<power>
 				<id>98928dbd-5b79-4dde-bc92-56dc317e293b</id>
-				<name>Underwater Adapation</name>
+				<name>Underwater Adaptation</name>
 				<translate>Adaptation sous-marine</translate>
 				<altpage>164</altpage>
 			</power>
@@ -4562,6 +4581,7 @@
 			<category translate="Créatures toxiques">Toxic Critters</category>
 			<category translate="Esprits toxiques">Toxic Spirits</category>
 			<category translate="Esprits de l'ombre">Shadow Spirits</category>
+			<category translate="Formes de la guerre">Warforms</category>
 		</categories>
 		<metatypes>
 			<metatype>
@@ -8030,6 +8050,18 @@
 				<translate>Omegaware (Adapsine)</translate>
 				<altpage>71</altpage>
 			</grade>
+			<grade>
+				<id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
+				<name>Greyware</name>
+				<translate>Greyware</translate>
+				<altpage>164</altpage>
+			</grade>
+			<grade>
+				<id>c4d67932-0de4-4206-91b6-f3fd504c382f</id>
+				<name>Greyware (Adapsin)</name>
+				<translate>Greyware (Adapsine)</translate>
+				<altpage>164</altpage>
+			</grade>
 		</grades>
 		<categories>
 			<category translate="Céphaloware">Headware</category>
@@ -8047,6 +8079,7 @@
 			<category translate="Nanoware injecté">Soft Nanoware</category>
 			<category translate="Cyberware pour biodrones">Special Biodrone Cyberware</category>
 			<category translate="Cyberware pour armes">Cyber Implant Weapon Accessory</category>
+			<category translate="Modifications Auto-Injecteur">Auto Injector Mods</category>
 		</categories>
 		<cyberwares>
 			<cyberware translated="True">
@@ -8735,7 +8768,7 @@
 			</cyberware>
 			<cyberware>
 				<id>d97a6e2f-0e3d-4f9b-a046-e1a86d5dad88</id>
-				<name>Auto Injector Expansion</name>
+				<name>Expanded Reservoir</name>
 				<translate>Auto-Injecteur - Réservoir auxiliaire</translate>
 				<altpage>82</altpage>
 			</cyberware>
@@ -9839,8 +9872,14 @@
 			</cyberware>
 			<cyberware>
 				<id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-				<name>Cosmetic Modifcations Eye (2050)</name>
-				<translate>Cosmetic Modifcations Eye (2050)</translate>
+				<name>Cosmetic Modifications Eye (2050)</name>
+				<translate>Modification Cosmétique Oeil (2050)</translate>
+				<altpage>201</altpage>
+			</cyberware>
+			<cyberware>
+				<id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+				<name>Cosmetic Modifications Ear (2050)</name>
+				<translate>Modification Cosmétique Oreille (2050)</translate>
 				<altpage>201</altpage>
 			</cyberware>
 			<cyberware>
@@ -10444,10 +10483,9 @@
 			<category translate="Drogues personnalisées">Custom Drug</category>
 			<category translate="Accessoires matriciels">Matrix Accessories</category>
 			<category translate="Puces de boost">Booster Chips</category>
-			<category translate="Informations payantes">Paydata</category>
-			<category translate="Nanoware implanté">Hard Nanoware</category>
-			<category translate="Programmes PI-Tac">PI-Tac Programs</category>
-			<category translate="Pi-Tac Programs">Pi-Tac Programs</category>
+			<category translate="Modificateurs d'apparence">Appearance Modification</category>
+			<category translate="Instruments de Musique">Musical Intruments</category>
+			<category translate="Imprimerie">Printing</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -13512,8 +13550,8 @@
 			</gear>
 			<gear translated="True">
 				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-				<name>Microtronica Azteca Raptor</name>
-				<translate>Microtronica Azteca Raptor</translate>
+				<name>Microtrónica Azteca Raptor</name>
+				<translate>Microtrónica Azteca Raptor</translate>
 				<altpage>17</altpage>
 			</gear>
 			<gear translated="True">
@@ -13656,7 +13694,7 @@
 			</gear>
 			<gear translated="True">
 				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-				<name>Microtronica Azteca 300</name>
+				<name>Microtrónica Azteca 300</name>
 				<translate>Microtrónica Azteca 300</translate>
 				<altpage>64</altpage>
 			</gear>
@@ -17364,8 +17402,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Luggage (2050)</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Luggage (2050)</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -18376,10 +18414,43 @@
 				<translate>Micro-transmetteur PI-Tac</translate>
 				<altpage>73</altpage>
 			</gear>
+			<gear>
+				<id>2790877a-046e-4c93-be2d-1053fbafd6c0</id>
+				<name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+				<translate>Mini-Grenades MCT/Winchester-Howe Hornet Direct-Fire</translate>
+				<altpage>132</altpage>
+			</gear>
+			<gear>
+				<id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
+				<name>Grey Mana Tattoos</name>
+				<translate>Tatoos Grey Mana</translate>
+				<altpage>156</altpage>
+			</gear>
+			<gear>
+				<id>ae502bc1-1053-46ed-a5c1-4d37aedf3a3a</id>
+				<name>Blight</name>
+				<translate>Blight</translate>
+				<altpage>157</altpage>
+			</gear>
+			<gear>
+				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+				<name>Personal Drone Rack</name>
+				<translate>Rack de drone personnel PI-Tac</translate>
+				<altpage>73</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="improvements.xml">
 		<improvements>
+			<improvement>
+				<id>actiondicepool</id>
+				<name>Action Dice-Pool Modifier</name>
+				<translate>Modificateur du pool de dés d'action</translate>
+				<altpage>Ajuste le nombre de cases que le personnage possède dans son moniteur de 
+          condition étourdissant. Les nombres positifs augmentent le nombre de cases du
+          moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
+          moniteur de condition.</altpage>
+			</improvement>
 			<improvement>
 				<id>specificattribute</id>
 				<name>Attribute</name>
@@ -18902,6 +18973,12 @@
 				<name>Cyber-Singularity Seeker/Redliner (Condition Monitor)</name>
 				<translate>Bonus de moniteur de condition de cyber-singularité</translate>
 				<altpage>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</altpage>
+			</improvement>
+			<improvement>
+				<id>freespells</id>
+				<name>Free Spells</name>
+				<translate>Sorts gratuits</translate>
+				<altpage>Permet au personnage de marquer certains sorts comme gratuits pour éviter des coûts en karma.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
@@ -21274,11 +21351,11 @@
 				<choices>
 					<choice>
 						<name>+2 to First Aid</name>
-						<translate>+2 to First Aid</translate>
+						<translate>+2 dés pour premiers soins</translate>
 					</choice>
 					<choice>
 						<name>+2 to Medicine</name>
-						<translate>+2 to Medicine</translate>
+						<translate>+2 dés pour médecine</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Health spells</name>
@@ -24157,6 +24234,24 @@
 					</choice>
 				</choices>
 			</mentor>
+			<mentor>
+				<id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
+				<name>Guanyin</name>
+				<translate>Guanyin</translate>
+				<altadvantage>+2 dés pour premiers soins</altadvantage>
+				<altdisadvantage>A Guanyin magician is highly motivated to save other beings. If the Magician is offered a run that doesn’t involve hooding, she must make a Charisma + Willpower (3) test before she can accept the run. Failure on this test means she turns down the job.</altdisadvantage>
+				<altpage>139</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Health spells</name>
+						<translate>Magicien : +2 dés pour les sorts de Soin</translate>
+					</choice>
+					<choice>
+						<name>Adept: Free Empathic Healing power</name>
+						<translate>Adepte : 1 niveau gratuit de Soins empathiques</translate>
+					</choice>
+				</choices>
+			</mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -26853,6 +26948,18 @@
 				<translate>Ventriloquie</translate>
 				<altpage>153</altpage>
 			</power>
+			<power>
+				<id>1ac890d7-5152-40a8-80e8-73d342571a33</id>
+				<name>Mystic Aptitude</name>
+				<translate>Aptitude Mystique</translate>
+				<altpage>153</altpage>
+			</power>
+			<power>
+				<id>56b4fe33-eb48-4365-ae2e-ebdffa05b1f6</id>
+				<name>State of Purity</name>
+				<translate>Etat de Pureté</translate>
+				<altpage>154</altpage>
+			</power>
 		</powers>
 		<enhancements>
 			<enhancement>
@@ -29452,8 +29559,8 @@
 			</quality>
 			<quality>
 				<id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-				<name>Magic Sense (Changeling)</name>
-				<translate>Magicoperception (Changelin)</translate>
+				<name>Magic Sense</name>
+				<translate>Magicoperception</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
@@ -29472,54 +29579,54 @@
 			</quality>
 			<quality>
 				<id>2ffd990c-ced6-4484-955c-108473df5335</id>
-				<name>Metagenetic Improvement (Body)</name>
+				<name>Metagenic Improvement (Body)</name>
 				<translate>Avantage métagénétique (Constitution)</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-				<name>Metagenetic Improvement (Agility)</name>
+				<name>Metagenic Improvement (Agility)</name>
 				<translate>Avantage métagénétique (Agilité)</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-				<name>Metagenetic Improvement (Reaction)</name>
+				<name>Metagenic Improvement (Reaction)</name>
 				<translate>Avantage métagénétique (Réaction)</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-				<name>Metagenetic Improvement (Strength)</name>
+				<name>Metagenic Improvement (Strength)</name>
 				<translate>Avantage métagénétique (Force)</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-				<name>Metagenetic Improvement (Charisma)</name>
+				<name>Metagenic Improvement (Charisma)</name>
 				<translate>Avantage métagénétique (Charisme)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-				<name>Metagenetic Improvement (Intuition)</name>
+				<name>Metagenic Improvement (Intuition)</name>
 				<translate>Avantage métagénétique (Intuition)</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
-				<name>Metagenetic Improvement (Logic)</name>
+				<name>Metagenic Improvement (Logic)</name>
 				<translate>Avantage métagénétique (Logique)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-				<name>Metagenetic Improvement (Willpower)</name>
+				<name>Metagenic Improvement (Willpower)</name>
 				<translate>Avantage métagénétique (Volonté)</translate>
 				<altpage>116</altpage>
 				<altnameonpage></altnameonpage>
@@ -31051,7 +31158,7 @@
 			</quality>
 			<quality>
 				<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
-				<name>Dishevelled</name>
+				<name>Disheveled</name>
 				<translate>Ébouriffé</translate>
 				<altpage>152</altpage>
 				<altnameonpage></altnameonpage>
@@ -36323,6 +36430,11 @@
 					<spec translate="Jargon">Lingo</spec>
 				</specs>
 			</skill>
+			<skill>
+				<id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
+				<name>Zoology</name>
+				<translate>Zoologie</translate>
+			</skill>
 		</knowledgeskills>
 	</chummer>
 	<chummer file="spells.xml">
@@ -38465,6 +38577,18 @@
 				<name>Guardian Bond</name>
 				<translate>Lien gardien</translate>
 				<altpage>131</altpage>
+			</spell>
+			<spell>
+				<id>89046778-a77a-4f21-a448-a750af0898eb</id>
+				<name>Astral Disruption</name>
+				<translate>Astral Disruption</translate>
+				<altpage>158</altpage>
+			</spell>
+			<spell>
+				<id>4c595074-add0-40da-a707-598d2b94ae4f</id>
+				<name>Mass Astral Disruption</name>
+				<translate>Mass Astral Disruption</translate>
+				<altpage>158</altpage>
 			</spell>
 		</spells>
 	</chummer>
@@ -41281,6 +41405,12 @@
 				<translate>Yongkang Water Spirit</translate>
 				<altpage>177</altpage>
 			</vehicle>
+			<vehicle>
+				<id>4f1cc61b-7eae-4909-b549-5dda9e6f3f3f</id>
+				<name>Maersk Shipyards Wavecutter MPAC</name>
+				<translate>Maersk Shipyards Wavecutter MPAC</translate>
+				<altpage>131</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -41651,7 +41781,7 @@
 			</mod>
 			<mod>
 				<id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-				<name>Missile Defence System</name>
+				<name>Missile Defense System</name>
 				<translate>Système anti-missile</translate>
 				<altpage>160</altpage>
 			</mod>
@@ -42362,6 +42492,12 @@
 				<name>Remote Adaptation (2050)</name>
 				<translate>Remote Adaptation (2050)</translate>
 				<altpage>212</altpage>
+			</mod>
+			<mod>
+				<id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+				<name>Ejection seat</name>
+				<translate>Siège éjectable</translate>
+				<altpage>171</altpage>
 			</mod>
 		</mods>
 		<weaponmounts>
@@ -44148,7 +44284,7 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
+				<name>Nissan Optimum II Shotgun</name>
 				<translate>Nissan Optimum II</translate>
 				<altpage>38</altpage>
 			</weapon>
@@ -44538,7 +44674,7 @@
 			</weapon>
 			<weapon>
 				<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
-				<name>Cavalier Arms Adder Silvergun</name>
+				<name>Cavalier Arms Adder Slivergun</name>
 				<translate>Pistolet à aigulles Cavalier Arms Adder</translate>
 				<altpage>178</altpage>
 			</weapon>
@@ -45879,6 +46015,24 @@
 				<name>Elektro-Netz</name>
 				<translate>Elektro-Netz</translate>
 				<altpage>172</altpage>
+			</weapon>
+			<weapon>
+				<id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
+				<name>Renraku Red Samurai Katana</name>
+				<translate>Renraku Red Samurai Katana</translate>
+				<altpage>132</altpage>
+			</weapon>
+			<weapon>
+				<id>09502fce-989a-4143-95a8-86dbe70b909d</id>
+				<name>SK/Onotari Arms Silent Claw Stiletto</name>
+				<translate>SK/Onotari Arms Silent Claw Stiletto</translate>
+				<altpage>133</altpage>
+			</weapon>
+			<weapon>
+				<id>b14a54e6-a60d-4e89-8ddb-91b4af9d41e8</id>
+				<name>Wuxing-Armtec PTL-02</name>
+				<translate>Wuxing-Armtec PTL-02</translate>
+				<altpage>133</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
@@ -47407,6 +47561,11 @@
 				<id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
 				<name>Street Scum</name>
 				<translate>Déchet des rues</translate>
+			</gameplayoption>
+			<gameplayoption>
+				<id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+				<name>High Life</name>
+				<translate>Vie de luxe</translate>
 			</gameplayoption>
 		</gameplayoptions>
 	</chummer>

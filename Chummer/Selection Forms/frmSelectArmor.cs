@@ -52,8 +52,8 @@ namespace Chummer
         public frmSelectArmor(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objCharacter = objCharacter;
+            this.TranslateWinForm();
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
@@ -71,7 +71,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
@@ -99,7 +99,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -158,7 +158,7 @@ namespace Chummer
                 string strRating = xmlArmor["rating"]?.InnerText;
                 if (!string.IsNullOrEmpty(strRating))
                 {
-                    nudRating.Maximum = Convert.ToInt32(strRating);
+                    nudRating.Maximum = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
                     if (chkHideOverAvailLimit.Checked)
                     {
                         while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
@@ -194,6 +194,12 @@ namespace Chummer
                     nudRating.Enabled = false;
                     nudRating.Visible = false;
                 }
+
+                string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
+                lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
+                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                        LanguageManager.GetString(strRatingLabel))
+                    : LanguageManager.GetString("Label_Rating");
             }
             else
             {
@@ -404,23 +410,23 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>();
                             objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
-                            string strArmorGuid = objArmor.SourceID.ToString("D");
-                            string strArmorName = objArmor.DisplayName(GlobalOptions.Language);
+                            string strArmorGuid = objArmor.SourceIDString;
+                            string strArmorName = objArmor.CurrentDisplayName;
                             int intArmor = objArmor.TotalArmor;
                             decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo);
                             AvailabilityValue objAvail = objArmor.TotalAvailTuple();
                             StringBuilder strAccessories = new StringBuilder();
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
-                                strAccessories.AppendLine(objMod.DisplayName(GlobalOptions.Language));
+                                strAccessories.AppendLine(objMod.CurrentDisplayName);
                             }
                             foreach (Gear objGear in objArmor.Gear)
                             {
-                                strAccessories.AppendLine(objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
+                                strAccessories.AppendLine(objGear.CurrentDisplayName);
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= Environment.NewLine.Length;
-                            SourceString strSource = new SourceString(objArmor.Source, objArmor.Page(GlobalOptions.Language), GlobalOptions.Language);
+                            SourceString strSource = new SourceString(objArmor.Source, objArmor.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
                             NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 
                             tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail, strAccessories.ToString(), strSource, strCost);
@@ -436,14 +442,20 @@ namespace Chummer
                     break;
                 default:
                     List<ListItem> lstArmors = new List<ListItem>();
+                    int intOverLimit = 0;
+                    string strSpace = LanguageManager.GetString("String_Space");
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
-                        if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) &&
-                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                             SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
+                        if ((!chkHideOverAvailLimit.Checked
+                            || (chkHideOverAvailLimit.Checked
+                                && SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter)))
+                             && (chkFreeItem.Checked
+                                || !chkShowOnlyAffordItems.Checked
+                                || (chkShowOnlyAffordItems.Checked
+                                    && SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
                         {
                             string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
                             if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
@@ -454,15 +466,25 @@ namespace Chummer
                                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                     if (!string.IsNullOrEmpty(objFoundItem.Name))
                                     {
-                                        strDisplayName += " [" + objFoundItem.Name + "]";
+                                        strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                                     }
                                 }
                             }
 
                             lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
                         }
+                        else
+                            ++intOverLimit;
                     }
+
                     lstArmors.Sort(CompareListItems.CompareNames);
+                    if (intOverLimit > 0)
+                    {
+                        // Add after sort so that it's always at the end
+                        lstArmors.Add(new ListItem(string.Empty,
+                            LanguageManager.GetString("String_RestrictedItemsHidden")
+                            .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    }
                     _blnLoading = true;
                     string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
@@ -513,11 +535,12 @@ namespace Chummer
             _blnSkipUpdate = true;
             if (_objSelectedArmor != null)
             {
-                chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
                 _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
-                
+
                 lblSource.Text =     _objSelectedArmor.SourceDetail.ToString();
                 lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -541,7 +564,7 @@ namespace Chummer
                 AvailabilityValue objTotalAvail = _objSelectedArmor.TotalAvailTuple();
                 lblAvailLabel.Visible = true;
                 lblTestLabel.Visible = true;
-                lblAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblAvail.Text = objTotalAvail.ToString();
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
             }
             else

@@ -27,7 +27,7 @@ namespace Chummer
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
     [DebuggerDisplay("{Name} {Value?.ToString() ?? \"\"}")]
-    public struct ListItem
+    public struct ListItem : IEquatable<ListItem>
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
@@ -81,6 +81,11 @@ namespace Chummer
         {
             return !(x?.Equals(y) ?? y == null);
         }
+
+        public bool Equals(ListItem other)
+        {
+            return Name == other.Name && Value == other.Value;
+        }
     }
 
     #region Sorting Classes
@@ -95,20 +100,12 @@ namespace Chummer
             {
                 if (ty == null)
                     return 0;
-                else
-                    return -1;
+                return -1;
             }
-            else if (ty == null)
+
+            if (ty == null)
                 return 1;
             return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
-        }
-
-        public class TextComparer : IComparer
-        {
-            public int Compare(object x, object y)
-            {
-                return CompareText(x as TreeNode, y as TreeNode);
-            }
         }
     }
 
@@ -119,15 +116,14 @@ namespace Chummer
         /// </summary>
         public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
-            DateTime datY;
             if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
-                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out _))
                     return 0;
-                else
-                    return -1;
+                return -1;
             }
-            else if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+
+            if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datY))
                 return 1;
 
             return DateTime.Compare(datY, datX);
@@ -228,11 +224,11 @@ namespace Chummer
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
             string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
-                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
-                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
             string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
-                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
-                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))

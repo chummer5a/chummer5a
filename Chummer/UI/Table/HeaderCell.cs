@@ -77,7 +77,7 @@ namespace Chummer.UI.Table
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(ArrowSize));
                 }
                 _intArrowSize = value;
                 ResizeControl();
@@ -91,7 +91,7 @@ namespace Chummer.UI.Table
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(ArrowPadding));
                 }
                 _intArrowPadding = value;
                 ResizeControl();
@@ -131,7 +131,8 @@ namespace Chummer.UI.Table
         {
             // add gradient to background
             Rectangle rect = new Rectangle(0, 0, Width, Height);
-            e.Graphics.FillRectangle(new LinearGradientBrush(rect, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical), rect);
+            using (LinearGradientBrush objBrush = new LinearGradientBrush(rect, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical))
+                e.Graphics.FillRectangle(objBrush, rect);
 
             if (Sortable && SortType != SortOrder.None) {
                 // draw arrow
@@ -155,7 +156,7 @@ namespace Chummer.UI.Table
 
         public void Translate()
         {
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
     }
 }

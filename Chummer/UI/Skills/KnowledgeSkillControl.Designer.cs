@@ -63,7 +63,6 @@ namespace Chummer.UI.Skills
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(177, 21);
             this.cboSpec.TabIndex = 17;
-            this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
             // 
             // chkKarma
             // 
@@ -200,6 +199,8 @@ namespace Chummer.UI.Skills
             this.Size = new System.Drawing.Size(800, 24);
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -31,13 +31,13 @@ namespace Chummer
         public frmSelectLimit(params string[] lstLimits)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Build the list of Limits.
             List<ListItem> lstLimitItems = new List<ListItem>();
             foreach (string strLimit in lstLimits)
             {
-                lstLimitItems.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short", GlobalOptions.Language)));
+                lstLimitItems.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
             }
 
             cboLimit.BeginUpdate();

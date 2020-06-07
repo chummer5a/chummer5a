@@ -25,26 +25,26 @@ namespace Chummer
 {
     public partial class frmReload : Form
     {
-        private List<Gear> _lstAmmo = new List<Gear>();
-        private List<string> _lstCount = new List<string>();
+        private readonly List<Gear> _lstAmmo = new List<Gear>();
+        private readonly List<string> _lstCount = new List<string>();
 
         #region Control Events
         public frmReload()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmReload_Load(object sender, EventArgs e)
         {
             List<ListItem> lstAmmo = new List<ListItem>();
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strSpace = LanguageManager.GetString("String_Space");
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Rating > 0)
-                    strName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                    strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
 
                 if (objGear.Parent is Gear objParent)
                 {
@@ -52,13 +52,13 @@ namespace Chummer
                     {
                         strName += strSpace + '(' + objParent.DisplayNameShort(GlobalOptions.Language);
                         if (objParent.Location != null)
-                            strName += strSpace + '@' + strSpace + objParent.Location.DisplayName(GlobalOptions.Language);
+                            strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
                         strName += ')';
                     }
                 }
                 else if (objGear.Location != null)
-                    strName += strSpace + '(' + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
-                
+                    strName += strSpace + '(' + objGear.Location.DisplayName() + ')';
+
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
@@ -108,17 +108,25 @@ namespace Chummer
         /// <summary>
         /// List of Ammo Gear that the user can selected.
         /// </summary>
-        public List<Gear> Ammo
+        public IEnumerable<Gear> Ammo
         {
-            set => _lstAmmo = value;
+            set
+            {
+                _lstAmmo.Clear();
+                _lstAmmo.AddRange(value);
+            }
         }
 
         /// <summary>
         /// List of ammunition that the user can select.
         /// </summary>
-        public List<string> Count
+        public IEnumerable<string> Count
         {
-            set => _lstCount = value;
+            set
+            {
+                _lstCount.Clear();
+                _lstCount.AddRange(value);
+            }
         }
 
         /// <summary>
@@ -129,7 +137,7 @@ namespace Chummer
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount => Convert.ToInt32(cboType.Text);
+        public int SelectedCount => Convert.ToInt32(cboType.Text, GlobalOptions.InvariantCultureInfo);
 
         #endregion
 

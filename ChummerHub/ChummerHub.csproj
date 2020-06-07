@@ -1,0 +1,144 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <UserSecretsId>572ea518-a8ec-422d-b9f3-8817088ece8c</UserSecretsId>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <ApplicationInsightsResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsAnnotationResourceId>
+    <PackageProjectUrl>https://sinners.azurewebsites.net/</PackageProjectUrl>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>ChummerHub.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+
+    <Compile Remove="Migrations\20181029112504_03.cs" />
+    <Compile Remove="Migrations\20181029112504_03.Designer.cs" />
+    <Compile Remove="Migrations\20190314112930_2347823423.cs" />
+    <Compile Remove="Migrations\20190314112930_2347823423.Designer.cs" />
+    <Compile Remove="Migrations\20190314121202_cumulativeMigration.cs" />
+    <Compile Remove="Migrations\20190314121202_cumulativeMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Services\GoogleDrive\SINners.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="googleb94c18697e68333b.html" />
+    <None Remove="Migrations\ApplicationDbContextModelSnapshot.cs.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\GoogleDrive\SINners.json" />
+  </ItemGroup>
+  <!--<PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>-->
+  
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.45.0.1951" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.14.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.14.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.SnapshotCollector" Version="1.3.7" />
+    <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.14.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.14.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel" Version="2.14.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureKeyVault.HostingStartup" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+  
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6" PrivateAssets="All" />
+  
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+  
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" PrivateAssets="All" />
+    <PackageReference Include="Sendgrid" Version="9.15.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.5.5" />
+    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+    <PackageReference Include="Veldrid.ImageSharp" Version="4.7.0" />
+  </ItemGroup>
+
+    <ItemGroup>
+        <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
+        <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
+        <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+    </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Controllers\V2\" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
+      <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\SINners - Web Deploy.pubxml.user" />
+    <None Include="Properties\PublishProfiles\sinners-Beta - Web Deploy.pubxml.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Web">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\googleb94c18697e68333b.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ChummerHub.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+</Project>

@@ -493,8 +493,8 @@
 			</armor>
 			<armor>
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
-				<translate>Ares Flashield</translate>
+				<name>Ares FlaShield</name>
+				<translate>Ares FlaShield</translate>
 				<altpage>72</altpage>
 			</armor>
 			<armor>
@@ -595,8 +595,8 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
-				<translate>Evo Hel Suit</translate>
+				<name>Evo HEL Suit</name>
+				<translate>Evo HEL Suit</translate>
 				<altpage>81</altpage>
 			</armor>
 			<armor>
@@ -1901,7 +1901,7 @@
 				<altpage>113</altpage>
 			</bioware>
 			<bioware>
-				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+				<id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
 				<name>Hand and Foot Webbing (Feet)</name>
 				<translate>Hand and Foot Webbing (Feet)</translate>
 				<altpage>113</altpage>
@@ -3093,12 +3093,6 @@
 				<altcode>HS</altcode>
 			</book>
 			<book>
-				<id>9b88873f-61fa-4419-b733-49b96997bd42</id>
-				<name>Battle Of Manhattan</name>
-				<translate>Battle Of Manhattan</translate>
-				<altcode>BOM</altcode>
-			</book>
-			<book>
 				<id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
 				<name>The Vladivostok Gauntlet</name>
 				<translate>The Vladivostok Gauntlet</translate>
@@ -3776,8 +3770,8 @@
 			</power>
 			<power>
 				<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
-				<name>Cozenage</name>
-				<translate>Cozenage</translate>
+				<name>Cozenge</name>
+				<translate>Cozenge</translate>
 				<altpage>216</altpage>
 			</power>
 			<power>
@@ -4250,8 +4244,8 @@
 			</power>
 			<power>
 				<id>98928dbd-5b79-4dde-bc92-56dc317e293b</id>
-				<name>Underwater Adapation</name>
-				<translate>Underwater Adapation</translate>
+				<name>Underwater Adaptation</name>
+				<translate>Underwater Adaptation</translate>
 				<altpage>164</altpage>
 			</power>
 			<power>
@@ -13539,8 +13533,8 @@
 			</gear>
 			<gear>
 				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-				<name>Microtronica Azteca Raptor</name>
-				<translate>Microtronica Azteca Raptor</translate>
+				<name>Microtrónica Azteca Raptor</name>
+				<translate>Microtrónica Azteca Raptor</translate>
 				<altpage>17</altpage>
 			</gear>
 			<gear>
@@ -13683,8 +13677,8 @@
 			</gear>
 			<gear>
 				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-				<name>Microtronica Azteca 300</name>
-				<translate>Microtronica Azteca 300</translate>
+				<name>Microtrónica Azteca 300</name>
+				<translate>Microtrónica Azteca 300</translate>
 				<altpage>64</altpage>
 			</gear>
 			<gear>
@@ -17391,8 +17385,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Luggage (2050)</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Luggage (2050)</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -28991,8 +28985,8 @@
 			</quality>
 			<quality>
 				<id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-				<name>Magic Sense (Changeling)</name>
-				<translate>Magic Sense (Changeling)</translate>
+				<name>Magic Sense</name>
+				<translate>Magic Sense</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
@@ -29009,50 +29003,50 @@
 			</quality>
 			<quality>
 				<id>2ffd990c-ced6-4484-955c-108473df5335</id>
-				<name>Metagenetic Improvement (Body)</name>
-				<translate>Metagenetic Improvement (Body)</translate>
+				<name>Metagenic Improvement (Body)</name>
+				<translate>Metagenic Improvement (Body)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-				<name>Metagenetic Improvement (Agility)</name>
-				<translate>Metagenetic Improvement (Agility)</translate>
+				<name>Metagenic Improvement (Agility)</name>
+				<translate>Metagenic Improvement (Agility)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-				<name>Metagenetic Improvement (Reaction)</name>
-				<translate>Metagenetic Improvement (Reaction)</translate>
+				<name>Metagenic Improvement (Reaction)</name>
+				<translate>Metagenic Improvement (Reaction)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-				<name>Metagenetic Improvement (Strength)</name>
-				<translate>Metagenetic Improvement (Strength)</translate>
+				<name>Metagenic Improvement (Strength)</name>
+				<translate>Metagenic Improvement (Strength)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-				<name>Metagenetic Improvement (Charisma)</name>
-				<translate>Metagenetic Improvement (Charisma)</translate>
+				<name>Metagenic Improvement (Charisma)</name>
+				<translate>Metagenic Improvement (Charisma)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-				<name>Metagenetic Improvement (Intuition)</name>
-				<translate>Metagenetic Improvement (Intuition)</translate>
+				<name>Metagenic Improvement (Intuition)</name>
+				<translate>Metagenic Improvement (Intuition)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
-				<name>Metagenetic Improvement (Logic)</name>
-				<translate>Metagenetic Improvement (Logic)</translate>
+				<name>Metagenic Improvement (Logic)</name>
+				<translate>Metagenic Improvement (Logic)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
 				<id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-				<name>Metagenetic Improvement (Willpower)</name>
-				<translate>Metagenetic Improvement (Willpower)</translate>
+				<name>Metagenic Improvement (Willpower)</name>
+				<translate>Metagenic Improvement (Willpower)</translate>
 				<altpage>116</altpage>
 			</quality>
 			<quality>
@@ -40821,8 +40815,8 @@
 			</mod>
 			<mod>
 				<id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-				<name>Missile Defence System</name>
-				<translate>Missile Defence System</translate>
+				<name>Missile Defense System</name>
+				<translate>Missile Defense System</translate>
 				<altpage>160</altpage>
 			</mod>
 			<mod>
@@ -43298,8 +43292,8 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
-				<translate>Nissan Optiumum II Shotgun</translate>
+				<name>Nissan Optimum II Shotgun</name>
+				<translate>Nissan Optimum II Shotgun</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon>

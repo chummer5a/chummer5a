@@ -29,14 +29,14 @@ namespace Chummer
         public frmSelectText()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (PreventXPathErrors && txtValue.Text.Contains('"'))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_InvalidCharacters", GlobalOptions.Language), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

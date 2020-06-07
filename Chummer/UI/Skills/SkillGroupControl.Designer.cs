@@ -107,6 +107,8 @@ namespace Chummer.UI.Skills
             this.Size = new System.Drawing.Size(225, 23);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 

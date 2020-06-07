@@ -21,7 +21,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public interface IHasGear<T>
+    public interface IHasGear
     {
         TaggedObservableCollection<Gear> Gear { get; }
     }

@@ -35,7 +35,7 @@ namespace Chummer
         public frmSelectSkillGroup()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
@@ -47,7 +47,9 @@ namespace Chummer
             {
                 // Build the list of Skill Groups found in the Skills file.
                 using (XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name"))
+                {
                     if (objXmlSkillList != null)
+                    {
                         foreach (XmlNode objXmlSkill in objXmlSkillList)
                         {
                             if (!string.IsNullOrEmpty(_strExcludeCategory))
@@ -67,6 +69,8 @@ namespace Chummer
                             string strInnerText = objXmlSkill.InnerText;
                             lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
                         }
+                    }
+                }
             }
             else
             {

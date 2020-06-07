@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _intStage = intStage;
         }
@@ -79,7 +79,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || xmlNode.RequirementsMet(_objCharacter))
+                if (!chkLimitList.Checked || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode
@@ -114,7 +114,7 @@ namespace Chummer
 
             return lstTreeNodes.ToArray();
         }
-        
+
         private void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
@@ -147,11 +147,11 @@ namespace Chummer
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
-                blnSelectAble = (node != null && (node.InnerText == bool.TrueString || node.OuterXml.EndsWith("/>")));
+                blnSelectAble = (node != null && (node.InnerText == bool.TrueString || node.OuterXml.EndsWith("/>", StringComparison.Ordinal)));
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml"));
 
             if (xmlSelectedNodeInfo != null)
             {
@@ -159,14 +159,14 @@ namespace Chummer
                 cmdOKAdd.Enabled = blnSelectAble;
 
                 lblBP.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty;
-                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space", GlobalOptions.Language) + xmlSelectedNodeInfo["page"]?.InnerText;
+                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space") + xmlSelectedNodeInfo["page"]?.InnerText;
                 lblStage.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
             {
-                lblBP.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                lblStage.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                lblSource.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblBP.Text = LanguageManager.GetString("String_Error");
+                lblStage.Text = LanguageManager.GetString("String_Error");
+                lblSource.Text = LanguageManager.GetString("String_Error");
 
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;
@@ -174,7 +174,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml"));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {
@@ -197,7 +197,7 @@ namespace Chummer
                 {
                     List<ListItem> Stages = new List<ListItem>()
                     {
-                        new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Language))
+                        new ListItem("0", LanguageManager.GetString("String_All"))
                     };
 
                     using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
@@ -237,7 +237,7 @@ namespace Chummer
                     cboStage.DataSource = Stages;
                 }
 
-                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
+                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalOptions.InvariantCultureInfo));
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
 

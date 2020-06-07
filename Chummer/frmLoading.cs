@@ -32,7 +32,7 @@ namespace Chummer
                 if (_strCharacterFile != value)
                 {
                     _strCharacterFile = value;
-                    Text = string.Format(LanguageManager.GetString("String_Loading_Pattern"), _strCharacterFile);
+                    Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), _strCharacterFile);
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace Chummer
         public frmLoading()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Chummer
             pgbLoadingProgress.PerformStep();
             lblLoadingInfo.Text = string.IsNullOrEmpty(strStepName)
                 ? LanguageManager.GetString("String_Loading")
-                : string.Format(LanguageManager.GetString("String_Loading_Pattern"), strStepName);
+                : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
         }
     }
 }

@@ -18,6 +18,7 @@
  */
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
 
@@ -28,16 +29,18 @@ namespace Chummer.UI.Skills
         private readonly SkillGroup _skillGroup;
         public SkillGroupControl(SkillGroup skillGroup)
         {
+            if (skillGroup == null)
+                return;
             _skillGroup = skillGroup;
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblName.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblName.DoDatabinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
+            lblName.DoDatabinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
 
             nudSkill.Visible = !skillGroup.CharacterObject.Created && skillGroup.CharacterObject.BuildMethodHasSkillPoints;
             nudKarma.Visible = !skillGroup.CharacterObject.Created;
@@ -47,21 +50,21 @@ namespace Chummer.UI.Skills
 
             if (_skillGroup.CharacterObject.Created)
             {
-                btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnCareerIncrease.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
+                btnCareerIncrease.DoDatabinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
 
-                lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblGroupRating.DoDatabinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
             }
             else
             {
-                nudKarma.DataBindings.Add("Value", _skillGroup, nameof(SkillGroup.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
+                nudKarma.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
+                nudKarma.DoDatabinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
-                nudSkill.DataBindings.Add("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Value", _skillGroup, nameof(SkillGroup.Base), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DoDatabinding("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
+                nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
+                nudSkill.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
+                nudSkill.DoDatabinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
             }
             ResumeLayout();
             sw.TaskEnd("Create skillgroup");
@@ -78,8 +81,8 @@ namespace Chummer.UI.Skills
         #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                    _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -112,6 +115,49 @@ namespace Chummer.UI.Skills
                 nudSkill.Left = lblName.Left + nameWidth + 6;
                 nudKarma.Left = nudSkill.Left + ratingWidth + 6;
             }
+        }
+        #endregion
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+        protected ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        protected Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
         }
         #endregion
     }

@@ -1,11 +1,12 @@
-version: "5.203.{build}"
+version: "5.212.{build}"
 branches:
   only:
   - master
 skip_tags: true
 image: Visual Studio 2017
 configuration: Release
-platform: x86
+platform: Any CPU
+
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -20,6 +21,7 @@ environment:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
 init:
+
 - ps: |
     $headers = @{
     "Authorization" = "Bearer $token"
@@ -75,7 +77,7 @@ install:
       Write-Host "Old Minor: $($env:OldMinorVersion))"
       Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
       $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
-      $BuildNumber = '{ nextBuildNumber: 2; }'
+      $BuildNumber = '{ nextBuildNumber: 1; }'
       $Format = '{ versionFormat: $Major.$Minor.1; }'
       # get project with last build details
       Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
@@ -100,6 +102,8 @@ build:
   verbosity: normal
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
+on_failure:
+- ps: Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
 artifacts:
 - path: Chummer.Nightly.zip
   name: Chummer
@@ -111,3 +115,9 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
+#test:
+  # all except assemblies to test
+#  assemblies:
+#    except:
+#      - ChummerHub.Client.Tests.dll
+#      - '**\ChummerHub.Client.Tests.dll'

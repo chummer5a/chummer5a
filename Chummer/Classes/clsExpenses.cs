@@ -155,6 +155,8 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("undo");
             objWriter.WriteElementString("karmatype", KarmaType.ToString());
             objWriter.WriteElementString("nuyentype", NuyenType.ToString());
@@ -224,10 +226,10 @@ namespace Chummer
     }
 
     /// <summary>
-    /// Exense Log Entry.
+    /// Expense Log Entry.
     /// </summary>
     [DebuggerDisplay("{Date.ToString()}: {Amount.ToString()}")]
-    public class ExpenseLogEntry : IHasInternalId, IComparable
+    public class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -236,13 +238,45 @@ namespace Chummer
         private string _strReason = string.Empty;
         private ExpenseType _objExpenseType;
         private bool _blnRefund;
+        private bool _blnForceCareerVisible;
 
         #region Helper Methods
         public int CompareTo(object obj)
         {
             if (obj is ExpenseLogEntry objEntry)
             {
-                return Date.CompareTo(objEntry.Date);
+                if (Equals(_objCharacter, objEntry._objCharacter))
+                {
+                    int intReturn = Date.CompareTo(objEntry.Date);
+                    if (intReturn == 0)
+                        intReturn = _objExpenseType.CompareTo(objEntry._objExpenseType);
+                    if (intReturn == 0)
+                        intReturn = string.Compare(Reason, objEntry.Reason, StringComparison.Ordinal);
+                    if (intReturn == 0)
+                        intReturn = Refund.CompareTo(objEntry.Refund);
+                    if (intReturn == 0)
+                        intReturn = Amount.CompareTo(objEntry.Amount);
+                    if (intReturn == 0)
+                        intReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
+                    return intReturn;
+                }
+
+                int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, objEntry._objCharacter?.FileName ?? string.Empty, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                    intBackupReturn = string.Compare(_objCharacter?.CharacterName ?? string.Empty, objEntry._objCharacter?.CharacterName ?? string.Empty, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                    intBackupReturn = Date.CompareTo(objEntry.Date);
+                if (intBackupReturn == 0)
+                    intBackupReturn = _objExpenseType.CompareTo(objEntry._objExpenseType);
+                if (intBackupReturn == 0)
+                    intBackupReturn = string.Compare(Reason, objEntry.Reason, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                    intBackupReturn = Refund.CompareTo(objEntry.Refund);
+                if (intBackupReturn == 0)
+                    intBackupReturn = Amount.CompareTo(objEntry.Amount);
+                if (intBackupReturn == 0)
+                    intBackupReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
+                return intBackupReturn;
             }
             return 1;
         }
@@ -274,7 +308,7 @@ namespace Chummer
         /// Create a new Expense Log Entry.
         /// </summary>
         /// <param name="decAmount">Amount of the Karma/Nuyen expense.</param>
-        /// <param name="strReason">Reason for the Karma/Nueyn change.</param>
+        /// <param name="strReason">Reason for the Karma/Nuyen change.</param>
         /// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
         /// <param name="datDate">Date and time of the Expense.</param>
         /// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
@@ -295,13 +329,16 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
-            objWriter.WriteElementString("refund", _blnRefund.ToString());
+            objWriter.WriteElementString("refund", _blnRefund.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("forcecareervisible", _blnForceCareerVisible.ToString(GlobalOptions.InvariantCultureInfo));
             Undo?.Save(objWriter);
             objWriter.WriteEndElement();
         }
@@ -312,14 +349,17 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            if (objNode == null)
+                return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
-                _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ')').Replace("🡒", "->");
+                _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund") + ')').Replace("🡒", "->");
             if (objNode["type"] != null)
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
+            objNode.TryGetBoolFieldQuickly("forcecareervisible", ref _blnForceCareerVisible);
 
             if (objNode["undo"] != null)
             {
@@ -336,6 +376,8 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             if (Amount != 0 || _objCharacter.Options.PrintFreeExpenses)
             {
                 objWriter.WriteStartElement("expense");
@@ -343,7 +385,7 @@ namespace Chummer
                 objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
                 objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));
                 objWriter.WriteElementString("type", Type.ToString());
-                objWriter.WriteElementString("refund", Refund.ToString());
+                objWriter.WriteElementString("refund", Refund.ToString(GlobalOptions.InvariantCultureInfo));
                 objWriter.WriteEndElement();
             }
         }
@@ -353,10 +395,10 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Expense Log Entry.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
-        /// Date the Exense Log Entry was made.
+        /// Date the Expense Log Entry was made.
         /// </summary>
         public DateTime Date
         {
@@ -435,10 +477,74 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Should this Expense be presented to the Total Career Karma and Nuyen values?
+        /// </summary>
+        public bool ForceCareerVisible
+        {
+            get => _blnForceCareerVisible;
+            set => _blnForceCareerVisible = value;
+        }
+
+        /// <summary>
         /// Undo object.
         /// </summary>
         public ExpenseUndo Undo { get; set; }
 
         #endregion
+
+        public bool Equals(ExpenseLogEntry other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return CompareTo(other) == 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((ExpenseLogEntry) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return new {_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible}.GetHashCode();
+        }
+
+        public static bool operator ==(ExpenseLogEntry left, ExpenseLogEntry right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ExpenseLogEntry left, ExpenseLogEntry right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(ExpenseLogEntry left, ExpenseLogEntry right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(ExpenseLogEntry left, ExpenseLogEntry right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(ExpenseLogEntry left, ExpenseLogEntry right)
+        {
+            return !(left is null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(ExpenseLogEntry left, ExpenseLogEntry right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
     }
 }

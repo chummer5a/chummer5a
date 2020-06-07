@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,12 +28,10 @@ namespace Chummer
             sw.Stop();
 
             TimeSpan elapsed = sw.Elapsed;
-            Trace.WriteLine($"{task} finished in {elapsed.TotalMilliseconds} ms");
+            Trace.WriteLine(string.Format(GlobalOptions.InvariantCultureInfo, "{0} finished in {1} ms", task, elapsed.TotalMilliseconds));
 
             sw.Restart();
             return elapsed;
-
         }
-
     }
 }

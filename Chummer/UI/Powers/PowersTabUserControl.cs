@@ -36,13 +36,13 @@ namespace Chummer.UI.Powers
     {
         // TODO: check, if this can be removed???
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
-        
+
         private TableView<Power> _table;
 
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _dropDownList = GenerateDropdownFilter();
 
@@ -50,11 +50,11 @@ namespace Chummer.UI.Powers
             InitializeTable();
             ResumeLayout();
         }
-        
+
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
         private bool _blnSearchMode;
-        
+
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter == null)
@@ -66,7 +66,7 @@ namespace Chummer.UI.Powers
                     ParentForm.Cursor = Cursors.Default;
             }
         }
-        
+
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
@@ -101,7 +101,7 @@ namespace Chummer.UI.Powers
             SuspendLayout();
             DoubleBuffered = true;
 
-            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPowerPoints.DoDatabinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
 
             parts.TaskEnd("MakePowerDisplay()");
 
@@ -129,15 +129,15 @@ namespace Chummer.UI.Powers
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
-        
+
         private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language), power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language), power => power.Rating == 0)
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"), power => power.Rating > 0),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"), power => power.Rating == 0)
             };
 
             /*
@@ -147,14 +147,14 @@ namespace Chummer.UI.Powers
                     {
                         string strName = xmlCategoryNode.InnerText;
                         ret.Add(new Tuple<string, Predicate<Power>>(
-                            $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
+                            LanguageManager.GetString("Label_Category") + LanguageManager.GetString("String_Space") + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
                             power => power.Category == strName));
                     }
                     */
 
             return ret;
         }
-        
+
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
@@ -178,7 +178,7 @@ namespace Chummer.UI.Powers
         {
             if (_blnSearchMode)
             {
-                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
+                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
             }
         }
 
@@ -190,26 +190,25 @@ namespace Chummer.UI.Powers
 
             do
             {
-                frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-                frmPickPower.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                 {
-                    frmPickPower.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickPower.AddAgain;
+                    frmPickPower.ShowDialog(this);
 
-                Power objPower = new Power(_objCharacter);
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                        break;
 
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
-                frmPickPower.Dispose();
-                if (objPower.Create(objXmlPower))
-                {
-                    _objCharacter.Powers.Add(objPower);
+                    blnAddAgain = frmPickPower.AddAgain;
 
-                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+                    Power objPower = new Power(_objCharacter);
+
+                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
+                    if (objPower.Create(objXmlPower))
+                    {
+                        _objCharacter.Powers.Add(objPower);
+
+                        MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+                    }
                 }
             }
             while (blnAddAgain);
@@ -227,7 +226,8 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            lblPowerPoints.Text = string.Format("{0} ({1} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{1}{0}({2}{0}{3})",
+                LanguageManager.GetString("String_Space"), intPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
         }
 
         private int PowerPointsTotal
@@ -264,11 +264,11 @@ namespace Chummer.UI.Powers
             TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
             {
                 Text = "Power",
-                Extractor = (power => power.DisplayName),
+                Extractor = (power => power.CurrentDisplayName),
                 Tag = "String_Power",
                 Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
             };
-            nameColumn.AddDependency(nameof(Power.DisplayName));
+            nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
             TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
             {
@@ -285,12 +285,11 @@ namespace Chummer.UI.Powers
                 MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
                 ValueUpdater = (p, newRating) =>
                 {
-                    int delta = ((int)newRating) - p.Rating;
+                    int delta = ((int) newRating) - p.Rating;
                     if (delta != 0)
                     {
                         p.Rating += delta;
                     }
-
                 },
                 MinExtractor = (p => 0),
                 ValueGetter = (p => p.Rating),
@@ -298,9 +297,16 @@ namespace Chummer.UI.Powers
             {
                 Text = "Rating",
                 Tag = "String_Rating",
-                Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
+                Sorter = (o1, o2) =>
+                {
+                    if (o1 is Power objPower1 && o2 is Power objPower2)
+                        return objPower1.Rating - objPower2.Rating;
+                    string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
+                                 o2.GetType() + " in the ratingColumn." + Environment.NewLine;
+                    msg += "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(msg, nameof(o1));
+                },
             };
-
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
@@ -311,7 +317,15 @@ namespace Chummer.UI.Powers
                 Text = "Total Rating",
                 Extractor = (power => power.TotalRating),
                 Tag = "String_TotalRating",
-                Sorter = (o1, o2) => ((Power)o1).TotalRating - ((Power)o2).TotalRating
+                Sorter = (o1, o2) =>
+                {
+                    if (o1 is Power objPower1 && o2 is Power objPower2)
+                        return objPower1.TotalRating - objPower2.TotalRating;
+                    string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
+                                 o2.GetType() + " in the totalRatingColumn." + Environment.NewLine;
+                    msg += "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(msg, nameof(o1));
+                },
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
@@ -336,9 +350,10 @@ namespace Chummer.UI.Powers
 
             TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
             {
-                ValueGetter = (p => p.DiscountedAdeptWay),
+                ValueGetter = p => p.DiscountedAdeptWay,
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
-                VisibleExtractor = (p => p.AdeptWayDiscountEnabled),
+                VisibleExtractor = p => p.AdeptWayDiscountEnabled,
+                EnabledExtractor = p => (p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay),
                 Alignment = Alignment.Center
             })
             {
@@ -347,6 +362,7 @@ namespace Chummer.UI.Powers
             };
             adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
             adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
+            adeptWayColumn.AddDependency(nameof(Character.AllowAdeptWayPowerDiscount));
             adeptWayColumn.AddDependency(nameof(Power.Rating));
 
             /*
@@ -370,14 +386,13 @@ namespace Chummer.UI.Powers
             })
             {
                 ClickHandler = p => {
-                    frmNotes frmPowerNotes = new frmNotes
+                    using (frmNotes frmPowerNotes = new frmNotes { Notes = p.Notes })
                     {
-                        Notes = p.Notes
-                    };
-                    frmPowerNotes.ShowDialog(this);
+                        frmPowerNotes.ShowDialog(this);
 
-                    if (frmPowerNotes.DialogResult == DialogResult.OK)
-                        p.Notes = frmPowerNotes.Notes;
+                        if (frmPowerNotes.DialogResult == DialogResult.OK)
+                            p.Notes = frmPowerNotes.Notes;
+                    }
                 },
                 Alignment = Alignment.Center
             })
@@ -385,15 +400,15 @@ namespace Chummer.UI.Powers
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
                 ToolTipExtractor = (p => {
-                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
+                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
+                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
                     return strTooltip.WordWrap(100);
                 })
             };
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button() { Text = "Delete", Tag = "String_Delete", BackColor = SystemColors.Control })
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete"), Tag = "String_Delete", BackColor = SystemColors.Control })
             {
                 ClickHandler = p =>
                 {
@@ -429,7 +444,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
+            _table.TranslateWinForm();
 
             pnlPowers.Controls.Add(_table);
         }

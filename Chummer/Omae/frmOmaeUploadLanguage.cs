@@ -47,8 +47,8 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
             _strUserName = strUserName;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection");
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection");
         }
 
         private void frmOmaeUploadLanguage_Load(object sender, EventArgs e)
@@ -75,7 +75,7 @@ namespace Chummer
             // Make sure a .chum5 file was selected.
             if (!openFileDialog.FileName.EndsWith(".xml"))
             {
-                MessageBox.Show("You must select a valid XML file to upload.", "Cannot Upload File", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox("You must select a valid XML file to upload.", "Cannot Upload File", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -90,12 +90,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
 
@@ -107,7 +107,7 @@ namespace Chummer
             // Make sure a file has been selected.
             if (string.IsNullOrEmpty(txtFilePath.Text))
             {
-                MessageBox.Show("Please select a language file to upload.", "No Language File Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox("Please select a language file to upload.", "No Language File Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -120,15 +120,15 @@ namespace Chummer
                 int intResult = objService.UploadLanguage(_strUserName, strFileName, bytFile);
 
                 if (intResult == RESULT_SUCCESS)
-                    MessageBox.Show(MESSAGE_SUCCESS, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(MESSAGE_SUCCESS, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else if (intResult == RESULT_UNAUTHORIZED)
-                    MessageBox.Show(MESSAGE_UNAUTHORIZED, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(MESSAGE_UNAUTHORIZED, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else if (intResult == RESULT_INVALID_FILE)
-                    MessageBox.Show(MESSAGE_INVALID_FILE, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(MESSAGE_INVALID_FILE, "File Upload", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (EndpointNotFoundException)
             {
-                MessageBox.Show(NO_CONNECTION_MESSAGE, NO_CONNECTION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(NO_CONNECTION_MESSAGE, NO_CONNECTION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             objService.Close();
         }

@@ -32,14 +32,14 @@ namespace Chummer
         public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
-                string strName = LanguageManager.TranslateExtra(lstObject.Item1, GlobalOptions.Language);
+                string strName = LanguageManager.TranslateExtra(lstObject.Item1);
                 if (!string.IsNullOrEmpty(lstObject.Item2))
                 {
-                    strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.TranslateExtra(lstObject.Item2, GlobalOptions.Language) + ')';
+                    strName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(lstObject.Item2) + ')';
                 }
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }

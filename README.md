@@ -16,6 +16,8 @@ Pre-release automated builds are performed by Appveyor, and are accessible via [
 
 [![Build status](https://ci.appveyor.com/api/projects/status/wf0jbqd5xp05s4hs?svg=true)](https://ci.appveyor.com/project/chummer5a/chummer5a)
 
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/Z8Z7IP4E)
+
 ### Sponsors
 
 * [JetBrains](http://www.jetbrains.com/) have been kind enough to provide our development team with licences for their excellent tools

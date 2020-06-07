@@ -23,7 +23,7 @@ namespace Chummer
         int PhysicalCM { get; }
         int PhysicalCMFilled { get; set; }
     }
-    interface IHasMatrixConditionMonitor
+    public interface IHasMatrixConditionMonitor
     {
         int MatrixCM { get; }
         int MatrixCMFilled { get; set; }

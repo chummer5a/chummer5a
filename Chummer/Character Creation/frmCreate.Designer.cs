@@ -113,23 +113,23 @@ namespace Chummer
             this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIndirectDodgeLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIndirectSoakLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDirectSoakManaLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDirectSoakPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttBODLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDetectionLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttAGILabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttSTRLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttREALabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttWILLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttLOGLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttINTLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceDecAttCHALabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceManipPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceManipMentalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIllusionPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIndirectDodgeLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIndirectSoakLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDirectSoakManaLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDirectSoakPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttBODLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDetectionLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttAGILabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttSTRLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttREALabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttWILLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttLOGLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttINTLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseDecAttCHALabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseManipPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseManipMentalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIllusionPhysicalLabel = new System.Windows.Forms.Label();
+            this.lblSpellDefenseIllusionManaLabel = new System.Windows.Forms.Label();
             this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
             this.lblBuildAIAdvancedPrograms = new System.Windows.Forms.Label();
             this.lblBuildRitualsBPLabel = new System.Windows.Forms.Label();
@@ -194,6 +194,7 @@ namespace Chummer
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFileSaveAsCreated = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuFileClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -243,6 +244,7 @@ namespace Chummer
             this.tsArmorGearNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmorMod = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsArmorModNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsArmorModAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsQuality = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsQualityNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSpell = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -305,6 +307,8 @@ namespace Chummer
             this.cmdAddQuality = new System.Windows.Forms.Button();
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
             this.lblAlias = new System.Windows.Forms.Label();
+            this.lblStolenNuyen = new System.Windows.Forms.Label();
+            this.lblStolenNuyenLabel = new System.Windows.Forms.Label();
             this.pnlAttributes = new System.Windows.Forms.FlowLayoutPanel();
             this.txtAlias = new System.Windows.Forms.TextBox();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
@@ -419,11 +423,11 @@ namespace Chummer
             this.lblFadingAttributesValue = new Chummer.LabelWithToolTip();
             this.gpbTechnomancerParagon = new System.Windows.Forms.GroupBox();
             this.tlpTechnomancerParagon = new System.Windows.Forms.TableLayoutPanel();
-            this.lblParagonInformation = new System.Windows.Forms.Label();
             this.lblParagonSource = new System.Windows.Forms.Label();
             this.lblParagonSourceLabel = new System.Windows.Forms.Label();
             this.lblParagonLabel = new System.Windows.Forms.Label();
             this.lblParagon = new System.Windows.Forms.Label();
+            this.lblParagonInformation = new System.Windows.Forms.Label();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
             this.tlpAdvancedPrograms = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treAIPrograms = new System.Windows.Forms.TreeView();
@@ -465,7 +469,14 @@ namespace Chummer
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.flpInitiationButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddMetamagic = new System.Windows.Forms.Button();
+            this.cmdAddMetamagic = new SplitButton();
+            this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsMetamagicAddArt = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddEnchantment = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddEnhancement = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddMetamagic = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicAddRitual = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
@@ -500,6 +511,7 @@ namespace Chummer
             this.lblPrototypeTranshumanESS = new System.Windows.Forms.Label();
             this.gpbCyberwareCommon = new System.Windows.Forms.GroupBox();
             this.tlpCyberwareCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.chkCyberwareStolen = new System.Windows.Forms.CheckBox();
             this.lblCyberwareNameLabel = new System.Windows.Forms.Label();
             this.nudCyberwareRating = new System.Windows.Forms.NumericUpDown();
             this.lblCyberwareRatingLabel = new System.Windows.Forms.Label();
@@ -567,14 +579,14 @@ namespace Chummer
             this.lblGearCapacity = new System.Windows.Forms.Label();
             this.lblGearSourceLabel = new System.Windows.Forms.Label();
             this.lblGearSource = new System.Windows.Forms.Label();
+            this.flowLayoutPanel12 = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGearEquipped = new System.Windows.Forms.CheckBox();
+            this.chkGearStolen = new System.Windows.Forms.CheckBox();
             this.gpbGearMatrix = new System.Windows.Forms.GroupBox();
             this.tlpGearMatrix = new System.Windows.Forms.TableLayoutPanel();
-            this.chkGearActiveCommlink = new System.Windows.Forms.CheckBox();
             this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
             this.lblGearDeviceRating = new System.Windows.Forms.Label();
             this.lblGearAttackLabel = new System.Windows.Forms.Label();
-            this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
             this.lblGearSleazeLabel = new System.Windows.Forms.Label();
             this.cboGearFirewall = new Chummer.ElasticComboBox();
             this.lblGearFirewallLabel = new System.Windows.Forms.Label();
@@ -582,6 +594,9 @@ namespace Chummer
             this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
             this.cboGearAttack = new Chummer.ElasticComboBox();
             this.cboGearSleaze = new Chummer.ElasticComboBox();
+            this.flowLayoutPanel14 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
+            this.chkGearActiveCommlink = new System.Windows.Forms.CheckBox();
             this.gpbGearBondedFoci = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.treFoci = new System.Windows.Forms.TreeView();
@@ -610,6 +625,7 @@ namespace Chummer
             this.lblArmorSourceLabel = new System.Windows.Forms.Label();
             this.flpArmorCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkIncludedInArmor = new System.Windows.Forms.CheckBox();
+            this.chkArmorStolen = new System.Windows.Forms.CheckBox();
             this.gpbArmorMatrix = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.lblArmorAttack = new System.Windows.Forms.Label();
@@ -659,6 +675,7 @@ namespace Chummer
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.flpWeaponsCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkIncludedInWeapon = new System.Windows.Forms.CheckBox();
+            this.chkWeaponStolen = new System.Windows.Forms.CheckBox();
             this.gpbWeaponsWeapon = new System.Windows.Forms.GroupBox();
             this.flpWeaponsWeapon = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpWeaponsWeapon = new System.Windows.Forms.TableLayoutPanel();
@@ -715,6 +732,7 @@ namespace Chummer
             this.flpDrugs = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbDrugsCommon = new System.Windows.Forms.GroupBox();
             this.tlpDrugsCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.chkDrugStolen = new System.Windows.Forms.CheckBox();
             this.lblDrugNameLabel = new System.Windows.Forms.Label();
             this.lblDrugEffectLabel = new System.Windows.Forms.Label();
             this.lblDrugName = new System.Windows.Forms.Label();
@@ -786,6 +804,7 @@ namespace Chummer
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
             this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkVehicleIncludedInWeapon = new System.Windows.Forms.CheckBox();
+            this.chkVehicleStolen = new System.Windows.Forms.CheckBox();
             this.gpbVehiclesVehicle = new System.Windows.Forms.GroupBox();
             this.tlpVehiclesVehicle = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
@@ -821,17 +840,19 @@ namespace Chummer
             this.gpbVehiclesWeapon = new System.Windows.Forms.GroupBox();
             this.flpVehiclesWeapon = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpVehiclesWeaponCommon = new System.Windows.Forms.TableLayoutPanel();
-            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDamageLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDamage = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAPLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAP = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponModeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDicePoolLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAmmoLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAmmo = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponModeLabel = new System.Windows.Forms.Label();
+            this.cboVehicleWeaponFiringMode = new Chummer.ElasticComboBox();
+            this.lblFiringModeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponMode = new System.Windows.Forms.Label();
             this.tlpVehiclesWeaponRanges = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
@@ -875,19 +896,13 @@ namespace Chummer
             this.lblHandedness = new System.Windows.Forms.Label();
             this.btnCreateBackstory = new System.Windows.Forms.Button();
             this.txtSex = new System.Windows.Forms.TextBox();
-            this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblPublicAwareTotal = new Chummer.LabelWithToolTip();
-            this.lblNotes = new System.Windows.Forms.Label();
             this.lblAge = new System.Windows.Forms.Label();
             this.lblNotorietyTotal = new Chummer.LabelWithToolTip();
             this.txtAge = new System.Windows.Forms.TextBox();
             this.lblStreetCredTotal = new Chummer.LabelWithToolTip();
-            this.txtConcept = new System.Windows.Forms.TextBox();
             this.lblEyes = new System.Windows.Forms.Label();
-            this.lblConcept = new System.Windows.Forms.Label();
-            this.txtBackground = new System.Windows.Forms.TextBox();
             this.txtEyes = new System.Windows.Forms.TextBox();
-            this.lblBackground = new System.Windows.Forms.Label();
             this.lblHair = new System.Windows.Forms.Label();
             this.txtHair = new System.Windows.Forms.TextBox();
             this.lblHeight = new System.Windows.Forms.Label();
@@ -900,12 +915,20 @@ namespace Chummer
             this.txtWeight = new System.Windows.Forms.TextBox();
             this.lblSkin = new System.Windows.Forms.Label();
             this.txtSkin = new System.Windows.Forms.TextBox();
-            this.lblDescription = new System.Windows.Forms.Label();
-            this.txtDescription = new System.Windows.Forms.TextBox();
             this.lblMugshot = new System.Windows.Forms.Label();
             this.flowLayoutPanel10 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddMugshot = new System.Windows.Forms.Button();
             this.cmdDeleteMugshot = new System.Windows.Forms.Button();
+            this.pnlLongTexts = new System.Windows.Forms.Panel();
+            this.tlpLongTexts = new System.Windows.Forms.TableLayoutPanel();
+            this.gpbDescription = new System.Windows.Forms.GroupBox();
+            this.rtfDescription = new Chummer.UI.Editors.RtfEditor();
+            this.gpbBackground = new System.Windows.Forms.GroupBox();
+            this.rtfBackground = new Chummer.UI.Editors.RtfEditor();
+            this.gpbConcept = new System.Windows.Forms.GroupBox();
+            this.rtfConcept = new Chummer.UI.Editors.RtfEditor();
+            this.gpbNotes = new System.Windows.Forms.GroupBox();
+            this.rtfNotes = new Chummer.UI.Editors.RtfEditor();
             this.tabRelationships = new System.Windows.Forms.TabPage();
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
@@ -938,6 +961,8 @@ namespace Chummer
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabBPSummary = new System.Windows.Forms.TabPage();
             this.tlpKarmaSummary = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblMetagenicQualities = new System.Windows.Forms.Label();
+            this.lblMetagenicQualitiesLabel = new System.Windows.Forms.Label();
             this.lblAINormalProgramsBP = new System.Windows.Forms.Label();
             this.lblAIAdvancedProgramsBP = new System.Windows.Forms.Label();
             this.lblBuildRitualsBP = new System.Windows.Forms.Label();
@@ -987,36 +1012,33 @@ namespace Chummer
             this.lblMatrixINI = new Chummer.LabelWithToolTip();
             this.lblESSMax = new System.Windows.Forms.Label();
             this.lblArmor = new Chummer.LabelWithToolTip();
-            this.tabDefences = new System.Windows.Forms.TabPage();
+            this.lblSurprise = new Chummer.LabelWithToolTip();
+            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
+            this.lblDodgeLabel = new Chummer.LabelWithToolTip();
+            this.lblDodge = new Chummer.LabelWithToolTip();
+            this.tabDefenses = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblSpellDefenceManipPhysical = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseManipPhysical = new Chummer.LabelWithToolTip();
             this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
-            this.lblSpellDefenceManipMental = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIllusionPhysical = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIndirectDodge = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIllusionMana = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceIndirectSoak = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttWIL = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttLOG = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDirectSoakMana = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttINT = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDirectSoakPhysical = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttCHA = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDetection = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttSTR = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttBOD = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttAGI = new Chummer.LabelWithToolTip();
-            this.lblSpellDefenceDecAttREA = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseManipMental = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIllusionPhysical = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIndirectDodge = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIllusionMana = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseIndirectSoak = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttWIL = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttLOG = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDirectSoakMana = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttINT = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDirectSoakPhysical = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttCHA = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDetection = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttSTR = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttBOD = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttAGI = new Chummer.LabelWithToolTip();
+            this.lblSpellDefenseDecAttREA = new Chummer.LabelWithToolTip();
             this.panel1 = new System.Windows.Forms.Panel();
             this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsMetamagicAddArt = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddEnchantment = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddEnhancement = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddMetamagic = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicAddRitual = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1111,6 +1133,7 @@ namespace Chummer
             this.tabInitiation.SuspendLayout();
             this.tlpInitiation.SuspendLayout();
             this.flpInitiationButtons.SuspendLayout();
+            this.cmsMetamagic.SuspendLayout();
             this.flpInitiation.SuspendLayout();
             this.gpbInitiationType.SuspendLayout();
             this.flpInitiationCheckBoxes.SuspendLayout();
@@ -1137,8 +1160,10 @@ namespace Chummer
             this.tlpGearCommon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
+            this.flowLayoutPanel12.SuspendLayout();
             this.gpbGearMatrix.SuspendLayout();
             this.tlpGearMatrix.SuspendLayout();
+            this.flowLayoutPanel14.SuspendLayout();
             this.gpbGearBondedFoci.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.tabArmor.SuspendLayout();
@@ -1204,6 +1229,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).BeginInit();
             this.flowLayoutPanel10.SuspendLayout();
+            this.pnlLongTexts.SuspendLayout();
+            this.tlpLongTexts.SuspendLayout();
+            this.gpbDescription.SuspendLayout();
+            this.gpbBackground.SuspendLayout();
+            this.gpbConcept.SuspendLayout();
+            this.gpbNotes.SuspendLayout();
             this.tabRelationships.SuspendLayout();
             this.tabPeople.SuspendLayout();
             this.tabContacts.SuspendLayout();
@@ -1221,11 +1252,10 @@ namespace Chummer
             this.tlpKarmaSummary.SuspendLayout();
             this.tabOtherInfo.SuspendLayout();
             this.tlpOtherInfo.SuspendLayout();
-            this.tabDefences.SuspendLayout();
+            this.tabDefenses.SuspendLayout();
             this.tlpSpellDefense.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
             this.cmsInitiationNotes.SuspendLayout();
-            this.cmsMetamagic.SuspendLayout();
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsGearAllowRename.SuspendLayout();
@@ -1382,13 +1412,9 @@ namespace Chummer
             // 
             // chkArmorEquipped
             // 
-            this.chkArmorEquipped.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkArmorEquipped.AutoSize = true;
             this.chkArmorEquipped.Enabled = false;
-            this.chkArmorEquipped.Location = new System.Drawing.Point(3, 4);
-            this.chkArmorEquipped.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkArmorEquipped.Location = new System.Drawing.Point(3, 3);
             this.chkArmorEquipped.Name = "chkArmorEquipped";
             this.chkArmorEquipped.Size = new System.Drawing.Size(71, 17);
             this.chkArmorEquipped.TabIndex = 78;
@@ -1399,13 +1425,9 @@ namespace Chummer
             // 
             // chkWeaponAccessoryInstalled
             // 
-            this.chkWeaponAccessoryInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkWeaponAccessoryInstalled.AutoSize = true;
             this.chkWeaponAccessoryInstalled.Enabled = false;
-            this.chkWeaponAccessoryInstalled.Location = new System.Drawing.Point(3, 4);
-            this.chkWeaponAccessoryInstalled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkWeaponAccessoryInstalled.Location = new System.Drawing.Point(3, 3);
             this.chkWeaponAccessoryInstalled.Name = "chkWeaponAccessoryInstalled";
             this.chkWeaponAccessoryInstalled.Size = new System.Drawing.Size(65, 17);
             this.chkWeaponAccessoryInstalled.TabIndex = 72;
@@ -1474,7 +1496,7 @@ namespace Chummer
             // 
             this.lblBuildFoci.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildFoci.AutoSize = true;
-            this.lblBuildFoci.Location = new System.Drawing.Point(89, 356);
+            this.lblBuildFoci.Location = new System.Drawing.Point(89, 381);
             this.lblBuildFoci.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildFoci.Name = "lblBuildFoci";
             this.lblBuildFoci.Size = new System.Drawing.Size(27, 13);
@@ -1486,7 +1508,7 @@ namespace Chummer
             // 
             this.lblBuildMartialArts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildMartialArts.AutoSize = true;
-            this.lblBuildMartialArts.Location = new System.Drawing.Point(57, 481);
+            this.lblBuildMartialArts.Location = new System.Drawing.Point(57, 506);
             this.lblBuildMartialArts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildMartialArts.Name = "lblBuildMartialArts";
             this.lblBuildMartialArts.Size = new System.Drawing.Size(59, 13);
@@ -1498,7 +1520,7 @@ namespace Chummer
             // 
             this.lblBuildNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildNuyen.AutoSize = true;
-            this.lblBuildNuyen.Location = new System.Drawing.Point(78, 181);
+            this.lblBuildNuyen.Location = new System.Drawing.Point(78, 206);
             this.lblBuildNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildNuyen.Name = "lblBuildNuyen";
             this.lblBuildNuyen.Size = new System.Drawing.Size(38, 13);
@@ -1510,7 +1532,7 @@ namespace Chummer
             // 
             this.lblBuildEnemies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildEnemies.AutoSize = true;
-            this.lblBuildEnemies.Location = new System.Drawing.Point(69, 156);
+            this.lblBuildEnemies.Location = new System.Drawing.Point(69, 181);
             this.lblBuildEnemies.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildEnemies.Name = "lblBuildEnemies";
             this.lblBuildEnemies.Size = new System.Drawing.Size(47, 13);
@@ -1522,7 +1544,7 @@ namespace Chummer
             // 
             this.lblBuildComplexForms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildComplexForms.AutoSize = true;
-            this.lblBuildComplexForms.Location = new System.Drawing.Point(38, 431);
+            this.lblBuildComplexForms.Location = new System.Drawing.Point(38, 456);
             this.lblBuildComplexForms.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildComplexForms.Name = "lblBuildComplexForms";
             this.lblBuildComplexForms.Size = new System.Drawing.Size(78, 13);
@@ -1534,7 +1556,7 @@ namespace Chummer
             // 
             this.lblBuildSprites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildSprites.AutoSize = true;
-            this.lblBuildSprites.Location = new System.Drawing.Point(77, 406);
+            this.lblBuildSprites.Location = new System.Drawing.Point(77, 431);
             this.lblBuildSprites.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildSprites.Name = "lblBuildSprites";
             this.lblBuildSprites.Size = new System.Drawing.Size(39, 13);
@@ -1546,7 +1568,7 @@ namespace Chummer
             // 
             this.lblBuildSpirits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildSpirits.AutoSize = true;
-            this.lblBuildSpirits.Location = new System.Drawing.Point(81, 381);
+            this.lblBuildSpirits.Location = new System.Drawing.Point(81, 406);
             this.lblBuildSpirits.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildSpirits.Name = "lblBuildSpirits";
             this.lblBuildSpirits.Size = new System.Drawing.Size(35, 13);
@@ -1558,7 +1580,7 @@ namespace Chummer
             // 
             this.lblBuildSpells.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildSpells.AutoSize = true;
-            this.lblBuildSpells.Location = new System.Drawing.Point(81, 281);
+            this.lblBuildSpells.Location = new System.Drawing.Point(81, 306);
             this.lblBuildSpells.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildSpells.Name = "lblBuildSpells";
             this.lblBuildSpells.Size = new System.Drawing.Size(35, 13);
@@ -1570,7 +1592,7 @@ namespace Chummer
             // 
             this.lblBuildKnowledgeSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildKnowledgeSkills.AutoSize = true;
-            this.lblBuildKnowledgeSkills.Location = new System.Drawing.Point(29, 256);
+            this.lblBuildKnowledgeSkills.Location = new System.Drawing.Point(29, 281);
             this.lblBuildKnowledgeSkills.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildKnowledgeSkills.Name = "lblBuildKnowledgeSkills";
             this.lblBuildKnowledgeSkills.Size = new System.Drawing.Size(87, 13);
@@ -1582,7 +1604,7 @@ namespace Chummer
             // 
             this.lblBuildActiveSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildActiveSkills.AutoSize = true;
-            this.lblBuildActiveSkills.Location = new System.Drawing.Point(52, 231);
+            this.lblBuildActiveSkills.Location = new System.Drawing.Point(52, 256);
             this.lblBuildActiveSkills.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildActiveSkills.Name = "lblBuildActiveSkills";
             this.lblBuildActiveSkills.Size = new System.Drawing.Size(64, 13);
@@ -1594,7 +1616,7 @@ namespace Chummer
             // 
             this.lblBuildSkillGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildSkillGroups.AutoSize = true;
-            this.lblBuildSkillGroups.Location = new System.Drawing.Point(53, 206);
+            this.lblBuildSkillGroups.Location = new System.Drawing.Point(53, 231);
             this.lblBuildSkillGroups.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildSkillGroups.Name = "lblBuildSkillGroups";
             this.lblBuildSkillGroups.Size = new System.Drawing.Size(63, 13);
@@ -1606,7 +1628,7 @@ namespace Chummer
             // 
             this.lblBuildContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildContacts.AutoSize = true;
-            this.lblBuildContacts.Location = new System.Drawing.Point(67, 131);
+            this.lblBuildContacts.Location = new System.Drawing.Point(67, 156);
             this.lblBuildContacts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildContacts.Name = "lblBuildContacts";
             this.lblBuildContacts.Size = new System.Drawing.Size(49, 13);
@@ -1690,7 +1712,7 @@ namespace Chummer
             // 
             this.lblMemoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMemoryLabel.AutoSize = true;
-            this.lblMemoryLabel.Location = new System.Drawing.Point(91, 356);
+            this.lblMemoryLabel.Location = new System.Drawing.Point(91, 406);
             this.lblMemoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMemoryLabel.Name = "lblMemoryLabel";
             this.lblMemoryLabel.Size = new System.Drawing.Size(47, 13);
@@ -1702,7 +1724,7 @@ namespace Chummer
             // 
             this.lblLiftCarryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLiftCarryLabel.AutoSize = true;
-            this.lblLiftCarryLabel.Location = new System.Drawing.Point(66, 331);
+            this.lblLiftCarryLabel.Location = new System.Drawing.Point(66, 381);
             this.lblLiftCarryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLiftCarryLabel.Name = "lblLiftCarryLabel";
             this.lblLiftCarryLabel.Size = new System.Drawing.Size(72, 13);
@@ -1714,7 +1736,7 @@ namespace Chummer
             // 
             this.lblJudgeIntentionsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblJudgeIntentionsLabel.AutoSize = true;
-            this.lblJudgeIntentionsLabel.Location = new System.Drawing.Point(50, 306);
+            this.lblJudgeIntentionsLabel.Location = new System.Drawing.Point(50, 331);
             this.lblJudgeIntentionsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblJudgeIntentionsLabel.Name = "lblJudgeIntentionsLabel";
             this.lblJudgeIntentionsLabel.Size = new System.Drawing.Size(88, 13);
@@ -1726,19 +1748,19 @@ namespace Chummer
             // 
             this.lblComposureLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposureLabel.AutoSize = true;
-            this.lblComposureLabel.Location = new System.Drawing.Point(75, 281);
+            this.lblComposureLabel.Location = new System.Drawing.Point(75, 306);
             this.lblComposureLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComposureLabel.Name = "lblComposureLabel";
             this.lblComposureLabel.Size = new System.Drawing.Size(63, 13);
             this.lblComposureLabel.TabIndex = 44;
-            this.lblComposureLabel.Tag = "Label_OtherCmposure";
+            this.lblComposureLabel.Tag = "Label_OtherComposure";
             this.lblComposureLabel.Text = "Composure:";
             // 
             // lblRemainingNuyenLabel
             // 
             this.lblRemainingNuyenLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRemainingNuyenLabel.AutoSize = true;
-            this.lblRemainingNuyenLabel.Location = new System.Drawing.Point(44, 256);
+            this.lblRemainingNuyenLabel.Location = new System.Drawing.Point(44, 281);
             this.lblRemainingNuyenLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblRemainingNuyenLabel.Name = "lblRemainingNuyenLabel";
             this.lblRemainingNuyenLabel.Size = new System.Drawing.Size(94, 13);
@@ -1750,7 +1772,7 @@ namespace Chummer
             // 
             this.lblESS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblESS.AutoSize = true;
-            this.lblESS.Location = new System.Drawing.Point(87, 231);
+            this.lblESS.Location = new System.Drawing.Point(87, 256);
             this.lblESS.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblESS.Name = "lblESS";
             this.lblESS.Size = new System.Drawing.Size(51, 13);
@@ -1853,209 +1875,209 @@ namespace Chummer
             this.label7.Tag = "String_Karma";
             this.label7.Text = "Karma";
             // 
-            // lblSpellDefenceIndirectDodgeLabel
+            // lblSpellDefenseIndirectDodgeLabel
             // 
-            this.lblSpellDefenceIndirectDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIndirectDodgeLabel.AutoSize = true;
-            this.lblSpellDefenceIndirectDodgeLabel.Location = new System.Drawing.Point(61, 32);
-            this.lblSpellDefenceIndirectDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectDodgeLabel.Name = "lblSpellDefenceIndirectDodgeLabel";
-            this.lblSpellDefenceIndirectDodgeLabel.Size = new System.Drawing.Size(77, 13);
-            this.lblSpellDefenceIndirectDodgeLabel.TabIndex = 25;
-            this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
-            this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
+            this.lblSpellDefenseIndirectDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIndirectDodgeLabel.AutoSize = true;
+            this.lblSpellDefenseIndirectDodgeLabel.Location = new System.Drawing.Point(61, 32);
+            this.lblSpellDefenseIndirectDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectDodgeLabel.Name = "lblSpellDefenseIndirectDodgeLabel";
+            this.lblSpellDefenseIndirectDodgeLabel.Size = new System.Drawing.Size(77, 13);
+            this.lblSpellDefenseIndirectDodgeLabel.TabIndex = 25;
+            this.lblSpellDefenseIndirectDodgeLabel.Tag = "Label_SpellDefenseIndirectDodge";
+            this.lblSpellDefenseIndirectDodgeLabel.Text = "Indirect Dodge";
             // 
-            // lblSpellDefenceIndirectSoakLabel
+            // lblSpellDefenseIndirectSoakLabel
             // 
-            this.lblSpellDefenceIndirectSoakLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIndirectSoakLabel.AutoSize = true;
-            this.lblSpellDefenceIndirectSoakLabel.Location = new System.Drawing.Point(68, 57);
-            this.lblSpellDefenceIndirectSoakLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectSoakLabel.Name = "lblSpellDefenceIndirectSoakLabel";
-            this.lblSpellDefenceIndirectSoakLabel.Size = new System.Drawing.Size(70, 13);
-            this.lblSpellDefenceIndirectSoakLabel.TabIndex = 27;
-            this.lblSpellDefenceIndirectSoakLabel.Tag = "Label_SpellDefenceIndirect";
-            this.lblSpellDefenceIndirectSoakLabel.Text = "Indirect Soak";
+            this.lblSpellDefenseIndirectSoakLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIndirectSoakLabel.AutoSize = true;
+            this.lblSpellDefenseIndirectSoakLabel.Location = new System.Drawing.Point(68, 57);
+            this.lblSpellDefenseIndirectSoakLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectSoakLabel.Name = "lblSpellDefenseIndirectSoakLabel";
+            this.lblSpellDefenseIndirectSoakLabel.Size = new System.Drawing.Size(70, 13);
+            this.lblSpellDefenseIndirectSoakLabel.TabIndex = 27;
+            this.lblSpellDefenseIndirectSoakLabel.Tag = "Label_SpellDefenseIndirect";
+            this.lblSpellDefenseIndirectSoakLabel.Text = "Indirect Soak";
             // 
-            // lblSpellDefenceDirectSoakManaLabel
+            // lblSpellDefenseDirectSoakManaLabel
             // 
-            this.lblSpellDefenceDirectSoakManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDirectSoakManaLabel.AutoSize = true;
-            this.lblSpellDefenceDirectSoakManaLabel.Location = new System.Drawing.Point(39, 82);
-            this.lblSpellDefenceDirectSoakManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakManaLabel.Name = "lblSpellDefenceDirectSoakManaLabel";
-            this.lblSpellDefenceDirectSoakManaLabel.Size = new System.Drawing.Size(99, 13);
-            this.lblSpellDefenceDirectSoakManaLabel.TabIndex = 29;
-            this.lblSpellDefenceDirectSoakManaLabel.Tag = "Label_SpellDefenceDirectSoakMana";
-            this.lblSpellDefenceDirectSoakManaLabel.Text = "Direct Soak - Mana";
+            this.lblSpellDefenseDirectSoakManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDirectSoakManaLabel.AutoSize = true;
+            this.lblSpellDefenseDirectSoakManaLabel.Location = new System.Drawing.Point(39, 82);
+            this.lblSpellDefenseDirectSoakManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakManaLabel.Name = "lblSpellDefenseDirectSoakManaLabel";
+            this.lblSpellDefenseDirectSoakManaLabel.Size = new System.Drawing.Size(99, 13);
+            this.lblSpellDefenseDirectSoakManaLabel.TabIndex = 29;
+            this.lblSpellDefenseDirectSoakManaLabel.Tag = "Label_SpellDefenseDirectSoakMana";
+            this.lblSpellDefenseDirectSoakManaLabel.Text = "Direct Soak - Mana";
             // 
-            // lblSpellDefenceDirectSoakPhysicalLabel
+            // lblSpellDefenseDirectSoakPhysicalLabel
             // 
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDirectSoakPhysicalLabel.AutoSize = true;
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Location = new System.Drawing.Point(27, 107);
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Name = "lblSpellDefenceDirectSoakPhysicalLabel";
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Size = new System.Drawing.Size(111, 13);
-            this.lblSpellDefenceDirectSoakPhysicalLabel.TabIndex = 31;
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Tag = "Label_SpellDefenceDirectSoakPhysical";
-            this.lblSpellDefenceDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDirectSoakPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Location = new System.Drawing.Point(27, 107);
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Name = "lblSpellDefenseDirectSoakPhysicalLabel";
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Size = new System.Drawing.Size(111, 13);
+            this.lblSpellDefenseDirectSoakPhysicalLabel.TabIndex = 31;
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Tag = "Label_SpellDefenseDirectSoakPhysical";
+            this.lblSpellDefenseDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
             // 
-            // lblSpellDefenceDecAttBODLabel
+            // lblSpellDefenseDecAttBODLabel
             // 
-            this.lblSpellDefenceDecAttBODLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttBODLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttBODLabel.Location = new System.Drawing.Point(11, 157);
-            this.lblSpellDefenceDecAttBODLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttBODLabel.Name = "lblSpellDefenceDecAttBODLabel";
-            this.lblSpellDefenceDecAttBODLabel.Size = new System.Drawing.Size(127, 13);
-            this.lblSpellDefenceDecAttBODLabel.TabIndex = 35;
-            this.lblSpellDefenceDecAttBODLabel.Tag = "Label_SpellDefenceDecAttBOD";
-            this.lblSpellDefenceDecAttBODLabel.Text = "Decrease Attribute (BOD)";
+            this.lblSpellDefenseDecAttBODLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttBODLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttBODLabel.Location = new System.Drawing.Point(11, 157);
+            this.lblSpellDefenseDecAttBODLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttBODLabel.Name = "lblSpellDefenseDecAttBODLabel";
+            this.lblSpellDefenseDecAttBODLabel.Size = new System.Drawing.Size(127, 13);
+            this.lblSpellDefenseDecAttBODLabel.TabIndex = 35;
+            this.lblSpellDefenseDecAttBODLabel.Tag = "Label_SpellDefenseDecAttBOD";
+            this.lblSpellDefenseDecAttBODLabel.Text = "Decrease Attribute (BOD)";
             // 
-            // lblSpellDefenceDetectionLabel
+            // lblSpellDefenseDetectionLabel
             // 
-            this.lblSpellDefenceDetectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDetectionLabel.AutoSize = true;
-            this.lblSpellDefenceDetectionLabel.Location = new System.Drawing.Point(54, 132);
-            this.lblSpellDefenceDetectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDetectionLabel.Name = "lblSpellDefenceDetectionLabel";
-            this.lblSpellDefenceDetectionLabel.Size = new System.Drawing.Size(84, 13);
-            this.lblSpellDefenceDetectionLabel.TabIndex = 33;
-            this.lblSpellDefenceDetectionLabel.Tag = "Label_SpellDefenceDetection";
-            this.lblSpellDefenceDetectionLabel.Text = "Detection Spells";
+            this.lblSpellDefenseDetectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDetectionLabel.AutoSize = true;
+            this.lblSpellDefenseDetectionLabel.Location = new System.Drawing.Point(54, 132);
+            this.lblSpellDefenseDetectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDetectionLabel.Name = "lblSpellDefenseDetectionLabel";
+            this.lblSpellDefenseDetectionLabel.Size = new System.Drawing.Size(84, 13);
+            this.lblSpellDefenseDetectionLabel.TabIndex = 33;
+            this.lblSpellDefenseDetectionLabel.Tag = "Label_SpellDefenseDetection";
+            this.lblSpellDefenseDetectionLabel.Text = "Detection Spells";
             // 
-            // lblSpellDefenceDecAttAGILabel
+            // lblSpellDefenseDecAttAGILabel
             // 
-            this.lblSpellDefenceDecAttAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttAGILabel.AutoSize = true;
-            this.lblSpellDefenceDecAttAGILabel.Location = new System.Drawing.Point(16, 182);
-            this.lblSpellDefenceDecAttAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttAGILabel.Name = "lblSpellDefenceDecAttAGILabel";
-            this.lblSpellDefenceDecAttAGILabel.Size = new System.Drawing.Size(122, 13);
-            this.lblSpellDefenceDecAttAGILabel.TabIndex = 41;
-            this.lblSpellDefenceDecAttAGILabel.Tag = "Label_SpellDefenceDecAttAGI";
-            this.lblSpellDefenceDecAttAGILabel.Text = "Decrease Attribute (AGI)";
+            this.lblSpellDefenseDecAttAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttAGILabel.AutoSize = true;
+            this.lblSpellDefenseDecAttAGILabel.Location = new System.Drawing.Point(16, 182);
+            this.lblSpellDefenseDecAttAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttAGILabel.Name = "lblSpellDefenseDecAttAGILabel";
+            this.lblSpellDefenseDecAttAGILabel.Size = new System.Drawing.Size(122, 13);
+            this.lblSpellDefenseDecAttAGILabel.TabIndex = 41;
+            this.lblSpellDefenseDecAttAGILabel.Tag = "Label_SpellDefenseDecAttAGI";
+            this.lblSpellDefenseDecAttAGILabel.Text = "Decrease Attribute (AGI)";
             // 
-            // lblSpellDefenceDecAttSTRLabel
+            // lblSpellDefenseDecAttSTRLabel
             // 
-            this.lblSpellDefenceDecAttSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttSTRLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttSTRLabel.Location = new System.Drawing.Point(12, 232);
-            this.lblSpellDefenceDecAttSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttSTRLabel.Name = "lblSpellDefenceDecAttSTRLabel";
-            this.lblSpellDefenceDecAttSTRLabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttSTRLabel.TabIndex = 43;
-            this.lblSpellDefenceDecAttSTRLabel.Tag = "Label_SpellDefenceDecAttSTR";
-            this.lblSpellDefenceDecAttSTRLabel.Text = "Decrease Attribute (STR)";
+            this.lblSpellDefenseDecAttSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttSTRLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttSTRLabel.Location = new System.Drawing.Point(12, 232);
+            this.lblSpellDefenseDecAttSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttSTRLabel.Name = "lblSpellDefenseDecAttSTRLabel";
+            this.lblSpellDefenseDecAttSTRLabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttSTRLabel.TabIndex = 43;
+            this.lblSpellDefenseDecAttSTRLabel.Tag = "Label_SpellDefenseDecAttSTR";
+            this.lblSpellDefenseDecAttSTRLabel.Text = "Decrease Attribute (STR)";
             // 
-            // lblSpellDefenceDecAttREALabel
+            // lblSpellDefenseDecAttREALabel
             // 
-            this.lblSpellDefenceDecAttREALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttREALabel.AutoSize = true;
-            this.lblSpellDefenceDecAttREALabel.Location = new System.Drawing.Point(12, 207);
-            this.lblSpellDefenceDecAttREALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttREALabel.Name = "lblSpellDefenceDecAttREALabel";
-            this.lblSpellDefenceDecAttREALabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttREALabel.TabIndex = 42;
-            this.lblSpellDefenceDecAttREALabel.Tag = "Label_SpellDefenceDecAttREA";
-            this.lblSpellDefenceDecAttREALabel.Text = "Decrease Attribute (REA)";
+            this.lblSpellDefenseDecAttREALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttREALabel.AutoSize = true;
+            this.lblSpellDefenseDecAttREALabel.Location = new System.Drawing.Point(12, 207);
+            this.lblSpellDefenseDecAttREALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttREALabel.Name = "lblSpellDefenseDecAttREALabel";
+            this.lblSpellDefenseDecAttREALabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttREALabel.TabIndex = 42;
+            this.lblSpellDefenseDecAttREALabel.Tag = "Label_SpellDefenseDecAttREA";
+            this.lblSpellDefenseDecAttREALabel.Text = "Decrease Attribute (REA)";
             // 
-            // lblSpellDefenceDecAttWILLabel
+            // lblSpellDefenseDecAttWILLabel
             // 
-            this.lblSpellDefenceDecAttWILLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttWILLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttWILLabel.Location = new System.Drawing.Point(14, 332);
-            this.lblSpellDefenceDecAttWILLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttWILLabel.Name = "lblSpellDefenceDecAttWILLabel";
-            this.lblSpellDefenceDecAttWILLabel.Size = new System.Drawing.Size(124, 13);
-            this.lblSpellDefenceDecAttWILLabel.TabIndex = 47;
-            this.lblSpellDefenceDecAttWILLabel.Tag = "Label_SpellDefenceDecAttWIL";
-            this.lblSpellDefenceDecAttWILLabel.Text = "Decrease Attribute (WIL)";
+            this.lblSpellDefenseDecAttWILLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttWILLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttWILLabel.Location = new System.Drawing.Point(14, 332);
+            this.lblSpellDefenseDecAttWILLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttWILLabel.Name = "lblSpellDefenseDecAttWILLabel";
+            this.lblSpellDefenseDecAttWILLabel.Size = new System.Drawing.Size(124, 13);
+            this.lblSpellDefenseDecAttWILLabel.TabIndex = 47;
+            this.lblSpellDefenseDecAttWILLabel.Tag = "Label_SpellDefenseDecAttWIL";
+            this.lblSpellDefenseDecAttWILLabel.Text = "Decrease Attribute (WIL)";
             // 
-            // lblSpellDefenceDecAttLOGLabel
+            // lblSpellDefenseDecAttLOGLabel
             // 
-            this.lblSpellDefenceDecAttLOGLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttLOGLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttLOGLabel.Location = new System.Drawing.Point(12, 307);
-            this.lblSpellDefenceDecAttLOGLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttLOGLabel.Name = "lblSpellDefenceDecAttLOGLabel";
-            this.lblSpellDefenceDecAttLOGLabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttLOGLabel.TabIndex = 46;
-            this.lblSpellDefenceDecAttLOGLabel.Tag = "Label_SpellDefenceDecAttLOG";
-            this.lblSpellDefenceDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
+            this.lblSpellDefenseDecAttLOGLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttLOGLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttLOGLabel.Location = new System.Drawing.Point(12, 307);
+            this.lblSpellDefenseDecAttLOGLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttLOGLabel.Name = "lblSpellDefenseDecAttLOGLabel";
+            this.lblSpellDefenseDecAttLOGLabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttLOGLabel.TabIndex = 46;
+            this.lblSpellDefenseDecAttLOGLabel.Tag = "Label_SpellDefenseDecAttLOG";
+            this.lblSpellDefenseDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
             // 
-            // lblSpellDefenceDecAttINTLabel
+            // lblSpellDefenseDecAttINTLabel
             // 
-            this.lblSpellDefenceDecAttINTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttINTLabel.AutoSize = true;
-            this.lblSpellDefenceDecAttINTLabel.Location = new System.Drawing.Point(16, 282);
-            this.lblSpellDefenceDecAttINTLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttINTLabel.Name = "lblSpellDefenceDecAttINTLabel";
-            this.lblSpellDefenceDecAttINTLabel.Size = new System.Drawing.Size(122, 13);
-            this.lblSpellDefenceDecAttINTLabel.TabIndex = 45;
-            this.lblSpellDefenceDecAttINTLabel.Tag = "Label_SpellDefenceDecAttINT";
-            this.lblSpellDefenceDecAttINTLabel.Text = "Decrease Attribute (INT)";
+            this.lblSpellDefenseDecAttINTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttINTLabel.AutoSize = true;
+            this.lblSpellDefenseDecAttINTLabel.Location = new System.Drawing.Point(16, 282);
+            this.lblSpellDefenseDecAttINTLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttINTLabel.Name = "lblSpellDefenseDecAttINTLabel";
+            this.lblSpellDefenseDecAttINTLabel.Size = new System.Drawing.Size(122, 13);
+            this.lblSpellDefenseDecAttINTLabel.TabIndex = 45;
+            this.lblSpellDefenseDecAttINTLabel.Tag = "Label_SpellDefenseDecAttINT";
+            this.lblSpellDefenseDecAttINTLabel.Text = "Decrease Attribute (INT)";
             // 
-            // lblSpellDefenceDecAttCHALabel
+            // lblSpellDefenseDecAttCHALabel
             // 
-            this.lblSpellDefenceDecAttCHALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceDecAttCHALabel.AutoSize = true;
-            this.lblSpellDefenceDecAttCHALabel.Location = new System.Drawing.Point(12, 257);
-            this.lblSpellDefenceDecAttCHALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttCHALabel.Name = "lblSpellDefenceDecAttCHALabel";
-            this.lblSpellDefenceDecAttCHALabel.Size = new System.Drawing.Size(126, 13);
-            this.lblSpellDefenceDecAttCHALabel.TabIndex = 44;
-            this.lblSpellDefenceDecAttCHALabel.Tag = "Label_SpellDefenceDecAttCHA";
-            this.lblSpellDefenceDecAttCHALabel.Text = "Decrease Attribute (CHA)";
+            this.lblSpellDefenseDecAttCHALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseDecAttCHALabel.AutoSize = true;
+            this.lblSpellDefenseDecAttCHALabel.Location = new System.Drawing.Point(12, 257);
+            this.lblSpellDefenseDecAttCHALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttCHALabel.Name = "lblSpellDefenseDecAttCHALabel";
+            this.lblSpellDefenseDecAttCHALabel.Size = new System.Drawing.Size(126, 13);
+            this.lblSpellDefenseDecAttCHALabel.TabIndex = 44;
+            this.lblSpellDefenseDecAttCHALabel.Tag = "Label_SpellDefenseDecAttCHA";
+            this.lblSpellDefenseDecAttCHALabel.Text = "Decrease Attribute (CHA)";
             // 
-            // lblSpellDefenceManipPhysicalLabel
+            // lblSpellDefenseManipPhysicalLabel
             // 
-            this.lblSpellDefenceManipPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceManipPhysicalLabel.AutoSize = true;
-            this.lblSpellDefenceManipPhysicalLabel.Location = new System.Drawing.Point(23, 432);
-            this.lblSpellDefenceManipPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipPhysicalLabel.Name = "lblSpellDefenceManipPhysicalLabel";
-            this.lblSpellDefenceManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
-            this.lblSpellDefenceManipPhysicalLabel.TabIndex = 59;
-            this.lblSpellDefenceManipPhysicalLabel.Tag = "Label_SpellDefenceManipPhysical";
-            this.lblSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
+            this.lblSpellDefenseManipPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseManipPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenseManipPhysicalLabel.Location = new System.Drawing.Point(23, 432);
+            this.lblSpellDefenseManipPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipPhysicalLabel.Name = "lblSpellDefenseManipPhysicalLabel";
+            this.lblSpellDefenseManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
+            this.lblSpellDefenseManipPhysicalLabel.TabIndex = 59;
+            this.lblSpellDefenseManipPhysicalLabel.Tag = "Label_SpellDefenseManipPhysical";
+            this.lblSpellDefenseManipPhysicalLabel.Text = "Manipulation - Physical";
             // 
-            // lblSpellDefenceManipMentalLabel
+            // lblSpellDefenseManipMentalLabel
             // 
-            this.lblSpellDefenceManipMentalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceManipMentalLabel.AutoSize = true;
-            this.lblSpellDefenceManipMentalLabel.Location = new System.Drawing.Point(30, 407);
-            this.lblSpellDefenceManipMentalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipMentalLabel.Name = "lblSpellDefenceManipMentalLabel";
-            this.lblSpellDefenceManipMentalLabel.Size = new System.Drawing.Size(108, 13);
-            this.lblSpellDefenceManipMentalLabel.TabIndex = 57;
-            this.lblSpellDefenceManipMentalLabel.Tag = "Label_SpellDefenceManipMental";
-            this.lblSpellDefenceManipMentalLabel.Text = "Manipulation - Mental";
+            this.lblSpellDefenseManipMentalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseManipMentalLabel.AutoSize = true;
+            this.lblSpellDefenseManipMentalLabel.Location = new System.Drawing.Point(30, 407);
+            this.lblSpellDefenseManipMentalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipMentalLabel.Name = "lblSpellDefenseManipMentalLabel";
+            this.lblSpellDefenseManipMentalLabel.Size = new System.Drawing.Size(108, 13);
+            this.lblSpellDefenseManipMentalLabel.TabIndex = 57;
+            this.lblSpellDefenseManipMentalLabel.Tag = "Label_SpellDefenseManipMental";
+            this.lblSpellDefenseManipMentalLabel.Text = "Manipulation - Mental";
             // 
-            // lblSpellDefenceIllusionPhysicalLabel
+            // lblSpellDefenseIllusionPhysicalLabel
             // 
-            this.lblSpellDefenceIllusionPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIllusionPhysicalLabel.AutoSize = true;
-            this.lblSpellDefenceIllusionPhysicalLabel.Location = new System.Drawing.Point(51, 382);
-            this.lblSpellDefenceIllusionPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionPhysicalLabel.Name = "lblSpellDefenceIllusionPhysicalLabel";
-            this.lblSpellDefenceIllusionPhysicalLabel.Size = new System.Drawing.Size(87, 13);
-            this.lblSpellDefenceIllusionPhysicalLabel.TabIndex = 55;
-            this.lblSpellDefenceIllusionPhysicalLabel.Tag = "Label_SpellDefenceIllusionPhysical";
-            this.lblSpellDefenceIllusionPhysicalLabel.Text = "Illusion - Physical";
+            this.lblSpellDefenseIllusionPhysicalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIllusionPhysicalLabel.AutoSize = true;
+            this.lblSpellDefenseIllusionPhysicalLabel.Location = new System.Drawing.Point(51, 382);
+            this.lblSpellDefenseIllusionPhysicalLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionPhysicalLabel.Name = "lblSpellDefenseIllusionPhysicalLabel";
+            this.lblSpellDefenseIllusionPhysicalLabel.Size = new System.Drawing.Size(87, 13);
+            this.lblSpellDefenseIllusionPhysicalLabel.TabIndex = 55;
+            this.lblSpellDefenseIllusionPhysicalLabel.Tag = "Label_SpellDefenseIllusionPhysical";
+            this.lblSpellDefenseIllusionPhysicalLabel.Text = "Illusion - Physical";
             // 
-            // lblSpellDefenceIllusionManaLabel
+            // lblSpellDefenseIllusionManaLabel
             // 
-            this.lblSpellDefenceIllusionManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpellDefenceIllusionManaLabel.AutoSize = true;
-            this.lblSpellDefenceIllusionManaLabel.Location = new System.Drawing.Point(63, 357);
-            this.lblSpellDefenceIllusionManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionManaLabel.Name = "lblSpellDefenceIllusionManaLabel";
-            this.lblSpellDefenceIllusionManaLabel.Size = new System.Drawing.Size(75, 13);
-            this.lblSpellDefenceIllusionManaLabel.TabIndex = 53;
-            this.lblSpellDefenceIllusionManaLabel.Tag = "Label_SpellDefenceIllusionMana";
-            this.lblSpellDefenceIllusionManaLabel.Text = "Illusion - Mana";
+            this.lblSpellDefenseIllusionManaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpellDefenseIllusionManaLabel.AutoSize = true;
+            this.lblSpellDefenseIllusionManaLabel.Location = new System.Drawing.Point(63, 357);
+            this.lblSpellDefenseIllusionManaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionManaLabel.Name = "lblSpellDefenseIllusionManaLabel";
+            this.lblSpellDefenseIllusionManaLabel.Size = new System.Drawing.Size(75, 13);
+            this.lblSpellDefenseIllusionManaLabel.TabIndex = 53;
+            this.lblSpellDefenseIllusionManaLabel.Tag = "Label_SpellDefenseIllusionMana";
+            this.lblSpellDefenseIllusionManaLabel.Text = "Illusion - Mana";
             // 
             // lblCounterspellingDiceLabel
             // 
@@ -2074,7 +2096,7 @@ namespace Chummer
             // 
             this.lblBuildAIAdvancedPrograms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildAIAdvancedPrograms.AutoSize = true;
-            this.lblBuildAIAdvancedPrograms.Location = new System.Drawing.Point(13, 531);
+            this.lblBuildAIAdvancedPrograms.Location = new System.Drawing.Point(13, 556);
             this.lblBuildAIAdvancedPrograms.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildAIAdvancedPrograms.Name = "lblBuildAIAdvancedPrograms";
             this.lblBuildAIAdvancedPrograms.Size = new System.Drawing.Size(103, 13);
@@ -2086,7 +2108,7 @@ namespace Chummer
             // 
             this.lblBuildRitualsBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildRitualsBPLabel.AutoSize = true;
-            this.lblBuildRitualsBPLabel.Location = new System.Drawing.Point(77, 331);
+            this.lblBuildRitualsBPLabel.Location = new System.Drawing.Point(77, 356);
             this.lblBuildRitualsBPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildRitualsBPLabel.Name = "lblBuildRitualsBPLabel";
             this.lblBuildRitualsBPLabel.Size = new System.Drawing.Size(39, 13);
@@ -2098,7 +2120,7 @@ namespace Chummer
             // 
             this.lblBuildPrepsBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildPrepsBPLabel.AutoSize = true;
-            this.lblBuildPrepsBPLabel.Location = new System.Drawing.Point(50, 306);
+            this.lblBuildPrepsBPLabel.Location = new System.Drawing.Point(50, 331);
             this.lblBuildPrepsBPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildPrepsBPLabel.Name = "lblBuildPrepsBPLabel";
             this.lblBuildPrepsBPLabel.Size = new System.Drawing.Size(66, 13);
@@ -2125,13 +2147,13 @@ namespace Chummer
             this.tsMartialArtsAddAdvantage,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
             // 
             // tsMartialArtsAddAdvantage
             // 
             this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
             this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
             this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
@@ -2140,7 +2162,7 @@ namespace Chummer
             // 
             this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
@@ -2636,6 +2658,7 @@ namespace Chummer
             this.mnuCreateFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFileSave,
             this.mnuFileSaveAs,
+            this.mnuFileSaveAsCreated,
             this.toolStripSeparator1,
             this.mnuFileClose,
             this.toolStripSeparator2,
@@ -2654,7 +2677,7 @@ namespace Chummer
             this.mnuFileSave.MergeIndex = 3;
             this.mnuFileSave.Name = "mnuFileSave";
             this.mnuFileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuFileSave.Size = new System.Drawing.Size(148, 22);
+            this.mnuFileSave.Size = new System.Drawing.Size(158, 22);
             this.mnuFileSave.Tag = "Menu_FileSave";
             this.mnuFileSave.Text = "&Save";
             this.mnuFileSave.Click += new System.EventHandler(this.mnuFileSave_Click);
@@ -2665,44 +2688,55 @@ namespace Chummer
             this.mnuFileSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileSaveAs.MergeIndex = 4;
             this.mnuFileSaveAs.Name = "mnuFileSaveAs";
-            this.mnuFileSaveAs.Size = new System.Drawing.Size(148, 22);
+            this.mnuFileSaveAs.Size = new System.Drawing.Size(158, 22);
             this.mnuFileSaveAs.Tag = "Menu_FileSaveAs";
             this.mnuFileSaveAs.Text = "Save &As";
             this.mnuFileSaveAs.Click += new System.EventHandler(this.mnuFileSaveAs_Click);
             // 
+            // mnuFileSaveAsCreated
+            // 
+            this.mnuFileSaveAsCreated.Image = global::Chummer.Properties.Resources.accept;
+            this.mnuFileSaveAsCreated.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.mnuFileSaveAsCreated.MergeIndex = 5;
+            this.mnuFileSaveAsCreated.Name = "mnuFileSaveAsCreated";
+            this.mnuFileSaveAsCreated.Size = new System.Drawing.Size(158, 22);
+            this.mnuFileSaveAsCreated.Tag = "Menu_FileSaveAsCreated";
+            this.mnuFileSaveAsCreated.Text = "Save As &Created";
+            this.mnuFileSaveAsCreated.Click += new System.EventHandler(this.mnuFileSaveAsCreated_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripSeparator1.MergeIndex = 5;
+            this.toolStripSeparator1.MergeIndex = 6;
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
             // 
             // mnuFileClose
             // 
             this.mnuFileClose.Image = global::Chummer.Properties.Resources.cancel;
             this.mnuFileClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.mnuFileClose.MergeIndex = 6;
+            this.mnuFileClose.MergeIndex = 7;
             this.mnuFileClose.Name = "mnuFileClose";
             this.mnuFileClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.mnuFileClose.Size = new System.Drawing.Size(148, 22);
+            this.mnuFileClose.Size = new System.Drawing.Size(158, 22);
             this.mnuFileClose.Tag = "Menu_FileClose";
             this.mnuFileClose.Text = "&Close";
             this.mnuFileClose.Click += new System.EventHandler(this.mnuFileClose_Click);
             // 
             // toolStripSeparator2
             // 
-            this.toolStripSeparator2.MergeIndex = 7;
+            this.toolStripSeparator2.MergeIndex = 8;
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(155, 6);
             // 
             // mnuFilePrint
             // 
             this.mnuFilePrint.Image = global::Chummer.Properties.Resources.printer;
             this.mnuFilePrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.mnuFilePrint.MergeIndex = 8;
+            this.mnuFilePrint.MergeIndex = 9;
             this.mnuFilePrint.Name = "mnuFilePrint";
             this.mnuFilePrint.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.mnuFilePrint.Size = new System.Drawing.Size(148, 22);
+            this.mnuFilePrint.Size = new System.Drawing.Size(158, 22);
             this.mnuFilePrint.Tag = "Menu_FilePrint";
             this.mnuFilePrint.Text = "&Print";
             this.mnuFilePrint.Click += new System.EventHandler(this.mnuFilePrint_Click);
@@ -2852,7 +2886,7 @@ namespace Chummer
             this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.transmit_go;
             this.mnuSpecialCyberzombie.Name = "mnuSpecialCyberzombie";
             this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(213, 22);
-            this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConverToCyberzombie";
+            this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConvertToCyberzombie";
             this.mnuSpecialCyberzombie.Text = "Convert to Cyberzombie";
             this.mnuSpecialCyberzombie.Click += new System.EventHandler(this.mnuSpecialCyberzombie_Click);
             // 
@@ -3014,7 +3048,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
             this.tsGearAllowRenameAddAsPlugin.Name = "tsGearAllowRenameAddAsPlugin";
-            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsGearAllowRenameAddAsPlugin.Text = "&Add as Plugin";
             this.tsGearAllowRenameAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
@@ -3023,7 +3057,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameName.Image = global::Chummer.Properties.Resources.tag_red;
             this.tsGearAllowRenameName.Name = "tsGearAllowRenameName";
-            this.tsGearAllowRenameName.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameName.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameName.Tag = "Menu_NameGear";
             this.tsGearAllowRenameName.Text = "Name Gear";
             this.tsGearAllowRenameName.Click += new System.EventHandler(this.tsGearName_Click);
@@ -3032,7 +3066,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameNotes.Name = "tsGearAllowRenameNotes";
-            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameNotes.Tag = "Menu_Notes";
             this.tsGearAllowRenameNotes.Text = "&Notes";
             this.tsGearAllowRenameNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
@@ -3128,18 +3162,28 @@ namespace Chummer
             // cmsArmorMod
             // 
             this.cmsArmorMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsArmorModNotes});
+            this.tsArmorModNotes,
+            this.tsArmorModAddAsPlugin});
             this.cmsArmorMod.Name = "cmsArmorMod";
-            this.cmsArmorMod.Size = new System.Drawing.Size(106, 26);
+            this.cmsArmorMod.Size = new System.Drawing.Size(148, 48);
             // 
             // tsArmorModNotes
             // 
             this.tsArmorModNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsArmorModNotes.Name = "tsArmorModNotes";
-            this.tsArmorModNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsArmorModNotes.Size = new System.Drawing.Size(147, 22);
             this.tsArmorModNotes.Tag = "Menu_Notes";
             this.tsArmorModNotes.Text = "&Notes";
             this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
+            // 
+            // tsArmorModAddAsPlugin
+            // 
+            this.tsArmorModAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsArmorModAddAsPlugin.Name = "tsArmorModAddAsPlugin";
+            this.tsArmorModAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorModAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsArmorModAddAsPlugin.Text = "&Add as Plugin";
+            this.tsArmorModAddAsPlugin.Click += new System.EventHandler(this.tsArmorGearAddAsPlugin_Click);
             // 
             // cmsQuality
             // 
@@ -3593,6 +3637,8 @@ namespace Chummer
             this.tlpCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.25F));
             this.tlpCommon.Controls.Add(this.tlpCommonLeftSide, 0, 0);
             this.tlpCommon.Controls.Add(this.lblAlias, 1, 0);
+            this.tlpCommon.Controls.Add(this.lblStolenNuyen, 8, 3);
+            this.tlpCommon.Controls.Add(this.lblStolenNuyenLabel, 7, 3);
             this.tlpCommon.Controls.Add(this.pnlAttributes, 1, 2);
             this.tlpCommon.Controls.Add(this.txtAlias, 2, 0);
             this.tlpCommon.Controls.Add(this.lblMetatypeLabel, 7, 0);
@@ -3617,17 +3663,19 @@ namespace Chummer
             this.tlpCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tlpCommon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpCommon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpCommon.Size = new System.Drawing.Size(835, 625);
             this.tlpCommon.TabIndex = 99;
             // 
             // tlpCommonLeftSide
             // 
             this.tlpCommonLeftSide.AutoSize = true;
+            this.tlpCommonLeftSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCommonLeftSide.ColumnCount = 4;
-            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCommonLeftSide.Controls.Add(this.treQualities, 0, 2);
             this.tlpCommonLeftSide.Controls.Add(this.cmdLifeModule, 3, 0);
             this.tlpCommonLeftSide.Controls.Add(this.tlpCommonBottomLeftSide, 0, 3);
@@ -3681,7 +3729,7 @@ namespace Chummer
             this.cmdLifeModule.Name = "cmdLifeModule";
             this.cmdLifeModule.Size = new System.Drawing.Size(95, 23);
             this.cmdLifeModule.TabIndex = 95;
-            this.cmdLifeModule.Tag = "String_Life_Module";
+            this.cmdLifeModule.Tag = "String_LifeModule";
             this.cmdLifeModule.Text = "Life Module";
             this.cmdLifeModule.UseVisualStyleBackColor = true;
             this.cmdLifeModule.Visible = false;
@@ -3829,6 +3877,29 @@ namespace Chummer
             this.lblAlias.TabIndex = 90;
             this.lblAlias.Tag = "Label_Alias";
             this.lblAlias.Text = "Alias:";
+            // 
+            // lblStolenNuyen
+            // 
+            this.lblStolenNuyen.AutoSize = true;
+            this.lblStolenNuyen.Location = new System.Drawing.Point(750, 83);
+            this.lblStolenNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblStolenNuyen.Name = "lblStolenNuyen";
+            this.lblStolenNuyen.Size = new System.Drawing.Size(19, 13);
+            this.lblStolenNuyen.TabIndex = 19;
+            this.lblStolenNuyen.Tag = "Label_Nuyen";
+            this.lblStolenNuyen.Text = "0¥";
+            // 
+            // lblStolenNuyenLabel
+            // 
+            this.lblStolenNuyenLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStolenNuyenLabel.AutoSize = true;
+            this.lblStolenNuyenLabel.Location = new System.Drawing.Point(664, 83);
+            this.lblStolenNuyenLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblStolenNuyenLabel.Name = "lblStolenNuyenLabel";
+            this.lblStolenNuyenLabel.Size = new System.Drawing.Size(80, 13);
+            this.lblStolenNuyenLabel.TabIndex = 19;
+            this.lblStolenNuyenLabel.Tag = "Label_StolenGearNuyen";
+            this.lblStolenNuyenLabel.Text = "Nuyen (Stolen):";
             // 
             // pnlAttributes
             // 
@@ -4148,6 +4219,7 @@ namespace Chummer
             // 
             // cmdAddSpirit
             // 
+            this.cmdAddSpirit.AutoSize = true;
             this.cmdAddSpirit.Location = new System.Drawing.Point(3, 417);
             this.cmdAddSpirit.Name = "cmdAddSpirit";
             this.cmdAddSpirit.Size = new System.Drawing.Size(105, 23);
@@ -4585,8 +4657,7 @@ namespace Chummer
             // 
             // cboTradition
             // 
-            this.cboTradition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboTradition.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboTradition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTradition.FormattingEnabled = true;
             this.cboTradition.Location = new System.Drawing.Point(98, 3);
@@ -4634,8 +4705,7 @@ namespace Chummer
             // 
             // cboSpiritManipulation
             // 
-            this.cboSpiritManipulation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpiritManipulation.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboSpiritManipulation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritManipulation.FormattingEnabled = true;
             this.cboSpiritManipulation.Location = new System.Drawing.Point(336, 138);
@@ -4659,8 +4729,7 @@ namespace Chummer
             // 
             // txtTraditionName
             // 
-            this.txtTraditionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTraditionName.Dock = System.Windows.Forms.DockStyle.Top;
             this.txtTraditionName.Location = new System.Drawing.Point(336, 3);
             this.txtTraditionName.Name = "txtTraditionName";
             this.txtTraditionName.Size = new System.Drawing.Size(156, 20);
@@ -4743,8 +4812,7 @@ namespace Chummer
             // 
             // cboSpiritCombat
             // 
-            this.cboSpiritCombat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpiritCombat.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboSpiritCombat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritCombat.FormattingEnabled = true;
             this.cboSpiritCombat.Location = new System.Drawing.Point(336, 30);
@@ -4756,8 +4824,7 @@ namespace Chummer
             // 
             // cboSpiritIllusion
             // 
-            this.cboSpiritIllusion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpiritIllusion.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboSpiritIllusion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritIllusion.FormattingEnabled = true;
             this.cboSpiritIllusion.Location = new System.Drawing.Point(336, 111);
@@ -4782,8 +4849,7 @@ namespace Chummer
             // 
             // cboSpiritDetection
             // 
-            this.cboSpiritDetection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpiritDetection.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboSpiritDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritDetection.FormattingEnabled = true;
             this.cboSpiritDetection.Location = new System.Drawing.Point(336, 57);
@@ -4808,8 +4874,7 @@ namespace Chummer
             // 
             // cboSpiritHealth
             // 
-            this.cboSpiritHealth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpiritHealth.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboSpiritHealth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritHealth.FormattingEnabled = true;
             this.cboSpiritHealth.Location = new System.Drawing.Point(336, 84);
@@ -4895,11 +4960,12 @@ namespace Chummer
             // 
             this.lblMentorSpiritInformation.AutoSize = true;
             this.tableLayoutPanel6.SetColumnSpan(this.lblMentorSpiritInformation, 4);
+            this.lblMentorSpiritInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblMentorSpiritInformation.Location = new System.Drawing.Point(3, 31);
             this.lblMentorSpiritInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritInformation.MaximumSize = new System.Drawing.Size(488, 10000);
+            this.lblMentorSpiritInformation.MaximumSize = new System.Drawing.Size(488, 0);
             this.lblMentorSpiritInformation.Name = "lblMentorSpiritInformation";
-            this.lblMentorSpiritInformation.Size = new System.Drawing.Size(127, 13);
+            this.lblMentorSpiritInformation.Size = new System.Drawing.Size(488, 13);
             this.lblMentorSpiritInformation.TabIndex = 94;
             this.lblMentorSpiritInformation.Text = "[Mentor Spirit Information]";
             // 
@@ -5239,6 +5305,7 @@ namespace Chummer
             // gpbTechnomancerStream
             // 
             this.gpbTechnomancerStream.AutoSize = true;
+            this.gpbTechnomancerStream.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbTechnomancerStream.Controls.Add(this.tlpTechnomancerStream);
             this.gpbTechnomancerStream.Location = new System.Drawing.Point(3, 153);
             this.gpbTechnomancerStream.MinimumSize = new System.Drawing.Size(250, 0);
@@ -5375,18 +5442,6 @@ namespace Chummer
             this.tlpTechnomancerParagon.Size = new System.Drawing.Size(494, 50);
             this.tlpTechnomancerParagon.TabIndex = 0;
             // 
-            // lblParagonInformation
-            // 
-            this.lblParagonInformation.AutoSize = true;
-            this.tlpTechnomancerParagon.SetColumnSpan(this.lblParagonInformation, 4);
-            this.lblParagonInformation.Location = new System.Drawing.Point(3, 31);
-            this.lblParagonInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagonInformation.MaximumSize = new System.Drawing.Size(488, 10000);
-            this.lblParagonInformation.Name = "lblParagonInformation";
-            this.lblParagonInformation.Size = new System.Drawing.Size(108, 13);
-            this.lblParagonInformation.TabIndex = 184;
-            this.lblParagonInformation.Text = "[Paragon Information]";
-            // 
             // lblParagonSource
             // 
             this.lblParagonSource.AutoSize = true;
@@ -5431,6 +5486,18 @@ namespace Chummer
             this.lblParagon.Size = new System.Drawing.Size(53, 13);
             this.lblParagon.TabIndex = 186;
             this.lblParagon.Text = "[Paragon]";
+            // 
+            // lblParagonInformation
+            // 
+            this.lblParagonInformation.AutoSize = true;
+            this.tlpTechnomancerParagon.SetColumnSpan(this.lblParagonInformation, 4);
+            this.lblParagonInformation.Location = new System.Drawing.Point(3, 31);
+            this.lblParagonInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblParagonInformation.MaximumSize = new System.Drawing.Size(488, 10000);
+            this.lblParagonInformation.Name = "lblParagonInformation";
+            this.lblParagonInformation.Size = new System.Drawing.Size(108, 13);
+            this.lblParagonInformation.TabIndex = 184;
+            this.lblParagonInformation.Text = "[Paragon Information]";
             // 
             // tabAdvancedPrograms
             // 
@@ -5999,7 +6066,7 @@ namespace Chummer
             this.flpInitiationButtons.Location = new System.Drawing.Point(0, 0);
             this.flpInitiationButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpInitiationButtons.Name = "flpInitiationButtons";
-            this.flpInitiationButtons.Size = new System.Drawing.Size(237, 29);
+            this.flpInitiationButtons.Size = new System.Drawing.Size(255, 29);
             this.flpInitiationButtons.TabIndex = 131;
             // 
             // cmdAddMetamagic
@@ -6008,14 +6075,72 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdAddMetamagic.AutoSize = true;
             this.cmdAddMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddMetamagic.ContextMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.Location = new System.Drawing.Point(3, 3);
             this.cmdAddMetamagic.Name = "cmdAddMetamagic";
-            this.cmdAddMetamagic.Size = new System.Drawing.Size(102, 23);
+            this.cmdAddMetamagic.Size = new System.Drawing.Size(120, 23);
+            this.cmdAddMetamagic.SplitMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.TabIndex = 93;
             this.cmdAddMetamagic.Tag = "Button_AddInitiateGrade";
             this.cmdAddMetamagic.Text = "&Add Initiate Grade";
             this.cmdAddMetamagic.UseVisualStyleBackColor = true;
             this.cmdAddMetamagic.Click += new System.EventHandler(this.cmdAddMetamagic_Click);
+            // 
+            // cmsMetamagic
+            // 
+            this.cmsMetamagic.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsMetamagicAddArt,
+            this.tsMetamagicAddEnchantment,
+            this.tsMetamagicAddEnhancement,
+            this.tsMetamagicAddMetamagic,
+            this.tsMetamagicAddRitual,
+            this.tsMetamagicNotes});
+            this.cmsMetamagic.Name = "cmsMetamagic";
+            this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
+            // 
+            // tsMetamagicAddArt
+            // 
+            this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
+            this.tsMetamagicAddArt.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddArt.Text = "Add Art";
+            this.tsMetamagicAddArt.Click += new System.EventHandler(this.tsMetamagicAddArt_Click);
+            // 
+            // tsMetamagicAddEnchantment
+            // 
+            this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
+            this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
+            this.tsMetamagicAddEnchantment.Click += new System.EventHandler(this.tsMetamagicAddEnchantment_Click);
+            // 
+            // tsMetamagicAddEnhancement
+            // 
+            this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
+            this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
+            this.tsMetamagicAddEnhancement.Click += new System.EventHandler(this.tsMetamagicAddEnhancement_Click);
+            // 
+            // tsMetamagicAddMetamagic
+            // 
+            this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
+            this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
+            this.tsMetamagicAddMetamagic.Click += new System.EventHandler(this.tsMetamagicAddMetamagic_Click);
+            // 
+            // tsMetamagicAddRitual
+            // 
+            this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
+            this.tsMetamagicAddRitual.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddRitual.Text = "Add Ritual";
+            this.tsMetamagicAddRitual.Click += new System.EventHandler(this.tsMetamagicAddRitual_Click);
+            // 
+            // tsMetamagicNotes
+            // 
+            this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsMetamagicNotes.Name = "tsMetamagicNotes";
+            this.tsMetamagicNotes.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicNotes.Tag = "Menu_Notes";
+            this.tsMetamagicNotes.Text = "&Notes";
+            this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
             // 
             // cmdDeleteMetamagic
             // 
@@ -6023,7 +6148,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDeleteMetamagic.AutoSize = true;
             this.cmdDeleteMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(111, 3);
+            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(129, 3);
             this.cmdDeleteMetamagic.Name = "cmdDeleteMetamagic";
             this.cmdDeleteMetamagic.Size = new System.Drawing.Size(123, 23);
             this.cmdDeleteMetamagic.TabIndex = 94;
@@ -6038,15 +6163,18 @@ namespace Chummer
             this.flpInitiation.Controls.Add(this.gpbInitiationType);
             this.flpInitiation.Controls.Add(this.gpbInitiationGroup);
             this.flpInitiation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpInitiation.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpInitiation.Location = new System.Drawing.Point(301, 54);
             this.flpInitiation.Margin = new System.Windows.Forms.Padding(0);
             this.flpInitiation.Name = "flpInitiation";
             this.flpInitiation.Size = new System.Drawing.Size(534, 571);
             this.flpInitiation.TabIndex = 132;
+            this.flpInitiation.WrapContents = false;
             // 
             // gpbInitiationType
             // 
             this.gpbInitiationType.AutoSize = true;
+            this.gpbInitiationType.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbInitiationType.Controls.Add(this.flpInitiationCheckBoxes);
             this.gpbInitiationType.Location = new System.Drawing.Point(3, 3);
             this.gpbInitiationType.MinimumSize = new System.Drawing.Size(250, 0);
@@ -6103,10 +6231,12 @@ namespace Chummer
             this.chkInitiationSchooling.Text = "Schooling (-10%)";
             this.chkInitiationSchooling.UseVisualStyleBackColor = true;
             this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.chkInitiationSchooling_CheckedChanged);
+            this.chkInitiationSchooling.EnabledChanged += new System.EventHandler(this.chkInitiationSchooling_EnabledChanged);
             // 
             // gpbInitiationGroup
             // 
             this.gpbInitiationGroup.AutoSize = true;
+            this.gpbInitiationGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbInitiationGroup.Controls.Add(this.tlpInitiationGroup);
             this.gpbInitiationGroup.Location = new System.Drawing.Point(3, 78);
             this.gpbInitiationGroup.MinimumSize = new System.Drawing.Size(500, 0);
@@ -6172,7 +6302,7 @@ namespace Chummer
             this.chkInitiationGroup.Name = "chkInitiationGroup";
             this.chkInitiationGroup.Size = new System.Drawing.Size(129, 17);
             this.chkInitiationGroup.TabIndex = 126;
-            this.chkInitiationGroup.Tag = "Checkbox_GroupInitiation";
+            this.chkInitiationGroup.Tag = "Checkbox_InitiationGroup";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
             this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.chkInitiationGroup_CheckedChanged);
@@ -6225,6 +6355,8 @@ namespace Chummer
             // 
             // tlpCyberware
             // 
+            this.tlpCyberware.AutoSize = true;
+            this.tlpCyberware.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCyberware.ColumnCount = 2;
             this.tlpCyberware.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tlpCyberware.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -6339,11 +6471,13 @@ namespace Chummer
             this.flpCyberware.Controls.Add(this.gpbCyberwareCommon);
             this.flpCyberware.Controls.Add(this.gpbCyberwareMatrix);
             this.flpCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpCyberware.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpCyberware.Location = new System.Drawing.Point(301, 29);
             this.flpCyberware.Margin = new System.Windows.Forms.Padding(0);
             this.flpCyberware.Name = "flpCyberware";
             this.flpCyberware.Size = new System.Drawing.Size(534, 596);
             this.flpCyberware.TabIndex = 252;
+            this.flpCyberware.WrapContents = false;
             // 
             // gpbEssenceConsumption
             // 
@@ -6477,11 +6611,12 @@ namespace Chummer
             // gpbCyberwareCommon
             // 
             this.gpbCyberwareCommon.AutoSize = true;
+            this.gpbCyberwareCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbCyberwareCommon.Controls.Add(this.tlpCyberwareCommon);
             this.gpbCyberwareCommon.Location = new System.Drawing.Point(3, 128);
             this.gpbCyberwareCommon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbCyberwareCommon.Name = "gpbCyberwareCommon";
-            this.gpbCyberwareCommon.Size = new System.Drawing.Size(501, 201);
+            this.gpbCyberwareCommon.Size = new System.Drawing.Size(501, 226);
             this.gpbCyberwareCommon.TabIndex = 255;
             this.gpbCyberwareCommon.TabStop = false;
             this.gpbCyberwareCommon.Tag = "String_Info";
@@ -6496,6 +6631,7 @@ namespace Chummer
             this.tlpCyberwareCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpCyberwareCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCyberwareCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpCyberwareCommon.Controls.Add(this.chkCyberwareStolen, 1, 6);
             this.tlpCyberwareCommon.Controls.Add(this.lblCyberwareNameLabel, 0, 0);
             this.tlpCyberwareCommon.Controls.Add(this.nudCyberwareRating, 3, 1);
             this.tlpCyberwareCommon.Controls.Add(this.lblCyberwareRatingLabel, 2, 1);
@@ -6519,12 +6655,12 @@ namespace Chummer
             this.tlpCyberwareCommon.Controls.Add(this.cboCyberwareGrade, 1, 2);
             this.tlpCyberwareCommon.Controls.Add(this.lblCyberwareGradeLabel, 0, 2);
             this.tlpCyberwareCommon.Controls.Add(this.lblCyberwareCategory, 1, 1);
-            this.tlpCyberwareCommon.Controls.Add(this.chkPrototypeTranshuman, 2, 6);
+            this.tlpCyberwareCommon.Controls.Add(this.chkPrototypeTranshuman, 2, 7);
             this.tlpCyberwareCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCyberwareCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpCyberwareCommon.Margin = new System.Windows.Forms.Padding(0);
             this.tlpCyberwareCommon.Name = "tlpCyberwareCommon";
-            this.tlpCyberwareCommon.RowCount = 7;
+            this.tlpCyberwareCommon.RowCount = 8;
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -6532,8 +6668,23 @@ namespace Chummer
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCyberwareCommon.Size = new System.Drawing.Size(495, 182);
+            this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCyberwareCommon.Size = new System.Drawing.Size(495, 207);
             this.tlpCyberwareCommon.TabIndex = 253;
+            // 
+            // chkCyberwareStolen
+            // 
+            this.chkCyberwareStolen.AutoSize = true;
+            this.chkCyberwareStolen.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkCyberwareStolen.Location = new System.Drawing.Point(236, 156);
+            this.chkCyberwareStolen.Name = "chkCyberwareStolen";
+            this.chkCyberwareStolen.Size = new System.Drawing.Size(56, 23);
+            this.chkCyberwareStolen.TabIndex = 228;
+            this.chkCyberwareStolen.Tag = "Checkbox_Stolen";
+            this.chkCyberwareStolen.Text = "Stolen";
+            this.chkCyberwareStolen.UseVisualStyleBackColor = true;
+            this.chkCyberwareStolen.Visible = false;
+            this.chkCyberwareStolen.CheckedChanged += new System.EventHandler(this.chkCyberwareStolen_CheckedChanged);
             // 
             // lblCyberwareNameLabel
             // 
@@ -6549,8 +6700,7 @@ namespace Chummer
             // 
             // nudCyberwareRating
             // 
-            this.nudCyberwareRating.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudCyberwareRating.Dock = System.Windows.Forms.DockStyle.Top;
             this.nudCyberwareRating.Enabled = false;
             this.nudCyberwareRating.Location = new System.Drawing.Point(323, 28);
             this.nudCyberwareRating.Maximum = new decimal(new int[] {
@@ -6774,8 +6924,7 @@ namespace Chummer
             // 
             // cboCyberwareGrade
             // 
-            this.cboCyberwareGrade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCyberwareGrade.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboCyberwareGrade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGrade.FormattingEnabled = true;
             this.cboCyberwareGrade.Location = new System.Drawing.Point(61, 54);
@@ -6810,14 +6959,13 @@ namespace Chummer
             // 
             // chkPrototypeTranshuman
             // 
-            this.chkPrototypeTranshuman.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.chkPrototypeTranshuman.AutoSize = true;
             this.tlpCyberwareCommon.SetColumnSpan(this.chkPrototypeTranshuman, 2);
-            this.chkPrototypeTranshuman.Location = new System.Drawing.Point(236, 157);
+            this.chkPrototypeTranshuman.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkPrototypeTranshuman.Location = new System.Drawing.Point(236, 186);
             this.chkPrototypeTranshuman.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrototypeTranshuman.Name = "chkPrototypeTranshuman";
-            this.chkPrototypeTranshuman.Size = new System.Drawing.Size(133, 21);
+            this.chkPrototypeTranshuman.Size = new System.Drawing.Size(133, 17);
             this.chkPrototypeTranshuman.TabIndex = 226;
             this.chkPrototypeTranshuman.Tag = "Checkbox_PrototypeTranshuman";
             this.chkPrototypeTranshuman.Text = "Prototype Transhuman";
@@ -6830,7 +6978,7 @@ namespace Chummer
             this.gpbCyberwareMatrix.AutoSize = true;
             this.gpbCyberwareMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbCyberwareMatrix.Controls.Add(this.tlpCyberwareMatrix);
-            this.gpbCyberwareMatrix.Location = new System.Drawing.Point(3, 335);
+            this.gpbCyberwareMatrix.Location = new System.Drawing.Point(3, 360);
             this.gpbCyberwareMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbCyberwareMatrix.Name = "gpbCyberwareMatrix";
             this.gpbCyberwareMatrix.Size = new System.Drawing.Size(516, 96);
@@ -6944,14 +7092,12 @@ namespace Chummer
             // 
             // chkCyberwareHomeNode
             // 
-            this.chkCyberwareHomeNode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkCyberwareHomeNode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberwareHomeNode.AutoSize = true;
             this.chkCyberwareHomeNode.Location = new System.Drawing.Point(207, 4);
             this.chkCyberwareHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCyberwareHomeNode.Name = "chkCyberwareHomeNode";
-            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(96, 17);
+            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(83, 17);
             this.chkCyberwareHomeNode.TabIndex = 246;
             this.chkCyberwareHomeNode.Tag = "Checkbox_HomeNode";
             this.chkCyberwareHomeNode.Text = "Home Node";
@@ -6960,15 +7106,13 @@ namespace Chummer
             // 
             // chkCyberwareActiveCommlink
             // 
-            this.chkCyberwareActiveCommlink.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkCyberwareActiveCommlink.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberwareActiveCommlink.AutoSize = true;
             this.tlpCyberwareMatrix.SetColumnSpan(this.chkCyberwareActiveCommlink, 2);
             this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(309, 4);
             this.chkCyberwareActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCyberwareActiveCommlink.Name = "chkCyberwareActiveCommlink";
-            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(198, 17);
+            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(104, 17);
             this.chkCyberwareActiveCommlink.TabIndex = 247;
             this.chkCyberwareActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkCyberwareActiveCommlink.Text = "Active Commlink";
@@ -6977,8 +7121,7 @@ namespace Chummer
             // 
             // cboCyberwareAttack
             // 
-            this.cboCyberwareAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCyberwareAttack.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboCyberwareAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareAttack.FormattingEnabled = true;
             this.cboCyberwareAttack.Location = new System.Drawing.Point(105, 53);
@@ -6989,8 +7132,7 @@ namespace Chummer
             // 
             // cboCyberwareSleaze
             // 
-            this.cboCyberwareSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCyberwareSleaze.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboCyberwareSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareSleaze.FormattingEnabled = true;
             this.cboCyberwareSleaze.Location = new System.Drawing.Point(207, 53);
@@ -7001,8 +7143,7 @@ namespace Chummer
             // 
             // cboCyberwareDataProcessing
             // 
-            this.cboCyberwareDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCyberwareDataProcessing.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboCyberwareDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareDataProcessing.FormattingEnabled = true;
             this.cboCyberwareDataProcessing.Location = new System.Drawing.Point(309, 53);
@@ -7013,8 +7154,7 @@ namespace Chummer
             // 
             // cboCyberwareFirewall
             // 
-            this.cboCyberwareFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCyberwareFirewall.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboCyberwareFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareFirewall.FormattingEnabled = true;
             this.cboCyberwareFirewall.Location = new System.Drawing.Point(411, 53);
@@ -7031,7 +7171,7 @@ namespace Chummer
             this.tabStreetGear.Name = "tabStreetGear";
             this.tabStreetGear.Size = new System.Drawing.Size(841, 631);
             this.tabStreetGear.TabIndex = 5;
-            this.tabStreetGear.Tag = "Tab_StreeGear";
+            this.tabStreetGear.Tag = "Tab_StreetGear";
             this.tabStreetGear.Text = "Street Gear";
             // 
             // tabStreetGearTabs
@@ -7063,6 +7203,8 @@ namespace Chummer
             // 
             // tlpGear
             // 
+            this.tlpGear.AutoSize = true;
+            this.tlpGear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpGear.ColumnCount = 2;
             this.tlpGear.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tlpGear.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -7169,7 +7311,6 @@ namespace Chummer
             // flpGear
             // 
             this.flpGear.AutoScroll = true;
-            this.flpGear.AutoSize = true;
             this.flpGear.Controls.Add(this.gpbGearCommon);
             this.flpGear.Controls.Add(this.gpbGearMatrix);
             this.flpGear.Controls.Add(this.gpbGearBondedFoci);
@@ -7190,7 +7331,7 @@ namespace Chummer
             this.gpbGearCommon.Location = new System.Drawing.Point(3, 3);
             this.gpbGearCommon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbGearCommon.Name = "gpbGearCommon";
-            this.gpbGearCommon.Size = new System.Drawing.Size(500, 146);
+            this.gpbGearCommon.Size = new System.Drawing.Size(500, 171);
             this.gpbGearCommon.TabIndex = 0;
             this.gpbGearCommon.TabStop = false;
             this.gpbGearCommon.Tag = "String_Info";
@@ -7221,7 +7362,7 @@ namespace Chummer
             this.tlpGearCommon.Controls.Add(this.lblGearCapacity, 3, 3);
             this.tlpGearCommon.Controls.Add(this.lblGearSourceLabel, 0, 4);
             this.tlpGearCommon.Controls.Add(this.lblGearSource, 1, 4);
-            this.tlpGearCommon.Controls.Add(this.chkGearEquipped, 2, 4);
+            this.tlpGearCommon.Controls.Add(this.flowLayoutPanel12, 2, 4);
             this.tlpGearCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGearCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpGearCommon.Name = "tlpGearCommon";
@@ -7231,7 +7372,7 @@ namespace Chummer
             this.tlpGearCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGearCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGearCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpGearCommon.Size = new System.Drawing.Size(494, 127);
+            this.tlpGearCommon.Size = new System.Drawing.Size(494, 152);
             this.tlpGearCommon.TabIndex = 0;
             // 
             // lblGearNameLabel
@@ -7346,7 +7487,7 @@ namespace Chummer
             this.nudGearQty.Enabled = false;
             this.nudGearQty.Location = new System.Drawing.Point(61, 79);
             this.nudGearQty.Maximum = new decimal(new int[] {
-            100000,
+            1000000000,
             0,
             0,
             0});
@@ -7433,11 +7574,23 @@ namespace Chummer
             this.lblGearSource.Text = "[Source]";
             this.lblGearSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
+            // flowLayoutPanel12
+            // 
+            this.flowLayoutPanel12.AutoSize = true;
+            this.flowLayoutPanel12.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpGearCommon.SetColumnSpan(this.flowLayoutPanel12, 2);
+            this.flowLayoutPanel12.Controls.Add(this.chkGearEquipped);
+            this.flowLayoutPanel12.Controls.Add(this.chkGearStolen);
+            this.flowLayoutPanel12.Location = new System.Drawing.Point(247, 102);
+            this.flowLayoutPanel12.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel12.Name = "flowLayoutPanel12";
+            this.flowLayoutPanel12.Size = new System.Drawing.Size(139, 25);
+            this.flowLayoutPanel12.TabIndex = 230;
+            // 
             // chkGearEquipped
             // 
             this.chkGearEquipped.AutoSize = true;
-            this.tlpGearCommon.SetColumnSpan(this.chkGearEquipped, 2);
-            this.chkGearEquipped.Location = new System.Drawing.Point(250, 106);
+            this.chkGearEquipped.Location = new System.Drawing.Point(3, 4);
             this.chkGearEquipped.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkGearEquipped.Name = "chkGearEquipped";
             this.chkGearEquipped.Size = new System.Drawing.Size(71, 17);
@@ -7448,10 +7601,27 @@ namespace Chummer
             this.chkGearEquipped.Visible = false;
             this.chkGearEquipped.CheckedChanged += new System.EventHandler(this.chkGearEquipped_CheckedChanged);
             // 
+            // chkGearStolen
+            // 
+            this.chkGearStolen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkGearStolen.AutoSize = true;
+            this.chkGearStolen.Location = new System.Drawing.Point(80, 4);
+            this.chkGearStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkGearStolen.Name = "chkGearStolen";
+            this.chkGearStolen.Size = new System.Drawing.Size(56, 17);
+            this.chkGearStolen.TabIndex = 229;
+            this.chkGearStolen.Tag = "Checkbox_Stolen";
+            this.chkGearStolen.Text = "Stolen";
+            this.chkGearStolen.UseVisualStyleBackColor = true;
+            this.chkGearStolen.Visible = false;
+            this.chkGearStolen.CheckedChanged += new System.EventHandler(this.chkGearStolen_CheckedChanged);
+            // 
             // gpbGearMatrix
             // 
+            this.gpbGearMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbGearMatrix.Controls.Add(this.tlpGearMatrix);
-            this.gpbGearMatrix.Location = new System.Drawing.Point(3, 155);
+            this.gpbGearMatrix.Location = new System.Drawing.Point(3, 180);
             this.gpbGearMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbGearMatrix.Name = "gpbGearMatrix";
             this.gpbGearMatrix.Size = new System.Drawing.Size(500, 100);
@@ -7462,17 +7632,17 @@ namespace Chummer
             // 
             // tlpGearMatrix
             // 
+            this.tlpGearMatrix.AutoSize = true;
+            this.tlpGearMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpGearMatrix.ColumnCount = 5;
             this.tlpGearMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpGearMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpGearMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpGearMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpGearMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpGearMatrix.Controls.Add(this.chkGearActiveCommlink, 3, 0);
             this.tlpGearMatrix.Controls.Add(this.lblGearDeviceRatingLabel, 0, 1);
             this.tlpGearMatrix.Controls.Add(this.lblGearDeviceRating, 0, 2);
             this.tlpGearMatrix.Controls.Add(this.lblGearAttackLabel, 1, 1);
-            this.tlpGearMatrix.Controls.Add(this.chkGearHomeNode, 2, 0);
             this.tlpGearMatrix.Controls.Add(this.lblGearSleazeLabel, 2, 1);
             this.tlpGearMatrix.Controls.Add(this.cboGearFirewall, 4, 2);
             this.tlpGearMatrix.Controls.Add(this.lblGearFirewallLabel, 4, 1);
@@ -7480,6 +7650,7 @@ namespace Chummer
             this.tlpGearMatrix.Controls.Add(this.lblGearDataProcessingLabel, 3, 1);
             this.tlpGearMatrix.Controls.Add(this.cboGearAttack, 1, 2);
             this.tlpGearMatrix.Controls.Add(this.cboGearSleaze, 2, 2);
+            this.tlpGearMatrix.Controls.Add(this.flowLayoutPanel14, 2, 0);
             this.tlpGearMatrix.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGearMatrix.Location = new System.Drawing.Point(3, 16);
             this.tlpGearMatrix.Name = "tlpGearMatrix";
@@ -7490,28 +7661,11 @@ namespace Chummer
             this.tlpGearMatrix.Size = new System.Drawing.Size(494, 81);
             this.tlpGearMatrix.TabIndex = 0;
             // 
-            // chkGearActiveCommlink
-            // 
-            this.chkGearActiveCommlink.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkGearActiveCommlink.AutoSize = true;
-            this.tlpGearMatrix.SetColumnSpan(this.chkGearActiveCommlink, 2);
-            this.chkGearActiveCommlink.Location = new System.Drawing.Point(297, 4);
-            this.chkGearActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkGearActiveCommlink.Name = "chkGearActiveCommlink";
-            this.chkGearActiveCommlink.Size = new System.Drawing.Size(194, 17);
-            this.chkGearActiveCommlink.TabIndex = 115;
-            this.chkGearActiveCommlink.Tag = "Checkbox_ActiveCommlink";
-            this.chkGearActiveCommlink.Text = "Active Commlink";
-            this.chkGearActiveCommlink.UseVisualStyleBackColor = true;
-            this.chkGearActiveCommlink.CheckedChanged += new System.EventHandler(this.chkGearActiveCommlink_CheckedChanged);
-            // 
             // lblGearDeviceRatingLabel
             // 
             this.lblGearDeviceRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblGearDeviceRatingLabel.AutoSize = true;
-            this.lblGearDeviceRatingLabel.Location = new System.Drawing.Point(3, 31);
+            this.lblGearDeviceRatingLabel.Location = new System.Drawing.Point(3, 29);
             this.lblGearDeviceRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGearDeviceRatingLabel.Name = "lblGearDeviceRatingLabel";
             this.lblGearDeviceRatingLabel.Size = new System.Drawing.Size(78, 13);
@@ -7522,7 +7676,7 @@ namespace Chummer
             // lblGearDeviceRating
             // 
             this.lblGearDeviceRating.AutoSize = true;
-            this.lblGearDeviceRating.Location = new System.Drawing.Point(3, 56);
+            this.lblGearDeviceRating.Location = new System.Drawing.Point(3, 54);
             this.lblGearDeviceRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGearDeviceRating.Name = "lblGearDeviceRating";
             this.lblGearDeviceRating.Size = new System.Drawing.Size(19, 13);
@@ -7533,7 +7687,7 @@ namespace Chummer
             // 
             this.lblGearAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblGearAttackLabel.AutoSize = true;
-            this.lblGearAttackLabel.Location = new System.Drawing.Point(101, 31);
+            this.lblGearAttackLabel.Location = new System.Drawing.Point(101, 29);
             this.lblGearAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGearAttackLabel.Name = "lblGearAttackLabel";
             this.lblGearAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -7542,28 +7696,11 @@ namespace Chummer
             this.lblGearAttackLabel.Text = "Attack:";
             this.lblGearAttackLabel.Visible = false;
             // 
-            // chkGearHomeNode
-            // 
-            this.chkGearHomeNode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkGearHomeNode.AutoSize = true;
-            this.chkGearHomeNode.Location = new System.Drawing.Point(199, 4);
-            this.chkGearHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkGearHomeNode.Name = "chkGearHomeNode";
-            this.chkGearHomeNode.Size = new System.Drawing.Size(92, 17);
-            this.chkGearHomeNode.TabIndex = 108;
-            this.chkGearHomeNode.Tag = "Checkbox_HomeNode";
-            this.chkGearHomeNode.Text = "Home Node";
-            this.chkGearHomeNode.UseVisualStyleBackColor = true;
-            this.chkGearHomeNode.Visible = false;
-            this.chkGearHomeNode.CheckedChanged += new System.EventHandler(this.chkGearHomeNode_CheckedChanged);
-            // 
             // lblGearSleazeLabel
             // 
             this.lblGearSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblGearSleazeLabel.AutoSize = true;
-            this.lblGearSleazeLabel.Location = new System.Drawing.Point(199, 31);
+            this.lblGearSleazeLabel.Location = new System.Drawing.Point(199, 29);
             this.lblGearSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
             this.lblGearSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -7574,11 +7711,10 @@ namespace Chummer
             // 
             // cboGearFirewall
             // 
-            this.cboGearFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboGearFirewall.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearFirewall.FormattingEnabled = true;
-            this.cboGearFirewall.Location = new System.Drawing.Point(395, 53);
+            this.cboGearFirewall.Location = new System.Drawing.Point(395, 51);
             this.cboGearFirewall.Name = "cboGearFirewall";
             this.cboGearFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboGearFirewall.TabIndex = 158;
@@ -7590,7 +7726,7 @@ namespace Chummer
             // 
             this.lblGearFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblGearFirewallLabel.AutoSize = true;
-            this.lblGearFirewallLabel.Location = new System.Drawing.Point(395, 31);
+            this.lblGearFirewallLabel.Location = new System.Drawing.Point(395, 29);
             this.lblGearFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
             this.lblGearFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -7601,11 +7737,10 @@ namespace Chummer
             // 
             // cboGearDataProcessing
             // 
-            this.cboGearDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboGearDataProcessing.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearDataProcessing.FormattingEnabled = true;
-            this.cboGearDataProcessing.Location = new System.Drawing.Point(297, 53);
+            this.cboGearDataProcessing.Location = new System.Drawing.Point(297, 51);
             this.cboGearDataProcessing.Name = "cboGearDataProcessing";
             this.cboGearDataProcessing.Size = new System.Drawing.Size(92, 21);
             this.cboGearDataProcessing.TabIndex = 159;
@@ -7617,7 +7752,7 @@ namespace Chummer
             // 
             this.lblGearDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblGearDataProcessingLabel.AutoSize = true;
-            this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(297, 31);
+            this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(297, 29);
             this.lblGearDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
             this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(58, 13);
@@ -7628,11 +7763,10 @@ namespace Chummer
             // 
             // cboGearAttack
             // 
-            this.cboGearAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboGearAttack.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearAttack.FormattingEnabled = true;
-            this.cboGearAttack.Location = new System.Drawing.Point(101, 53);
+            this.cboGearAttack.Location = new System.Drawing.Point(101, 51);
             this.cboGearAttack.Name = "cboGearAttack";
             this.cboGearAttack.Size = new System.Drawing.Size(92, 21);
             this.cboGearAttack.TabIndex = 156;
@@ -7642,11 +7776,10 @@ namespace Chummer
             // 
             // cboGearSleaze
             // 
-            this.cboGearSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboGearSleaze.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearSleaze.FormattingEnabled = true;
-            this.cboGearSleaze.Location = new System.Drawing.Point(199, 53);
+            this.cboGearSleaze.Location = new System.Drawing.Point(199, 51);
             this.cboGearSleaze.Name = "cboGearSleaze";
             this.cboGearSleaze.Size = new System.Drawing.Size(92, 21);
             this.cboGearSleaze.TabIndex = 157;
@@ -7654,12 +7787,50 @@ namespace Chummer
             this.cboGearSleaze.Visible = false;
             this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
             // 
+            // flowLayoutPanel14
+            // 
+            this.flowLayoutPanel14.AutoSize = true;
+            this.flowLayoutPanel14.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpGearMatrix.SetColumnSpan(this.flowLayoutPanel14, 3);
+            this.flowLayoutPanel14.Controls.Add(this.chkGearHomeNode);
+            this.flowLayoutPanel14.Controls.Add(this.chkGearActiveCommlink);
+            this.flowLayoutPanel14.Location = new System.Drawing.Point(196, 0);
+            this.flowLayoutPanel14.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel14.Name = "flowLayoutPanel14";
+            this.flowLayoutPanel14.Size = new System.Drawing.Size(199, 23);
+            this.flowLayoutPanel14.TabIndex = 160;
+            // 
+            // chkGearHomeNode
+            // 
+            this.chkGearHomeNode.AutoSize = true;
+            this.chkGearHomeNode.Location = new System.Drawing.Point(3, 3);
+            this.chkGearHomeNode.Name = "chkGearHomeNode";
+            this.chkGearHomeNode.Size = new System.Drawing.Size(83, 17);
+            this.chkGearHomeNode.TabIndex = 108;
+            this.chkGearHomeNode.Tag = "Checkbox_HomeNode";
+            this.chkGearHomeNode.Text = "Home Node";
+            this.chkGearHomeNode.UseVisualStyleBackColor = true;
+            this.chkGearHomeNode.Visible = false;
+            this.chkGearHomeNode.CheckedChanged += new System.EventHandler(this.chkGearHomeNode_CheckedChanged);
+            // 
+            // chkGearActiveCommlink
+            // 
+            this.chkGearActiveCommlink.AutoSize = true;
+            this.chkGearActiveCommlink.Location = new System.Drawing.Point(92, 3);
+            this.chkGearActiveCommlink.Name = "chkGearActiveCommlink";
+            this.chkGearActiveCommlink.Size = new System.Drawing.Size(104, 17);
+            this.chkGearActiveCommlink.TabIndex = 115;
+            this.chkGearActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkGearActiveCommlink.Text = "Active Commlink";
+            this.chkGearActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkGearActiveCommlink.CheckedChanged += new System.EventHandler(this.chkGearActiveCommlink_CheckedChanged);
+            // 
             // gpbGearBondedFoci
             // 
             this.gpbGearBondedFoci.AutoSize = true;
             this.gpbGearBondedFoci.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbGearBondedFoci.Controls.Add(this.tableLayoutPanel4);
-            this.gpbGearBondedFoci.Location = new System.Drawing.Point(3, 261);
+            this.gpbGearBondedFoci.Location = new System.Drawing.Point(3, 286);
             this.gpbGearBondedFoci.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbGearBondedFoci.Name = "gpbGearBondedFoci";
             this.gpbGearBondedFoci.Size = new System.Drawing.Size(500, 254);
@@ -7720,7 +7891,7 @@ namespace Chummer
             this.tabArmor.Location = new System.Drawing.Point(4, 22);
             this.tabArmor.Name = "tabArmor";
             this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(184, 48);
+            this.tabArmor.Size = new System.Drawing.Size(833, 605);
             this.tabArmor.TabIndex = 1;
             this.tabArmor.Tag = "Tab_Armor";
             this.tabArmor.Text = "Armor";
@@ -7751,7 +7922,7 @@ namespace Chummer
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpArmor.Size = new System.Drawing.Size(178, 42);
+            this.tlpArmor.Size = new System.Drawing.Size(827, 599);
             this.tlpArmor.TabIndex = 176;
             // 
             // treArmor
@@ -7759,7 +7930,7 @@ namespace Chummer
             this.treArmor.AllowDrop = true;
             this.treArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treArmor.HideSelection = false;
-            this.treArmor.Location = new System.Drawing.Point(3, 61);
+            this.treArmor.Location = new System.Drawing.Point(3, 32);
             this.treArmor.Name = "treArmor";
             treeNode20.Name = "nodArmorRoot";
             treeNode20.Tag = "Node_SelectedArmor";
@@ -7767,7 +7938,7 @@ namespace Chummer
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode20});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(295, 1);
+            this.treArmor.Size = new System.Drawing.Size(295, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -7784,7 +7955,7 @@ namespace Chummer
             this.flpArmorButtons.Location = new System.Drawing.Point(0, 0);
             this.flpArmorButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmorButtons.Name = "flpArmorButtons";
-            this.flpArmorButtons.Size = new System.Drawing.Size(176, 58);
+            this.flpArmorButtons.Size = new System.Drawing.Size(284, 29);
             this.flpArmorButtons.TabIndex = 176;
             // 
             // cmdAddArmor
@@ -7816,7 +7987,7 @@ namespace Chummer
             // cmdAddArmorBundle
             // 
             this.cmdAddArmorBundle.AutoSize = true;
-            this.cmdAddArmorBundle.Location = new System.Drawing.Point(3, 32);
+            this.cmdAddArmorBundle.Location = new System.Drawing.Point(179, 3);
             this.cmdAddArmorBundle.Name = "cmdAddArmorBundle";
             this.cmdAddArmorBundle.Size = new System.Drawing.Size(102, 23);
             this.cmdAddArmorBundle.TabIndex = 104;
@@ -7828,26 +7999,27 @@ namespace Chummer
             // flpArmor
             // 
             this.flpArmor.AutoScroll = true;
-            this.flpArmor.AutoSize = true;
-            this.flpArmor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpArmor.Controls.Add(this.gpbArmorCommon);
             this.flpArmor.Controls.Add(this.gpbArmorMatrix);
             this.flpArmor.Controls.Add(this.gpbArmorLocation);
             this.flpArmor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpArmor.Location = new System.Drawing.Point(301, 58);
+            this.flpArmor.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpArmor.Location = new System.Drawing.Point(301, 29);
             this.flpArmor.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmor.Name = "flpArmor";
-            this.flpArmor.Size = new System.Drawing.Size(1, 1);
+            this.flpArmor.Size = new System.Drawing.Size(526, 570);
             this.flpArmor.TabIndex = 177;
+            this.flpArmor.WrapContents = false;
             // 
             // gpbArmorCommon
             // 
             this.gpbArmorCommon.AutoSize = true;
+            this.gpbArmorCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbArmorCommon.Controls.Add(this.tlpArmorCommon);
             this.gpbArmorCommon.Location = new System.Drawing.Point(3, 3);
             this.gpbArmorCommon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbArmorCommon.Name = "gpbArmorCommon";
-            this.gpbArmorCommon.Size = new System.Drawing.Size(500, 145);
+            this.gpbArmorCommon.Size = new System.Drawing.Size(500, 164);
             this.gpbArmorCommon.TabIndex = 0;
             this.gpbArmorCommon.TabStop = false;
             this.gpbArmorCommon.Tag = "String_Info";
@@ -7883,7 +8055,8 @@ namespace Chummer
             this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpArmorCommon.Size = new System.Drawing.Size(494, 126);
+            this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpArmorCommon.Size = new System.Drawing.Size(494, 145);
             this.tlpArmorCommon.TabIndex = 0;
             // 
             // lblArmorValueLabel
@@ -7922,6 +8095,7 @@ namespace Chummer
             // 
             // nudArmorRating
             // 
+            this.nudArmorRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudArmorRating.Enabled = false;
             this.nudArmorRating.Location = new System.Drawing.Point(126, 28);
             this.nudArmorRating.Maximum = new decimal(new int[] {
@@ -7935,7 +8109,7 @@ namespace Chummer
             0,
             0});
             this.nudArmorRating.Name = "nudArmorRating";
-            this.nudArmorRating.Size = new System.Drawing.Size(100, 20);
+            this.nudArmorRating.Size = new System.Drawing.Size(117, 20);
             this.nudArmorRating.TabIndex = 82;
             this.nudArmorRating.Value = new decimal(new int[] {
             1,
@@ -8039,21 +8213,18 @@ namespace Chummer
             this.tlpArmorCommon.SetColumnSpan(this.flpArmorCommonCheckBoxes, 2);
             this.flpArmorCommonCheckBoxes.Controls.Add(this.chkArmorEquipped);
             this.flpArmorCommonCheckBoxes.Controls.Add(this.chkIncludedInArmor);
+            this.flpArmorCommonCheckBoxes.Controls.Add(this.chkArmorStolen);
             this.flpArmorCommonCheckBoxes.Location = new System.Drawing.Point(246, 76);
             this.flpArmorCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmorCommonCheckBoxes.Name = "flpArmorCommonCheckBoxes";
-            this.flpArmorCommonCheckBoxes.Size = new System.Drawing.Size(196, 25);
+            this.flpArmorCommonCheckBoxes.Size = new System.Drawing.Size(196, 46);
             this.flpArmorCommonCheckBoxes.TabIndex = 134;
             // 
             // chkIncludedInArmor
             // 
-            this.chkIncludedInArmor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkIncludedInArmor.AutoSize = true;
             this.chkIncludedInArmor.Enabled = false;
-            this.chkIncludedInArmor.Location = new System.Drawing.Point(80, 4);
-            this.chkIncludedInArmor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIncludedInArmor.Location = new System.Drawing.Point(80, 3);
             this.chkIncludedInArmor.Name = "chkIncludedInArmor";
             this.chkIncludedInArmor.Size = new System.Drawing.Size(113, 17);
             this.chkIncludedInArmor.TabIndex = 113;
@@ -8061,12 +8232,25 @@ namespace Chummer
             this.chkIncludedInArmor.Text = "Part of base Armor";
             this.chkIncludedInArmor.UseVisualStyleBackColor = true;
             // 
+            // chkArmorStolen
+            // 
+            this.chkArmorStolen.AutoSize = true;
+            this.chkArmorStolen.Location = new System.Drawing.Point(3, 26);
+            this.chkArmorStolen.Name = "chkArmorStolen";
+            this.chkArmorStolen.Size = new System.Drawing.Size(56, 17);
+            this.chkArmorStolen.TabIndex = 230;
+            this.chkArmorStolen.Tag = "Checkbox_Stolen";
+            this.chkArmorStolen.Text = "Stolen";
+            this.chkArmorStolen.UseVisualStyleBackColor = true;
+            this.chkArmorStolen.Visible = false;
+            this.chkArmorStolen.CheckedChanged += new System.EventHandler(this.chkArmorStolen_CheckedChanged);
+            // 
             // gpbArmorMatrix
             // 
             this.gpbArmorMatrix.AutoSize = true;
             this.gpbArmorMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbArmorMatrix.Controls.Add(this.tableLayoutPanel2);
-            this.gpbArmorMatrix.Location = new System.Drawing.Point(3, 154);
+            this.gpbArmorMatrix.Location = new System.Drawing.Point(3, 173);
             this.gpbArmorMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbArmorMatrix.Name = "gpbArmorMatrix";
             this.gpbArmorMatrix.Size = new System.Drawing.Size(500, 94);
@@ -8217,11 +8401,13 @@ namespace Chummer
             // 
             // gpbArmorLocation
             // 
+            this.gpbArmorLocation.AutoSize = true;
+            this.gpbArmorLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbArmorLocation.Controls.Add(this.tlpArmorLocation);
-            this.gpbArmorLocation.Location = new System.Drawing.Point(3, 254);
+            this.gpbArmorLocation.Location = new System.Drawing.Point(3, 273);
             this.gpbArmorLocation.MinimumSize = new System.Drawing.Size(250, 0);
             this.gpbArmorLocation.Name = "gpbArmorLocation";
-            this.gpbArmorLocation.Size = new System.Drawing.Size(250, 100);
+            this.gpbArmorLocation.Size = new System.Drawing.Size(250, 73);
             this.gpbArmorLocation.TabIndex = 2;
             this.gpbArmorLocation.TabStop = false;
             this.gpbArmorLocation.Tag = "String_Armor";
@@ -8229,6 +8415,8 @@ namespace Chummer
             // 
             // tlpArmorLocation
             // 
+            this.tlpArmorLocation.AutoSize = true;
+            this.tlpArmorLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpArmorLocation.ColumnCount = 2;
             this.tlpArmorLocation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpArmorLocation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -8241,7 +8429,7 @@ namespace Chummer
             this.tlpArmorLocation.RowCount = 2;
             this.tlpArmorLocation.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorLocation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmorLocation.Size = new System.Drawing.Size(244, 81);
+            this.tlpArmorLocation.Size = new System.Drawing.Size(244, 54);
             this.tlpArmorLocation.TabIndex = 0;
             // 
             // lblArmorEquippedLabel
@@ -8418,16 +8606,17 @@ namespace Chummer
             // flpWeapons
             // 
             this.flpWeapons.AutoScroll = true;
-            this.flpWeapons.AutoSize = true;
             this.flpWeapons.Controls.Add(this.gpbWeaponsCommon);
             this.flpWeapons.Controls.Add(this.gpbWeaponsWeapon);
             this.flpWeapons.Controls.Add(this.gpbWeaponsMatrix);
             this.flpWeapons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpWeapons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpWeapons.Location = new System.Drawing.Point(301, 29);
             this.flpWeapons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeapons.Name = "flpWeapons";
             this.flpWeapons.Size = new System.Drawing.Size(526, 570);
             this.flpWeapons.TabIndex = 227;
+            this.flpWeapons.WrapContents = false;
             // 
             // gpbWeaponsCommon
             // 
@@ -8437,7 +8626,7 @@ namespace Chummer
             this.gpbWeaponsCommon.Location = new System.Drawing.Point(3, 3);
             this.gpbWeaponsCommon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbWeaponsCommon.Name = "gpbWeaponsCommon";
-            this.gpbWeaponsCommon.Size = new System.Drawing.Size(500, 169);
+            this.gpbWeaponsCommon.Size = new System.Drawing.Size(500, 188);
             this.gpbWeaponsCommon.TabIndex = 0;
             this.gpbWeaponsCommon.TabStop = false;
             this.gpbWeaponsCommon.Tag = "String_Info";
@@ -8480,7 +8669,7 @@ namespace Chummer
             this.tlpWeaponsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeaponsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeaponsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeaponsCommon.Size = new System.Drawing.Size(494, 150);
+            this.tlpWeaponsCommon.Size = new System.Drawing.Size(494, 169);
             this.tlpWeaponsCommon.TabIndex = 0;
             // 
             // lblWeaponCapacity
@@ -8689,21 +8878,18 @@ namespace Chummer
             this.tlpWeaponsCommon.SetColumnSpan(this.flpWeaponsCommonCheckBoxes, 2);
             this.flpWeaponsCommonCheckBoxes.Controls.Add(this.chkWeaponAccessoryInstalled);
             this.flpWeaponsCommonCheckBoxes.Controls.Add(this.chkIncludedInWeapon);
+            this.flpWeaponsCommonCheckBoxes.Controls.Add(this.chkWeaponStolen);
             this.flpWeaponsCommonCheckBoxes.Location = new System.Drawing.Point(244, 100);
             this.flpWeaponsCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeaponsCommonCheckBoxes.Name = "flpWeaponsCommonCheckBoxes";
-            this.flpWeaponsCommonCheckBoxes.Size = new System.Drawing.Size(204, 25);
+            this.flpWeaponsCommonCheckBoxes.Size = new System.Drawing.Size(204, 46);
             this.flpWeaponsCommonCheckBoxes.TabIndex = 225;
             // 
             // chkIncludedInWeapon
             // 
-            this.chkIncludedInWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkIncludedInWeapon.AutoSize = true;
             this.chkIncludedInWeapon.Enabled = false;
-            this.chkIncludedInWeapon.Location = new System.Drawing.Point(74, 4);
-            this.chkIncludedInWeapon.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIncludedInWeapon.Location = new System.Drawing.Point(74, 3);
             this.chkIncludedInWeapon.Name = "chkIncludedInWeapon";
             this.chkIncludedInWeapon.Size = new System.Drawing.Size(127, 17);
             this.chkIncludedInWeapon.TabIndex = 73;
@@ -8712,11 +8898,25 @@ namespace Chummer
             this.chkIncludedInWeapon.UseVisualStyleBackColor = true;
             this.chkIncludedInWeapon.CheckedChanged += new System.EventHandler(this.chkIncludedInWeapon_CheckedChanged);
             // 
+            // chkWeaponStolen
+            // 
+            this.chkWeaponStolen.AutoSize = true;
+            this.chkWeaponStolen.Location = new System.Drawing.Point(3, 26);
+            this.chkWeaponStolen.Name = "chkWeaponStolen";
+            this.chkWeaponStolen.Size = new System.Drawing.Size(56, 17);
+            this.chkWeaponStolen.TabIndex = 229;
+            this.chkWeaponStolen.Tag = "Checkbox_Stolen";
+            this.chkWeaponStolen.Text = "Stolen";
+            this.chkWeaponStolen.UseVisualStyleBackColor = true;
+            this.chkWeaponStolen.Visible = false;
+            this.chkWeaponStolen.CheckedChanged += new System.EventHandler(this.chkWeaponStolen_CheckedChanged);
+            // 
             // gpbWeaponsWeapon
             // 
             this.gpbWeaponsWeapon.AutoSize = true;
+            this.gpbWeaponsWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbWeaponsWeapon.Controls.Add(this.flpWeaponsWeapon);
-            this.gpbWeaponsWeapon.Location = new System.Drawing.Point(3, 178);
+            this.gpbWeaponsWeapon.Location = new System.Drawing.Point(3, 197);
             this.gpbWeaponsWeapon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbWeaponsWeapon.Name = "gpbWeaponsWeapon";
             this.gpbWeaponsWeapon.Size = new System.Drawing.Size(500, 150);
@@ -9192,7 +9392,7 @@ namespace Chummer
             this.gpbWeaponsMatrix.AutoSize = true;
             this.gpbWeaponsMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbWeaponsMatrix.Controls.Add(this.tableLayoutPanel3);
-            this.gpbWeaponsMatrix.Location = new System.Drawing.Point(3, 334);
+            this.gpbWeaponsMatrix.Location = new System.Drawing.Point(3, 353);
             this.gpbWeaponsMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbWeaponsMatrix.Name = "gpbWeaponsMatrix";
             this.gpbWeaponsMatrix.Size = new System.Drawing.Size(500, 94);
@@ -9423,25 +9623,30 @@ namespace Chummer
             this.btnDeleteCustomDrug.Tag = "String_Delete";
             this.btnDeleteCustomDrug.Text = "Delete";
             this.btnDeleteCustomDrug.UseVisualStyleBackColor = true;
+            this.btnDeleteCustomDrug.Click += new System.EventHandler(this.btnDeleteCustomDrug_Click);
             // 
             // flpDrugs
             // 
+            this.flpDrugs.AutoScroll = true;
             this.flpDrugs.Controls.Add(this.gpbDrugsCommon);
             this.flpDrugs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpDrugs.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDrugs.Location = new System.Drawing.Point(301, 29);
             this.flpDrugs.Margin = new System.Windows.Forms.Padding(0);
             this.flpDrugs.Name = "flpDrugs";
             this.flpDrugs.Size = new System.Drawing.Size(514, 570);
             this.flpDrugs.TabIndex = 100;
+            this.flpDrugs.WrapContents = false;
             // 
             // gpbDrugsCommon
             // 
             this.gpbDrugsCommon.AutoSize = true;
+            this.gpbDrugsCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbDrugsCommon.Controls.Add(this.tlpDrugsCommon);
             this.gpbDrugsCommon.Location = new System.Drawing.Point(3, 3);
             this.gpbDrugsCommon.MinimumSize = new System.Drawing.Size(250, 0);
             this.gpbDrugsCommon.Name = "gpbDrugsCommon";
-            this.gpbDrugsCommon.Size = new System.Drawing.Size(250, 270);
+            this.gpbDrugsCommon.Size = new System.Drawing.Size(250, 295);
             this.gpbDrugsCommon.TabIndex = 0;
             this.gpbDrugsCommon.TabStop = false;
             this.gpbDrugsCommon.Tag = "String_Info";
@@ -9453,6 +9658,7 @@ namespace Chummer
             this.tlpDrugsCommon.ColumnCount = 2;
             this.tlpDrugsCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpDrugsCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpDrugsCommon.Controls.Add(this.chkDrugStolen, 1, 10);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugNameLabel, 0, 0);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugEffectLabel, 0, 9);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugName, 1, 0);
@@ -9476,7 +9682,7 @@ namespace Chummer
             this.tlpDrugsCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpDrugsCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpDrugsCommon.Name = "tlpDrugsCommon";
-            this.tlpDrugsCommon.RowCount = 10;
+            this.tlpDrugsCommon.RowCount = 11;
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -9487,9 +9693,25 @@ namespace Chummer
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpDrugsCommon.Size = new System.Drawing.Size(244, 251);
+            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDrugsCommon.Size = new System.Drawing.Size(244, 276);
             this.tlpDrugsCommon.TabIndex = 0;
+            // 
+            // chkDrugStolen
+            // 
+            this.chkDrugStolen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkDrugStolen.AutoSize = true;
+            this.chkDrugStolen.Location = new System.Drawing.Point(78, 255);
+            this.chkDrugStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkDrugStolen.Name = "chkDrugStolen";
+            this.chkDrugStolen.Size = new System.Drawing.Size(56, 17);
+            this.chkDrugStolen.TabIndex = 230;
+            this.chkDrugStolen.Tag = "Checkbox_Stolen";
+            this.chkDrugStolen.Text = "Stolen";
+            this.chkDrugStolen.UseVisualStyleBackColor = true;
+            this.chkDrugStolen.Visible = false;
+            this.chkDrugStolen.CheckedChanged += new System.EventHandler(this.chkDrugStolen_CheckedChanged);
             // 
             // lblDrugNameLabel
             // 
@@ -9727,7 +9949,7 @@ namespace Chummer
             this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
             this.tabLifestyle.Name = "tabLifestyle";
             this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
+            this.tabLifestyle.Size = new System.Drawing.Size(833, 605);
             this.tabLifestyle.TabIndex = 0;
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyle";
@@ -9755,7 +9977,7 @@ namespace Chummer
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblLifestyleDetails.Size = new System.Drawing.Size(815, 587);
+            this.tblLifestyleDetails.Size = new System.Drawing.Size(827, 599);
             this.tblLifestyleDetails.TabIndex = 104;
             // 
             // treLifestyles
@@ -9821,14 +10043,15 @@ namespace Chummer
             // flpLifestyleDetails
             // 
             this.flpLifestyleDetails.AutoScroll = true;
-            this.flpLifestyleDetails.AutoSize = true;
             this.flpLifestyleDetails.Controls.Add(this.gpbLifestyleCommon);
             this.flpLifestyleDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpLifestyleDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpLifestyleDetails.Location = new System.Drawing.Point(301, 29);
             this.flpLifestyleDetails.Margin = new System.Windows.Forms.Padding(0);
             this.flpLifestyleDetails.Name = "flpLifestyleDetails";
-            this.flpLifestyleDetails.Size = new System.Drawing.Size(514, 570);
+            this.flpLifestyleDetails.Size = new System.Drawing.Size(526, 570);
             this.flpLifestyleDetails.TabIndex = 105;
+            this.flpLifestyleDetails.WrapContents = false;
             // 
             // gpbLifestyleCommon
             // 
@@ -10161,7 +10384,7 @@ namespace Chummer
             this.gpbVehiclesCommon.Location = new System.Drawing.Point(3, 3);
             this.gpbVehiclesCommon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbVehiclesCommon.Name = "gpbVehiclesCommon";
-            this.gpbVehiclesCommon.Size = new System.Drawing.Size(500, 174);
+            this.gpbVehiclesCommon.Size = new System.Drawing.Size(500, 199);
             this.gpbVehiclesCommon.TabIndex = 3;
             this.gpbVehiclesCommon.TabStop = false;
             this.gpbVehiclesCommon.Tag = "String_Info";
@@ -10203,7 +10426,7 @@ namespace Chummer
             this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesCommon.Size = new System.Drawing.Size(494, 155);
+            this.tlpVehiclesCommon.Size = new System.Drawing.Size(494, 180);
             this.tlpVehiclesCommon.TabIndex = 0;
             // 
             // lblVehicleNameLabel
@@ -10415,10 +10638,11 @@ namespace Chummer
             this.tlpVehiclesCommon.SetColumnSpan(this.flpVehiclesCommonCheckBoxes, 2);
             this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleWeaponAccessoryInstalled);
             this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleIncludedInWeapon);
+            this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleStolen);
             this.flpVehiclesCommonCheckBoxes.Location = new System.Drawing.Point(256, 105);
             this.flpVehiclesCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesCommonCheckBoxes.Name = "flpVehiclesCommonCheckBoxes";
-            this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(204, 25);
+            this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(204, 50);
             this.flpVehiclesCommonCheckBoxes.TabIndex = 242;
             // 
             // chkVehicleIncludedInWeapon
@@ -10438,15 +10662,29 @@ namespace Chummer
             this.chkVehicleIncludedInWeapon.Text = "Part of base Weapon";
             this.chkVehicleIncludedInWeapon.UseVisualStyleBackColor = true;
             // 
+            // chkVehicleStolen
+            // 
+            this.chkVehicleStolen.AutoSize = true;
+            this.chkVehicleStolen.Enabled = false;
+            this.chkVehicleStolen.Location = new System.Drawing.Point(3, 29);
+            this.chkVehicleStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkVehicleStolen.Name = "chkVehicleStolen";
+            this.chkVehicleStolen.Size = new System.Drawing.Size(56, 17);
+            this.chkVehicleStolen.TabIndex = 76;
+            this.chkVehicleStolen.Tag = "Checkbox_Stolen";
+            this.chkVehicleStolen.Text = "Stolen";
+            this.chkVehicleStolen.UseVisualStyleBackColor = true;
+            this.chkVehicleStolen.CheckedChanged += new System.EventHandler(this.chkVehicleStolen_CheckedChanged);
+            // 
             // gpbVehiclesVehicle
             // 
             this.gpbVehiclesVehicle.AutoSize = true;
             this.gpbVehiclesVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbVehiclesVehicle.Controls.Add(this.tlpVehiclesVehicle);
-            this.gpbVehiclesVehicle.Location = new System.Drawing.Point(3, 183);
-            this.gpbVehiclesVehicle.MinimumSize = new System.Drawing.Size(510, 0);
+            this.gpbVehiclesVehicle.Location = new System.Drawing.Point(3, 208);
+            this.gpbVehiclesVehicle.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbVehiclesVehicle.Name = "gpbVehiclesVehicle";
-            this.gpbVehiclesVehicle.Size = new System.Drawing.Size(510, 119);
+            this.gpbVehiclesVehicle.Size = new System.Drawing.Size(500, 119);
             this.gpbVehiclesVehicle.TabIndex = 2;
             this.gpbVehiclesVehicle.TabStop = false;
             this.gpbVehiclesVehicle.Tag = "String_Vehicle";
@@ -10503,7 +10741,7 @@ namespace Chummer
             this.tlpVehiclesVehicle.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesVehicle.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesVehicle.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesVehicle.Size = new System.Drawing.Size(504, 100);
+            this.tlpVehiclesVehicle.Size = new System.Drawing.Size(494, 100);
             this.tlpVehiclesVehicle.TabIndex = 0;
             // 
             // lblVehicleHandlingLabel
@@ -10532,7 +10770,7 @@ namespace Chummer
             // 
             this.lblVehicleAccelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleAccelLabel.AutoSize = true;
-            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(140, 6);
+            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(138, 6);
             this.lblVehicleAccelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAccelLabel.Name = "lblVehicleAccelLabel";
             this.lblVehicleAccelLabel.Size = new System.Drawing.Size(37, 13);
@@ -10543,7 +10781,7 @@ namespace Chummer
             // lblVehicleAccel
             // 
             this.lblVehicleAccel.AutoSize = true;
-            this.lblVehicleAccel.Location = new System.Drawing.Point(183, 6);
+            this.lblVehicleAccel.Location = new System.Drawing.Point(181, 6);
             this.lblVehicleAccel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAccel.Name = "lblVehicleAccel";
             this.lblVehicleAccel.Size = new System.Drawing.Size(40, 13);
@@ -10554,7 +10792,7 @@ namespace Chummer
             // 
             this.lblVehicleSpeedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSpeedLabel.AutoSize = true;
-            this.lblVehicleSpeedLabel.Location = new System.Drawing.Point(254, 6);
+            this.lblVehicleSpeedLabel.Location = new System.Drawing.Point(250, 6);
             this.lblVehicleSpeedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSpeedLabel.Name = "lblVehicleSpeedLabel";
             this.lblVehicleSpeedLabel.Size = new System.Drawing.Size(41, 13);
@@ -10565,7 +10803,7 @@ namespace Chummer
             // lblVehicleSpeed
             // 
             this.lblVehicleSpeed.AutoSize = true;
-            this.lblVehicleSpeed.Location = new System.Drawing.Point(301, 6);
+            this.lblVehicleSpeed.Location = new System.Drawing.Point(297, 6);
             this.lblVehicleSpeed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSpeed.Name = "lblVehicleSpeed";
             this.lblVehicleSpeed.Size = new System.Drawing.Size(44, 13);
@@ -10575,7 +10813,7 @@ namespace Chummer
             // lblVehicleCosmetic
             // 
             this.lblVehicleCosmetic.AutoSize = true;
-            this.lblVehicleCosmetic.Location = new System.Drawing.Point(434, 81);
+            this.lblVehicleCosmetic.Location = new System.Drawing.Point(428, 81);
             this.lblVehicleCosmetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCosmetic.Name = "lblVehicleCosmetic";
             this.lblVehicleCosmetic.Size = new System.Drawing.Size(56, 13);
@@ -10586,7 +10824,7 @@ namespace Chummer
             // 
             this.lblVehicleCosmeticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleCosmeticLabel.AutoSize = true;
-            this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(375, 81);
+            this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(369, 81);
             this.lblVehicleCosmeticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCosmeticLabel.Name = "lblVehicleCosmeticLabel";
             this.lblVehicleCosmeticLabel.Size = new System.Drawing.Size(53, 13);
@@ -10598,7 +10836,7 @@ namespace Chummer
             // 
             this.lblVehiclePilotLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehiclePilotLabel.AutoSize = true;
-            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(398, 6);
+            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(392, 6);
             this.lblVehiclePilotLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePilotLabel.Name = "lblVehiclePilotLabel";
             this.lblVehiclePilotLabel.Size = new System.Drawing.Size(30, 13);
@@ -10609,7 +10847,7 @@ namespace Chummer
             // lblVehiclePilot
             // 
             this.lblVehiclePilot.AutoSize = true;
-            this.lblVehiclePilot.Location = new System.Drawing.Point(434, 6);
+            this.lblVehiclePilot.Location = new System.Drawing.Point(428, 6);
             this.lblVehiclePilot.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePilot.Name = "lblVehiclePilot";
             this.lblVehiclePilot.Size = new System.Drawing.Size(33, 13);
@@ -10653,7 +10891,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponsmodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponsmodLabel.AutoSize = true;
-            this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(372, 56);
+            this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(366, 56);
             this.lblVehicleWeaponsmodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponsmodLabel.Name = "lblVehicleWeaponsmodLabel";
             this.lblVehicleWeaponsmodLabel.Size = new System.Drawing.Size(56, 13);
@@ -10677,7 +10915,7 @@ namespace Chummer
             // lblVehicleSeats
             // 
             this.lblVehicleSeats.AutoSize = true;
-            this.lblVehicleSeats.Location = new System.Drawing.Point(301, 31);
+            this.lblVehicleSeats.Location = new System.Drawing.Point(297, 31);
             this.lblVehicleSeats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSeats.Name = "lblVehicleSeats";
             this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
@@ -10689,7 +10927,7 @@ namespace Chummer
             this.lblVehicleBodymodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleBodymodLabel.AutoSize = true;
             this.tlpVehiclesVehicle.SetColumnSpan(this.lblVehicleBodymodLabel, 3);
-            this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(114, 81);
+            this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(112, 81);
             this.lblVehicleBodymodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleBodymodLabel.Name = "lblVehicleBodymodLabel";
             this.lblVehicleBodymodLabel.Size = new System.Drawing.Size(63, 13);
@@ -10701,7 +10939,7 @@ namespace Chummer
             // 
             this.lblVehicleArmorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleArmorLabel.AutoSize = true;
-            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(140, 31);
+            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(138, 31);
             this.lblVehicleArmorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleArmorLabel.Name = "lblVehicleArmorLabel";
             this.lblVehicleArmorLabel.Size = new System.Drawing.Size(37, 13);
@@ -10712,7 +10950,7 @@ namespace Chummer
             // lblVehicleArmor
             // 
             this.lblVehicleArmor.AutoSize = true;
-            this.lblVehicleArmor.Location = new System.Drawing.Point(183, 31);
+            this.lblVehicleArmor.Location = new System.Drawing.Point(181, 31);
             this.lblVehicleArmor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleArmor.Name = "lblVehicleArmor";
             this.lblVehicleArmor.Size = new System.Drawing.Size(40, 13);
@@ -10723,7 +10961,7 @@ namespace Chummer
             // 
             this.lblVehicleSeatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSeatsLabel.AutoSize = true;
-            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(258, 31);
+            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(254, 31);
             this.lblVehicleSeatsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
             this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
@@ -10735,7 +10973,7 @@ namespace Chummer
             // 
             this.lblVehicleSensorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSensorLabel.AutoSize = true;
-            this.lblVehicleSensorLabel.Location = new System.Drawing.Point(385, 31);
+            this.lblVehicleSensorLabel.Location = new System.Drawing.Point(379, 31);
             this.lblVehicleSensorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSensorLabel.Name = "lblVehicleSensorLabel";
             this.lblVehicleSensorLabel.Size = new System.Drawing.Size(43, 13);
@@ -10746,7 +10984,7 @@ namespace Chummer
             // lblVehicleSensor
             // 
             this.lblVehicleSensor.AutoSize = true;
-            this.lblVehicleSensor.Location = new System.Drawing.Point(434, 31);
+            this.lblVehicleSensor.Location = new System.Drawing.Point(428, 31);
             this.lblVehicleSensor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSensor.Name = "lblVehicleSensor";
             this.lblVehicleSensor.Size = new System.Drawing.Size(46, 13);
@@ -10757,7 +10995,7 @@ namespace Chummer
             // 
             this.lblVehiclePowertrainLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehiclePowertrainLabel.AutoSize = true;
-            this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(137, 56);
+            this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(135, 56);
             this.lblVehiclePowertrainLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePowertrainLabel.Name = "lblVehiclePowertrainLabel";
             this.lblVehiclePowertrainLabel.Size = new System.Drawing.Size(40, 13);
@@ -10768,7 +11006,7 @@ namespace Chummer
             // lblVehiclePowertrain
             // 
             this.lblVehiclePowertrain.AutoSize = true;
-            this.lblVehiclePowertrain.Location = new System.Drawing.Point(183, 56);
+            this.lblVehiclePowertrain.Location = new System.Drawing.Point(181, 56);
             this.lblVehiclePowertrain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePowertrain.Name = "lblVehiclePowertrain";
             this.lblVehiclePowertrain.Size = new System.Drawing.Size(43, 13);
@@ -10778,7 +11016,7 @@ namespace Chummer
             // lblVehicleWeaponsmod
             // 
             this.lblVehicleWeaponsmod.AutoSize = true;
-            this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(434, 56);
+            this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(428, 56);
             this.lblVehicleWeaponsmod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponsmod.Name = "lblVehicleWeaponsmod";
             this.lblVehicleWeaponsmod.Size = new System.Drawing.Size(42, 13);
@@ -10788,7 +11026,7 @@ namespace Chummer
             // lblVehicleElectromagnetic
             // 
             this.lblVehicleElectromagnetic.AutoSize = true;
-            this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(301, 81);
+            this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(297, 81);
             this.lblVehicleElectromagnetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleElectromagnetic.Name = "lblVehicleElectromagnetic";
             this.lblVehicleElectromagnetic.Size = new System.Drawing.Size(34, 13);
@@ -10799,7 +11037,7 @@ namespace Chummer
             // 
             this.lblVehicleElectromagneticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleElectromagneticLabel.AutoSize = true;
-            this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(264, 81);
+            this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(260, 81);
             this.lblVehicleElectromagneticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleElectromagneticLabel.Name = "lblVehicleElectromagneticLabel";
             this.lblVehicleElectromagneticLabel.Size = new System.Drawing.Size(31, 13);
@@ -10810,7 +11048,7 @@ namespace Chummer
             // lblVehicleBodymod
             // 
             this.lblVehicleBodymod.AutoSize = true;
-            this.lblVehicleBodymod.Location = new System.Drawing.Point(183, 81);
+            this.lblVehicleBodymod.Location = new System.Drawing.Point(181, 81);
             this.lblVehicleBodymod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleBodymod.Name = "lblVehicleBodymod";
             this.lblVehicleBodymod.Size = new System.Drawing.Size(37, 13);
@@ -10821,7 +11059,7 @@ namespace Chummer
             // 
             this.lblVehicleProtectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleProtectionLabel.AutoSize = true;
-            this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(266, 56);
+            this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(262, 56);
             this.lblVehicleProtectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleProtectionLabel.Name = "lblVehicleProtectionLabel";
             this.lblVehicleProtectionLabel.Size = new System.Drawing.Size(29, 13);
@@ -10832,7 +11070,7 @@ namespace Chummer
             // lblVehicleProtection
             // 
             this.lblVehicleProtection.AutoSize = true;
-            this.lblVehicleProtection.Location = new System.Drawing.Point(301, 56);
+            this.lblVehicleProtection.Location = new System.Drawing.Point(297, 56);
             this.lblVehicleProtection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleProtection.Name = "lblVehicleProtection";
             this.lblVehicleProtection.Size = new System.Drawing.Size(32, 13);
@@ -10844,7 +11082,7 @@ namespace Chummer
             this.gpbVehiclesWeapon.AutoSize = true;
             this.gpbVehiclesWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbVehiclesWeapon.Controls.Add(this.flpVehiclesWeapon);
-            this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 308);
+            this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 333);
             this.gpbVehiclesWeapon.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbVehiclesWeapon.Name = "gpbVehiclesWeapon";
             this.gpbVehiclesWeapon.Size = new System.Drawing.Size(500, 152);
@@ -10866,58 +11104,46 @@ namespace Chummer
             this.flpVehiclesWeapon.Name = "flpVehiclesWeapon";
             this.flpVehiclesWeapon.Size = new System.Drawing.Size(494, 133);
             this.flpVehiclesWeapon.TabIndex = 0;
+            this.flpVehiclesWeapon.WrapContents = false;
             // 
             // tlpVehiclesWeaponCommon
             // 
-            this.tlpVehiclesWeaponCommon.ColumnCount = 6;
+            this.tlpVehiclesWeaponCommon.AutoSize = true;
+            this.tlpVehiclesWeaponCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesWeaponCommon.ColumnCount = 9;
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracyLabel, 4, 0);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracy, 5, 0);
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamageLabel, 0, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamage, 1, 0);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAPLabel, 2, 0);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAP, 3, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAPLabel, 3, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAP, 4, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracyLabel, 5, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracy, 6, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponModeLabel, 7, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDicePoolLabel, 0, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDicePool, 1, 1);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmoLabel, 2, 1);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmo, 3, 1);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponModeLabel, 4, 1);
-            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponMode, 5, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmoLabel, 3, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmo, 4, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.cboVehicleWeaponFiringMode, 6, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblFiringModeLabel, 5, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponMode, 8, 0);
+            this.tlpVehiclesWeaponCommon.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVehiclesWeaponCommon.Location = new System.Drawing.Point(0, 0);
             this.tlpVehiclesWeaponCommon.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.tlpVehiclesWeaponCommon.Name = "tlpVehiclesWeaponCommon";
             this.tlpVehiclesWeaponCommon.RowCount = 2;
             this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesWeaponCommon.Size = new System.Drawing.Size(384, 52);
+            this.tlpVehiclesWeaponCommon.Size = new System.Drawing.Size(494, 52);
             this.tlpVehiclesWeaponCommon.TabIndex = 0;
-            // 
-            // lblVehicleWeaponAccuracyLabel
-            // 
-            this.lblVehicleWeaponAccuracyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
-            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(254, 6);
-            this.lblVehicleWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
-            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
-            this.lblVehicleWeaponAccuracyLabel.TabIndex = 243;
-            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
-            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
-            // 
-            // lblVehicleWeaponAccuracy
-            // 
-            this.lblVehicleWeaponAccuracy.AutoSize = true;
-            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(315, 6);
-            this.lblVehicleWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
-            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(32, 13);
-            this.lblVehicleWeaponAccuracy.TabIndex = 244;
-            this.lblVehicleWeaponAccuracy.Text = "[Acc]";
             // 
             // lblVehicleWeaponDamageLabel
             // 
@@ -10945,7 +11171,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponAPLabel.AutoSize = true;
-            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(152, 6);
+            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(185, 6);
             this.lblVehicleWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAPLabel.Name = "lblVehicleWeaponAPLabel";
             this.lblVehicleWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
@@ -10956,12 +11182,46 @@ namespace Chummer
             // lblVehicleWeaponAP
             // 
             this.lblVehicleWeaponAP.AutoSize = true;
-            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(182, 6);
+            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(215, 6);
             this.lblVehicleWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAP.Name = "lblVehicleWeaponAP";
             this.lblVehicleWeaponAP.Size = new System.Drawing.Size(27, 13);
             this.lblVehicleWeaponAP.TabIndex = 137;
             this.lblVehicleWeaponAP.Text = "[AP]";
+            // 
+            // lblVehicleWeaponAccuracyLabel
+            // 
+            this.lblVehicleWeaponAccuracyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
+            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(277, 6);
+            this.lblVehicleWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
+            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
+            this.lblVehicleWeaponAccuracyLabel.TabIndex = 243;
+            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
+            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
+            // 
+            // lblVehicleWeaponAccuracy
+            // 
+            this.lblVehicleWeaponAccuracy.AutoSize = true;
+            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(338, 6);
+            this.lblVehicleWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
+            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(32, 13);
+            this.lblVehicleWeaponAccuracy.TabIndex = 244;
+            this.lblVehicleWeaponAccuracy.Text = "[Acc]";
+            // 
+            // lblVehicleWeaponModeLabel
+            // 
+            this.lblVehicleWeaponModeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponModeLabel.AutoSize = true;
+            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(408, 6);
+            this.lblVehicleWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponModeLabel.Name = "lblVehicleWeaponModeLabel";
+            this.lblVehicleWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblVehicleWeaponModeLabel.TabIndex = 138;
+            this.lblVehicleWeaponModeLabel.Tag = "Label_Mode";
+            this.lblVehicleWeaponModeLabel.Text = "Mode:";
             // 
             // lblVehicleWeaponDicePoolLabel
             // 
@@ -10989,7 +11249,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponAmmoLabel.AutoSize = true;
-            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(137, 31);
+            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(170, 31);
             this.lblVehicleWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAmmoLabel.Name = "lblVehicleWeaponAmmoLabel";
             this.lblVehicleWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
@@ -11000,29 +11260,42 @@ namespace Chummer
             // lblVehicleWeaponAmmo
             // 
             this.lblVehicleWeaponAmmo.AutoSize = true;
-            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(182, 31);
+            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(215, 31);
             this.lblVehicleWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAmmo.Name = "lblVehicleWeaponAmmo";
             this.lblVehicleWeaponAmmo.Size = new System.Drawing.Size(42, 13);
             this.lblVehicleWeaponAmmo.TabIndex = 141;
             this.lblVehicleWeaponAmmo.Text = "[Ammo]";
             // 
-            // lblVehicleWeaponModeLabel
+            // cboVehicleWeaponFiringMode
             // 
-            this.lblVehicleWeaponModeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponModeLabel.AutoSize = true;
-            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(272, 31);
-            this.lblVehicleWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponModeLabel.Name = "lblVehicleWeaponModeLabel";
-            this.lblVehicleWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblVehicleWeaponModeLabel.TabIndex = 138;
-            this.lblVehicleWeaponModeLabel.Tag = "Label_Mode";
-            this.lblVehicleWeaponModeLabel.Text = "Mode:";
+            this.tlpVehiclesWeaponCommon.SetColumnSpan(this.cboVehicleWeaponFiringMode, 3);
+            this.cboVehicleWeaponFiringMode.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cboVehicleWeaponFiringMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVehicleWeaponFiringMode.FormattingEnabled = true;
+            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(338, 28);
+            this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
+            this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(153, 21);
+            this.cboVehicleWeaponFiringMode.TabIndex = 250;
+            this.cboVehicleWeaponFiringMode.TooltipText = "";
+            this.cboVehicleWeaponFiringMode.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponFiringMode_SelectedIndexChanged);
+            // 
+            // lblFiringModeLabel
+            // 
+            this.lblFiringModeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFiringModeLabel.AutoSize = true;
+            this.lblFiringModeLabel.Location = new System.Drawing.Point(267, 31);
+            this.lblFiringModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblFiringModeLabel.Name = "lblFiringModeLabel";
+            this.lblFiringModeLabel.Size = new System.Drawing.Size(65, 13);
+            this.lblFiringModeLabel.TabIndex = 249;
+            this.lblFiringModeLabel.Tag = "Label_FiringMode";
+            this.lblFiringModeLabel.Text = "Firing Mode:";
             // 
             // lblVehicleWeaponMode
             // 
             this.lblVehicleWeaponMode.AutoSize = true;
-            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(315, 31);
+            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(451, 6);
             this.lblVehicleWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponMode.Name = "lblVehicleWeaponMode";
             this.lblVehicleWeaponMode.Size = new System.Drawing.Size(40, 13);
@@ -11054,14 +11327,16 @@ namespace Chummer
             this.tlpVehiclesWeaponRanges.Controls.Add(this.lblVehicleWeaponRangeMain, 0, 1);
             this.tlpVehiclesWeaponRanges.Controls.Add(this.lblVehicleWeaponRangeMediumLabel, 2, 0);
             this.tlpVehiclesWeaponRanges.Controls.Add(this.lblVehicleWeaponRangeShort, 1, 1);
+            this.tlpVehiclesWeaponRanges.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVehiclesWeaponRanges.Location = new System.Drawing.Point(0, 58);
             this.tlpVehiclesWeaponRanges.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.tlpVehiclesWeaponRanges.MinimumSize = new System.Drawing.Size(494, 0);
             this.tlpVehiclesWeaponRanges.Name = "tlpVehiclesWeaponRanges";
             this.tlpVehiclesWeaponRanges.RowCount = 3;
             this.tlpVehiclesWeaponRanges.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponRanges.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponRanges.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesWeaponRanges.Size = new System.Drawing.Size(480, 75);
+            this.tlpVehiclesWeaponRanges.Size = new System.Drawing.Size(494, 75);
             this.tlpVehiclesWeaponRanges.TabIndex = 245;
             // 
             // lblVehicleWeaponAlternateRangeExtreme
@@ -11069,10 +11344,10 @@ namespace Chummer
             this.lblVehicleWeaponAlternateRangeExtreme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponAlternateRangeExtreme.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(387, 56);
+            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(395, 56);
             this.lblVehicleWeaponAlternateRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeExtreme.Name = "lblVehicleWeaponAlternateRangeExtreme";
-            this.lblVehicleWeaponAlternateRangeExtreme.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeExtreme.Size = new System.Drawing.Size(96, 13);
             this.lblVehicleWeaponAlternateRangeExtreme.TabIndex = 236;
             this.lblVehicleWeaponAlternateRangeExtreme.Text = "[0]";
             this.lblVehicleWeaponAlternateRangeExtreme.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11082,10 +11357,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeExtreme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeExtreme.AutoSize = true;
-            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(387, 31);
+            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(395, 31);
             this.lblVehicleWeaponRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeExtreme.Name = "lblVehicleWeaponRangeExtreme";
-            this.lblVehicleWeaponRangeExtreme.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeExtreme.Size = new System.Drawing.Size(96, 13);
             this.lblVehicleWeaponRangeExtreme.TabIndex = 150;
             this.lblVehicleWeaponRangeExtreme.Text = "[0]";
             this.lblVehicleWeaponRangeExtreme.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11095,10 +11370,10 @@ namespace Chummer
             this.lblVehicleWeaponAlternateRangeLong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponAlternateRangeLong.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(291, 56);
+            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(297, 56);
             this.lblVehicleWeaponAlternateRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeLong.Name = "lblVehicleWeaponAlternateRangeLong";
-            this.lblVehicleWeaponAlternateRangeLong.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeLong.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponAlternateRangeLong.TabIndex = 235;
             this.lblVehicleWeaponAlternateRangeLong.Text = "[0]";
             this.lblVehicleWeaponAlternateRangeLong.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11108,10 +11383,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeExtremeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeExtremeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(387, 6);
+            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(395, 6);
             this.lblVehicleWeaponRangeExtremeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeExtremeLabel.Name = "lblVehicleWeaponRangeExtremeLabel";
-            this.lblVehicleWeaponRangeExtremeLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeExtremeLabel.Size = new System.Drawing.Size(96, 13);
             this.lblVehicleWeaponRangeExtremeLabel.TabIndex = 146;
             this.lblVehicleWeaponRangeExtremeLabel.Tag = "Label_RangeExtreme";
             this.lblVehicleWeaponRangeExtremeLabel.Text = "Extreme (-6)";
@@ -11125,7 +11400,7 @@ namespace Chummer
             this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(3, 6);
             this.lblVehicleWeaponRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeLabel.Name = "lblVehicleWeaponRangeLabel";
-            this.lblVehicleWeaponRangeLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeLabel.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeLabel.TabIndex = 142;
             this.lblVehicleWeaponRangeLabel.Tag = "Label_RangeHeading";
             this.lblVehicleWeaponRangeLabel.Text = "Range";
@@ -11136,10 +11411,10 @@ namespace Chummer
             this.lblVehicleWeaponAlternateRangeMedium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponAlternateRangeMedium.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(195, 56);
+            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(199, 56);
             this.lblVehicleWeaponAlternateRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeMedium.Name = "lblVehicleWeaponAlternateRangeMedium";
-            this.lblVehicleWeaponAlternateRangeMedium.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeMedium.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponAlternateRangeMedium.TabIndex = 234;
             this.lblVehicleWeaponAlternateRangeMedium.Text = "[0]";
             this.lblVehicleWeaponAlternateRangeMedium.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11149,10 +11424,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeLong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeLong.AutoSize = true;
-            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(291, 31);
+            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(297, 31);
             this.lblVehicleWeaponRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeLong.Name = "lblVehicleWeaponRangeLong";
-            this.lblVehicleWeaponRangeLong.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeLong.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeLong.TabIndex = 149;
             this.lblVehicleWeaponRangeLong.Text = "[0]";
             this.lblVehicleWeaponRangeLong.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11162,10 +11437,10 @@ namespace Chummer
             this.lblVehicleWeaponAlternateRangeShort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponAlternateRangeShort.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(99, 56);
+            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(101, 56);
             this.lblVehicleWeaponAlternateRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeShort.Name = "lblVehicleWeaponAlternateRangeShort";
-            this.lblVehicleWeaponAlternateRangeShort.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeShort.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponAlternateRangeShort.TabIndex = 233;
             this.lblVehicleWeaponAlternateRangeShort.Text = "[0]";
             this.lblVehicleWeaponAlternateRangeShort.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11175,10 +11450,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeLongLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeLongLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(291, 6);
+            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(297, 6);
             this.lblVehicleWeaponRangeLongLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeLongLabel.Name = "lblVehicleWeaponRangeLongLabel";
-            this.lblVehicleWeaponRangeLongLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeLongLabel.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeLongLabel.TabIndex = 145;
             this.lblVehicleWeaponRangeLongLabel.Tag = "Label_RangeLong";
             this.lblVehicleWeaponRangeLongLabel.Text = "Long (-3)";
@@ -11189,10 +11464,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeShortLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeShortLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(99, 6);
+            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(101, 6);
             this.lblVehicleWeaponRangeShortLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeShortLabel.Name = "lblVehicleWeaponRangeShortLabel";
-            this.lblVehicleWeaponRangeShortLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeShortLabel.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeShortLabel.TabIndex = 143;
             this.lblVehicleWeaponRangeShortLabel.Tag = "Label_RangeShort";
             this.lblVehicleWeaponRangeShortLabel.Text = "Short (-0)";
@@ -11203,10 +11478,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeMedium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeMedium.AutoSize = true;
-            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(195, 31);
+            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(199, 31);
             this.lblVehicleWeaponRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeMedium.Name = "lblVehicleWeaponRangeMedium";
-            this.lblVehicleWeaponRangeMedium.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeMedium.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeMedium.TabIndex = 148;
             this.lblVehicleWeaponRangeMedium.Text = "[0]";
             this.lblVehicleWeaponRangeMedium.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11215,7 +11490,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeAlternate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeAlternate.AutoSize = true;
-            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(3, 56);
+            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(5, 56);
             this.lblVehicleWeaponRangeAlternate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeAlternate.Name = "lblVehicleWeaponRangeAlternate";
             this.lblVehicleWeaponRangeAlternate.Size = new System.Drawing.Size(90, 13);
@@ -11227,7 +11502,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeMain.AutoSize = true;
-            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(22, 31);
+            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(24, 31);
             this.lblVehicleWeaponRangeMain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeMain.Name = "lblVehicleWeaponRangeMain";
             this.lblVehicleWeaponRangeMain.Size = new System.Drawing.Size(71, 13);
@@ -11240,10 +11515,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeMediumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeMediumLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(195, 6);
+            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(199, 6);
             this.lblVehicleWeaponRangeMediumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeMediumLabel.Name = "lblVehicleWeaponRangeMediumLabel";
-            this.lblVehicleWeaponRangeMediumLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeMediumLabel.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeMediumLabel.TabIndex = 144;
             this.lblVehicleWeaponRangeMediumLabel.Tag = "Label_RangeMedium";
             this.lblVehicleWeaponRangeMediumLabel.Text = "Medium (-1)";
@@ -11254,10 +11529,10 @@ namespace Chummer
             this.lblVehicleWeaponRangeShort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponRangeShort.AutoSize = true;
-            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(99, 31);
+            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(101, 31);
             this.lblVehicleWeaponRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeShort.Name = "lblVehicleWeaponRangeShort";
-            this.lblVehicleWeaponRangeShort.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeShort.Size = new System.Drawing.Size(92, 13);
             this.lblVehicleWeaponRangeShort.TabIndex = 147;
             this.lblVehicleWeaponRangeShort.Text = "[0]";
             this.lblVehicleWeaponRangeShort.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -11267,10 +11542,10 @@ namespace Chummer
             this.gpbVehiclesMatrix.AutoSize = true;
             this.gpbVehiclesMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbVehiclesMatrix.Controls.Add(this.tlpVehiclesMatrix);
-            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 466);
+            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 491);
             this.gpbVehiclesMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbVehiclesMatrix.Name = "gpbVehiclesMatrix";
-            this.gpbVehiclesMatrix.Size = new System.Drawing.Size(516, 96);
+            this.gpbVehiclesMatrix.Size = new System.Drawing.Size(500, 96);
             this.gpbVehiclesMatrix.TabIndex = 1;
             this.gpbVehiclesMatrix.TabStop = false;
             this.gpbVehiclesMatrix.Tag = "String_Matrix";
@@ -11305,7 +11580,7 @@ namespace Chummer
             this.tlpVehiclesMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesMatrix.Size = new System.Drawing.Size(510, 77);
+            this.tlpVehiclesMatrix.Size = new System.Drawing.Size(494, 77);
             this.tlpVehiclesMatrix.TabIndex = 0;
             // 
             // chkVehicleHomeNode
@@ -11314,10 +11589,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkVehicleHomeNode.AutoSize = true;
-            this.chkVehicleHomeNode.Location = new System.Drawing.Point(207, 4);
+            this.chkVehicleHomeNode.Location = new System.Drawing.Point(199, 4);
             this.chkVehicleHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleHomeNode.Name = "chkVehicleHomeNode";
-            this.chkVehicleHomeNode.Size = new System.Drawing.Size(96, 17);
+            this.chkVehicleHomeNode.Size = new System.Drawing.Size(92, 17);
             this.chkVehicleHomeNode.TabIndex = 127;
             this.chkVehicleHomeNode.Tag = "Checkbox_HomeNode";
             this.chkVehicleHomeNode.Text = "Home Node";
@@ -11332,10 +11607,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkVehicleActiveCommlink.AutoSize = true;
             this.tlpVehiclesMatrix.SetColumnSpan(this.chkVehicleActiveCommlink, 2);
-            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(309, 4);
+            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(297, 4);
             this.chkVehicleActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleActiveCommlink.Name = "chkVehicleActiveCommlink";
-            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(198, 17);
+            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(194, 17);
             this.chkVehicleActiveCommlink.TabIndex = 242;
             this.chkVehicleActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkVehicleActiveCommlink.Text = "Active Commlink";
@@ -11367,13 +11642,12 @@ namespace Chummer
             // 
             // cboVehicleAttack
             // 
-            this.cboVehicleAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleAttack.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboVehicleAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleAttack.FormattingEnabled = true;
-            this.cboVehicleAttack.Location = new System.Drawing.Point(105, 53);
+            this.cboVehicleAttack.Location = new System.Drawing.Point(101, 53);
             this.cboVehicleAttack.Name = "cboVehicleAttack";
-            this.cboVehicleAttack.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleAttack.Size = new System.Drawing.Size(92, 21);
             this.cboVehicleAttack.TabIndex = 193;
             this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
@@ -11383,7 +11657,7 @@ namespace Chummer
             // 
             this.lblVehicleAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleAttackLabel.AutoSize = true;
-            this.lblVehicleAttackLabel.Location = new System.Drawing.Point(105, 31);
+            this.lblVehicleAttackLabel.Location = new System.Drawing.Point(101, 31);
             this.lblVehicleAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAttackLabel.Name = "lblVehicleAttackLabel";
             this.lblVehicleAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -11395,7 +11669,7 @@ namespace Chummer
             // 
             this.lblVehicleSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleSleazeLabel.AutoSize = true;
-            this.lblVehicleSleazeLabel.Location = new System.Drawing.Point(207, 31);
+            this.lblVehicleSleazeLabel.Location = new System.Drawing.Point(199, 31);
             this.lblVehicleSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSleazeLabel.Name = "lblVehicleSleazeLabel";
             this.lblVehicleSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -11405,13 +11679,12 @@ namespace Chummer
             // 
             // cboVehicleSleaze
             // 
-            this.cboVehicleSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleSleaze.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboVehicleSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleSleaze.FormattingEnabled = true;
-            this.cboVehicleSleaze.Location = new System.Drawing.Point(207, 53);
+            this.cboVehicleSleaze.Location = new System.Drawing.Point(199, 53);
             this.cboVehicleSleaze.Name = "cboVehicleSleaze";
-            this.cboVehicleSleaze.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleSleaze.Size = new System.Drawing.Size(92, 21);
             this.cboVehicleSleaze.TabIndex = 194;
             this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
@@ -11421,7 +11694,7 @@ namespace Chummer
             // 
             this.lblVehicleDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleDataProcessingLabel.AutoSize = true;
-            this.lblVehicleDataProcessingLabel.Location = new System.Drawing.Point(309, 31);
+            this.lblVehicleDataProcessingLabel.Location = new System.Drawing.Point(297, 31);
             this.lblVehicleDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleDataProcessingLabel.Name = "lblVehicleDataProcessingLabel";
             this.lblVehicleDataProcessingLabel.Size = new System.Drawing.Size(58, 13);
@@ -11431,13 +11704,12 @@ namespace Chummer
             // 
             // cboVehicleDataProcessing
             // 
-            this.cboVehicleDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleDataProcessing.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboVehicleDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleDataProcessing.FormattingEnabled = true;
-            this.cboVehicleDataProcessing.Location = new System.Drawing.Point(309, 53);
+            this.cboVehicleDataProcessing.Location = new System.Drawing.Point(297, 53);
             this.cboVehicleDataProcessing.Name = "cboVehicleDataProcessing";
-            this.cboVehicleDataProcessing.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleDataProcessing.Size = new System.Drawing.Size(92, 21);
             this.cboVehicleDataProcessing.TabIndex = 196;
             this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
@@ -11445,11 +11717,10 @@ namespace Chummer
             // 
             // cboVehicleFirewall
             // 
-            this.cboVehicleFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleFirewall.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboVehicleFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleFirewall.FormattingEnabled = true;
-            this.cboVehicleFirewall.Location = new System.Drawing.Point(411, 53);
+            this.cboVehicleFirewall.Location = new System.Drawing.Point(395, 53);
             this.cboVehicleFirewall.Name = "cboVehicleFirewall";
             this.cboVehicleFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleFirewall.TabIndex = 195;
@@ -11461,7 +11732,7 @@ namespace Chummer
             // 
             this.lblVehicleFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleFirewallLabel.AutoSize = true;
-            this.lblVehicleFirewallLabel.Location = new System.Drawing.Point(411, 31);
+            this.lblVehicleFirewallLabel.Location = new System.Drawing.Point(395, 31);
             this.lblVehicleFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleFirewallLabel.Name = "lblVehicleFirewallLabel";
             this.lblVehicleFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -11483,7 +11754,6 @@ namespace Chummer
             this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode24});
             this.treVehicles.ShowNodeToolTips = true;
-            this.treVehicles.ShowRootLines = false;
             this.treVehicles.Size = new System.Drawing.Size(295, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
@@ -11518,30 +11788,23 @@ namespace Chummer
             this.tlpCharacterInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.5F));
             this.tlpCharacterInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.5F));
             this.tlpCharacterInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tlpCharacterInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterInfo.Controls.Add(this.picMugshot, 8, 11);
-            this.tlpCharacterInfo.Controls.Add(this.chkIsMainMugshot, 8, 10);
+            this.tlpCharacterInfo.Controls.Add(this.picMugshot, 8, 10);
+            this.tlpCharacterInfo.Controls.Add(this.chkIsMainMugshot, 8, 9);
             this.tlpCharacterInfo.Controls.Add(this.cboPrimaryArm, 10, 2);
-            this.tlpCharacterInfo.Controls.Add(this.lblNumMugshots, 11, 8);
+            this.tlpCharacterInfo.Controls.Add(this.lblNumMugshots, 11, 7);
             this.tlpCharacterInfo.Controls.Add(this.lblSex, 0, 0);
-            this.tlpCharacterInfo.Controls.Add(this.nudMugshotIndex, 10, 8);
+            this.tlpCharacterInfo.Controls.Add(this.nudMugshotIndex, 10, 7);
             this.tlpCharacterInfo.Controls.Add(this.lblHandedness, 8, 2);
             this.tlpCharacterInfo.Controls.Add(this.btnCreateBackstory, 9, 6);
             this.tlpCharacterInfo.Controls.Add(this.txtSex, 1, 0);
-            this.tlpCharacterInfo.Controls.Add(this.txtNotes, 0, 15);
             this.tlpCharacterInfo.Controls.Add(this.lblPublicAwareTotal, 11, 5);
-            this.tlpCharacterInfo.Controls.Add(this.lblNotes, 0, 14);
             this.tlpCharacterInfo.Controls.Add(this.lblAge, 2, 0);
             this.tlpCharacterInfo.Controls.Add(this.lblNotorietyTotal, 11, 4);
             this.tlpCharacterInfo.Controls.Add(this.txtAge, 3, 0);
             this.tlpCharacterInfo.Controls.Add(this.lblStreetCredTotal, 11, 3);
-            this.tlpCharacterInfo.Controls.Add(this.txtConcept, 0, 13);
             this.tlpCharacterInfo.Controls.Add(this.lblEyes, 4, 0);
-            this.tlpCharacterInfo.Controls.Add(this.lblConcept, 0, 12);
             this.tlpCharacterInfo.Controls.Add(this.lblPublicAware, 8, 5);
-            this.tlpCharacterInfo.Controls.Add(this.txtBackground, 0, 8);
             this.tlpCharacterInfo.Controls.Add(this.txtEyes, 5, 0);
-            this.tlpCharacterInfo.Controls.Add(this.lblBackground, 0, 7);
             this.tlpCharacterInfo.Controls.Add(this.lblNotoriety, 8, 4);
             this.tlpCharacterInfo.Controls.Add(this.lblHair, 6, 0);
             this.tlpCharacterInfo.Controls.Add(this.lblStreetCred, 8, 3);
@@ -11557,14 +11820,13 @@ namespace Chummer
             this.tlpCharacterInfo.Controls.Add(this.txtWeight, 3, 1);
             this.tlpCharacterInfo.Controls.Add(this.lblSkin, 4, 1);
             this.tlpCharacterInfo.Controls.Add(this.txtSkin, 5, 1);
-            this.tlpCharacterInfo.Controls.Add(this.lblDescription, 0, 2);
-            this.tlpCharacterInfo.Controls.Add(this.txtDescription, 0, 3);
-            this.tlpCharacterInfo.Controls.Add(this.lblMugshot, 8, 8);
-            this.tlpCharacterInfo.Controls.Add(this.flowLayoutPanel10, 8, 9);
+            this.tlpCharacterInfo.Controls.Add(this.lblMugshot, 8, 7);
+            this.tlpCharacterInfo.Controls.Add(this.flowLayoutPanel10, 8, 8);
+            this.tlpCharacterInfo.Controls.Add(this.pnlLongTexts, 0, 2);
             this.tlpCharacterInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCharacterInfo.Location = new System.Drawing.Point(3, 3);
             this.tlpCharacterInfo.Name = "tlpCharacterInfo";
-            this.tlpCharacterInfo.RowCount = 16;
+            this.tlpCharacterInfo.RowCount = 11;
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -11576,11 +11838,7 @@ namespace Chummer
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpCharacterInfo.Size = new System.Drawing.Size(835, 625);
             this.tlpCharacterInfo.TabIndex = 96;
             // 
@@ -11590,11 +11848,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpCharacterInfo.SetColumnSpan(this.picMugshot, 4);
-            this.picMugshot.Location = new System.Drawing.Point(634, 294);
+            this.picMugshot.Location = new System.Drawing.Point(634, 266);
             this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
-            this.tlpCharacterInfo.SetRowSpan(this.picMugshot, 5);
-            this.picMugshot.Size = new System.Drawing.Size(198, 328);
+            this.picMugshot.Size = new System.Drawing.Size(198, 356);
             this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 20;
             this.picMugshot.TabStop = false;
@@ -11607,7 +11864,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkIsMainMugshot.AutoSize = true;
             this.tlpCharacterInfo.SetColumnSpan(this.chkIsMainMugshot, 4);
-            this.chkIsMainMugshot.Location = new System.Drawing.Point(634, 270);
+            this.chkIsMainMugshot.Location = new System.Drawing.Point(634, 242);
             this.chkIsMainMugshot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkIsMainMugshot.Name = "chkIsMainMugshot";
             this.chkIsMainMugshot.Size = new System.Drawing.Size(198, 17);
@@ -11634,7 +11891,7 @@ namespace Chummer
             // lblNumMugshots
             // 
             this.lblNumMugshots.AutoSize = true;
-            this.lblNumMugshots.Location = new System.Drawing.Point(775, 217);
+            this.lblNumMugshots.Location = new System.Drawing.Point(775, 189);
             this.lblNumMugshots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNumMugshots.Name = "lblNumMugshots";
             this.lblNumMugshots.Size = new System.Drawing.Size(21, 13);
@@ -11658,7 +11915,7 @@ namespace Chummer
             // 
             this.nudMugshotIndex.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMugshotIndex.Location = new System.Drawing.Point(721, 214);
+            this.nudMugshotIndex.Location = new System.Drawing.Point(721, 186);
             this.nudMugshotIndex.Name = "nudMugshotIndex";
             this.nudMugshotIndex.Size = new System.Drawing.Size(48, 20);
             this.nudMugshotIndex.TabIndex = 93;
@@ -11700,20 +11957,6 @@ namespace Chummer
             this.txtSex.Size = new System.Drawing.Size(106, 20);
             this.txtSex.TabIndex = 1;
             // 
-            // txtNotes
-            // 
-            this.txtNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpCharacterInfo.SetColumnSpan(this.txtNotes, 8);
-            this.txtNotes.Location = new System.Drawing.Point(3, 466);
-            this.txtNotes.Multiline = true;
-            this.txtNotes.Name = "txtNotes";
-            this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtNotes.Size = new System.Drawing.Size(625, 156);
-            this.txtNotes.TabIndex = 25;
-            this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-            // 
             // lblPublicAwareTotal
             // 
             this.lblPublicAwareTotal.AutoSize = true;
@@ -11725,19 +11968,6 @@ namespace Chummer
             this.lblPublicAwareTotal.Tag = "Label_StreetCred";
             this.lblPublicAwareTotal.Text = "[0]";
             this.lblPublicAwareTotal.ToolTipText = "";
-            // 
-            // lblNotes
-            // 
-            this.lblNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblNotes.AutoSize = true;
-            this.tlpCharacterInfo.SetColumnSpan(this.lblNotes, 3);
-            this.lblNotes.Location = new System.Drawing.Point(3, 444);
-            this.lblNotes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblNotes.Name = "lblNotes";
-            this.lblNotes.Size = new System.Drawing.Size(38, 13);
-            this.lblNotes.TabIndex = 24;
-            this.lblNotes.Tag = "Label_Notes";
-            this.lblNotes.Text = "Notes:";
             // 
             // lblAge
             // 
@@ -11784,20 +12014,6 @@ namespace Chummer
             this.lblStreetCredTotal.Text = "[0]";
             this.lblStreetCredTotal.ToolTipText = "";
             // 
-            // txtConcept
-            // 
-            this.txtConcept.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpCharacterInfo.SetColumnSpan(this.txtConcept, 8);
-            this.txtConcept.Location = new System.Drawing.Point(3, 341);
-            this.txtConcept.Multiline = true;
-            this.txtConcept.Name = "txtConcept";
-            this.txtConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtConcept.Size = new System.Drawing.Size(625, 94);
-            this.txtConcept.TabIndex = 19;
-            this.txtConcept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-            // 
             // lblEyes
             // 
             this.lblEyes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -11810,35 +12026,6 @@ namespace Chummer
             this.lblEyes.Tag = "Label_Eyes";
             this.lblEyes.Text = "Eyes:";
             // 
-            // lblConcept
-            // 
-            this.lblConcept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblConcept.AutoSize = true;
-            this.tlpCharacterInfo.SetColumnSpan(this.lblConcept, 3);
-            this.lblConcept.Location = new System.Drawing.Point(3, 319);
-            this.lblConcept.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblConcept.Name = "lblConcept";
-            this.lblConcept.Size = new System.Drawing.Size(50, 13);
-            this.lblConcept.TabIndex = 18;
-            this.lblConcept.Tag = "Label_Concept";
-            this.lblConcept.Text = "Concept:";
-            // 
-            // txtBackground
-            // 
-            this.txtBackground.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpCharacterInfo.SetColumnSpan(this.txtBackground, 8);
-            this.txtBackground.Location = new System.Drawing.Point(3, 214);
-            this.txtBackground.Multiline = true;
-            this.txtBackground.Name = "txtBackground";
-            this.tlpCharacterInfo.SetRowSpan(this.txtBackground, 4);
-            this.txtBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBackground.Size = new System.Drawing.Size(625, 96);
-            this.txtBackground.TabIndex = 17;
-            this.txtBackground.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-            this.txtBackground.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBackground_KeyPress);
-            // 
             // txtEyes
             // 
             this.txtEyes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -11847,19 +12034,6 @@ namespace Chummer
             this.txtEyes.Name = "txtEyes";
             this.txtEyes.Size = new System.Drawing.Size(106, 20);
             this.txtEyes.TabIndex = 5;
-            // 
-            // lblBackground
-            // 
-            this.lblBackground.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblBackground.AutoSize = true;
-            this.tlpCharacterInfo.SetColumnSpan(this.lblBackground, 3);
-            this.lblBackground.Location = new System.Drawing.Point(3, 192);
-            this.lblBackground.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBackground.Name = "lblBackground";
-            this.lblBackground.Size = new System.Drawing.Size(68, 13);
-            this.lblBackground.TabIndex = 16;
-            this.lblBackground.Tag = "Label_Background";
-            this.lblBackground.Text = "Background:";
             // 
             // lblHair
             // 
@@ -11990,40 +12164,12 @@ namespace Chummer
             this.txtSkin.Size = new System.Drawing.Size(106, 20);
             this.txtSkin.TabIndex = 13;
             // 
-            // lblDescription
-            // 
-            this.lblDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblDescription.AutoSize = true;
-            this.tlpCharacterInfo.SetColumnSpan(this.lblDescription, 3);
-            this.lblDescription.Location = new System.Drawing.Point(3, 60);
-            this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(63, 13);
-            this.lblDescription.TabIndex = 14;
-            this.lblDescription.Tag = "Label_Description";
-            this.lblDescription.Text = "Description:";
-            // 
-            // txtDescription
-            // 
-            this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpCharacterInfo.SetColumnSpan(this.txtDescription, 8);
-            this.txtDescription.Location = new System.Drawing.Point(3, 82);
-            this.txtDescription.Multiline = true;
-            this.txtDescription.Name = "txtDescription";
-            this.tlpCharacterInfo.SetRowSpan(this.txtDescription, 4);
-            this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDescription.Size = new System.Drawing.Size(625, 101);
-            this.txtDescription.TabIndex = 15;
-            this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-            // 
             // lblMugshot
             // 
             this.lblMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMugshot.AutoSize = true;
             this.tlpCharacterInfo.SetColumnSpan(this.lblMugshot, 2);
-            this.lblMugshot.Location = new System.Drawing.Point(664, 217);
+            this.lblMugshot.Location = new System.Drawing.Point(664, 189);
             this.lblMugshot.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMugshot.Name = "lblMugshot";
             this.lblMugshot.Size = new System.Drawing.Size(51, 13);
@@ -12040,7 +12186,7 @@ namespace Chummer
             this.tlpCharacterInfo.SetColumnSpan(this.flowLayoutPanel10, 4);
             this.flowLayoutPanel10.Controls.Add(this.cmdAddMugshot);
             this.flowLayoutPanel10.Controls.Add(this.cmdDeleteMugshot);
-            this.flowLayoutPanel10.Location = new System.Drawing.Point(631, 237);
+            this.flowLayoutPanel10.Location = new System.Drawing.Point(631, 209);
             this.flowLayoutPanel10.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel10.Name = "flowLayoutPanel10";
             this.flowLayoutPanel10.Size = new System.Drawing.Size(204, 29);
@@ -12067,6 +12213,157 @@ namespace Chummer
             this.cmdDeleteMugshot.Text = "Delete";
             this.cmdDeleteMugshot.UseVisualStyleBackColor = true;
             this.cmdDeleteMugshot.Click += new System.EventHandler(this.cmdDeleteMugshot_Click);
+            // 
+            // pnlLongTexts
+            // 
+            this.pnlLongTexts.AutoScroll = true;
+            this.tlpCharacterInfo.SetColumnSpan(this.pnlLongTexts, 8);
+            this.pnlLongTexts.Controls.Add(this.tlpLongTexts);
+            this.pnlLongTexts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlLongTexts.Location = new System.Drawing.Point(0, 52);
+            this.pnlLongTexts.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlLongTexts.Name = "pnlLongTexts";
+            this.tlpCharacterInfo.SetRowSpan(this.pnlLongTexts, 9);
+            this.pnlLongTexts.Size = new System.Drawing.Size(631, 573);
+            this.pnlLongTexts.TabIndex = 101;
+            // 
+            // tlpLongTexts
+            // 
+            this.tlpLongTexts.AutoSize = true;
+            this.tlpLongTexts.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpLongTexts.ColumnCount = 1;
+            this.tlpLongTexts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLongTexts.Controls.Add(this.gpbDescription, 0, 0);
+            this.tlpLongTexts.Controls.Add(this.gpbBackground, 0, 1);
+            this.tlpLongTexts.Controls.Add(this.gpbConcept, 0, 2);
+            this.tlpLongTexts.Controls.Add(this.gpbNotes, 0, 3);
+            this.tlpLongTexts.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpLongTexts.Location = new System.Drawing.Point(0, 0);
+            this.tlpLongTexts.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpLongTexts.Name = "tlpLongTexts";
+            this.tlpLongTexts.RowCount = 4;
+            this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpLongTexts.Size = new System.Drawing.Size(614, 580);
+            this.tlpLongTexts.TabIndex = 100;
+            // 
+            // gpbDescription
+            // 
+            this.gpbDescription.AutoSize = true;
+            this.gpbDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbDescription.Controls.Add(this.rtfDescription);
+            this.gpbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbDescription.Location = new System.Drawing.Point(3, 3);
+            this.gpbDescription.Name = "gpbDescription";
+            this.gpbDescription.Size = new System.Drawing.Size(608, 139);
+            this.gpbDescription.TabIndex = 96;
+            this.gpbDescription.TabStop = false;
+            this.gpbDescription.Tag = "Label_Description";
+            this.gpbDescription.Text = "Description:";
+            // 
+            // rtfDescription
+            // 
+            this.rtfDescription.AllowFormatting = true;
+            this.rtfDescription.AutoSize = true;
+            this.rtfDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.rtfDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtfDescription.Location = new System.Drawing.Point(3, 16);
+            this.rtfDescription.MinimumSize = new System.Drawing.Size(0, 120);
+            this.rtfDescription.Name = "rtfDescription";
+            this.rtfDescription.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "d\\f0\\fs17\\par\r\n}\r\n";
+            this.rtfDescription.Size = new System.Drawing.Size(602, 120);
+            this.rtfDescription.TabIndex = 0;
+            // 
+            // gpbBackground
+            // 
+            this.gpbBackground.AutoSize = true;
+            this.gpbBackground.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbBackground.Controls.Add(this.rtfBackground);
+            this.gpbBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbBackground.Location = new System.Drawing.Point(3, 148);
+            this.gpbBackground.Name = "gpbBackground";
+            this.gpbBackground.Size = new System.Drawing.Size(608, 139);
+            this.gpbBackground.TabIndex = 97;
+            this.gpbBackground.TabStop = false;
+            this.gpbBackground.Tag = "Label_Background";
+            this.gpbBackground.Text = "Background:";
+            // 
+            // rtfBackground
+            // 
+            this.rtfBackground.AllowFormatting = true;
+            this.rtfBackground.AutoSize = true;
+            this.rtfBackground.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.rtfBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtfBackground.Location = new System.Drawing.Point(3, 16);
+            this.rtfBackground.MinimumSize = new System.Drawing.Size(0, 120);
+            this.rtfBackground.Name = "rtfBackground";
+            this.rtfBackground.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "d\\f0\\fs17\\par\r\n}\r\n";
+            this.rtfBackground.Size = new System.Drawing.Size(602, 120);
+            this.rtfBackground.TabIndex = 0;
+            // 
+            // gpbConcept
+            // 
+            this.gpbConcept.AutoSize = true;
+            this.gpbConcept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbConcept.Controls.Add(this.rtfConcept);
+            this.gpbConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbConcept.Location = new System.Drawing.Point(3, 293);
+            this.gpbConcept.Name = "gpbConcept";
+            this.gpbConcept.Size = new System.Drawing.Size(608, 139);
+            this.gpbConcept.TabIndex = 98;
+            this.gpbConcept.TabStop = false;
+            this.gpbConcept.Tag = "Label_Concept";
+            this.gpbConcept.Text = "Concept:";
+            // 
+            // rtfConcept
+            // 
+            this.rtfConcept.AllowFormatting = true;
+            this.rtfConcept.AutoSize = true;
+            this.rtfConcept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.rtfConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtfConcept.Location = new System.Drawing.Point(3, 16);
+            this.rtfConcept.MinimumSize = new System.Drawing.Size(0, 120);
+            this.rtfConcept.Name = "rtfConcept";
+            this.rtfConcept.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "d\\f0\\fs17\\par\r\n}\r\n";
+            this.rtfConcept.Size = new System.Drawing.Size(602, 120);
+            this.rtfConcept.TabIndex = 0;
+            // 
+            // gpbNotes
+            // 
+            this.gpbNotes.AutoSize = true;
+            this.gpbNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbNotes.Controls.Add(this.rtfNotes);
+            this.gpbNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbNotes.Location = new System.Drawing.Point(3, 438);
+            this.gpbNotes.Name = "gpbNotes";
+            this.gpbNotes.Size = new System.Drawing.Size(608, 139);
+            this.gpbNotes.TabIndex = 99;
+            this.gpbNotes.TabStop = false;
+            this.gpbNotes.Tag = "Label_Notes";
+            this.gpbNotes.Text = "Notes:";
+            // 
+            // rtfNotes
+            // 
+            this.rtfNotes.AllowFormatting = true;
+            this.rtfNotes.AutoSize = true;
+            this.rtfNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.rtfNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtfNotes.Location = new System.Drawing.Point(3, 16);
+            this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 120);
+            this.rtfNotes.Name = "rtfNotes";
+            this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "d\\f0\\fs17\\par\r\n}\r\n";
+            this.rtfNotes.Size = new System.Drawing.Size(602, 120);
+            this.rtfNotes.TabIndex = 0;
             // 
             // tabRelationships
             // 
@@ -12149,7 +12446,7 @@ namespace Chummer
             this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
             this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
             this.lblContactArchtypeLabel.TabIndex = 44;
-            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
+            this.lblContactArchtypeLabel.Tag = "Label_Archetype";
             this.lblContactArchtypeLabel.Text = "Archtype:";
             // 
             // flowLayoutPanel9
@@ -12320,7 +12617,7 @@ namespace Chummer
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(1, 13);
             this.label6.TabIndex = 49;
-            this.label6.Tag = "Label_Archtype";
+            this.label6.Tag = "Label_Archetype";
             this.label6.Text = "Archtype:";
             // 
             // label15
@@ -12437,7 +12734,7 @@ namespace Chummer
             // 
             this.tabInfo.Controls.Add(this.tabBPSummary);
             this.tabInfo.Controls.Add(this.tabOtherInfo);
-            this.tabInfo.Controls.Add(this.tabDefences);
+            this.tabInfo.Controls.Add(this.tabDefenses);
             this.tabInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabInfo.Location = new System.Drawing.Point(0, 0);
             this.tabInfo.Name = "tabInfo";
@@ -12459,60 +12756,64 @@ namespace Chummer
             // 
             // tlpKarmaSummary
             // 
+            this.tlpKarmaSummary.AutoScroll = true;
             this.tlpKarmaSummary.AutoSize = true;
             this.tlpKarmaSummary.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpKarmaSummary.ColumnCount = 2;
             this.tlpKarmaSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tlpKarmaSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.tlpKarmaSummary.Controls.Add(this.lblAINormalProgramsBP, 1, 20);
-            this.tlpKarmaSummary.Controls.Add(this.lblAIAdvancedProgramsBP, 1, 21);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildAIAdvancedPrograms, 0, 21);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildRitualsBP, 1, 13);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildAINormalPrograms, 0, 20);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildRitualsBPLabel, 0, 13);
+            this.tlpKarmaSummary.Controls.Add(this.lblMetagenicQualities, 1, 5);
+            this.tlpKarmaSummary.Controls.Add(this.lblMetagenicQualitiesLabel, 0, 5);
+            this.tlpKarmaSummary.Controls.Add(this.lblAINormalProgramsBP, 1, 21);
+            this.tlpKarmaSummary.Controls.Add(this.lblAIAdvancedProgramsBP, 1, 22);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildAIAdvancedPrograms, 0, 22);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildRitualsBP, 1, 14);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildAINormalPrograms, 0, 21);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildRitualsBPLabel, 0, 14);
             this.tlpKarmaSummary.Controls.Add(this.lblPBuildSpecial, 1, 2);
             this.tlpKarmaSummary.Controls.Add(this.lblSummaryMetatype, 0, 0);
-            this.tlpKarmaSummary.Controls.Add(this.lblInitiationBP, 1, 18);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildMartialArts, 0, 19);
-            this.tlpKarmaSummary.Controls.Add(this.lblMartialArtsBP, 1, 19);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildPrepsBP, 1, 12);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildInitiation, 0, 18);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildPrepsBPLabel, 0, 12);
-            this.tlpKarmaSummary.Controls.Add(this.lblFociBP, 1, 14);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildFoci, 0, 14);
-            this.tlpKarmaSummary.Controls.Add(this.lblComplexFormsBP, 1, 17);
+            this.tlpKarmaSummary.Controls.Add(this.lblInitiationBP, 1, 19);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildMartialArts, 0, 20);
+            this.tlpKarmaSummary.Controls.Add(this.lblMartialArtsBP, 1, 20);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildPrepsBP, 1, 13);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildInitiation, 0, 19);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildPrepsBPLabel, 0, 13);
+            this.tlpKarmaSummary.Controls.Add(this.lblFociBP, 1, 15);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildFoci, 0, 15);
+            this.tlpKarmaSummary.Controls.Add(this.lblComplexFormsBP, 1, 18);
             this.tlpKarmaSummary.Controls.Add(this.lblPBuildSpecialLabel, 0, 2);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildComplexForms, 0, 17);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildComplexForms, 0, 18);
             this.tlpKarmaSummary.Controls.Add(this.lblKarmaMetatypeBP, 1, 0);
-            this.tlpKarmaSummary.Controls.Add(this.lblSpritesBP, 1, 16);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildSprites, 0, 16);
+            this.tlpKarmaSummary.Controls.Add(this.lblSpritesBP, 1, 17);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildSprites, 0, 17);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildPrimaryAttributes, 0, 1);
-            this.tlpKarmaSummary.Controls.Add(this.lblSpiritsBP, 1, 15);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildSpirits, 0, 15);
+            this.tlpKarmaSummary.Controls.Add(this.lblSpiritsBP, 1, 16);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildSpirits, 0, 16);
             this.tlpKarmaSummary.Controls.Add(this.lblAttributesBP, 1, 1);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildPositiveQualities, 0, 3);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildNegativeQualities, 0, 4);
             this.tlpKarmaSummary.Controls.Add(this.lblPositiveQualitiesBP, 1, 3);
             this.tlpKarmaSummary.Controls.Add(this.lblNegativeQualitiesBP, 1, 4);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildContacts, 0, 5);
-            this.tlpKarmaSummary.Controls.Add(this.lblContactsBP, 1, 5);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildEnemies, 0, 6);
-            this.tlpKarmaSummary.Controls.Add(this.lblEnemiesBP, 1, 6);
-            this.tlpKarmaSummary.Controls.Add(this.lblNuyenBP, 1, 7);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildNuyen, 0, 7);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildSkillGroups, 0, 8);
-            this.tlpKarmaSummary.Controls.Add(this.lblSkillGroupsBP, 1, 8);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildActiveSkills, 0, 9);
-            this.tlpKarmaSummary.Controls.Add(this.lblActiveSkillsBP, 1, 9);
-            this.tlpKarmaSummary.Controls.Add(this.lblSpellsBP, 1, 11);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildSpells, 0, 11);
-            this.tlpKarmaSummary.Controls.Add(this.lblBuildKnowledgeSkills, 0, 10);
-            this.tlpKarmaSummary.Controls.Add(this.lblKnowledgeSkillsBP, 1, 10);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildContacts, 0, 6);
+            this.tlpKarmaSummary.Controls.Add(this.lblContactsBP, 1, 6);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildEnemies, 0, 7);
+            this.tlpKarmaSummary.Controls.Add(this.lblEnemiesBP, 1, 7);
+            this.tlpKarmaSummary.Controls.Add(this.lblNuyenBP, 1, 8);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildNuyen, 0, 8);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildSkillGroups, 0, 9);
+            this.tlpKarmaSummary.Controls.Add(this.lblSkillGroupsBP, 1, 9);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildActiveSkills, 0, 10);
+            this.tlpKarmaSummary.Controls.Add(this.lblActiveSkillsBP, 1, 10);
+            this.tlpKarmaSummary.Controls.Add(this.lblSpellsBP, 1, 12);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildSpells, 0, 12);
+            this.tlpKarmaSummary.Controls.Add(this.lblBuildKnowledgeSkills, 0, 11);
+            this.tlpKarmaSummary.Controls.Add(this.lblKnowledgeSkillsBP, 1, 11);
             this.tlpKarmaSummary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarmaSummary.Location = new System.Drawing.Point(3, 3);
             this.tlpKarmaSummary.Margin = new System.Windows.Forms.Padding(0);
             this.tlpKarmaSummary.Name = "tlpKarmaSummary";
-            this.tlpKarmaSummary.RowCount = 22;
+            this.tlpKarmaSummary.RowCount = 23;
+            this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -12538,10 +12839,32 @@ namespace Chummer
             this.tlpKarmaSummary.Size = new System.Drawing.Size(218, 625);
             this.tlpKarmaSummary.TabIndex = 99;
             // 
+            // lblMetagenicQualities
+            // 
+            this.lblMetagenicQualities.AutoSize = true;
+            this.lblMetagenicQualities.Location = new System.Drawing.Point(122, 131);
+            this.lblMetagenicQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetagenicQualities.Name = "lblMetagenicQualities";
+            this.lblMetagenicQualities.Size = new System.Drawing.Size(88, 13);
+            this.lblMetagenicQualities.TabIndex = 137;
+            this.lblMetagenicQualities.Text = "[P]/[N] (L) (0-1 K)";
+            // 
+            // lblMetagenicQualitiesLabel
+            // 
+            this.lblMetagenicQualitiesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMetagenicQualitiesLabel.AutoSize = true;
+            this.lblMetagenicQualitiesLabel.Location = new System.Drawing.Point(16, 131);
+            this.lblMetagenicQualitiesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetagenicQualitiesLabel.Name = "lblMetagenicQualitiesLabel";
+            this.lblMetagenicQualitiesLabel.Size = new System.Drawing.Size(100, 13);
+            this.lblMetagenicQualitiesLabel.TabIndex = 136;
+            this.lblMetagenicQualitiesLabel.Tag = "Label_SummaryMetagenicQualities";
+            this.lblMetagenicQualitiesLabel.Text = "Metagenic Qualities";
+            // 
             // lblAINormalProgramsBP
             // 
             this.lblAINormalProgramsBP.AutoSize = true;
-            this.lblAINormalProgramsBP.Location = new System.Drawing.Point(122, 506);
+            this.lblAINormalProgramsBP.Location = new System.Drawing.Point(122, 531);
             this.lblAINormalProgramsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAINormalProgramsBP.Name = "lblAINormalProgramsBP";
             this.lblAINormalProgramsBP.Size = new System.Drawing.Size(30, 13);
@@ -12551,7 +12874,7 @@ namespace Chummer
             // lblAIAdvancedProgramsBP
             // 
             this.lblAIAdvancedProgramsBP.AutoSize = true;
-            this.lblAIAdvancedProgramsBP.Location = new System.Drawing.Point(122, 531);
+            this.lblAIAdvancedProgramsBP.Location = new System.Drawing.Point(122, 556);
             this.lblAIAdvancedProgramsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAIAdvancedProgramsBP.Name = "lblAIAdvancedProgramsBP";
             this.lblAIAdvancedProgramsBP.Size = new System.Drawing.Size(30, 13);
@@ -12561,7 +12884,7 @@ namespace Chummer
             // lblBuildRitualsBP
             // 
             this.lblBuildRitualsBP.AutoSize = true;
-            this.lblBuildRitualsBP.Location = new System.Drawing.Point(122, 331);
+            this.lblBuildRitualsBP.Location = new System.Drawing.Point(122, 356);
             this.lblBuildRitualsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildRitualsBP.Name = "lblBuildRitualsBP";
             this.lblBuildRitualsBP.Size = new System.Drawing.Size(30, 13);
@@ -12572,7 +12895,7 @@ namespace Chummer
             // 
             this.lblBuildAINormalPrograms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildAINormalPrograms.AutoSize = true;
-            this.lblBuildAINormalPrograms.Location = new System.Drawing.Point(29, 506);
+            this.lblBuildAINormalPrograms.Location = new System.Drawing.Point(29, 531);
             this.lblBuildAINormalPrograms.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildAINormalPrograms.Name = "lblBuildAINormalPrograms";
             this.lblBuildAINormalPrograms.Size = new System.Drawing.Size(87, 13);
@@ -12605,7 +12928,7 @@ namespace Chummer
             // lblInitiationBP
             // 
             this.lblInitiationBP.AutoSize = true;
-            this.lblInitiationBP.Location = new System.Drawing.Point(122, 456);
+            this.lblInitiationBP.Location = new System.Drawing.Point(122, 481);
             this.lblInitiationBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblInitiationBP.Name = "lblInitiationBP";
             this.lblInitiationBP.Size = new System.Drawing.Size(30, 13);
@@ -12615,7 +12938,7 @@ namespace Chummer
             // lblMartialArtsBP
             // 
             this.lblMartialArtsBP.AutoSize = true;
-            this.lblMartialArtsBP.Location = new System.Drawing.Point(122, 481);
+            this.lblMartialArtsBP.Location = new System.Drawing.Point(122, 506);
             this.lblMartialArtsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMartialArtsBP.Name = "lblMartialArtsBP";
             this.lblMartialArtsBP.Size = new System.Drawing.Size(30, 13);
@@ -12625,7 +12948,7 @@ namespace Chummer
             // lblBuildPrepsBP
             // 
             this.lblBuildPrepsBP.AutoSize = true;
-            this.lblBuildPrepsBP.Location = new System.Drawing.Point(122, 306);
+            this.lblBuildPrepsBP.Location = new System.Drawing.Point(122, 331);
             this.lblBuildPrepsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildPrepsBP.Name = "lblBuildPrepsBP";
             this.lblBuildPrepsBP.Size = new System.Drawing.Size(30, 13);
@@ -12636,7 +12959,7 @@ namespace Chummer
             // 
             this.lblBuildInitiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuildInitiation.AutoSize = true;
-            this.lblBuildInitiation.Location = new System.Drawing.Point(10, 456);
+            this.lblBuildInitiation.Location = new System.Drawing.Point(10, 481);
             this.lblBuildInitiation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildInitiation.Name = "lblBuildInitiation";
             this.lblBuildInitiation.Size = new System.Drawing.Size(106, 13);
@@ -12647,7 +12970,7 @@ namespace Chummer
             // lblFociBP
             // 
             this.lblFociBP.AutoSize = true;
-            this.lblFociBP.Location = new System.Drawing.Point(122, 356);
+            this.lblFociBP.Location = new System.Drawing.Point(122, 381);
             this.lblFociBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFociBP.Name = "lblFociBP";
             this.lblFociBP.Size = new System.Drawing.Size(30, 13);
@@ -12657,7 +12980,7 @@ namespace Chummer
             // lblComplexFormsBP
             // 
             this.lblComplexFormsBP.AutoSize = true;
-            this.lblComplexFormsBP.Location = new System.Drawing.Point(122, 431);
+            this.lblComplexFormsBP.Location = new System.Drawing.Point(122, 456);
             this.lblComplexFormsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComplexFormsBP.Name = "lblComplexFormsBP";
             this.lblComplexFormsBP.Size = new System.Drawing.Size(30, 13);
@@ -12689,7 +13012,7 @@ namespace Chummer
             // lblSpritesBP
             // 
             this.lblSpritesBP.AutoSize = true;
-            this.lblSpritesBP.Location = new System.Drawing.Point(122, 406);
+            this.lblSpritesBP.Location = new System.Drawing.Point(122, 431);
             this.lblSpritesBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpritesBP.Name = "lblSpritesBP";
             this.lblSpritesBP.Size = new System.Drawing.Size(30, 13);
@@ -12699,7 +13022,7 @@ namespace Chummer
             // lblSpiritsBP
             // 
             this.lblSpiritsBP.AutoSize = true;
-            this.lblSpiritsBP.Location = new System.Drawing.Point(122, 381);
+            this.lblSpiritsBP.Location = new System.Drawing.Point(122, 406);
             this.lblSpiritsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpiritsBP.Name = "lblSpiritsBP";
             this.lblSpiritsBP.Size = new System.Drawing.Size(30, 13);
@@ -12739,7 +13062,7 @@ namespace Chummer
             // lblContactsBP
             // 
             this.lblContactsBP.AutoSize = true;
-            this.lblContactsBP.Location = new System.Drawing.Point(122, 131);
+            this.lblContactsBP.Location = new System.Drawing.Point(122, 156);
             this.lblContactsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblContactsBP.Name = "lblContactsBP";
             this.lblContactsBP.Size = new System.Drawing.Size(46, 13);
@@ -12749,7 +13072,7 @@ namespace Chummer
             // lblEnemiesBP
             // 
             this.lblEnemiesBP.AutoSize = true;
-            this.lblEnemiesBP.Location = new System.Drawing.Point(122, 156);
+            this.lblEnemiesBP.Location = new System.Drawing.Point(122, 181);
             this.lblEnemiesBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEnemiesBP.Name = "lblEnemiesBP";
             this.lblEnemiesBP.Size = new System.Drawing.Size(30, 13);
@@ -12759,7 +13082,7 @@ namespace Chummer
             // lblNuyenBP
             // 
             this.lblNuyenBP.AutoSize = true;
-            this.lblNuyenBP.Location = new System.Drawing.Point(122, 181);
+            this.lblNuyenBP.Location = new System.Drawing.Point(122, 206);
             this.lblNuyenBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenBP.Name = "lblNuyenBP";
             this.lblNuyenBP.Size = new System.Drawing.Size(30, 13);
@@ -12769,7 +13092,7 @@ namespace Chummer
             // lblSkillGroupsBP
             // 
             this.lblSkillGroupsBP.AutoSize = true;
-            this.lblSkillGroupsBP.Location = new System.Drawing.Point(122, 206);
+            this.lblSkillGroupsBP.Location = new System.Drawing.Point(122, 231);
             this.lblSkillGroupsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSkillGroupsBP.Name = "lblSkillGroupsBP";
             this.lblSkillGroupsBP.Size = new System.Drawing.Size(30, 13);
@@ -12779,7 +13102,7 @@ namespace Chummer
             // lblActiveSkillsBP
             // 
             this.lblActiveSkillsBP.AutoSize = true;
-            this.lblActiveSkillsBP.Location = new System.Drawing.Point(122, 231);
+            this.lblActiveSkillsBP.Location = new System.Drawing.Point(122, 256);
             this.lblActiveSkillsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblActiveSkillsBP.Name = "lblActiveSkillsBP";
             this.lblActiveSkillsBP.Size = new System.Drawing.Size(30, 13);
@@ -12789,7 +13112,7 @@ namespace Chummer
             // lblSpellsBP
             // 
             this.lblSpellsBP.AutoSize = true;
-            this.lblSpellsBP.Location = new System.Drawing.Point(122, 281);
+            this.lblSpellsBP.Location = new System.Drawing.Point(122, 306);
             this.lblSpellsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellsBP.Name = "lblSpellsBP";
             this.lblSpellsBP.Size = new System.Drawing.Size(30, 13);
@@ -12799,7 +13122,7 @@ namespace Chummer
             // lblKnowledgeSkillsBP
             // 
             this.lblKnowledgeSkillsBP.AutoSize = true;
-            this.lblKnowledgeSkillsBP.Location = new System.Drawing.Point(122, 256);
+            this.lblKnowledgeSkillsBP.Location = new System.Drawing.Point(122, 281);
             this.lblKnowledgeSkillsBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKnowledgeSkillsBP.Name = "lblKnowledgeSkillsBP";
             this.lblKnowledgeSkillsBP.Size = new System.Drawing.Size(30, 13);
@@ -12820,52 +13143,59 @@ namespace Chummer
             // 
             // tlpOtherInfo
             // 
+            this.tlpOtherInfo.AutoScroll = true;
             this.tlpOtherInfo.AutoSize = true;
             this.tlpOtherInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpOtherInfo.ColumnCount = 2;
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 19);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINI, 1, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 19);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysicalLabel, 0, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 18);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINILabel, 0, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 18);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysical, 1, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 15);
-            this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 14);
-            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 15);
+            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 17);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHot, 1, 6);
-            this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 16);
             this.tlpOtherInfo.Controls.Add(this.lblCMStunLabel, 0, 1);
-            this.tlpOtherInfo.Controls.Add(this.lblLiftCarry, 1, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarry, 1, 15);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINICold, 1, 5);
-            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLabel, 0, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLabel, 0, 15);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHotLabel, 0, 6);
-            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentions, 1, 12);
+            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentions, 1, 13);
             this.tlpOtherInfo.Controls.Add(this.lblCMStun, 1, 1);
-            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentionsLabel, 0, 12);
+            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentionsLabel, 0, 13);
             this.tlpOtherInfo.Controls.Add(this.lblINILabel, 0, 2);
-            this.tlpOtherInfo.Controls.Add(this.lblComposure, 1, 11);
+            this.tlpOtherInfo.Controls.Add(this.lblComposure, 1, 12);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIColdLabel, 0, 5);
-            this.tlpOtherInfo.Controls.Add(this.lblComposureLabel, 0, 11);
+            this.tlpOtherInfo.Controls.Add(this.lblComposureLabel, 0, 12);
             this.tlpOtherInfo.Controls.Add(this.lblINI, 1, 2);
             this.tlpOtherInfo.Controls.Add(this.lblAstralINILabel, 0, 3);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINILabel, 0, 4);
-            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyen, 1, 10);
+            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyen, 1, 11);
             this.tlpOtherInfo.Controls.Add(this.lblAstralINI, 1, 3);
-            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyenLabel, 0, 10);
+            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyenLabel, 0, 11);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINI, 1, 4);
-            this.tlpOtherInfo.Controls.Add(this.lblESSMax, 1, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblESSMax, 1, 10);
             this.tlpOtherInfo.Controls.Add(this.lblArmorLabel, 0, 8);
             this.tlpOtherInfo.Controls.Add(this.lblArmor, 1, 8);
-            this.tlpOtherInfo.Controls.Add(this.lblESS, 0, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblESS, 0, 10);
+            this.tlpOtherInfo.Controls.Add(this.lblSurprise, 1, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblSurpriseLabel, 0, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblDodgeLabel, 0, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblDodge, 1, 9);
             this.tlpOtherInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOtherInfo.Location = new System.Drawing.Point(3, 3);
             this.tlpOtherInfo.Margin = new System.Windows.Forms.Padding(0);
             this.tlpOtherInfo.Name = "tlpOtherInfo";
-            this.tlpOtherInfo.RowCount = 18;
+            this.tlpOtherInfo.RowCount = 20;
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -12890,7 +13220,7 @@ namespace Chummer
             // lblFly
             // 
             this.lblFly.AutoSize = true;
-            this.lblFly.Location = new System.Drawing.Point(144, 431);
+            this.lblFly.Location = new System.Drawing.Point(144, 481);
             this.lblFly.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFly.Name = "lblFly";
             this.lblFly.Size = new System.Drawing.Size(13, 13);
@@ -12912,7 +13242,7 @@ namespace Chummer
             // 
             this.lblFlyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFlyLabel.AutoSize = true;
-            this.lblFlyLabel.Location = new System.Drawing.Point(115, 431);
+            this.lblFlyLabel.Location = new System.Drawing.Point(115, 481);
             this.lblFlyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlyLabel.Name = "lblFlyLabel";
             this.lblFlyLabel.Size = new System.Drawing.Size(23, 13);
@@ -12923,7 +13253,7 @@ namespace Chummer
             // lblSwim
             // 
             this.lblSwim.AutoSize = true;
-            this.lblSwim.Location = new System.Drawing.Point(144, 406);
+            this.lblSwim.Location = new System.Drawing.Point(144, 456);
             this.lblSwim.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwim.Name = "lblSwim";
             this.lblSwim.Size = new System.Drawing.Size(13, 13);
@@ -12934,7 +13264,7 @@ namespace Chummer
             // 
             this.lblSwimLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSwimLabel.AutoSize = true;
-            this.lblSwimLabel.Location = new System.Drawing.Point(103, 406);
+            this.lblSwimLabel.Location = new System.Drawing.Point(103, 456);
             this.lblSwimLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwimLabel.Name = "lblSwimLabel";
             this.lblSwimLabel.Size = new System.Drawing.Size(35, 13);
@@ -12956,7 +13286,7 @@ namespace Chummer
             // lblMovement
             // 
             this.lblMovement.AutoSize = true;
-            this.lblMovement.Location = new System.Drawing.Point(144, 381);
+            this.lblMovement.Location = new System.Drawing.Point(144, 431);
             this.lblMovement.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovement.Name = "lblMovement";
             this.lblMovement.Size = new System.Drawing.Size(13, 13);
@@ -12966,7 +13296,7 @@ namespace Chummer
             // lblMemory
             // 
             this.lblMemory.AutoSize = true;
-            this.lblMemory.Location = new System.Drawing.Point(144, 356);
+            this.lblMemory.Location = new System.Drawing.Point(144, 406);
             this.lblMemory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMemory.Name = "lblMemory";
             this.lblMemory.Size = new System.Drawing.Size(13, 13);
@@ -12978,7 +13308,7 @@ namespace Chummer
             // 
             this.lblMovementLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMovementLabel.AutoSize = true;
-            this.lblMovementLabel.Location = new System.Drawing.Point(78, 381);
+            this.lblMovementLabel.Location = new System.Drawing.Point(78, 431);
             this.lblMovementLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovementLabel.Name = "lblMovementLabel";
             this.lblMovementLabel.Size = new System.Drawing.Size(60, 13);
@@ -13000,7 +13330,7 @@ namespace Chummer
             // lblLiftCarry
             // 
             this.lblLiftCarry.AutoSize = true;
-            this.lblLiftCarry.Location = new System.Drawing.Point(144, 331);
+            this.lblLiftCarry.Location = new System.Drawing.Point(144, 381);
             this.lblLiftCarry.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLiftCarry.Name = "lblLiftCarry";
             this.lblLiftCarry.Size = new System.Drawing.Size(13, 13);
@@ -13022,7 +13352,7 @@ namespace Chummer
             // lblJudgeIntentions
             // 
             this.lblJudgeIntentions.AutoSize = true;
-            this.lblJudgeIntentions.Location = new System.Drawing.Point(144, 306);
+            this.lblJudgeIntentions.Location = new System.Drawing.Point(144, 331);
             this.lblJudgeIntentions.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblJudgeIntentions.Name = "lblJudgeIntentions";
             this.lblJudgeIntentions.Size = new System.Drawing.Size(13, 13);
@@ -13044,7 +13374,7 @@ namespace Chummer
             // lblComposure
             // 
             this.lblComposure.AutoSize = true;
-            this.lblComposure.Location = new System.Drawing.Point(144, 281);
+            this.lblComposure.Location = new System.Drawing.Point(144, 306);
             this.lblComposure.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComposure.Name = "lblComposure";
             this.lblComposure.Size = new System.Drawing.Size(13, 13);
@@ -13066,7 +13396,7 @@ namespace Chummer
             // lblRemainingNuyen
             // 
             this.lblRemainingNuyen.AutoSize = true;
-            this.lblRemainingNuyen.Location = new System.Drawing.Point(144, 256);
+            this.lblRemainingNuyen.Location = new System.Drawing.Point(144, 281);
             this.lblRemainingNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblRemainingNuyen.Name = "lblRemainingNuyen";
             this.lblRemainingNuyen.Size = new System.Drawing.Size(13, 13);
@@ -13098,7 +13428,7 @@ namespace Chummer
             // lblESSMax
             // 
             this.lblESSMax.AutoSize = true;
-            this.lblESSMax.Location = new System.Drawing.Point(144, 231);
+            this.lblESSMax.Location = new System.Drawing.Point(144, 256);
             this.lblESSMax.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblESSMax.Name = "lblESSMax";
             this.lblESSMax.Size = new System.Drawing.Size(13, 13);
@@ -13116,61 +13446,109 @@ namespace Chummer
             this.lblArmor.Text = "0";
             this.lblArmor.ToolTipText = "";
             // 
-            // tabDefences
+            // lblSurprise
             // 
-            this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
-            this.tabDefences.Controls.Add(this.tlpSpellDefense);
-            this.tabDefences.Location = new System.Drawing.Point(4, 22);
-            this.tabDefences.Name = "tabDefences";
-            this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDefences.Size = new System.Drawing.Size(224, 631);
-            this.tabDefences.TabIndex = 3;
-            this.tabDefences.Tag = "String_SpellDefense";
-            this.tabDefences.Text = "Spell Defence";
+            this.lblSurprise.AutoSize = true;
+            this.lblSurprise.Location = new System.Drawing.Point(144, 356);
+            this.lblSurprise.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurprise.Name = "lblSurprise";
+            this.lblSurprise.Size = new System.Drawing.Size(13, 13);
+            this.lblSurprise.TabIndex = 77;
+            this.lblSurprise.Text = "0";
+            this.lblSurprise.ToolTipText = "";
+            // 
+            // lblSurpriseLabel
+            // 
+            this.lblSurpriseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurpriseLabel.AutoSize = true;
+            this.lblSurpriseLabel.Location = new System.Drawing.Point(90, 356);
+            this.lblSurpriseLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurpriseLabel.Name = "lblSurpriseLabel";
+            this.lblSurpriseLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblSurpriseLabel.TabIndex = 78;
+            this.lblSurpriseLabel.Tag = "Label_OtherSurprise";
+            this.lblSurpriseLabel.Text = "Surprise:";
+            this.lblSurpriseLabel.ToolTipText = "";
+            // 
+            // lblDodgeLabel
+            // 
+            this.lblDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDodgeLabel.AutoSize = true;
+            this.lblDodgeLabel.Location = new System.Drawing.Point(96, 231);
+            this.lblDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodgeLabel.Name = "lblDodgeLabel";
+            this.lblDodgeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblDodgeLabel.TabIndex = 79;
+            this.lblDodgeLabel.Text = "Dodge:";
+            this.lblDodgeLabel.ToolTipText = "";
+            // 
+            // lblDodge
+            // 
+            this.lblDodge.AutoSize = true;
+            this.lblDodge.Location = new System.Drawing.Point(144, 231);
+            this.lblDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodge.Name = "lblDodge";
+            this.lblDodge.Size = new System.Drawing.Size(13, 13);
+            this.lblDodge.TabIndex = 80;
+            this.lblDodge.Text = "0";
+            this.lblDodge.ToolTipText = "";
+            // 
+            // tabDefenses
+            // 
+            this.tabDefenses.BackColor = System.Drawing.SystemColors.Control;
+            this.tabDefenses.Controls.Add(this.tlpSpellDefense);
+            this.tabDefenses.Location = new System.Drawing.Point(4, 22);
+            this.tabDefenses.Name = "tabDefenses";
+            this.tabDefenses.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDefenses.Size = new System.Drawing.Size(224, 631);
+            this.tabDefenses.TabIndex = 3;
+            this.tabDefenses.Tag = "String_SpellDefense";
+            this.tabDefenses.Text = "Spell Defense";
             // 
             // tlpSpellDefense
             // 
+            this.tlpSpellDefense.AutoScroll = true;
             this.tlpSpellDefense.AutoSize = true;
             this.tlpSpellDefense.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpSpellDefense.ColumnCount = 2;
             this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpSpellDefense.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysical, 1, 17);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipPhysical, 1, 17);
             this.tlpSpellDefense.Controls.Add(this.nudCounterspellingDice, 1, 0);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMental, 1, 16);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipPhysicalLabel, 0, 17);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipMental, 1, 16);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipPhysicalLabel, 0, 17);
             this.tlpSpellDefense.Controls.Add(this.lblCounterspellingDiceLabel, 0, 0);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel, 0, 1);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceManipMentalLabel, 0, 16);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoakLabel, 0, 2);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysical, 1, 15);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectDodge, 1, 1);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionMana, 1, 14);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel, 0, 15);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIndirectSoak, 1, 2);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel, 0, 3);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceIllusionManaLabel, 0, 14);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel, 0, 4);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWIL, 1, 13);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetectionLabel, 0, 5);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOG, 1, 12);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakMana, 1, 3);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttWILLabel, 0, 13);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINT, 1, 11);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttLOGLabel, 0, 12);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDirectSoakPhysical, 1, 4);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHA, 1, 10);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDetection, 1, 5);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTR, 1, 9);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBOD, 1, 6);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttINTLabel, 0, 11);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttBODLabel, 0, 6);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttCHALabel, 0, 10);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGILabel, 0, 7);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttAGI, 1, 7);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREALabel, 0, 8);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttSTRLabel, 0, 9);
-            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenceDecAttREA, 1, 8);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectDodgeLabel, 0, 1);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseManipMentalLabel, 0, 16);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectSoakLabel, 0, 2);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionPhysical, 1, 15);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectDodge, 1, 1);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionMana, 1, 14);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionPhysicalLabel, 0, 15);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIndirectSoak, 1, 2);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakManaLabel, 0, 3);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseIllusionManaLabel, 0, 14);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakPhysicalLabel, 0, 4);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttWIL, 1, 13);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDetectionLabel, 0, 5);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttLOG, 1, 12);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakMana, 1, 3);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttWILLabel, 0, 13);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttINT, 1, 11);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttLOGLabel, 0, 12);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDirectSoakPhysical, 1, 4);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttCHA, 1, 10);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDetection, 1, 5);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttSTR, 1, 9);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttBOD, 1, 6);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttINTLabel, 0, 11);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttBODLabel, 0, 6);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttCHALabel, 0, 10);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttAGILabel, 0, 7);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttAGI, 1, 7);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttREALabel, 0, 8);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttSTRLabel, 0, 9);
+            this.tlpSpellDefense.Controls.Add(this.lblSpellDefenseDecAttREA, 1, 8);
             this.tlpSpellDefense.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpSpellDefense.Location = new System.Drawing.Point(3, 3);
             this.tlpSpellDefense.Margin = new System.Windows.Forms.Padding(0);
@@ -13197,16 +13575,16 @@ namespace Chummer
             this.tlpSpellDefense.Size = new System.Drawing.Size(218, 625);
             this.tlpSpellDefense.TabIndex = 99;
             // 
-            // lblSpellDefenceManipPhysical
+            // lblSpellDefenseManipPhysical
             // 
-            this.lblSpellDefenceManipPhysical.AutoSize = true;
-            this.lblSpellDefenceManipPhysical.Location = new System.Drawing.Point(144, 432);
-            this.lblSpellDefenceManipPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipPhysical.Name = "lblSpellDefenceManipPhysical";
-            this.lblSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceManipPhysical.TabIndex = 60;
-            this.lblSpellDefenceManipPhysical.Text = "0";
-            this.lblSpellDefenceManipPhysical.ToolTipText = "";
+            this.lblSpellDefenseManipPhysical.AutoSize = true;
+            this.lblSpellDefenseManipPhysical.Location = new System.Drawing.Point(144, 432);
+            this.lblSpellDefenseManipPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipPhysical.Name = "lblSpellDefenseManipPhysical";
+            this.lblSpellDefenseManipPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseManipPhysical.TabIndex = 60;
+            this.lblSpellDefenseManipPhysical.Text = "0";
+            this.lblSpellDefenseManipPhysical.ToolTipText = "";
             // 
             // nudCounterspellingDice
             // 
@@ -13216,181 +13594,181 @@ namespace Chummer
             this.nudCounterspellingDice.Size = new System.Drawing.Size(71, 20);
             this.nudCounterspellingDice.TabIndex = 61;
             // 
-            // lblSpellDefenceManipMental
+            // lblSpellDefenseManipMental
             // 
-            this.lblSpellDefenceManipMental.AutoSize = true;
-            this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(144, 407);
-            this.lblSpellDefenceManipMental.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
-            this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceManipMental.TabIndex = 58;
-            this.lblSpellDefenceManipMental.Text = "0";
-            this.lblSpellDefenceManipMental.ToolTipText = "";
+            this.lblSpellDefenseManipMental.AutoSize = true;
+            this.lblSpellDefenseManipMental.Location = new System.Drawing.Point(144, 407);
+            this.lblSpellDefenseManipMental.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseManipMental.Name = "lblSpellDefenseManipMental";
+            this.lblSpellDefenseManipMental.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseManipMental.TabIndex = 58;
+            this.lblSpellDefenseManipMental.Text = "0";
+            this.lblSpellDefenseManipMental.ToolTipText = "";
             // 
-            // lblSpellDefenceIllusionPhysical
+            // lblSpellDefenseIllusionPhysical
             // 
-            this.lblSpellDefenceIllusionPhysical.AutoSize = true;
-            this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(144, 382);
-            this.lblSpellDefenceIllusionPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
-            this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
-            this.lblSpellDefenceIllusionPhysical.Text = "0";
-            this.lblSpellDefenceIllusionPhysical.ToolTipText = "";
+            this.lblSpellDefenseIllusionPhysical.AutoSize = true;
+            this.lblSpellDefenseIllusionPhysical.Location = new System.Drawing.Point(144, 382);
+            this.lblSpellDefenseIllusionPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionPhysical.Name = "lblSpellDefenseIllusionPhysical";
+            this.lblSpellDefenseIllusionPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIllusionPhysical.TabIndex = 56;
+            this.lblSpellDefenseIllusionPhysical.Text = "0";
+            this.lblSpellDefenseIllusionPhysical.ToolTipText = "";
             // 
-            // lblSpellDefenceIndirectDodge
+            // lblSpellDefenseIndirectDodge
             // 
-            this.lblSpellDefenceIndirectDodge.AutoSize = true;
-            this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(144, 32);
-            this.lblSpellDefenceIndirectDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
-            this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIndirectDodge.TabIndex = 26;
-            this.lblSpellDefenceIndirectDodge.Text = "0";
-            this.lblSpellDefenceIndirectDodge.ToolTipText = "";
+            this.lblSpellDefenseIndirectDodge.AutoSize = true;
+            this.lblSpellDefenseIndirectDodge.Location = new System.Drawing.Point(144, 32);
+            this.lblSpellDefenseIndirectDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectDodge.Name = "lblSpellDefenseIndirectDodge";
+            this.lblSpellDefenseIndirectDodge.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIndirectDodge.TabIndex = 26;
+            this.lblSpellDefenseIndirectDodge.Text = "0";
+            this.lblSpellDefenseIndirectDodge.ToolTipText = "";
             // 
-            // lblSpellDefenceIllusionMana
+            // lblSpellDefenseIllusionMana
             // 
-            this.lblSpellDefenceIllusionMana.AutoSize = true;
-            this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(144, 357);
-            this.lblSpellDefenceIllusionMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
-            this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIllusionMana.TabIndex = 54;
-            this.lblSpellDefenceIllusionMana.Text = "0";
-            this.lblSpellDefenceIllusionMana.ToolTipText = "";
+            this.lblSpellDefenseIllusionMana.AutoSize = true;
+            this.lblSpellDefenseIllusionMana.Location = new System.Drawing.Point(144, 357);
+            this.lblSpellDefenseIllusionMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIllusionMana.Name = "lblSpellDefenseIllusionMana";
+            this.lblSpellDefenseIllusionMana.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIllusionMana.TabIndex = 54;
+            this.lblSpellDefenseIllusionMana.Text = "0";
+            this.lblSpellDefenseIllusionMana.ToolTipText = "";
             // 
-            // lblSpellDefenceIndirectSoak
+            // lblSpellDefenseIndirectSoak
             // 
-            this.lblSpellDefenceIndirectSoak.AutoSize = true;
-            this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(144, 57);
-            this.lblSpellDefenceIndirectSoak.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceIndirectSoak.Name = "lblSpellDefenceIndirectSoak";
-            this.lblSpellDefenceIndirectSoak.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceIndirectSoak.TabIndex = 28;
-            this.lblSpellDefenceIndirectSoak.Text = "0";
-            this.lblSpellDefenceIndirectSoak.ToolTipText = "";
+            this.lblSpellDefenseIndirectSoak.AutoSize = true;
+            this.lblSpellDefenseIndirectSoak.Location = new System.Drawing.Point(144, 57);
+            this.lblSpellDefenseIndirectSoak.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseIndirectSoak.Name = "lblSpellDefenseIndirectSoak";
+            this.lblSpellDefenseIndirectSoak.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseIndirectSoak.TabIndex = 28;
+            this.lblSpellDefenseIndirectSoak.Text = "0";
+            this.lblSpellDefenseIndirectSoak.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttWIL
+            // lblSpellDefenseDecAttWIL
             // 
-            this.lblSpellDefenceDecAttWIL.AutoSize = true;
-            this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(144, 332);
-            this.lblSpellDefenceDecAttWIL.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
-            this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttWIL.TabIndex = 52;
-            this.lblSpellDefenceDecAttWIL.Text = "0";
-            this.lblSpellDefenceDecAttWIL.ToolTipText = "";
+            this.lblSpellDefenseDecAttWIL.AutoSize = true;
+            this.lblSpellDefenseDecAttWIL.Location = new System.Drawing.Point(144, 332);
+            this.lblSpellDefenseDecAttWIL.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttWIL.Name = "lblSpellDefenseDecAttWIL";
+            this.lblSpellDefenseDecAttWIL.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttWIL.TabIndex = 52;
+            this.lblSpellDefenseDecAttWIL.Text = "0";
+            this.lblSpellDefenseDecAttWIL.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttLOG
+            // lblSpellDefenseDecAttLOG
             // 
-            this.lblSpellDefenceDecAttLOG.AutoSize = true;
-            this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(144, 307);
-            this.lblSpellDefenceDecAttLOG.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
-            this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttLOG.TabIndex = 51;
-            this.lblSpellDefenceDecAttLOG.Text = "0";
-            this.lblSpellDefenceDecAttLOG.ToolTipText = "";
+            this.lblSpellDefenseDecAttLOG.AutoSize = true;
+            this.lblSpellDefenseDecAttLOG.Location = new System.Drawing.Point(144, 307);
+            this.lblSpellDefenseDecAttLOG.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttLOG.Name = "lblSpellDefenseDecAttLOG";
+            this.lblSpellDefenseDecAttLOG.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttLOG.TabIndex = 51;
+            this.lblSpellDefenseDecAttLOG.Text = "0";
+            this.lblSpellDefenseDecAttLOG.ToolTipText = "";
             // 
-            // lblSpellDefenceDirectSoakMana
+            // lblSpellDefenseDirectSoakMana
             // 
-            this.lblSpellDefenceDirectSoakMana.AutoSize = true;
-            this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(144, 82);
-            this.lblSpellDefenceDirectSoakMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
-            this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
-            this.lblSpellDefenceDirectSoakMana.Text = "0";
-            this.lblSpellDefenceDirectSoakMana.ToolTipText = "";
+            this.lblSpellDefenseDirectSoakMana.AutoSize = true;
+            this.lblSpellDefenseDirectSoakMana.Location = new System.Drawing.Point(144, 82);
+            this.lblSpellDefenseDirectSoakMana.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakMana.Name = "lblSpellDefenseDirectSoakMana";
+            this.lblSpellDefenseDirectSoakMana.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDirectSoakMana.TabIndex = 30;
+            this.lblSpellDefenseDirectSoakMana.Text = "0";
+            this.lblSpellDefenseDirectSoakMana.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttINT
+            // lblSpellDefenseDecAttINT
             // 
-            this.lblSpellDefenceDecAttINT.AutoSize = true;
-            this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(144, 282);
-            this.lblSpellDefenceDecAttINT.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
-            this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttINT.TabIndex = 50;
-            this.lblSpellDefenceDecAttINT.Text = "0";
-            this.lblSpellDefenceDecAttINT.ToolTipText = "";
+            this.lblSpellDefenseDecAttINT.AutoSize = true;
+            this.lblSpellDefenseDecAttINT.Location = new System.Drawing.Point(144, 282);
+            this.lblSpellDefenseDecAttINT.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttINT.Name = "lblSpellDefenseDecAttINT";
+            this.lblSpellDefenseDecAttINT.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttINT.TabIndex = 50;
+            this.lblSpellDefenseDecAttINT.Text = "0";
+            this.lblSpellDefenseDecAttINT.ToolTipText = "";
             // 
-            // lblSpellDefenceDirectSoakPhysical
+            // lblSpellDefenseDirectSoakPhysical
             // 
-            this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
-            this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(144, 107);
-            this.lblSpellDefenceDirectSoakPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
-            this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
-            this.lblSpellDefenceDirectSoakPhysical.Text = "0";
-            this.lblSpellDefenceDirectSoakPhysical.ToolTipText = "";
+            this.lblSpellDefenseDirectSoakPhysical.AutoSize = true;
+            this.lblSpellDefenseDirectSoakPhysical.Location = new System.Drawing.Point(144, 107);
+            this.lblSpellDefenseDirectSoakPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDirectSoakPhysical.Name = "lblSpellDefenseDirectSoakPhysical";
+            this.lblSpellDefenseDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDirectSoakPhysical.TabIndex = 32;
+            this.lblSpellDefenseDirectSoakPhysical.Text = "0";
+            this.lblSpellDefenseDirectSoakPhysical.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttCHA
+            // lblSpellDefenseDecAttCHA
             // 
-            this.lblSpellDefenceDecAttCHA.AutoSize = true;
-            this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(144, 257);
-            this.lblSpellDefenceDecAttCHA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
-            this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttCHA.TabIndex = 49;
-            this.lblSpellDefenceDecAttCHA.Text = "0";
-            this.lblSpellDefenceDecAttCHA.ToolTipText = "";
+            this.lblSpellDefenseDecAttCHA.AutoSize = true;
+            this.lblSpellDefenseDecAttCHA.Location = new System.Drawing.Point(144, 257);
+            this.lblSpellDefenseDecAttCHA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttCHA.Name = "lblSpellDefenseDecAttCHA";
+            this.lblSpellDefenseDecAttCHA.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttCHA.TabIndex = 49;
+            this.lblSpellDefenseDecAttCHA.Text = "0";
+            this.lblSpellDefenseDecAttCHA.ToolTipText = "";
             // 
-            // lblSpellDefenceDetection
+            // lblSpellDefenseDetection
             // 
-            this.lblSpellDefenceDetection.AutoSize = true;
-            this.lblSpellDefenceDetection.Location = new System.Drawing.Point(144, 132);
-            this.lblSpellDefenceDetection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
-            this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDetection.TabIndex = 34;
-            this.lblSpellDefenceDetection.Text = "0";
-            this.lblSpellDefenceDetection.ToolTipText = "";
+            this.lblSpellDefenseDetection.AutoSize = true;
+            this.lblSpellDefenseDetection.Location = new System.Drawing.Point(144, 132);
+            this.lblSpellDefenseDetection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDetection.Name = "lblSpellDefenseDetection";
+            this.lblSpellDefenseDetection.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDetection.TabIndex = 34;
+            this.lblSpellDefenseDetection.Text = "0";
+            this.lblSpellDefenseDetection.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttSTR
+            // lblSpellDefenseDecAttSTR
             // 
-            this.lblSpellDefenceDecAttSTR.AutoSize = true;
-            this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(144, 232);
-            this.lblSpellDefenceDecAttSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
-            this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttSTR.TabIndex = 48;
-            this.lblSpellDefenceDecAttSTR.Text = "0";
-            this.lblSpellDefenceDecAttSTR.ToolTipText = "";
+            this.lblSpellDefenseDecAttSTR.AutoSize = true;
+            this.lblSpellDefenseDecAttSTR.Location = new System.Drawing.Point(144, 232);
+            this.lblSpellDefenseDecAttSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttSTR.Name = "lblSpellDefenseDecAttSTR";
+            this.lblSpellDefenseDecAttSTR.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttSTR.TabIndex = 48;
+            this.lblSpellDefenseDecAttSTR.Text = "0";
+            this.lblSpellDefenseDecAttSTR.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttBOD
+            // lblSpellDefenseDecAttBOD
             // 
-            this.lblSpellDefenceDecAttBOD.AutoSize = true;
-            this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(144, 157);
-            this.lblSpellDefenceDecAttBOD.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
-            this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttBOD.TabIndex = 36;
-            this.lblSpellDefenceDecAttBOD.Text = "0";
-            this.lblSpellDefenceDecAttBOD.ToolTipText = "";
+            this.lblSpellDefenseDecAttBOD.AutoSize = true;
+            this.lblSpellDefenseDecAttBOD.Location = new System.Drawing.Point(144, 157);
+            this.lblSpellDefenseDecAttBOD.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttBOD.Name = "lblSpellDefenseDecAttBOD";
+            this.lblSpellDefenseDecAttBOD.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttBOD.TabIndex = 36;
+            this.lblSpellDefenseDecAttBOD.Text = "0";
+            this.lblSpellDefenseDecAttBOD.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttAGI
+            // lblSpellDefenseDecAttAGI
             // 
-            this.lblSpellDefenceDecAttAGI.AutoSize = true;
-            this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(144, 182);
-            this.lblSpellDefenceDecAttAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
-            this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttAGI.TabIndex = 38;
-            this.lblSpellDefenceDecAttAGI.Text = "0";
-            this.lblSpellDefenceDecAttAGI.ToolTipText = "";
+            this.lblSpellDefenseDecAttAGI.AutoSize = true;
+            this.lblSpellDefenseDecAttAGI.Location = new System.Drawing.Point(144, 182);
+            this.lblSpellDefenseDecAttAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttAGI.Name = "lblSpellDefenseDecAttAGI";
+            this.lblSpellDefenseDecAttAGI.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttAGI.TabIndex = 38;
+            this.lblSpellDefenseDecAttAGI.Text = "0";
+            this.lblSpellDefenseDecAttAGI.ToolTipText = "";
             // 
-            // lblSpellDefenceDecAttREA
+            // lblSpellDefenseDecAttREA
             // 
-            this.lblSpellDefenceDecAttREA.AutoSize = true;
-            this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(144, 207);
-            this.lblSpellDefenceDecAttREA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
-            this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
-            this.lblSpellDefenceDecAttREA.TabIndex = 40;
-            this.lblSpellDefenceDecAttREA.Text = "0";
-            this.lblSpellDefenceDecAttREA.ToolTipText = "";
+            this.lblSpellDefenseDecAttREA.AutoSize = true;
+            this.lblSpellDefenseDecAttREA.Location = new System.Drawing.Point(144, 207);
+            this.lblSpellDefenseDecAttREA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDefenseDecAttREA.Name = "lblSpellDefenseDecAttREA";
+            this.lblSpellDefenseDecAttREA.Size = new System.Drawing.Size(13, 13);
+            this.lblSpellDefenseDecAttREA.TabIndex = 40;
+            this.lblSpellDefenseDecAttREA.Text = "0";
+            this.lblSpellDefenseDecAttREA.ToolTipText = "";
             // 
             // panel1
             // 
@@ -13417,62 +13795,6 @@ namespace Chummer
             this.tsInitiationNotes.Tag = "Menu_Notes";
             this.tsInitiationNotes.Text = "&Notes";
             this.tsInitiationNotes.Click += new System.EventHandler(this.tsInitiationNotes_Click);
-            // 
-            // cmsMetamagic
-            // 
-            this.cmsMetamagic.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsMetamagicAddArt,
-            this.tsMetamagicAddEnchantment,
-            this.tsMetamagicAddEnhancement,
-            this.tsMetamagicAddMetamagic,
-            this.tsMetamagicAddRitual,
-            this.tsMetamagicNotes});
-            this.cmsMetamagic.Name = "cmsMetamagic";
-            this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
-            // 
-            // tsMetamagicAddArt
-            // 
-            this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
-            this.tsMetamagicAddArt.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddArt.Text = "Add Art";
-            this.tsMetamagicAddArt.Click += new System.EventHandler(this.tsMetamagicAddArt_Click);
-            // 
-            // tsMetamagicAddEnchantment
-            // 
-            this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
-            this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
-            this.tsMetamagicAddEnchantment.Click += new System.EventHandler(this.tsMetamagicAddEnchantment_Click);
-            // 
-            // tsMetamagicAddEnhancement
-            // 
-            this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
-            this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
-            this.tsMetamagicAddEnhancement.Click += new System.EventHandler(this.tsMetamagicAddEnhancement_Click);
-            // 
-            // tsMetamagicAddMetamagic
-            // 
-            this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
-            this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
-            this.tsMetamagicAddMetamagic.Click += new System.EventHandler(this.tsMetamagicAddMetamagic_Click);
-            // 
-            // tsMetamagicAddRitual
-            // 
-            this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
-            this.tsMetamagicAddRitual.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicAddRitual.Text = "Add Ritual";
-            this.tsMetamagicAddRitual.Click += new System.EventHandler(this.tsMetamagicAddRitual_Click);
-            // 
-            // tsMetamagicNotes
-            // 
-            this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsMetamagicNotes.Name = "tsMetamagicNotes";
-            this.tsMetamagicNotes.Size = new System.Drawing.Size(172, 22);
-            this.tsMetamagicNotes.Tag = "Menu_Notes";
-            this.tsMetamagicNotes.Text = "&Notes";
-            this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
             // 
             // cmsTechnique
             // 
@@ -13523,13 +13845,13 @@ namespace Chummer
             this.tsGearAllowRenameNotes,
             this.tsGearAllowRenameExtra});
             this.cmsGearAllowRename.Name = "cmsGearAllowRename";
-            this.cmsGearAllowRename.Size = new System.Drawing.Size(170, 92);
+            this.cmsGearAllowRename.Size = new System.Drawing.Size(171, 92);
             // 
             // tsGearAllowRenameExtra
             // 
             this.tsGearAllowRenameExtra.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameExtra.Name = "tsGearAllowRenameExtra";
-            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
@@ -13677,6 +13999,7 @@ namespace Chummer
             this.tlpInitiation.PerformLayout();
             this.flpInitiationButtons.ResumeLayout(false);
             this.flpInitiationButtons.PerformLayout();
+            this.cmsMetamagic.ResumeLayout(false);
             this.flpInitiation.ResumeLayout(false);
             this.flpInitiation.PerformLayout();
             this.gpbInitiationType.ResumeLayout(false);
@@ -13688,6 +14011,7 @@ namespace Chummer
             this.tlpInitiationGroup.ResumeLayout(false);
             this.tlpInitiationGroup.PerformLayout();
             this.tabCyberware.ResumeLayout(false);
+            this.tabCyberware.PerformLayout();
             this.tlpCyberware.ResumeLayout(false);
             this.tlpCyberware.PerformLayout();
             this.flowLayoutPanel7.ResumeLayout(false);
@@ -13710,6 +14034,7 @@ namespace Chummer
             this.tabStreetGear.ResumeLayout(false);
             this.tabStreetGearTabs.ResumeLayout(false);
             this.tabGear.ResumeLayout(false);
+            this.tabGear.PerformLayout();
             this.tlpGear.ResumeLayout(false);
             this.tlpGear.PerformLayout();
             this.flowLayoutPanel13.ResumeLayout(false);
@@ -13722,9 +14047,14 @@ namespace Chummer
             this.tlpGearCommon.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
+            this.flowLayoutPanel12.ResumeLayout(false);
+            this.flowLayoutPanel12.PerformLayout();
             this.gpbGearMatrix.ResumeLayout(false);
+            this.gpbGearMatrix.PerformLayout();
             this.tlpGearMatrix.ResumeLayout(false);
             this.tlpGearMatrix.PerformLayout();
+            this.flowLayoutPanel14.ResumeLayout(false);
+            this.flowLayoutPanel14.PerformLayout();
             this.gpbGearBondedFoci.ResumeLayout(false);
             this.gpbGearBondedFoci.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
@@ -13748,6 +14078,7 @@ namespace Chummer
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.gpbArmorLocation.ResumeLayout(false);
+            this.gpbArmorLocation.PerformLayout();
             this.tlpArmorLocation.ResumeLayout(false);
             this.tlpArmorLocation.PerformLayout();
             this.flpArmorLocationButtons.ResumeLayout(false);
@@ -13840,6 +14171,18 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).EndInit();
             this.flowLayoutPanel10.ResumeLayout(false);
+            this.pnlLongTexts.ResumeLayout(false);
+            this.pnlLongTexts.PerformLayout();
+            this.tlpLongTexts.ResumeLayout(false);
+            this.tlpLongTexts.PerformLayout();
+            this.gpbDescription.ResumeLayout(false);
+            this.gpbDescription.PerformLayout();
+            this.gpbBackground.ResumeLayout(false);
+            this.gpbBackground.PerformLayout();
+            this.gpbConcept.ResumeLayout(false);
+            this.gpbConcept.PerformLayout();
+            this.gpbNotes.ResumeLayout(false);
+            this.gpbNotes.PerformLayout();
             this.tabRelationships.ResumeLayout(false);
             this.tabPeople.ResumeLayout(false);
             this.tabContacts.ResumeLayout(false);
@@ -13867,13 +14210,12 @@ namespace Chummer
             this.tabOtherInfo.PerformLayout();
             this.tlpOtherInfo.ResumeLayout(false);
             this.tlpOtherInfo.PerformLayout();
-            this.tabDefences.ResumeLayout(false);
-            this.tabDefences.PerformLayout();
+            this.tabDefenses.ResumeLayout(false);
+            this.tabDefenses.PerformLayout();
             this.tlpSpellDefense.ResumeLayout(false);
             this.tlpSpellDefense.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
             this.cmsInitiationNotes.ResumeLayout(false);
-            this.cmsMetamagic.ResumeLayout(false);
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsGearAllowRename.ResumeLayout(false);
@@ -14089,12 +14431,6 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsMartialArts;
         private System.Windows.Forms.ToolStripMenuItem tsMartialArtsAddAdvantage;
         private System.Windows.Forms.TabPage tabCharacterInfo;
-        private System.Windows.Forms.TextBox txtConcept;
-        private System.Windows.Forms.Label lblConcept;
-        private System.Windows.Forms.TextBox txtBackground;
-        private System.Windows.Forms.Label lblBackground;
-        private System.Windows.Forms.TextBox txtDescription;
-        private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.TextBox txtSkin;
         private System.Windows.Forms.Label lblSkin;
         private System.Windows.Forms.TextBox txtWeight;
@@ -14137,15 +14473,13 @@ namespace Chummer
         private System.Windows.Forms.PictureBox picMugshot;
         private System.Windows.Forms.Button cmdDeleteMugshot;
         private System.Windows.Forms.Button cmdAddMugshot;
-        private System.Windows.Forms.TextBox txtNotes;
-        private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.Label lblAttributesAug;
         private System.Windows.Forms.Label lblAttributesBase;
         private System.Windows.Forms.Label lblAttributesMetatype;
         private System.Windows.Forms.ToolStripMenuItem mnuFilePrint;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabPage tabInitiation;
-        private System.Windows.Forms.Button cmdAddMetamagic;
+        private SplitButton cmdAddMetamagic;
         private System.Windows.Forms.Button cmdDeleteMetamagic;
         private System.Windows.Forms.Label lblInitiationBP;
         private System.Windows.Forms.Label lblMartialArtsBP;
@@ -14261,6 +14595,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsVehicleCyberwareNotes;
         private System.Windows.Forms.ContextMenuStrip cmsArmorMod;
         private System.Windows.Forms.ToolStripMenuItem tsArmorModNotes;
+        private System.Windows.Forms.ToolStripMenuItem tsArmorModAddAsPlugin;
         private System.Windows.Forms.ContextMenuStrip cmsQuality;
         private System.Windows.Forms.ToolStripMenuItem tsQualityNotes;
         private System.Windows.Forms.ToolStripMenuItem tsMartialArtsNotes;
@@ -14380,7 +14715,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialConvertToFreeSprite;
         private System.Windows.Forms.Label lblVehicleWeaponAmmo;
         private System.Windows.Forms.Label lblVehicleWeaponAmmoLabel;
-        private System.Windows.Forms.Label lblVehicleWeaponMode;
         private System.Windows.Forms.Label lblVehicleWeaponModeLabel;
         private System.Windows.Forms.Label lblVehicleWeaponAP;
         private System.Windows.Forms.Label lblVehicleWeaponAPLabel;
@@ -14536,43 +14870,43 @@ namespace Chummer
         private ElasticComboBox cboVehicleFirewall;
         private ElasticComboBox cboVehicleSleaze;
         private ElasticComboBox cboVehicleAttack;
-        private System.Windows.Forms.TabPage tabDefences;
-        private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysicalLabel;
-        private LabelWithToolTip lblSpellDefenceDirectSoakMana;
-        private System.Windows.Forms.Label lblSpellDefenceDirectSoakManaLabel;
-        private LabelWithToolTip lblSpellDefenceIndirectSoak;
-        private System.Windows.Forms.Label lblSpellDefenceIndirectSoakLabel;
-        private LabelWithToolTip lblSpellDefenceIndirectDodge;
-        private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
+        private System.Windows.Forms.TabPage tabDefenses;
+        private System.Windows.Forms.Label lblSpellDefenseDirectSoakPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenseDirectSoakMana;
+        private System.Windows.Forms.Label lblSpellDefenseDirectSoakManaLabel;
+        private LabelWithToolTip lblSpellDefenseIndirectSoak;
+        private System.Windows.Forms.Label lblSpellDefenseIndirectSoakLabel;
+        private LabelWithToolTip lblSpellDefenseIndirectDodge;
+        private System.Windows.Forms.Label lblSpellDefenseIndirectDodgeLabel;
         private System.Windows.Forms.Label lblCounterspellingDiceLabel;
         private System.Windows.Forms.NumericUpDown nudCounterspellingDice;
-        private LabelWithToolTip lblSpellDefenceManipPhysical;
-        private System.Windows.Forms.Label lblSpellDefenceManipPhysicalLabel;
-        private LabelWithToolTip lblSpellDefenceManipMental;
-        private System.Windows.Forms.Label lblSpellDefenceManipMentalLabel;
-        private LabelWithToolTip lblSpellDefenceIllusionPhysical;
-        private System.Windows.Forms.Label lblSpellDefenceIllusionPhysicalLabel;
-        private LabelWithToolTip lblSpellDefenceIllusionMana;
-        private System.Windows.Forms.Label lblSpellDefenceIllusionManaLabel;
-        private LabelWithToolTip lblSpellDefenceDecAttWIL;
-        private LabelWithToolTip lblSpellDefenceDecAttLOG;
-        private LabelWithToolTip lblSpellDefenceDecAttINT;
-        private LabelWithToolTip lblSpellDefenceDecAttCHA;
-        private LabelWithToolTip lblSpellDefenceDecAttSTR;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttWILLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttLOGLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttINTLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttCHALabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttSTRLabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttREALabel;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttAGILabel;
-        private LabelWithToolTip lblSpellDefenceDecAttREA;
-        private LabelWithToolTip lblSpellDefenceDecAttAGI;
-        private LabelWithToolTip lblSpellDefenceDecAttBOD;
-        private System.Windows.Forms.Label lblSpellDefenceDecAttBODLabel;
-        private LabelWithToolTip lblSpellDefenceDetection;
-        private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
-        private LabelWithToolTip lblSpellDefenceDirectSoakPhysical;
+        private LabelWithToolTip lblSpellDefenseManipPhysical;
+        private System.Windows.Forms.Label lblSpellDefenseManipPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenseManipMental;
+        private System.Windows.Forms.Label lblSpellDefenseManipMentalLabel;
+        private LabelWithToolTip lblSpellDefenseIllusionPhysical;
+        private System.Windows.Forms.Label lblSpellDefenseIllusionPhysicalLabel;
+        private LabelWithToolTip lblSpellDefenseIllusionMana;
+        private System.Windows.Forms.Label lblSpellDefenseIllusionManaLabel;
+        private LabelWithToolTip lblSpellDefenseDecAttWIL;
+        private LabelWithToolTip lblSpellDefenseDecAttLOG;
+        private LabelWithToolTip lblSpellDefenseDecAttINT;
+        private LabelWithToolTip lblSpellDefenseDecAttCHA;
+        private LabelWithToolTip lblSpellDefenseDecAttSTR;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttWILLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttLOGLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttINTLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttCHALabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttSTRLabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttREALabel;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttAGILabel;
+        private LabelWithToolTip lblSpellDefenseDecAttREA;
+        private LabelWithToolTip lblSpellDefenseDecAttAGI;
+        private LabelWithToolTip lblSpellDefenseDecAttBOD;
+        private System.Windows.Forms.Label lblSpellDefenseDecAttBODLabel;
+        private LabelWithToolTip lblSpellDefenseDetection;
+        private System.Windows.Forms.Label lblSpellDefenseDetectionLabel;
+        private LabelWithToolTip lblSpellDefenseDirectSoakPhysical;
         private System.Windows.Forms.Label lblVehiclePowertrainLabel;
         private System.Windows.Forms.Label lblVehicleWeaponsmod;
         private System.Windows.Forms.Label lblVehicleProtection;
@@ -14848,5 +15182,35 @@ namespace Chummer
         private System.Windows.Forms.Label lblParagonSourceLabel;
         private System.Windows.Forms.Label lblParagonSource;
         private System.Windows.Forms.Label lblComplexFormDicePool;
+        private System.Windows.Forms.CheckBox chkCyberwareStolen;
+        private System.Windows.Forms.CheckBox chkGearStolen;
+        private System.Windows.Forms.CheckBox chkArmorStolen;
+        private System.Windows.Forms.CheckBox chkWeaponStolen;
+        private System.Windows.Forms.CheckBox chkDrugStolen;
+        private System.Windows.Forms.Label lblStolenNuyen;
+        private System.Windows.Forms.Label lblStolenNuyenLabel;
+        private System.Windows.Forms.CheckBox chkVehicleStolen;
+        private System.Windows.Forms.ToolStripMenuItem mnuFileSaveAsCreated;
+        private System.Windows.Forms.Label lblFiringModeLabel;
+        private ElasticComboBox cboVehicleWeaponFiringMode;
+        private System.Windows.Forms.Label lblVehicleWeaponMode;
+        private System.Windows.Forms.Label lblMetagenicQualities;
+        private System.Windows.Forms.Label lblMetagenicQualitiesLabel;
+        private LabelWithToolTip lblSurprise;
+        private LabelWithToolTip lblSurpriseLabel;
+        private LabelWithToolTip lblDodgeLabel;
+        private LabelWithToolTip lblDodge;
+        private System.Windows.Forms.GroupBox gpbDescription;
+        private UI.Editors.RtfEditor rtfDescription;
+        private System.Windows.Forms.GroupBox gpbBackground;
+        private UI.Editors.RtfEditor rtfBackground;
+        private System.Windows.Forms.TableLayoutPanel tlpLongTexts;
+        private System.Windows.Forms.GroupBox gpbConcept;
+        private UI.Editors.RtfEditor rtfConcept;
+        private System.Windows.Forms.GroupBox gpbNotes;
+        private UI.Editors.RtfEditor rtfNotes;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel12;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel14;
+        private System.Windows.Forms.Panel pnlLongTexts;
     }
 }

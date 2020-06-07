@@ -105,30 +105,30 @@ namespace Chummer
         #region Controls Methods
         private void frmAbout_Load(object sender, EventArgs e)
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            string strReturn = LanguageManager.GetString("Label_About", GlobalOptions.Language, false);
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strReturn = LanguageManager.GetString("Label_About", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
-            Text = strReturn + strSpaceCharacter + AssemblyTitle;
+            Text = strReturn + strSpace + AssemblyTitle;
             labelProductName.Text = AssemblyProduct;
-            strReturn = LanguageManager.GetString("String_Version", GlobalOptions.Language, false);
+            strReturn = LanguageManager.GetString("String_Version", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "Version";
-            labelVersion.Text = strReturn + strSpaceCharacter + AssemblyVersion;
-            strReturn = LanguageManager.GetString("About_Copyright_Text", GlobalOptions.Language, false);
+            labelVersion.Text = strReturn + strSpace + AssemblyVersion;
+            strReturn = LanguageManager.GetString("About_Copyright_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCopyright;
             labelCopyright.Text = strReturn;
-            strReturn = LanguageManager.GetString("About_Company_Text", GlobalOptions.Language, false);
+            strReturn = LanguageManager.GetString("About_Company_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCompany;
             labelCompanyName.Text = strReturn;
-            strReturn = LanguageManager.GetString("About_Description_Text", GlobalOptions.Language, false);
+            strReturn = LanguageManager.GetString("About_Description_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
             textBoxDescription.Text = strReturn;
             textBoxContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames) + Environment.NewLine + "/u/Iridios";
-            txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text", GlobalOptions.Language);
+            txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text");
         }
 
         private void txt_KeyDown(object sender, KeyEventArgs e)

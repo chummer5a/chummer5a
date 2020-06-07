@@ -34,7 +34,7 @@ namespace Chummer
         public frmSelectSpellCategory()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("spells.xml");
         }
 

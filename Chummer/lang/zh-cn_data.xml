@@ -404,7 +404,7 @@
     </armor>
     <armor>
       <id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-      <name>Ares Flashield</name>
+      <name>Ares FlaShield</name>
       <translate>阿瑞斯闪盾</translate>
     </armor>
       <armor>
@@ -499,7 +499,7 @@
     </armor>
     <armor>
       <id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-      <name>Evo Hel Suit</name>
+      <name>Evo HEL Suit</name>
       <translate>天演HEL服</translate>
     </armor>
     <armor>
@@ -1755,8 +1755,8 @@
 			</book>
 			<book>
 				<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-				<name>Shadowrun 5th Edition (German)</name>
-				<translate>Shadowrun 5th Edition (German)</translate>
+				<name>Shadowrun 5th Edition (German-exclusive Content)</name>
+				<translate>Shadowrun 5th Edition (German-exclusive Content)</translate>
 			</book>
       <book>
         <id>0b2e86c9-98b7-4265-800f-9f1b98ce7f96</id>
@@ -3728,7 +3728,7 @@
 			</cyberware>
 			<cyberware>
 				<id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>消音器</translate>
 			</cyberware>
 			<cyberware>
@@ -4602,7 +4602,7 @@
       </gear>
       <gear>
         <id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-        <name>Microtronica Azteca Raptor</name>
+        <name>Microtrónica Azteca Raptor</name>
       <translate>微电·阿兹特卡·猛禽</translate>
       </gear>
       <gear>
@@ -5526,8 +5526,8 @@
 				<translate>γ-东莨菪碱</translate>
 			</gear>
 			<gear>
-				<id>02514259-a41d-49e4-b1e4-b528feae2917</id>
-				<name>Narcoject</name>
+				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
+				<name>Narcojet</name>
 				<translate>麻醉针剂</translate>
 			</gear>
 			<gear>
@@ -5922,7 +5922,7 @@
 			</gear>
       <gear>
       <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
-      <name>Smokebomb</name>
+      <name>Grenade: Smokebomb</name>
       <translate>烟雾炸弹</translate>
     </gear>
 			<gear>
@@ -6287,7 +6287,7 @@
       </gear>
       <gear>
         <id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-        <name>Microtronica Azteca 300</name>
+        <name>Microtrónica Azteca 300</name>
         <translate>微电·阿兹特卡300</translate>
       </gear>
       <gear>
@@ -8220,7 +8220,7 @@
       </gear>
       <gear>
         <id>02100ba4-7b39-4cdc-9e7a-6c6454d34dae</id>
-        <name>Modify Matrix Attribute</name>
+        <name>Modify Matrix Attribute (Increase Attack, Decrease Sleaze)</name>
         <translate>调整矩阵属性</translate>
       </gear>
       <gear>
@@ -14077,7 +14077,7 @@
         <name>Wanted</name>
         <translate>通缉名单</translate>
       </quality>
-      <!-- Region Run Faster Metagenetic Qualities -->
+      <!-- Region Run Faster Metagenic Qualities -->
       <quality>
         <id>0355c69a-85b4-48ae-84d6-f6dbf031eae7</id>
         <name>Arcane Arrester</name>
@@ -14402,32 +14402,32 @@
       </quality>
       <quality>
         <id>2ffd990c-ced6-4484-955c-108473df5335</id>
-        <name>Metagenetic Improvement (Body)</name>
+        <name>Metagenic Improvement (Body)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-        <name>Metagenetic Improvement (Agility)</name>
+        <name>Metagenic Improvement (Agility)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-        <name>Metagenetic Improvement (Reaction)</name>
+        <name>Metagenic Improvement (Reaction)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-        <name>Metagenetic Improvement (Strength)</name>
+        <name>Metagenic Improvement (Strength)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-        <name>Metagenetic Improvement (Charisma)</name>
+        <name>Metagenic Improvement (Charisma)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-        <name>Metagenetic Improvement (Intuition)</name>
+        <name>Metagenic Improvement (Intuition)</name>
         <translate></translate>
       </quality>
       <quality>
@@ -14436,7 +14436,7 @@
       </quality>
       <quality>
         <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-        <name>Metagenetic Improvement (Willpower)</name>
+        <name>Metagenic Improvement (Willpower)</name>
         <translate></translate>
       </quality>
       <quality>
@@ -19247,7 +19247,7 @@
       </mod>
       <mod>
         <id>ff06549c-fe90-427d-97cd-c1336a7ecb5a</id>
-        <name>Missile Defence System</name>
+        <name>Missile Defense System</name>
         <translate>导弹防御系统</translate>
       </mod>
       <mod>
@@ -20737,7 +20737,7 @@
 			</weapon>
 			<weapon>
 				<id>28072a3f-5153-444e-83e3-46129b9ff572</id>
-				<name>Ranger Silver Pistol Crossbow</name>
+				<name>Ranger Sliver Pistol Crossbow</name>
 				<translate>游侠•“白银”手枪弩</translate>
 			</weapon>
 			<weapon>
@@ -21237,7 +21237,7 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
+				<name>Nissan Optimum II Shotgun</name>
 				<translate>尼桑·优化II 霰弹枪</translate>
 			</weapon>
 			<weapon>
@@ -21551,7 +21551,7 @@
 			</accessory>
 			<accessory>
 				<id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>消音器</translate>
 			</accessory>
 			<accessory>

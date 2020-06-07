@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 
@@ -40,35 +41,37 @@ namespace Chummer.UI.Skills
 
         public SkillControl2(Skill skill)
         {
+            if (skill == null)
+                return;
             _skill = skill;
             InitializeComponent();
             SuspendLayout();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
-            foreach (ToolStripItem objItem in cmsSkillLabel.Items)
+            foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                tssItem.TranslateToolStripItemsRecursively();
             }
-            
+
             this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
 
             //Display
             _normalName = lblName.Font;
             _italicName = new Font(lblName.Font, FontStyle.Italic);
-            
+
             this.DoDatabinding("BackColor", skill, nameof(Skill.PreferredControlColor));
-            
-            lblName.DoDatabinding("Text", skill, nameof(Skill.DisplayName));
+
+            lblName.DoDatabinding("Text", skill, nameof(Skill.CurrentDisplayName));
             lblName.DoDatabinding("ForeColor", skill, nameof(Skill.PreferredColor));
-            lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.SkillToolTip));
+            lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
 
             lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(Skill.PoolToolTip));
+            lblModifiedRating.DoDatabinding("Text", skill, nameof(Skill.DisplayPool));
 
             _attributeActive = skill.AttributeObject;
             _skill.PropertyChanged += Skill_PropertyChanged;
-            _skill.CharacterObject.AttributeSection.PropertyChanged += AttributeSection_PropertyChanged;
-            
+
             nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
@@ -89,60 +92,55 @@ namespace Chummer.UI.Skills
             {
                 lblModifiedRating.Location = new Point(256 - 13, 4);
 
-                lblCareerRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerRating.DoDatabinding("Text", skill, nameof(Skill.Rating));
 
-                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnCareerIncrease.DataBindings.Add("ToolTipText", skill, nameof(Skill.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DoDatabinding("Enabled", skill, nameof(Skill.CanUpgradeCareer));
+                btnCareerIncrease.DoDatabinding("ToolTipText", skill, nameof(Skill.UpgradeToolTip));
+                btnAddSpec.DoDatabinding("Enabled", skill, nameof(Skill.CanAffordSpecialization));
+                btnAddSpec.DoDatabinding("Visible", skill, nameof(Skill.CanHaveSpecs));
+                btnAddSpec.DoDatabinding("ToolTipText", skill, nameof(Skill.AddSpecToolTip));
 
-                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerSpec.DoDatabinding("Text", skill, nameof(Skill.CurrentDisplaySpecialization));
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
 
-                btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
+                btnAttribute.DoDatabinding("Text", skill, nameof(Skill.DisplayAttribute));
                 btnAttribute.Visible = true;
 
                 SetupDropdown();
             }
             else
             {
-                lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
+                lblAttribute.DoDatabinding("Text", skill, nameof(Skill.DisplayAttribute));
                 //Up down boxes
-                nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DoDatabinding("Value", skill, nameof(Skill.Karma));
+                nudSkill.DoDatabinding("Value", skill, nameof(Skill.Base));
 
-                nudSkill.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DoDatabinding("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints));
+                nudSkill.DoDatabinding("Enabled", skill, nameof(Skill.BaseUnlocked));
+                nudSkill.DoDatabinding("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoDatabinding("Enabled", skill, nameof(Skill.KarmaUnlocked));
+                nudKarma.DoDatabinding("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
-                chkKarma.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false, DataSourceUpdateMode.OnPropertyChanged);
-                chkKarma.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                chkKarma.DoDatabinding("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints));
+                chkKarma.DoDatabinding("Checked", skill, nameof(Skill.BuyWithKarma));
+                chkKarma.DoDatabinding("Enabled", skill, nameof(Skill.CanHaveSpecs));
 
                 cboSpec.BeginUpdate();
                 if (skill.IsExoticSkill)
                 {
                     cboSpec.Enabled = false;
-                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DoDatabinding("Text", skill, nameof(Skill.CurrentDisplaySpecialization));
                 }
                 else
                 {
                     //dropdown/spec
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DoDatabinding("Enabled", skill, nameof(Skill.CanHaveSpecs));
                     cboSpec.DataSource = skill.CGLSpecializations;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
                     cboSpec.SelectedIndex = -1;
-                    cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    cboSpec.DoDatabinding("Text", skill, nameof(Skill.Specialization));
                 }
                 cboSpec.EndUpdate();
             }
@@ -153,9 +151,14 @@ namespace Chummer.UI.Skills
             {
                 cmdDelete.Click += (sender, args) =>
                 {
+                    if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString(skill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill",
+                        GlobalOptions.Language)))
+                        return;
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.Skills.Remove(skill);
-                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name);
+                    skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill
+                        ? skill.Name + " (" + skill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
+                        : skill.Name);
                 };
 
                 if (skill.CharacterObject.Created)
@@ -168,22 +171,8 @@ namespace Chummer.UI.Skills
             lblModifiedRating.Text = _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
 
             _blnLoading = false;
+
             ResumeLayout();
-        }
-
-        private void AttributeSection_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (_blnLoading)
-                return;
-
-            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
-            {
-                _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
-
-                _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
-                AttributeActiveOnPropertyChanged(sender, e);
-            }
         }
 
         private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -201,6 +190,9 @@ namespace Chummer.UI.Skills
                 case null:
                     blnUpdateAll = true;
                     goto case nameof(Skill.Default);
+                case nameof(Skill.DisplayPool):
+                    Attribute_PropertyChanged(this, null);
+                    break;
                 case nameof(Skill.Default):
                     lblName.Font = !_skill.Default ? _italicName : _normalName;
                     if (blnUpdateAll)
@@ -225,20 +217,27 @@ namespace Chummer.UI.Skills
                         }
                         cboSpec.ResumeLayout();
                     }
-                    if (blnUpdateAll)
-                        goto case nameof(Skill.DisplayOtherAttribute);
-                    break;
-                case nameof(Skill.AttributeModifiers):
-                case nameof(Skill.DisplayOtherAttribute):
-                    lblModifiedRating.Text =  _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
                     break;
             }
         }
 
+        private void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (_blnLoading)
+                return;
+
+            switch (propertyChangedEventArgs?.PropertyName)
+            {
+                default:
+                    lblModifiedRating.Text = _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
+                    lblModifiedRating.ToolTipText = _skill.CompileDicepoolTooltip(_attributeActive.Abbrev);
+                    break;
+            }
+        }
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                    _skill.CurrentDisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -271,17 +270,20 @@ namespace Chummer.UI.Skills
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
+            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            frmSelectSpec selectForm = new frmSelectSpec(_skill);
-            selectForm.ShowDialog();
+            using (frmSelectSpec selectForm = new frmSelectSpec(_skill))
+            {
+                selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+                if (selectForm.DialogResult != DialogResult.OK)
+                    return;
 
-            _skill.AddSpecialization(selectForm.SelectedItem);
+                _skill.AddSpecialization(selectForm.SelectedItem);
+            }
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
@@ -292,8 +294,9 @@ namespace Chummer.UI.Skills
             List<ListItem> lstAttributeItems = new List<ListItem>();
 		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
-                if (strLoopAttribute != "MAGAdept")
-                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
+                string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
+                if (!string.IsNullOrEmpty(strAttributeShort))
+                    lstAttributeItems.Add(new ListItem (strLoopAttribute, strAttributeShort));
             }
 
             cboSelectAttribute.BeginUpdate();
@@ -315,15 +318,13 @@ namespace Chummer.UI.Skills
         {
             btnAttribute.Visible = true;
             cboSelectAttribute.Visible = false;
-            _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+            _attributeActive.PropertyChanged -= Attribute_PropertyChanged;
             _attributeActive = _skill.CharacterObject.GetAttribute((string) cboSelectAttribute.SelectedValue);
 
+            _attributeActive.PropertyChanged += Attribute_PropertyChanged;
             btnAttribute.Font = _attributeActive == _skill.AttributeObject ? _normal : _italic;
             btnAttribute.Text = cboSelectAttribute.Text;
-
-            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
-            AttributeActiveOnPropertyChanged(null, null);
-
+            Attribute_PropertyChanged(this,null);
             CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -331,38 +332,28 @@ namespace Chummer.UI.Skills
 
         public bool CustomAttributeSet => _attributeActive != _skill.AttributeObject;
 
-        public int NameWidth => lblName.PreferredWidth;
-        public int NudSkillWidth => nudSkill.Width;
+        [UsedImplicitly] public int NameWidth => lblName.PreferredWidth;
+        [UsedImplicitly] public int NudSkillWidth => nudSkill.Width;
 
+        [UsedImplicitly]
         public void ResetSelectAttribute()
         {
-            if (CustomAttributeSet)
-            {
-                cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
-                cboSelectAttribute_Closed(null, null);
-            }
+            if (!CustomAttributeSet) return;
+            _attributeActive.PropertyChanged -= Attribute_PropertyChanged;
+            cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
+            cboSelectAttribute_Closed(null, null);
         }
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmItemNotes = new frmNotes
+            using (frmNotes frmItemNotes = new frmNotes { Notes = _skill.Notes })
             {
-                Notes = _skill.Notes
-            };
-            frmItemNotes.ShowDialog(this);
+                frmItemNotes.ShowDialog(this);
+                if (frmItemNotes.DialogResult != DialogResult.OK)
+                    return;
 
-            if (frmItemNotes.DialogResult == DialogResult.OK)
-            {
-                _skill.Notes = frmItemNotes.Notes.WordWrap(100);
+                _skill.Notes = frmItemNotes.Notes;
             }
-        }
-
-        private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (_blnLoading)
-                return;
-
-            Skill_PropertyChanged(sender, new PropertyChangedEventArgs(nameof(Skill.Rating)));
         }
 
         private void lblName_Click(object sender, EventArgs e)
@@ -370,24 +361,7 @@ namespace Chummer.UI.Skills
             CommonFunctions.OpenPDF(_skill.Source + ' ' + _skill.DisplayPage(GlobalOptions.Language));
         }
 
-        private void cboSpec_TextChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-
-            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
-                !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
-            {
-                chkKarma.Checked = true;
-            }
-        }
-
-        /* Delnar: TODO Awaiting other authors' approval before activation.
-        private void chkKarma_CheckChanged(object sender, EventArgs e)
-        {
-            cboSpec_TextChanged(sender, e);
-        }
-        */
+        [UsedImplicitly]
         public void MoveControls(int i)
         {
             lblName.Width = i;
@@ -408,12 +382,56 @@ namespace Chummer.UI.Skills
         public void UnbindSkillControl()
         {
             _skill.PropertyChanged -= Skill_PropertyChanged;
-            _skill.CharacterObject.AttributeSection.PropertyChanged -= AttributeSection_PropertyChanged;
+            _attributeActive.PropertyChanged -= Attribute_PropertyChanged;
 
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
             }
         }
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+
+        private ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        private Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
+        }
+        #endregion
     }
 }

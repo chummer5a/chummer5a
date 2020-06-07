@@ -22,16 +22,21 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
     /// <summary>
     /// A Metamagic or Echo.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove, IHasSource
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private Guid _guiID;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -57,6 +62,11 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource, string strForcedValue = "")
         {
+            if (!objXmlMetamagicNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMetamagicNode });
+                Utils.BreakIfDebug();
+            }
             if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -73,7 +83,7 @@ namespace Chummer
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodBonus, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;
@@ -81,7 +91,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
                 ImprovementManager.ForcedValue = strOldFocedValue;
@@ -90,36 +100,17 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
-            }*/
+            }
+            */
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail
-        {
-            get
-            {
-                if (_objCachedSourceDetail == null)
-                {
-                    string strSource = Source;
-                    string strPage = Page(GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
-                    {
-                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
-                    }
-                    else
-                    {
-                        Utils.BreakIfDebug();
-                    }
-                }
-
-                return _objCachedSourceDetail;
-            }
-        }
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -127,11 +118,14 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("metamagic");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("paidwithkarma", _blnPaidWithKarma.ToString());
+            objWriter.WriteElementString("paidwithkarma", _blnPaidWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             if (_nodBonus != null)
@@ -152,7 +146,16 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -175,12 +178,14 @@ namespace Chummer
         /// <param name="strLanguageToPrint">Language in which to print</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("metamagic");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
@@ -190,10 +195,21 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -259,6 +275,11 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed in lists in the program's current language.
+        /// </summary>
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
+        /// <summary>
         /// Grade to which the Metamagic is tied. Negative if the Metamagic was added by an Improvement and not by an Initiation/Submersion.
         /// </summary>
         public int Grade
@@ -279,13 +300,24 @@ namespace Chummer
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
         {
-            // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
+            get => _strPage;
+            set => _strPage = value;
+        }
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -318,9 +350,19 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = _eImprovementSource == Improvement.ImprovementSource.Metamagic
-                    ? XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]")
-                    : XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                string doc = "metamagic.xml";
+                string path = "metamagics/metamagic";
+                if (_eImprovementSource == Improvement.ImprovementSource.Echo)
+                {
+                    doc = "echoes.xml";
+                    path = "echoes/echo";
+                }
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load(doc, strLanguage)
+                        .SelectSingleNode("/chummer/" + path + "[name = \"" + Name + "\"]")
+                    : XmlManager.Load(doc, strLanguage).SelectSingleNode(
+                        "/chummer/" + path + "[id = \"" + SourceIDString +  "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -333,9 +375,9 @@ namespace Chummer
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
-            string strText = DisplayName(GlobalOptions.Language);
+            string strText = CurrentDisplayName;
             if (blnAddCategory)
-                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
+                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo") + LanguageManager.GetString("String_Space") + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -367,25 +409,25 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
             if (blnConfirmDelete)
             {
                 string strMessage;
-                if (characterObject.MAGEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
-                else if (characterObject.RESEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                if (_objCharacter.MAGEnabled)
+                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic");
+                else if (_objCharacter.RESEnabled)
+                    strMessage = LanguageManager.GetString("Message_DeleteEcho");
                 else
                     return false;
-                if (!characterObject.ConfirmDelete(strMessage))
+                if (!_objCharacter.ConfirmDelete(strMessage))
                     return false;
             }
 
-            characterObject.Metamagics.Remove(this);
-            ImprovementManager.RemoveImprovements(characterObject, SourceType, InternalId);
+            _objCharacter.Metamagics.Remove(this);
+            ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
             return true;
         }
 

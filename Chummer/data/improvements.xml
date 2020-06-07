@@ -19,8 +19,19 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+
   <improvements>
+    <!--  <improvement>
+      <name>Action Dice-Pool Modifier</name>
+      <id>actiondicepool</id>
+      <internal>actiondicepool</internal>
+      <fields>
+        <field>SelectActionDicePool</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><<val>{val}</val>]]></xml>
+      <page>Adjusts the dicepool modifier for a given Action. Note: This is current unused</page>
+    </improvement> -->
     <improvement>
       <name>Enable Special Attribute</name>
       <id>enableattribute</id>
@@ -432,6 +443,16 @@
       <page>Adjusts the Essence cost of Bioware by the percent value entered. All Bioware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
     </improvement>
     <improvement>
+      <name>Genetech Essence Cost</name>
+      <id>genetechessmultiplier</id>
+      <internal>genetechessmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the Essence cost of Genetech by the percent value entered. All Genetech Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
+    </improvement>
+    <improvement>
       <name>Cyberware Essence Cost</name>
       <id>cyberwareessmultiplier</id>
       <internal>cyberwareessmultiplier</internal>
@@ -574,6 +595,17 @@
       <page>Adjusts the size of the character's Spellcasting pool when casting Spell in the selected category. Positive values improve Spellcasting. Negative values reduce Spellcasting.</page>
     </improvement>
     <improvement>
+      <name>Specific Spell Dicepool</name>
+      <id>spelldicepool</id>
+      <internal>spelldicepool</internal>
+      <fields>
+        <field>SelectSpell</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val>]]></xml>
+      <page>Adjusts the size of the character's Spellcasting pool when casting the Spell with the selected name. Positive values improve Spellcasting. Negative values reduce Spellcasting.</page>
+    </improvement>
+    <improvement>
       <name>Skillsoft Access</name>
       <id>skillsoftaccess</id>
       <internal>skillsoftaccess</internal>
@@ -677,6 +709,9 @@
       <name>Street Cred Multiplier</name>
       <id>streetcredmultiplier</id>
       <internal>streetcredmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases or reduces the multiplier used to calculate Street Cred.</page>
     </improvement>
@@ -684,6 +719,9 @@
       <name>Bonus Street Cred</name>
       <id>streetcred</id>
       <internal>streetcred</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Street Cred by the listed value.</page>
     </improvement>
@@ -691,8 +729,58 @@
       <name>Dodge</name>
       <id>dodge</id>
       <internal>dodge</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Dodge pool by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Cyberzombie Conversion</name>
+      <id>enablecyberzombie</id>
+      <internal>enablecyberzombie</internal>
+      <xml />
+      <page>Allows the character to be converted into a Cyberzombie.</page>
+    </improvement>
+    <improvement>
+      <name>Free Spells</name>
+      <id>freespells</id>
+      <internal>freespells</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Allows the character to mark some spells as Free, avoiding Karma costs.</page>
+    </improvement>
+    <improvement>
+      <name>Mental Limit</name>
+      <id>mentallimit</id>
+      <internal>mentallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Mental Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Physical Limit</name>
+      <id>physicallimit</id>
+      <internal>physicallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Physical Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Social Limit</name>
+      <id>sociallimit</id>
+      <internal>sociallimit</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Social Limit by the listed value.</page>
     </improvement>
   </improvements>
 </chummer>

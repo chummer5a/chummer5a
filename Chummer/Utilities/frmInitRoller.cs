@@ -27,12 +27,12 @@ namespace Chummer
         public frmInitRoller()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmInitRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text = string.Format(LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
+            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
         }

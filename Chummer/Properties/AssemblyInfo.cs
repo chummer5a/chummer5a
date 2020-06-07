@@ -1,3 +1,4 @@
+using System.Resources;
 /*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
@@ -48,5 +49,6 @@
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.203.0")]
-[assembly: AssemblyFileVersion("5.203.0")]
+[assembly: AssemblyVersion("5.212.0.0")]
+[assembly: AssemblyFileVersion("5.212.0.0")]
+[assembly: NeutralResourcesLanguage("en-US")]

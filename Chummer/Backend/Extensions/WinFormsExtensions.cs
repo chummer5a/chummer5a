@@ -18,15 +18,18 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using NLog;
 
 namespace Chummer
 {
     public static class WinFormsExtensions
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         #region Controls Extensions
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner.
@@ -36,10 +39,33 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoThreadSafe(this Control objControl, Action funcToRun)
         {
-            if (objControl?.InvokeRequired == true)
-                objControl.Invoke(funcToRun);
-            else
-                funcToRun.Invoke();
+            if (objControl == null || funcToRun == null)
+                return;
+            try
+            {
+                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                if (myControlCopy.InvokeRequired)
+                    myControlCopy.Invoke(funcToRun);
+                else
+                    funcToRun.Invoke();
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.MainForm.ShowMessageBox(e.ToString());
+#endif
+            }
         }
 
         /// <summary>
@@ -51,11 +77,31 @@ namespace Chummer
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
         public static void DoDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
+            if (objControl == null)
+                return;
             if (!objControl.IsHandleCreated)
             {
                 objControl.CreateControl();
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        /// <summary>
+        /// Bind a control's property to the OPPOSITE of property via OnPropertyChanged. Expected to be used exclusively by boolean bindings, other attributes have not been tested.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
         }
         #endregion
 
@@ -69,6 +115,8 @@ namespace Chummer
         #region TreeNode Extensions
         public static TreeNode GetTopParent(this TreeNode objThis)
         {
+            if (objThis == null)
+                return null;
             TreeNode objReturn = objThis;
             while (objReturn.Parent != null)
                 objReturn = objReturn.Parent;
@@ -129,10 +177,10 @@ namespace Chummer
         /// <returns></returns>
         public static int GetRightMostEdge(this TreeNode objNode)
         {
+            if (objNode == null)
+                return 0;
             if (objNode.Nodes.Count == 0)
-            {
                 return objNode.Bounds.Right;
-            }
             int intReturn = 0;
             foreach (TreeNode objChild in objNode.Nodes)
             {
@@ -221,6 +269,8 @@ namespace Chummer
         /// <param name="treView">The tree to sort</param>
         public static void SortCustomOrder(this TreeView treView)
         {
+            if (treView == null)
+                return;
             string strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
 
             var currentSorter = treView.TreeViewNodeSorter;
@@ -239,20 +289,12 @@ namespace Chummer
         /// </summary>
         private class CustomNodeSorter : System.Collections.IComparer
         {
-            public CustomNodeSorter() { }
-
             public int Compare(object x, object y)
             {
-                ICanSort lhs = (x as TreeNode)?.Tag as ICanSort;
-                ICanSort rhs = (y as TreeNode)?.Tag as ICanSort;
-
                 // Sort any non-sortables first
-                if (lhs == null)
+                if (!((x as TreeNode)?.Tag is ICanSort lhs))
                     return -1;
-                if (rhs == null)
-                    return 1;
-
-                return lhs.SortOrder.CompareTo(rhs.SortOrder);
+                return !((y as TreeNode)?.Tag is ICanSort rhs) ? 1 : lhs.SortOrder.CompareTo(rhs.SortOrder);
             }
         }
 
@@ -274,12 +316,16 @@ namespace Chummer
         {
             List<TreeNode> lstEnumerable = lstNodes.Cast<TreeNode>().ToList();
             // Do this as two steps because non-sortables can own sortables
-            lstEnumerable?.Where(n => n?.Tag is ICanSort).ToList().ForEach(n => (n.Tag as ICanSort).SortOrder = n.Index);
-            lstEnumerable?.ForEach(n => CacheSortOrderRecursive(n.Nodes));
+            lstEnumerable.Where(n => n?.Tag is ICanSort).ToList().ForEach(n =>
+                {
+                    if (n.Tag is ICanSort objSortable)
+                        objSortable.SortOrder = n.Index;
+                });
+            lstEnumerable.ForEach(n => CacheSortOrderRecursive(n.Nodes));
         }
 
         /// <summary>
-        /// Clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
+        /// Clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
         /// </summary>
         /// <param name="treView">Base TreeView whose nodes should get their background color cleared.</param>
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
@@ -299,7 +345,7 @@ namespace Chummer
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if (objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode.Tag.ToString() == strGuid)
+                if (objNode?.Tag != null &&  objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
                     return objNode;
 
                 if (!blnDeep) continue;
@@ -343,10 +389,10 @@ namespace Chummer
         /// <returns></returns>
         public static int GetRightMostEdge(this TreeView treTree)
         {
+            if (treTree == null)
+                return 0;
             if (treTree.Nodes.Count == 0)
-            {
                 return treTree.Bounds.Right;
-            }
             int intReturn = 0;
             foreach (TreeNode objChild in treTree.Nodes)
             {
@@ -360,12 +406,14 @@ namespace Chummer
 
         #region TreeNodeCollection Extensions
         /// <summary>
-        /// Recursive method to clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
+        /// Recursive method to clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
         /// </summary>
         /// <param name="objNodes">Parent TreeNodeCollection to check.</param>
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
         public static void ClearNodeBackground(this TreeNodeCollection objNodes, TreeNode objHighlighted)
         {
+            if (objNodes == null)
+                return;
             foreach (TreeNode objChild in objNodes)
             {
                 if (objChild != objHighlighted)

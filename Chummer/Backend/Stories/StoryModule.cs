@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -26,13 +27,13 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class StoryModule : IHasName, IHasInternalId, IHasXmlNode
     {
         private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();
         private readonly Guid _guiInternalId;
         private string _strName;
-        private string _strSourceId;
+        private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private string _strDefaultTextKey;
 
@@ -47,13 +48,14 @@ namespace Chummer
 
         public void Create(XmlNode xmlStoryModuleDataNode)
         {
-            xmlStoryModuleDataNode.TryGetStringFieldQuickly("id", ref _strSourceId);
+            xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
             xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
             XmlNode xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
             if (xmlTextsNode != null)
             {
                 using (XmlNodeList xmlChildrenList = xmlStoryModuleDataNode.SelectNodes("*"))
+                {
                     if (xmlChildrenList != null)
                     {
                         foreach (XmlNode xmlText in xmlChildrenList)
@@ -66,12 +68,13 @@ namespace Chummer
                         if (string.IsNullOrEmpty(_strDefaultTextKey))
                             _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
                     }
+                }
             }
         }
 
         public void Create(XPathNavigator xmlStoryModuleDataNode)
         {
-            xmlStoryModuleDataNode.TryGetStringFieldQuickly("id", ref _strSourceId);
+            xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
             xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
             XPathNavigator xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
@@ -102,9 +105,28 @@ namespace Chummer
             set => _strName = value;
         }
 
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
 
-        public string DisplayNameMethod(string strLanguage)
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+
+        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+
+        public string DisplayName(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
@@ -117,7 +139,7 @@ namespace Chummer
             get => _strDefaultTextKey;
             set => _strDefaultTextKey = value;
         }
-        
+
         public string DisplayText(string strKey, string strLanguage)
         {
             string strReturn;
@@ -130,17 +152,17 @@ namespace Chummer
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public void TestRunToGeneratePersistents(string strLanguage)
+        public void TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
-            ResolveMacros(DisplayText(DefaultKey, strLanguage), strLanguage, true);
+            ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true);
         }
 
-        public string PrintModule(string strLanguage)
+        public string PrintModule(CultureInfo objCulture, string strLanguage)
         {
-            return ResolveMacros(DisplayText(DefaultKey, strLanguage), strLanguage).NormalizeWhiteSpace();
+            return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage).NormalizeWhiteSpace();
         }
 
-        public string ResolveMacros(string strInput, string strLanguage, bool blnGeneratePersistents = false)
+        public string ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
@@ -212,7 +234,7 @@ namespace Chummer
                 Tuple<string, bool> objLoopItem = lstSubstrings[i];
                 if (objLoopItem.Item2)
                 {
-                    string strOutput = ProcessSingleMacro(objLoopItem.Item1, strLanguage, blnGeneratePersistents);
+                    string strOutput = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents);
                     lock (objProcessingLock)
                         lstOutputStrings[i] = strOutput;
                 }
@@ -226,10 +248,10 @@ namespace Chummer
             return string.Concat(lstOutputStrings);
         }
 
-        public string ProcessSingleMacro(string strInput, string strLanguage, bool blnGeneratePersistents)
+        public string ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
         {
             // Process Macros nested inside of single macro
-            strInput = ResolveMacros(strInput, strLanguage, blnGeneratePersistents);
+            strInput = ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents);
 
             int intPipeIndex = strInput.IndexOf('|');
             string strFunction = intPipeIndex == -1 ? strInput : strInput.Substring(0, intPipeIndex);
@@ -239,11 +261,11 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                 {
-                    return LanguageManager.ReverseTranslateExtra(strArguments, GlobalOptions.Language);
+                    return LanguageManager.ReverseTranslateExtra(strArguments);
                 }
                 case "$XmlNameFriendly":
                 {
-                    return strArguments.FastEscape(' ', '$', '/', '?', ',', '\'', '\"', '¥', ';', ':', '(', ')', '[', ']', '|', '\\', '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*').ToLower();
+                    return strArguments.FastEscape(' ', '$', '/', '?', ',', '\'', '\"', '¥', ';', ':', '(', ')', '[', ']', '|', '\\', '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*').ToLower(objCulture);
                 }
                 case "$CharacterName":
                 {
@@ -310,10 +332,10 @@ namespace Chummer
                         int intBirthYear = DateTime.UtcNow.Year + 62 - intCurrentAge;
                         if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intYearAtTime))
                         {
-                            return (intBirthYear + intYearAtTime).ToString();
+                            return (intBirthYear + intYearAtTime).ToString(objCulture);
                         }
 
-                        return intBirthYear.ToString();
+                        return intBirthYear.ToString(objCulture);
                     }
 
                     return LanguageManager.GetString("String_Unknown", strLanguage);
@@ -376,31 +398,18 @@ namespace Chummer
             if (blnGeneratePersistents)
             {
                 if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                    return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage);
+                    return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
                 StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
                 if (objPersistentStoryModule != null)
-                    return ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), strLanguage);
+                    return ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
             }
             else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage);
+                return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
 
             return LanguageManager.GetString("String_Error", strLanguage);
         }
 
-        public string SourceId
-        {
-            get => _strSourceId;
-            set
-            {
-                if (_strSourceId != value)
-                {
-                    _strSourceId = value;
-                    _objCachedMyXmlNode = null;
-                }
-            }
-        }
-
-        public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D");
+        public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public XmlNode GetNode()
         {
@@ -409,11 +418,11 @@ namespace Chummer
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage).SelectSingleNode("/chummer/stories/story[id = \"" + SourceId + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage)
+                .SelectSingleNode("/chummer/stories/story[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
     }
