@@ -3221,7 +3221,7 @@
       <limit>False</limit>
       <bonus>
         <selectcontact />
-        <selecttext select="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
       </bonus>
       <source>RF</source>
       <page>149</page>
