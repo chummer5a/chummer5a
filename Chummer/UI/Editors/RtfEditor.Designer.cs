@@ -76,47 +76,59 @@ namespace Chummer.UI.Editors
             this.tsControls.Location = new System.Drawing.Point(0, 0);
             this.tsControls.Name = "tsControls";
             this.tsControls.Padding = new System.Windows.Forms.Padding(3);
-            this.tsControls.Size = new System.Drawing.Size(558, 29);
+            this.tsControls.Size = new System.Drawing.Size(480, 29);
             this.tsControls.Stretch = true;
             this.tsControls.TabIndex = 0;
             // 
             // tsbBold
             // 
+            this.tsbBold.CheckOnClick = true;
             this.tsbBold.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbBold.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbBold.Image = global::Chummer.Properties.Resources.text_bold;
             this.tsbBold.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBold.Name = "tsbBold";
-            this.tsbBold.Size = new System.Drawing.Size(23, 22);
+            this.tsbBold.Size = new System.Drawing.Size(23, 20);
+            this.tsbBold.Tag = "String_Bold";
+            this.tsbBold.Text = "Bold";
             this.tsbBold.Click += new System.EventHandler(this.UpdateFont);
             // 
             // tsbItalic
             // 
+            this.tsbItalic.CheckOnClick = true;
             this.tsbItalic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbItalic.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbItalic.Image = global::Chummer.Properties.Resources.text_italic;
             this.tsbItalic.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbItalic.Name = "tsbItalic";
-            this.tsbItalic.Size = new System.Drawing.Size(23, 22);
+            this.tsbItalic.Size = new System.Drawing.Size(23, 20);
+            this.tsbItalic.Tag = "String_Italic";
+            this.tsbItalic.Text = "Italic";
             this.tsbItalic.Click += new System.EventHandler(this.UpdateFont);
             // 
             // tsbUnderline
             // 
+            this.tsbUnderline.CheckOnClick = true;
             this.tsbUnderline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbUnderline.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbUnderline.Image = global::Chummer.Properties.Resources.text_underline;
             this.tsbUnderline.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnderline.Name = "tsbUnderline";
-            this.tsbUnderline.Size = new System.Drawing.Size(23, 22);
+            this.tsbUnderline.Size = new System.Drawing.Size(23, 20);
+            this.tsbUnderline.Tag = "String_Underline";
+            this.tsbUnderline.Text = "Underline";
             this.tsbUnderline.Click += new System.EventHandler(this.UpdateFont);
             // 
             // tsbStrikeout
             // 
+            this.tsbStrikeout.CheckOnClick = true;
             this.tsbStrikeout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbStrikeout.Image = global::Chummer.Properties.Resources.text_strikethrough;
             this.tsbStrikeout.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbStrikeout.Name = "tsbStrikeout";
-            this.tsbStrikeout.Size = new System.Drawing.Size(23, 22);
+            this.tsbStrikeout.Size = new System.Drawing.Size(23, 20);
+            this.tsbStrikeout.Tag = "String_Strikethrough";
+            this.tsbStrikeout.Text = "Strikethrough";
             this.tsbStrikeout.Click += new System.EventHandler(this.UpdateFont);
             // 
             // tss1
@@ -130,7 +142,9 @@ namespace Chummer.UI.Editors
             this.tsbFont.Image = global::Chummer.Properties.Resources.font;
             this.tsbFont.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbFont.Name = "tsbFont";
-            this.tsbFont.Size = new System.Drawing.Size(23, 22);
+            this.tsbFont.Size = new System.Drawing.Size(23, 20);
+            this.tsbFont.Tag = "String_Font";
+            this.tsbFont.Text = "Font";
             this.tsbFont.Click += new System.EventHandler(this.tsbFont_Click);
             // 
             // tsbForeColor
@@ -139,7 +153,9 @@ namespace Chummer.UI.Editors
             this.tsbForeColor.Image = global::Chummer.Properties.Resources.color_wheel;
             this.tsbForeColor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbForeColor.Name = "tsbForeColor";
-            this.tsbForeColor.Size = new System.Drawing.Size(23, 22);
+            this.tsbForeColor.Size = new System.Drawing.Size(23, 20);
+            this.tsbForeColor.Tag = "String_ForeColor";
+            this.tsbForeColor.Text = "Foreground Color";
             this.tsbForeColor.Click += new System.EventHandler(this.tsbForeColor_Click);
             // 
             // tsbBackColor
@@ -148,8 +164,9 @@ namespace Chummer.UI.Editors
             this.tsbBackColor.Image = global::Chummer.Properties.Resources.paintcan;
             this.tsbBackColor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBackColor.Name = "tsbBackColor";
-            this.tsbBackColor.Size = new System.Drawing.Size(23, 22);
-            this.tsbBackColor.Text = "toolStripButton1";
+            this.tsbBackColor.Size = new System.Drawing.Size(23, 20);
+            this.tsbBackColor.Tag = "String_BackColor";
+            this.tsbBackColor.Text = "Background Color";
             this.tsbBackColor.Click += new System.EventHandler(this.tsbBackColor_Click);
             // 
             // tss2
@@ -159,30 +176,42 @@ namespace Chummer.UI.Editors
             // 
             // tsbAlignLeft
             // 
+            this.tsbAlignLeft.CheckOnClick = true;
             this.tsbAlignLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAlignLeft.Image = global::Chummer.Properties.Resources.text_align_left;
             this.tsbAlignLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignLeft.Name = "tsbAlignLeft";
-            this.tsbAlignLeft.Size = new System.Drawing.Size(23, 22);
-            this.tsbAlignLeft.Click += new System.EventHandler(this.UpdateFont);
+            this.tsbAlignLeft.Size = new System.Drawing.Size(23, 20);
+            this.tsbAlignLeft.Tag = "String_AlignLeft";
+            this.tsbAlignLeft.Text = "Align Left";
+            this.tsbAlignLeft.CheckedChanged += new System.EventHandler(this.tsbAlignLeft_CheckedChanged);
+            this.tsbAlignLeft.Click += new System.EventHandler(this.tsbAlignLeft_Click);
             // 
             // tsbAlignCenter
             // 
+            this.tsbAlignCenter.CheckOnClick = true;
             this.tsbAlignCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAlignCenter.Image = global::Chummer.Properties.Resources.text_align_center;
             this.tsbAlignCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignCenter.Name = "tsbAlignCenter";
-            this.tsbAlignCenter.Size = new System.Drawing.Size(23, 22);
-            this.tsbAlignCenter.Click += new System.EventHandler(this.UpdateFont);
+            this.tsbAlignCenter.Size = new System.Drawing.Size(23, 20);
+            this.tsbAlignCenter.Tag = "String_AlignCenter";
+            this.tsbAlignCenter.Text = "Align Center";
+            this.tsbAlignCenter.CheckedChanged += new System.EventHandler(this.tsbAlignCenter_CheckedChanged);
+            this.tsbAlignCenter.Click += new System.EventHandler(this.tsbAlignCenter_Click);
             // 
             // tsbAlignRight
             // 
+            this.tsbAlignRight.CheckOnClick = true;
             this.tsbAlignRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAlignRight.Image = global::Chummer.Properties.Resources.text_align_right;
             this.tsbAlignRight.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignRight.Name = "tsbAlignRight";
-            this.tsbAlignRight.Size = new System.Drawing.Size(23, 22);
-            this.tsbAlignRight.Click += new System.EventHandler(this.UpdateFont);
+            this.tsbAlignRight.Size = new System.Drawing.Size(23, 20);
+            this.tsbAlignRight.Tag = "String_AlignRight";
+            this.tsbAlignRight.Text = "Align Right";
+            this.tsbAlignRight.CheckedChanged += new System.EventHandler(this.tsbAlignRight_CheckedChanged);
+            this.tsbAlignRight.Click += new System.EventHandler(this.tsbAlignRight_Click);
             // 
             // tss3
             // 
@@ -191,11 +220,14 @@ namespace Chummer.UI.Editors
             // 
             // tsbUnorderedList
             // 
+            this.tsbUnorderedList.CheckOnClick = true;
             this.tsbUnorderedList.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbUnorderedList.Image = global::Chummer.Properties.Resources.text_list_bullets;
             this.tsbUnorderedList.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnorderedList.Name = "tsbUnorderedList";
-            this.tsbUnorderedList.Size = new System.Drawing.Size(23, 22);
+            this.tsbUnorderedList.Size = new System.Drawing.Size(23, 20);
+            this.tsbUnorderedList.Tag = "String_UnorderedList";
+            this.tsbUnorderedList.Text = "Toggle List";
             this.tsbUnorderedList.Click += new System.EventHandler(this.tsbUnorderedList_Click);
             // 
             // tsbIncreaseIndent
@@ -204,7 +236,9 @@ namespace Chummer.UI.Editors
             this.tsbIncreaseIndent.Image = global::Chummer.Properties.Resources.text_indent;
             this.tsbIncreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbIncreaseIndent.Name = "tsbIncreaseIndent";
-            this.tsbIncreaseIndent.Size = new System.Drawing.Size(23, 22);
+            this.tsbIncreaseIndent.Size = new System.Drawing.Size(23, 20);
+            this.tsbIncreaseIndent.Tag = "String_IncreaseIndent";
+            this.tsbIncreaseIndent.Text = "Increase Indent";
             this.tsbIncreaseIndent.Click += new System.EventHandler(this.tsbIncreaseIndent_Click);
             // 
             // tsbDecreaseIndent
@@ -213,7 +247,9 @@ namespace Chummer.UI.Editors
             this.tsbDecreaseIndent.Image = global::Chummer.Properties.Resources.text_indent_remove;
             this.tsbDecreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDecreaseIndent.Name = "tsbDecreaseIndent";
-            this.tsbDecreaseIndent.Size = new System.Drawing.Size(23, 22);
+            this.tsbDecreaseIndent.Size = new System.Drawing.Size(23, 20);
+            this.tsbDecreaseIndent.Tag = "String_DecreaseIndent";
+            this.tsbDecreaseIndent.Text = "Decrease Indent";
             this.tsbDecreaseIndent.Click += new System.EventHandler(this.tsbDecreaseIndent_Click);
             // 
             // tlpMain
@@ -230,18 +266,18 @@ namespace Chummer.UI.Editors
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(558, 320);
+            this.tlpMain.Size = new System.Drawing.Size(480, 120);
             this.tlpMain.TabIndex = 1;
             // 
             // rtbContent
             // 
             this.rtbContent.AcceptsTab = true;
             this.rtbContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbContent.BulletIndent = 4;
+            this.rtbContent.BulletIndent = 8;
             this.rtbContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbContent.Location = new System.Drawing.Point(3, 32);
             this.rtbContent.Name = "rtbContent";
-            this.rtbContent.Size = new System.Drawing.Size(552, 285);
+            this.rtbContent.Size = new System.Drawing.Size(474, 85);
             this.rtbContent.TabIndex = 1;
             this.rtbContent.TabStop = false;
             this.rtbContent.Text = "";
@@ -257,8 +293,9 @@ namespace Chummer.UI.Editors
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
+            this.MinimumSize = new System.Drawing.Size(0, 120);
             this.Name = "RtfEditor";
-            this.Size = new System.Drawing.Size(558, 320);
+            this.Size = new System.Drawing.Size(480, 120);
             this.tsControls.ResumeLayout(false);
             this.tsControls.PerformLayout();
             this.tlpMain.ResumeLayout(false);

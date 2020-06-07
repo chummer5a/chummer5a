@@ -22,7 +22,10 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-	public partial class frmNotes : Form
+    // We use RTFEditor for its shortcuts, but because notes are often displayed as TreeNode tooltips,
+    // and because TreeNode tooltips only support plaintext and not any kind of formatting, frmNotes
+    // and Notes items in general use plaintext instead of RTF or HTML formatted text.
+    public partial class frmNotes : Form
 	{
 		private static int s_IntWidth = 640;
 		private static int s_IntHeight = 360;

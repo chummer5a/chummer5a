@@ -29,6 +29,7 @@ namespace Chummer.UI.Editors
         public RtfEditor()
         {
             InitializeComponent();
+            this.TranslateWinForm();
             if (!Utils.IsDesignerMode)
                 tsControls.Visible = false;
         }
@@ -67,8 +68,8 @@ namespace Chummer.UI.Editors
                     int intTemp = rtbContent.SelectionIndent;
                     rtbContent.SelectionIndent = rtbContent.SelectionRightIndent;
                     rtbContent.SelectionRightIndent = intTemp;
+                    rtbContent.SelectionAlignment = HorizontalAlignment.Right;
                 }
-                rtbContent.SelectionAlignment = HorizontalAlignment.Right;
             }
             else if (tsbAlignCenter.Checked)
             {
@@ -76,8 +77,8 @@ namespace Chummer.UI.Editors
                 {
                     rtbContent.SelectionIndent = 0;
                     rtbContent.SelectionRightIndent = 0;
+                    rtbContent.SelectionAlignment = HorizontalAlignment.Center;
                 }
-                rtbContent.SelectionAlignment = HorizontalAlignment.Center;
             }
             else
             {
@@ -86,18 +87,15 @@ namespace Chummer.UI.Editors
                     int intTemp = rtbContent.SelectionIndent;
                     rtbContent.SelectionIndent = rtbContent.SelectionRightIndent;
                     rtbContent.SelectionRightIndent = intTemp;
+                    rtbContent.SelectionAlignment = HorizontalAlignment.Left;
                 }
-                rtbContent.SelectionAlignment = HorizontalAlignment.Left;
                 if (!tsbAlignLeft.Checked)
                     UpdateButtons(sender, e);
             }
             try
             {
                 Font objCurrentFont = rtbContent.SelectionFont ?? DefaultFont;
-                rtbContent.SelectionFont = new Font(
-                    objCurrentFont.FontFamily,
-                    objCurrentFont.Size,
-                    eNewFontStyle);
+                rtbContent.SelectionFont = new Font(objCurrentFont.FontFamily, objCurrentFont.Size, eNewFontStyle);
             }
             catch (ArgumentException)
             {
@@ -119,7 +117,9 @@ namespace Chummer.UI.Editors
             tsbUnorderedList.Checked = rtbContent.SelectionBullet;
             tsbIncreaseIndent.Enabled = !IsJustifyCenter;
             tsbDecreaseIndent.Enabled = !IsJustifyCenter;
-            rtbContent.Cursor = rtbContent.SelectionType == RichTextBoxSelectionTypes.Object ? Cursors.SizeAll : Cursors.IBeam;
+            rtbContent.Cursor = rtbContent.SelectionType == RichTextBoxSelectionTypes.Object
+                ? Cursors.SizeAll
+                : Cursors.IBeam;
         }
 
         #region Properties
@@ -209,20 +209,56 @@ namespace Chummer.UI.Editors
             rtbContent.SelectionBullet = tsbUnorderedList.Checked;
         }
 
+        private void tsbAlignLeft_Click(object sender, EventArgs e)
+        {
+            tsbAlignCenter.Checked = false;
+            tsbAlignRight.Checked = false;
+            UpdateFont(sender, e);
+        }
+
+        private void tsbAlignCenter_Click(object sender, EventArgs e)
+        {
+            tsbAlignLeft.Checked = false;
+            tsbAlignRight.Checked = false;
+            UpdateFont(sender, e);
+        }
+
+        private void tsbAlignRight_Click(object sender, EventArgs e)
+        {
+            tsbAlignLeft.Checked = false;
+            tsbAlignCenter.Checked = false;
+            UpdateFont(sender, e);
+        }
+
+        private void tsbAlignLeft_CheckedChanged(object sender, EventArgs e)
+        {
+            tsbAlignLeft.CheckOnClick = !tsbAlignLeft.Checked;
+        }
+
+        private void tsbAlignCenter_CheckedChanged(object sender, EventArgs e)
+        {
+            tsbAlignCenter.CheckOnClick = !tsbAlignCenter.Checked;
+        }
+
+        private void tsbAlignRight_CheckedChanged(object sender, EventArgs e)
+        {
+            tsbAlignRight.CheckOnClick = !tsbAlignRight.Checked;
+        }
+
         private void tsbIncreaseIndent_Click(object sender, EventArgs e)
         {
             if (IsJustifyLeft)
-                rtbContent.SelectionIndent += 4;
+                rtbContent.SelectionIndent += rtbContent.BulletIndent;
             else if (IsJustifyRight)
-                rtbContent.SelectionRightIndent += 4;
+                rtbContent.SelectionRightIndent += rtbContent.BulletIndent;
         }
 
         private void tsbDecreaseIndent_Click(object sender, EventArgs e)
         {
             if (IsJustifyLeft)
-                rtbContent.SelectionIndent = Math.Max(0, rtbContent.SelectionIndent - 4);
+                rtbContent.SelectionIndent = Math.Max(0, rtbContent.SelectionIndent - rtbContent.BulletIndent);
             else if (IsJustifyRight)
-                rtbContent.SelectionRightIndent = Math.Max(0, rtbContent.SelectionRightIndent - 4);
+                rtbContent.SelectionRightIndent = Math.Max(0, rtbContent.SelectionRightIndent - rtbContent.BulletIndent);
         }
 
         private void rtbContent_Enter(object sender, EventArgs e)
