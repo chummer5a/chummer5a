@@ -28,7 +28,7 @@ namespace Chummer
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.rtfNotes = new Chummer.UI.Editor.RtfEditor();
+            this.rtfNotes = new Chummer.UI.Editors.RtfEditor();
             this.SuspendLayout();
             // 
             // rtfNotes
@@ -70,6 +70,6 @@ namespace Chummer
 
         #endregion
 
-        private UI.Editor.RtfEditor rtfNotes;
+        private UI.Editors.RtfEditor rtfNotes;
     }
 }

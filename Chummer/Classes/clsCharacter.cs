@@ -4398,7 +4398,7 @@ namespace Chummer
             // <playername />
             objWriter.WriteElementString("playername", PlayerName);
             // <gamenotes />
-            objWriter.WriteElementString("gamenotes", GameNotes);
+            objWriter.WriteElementString("gamenotes", GameNotes.RtfToHtml());
 
             // <limitphysical />
             objWriter.WriteElementString("limitphysical", LimitPhysical.ToString(objCulture));

@@ -910,6 +910,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
+        public static string PlainTextToRtf(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (strInput.IsRtf())
+                return strInput;
+            if (!rtbRtfManipulator.IsHandleCreated)
+                rtbRtfManipulator.CreateControl();
+            rtbRtfManipulator.Text = strInput;
+            return rtbRtfManipulator.Rtf;
+        }
+
+        /// <summary>
         /// Strips RTF formatting from a string
         /// </summary>
         /// <param name="strInput">String to process</param>

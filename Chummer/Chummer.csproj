@@ -542,10 +542,10 @@
     <Compile Include="UI\Charts\ExpenseChart.Designer.cs">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Editor\RtfEditor.cs">
+    <Compile Include="UI\Editors\RtfEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Editor\RtfEditor.Designer.cs">
+    <Compile Include="UI\Editors\RtfEditor.Designer.cs">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Shared\Components\DicePoolControl.cs">
@@ -1296,7 +1296,7 @@
     <EmbeddedResource Include="UI\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Editor\RtfEditor.resx">
+    <EmbeddedResource Include="UI\Editors\RtfEditor.resx">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">

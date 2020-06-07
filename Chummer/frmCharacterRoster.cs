@@ -167,7 +167,7 @@ namespace Chummer
                                                                                 objCache.ErrorText;
                         }
                         else
-                            objCharacterNode.ForeColor = SystemColors.WindowText;
+                            objCharacterNode.ForeColor = SystemColors.Window;
                     }
                 }
             }
@@ -518,11 +518,26 @@ namespace Chummer
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
                 string strNone = LanguageManager.GetString("String_None");
-                txtCharacterBio.Text = objCache.Description;
-                txtCharacterBackground.Text = objCache.Background;
-                txtCharacterNotes.Text = objCache.CharacterNotes;
-                txtGameNotes.Text = objCache.GameNotes;
-                txtCharacterConcept.Text = objCache.Concept;
+                if (objCache.Description.IsRtf())
+                    rtbCharacterBio.Rtf = objCache.Description;
+                else
+                    rtbCharacterBio.Text = objCache.Description;
+                if (objCache.Background.IsRtf())
+                    rtbCharacterBackground.Rtf = objCache.Background;
+                else
+                    rtbCharacterBackground.Text = objCache.Background;
+                if (objCache.CharacterNotes.IsRtf())
+                    rtbCharacterNotes.Rtf = objCache.CharacterNotes;
+                else
+                    rtbCharacterNotes.Text = objCache.CharacterNotes;
+                if (objCache.GameNotes.IsRtf())
+                    rtbGameNotes.Rtf = objCache.GameNotes;
+                else
+                    rtbGameNotes.Text = objCache.GameNotes;
+                if (objCache.Concept.IsRtf())
+                    rtbCharacterConcept.Rtf = objCache.Concept;
+                else
+                    rtbCharacterConcept.Text = objCache.Concept;
                 lblCareerKarma.Text = objCache.Karma;
                 if(string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalOptions.CultureInfo))
                     lblCareerKarma.Text = strNone;
@@ -574,19 +589,21 @@ namespace Chummer
                 tabCharacterText.Visible = true;
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    txtCharacterBio.Text = objCache.ErrorText;
-                    txtCharacterBio.ForeColor = Color.Red;
-                    txtCharacterBio.BringToFront();
+                    rtbCharacterBio.Text = objCache.ErrorText;
+                    rtbCharacterBio.ForeColor = Color.Red;
+                    rtbCharacterBio.BringToFront();
                 }
+                else
+                    rtbCharacterBio.ForeColor = SystemColors.WindowText;
             }
             else
             {
                 tabCharacterText.Visible = false;
-                txtCharacterBio.Text = string.Empty;
-                txtCharacterBackground.Text = string.Empty;
-                txtCharacterNotes.Text = string.Empty;
-                txtGameNotes.Text = string.Empty;
-                txtCharacterConcept.Text = string.Empty;
+                rtbCharacterBio.Clear();
+                rtbCharacterBackground.Clear();
+                rtbCharacterNotes.Clear();
+                rtbGameNotes.Clear();
+                rtbCharacterConcept.Clear();
                 lblCareerKarma.Text = string.Empty;
                 lblMetatype.Text = string.Empty;
                 lblPlayerName.Text = string.Empty;

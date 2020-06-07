@@ -1,6 +1,6 @@
 using System;
 
-namespace Chummer.UI.Editor
+namespace Chummer.UI.Editors
 {
     partial class RtfEditor
     {
@@ -76,7 +76,7 @@ namespace Chummer.UI.Editor
             this.tsControls.Location = new System.Drawing.Point(0, 0);
             this.tsControls.Name = "tsControls";
             this.tsControls.Padding = new System.Windows.Forms.Padding(3);
-            this.tsControls.Size = new System.Drawing.Size(640, 29);
+            this.tsControls.Size = new System.Drawing.Size(558, 29);
             this.tsControls.Stretch = true;
             this.tsControls.TabIndex = 0;
             // 
@@ -230,7 +230,7 @@ namespace Chummer.UI.Editor
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(640, 360);
+            this.tlpMain.Size = new System.Drawing.Size(558, 320);
             this.tlpMain.TabIndex = 1;
             // 
             // rtbContent
@@ -241,7 +241,7 @@ namespace Chummer.UI.Editor
             this.rtbContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbContent.Location = new System.Drawing.Point(3, 32);
             this.rtbContent.Name = "rtbContent";
-            this.rtbContent.Size = new System.Drawing.Size(634, 325);
+            this.rtbContent.Size = new System.Drawing.Size(552, 285);
             this.rtbContent.TabIndex = 1;
             this.rtbContent.TabStop = false;
             this.rtbContent.Text = "";
@@ -254,9 +254,11 @@ namespace Chummer.UI.Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
             this.Name = "RtfEditor";
-            this.Size = new System.Drawing.Size(640, 360);
+            this.Size = new System.Drawing.Size(558, 320);
             this.tsControls.ResumeLayout(false);
             this.tsControls.PerformLayout();
             this.tlpMain.ResumeLayout(false);

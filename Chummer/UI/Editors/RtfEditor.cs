@@ -20,11 +20,11 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Chummer.UI.Editor
+namespace Chummer.UI.Editors
 {
     public partial class RtfEditor : UserControl
     {
-        private bool _blnAllowFormatting;
+        private bool _blnAllowFormatting = true;
 
         public RtfEditor()
         {
@@ -153,7 +153,8 @@ namespace Chummer.UI.Editor
                 {
                     _blnAllowFormatting = value;
                     rtbContent.DetectUrls = value;
-                    tsControls.Visible = value && rtbContent.Focused;
+                    if (!Utils.IsDesignerMode)
+                        tsControls.Visible = value && rtbContent.Focused;
                 }
             }
         }
