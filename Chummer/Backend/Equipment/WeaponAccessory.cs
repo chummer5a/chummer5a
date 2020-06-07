@@ -165,7 +165,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Minimum = decMin,
                             Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), CurrentDisplayNameShort),
                             AllowCancel = false
                         })
                         {
@@ -668,6 +668,11 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
+
+        /// <summary>
+        /// The name of the object as it should appear on printouts in the program's current language.
+        /// </summary>
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
@@ -1293,7 +1298,7 @@ namespace Chummer.Backend.Equipment
                 if (WirelessBonus?.InnerText != null)
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory,
-                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
+                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
                 }
 
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
@@ -1343,7 +1348,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                            strAvailItems += Environment.NewLine + "\t\t" + CurrentDisplayNameShort;
                         }
                     }
                 }
@@ -1438,7 +1443,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteWeaponAccessory() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }

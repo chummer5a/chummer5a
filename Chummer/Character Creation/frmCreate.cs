@@ -4167,7 +4167,7 @@ namespace Chummer
                             {
                                 Minimum = decMin,
                                 Maximum = decMax,
-                                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), objAccessory.DisplayNameShort(GlobalOptions.Language)),
+                                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), objAccessory.CurrentDisplayNameShort),
                                 AllowCancel = false
                             })
                             {

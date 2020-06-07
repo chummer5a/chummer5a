@@ -6227,7 +6227,7 @@ namespace Chummer
                             {
                                 Minimum = decMin,
                                 Maximum = decMax,
-                                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), objAccessory.DisplayNameShort(GlobalOptions.Language)),
+                                Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), objAccessory.CurrentDisplayNameShort),
                                 AllowCancel = false
                             })
                             {
@@ -6268,7 +6268,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory") + LanguageManager.GetString("String_Space") + objAccessory.DisplayNameShort(GlobalOptions.Language),
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory") + LanguageManager.GetString("String_Space") + objAccessory.CurrentDisplayNameShort,
                             ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen -= decCost;
@@ -6924,7 +6924,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + LanguageManager.GetString("String_Space") + objAccessory.DisplayNameShort(GlobalOptions.Language),
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + LanguageManager.GetString("String_Space") + objAccessory.CurrentDisplayNameShort,
                             ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen -= decCost;
@@ -13630,7 +13630,7 @@ namespace Chummer
                 cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon;
 
                 // gpbWeaponsCommon
-                lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
+                lblWeaponName.Text = objSelectedAccessory.CurrentDisplayNameShort;
                 lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory");
                 if (objSelectedAccessory.MaxRating > 0)
                 {
@@ -15500,7 +15500,7 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = !objAccessory.IncludedInWeapon;
 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleName.Text = objAccessory.CurrentDisplayNameShort;
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory");
                 if (objAccessory.MaxRating > 0)
                 {
