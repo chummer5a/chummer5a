@@ -27,8 +27,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using iText.Kernel.Pdf;
 using Microsoft.Win32;
-using iTextSharp.text.pdf;
 using MersenneTwister;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
@@ -60,8 +60,8 @@ namespace Chummer
 
     public sealed class SourcebookInfo : IDisposable
     {
-        string _strPath = string.Empty;
-        PdfReader _objPdfReader;
+        private string _strPath = string.Empty;
+        private PdfDocument _objPdfDocument;
 
         #region Properties
         public string Code { get; set; } = string.Empty;
@@ -74,28 +74,27 @@ namespace Chummer
                 if(_strPath != value)
                 {
                     _strPath = value;
-                    _objPdfReader?.Close();
-                    _objPdfReader = null;
+                    _objPdfDocument?.Close();
+                    _objPdfDocument = null;
                 }
             }
         }
 
         public int Offset { get; set; }
 
-        internal PdfReader CachedPdfReader
+        internal PdfDocument CachedPdfDocument
         {
             get
             {
-                if(_objPdfReader == null)
+                if (_objPdfDocument == null)
                 {
                     Uri uriPath = new Uri(Path);
-                    if(File.Exists(uriPath.LocalPath))
+                    if (File.Exists(uriPath.LocalPath))
                     {
-                        // using the "partial" param it runs much faster and I couldn't find any downsides to it
-                        _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
+                        _objPdfDocument = new PdfDocument(new PdfReader(uriPath.LocalPath));
                     }
                 }
-                return _objPdfReader;
+                return _objPdfDocument;
             }
         }
 
@@ -108,7 +107,7 @@ namespace Chummer
             {
                 if(disposing)
                 {
-                    _objPdfReader?.Dispose();
+                    _objPdfDocument?.Close();
                 }
 
                 disposedValue = true;

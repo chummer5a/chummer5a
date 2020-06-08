@@ -27,8 +27,9 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
 using Chummer.Annotations;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
 namespace Chummer
 {
@@ -990,7 +991,7 @@ namespace Chummer
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
-            PdfReader reader = objBookInfo.CachedPdfReader;
+            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
             List<string> lstStringFromPDF = new List<string>();
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
@@ -998,7 +999,7 @@ namespace Chummer
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
             int intMaxPagesToRead = 3;  // parse at most 3 pages of content
             // Loop through each page, starting at the listed page + offset.
-            for (; intPage <= reader.NumberOfPages; ++intPage)
+            for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
             {
                 // failsafe if something goes wrong, I guess no description takes more than two full pages?
                 if (intMaxPagesToRead-- == 0)
@@ -1008,7 +1009,7 @@ namespace Chummer
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
+                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                 lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
