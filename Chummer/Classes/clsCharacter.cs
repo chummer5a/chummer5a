@@ -12422,8 +12422,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
-                    _strRunAlt = GetNode().SelectSingleNode("run")?.GetAttribute("alt","") ??
-                                 GetNode(true).SelectSingleNode("run")?.GetAttribute("alt", "") ??
+                    _strRunAlt = GetNode().SelectSingleNode("run")?.GetAttribute("alt", string.Empty) ??
+                                 GetNode(true).SelectSingleNode("run")?.GetAttribute("alt", string.Empty) ??
                                  string.Empty;
                 }
 
@@ -12474,8 +12474,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
-                    _strWalkAlt = GetNode().SelectSingleNode("walk")?.GetAttribute("alt", "") ??
-                                  GetNode(true).SelectSingleNode("walk")?.GetAttribute("alt", "") ??
+                    _strWalkAlt = GetNode().SelectSingleNode("walk")?.GetAttribute("alt", string.Empty) ??
+                                  GetNode(true).SelectSingleNode("walk")?.GetAttribute("alt", string.Empty) ??
                                   string.Empty;
                 }
 
@@ -12526,8 +12526,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
-                    _strSprintAlt = GetNode().SelectSingleNode("sprint")?.GetAttribute("alt", "") ??
-                                    GetNode(true).SelectSingleNode("sprint")?.GetAttribute("alt", "") ??
+                    _strSprintAlt = GetNode().SelectSingleNode("sprint")?.GetAttribute("alt", string.Empty) ??
+                                    GetNode(true).SelectSingleNode("sprint")?.GetAttribute("alt", string.Empty) ??
                                     string.Empty;
                 }
 

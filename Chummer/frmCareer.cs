@@ -2796,21 +2796,21 @@ namespace Chummer
                     objMerge.Possessed = true;
                     objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
 
-                    ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                    ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
                         CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                    ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
                         CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                    ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
                         CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, "", CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                    ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
                         CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.INT.MetatypeMinimum,
+                    ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.INT.MetatypeMinimum,
                         CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
-                    ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.WIL.MetatypeMinimum,
+                    ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.WIL.MetatypeMinimum,
                         CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
-                    ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.LOG.MetatypeMinimum,
+                    ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.LOG.MetatypeMinimum,
                         CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
-                    ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, "", 0, 1, CharacterObject.CHA.MetatypeMinimum,
+                    ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
                         CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
                     XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
 

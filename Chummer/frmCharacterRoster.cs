@@ -213,7 +213,7 @@ namespace Chummer
                         continue;
                     }
 
-                    string strNewParent = objInfo.Directory.FullName.CheapReplace(GlobalOptions.CharacterRosterPath+"\\", () => "");
+                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalOptions.CharacterRosterPath+"\\", string.Empty);
                     dicWatch.Add(strFile,strNewParent);
                 }
 

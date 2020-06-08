@@ -526,7 +526,7 @@ namespace Chummer
             objPdfDocument.ExtraParams.Add("margin-left", "13");
             objPdfDocument.ExtraParams.Add("margin-right", "13");
             objPdfDocument.ExtraParams.Add("image-quality", "100");
-            objPdfDocument.ExtraParams.Add("print-media-type", "");
+            objPdfDocument.ExtraParams.Add("print-media-type", string.Empty);
 
             try
             {

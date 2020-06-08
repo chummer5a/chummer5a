@@ -38,8 +38,8 @@ namespace Chummer.Backend.Equipment
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
-        private string _strName = "";
-        private string _strCategory = "";
+        private string _strName = string.Empty;
+        private string _strCategory = string.Empty;
         private string _strAvailability = "0";
         private string _strDuration;
         private string _strDescription = string.Empty;
@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
         private List<string> _lstCachedInfos = new List<string>();
         private Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
         private List<XmlNode> _lstCachedQualities = new List<XmlNode>();
-        private string _strGrade = "";
+        private string _strGrade = string.Empty;
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
