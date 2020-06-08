@@ -26,6 +26,7 @@ Data Changes:
 - The custom rulesets for Toxic traditions having no requirements and for Painade being available per the German version of Cutting Aces now load and work properly.
 - The custom ruleset for having the special helmets assigned to specific armors be armor mods no longer still has an armor entry for the Urban Explorer Jumpsuit's helmet.
 - Adding the Sensei quality to a character no longer causes the program to crash.
+- The Elementalist qualities now properly restrict the character to a specific spell category instead of limiting the character to spells with the Elemental descriptor. Because not all traditions have a spell category assigned to all four elemental spirit types, because certain traditions like Draconic don't even have any spirit types assigned to spell categories, and because custom traditions and the Paradigm Shift metamagic exist, users will need to manually select the spell category to which their character is to be restricted instead of it being determined automatically.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

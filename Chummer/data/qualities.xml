@@ -17262,7 +17262,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Air</spirit>
         </limitspiritcategory>
@@ -17290,7 +17290,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Earth</spirit>
         </limitspiritcategory>
@@ -17318,7 +17318,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Fire</spirit>
         </limitspiritcategory>
@@ -17346,7 +17346,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Water</spirit>
         </limitspiritcategory>
