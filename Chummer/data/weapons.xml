@@ -17309,6 +17309,7 @@
       <page>161</page>
       <rating>0</rating>
       <ap>-1</ap>
+      <specialmodification>True</specialmodification>
       <required>
         <oneof>
           <specialmodificationlimit>1</specialmodificationlimit>
@@ -17393,6 +17394,7 @@
       <page>161</page>
       <rating>0</rating>
       <reach>1</reach>
+      <specialmodification>True</specialmodification>
       <required>
         <oneof>
           <specialmodificationlimit>1</specialmodificationlimit>
@@ -17409,6 +17411,7 @@
       <page>161</page>
       <rating>0</rating>
       <rc>1</rc>
+      <specialmodification>True</specialmodification>
       <required>
         <oneof>
           <specialmodificationlimit>1</specialmodificationlimit>
