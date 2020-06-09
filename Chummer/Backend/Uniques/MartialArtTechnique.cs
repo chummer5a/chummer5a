@@ -157,6 +157,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("martialarttechnique");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)

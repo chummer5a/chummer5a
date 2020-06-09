@@ -1010,6 +1010,8 @@ namespace Chummer.Backend.Equipment
             Gear objGear = lstGearToSearch.DeepFindById(ParentID);
 
             objWriter.WriteStartElement("weapon");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);

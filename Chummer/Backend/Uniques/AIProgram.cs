@@ -142,6 +142,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("aiprogram");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("name_english", Name);

@@ -489,6 +489,8 @@ namespace Chummer
                 if (!string.IsNullOrWhiteSpace(SourceName))
                     strSourceName = strSpace + '(' + GetSourceName(strLanguageToPrint) + ')';
                 objWriter.WriteStartElement("quality");
+                objWriter.WriteElementString("guid", InternalId);
+                objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
                 objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);

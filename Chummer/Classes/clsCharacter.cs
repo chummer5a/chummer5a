@@ -4287,10 +4287,14 @@ namespace Chummer
             objWriter.WriteElementString("metatype", DisplayMetatype(strLanguageToPrint));
             // <metatype_english />
             objWriter.WriteElementString("metatype_english", Metatype);
+            // <metatype_guid />
+            objWriter.WriteElementString("metatype_guid", MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo));
             // <metavariant />
             objWriter.WriteElementString("metavariant", DisplayMetavariant(strLanguageToPrint));
             // <metavariant_english />
             objWriter.WriteElementString("metavariant_english", Metavariant);
+            // <metavariant_guid />
+            objWriter.WriteElementString("metavariant_guid", MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo));
             // <movement />
             objWriter.WriteElementString("movement", FullMovement(objCulture, strLanguageToPrint));
             // <walk />

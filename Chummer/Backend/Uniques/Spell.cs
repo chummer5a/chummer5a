@@ -218,6 +218,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("spell");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             if (Limited)
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("String_SpellLimited", strLanguageToPrint) + ')');
             else if (Alchemical)

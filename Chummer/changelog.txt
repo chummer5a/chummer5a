@@ -22,6 +22,7 @@ Application Fixes:
 - The Description, Concept, Background, Character Notes, and Game Notes sections of characters now support rudimentary formatting.
 - Selecting a Street Scum setting or the High Life setting in the Build Method screen now properly updates the shown values in the screen's numerical displays. Choosing the change the Build Method of a character with one of these settings in Create mode now also properly displays their chosen setting in the resulting Build Method screen.
 - Special modifications of underbarrel weapons are now also properly processed.
+- The internal GUIDs for all items that have them are now included in all print- and export-information as the "guid" field. For items that also have references to the GUID of the XML data entry off of which they are based, they will also print this information: this is the "suid" field for skills, the "metatype_guid" field for metatypes, the "metavariant_guid" field for metavariants, and the "sourceid" field for everything else.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
