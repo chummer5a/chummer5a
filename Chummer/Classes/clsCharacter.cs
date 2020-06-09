@@ -17574,7 +17574,8 @@ namespace Chummer
                                                       .Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
                                                       .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
-                    _intCachedNegativeQualityLimitKarma += EnemyKarma;
+                    if (Options.EnemyKarmaQualityLimit)
+                        _intCachedNegativeQualityLimitKarma += EnemyKarma;
 
                     // Deduct the amount for free Qualities.
                     _intCachedNegativeQualityLimitKarma -=
