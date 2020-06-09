@@ -2515,7 +2515,7 @@ namespace Chummer
                         string strVersion = string.Empty;
                         //Check to see if the character was created in a version of Chummer later than the currently installed one.
                         if (xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) &&
-                            !string.IsNullOrEmpty(strVersion) && !Utils.IsUnitTest)
+                            !string.IsNullOrEmpty(strVersion))
                         {
                             if (strVersion.StartsWith("0.", StringComparison.Ordinal))
                             {
@@ -2897,7 +2897,7 @@ namespace Chummer
                         // Improvements.
                         objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
                         string strCharacterInnerXml = objXmlCharacter.InnerXml;
-                        bool removeImprovements = false;
+                        bool removeImprovements = Utils.IsUnitTest;
                         foreach (XmlNode objXmlImprovement in objXmlNodeList)
                         {
                             string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
@@ -2919,7 +2919,7 @@ namespace Chummer
                                 if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
                                     strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
                                 {
-                                    if (!Utils.IsUnitTest && showWarnings)
+                                    if (removeImprovements || showWarnings)
                                     {
                                         //Utils.BreakIfDebug();
                                         if (removeImprovements || (MessageBox.Show(
@@ -4201,6 +4201,9 @@ namespace Chummer
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
                         IsLoading = false;
+                        // Refresh Redliner now if a refresh was queued during loading
+                        if (_intCachedRedlinerBonus == int.MaxValue)
+                            RefreshRedlinerImprovements();
                         // Refresh permanent attribute changes due to essence loss
                         RefreshEssenceLossImprovements();
                         // Refresh dicepool modifiers due to filled condition monitor boxes
@@ -14218,6 +14221,11 @@ namespace Chummer
 
         public void RefreshRedlinerImprovements()
         {
+            if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+            {
+                _intCachedRedlinerBonus = int.MaxValue;
+                return;
+            }
             //Get attributes affected by redliner/cyber singularity seeker
             List<Improvement> lstSeekerImprovements = Improvements.Where(objLoopImprovement =>
                 (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
@@ -14246,16 +14254,16 @@ namespace Chummer
                 ? intCount
                 : 0;
 
-            for(int i = 0; i < lstSeekerAttributes.Count; ++i)
+            for(int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
             {
+                string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
                 Improvement objImprove = lstSeekerImprovements.FirstOrDefault(x =>
-                    x.SourceName == "SEEKER_" + lstSeekerAttributes[i] &&
-                    x.Value == (lstSeekerAttributes[i] == "BOX" ? intCount * -3 : intCount));
+                    x.SourceName == strSeekerAttribute &&
+                    x.Value == (strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount));
                 if(objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
                     lstSeekerImprovements.Remove(objImprove);
-                    --i;
                 }
             }
 
