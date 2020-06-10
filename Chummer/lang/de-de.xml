@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -10041,6 +10041,102 @@
 		<string>
 			<key>LimitCondition_SkillsActiveEscapeArtistGrappleLoose</key>
 			<text>Nur für Entfesseln und Festhalten, muss beweglich sein</text>
+		</string>
+		<string>
+			<key>DialogFilter_HeroLab</key>
+			<text>Hero Lab Dateien (*.por)|*.por</text>
+		</string>
+		<string>
+			<key>DialogFilter_ImagesPrefix</key>
+			<text>Alle Bilddateien</text>
+		</string>
+		<string>
+			<key>String_MetatypeLoadError</key>
+			<text>Fehler beim Laden des Metatyps!</text>
+		</string>
+		<string>
+			<key>Message_Options_ConfirmTelemetry</key>
+			<text>Wenn diese Option aktiviert ist, werden Ihre Chummer-Protokolle und Nutzungsdaten an das Chummer Entwicklerteam gesendet. Diese Daten geben Aufschluss darüber, was verbessert werden muss und wie Probleme behoben werden können, wobei uns detailliertere Angaben mehr Informationen liefern.\n Daneben werden Angaben darüber gesammelt, welches Betriebssystem verwendet wird und in welcher Gemeinde man sich befindet; Ersteres hilft bei Abstürzen und Leistungsdaten, während Letzteres Aufschluss darüber gibt, welche Gebietsschemata unterstützt und / oder dem Programm hinzugefügt werden sollten. \n Diese und alle anderen Daten werden vor der Sammlung anonymisiert, werden sicher auf einem Microsoft Azure-Server für einen Zeitraum von bis zu 2 Jahren gespeichert und werden nicht an Dritte außer einigen wenigen, wichtigen Chummer-Mitarbeitern weitergegeben. Daten werden immer dann übertragen, wenn Chummer gestartet, beendet oder ein neuer Charakter geladen wird. Sie haben alle Rechte an den Daten, die Sie auf diese Weise übertragen wurden. Wenn Sie alle Daten, die wir über Sie haben, anfordern oder Ihre Daten dauerhaft entfernen lassen möchten, wenden Sie sich bitte an den derzeitigen Administrator dieses Dienstes, MegalonArchon (archon.megalon@gmail.com), und wir werden versuchen, Ihre Anfrage so schnell wie möglich zu erfüllen.\n\n\n Möchten Sie fortfahren und die Telemetrie aktivieren?</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_ConfirmTelemetry</key>
+			<text>Aktivierung der Telemetrie bestätigen</text>
+		</string>
+		<string>
+			<key>Message_Options_ConfirmDetailedTelemetry</key>
+			<text>Wir schätzen es sehr, wenn man uns sehr detaillierte Protokollierungsinformationen schickt, denn so können wir Stellen zur Verbesserung des Programms finden, die sonst übersehen worden wären. Durch eine solch detaillierte Protokollierung werden Ihre Daten jedoch erheblich weniger anonym, und für diejenigen, die das Programm häufig über Internetverbindungen mit Zählern benutzen, kann dies zu nicht unerheblichen Mengen an Datenverkehr führen.\n\n\n Möchten Sie fortfahren und die sehr detaillierte Telemetrie aktivieren?</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_ConfirmDetailedTelemetry</key>
+			<text>Aktivierung der sehr detaillierten Telemetrie bestätigen</text>
+		</string>
+		<string>
+			<key>Label_Options_ImageQuality</key>
+			<text>Bildqualität:</text>
+		</string>
+		<string>
+			<key>String_Lossless_Compression_Option</key>
+			<text>Verlustfrei (PNG)</text>
+		</string>
+		<string>
+			<key>String_Lossy_Compression_Option</key>
+			<text>Verlustbehaftet (JPG)</text>
+		</string>
+		<string>
+			<key>String_RestrictedItemsHidden</key>
+			<text>* {0} Objekte sind durch Kosten- oder Verfügbarkeitsgrenzen ausgeblendet *</text>
+		</string>
+		<string>
+			<key>String_Bold</key>
+			<text>Fett</text>
+		</string>
+		<string>
+			<key>String_Italic</key>
+			<text>Kursiv</text>
+		</string>
+		<string>
+			<key>String_Underline</key>
+			<text>Unterstrichen</text>
+		</string>
+		<string>
+			<key>String_Strikethrough</key>
+			<text>Durchgestrichen</text>
+		</string>
+		<string>
+			<key>String_Font</key>
+			<text>Schriftart</text>
+		</string>
+		<string>
+			<key>String_ForeColor</key>
+			<text>Vordergrundfarbe</text>
+		</string>
+		<string>
+			<key>String_BackColor</key>
+			<text>Hintergrundfarbe</text>
+		</string>
+		<string>
+			<key>String_AlignLeft</key>
+			<text>Links ausrichten</text>
+		</string>
+		<string>
+			<key>String_AlignCenter</key>
+			<text>Zentriert ausrichten</text>
+		</string>
+		<string>
+			<key>String_AlignRight</key>
+			<text>Rechts ausrichten</text>
+		</string>
+		<string>
+			<key>String_UnorderedList</key>
+			<text>Liste umstellen</text>
+		</string>
+		<string>
+			<key>String_IncreaseIndent</key>
+			<text>Einrückung erweitern</text>
+		</string>
+		<string>
+			<key>String_DecreaseIndent</key>
+			<text>Einrückung reduzieren</text>
 		</string>
 	</strings>
 </chummer>
