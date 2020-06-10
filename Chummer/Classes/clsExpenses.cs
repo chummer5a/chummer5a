@@ -381,6 +381,7 @@ namespace Chummer
             if (Amount != 0 || _objCharacter.Options.PrintFreeExpenses)
             {
                 objWriter.WriteStartElement("expense");
+                objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("date", Date.ToString(objCulture));
                 objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
                 objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));

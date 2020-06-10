@@ -112,6 +112,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("initiationgrade");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("group", Group.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalOptions.InvariantCultureInfo));

@@ -168,6 +168,7 @@ namespace Chummer
             }
 
             objWriter.WriteStartElement("spirit");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("crittername", CritterName);

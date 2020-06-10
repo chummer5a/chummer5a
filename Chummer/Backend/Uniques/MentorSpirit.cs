@@ -268,6 +268,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("mentorspirit");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("mentortype", _eMentorType.ToString());
             objWriter.WriteElementString("name_english", Name);

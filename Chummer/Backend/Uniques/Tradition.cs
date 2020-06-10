@@ -346,6 +346,8 @@ namespace Chummer.Backend.Uniques
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("tradition");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));

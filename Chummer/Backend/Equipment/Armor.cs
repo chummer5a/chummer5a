@@ -453,7 +453,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("armor");
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("guid",InternalId);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("armor", _strArmorValue);
@@ -656,6 +656,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("armor");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);

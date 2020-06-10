@@ -337,6 +337,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("contact");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);

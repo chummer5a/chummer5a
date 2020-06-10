@@ -369,6 +369,7 @@ namespace Chummer.Backend.Skills
                 return;
             objWriter.WriteStartElement("skillgroup");
 
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
