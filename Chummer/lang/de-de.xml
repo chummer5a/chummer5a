@@ -9947,7 +9947,7 @@
 			<text>Nur für Wissens- und technische Fertigkeiten</text>
 		</string>
 		<string>
-			<key>Nur füfffff</key>
+			<key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
 			<text>Nur für Vorführung, verbundenes Synthtrument erforderlich</text>
 		</string>
 		<string>
@@ -10137,6 +10137,18 @@
 		<string>
 			<key>String_DecreaseIndent</key>
 			<text>Einrückung reduzieren</text>
+		</string>
+		<string>
+			<key>Tip_Options_TelemetryId</key>
+			<text>Installation: {0}</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillGroupStealth</key>
+			<text>Nur für die Fertigkeitsgruppe Heimlichkeit</text>
+		</string>
+		<string>
+			<key>LimitCondition_SkillGroupStealthNaked</key>
+			<text>Nur für die Fertigkeitsgruppe Heimlichkeit, muss vollständig unbekleidet sein</text>
 		</string>
 	</strings>
 </chummer>
