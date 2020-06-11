@@ -646,7 +646,7 @@ namespace Chummer
 
                         // Merge the ToolStrips.
                         ToolStripManager.RevertMerge("toolStrip");
-                        ToolStripManager.Merge(toolStrip, "toolStrip");
+                        ToolStripManager.Merge(tsMain, "toolStrip");
 
                         using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
                         {
@@ -1203,7 +1203,7 @@ namespace Chummer
         {
             // Merge the ToolStrips.
             ToolStripManager.RevertMerge("toolStrip");
-            ToolStripManager.Merge(toolStrip, "toolStrip");
+            ToolStripManager.Merge(tsMain, "toolStrip");
         }
         #endregion
 
@@ -1219,13 +1219,13 @@ namespace Chummer
                     UpdateWindowTitle(false);
                     break;
                 case nameof(Character.DisplayNuyen):
-                    tssNuyen.Text = CharacterObject.DisplayNuyen;
+                    tslNuyen.Text = CharacterObject.DisplayNuyen;
                     break;
                 case nameof(Character.DisplayKarma):
-                    tssKarma.Text = CharacterObject.DisplayKarma;
+                    tslKarma.Text = CharacterObject.DisplayKarma;
                     break;
                 case nameof(Character.DisplayEssence):
-                    tssEssence.Text = CharacterObject.DisplayEssence;
+                    tslEssence.Text = CharacterObject.DisplayEssence;
                     break;
                 case nameof(Character.NuyenBP):
                 case nameof(Character.MetatypeBP):

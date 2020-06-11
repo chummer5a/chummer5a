@@ -190,8 +190,8 @@ namespace Chummer
                         CharacterObject.BuildKarma == 0)
                     {
                         _blnFreestyle = true;
-                        tssBPRemain.Visible = false;
-                        tssBPRemainLabel.Visible = false;
+                        tslKarmaRemaining.Visible = false;
+                        tslKarmaRemainingLabel.Visible = false;
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_BuildMethod", op_load_frm_create))
@@ -267,8 +267,8 @@ namespace Chummer
                         lblMetagenicQualities.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblMetagenicQualitiesLabel.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
-                        tssBPLabel.Text = LanguageManager.GetString("Label_Karma");
-                        tssBPRemainLabel.Text =
+                        tslKarmaLabel.Text = LanguageManager.GetString("Label_Karma");
+                        tslKarmaRemainingLabel.Text =
                             LanguageManager.GetString("Label_KarmaRemaining");
                         tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma");
                         lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma");
@@ -637,7 +637,7 @@ namespace Chummer
 
                     // Merge the ToolStrips.
                     ToolStripManager.RevertMerge("toolStrip");
-                    ToolStripManager.Merge(toolStrip, "toolStrip");
+                    ToolStripManager.Merge(tsMain, "toolStrip");
                     using (_ = Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_create))
                     {
                         tabSkillUc.RealLoad();
@@ -1023,7 +1023,7 @@ namespace Chummer
         {
             // Merge the ToolStrips.
             ToolStripManager.RevertMerge("toolStrip");
-            ToolStripManager.Merge(toolStrip, "toolStrip");
+            ToolStripManager.Merge(tsMain, "toolStrip");
         }
         #endregion
 
@@ -1041,7 +1041,7 @@ namespace Chummer
                     UpdateWindowTitle(false);
                     break;
                 case nameof(Character.DisplayNuyen):
-                    tssNuyenRemaining.Text = CharacterObject.DisplayNuyen;
+                    tslNuyenRemaining.Text = CharacterObject.DisplayNuyen;
                     break;
                 case nameof(Character.StolenNuyen):
                     bool show = CharacterObject.Improvements.Any(i =>
@@ -1051,7 +1051,7 @@ namespace Chummer
                     lblStolenNuyenLabel.Visible = show;
                     break;
                 case nameof(Character.DisplayEssence):
-                    tssEssence.Text = CharacterObject.DisplayEssence;
+                    tslEssence.Text = CharacterObject.DisplayEssence;
                     break;
                 case nameof(Character.NuyenBP):
                 case nameof(Character.MetatypeBP):
@@ -9112,16 +9112,16 @@ namespace Chummer
                 lblInitiationBP.Text = intInitiationPoints.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 // ------------------------------------------------------------------------------
                 // Update the number of BP remaining in the StatusBar.
-                tssBPRemain.Text = intKarmaPointsRemain.ToString(GlobalOptions.CultureInfo);
+                tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalOptions.CultureInfo);
                 if (_blnFreestyle)
                 {
-                    tssBP.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalOptions.CultureInfo);
-                    tssBP.ForeColor = intFreestyleBP < intFreestyleBPMin ? Color.OrangeRed : SystemColors.ControlText;
+                    tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalOptions.CultureInfo);
+                    tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin ? Color.OrangeRed : SystemColors.ControlText;
                 }
                 else
                 {
-                    tssBP.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
-                    tssBP.ForeColor = SystemColors.ControlText;
+                    tslKarma.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
+                    tslKarma.ForeColor = SystemColors.ControlText;
                 }
             }
 
