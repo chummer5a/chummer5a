@@ -1045,6 +1045,7 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
+            this.flpVehiclesMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1258,6 +1259,7 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsGearAllowRename.SuspendLayout();
+            this.flpVehiclesMatrixCheckBoxes.SuspendLayout();
             this.SuspendLayout();
             // 
             // StatusStrip
@@ -7683,7 +7685,6 @@ namespace Chummer
             this.lblGearAttackLabel.TabIndex = 148;
             this.lblGearAttackLabel.Tag = "Label_Attack";
             this.lblGearAttackLabel.Text = "Attack:";
-            this.lblGearAttackLabel.Visible = false;
             // 
             // lblGearSleazeLabel
             // 
@@ -7696,7 +7697,6 @@ namespace Chummer
             this.lblGearSleazeLabel.TabIndex = 150;
             this.lblGearSleazeLabel.Tag = "Label_Sleaze";
             this.lblGearSleazeLabel.Text = "Sleaze:";
-            this.lblGearSleazeLabel.Visible = false;
             // 
             // cboGearFirewall
             // 
@@ -7722,7 +7722,6 @@ namespace Chummer
             this.lblGearFirewallLabel.TabIndex = 154;
             this.lblGearFirewallLabel.Tag = "Label_Firewall";
             this.lblGearFirewallLabel.Text = "Firewall:";
-            this.lblGearFirewallLabel.Visible = false;
             // 
             // cboGearDataProcessing
             // 
@@ -7748,7 +7747,6 @@ namespace Chummer
             this.lblGearDataProcessingLabel.TabIndex = 152;
             this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
             this.lblGearDataProcessingLabel.Text = "Data Proc:";
-            this.lblGearDataProcessingLabel.Visible = false;
             // 
             // cboGearAttack
             // 
@@ -10359,11 +10357,13 @@ namespace Chummer
             this.flpVehicles.Controls.Add(this.gpbVehiclesWeapon);
             this.flpVehicles.Controls.Add(this.gpbVehiclesMatrix);
             this.flpVehicles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpVehicles.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpVehicles.Location = new System.Drawing.Point(301, 29);
             this.flpVehicles.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehicles.Name = "flpVehicles";
             this.flpVehicles.Size = new System.Drawing.Size(534, 596);
             this.flpVehicles.TabIndex = 246;
+            this.flpVehicles.WrapContents = false;
             // 
             // gpbVehiclesCommon
             // 
@@ -11550,8 +11550,6 @@ namespace Chummer
             this.tlpVehiclesMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpVehiclesMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpVehiclesMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpVehiclesMatrix.Controls.Add(this.chkVehicleHomeNode, 2, 0);
-            this.tlpVehiclesMatrix.Controls.Add(this.chkVehicleActiveCommlink, 3, 0);
             this.tlpVehiclesMatrix.Controls.Add(this.lblVehicleDeviceLabel, 0, 1);
             this.tlpVehiclesMatrix.Controls.Add(this.lblVehicleDevice, 0, 2);
             this.tlpVehiclesMatrix.Controls.Add(this.cboVehicleAttack, 1, 2);
@@ -11562,6 +11560,7 @@ namespace Chummer
             this.tlpVehiclesMatrix.Controls.Add(this.cboVehicleDataProcessing, 3, 2);
             this.tlpVehiclesMatrix.Controls.Add(this.cboVehicleFirewall, 4, 2);
             this.tlpVehiclesMatrix.Controls.Add(this.lblVehicleFirewallLabel, 4, 1);
+            this.tlpVehiclesMatrix.Controls.Add(this.flpVehiclesMatrixCheckBoxes, 2, 0);
             this.tlpVehiclesMatrix.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVehiclesMatrix.Location = new System.Drawing.Point(3, 16);
             this.tlpVehiclesMatrix.Name = "tlpVehiclesMatrix";
@@ -11578,10 +11577,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkVehicleHomeNode.AutoSize = true;
-            this.chkVehicleHomeNode.Location = new System.Drawing.Point(199, 4);
+            this.chkVehicleHomeNode.Location = new System.Drawing.Point(3, 4);
             this.chkVehicleHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleHomeNode.Name = "chkVehicleHomeNode";
-            this.chkVehicleHomeNode.Size = new System.Drawing.Size(92, 17);
+            this.chkVehicleHomeNode.Size = new System.Drawing.Size(83, 17);
             this.chkVehicleHomeNode.TabIndex = 127;
             this.chkVehicleHomeNode.Tag = "Checkbox_HomeNode";
             this.chkVehicleHomeNode.Text = "Home Node";
@@ -11595,11 +11594,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkVehicleActiveCommlink.AutoSize = true;
-            this.tlpVehiclesMatrix.SetColumnSpan(this.chkVehicleActiveCommlink, 2);
-            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(297, 4);
+            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(92, 4);
             this.chkVehicleActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleActiveCommlink.Name = "chkVehicleActiveCommlink";
-            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(194, 17);
+            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(104, 17);
             this.chkVehicleActiveCommlink.TabIndex = 242;
             this.chkVehicleActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkVehicleActiveCommlink.Text = "Active Commlink";
@@ -13845,6 +13843,19 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
+            // flpVehiclesMatrixCheckBoxes
+            // 
+            this.flpVehiclesMatrixCheckBoxes.AutoSize = true;
+            this.flpVehiclesMatrixCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesMatrix.SetColumnSpan(this.flpVehiclesMatrixCheckBoxes, 3);
+            this.flpVehiclesMatrixCheckBoxes.Controls.Add(this.chkVehicleHomeNode);
+            this.flpVehiclesMatrixCheckBoxes.Controls.Add(this.chkVehicleActiveCommlink);
+            this.flpVehiclesMatrixCheckBoxes.Location = new System.Drawing.Point(196, 0);
+            this.flpVehiclesMatrixCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesMatrixCheckBoxes.Name = "flpVehiclesMatrixCheckBoxes";
+            this.flpVehiclesMatrixCheckBoxes.Size = new System.Drawing.Size(199, 25);
+            this.flpVehiclesMatrixCheckBoxes.TabIndex = 243;
+            // 
             // frmCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14208,6 +14219,8 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsGearAllowRename.ResumeLayout(false);
+            this.flpVehiclesMatrixCheckBoxes.ResumeLayout(false);
+            this.flpVehiclesMatrixCheckBoxes.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -15200,5 +15213,6 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel12;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel14;
         private System.Windows.Forms.Panel pnlLongTexts;
+        private System.Windows.Forms.FlowLayoutPanel flpVehiclesMatrixCheckBoxes;
     }
 }
