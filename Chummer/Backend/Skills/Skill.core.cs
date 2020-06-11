@@ -701,7 +701,7 @@ namespace Chummer.Backend.Skills
 
         public void AddSpecialization(string strName)
         {
-            SkillSpecialization nspec = new SkillSpecialization(strName, false, this);
+            SkillSpecialization nspec = new SkillSpecialization(strName);
             if (CharacterObject.Created)
             {
                 int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
@@ -829,18 +829,23 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Dicepool of the skill, formatted for use in tooltips by other objects.
         /// </summary>
-        /// <param name="pool">Dicepool to use. In most </param>
-        /// <param name="validSpec">A specialization to check for. If not empty, will be checked for and added to the string.</param>
+        /// <param name="intPool">Dicepool to use. In most </param>
+        /// <param name="strValidSpec">A specialization to check for. If not empty, will be checked for and added to the string.</param>
         /// <returns></returns>
-        public string FormattedDicePool(int pool, string validSpec = "")
+        public string FormattedDicePool(int intPool, string strValidSpec = "")
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            string strReturn = string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", CurrentDisplayName, strSpace, pool);
+            string strReturn = string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", CurrentDisplayName, strSpace, intPool);
             // Add any Specialization bonus if applicable.
-            if (HasSpecialization(validSpec) && !string.IsNullOrWhiteSpace(validSpec))
-                strReturn +=
-                    string.Format(GlobalOptions.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+', LanguageManager.GetString("String_ExpenseSpecialization"),
-                        LanguageManager.GetString("String_Colon"), DisplayCategory(GlobalOptions.Language), CharacterObject.Options.SpecializationBonus);
+            if (!string.IsNullOrWhiteSpace(strValidSpec))
+            {
+                int intSpecBonus = GetSpecializationBonus(strValidSpec);
+                if (intSpecBonus != 0)
+                    strReturn +=
+                        string.Format(GlobalOptions.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+', LanguageManager.GetString("String_ExpenseSpecialization"),
+                            LanguageManager.GetString("String_Colon"), DisplayCategory(GlobalOptions.Language), intSpecBonus);
+            }
+
             return strReturn;
         }
     }

@@ -197,6 +197,7 @@ namespace Chummer
             Ambidextrous,
             UnarmedReach,
             SkillSpecialization,
+            SkillExpertise, // SASS' Inspired, adds a specialization that gives a +3 bonus instead of the usual +2
             SkillSpecializationOption,
             NativeLanguageLimit,
             AdeptPowerFreeLevels,
@@ -1543,6 +1544,8 @@ namespace Chummer
                 case ImprovementType.UnarmedReach:
                     break;
                 case ImprovementType.SkillSpecialization:
+                    break;
+                case ImprovementType.SkillExpertise:
                     break;
                 case ImprovementType.SkillSpecializationOption:
                 {
@@ -4429,6 +4432,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
+                    case Improvement.ImprovementType.SkillExpertise:
                         {
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
                             SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);

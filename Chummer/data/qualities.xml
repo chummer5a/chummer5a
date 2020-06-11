@@ -2562,7 +2562,9 @@
       <name>Inspired</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <selectexpertise limittoskill="Artisan" />
+      </bonus>
       <source>SASS</source>
       <page>31</page>
     </quality>

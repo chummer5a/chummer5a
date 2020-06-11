@@ -506,10 +506,9 @@ namespace Chummer
                 int intReturn = 0;
                 if (Skill != null)
                 {
-                  intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
-                  // Add any Specialization bonus if applicable.
-                  if (Skill.HasSpecialization(CurrentDisplayName))
-                    intReturn += _objCharacter.Options.SpecializationBonus;
+                    intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
+                    // Add any Specialization bonus if applicable.
+                    intReturn += Skill.GetSpecializationBonus(CurrentDisplayName);
                 }
 
                 // Include any Improvements to Threading.

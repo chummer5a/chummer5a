@@ -6198,7 +6198,7 @@ namespace Chummer.Classes
                 Log.Info("Calling CreateImprovement");
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
                 CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
+                SkillSpecialization nspec = new SkillSpecialization(strSpec, true);
                 objSkill.Specializations.Add(nspec);
             }
         }
@@ -6240,7 +6240,7 @@ namespace Chummer.Classes
                     if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                        SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
+                        SkillSpecialization nspec = new SkillSpecialization(strSpec, true);
                         objSkill.Specializations.Add(nspec);
                     }
                 }
@@ -7394,6 +7394,8 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("disablequality");
+            Log.Info("disablequality = " + bonusNode.OuterXml);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique);
         }
 
@@ -7401,7 +7403,55 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("freequality");
+            Log.Info("freequality = " + bonusNode.OuterXml);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique);
+        }
+
+        public void selectexpertise(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("selectexpertise");
+            Log.Info("selectexpertise = " + bonusNode.OuterXml);
+
+            // Select the skill to get the expertise
+            bool blnIsKnowledgeSkill = false;
+            string strForcedValue = ForcedValue;
+            ForcedValue = string.Empty; // Temporarily clear Forced Value because the Forced Value should be for the specialization name, not the skill
+            string strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
+            ForcedValue = strForcedValue;
+            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+            if (objSkill == null)
+                throw new AbortedException();
+            // Select the actual specialization to add as an expertise
+            using (frmSelectItem frmPickItem = new frmSelectItem())
+            {
+                string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLimitToSpecialization))
+                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.Split(',').Select(x => x.Trim())
+                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, LanguageManager.TranslateExtra(x))));
+                else
+                    frmPickItem.SetGeneralItemsMode(objSkill.CGLSpecializations);
+                if (!string.IsNullOrEmpty(ForcedValue))
+                    frmPickItem.ForceItem(ForcedValue);
+
+                frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
+                frmPickItem.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.SelectedName))
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickItem.SelectedName;
+            }
+            // Create the Improvement.
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, SelectedValue);
+            SkillSpecialization objExpertise = new SkillSpecialization(SelectedValue, true, true);
+            objSkill.Specializations.Add(objExpertise);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

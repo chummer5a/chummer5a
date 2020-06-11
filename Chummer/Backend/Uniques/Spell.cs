@@ -808,8 +808,7 @@ namespace Chummer
                 {
                     intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
                     // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(Category))
-                        intReturn += _objCharacter.Options.SpecializationBonus;
+                    intReturn += Skill.GetSpecializationBonus(Category);
                 }
 
                 // Include any Improvements to the Spell's dicepool.

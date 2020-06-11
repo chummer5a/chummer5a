@@ -1375,7 +1375,7 @@ namespace Chummer
                 if (objSkill == null) continue;
                 string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                 ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization spec = new SkillSpecialization(strSpec, true, objSkill);
+                SkillSpecialization spec = new SkillSpecialization(strSpec, true);
                 objSkill.Specializations.Add(spec);
             }
             //Set the Skill Group Ratings for the Critter.
@@ -3135,6 +3135,17 @@ namespace Chummer
                                             Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                             Improvement.ImprovementType.ContactMakeFree,
                                             objQuality.DisplayNameShort(GlobalOptions.Language));
+                                    }
+
+                                    if (LastSavedVersion <= new Version(5, 212, 43)
+                                        && objQuality.Name == "Inspired"
+                                        && objQuality.Source == "SASS"
+                                        && objQuality.Bonus["selectexpertise"] == null)
+                                    {
+                                        // Old handling of SASS' Inspired quality was both hardcoded and wrong
+                                        // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
+                                        // so add the quality to the list for processing when the character is opened.
+                                        _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                     }
                                 }
                             }

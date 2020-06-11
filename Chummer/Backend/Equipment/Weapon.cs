@@ -4172,14 +4172,20 @@ namespace Chummer.Backend.Equipment
                                 // If the character has a Specialization, include it in the Dice Pool string.
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {
-                                    if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) ||
-                                        objSkill.HasSpecialization(Name) ||
-                                        objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ||
-                                        objSkill.HasSpecialization(Category) ||
-                                        !string.IsNullOrEmpty(objSkill.Specialization) &&
-                                        (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2)))
+                                    SkillSpecialization objSpec =
+                                        objSkill.GetSpecialization(DisplayNameShort(GlobalOptions.Language)) ??
+                                        objSkill.GetSpecialization(Name) ??
+                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ??
+                                        objSkill.GetSpecialization(Category);
+
+                                    if (objSpec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
                                     {
-                                        intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
+                                        objSpec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
+                                    }
+
+                                    if (objSpec != null)
+                                    {
+                                        intDicePoolModifier += objSpec.SpecializationBonus;
                                     }
                                 }
                             }
@@ -4192,14 +4198,10 @@ namespace Chummer.Backend.Equipment
                 if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
                     FireMode == FiringMode.ManualOperation)
                 {
-                    if (_objCharacter.SkillsSection.GetActiveSkill("Gunnery").Specializations.Count > 0 &&
-                        RelevantSpecialization != "None")
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                    if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
                     {
-                        if (_objCharacter.SkillsSection.GetActiveSkill("Gunnery").Specializations
-                            .Any(s => s.Name == RelevantSpecialization))
-                        {
-                            intDicePool += _objCharacter.Options.SpecializationBonus;
-                        }
+                        intDicePool += objSkill.GetSpecializationBonus(RelevantSpecialization);
                     }
                 }
 
@@ -4390,8 +4392,10 @@ namespace Chummer.Backend.Equipment
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
                                 if (spec != null)
                                 {
-                                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, spec.CurrentDisplayName, _objCharacter.Options.SpecializationBonus);
+                                    int intSpecBonus = spec.SpecializationBonus;
+                                    if (intSpecBonus != 0)
+                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, spec.CurrentDisplayName, intSpecBonus);
                                 }
                             }
                             break;
@@ -4406,8 +4410,10 @@ namespace Chummer.Backend.Equipment
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
                                 if (spec != null)
                                 {
-                                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, spec.CurrentDisplayName, _objCharacter.Options.SpecializationBonus);
+                                    int intSpecBonus = spec.SpecializationBonus;
+                                    if (intSpecBonus != 0)
+                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, spec.CurrentDisplayName, intSpecBonus);
                                 }
                             }
                             break;
@@ -4434,8 +4440,10 @@ namespace Chummer.Backend.Equipment
                                     }
                                     if (spec != null)
                                     {
-                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                            strSpace, spec.CurrentDisplayName, _objCharacter.Options.SpecializationBonus);
+                                        int intSpecBonus = spec.SpecializationBonus;
+                                        if (intSpecBonus != 0)
+                                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                                strSpace, spec.CurrentDisplayName, intSpecBonus);
                                     }
                                 }
                             }
