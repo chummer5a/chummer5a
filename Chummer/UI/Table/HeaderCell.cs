@@ -28,8 +28,6 @@ namespace Chummer.UI.Table
         private int _intArrowSize = 8;
         private int _intArrowPadding = 3;
         private SortOrder _eSortType = SortOrder.None;
-
-        private static readonly SolidBrush _objArrowBrush = new SolidBrush(Color.Black);
         private const int _intLabelPadding = 3;
 
         public HeaderCell()
@@ -130,11 +128,11 @@ namespace Chummer.UI.Table
         protected override void OnPaint(PaintEventArgs e)
         {
             // add gradient to background
-            Rectangle rect = new Rectangle(0, 0, Width, Height);
-            using (LinearGradientBrush objBrush = new LinearGradientBrush(rect, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical))
-                e.Graphics.FillRectangle(objBrush, rect);
+            using (LinearGradientBrush objBrush = new LinearGradientBrush(ClientRectangle, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical))
+                e.Graphics.FillRectangle(objBrush, ClientRectangle);
 
-            if (Sortable && SortType != SortOrder.None) {
+            if (Sortable && SortType != SortOrder.None)
+            {
                 // draw arrow
                 int intTipY = ArrowPadding + ArrowSize / 6;
                 int intBottomY = (ArrowPadding + ArrowSize) - ArrowSize / 6;
@@ -149,7 +147,7 @@ namespace Chummer.UI.Table
                     intTipY = intBottomY;
                     intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(_objArrowBrush, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
+                e.Graphics.FillPolygon(Brushes.Black, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
             }
             base.OnPaint(e);
         }
