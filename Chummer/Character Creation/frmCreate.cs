@@ -892,6 +892,7 @@ namespace Chummer
                     }
 
                     Log.Error(ex);
+                    throw;
                 }
             }
         }
@@ -1025,9 +1026,9 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(tsMain, "toolStrip");
         }
-        #endregion
+#endregion
 
-        #region Character Events
+#region Character Events
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (_blnReapplyImprovements)
@@ -1538,9 +1539,9 @@ namespace Chummer
             IsDirty = true;
         }
         */
-        #endregion
+#endregion
 
-        #region Menu Events
+#region Menu Events
         private void mnuFileSave_Click(object sender, EventArgs e)
         {
             SaveCharacter();
@@ -2550,9 +2551,9 @@ namespace Chummer
             IsDirty = true;
         }
 
-        #endregion
+#endregion
 
-        #region Martial Tab Control Events
+#region Martial Tab Control Events
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
             IsRefreshing = true;
@@ -7457,17 +7458,17 @@ namespace Chummer
 
             IsRefreshing = false;
         }
-        #endregion
+#endregion
 
-        #region Additional Drug Tab Control Events
+#region Additional Drug Tab Control Events
         private void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedDrug();
             RefreshPasteStatus(sender, e);
         }
-        #endregion
+#endregion
 
-        #region Additional Vehicle Tab Control Events
+#region Additional Vehicle Tab Control Events
         private void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedVehicle();
@@ -8187,9 +8188,9 @@ namespace Chummer
                 ((TextBox)sender)?.SelectAll();
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Critter Powers Tab Control Events
+#region Additional Critter Powers Tab Control Events
         private void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Look for the selected Critter Power.
@@ -14655,7 +14656,7 @@ namespace Chummer
             pnlAttributes.ResumeLayout();
         }
 
-        #region Stolen Property Changes
+#region Stolen Property Changes
         private void chkDrugStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (!(treCustomDrugs.SelectedNode?.Tag is IHasStolenProperty loot)) return;
@@ -14698,7 +14699,7 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
-        #endregion
+#endregion
 
         private void btnDeleteCustomDrug_Click(object sender, EventArgs e)
         {

@@ -290,6 +290,9 @@ namespace Chummer
                 {
                     Console.WriteLine(e);
                     Log.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
 
                 //load the plugins and maybe work of any command line arguments
@@ -406,10 +409,12 @@ namespace Chummer
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
                             break;
-                        case 5: Log.Warn(exception);
+                        case 5:
+                            Log.Warn(exception);
                             allUnblocked = false;
                             break;
-                        default: Log.Error(exception);
+                        default:
+                            Log.Error(exception);
                             allUnblocked = false;
                             break;
                     }

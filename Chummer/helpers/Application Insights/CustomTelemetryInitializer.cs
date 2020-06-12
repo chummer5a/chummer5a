@@ -71,6 +71,9 @@ namespace Chummer
                 catch (Exception e)
                 {
                     Log.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
             }
         }
