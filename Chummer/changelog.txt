@@ -35,6 +35,8 @@ Data Changes:
 - The special modifications for Improved AP, Improved Reach, and Improved Recoil Comp are now properly marked as such and are therefore now taken into account when trying to add more special modifications.
 - The SASS version of Inspired now properly requires an Artisan specialization to be chosen that will be added with a +3 bonus instead of applying a +3 bonus to all Artisan specializations.
 - The Run Faster version of Inspired no longer incorrectly makes all Artisan specializations give a +3 bonus instead of a +2 bonus.
+- All lifestyle assets that require the character to specify for what they are purchased for (e.g. Grid Subscription, Patron of the Arts) can now properly be purchased multiple times.
+- The lifestyle assets "Merchandise: Goods (Avail X)" are now correctly named "Merchandise: Goods (Specific Item) (Avail X)" and now appropriately require the character to select the specific legal good that is being sold.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
