@@ -20,8 +20,8 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
-                _italic?.Dispose();
-                _italicName?.Dispose();
+                _fntItalic?.Dispose();
+                _fntItalicName?.Dispose();
                 UnbindSkillControl();
             }
             base.Dispose(disposing);
@@ -36,37 +36,41 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblName = new Chummer.LabelWithToolTip();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblAttribute = new System.Windows.Forms.Label();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.pnlButtons = new System.Windows.Forms.Panel();
+            this.flpButtonsCareer = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnCareerIncrease = new Chummer.ButtonWithToolTip();
+            this.lblCareerRating = new System.Windows.Forms.Label();
+            this.flpButtonsCreate = new System.Windows.Forms.FlowLayoutPanel();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
-            this.lblModifiedRating = new Chummer.LabelWithToolTip();
-            this.cboSpec = new ElasticComboBox();
-            this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.lblCareerRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new Chummer.ButtonWithToolTip();
+            this.lblName = new Chummer.LabelWithToolTip();
+            this.lblModifiedRating = new Chummer.LabelWithToolTip();
+            this.pnlSpecs = new System.Windows.Forms.Panel();
+            this.tlpSpecsCareer = new System.Windows.Forms.TableLayoutPanel();
             this.lblCareerSpec = new System.Windows.Forms.Label();
             this.btnAddSpec = new Chummer.ButtonWithToolTip();
+            this.tlpSpecsCreate = new System.Windows.Forms.TableLayoutPanel();
+            this.chkKarma = new System.Windows.Forms.CheckBox();
+            this.cboSpec = new Chummer.ElasticComboBox();
+            this.pnlAttributes = new System.Windows.Forms.Panel();
             this.btnAttribute = new System.Windows.Forms.Button();
-            this.cboSelectAttribute = new ElasticComboBox();
+            this.cboSelectAttribute = new Chummer.ElasticComboBox();
             this.cmsSkillLabel.SuspendLayout();
+            this.tlpMain.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
+            this.flpButtonsCareer.SuspendLayout();
+            this.flpButtonsCreate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
+            this.pnlSpecs.SuspendLayout();
+            this.tlpSpecsCareer.SuspendLayout();
+            this.tlpSpecsCreate.SuspendLayout();
+            this.pnlAttributes.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // lblName
-            // 
-            this.lblName.ContextMenuStrip = this.cmsSkillLabel;
-            this.lblName.Location = new System.Drawing.Point(0, 5);
-            this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(35, 13);
-            this.lblName.TabIndex = 0;
-            this.lblName.Text = "label1";
-            this.lblName.ToolTipText = "";
-            this.lblName.Click += new System.EventHandler(this.lblName_Click);
             // 
             // cmsSkillLabel
             // 
@@ -84,97 +88,69 @@ namespace Chummer.UI.Skills
             this.tsSkillLabelNotes.Text = "&Notes";
             this.tsSkillLabelNotes.Click += new System.EventHandler(this.tsSkillLabelNotes_Click);
             // 
-            // lblAttribute
+            // tlpMain
             // 
-            this.lblAttribute.AutoSize = true;
-            this.lblAttribute.Location = new System.Drawing.Point(133, 4);
-            this.lblAttribute.Name = "lblAttribute";
-            this.lblAttribute.Size = new System.Drawing.Size(29, 13);
-            this.lblAttribute.TabIndex = 3;
-            this.lblAttribute.Text = "ATR";
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 6;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Controls.Add(this.pnlButtons, 2, 0);
+            this.tlpMain.Controls.Add(this.cmdDelete, 5, 0);
+            this.tlpMain.Controls.Add(this.lblName, 0, 0);
+            this.tlpMain.Controls.Add(this.lblModifiedRating, 3, 0);
+            this.tlpMain.Controls.Add(this.pnlSpecs, 4, 0);
+            this.tlpMain.Controls.Add(this.pnlAttributes, 1, 0);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(0, 0);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 1;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(506, 24);
+            this.tlpMain.TabIndex = 28;
             // 
-            // nudKarma
+            // pnlButtons
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
-            this.nudKarma.Location = new System.Drawing.Point(210, 2);
-            this.nudKarma.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudKarma.Name = "nudKarma";
-            this.nudKarma.Size = new System.Drawing.Size(40, 20);
-            this.nudKarma.TabIndex = 14;
+            this.pnlButtons.AutoSize = true;
+            this.pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlButtons.Controls.Add(this.flpButtonsCareer);
+            this.pnlButtons.Controls.Add(this.flpButtonsCreate);
+            this.pnlButtons.Location = new System.Drawing.Point(87, 0);
+            this.pnlButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Size = new System.Drawing.Size(82, 24);
+            this.pnlButtons.TabIndex = 32;
             // 
-            // nudSkill
+            // flpButtonsCareer
             // 
-            this.nudSkill.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
-            this.nudSkill.Location = new System.Drawing.Point(168, 2);
-            this.nudSkill.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudSkill.Name = "nudSkill";
-            this.nudSkill.Size = new System.Drawing.Size(40, 20);
-            this.nudSkill.TabIndex = 15;
-            // 
-            // lblModifiedRating
-            // 
-            this.lblModifiedRating.AutoSize = true;
-            this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModifiedRating.Location = new System.Drawing.Point(256, 5);
-            this.lblModifiedRating.Name = "lblModifiedRating";
-            this.lblModifiedRating.Size = new System.Drawing.Size(14, 13);
-            this.lblModifiedRating.TabIndex = 16;
-            this.lblModifiedRating.Text = "0";
-            this.lblModifiedRating.ToolTipText = "";
-            // 
-            // cboSpec
-            // 
-            this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSpec.FormattingEnabled = true;
-            this.cboSpec.Location = new System.Drawing.Point(310, 1);
-            this.cboSpec.Name = "cboSpec";
-            this.cboSpec.Size = new System.Drawing.Size(402, 21);
-            this.cboSpec.Sorted = true;
-            this.cboSpec.TabIndex = 17;
-            // 
-            // chkKarma
-            // 
-            this.chkKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkKarma.AutoSize = true;
-            this.chkKarma.Location = new System.Drawing.Point(723, 5);
-            this.chkKarma.Name = "chkKarma";
-            this.chkKarma.Size = new System.Drawing.Size(15, 14);
-            this.chkKarma.TabIndex = 18;
-            this.chkKarma.UseVisualStyleBackColor = true;
-            // 
-            // cmdDelete
-            // 
-            this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDelete.Location = new System.Drawing.Point(718, 1);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(71, 22);
-            this.cmdDelete.TabIndex = 19;
-            this.cmdDelete.Tag = "String_Delete";
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            // 
-            // lblCareerRating
-            // 
-            this.lblCareerRating.AutoSize = true;
-            this.lblCareerRating.Location = new System.Drawing.Point(169, 5);
-            this.lblCareerRating.Name = "lblCareerRating";
-            this.lblCareerRating.Size = new System.Drawing.Size(19, 13);
-            this.lblCareerRating.TabIndex = 20;
-            this.lblCareerRating.Text = "00";
+            this.flpButtonsCareer.AutoSize = true;
+            this.flpButtonsCareer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpButtonsCareer.Controls.Add(this.btnCareerIncrease);
+            this.flpButtonsCareer.Controls.Add(this.lblCareerRating);
+            this.flpButtonsCareer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flpButtonsCareer.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtonsCareer.Location = new System.Drawing.Point(0, 0);
+            this.flpButtonsCareer.Margin = new System.Windows.Forms.Padding(0);
+            this.flpButtonsCareer.Name = "flpButtonsCareer";
+            this.flpButtonsCareer.Size = new System.Drawing.Size(82, 24);
+            this.flpButtonsCareer.TabIndex = 1;
+            this.flpButtonsCareer.WrapContents = false;
             // 
             // btnCareerIncrease
             // 
+            this.btnCareerIncrease.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCareerIncrease.AutoSize = true;
+            this.btnCareerIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
-            this.btnCareerIncrease.Location = new System.Drawing.Point(214, 0);
+            this.btnCareerIncrease.Location = new System.Drawing.Point(55, 0);
+            this.btnCareerIncrease.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.btnCareerIncrease.MinimumSize = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.Name = "btnCareerIncrease";
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 21;
@@ -182,20 +158,161 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
+            // lblCareerRating
+            // 
+            this.lblCareerRating.AutoSize = true;
+            this.lblCareerRating.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblCareerRating.Location = new System.Drawing.Point(29, 0);
+            this.lblCareerRating.MinimumSize = new System.Drawing.Size(20, 0);
+            this.lblCareerRating.Name = "lblCareerRating";
+            this.lblCareerRating.Size = new System.Drawing.Size(20, 24);
+            this.lblCareerRating.TabIndex = 20;
+            this.lblCareerRating.Text = "00";
+            this.lblCareerRating.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // flpButtonsCreate
+            // 
+            this.flpButtonsCreate.AutoSize = true;
+            this.flpButtonsCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpButtonsCreate.Controls.Add(this.nudKarma);
+            this.flpButtonsCreate.Controls.Add(this.nudSkill);
+            this.flpButtonsCreate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpButtonsCreate.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtonsCreate.Location = new System.Drawing.Point(0, 0);
+            this.flpButtonsCreate.Margin = new System.Windows.Forms.Padding(0);
+            this.flpButtonsCreate.Name = "flpButtonsCreate";
+            this.flpButtonsCreate.Size = new System.Drawing.Size(82, 24);
+            this.flpButtonsCreate.TabIndex = 0;
+            this.flpButtonsCreate.WrapContents = false;
+            // 
+            // nudKarma
+            // 
+            this.nudKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.nudKarma.AutoSize = true;
+            this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.Location = new System.Drawing.Point(44, 2);
+            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.nudKarma.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudKarma.Name = "nudKarma";
+            this.nudKarma.Size = new System.Drawing.Size(35, 20);
+            this.nudKarma.TabIndex = 14;
+            // 
+            // nudSkill
+            // 
+            this.nudSkill.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.nudSkill.AutoSize = true;
+            this.nudSkill.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudSkill.Location = new System.Drawing.Point(3, 2);
+            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.nudSkill.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudSkill.Name = "nudSkill";
+            this.nudSkill.Size = new System.Drawing.Size(35, 20);
+            this.nudSkill.TabIndex = 15;
+            // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDelete.Location = new System.Drawing.Point(455, 0);
+            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(48, 23);
+            this.cmdDelete.TabIndex = 19;
+            this.cmdDelete.Tag = "String_Delete";
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Visible = false;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
+            // lblName
+            // 
+            this.lblName.AutoSize = true;
+            this.lblName.ContextMenuStrip = this.cmsSkillLabel;
+            this.lblName.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblName.Location = new System.Drawing.Point(3, 0);
+            this.lblName.MinimumSize = new System.Drawing.Size(0, 24);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(41, 24);
+            this.lblName.TabIndex = 0;
+            this.lblName.Text = "[Name]";
+            this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblName.ToolTipText = "";
+            this.lblName.Click += new System.EventHandler(this.lblName_Click);
+            // 
+            // lblModifiedRating
+            // 
+            this.lblModifiedRating.AutoSize = true;
+            this.lblModifiedRating.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblModifiedRating.Location = new System.Drawing.Point(172, 0);
+            this.lblModifiedRating.MinimumSize = new System.Drawing.Size(50, 0);
+            this.lblModifiedRating.Name = "lblModifiedRating";
+            this.lblModifiedRating.Size = new System.Drawing.Size(50, 24);
+            this.lblModifiedRating.TabIndex = 16;
+            this.lblModifiedRating.Text = "00 (00)";
+            this.lblModifiedRating.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblModifiedRating.ToolTipText = "";
+            // 
+            // pnlSpecs
+            // 
+            this.pnlSpecs.AutoSize = true;
+            this.pnlSpecs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlSpecs.Controls.Add(this.tlpSpecsCareer);
+            this.pnlSpecs.Controls.Add(this.tlpSpecsCreate);
+            this.pnlSpecs.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSpecs.Location = new System.Drawing.Point(225, 0);
+            this.pnlSpecs.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlSpecs.Name = "pnlSpecs";
+            this.pnlSpecs.Size = new System.Drawing.Size(227, 24);
+            this.pnlSpecs.TabIndex = 31;
+            // 
+            // tlpSpecsCareer
+            // 
+            this.tlpSpecsCareer.AutoSize = true;
+            this.tlpSpecsCareer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSpecsCareer.ColumnCount = 2;
+            this.tlpSpecsCareer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpSpecsCareer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSpecsCareer.Controls.Add(this.lblCareerSpec, 0, 0);
+            this.tlpSpecsCareer.Controls.Add(this.btnAddSpec, 1, 0);
+            this.tlpSpecsCareer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpSpecsCareer.Location = new System.Drawing.Point(0, 0);
+            this.tlpSpecsCareer.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpSpecsCareer.Name = "tlpSpecsCareer";
+            this.tlpSpecsCareer.RowCount = 1;
+            this.tlpSpecsCareer.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSpecsCareer.Size = new System.Drawing.Size(227, 24);
+            this.tlpSpecsCareer.TabIndex = 32;
+            // 
             // lblCareerSpec
             // 
             this.lblCareerSpec.AutoSize = true;
-            this.lblCareerSpec.Location = new System.Drawing.Point(290, 5);
+            this.lblCareerSpec.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblCareerSpec.Location = new System.Drawing.Point(3, 0);
             this.lblCareerSpec.Name = "lblCareerSpec";
-            this.lblCareerSpec.Size = new System.Drawing.Size(35, 13);
+            this.lblCareerSpec.Size = new System.Drawing.Size(83, 24);
             this.lblCareerSpec.TabIndex = 22;
-            this.lblCareerSpec.Text = "label1";
+            this.lblCareerSpec.Text = "[Specializations]";
+            this.lblCareerSpec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnAddSpec
             // 
-            this.btnAddSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddSpec.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnAddSpec.AutoSize = true;
+            this.btnAddSpec.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAddSpec.Image = global::Chummer.Properties.Resources.add;
-            this.btnAddSpec.Location = new System.Drawing.Point(765, 0);
+            this.btnAddSpec.Location = new System.Drawing.Point(200, 0);
+            this.btnAddSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.btnAddSpec.MinimumSize = new System.Drawing.Size(24, 24);
             this.btnAddSpec.Name = "btnAddSpec";
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 23;
@@ -203,14 +320,73 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.UseVisualStyleBackColor = true;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
+            // tlpSpecsCreate
+            // 
+            this.tlpSpecsCreate.AutoSize = true;
+            this.tlpSpecsCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSpecsCreate.ColumnCount = 2;
+            this.tlpSpecsCreate.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpSpecsCreate.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSpecsCreate.Controls.Add(this.chkKarma, 1, 0);
+            this.tlpSpecsCreate.Controls.Add(this.cboSpec, 0, 0);
+            this.tlpSpecsCreate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpSpecsCreate.Location = new System.Drawing.Point(0, 0);
+            this.tlpSpecsCreate.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpSpecsCreate.Name = "tlpSpecsCreate";
+            this.tlpSpecsCreate.RowCount = 1;
+            this.tlpSpecsCreate.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSpecsCreate.Size = new System.Drawing.Size(227, 24);
+            this.tlpSpecsCreate.TabIndex = 30;
+            // 
+            // chkKarma
+            // 
+            this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkKarma.AutoSize = true;
+            this.chkKarma.Location = new System.Drawing.Point(209, 5);
+            this.chkKarma.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.chkKarma.Name = "chkKarma";
+            this.chkKarma.Size = new System.Drawing.Size(15, 14);
+            this.chkKarma.TabIndex = 18;
+            this.chkKarma.UseVisualStyleBackColor = true;
+            // 
+            // cboSpec
+            // 
+            this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpec.FormattingEnabled = true;
+            this.cboSpec.Location = new System.Drawing.Point(3, 1);
+            this.cboSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cboSpec.Name = "cboSpec";
+            this.cboSpec.Size = new System.Drawing.Size(200, 21);
+            this.cboSpec.Sorted = true;
+            this.cboSpec.TabIndex = 17;
+            this.cboSpec.TooltipText = "";
+            // 
+            // pnlAttributes
+            // 
+            this.pnlAttributes.AutoSize = true;
+            this.pnlAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlAttributes.Controls.Add(this.btnAttribute);
+            this.pnlAttributes.Controls.Add(this.cboSelectAttribute);
+            this.pnlAttributes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlAttributes.Location = new System.Drawing.Point(47, 0);
+            this.pnlAttributes.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlAttributes.Name = "pnlAttributes";
+            this.pnlAttributes.Size = new System.Drawing.Size(40, 24);
+            this.pnlAttributes.TabIndex = 33;
+            // 
             // btnAttribute
             // 
+            this.btnAttribute.AutoSize = true;
+            this.btnAttribute.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAttribute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnAttribute.FlatAppearance.BorderSize = 0;
             this.btnAttribute.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAttribute.Location = new System.Drawing.Point(128, 0);
-            this.btnAttribute.Margin = new System.Windows.Forms.Padding(1);
+            this.btnAttribute.Location = new System.Drawing.Point(0, 0);
+            this.btnAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.btnAttribute.MaximumSize = new System.Drawing.Size(40, 0);
+            this.btnAttribute.MinimumSize = new System.Drawing.Size(40, 0);
             this.btnAttribute.Name = "btnAttribute";
-            this.btnAttribute.Size = new System.Drawing.Size(39, 23);
+            this.btnAttribute.Size = new System.Drawing.Size(40, 24);
             this.btnAttribute.TabIndex = 24;
             this.btnAttribute.Text = "ATR";
             this.btnAttribute.UseVisualStyleBackColor = true;
@@ -218,40 +394,52 @@ namespace Chummer.UI.Skills
             // 
             // cboSelectAttribute
             // 
+            this.cboSelectAttribute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboSelectAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSelectAttribute.FormattingEnabled = true;
-            this.cboSelectAttribute.Location = new System.Drawing.Point(128, 1);
+            this.cboSelectAttribute.Location = new System.Drawing.Point(0, 0);
+            this.cboSelectAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cboSelectAttribute.MaximumSize = new System.Drawing.Size(40, 0);
+            this.cboSelectAttribute.MinimumSize = new System.Drawing.Size(40, 0);
             this.cboSelectAttribute.Name = "cboSelectAttribute";
-            this.cboSelectAttribute.Size = new System.Drawing.Size(39, 21);
+            this.cboSelectAttribute.Size = new System.Drawing.Size(40, 21);
             this.cboSelectAttribute.TabIndex = 25;
+            this.cboSelectAttribute.TooltipText = "";
+            this.cboSelectAttribute.Visible = false;
             this.cboSelectAttribute.DropDownClosed += new System.EventHandler(this.cboSelectAttribute_Closed);
             // 
             // SkillControl2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.btnAddSpec);
-            this.Controls.Add(this.cboSelectAttribute);
-            this.Controls.Add(this.btnAttribute);
-            this.Controls.Add(this.lblCareerSpec);
-            this.Controls.Add(this.btnCareerIncrease);
-            this.Controls.Add(this.lblCareerRating);
-            this.Controls.Add(this.cboSpec);
-            this.Controls.Add(this.lblModifiedRating);
-            this.Controls.Add(this.nudSkill);
-            this.Controls.Add(this.nudKarma);
-            this.Controls.Add(this.lblAttribute);
-            this.Controls.Add(this.lblName);
-            this.Controls.Add(this.cmdDelete);
-            this.Controls.Add(this.chkKarma);
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.tlpMain);
             this.Margin = new System.Windows.Forms.Padding(0);
+            this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "SkillControl2";
-            this.Size = new System.Drawing.Size(789, 24);
-            this.cmsSkillLabel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+            this.Size = new System.Drawing.Size(506, 24);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
+            this.cmsSkillLabel.ResumeLayout(false);
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.pnlButtons.ResumeLayout(false);
+            this.pnlButtons.PerformLayout();
+            this.flpButtonsCareer.ResumeLayout(false);
+            this.flpButtonsCareer.PerformLayout();
+            this.flpButtonsCreate.ResumeLayout(false);
+            this.flpButtonsCreate.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+            this.pnlSpecs.ResumeLayout(false);
+            this.pnlSpecs.PerformLayout();
+            this.tlpSpecsCareer.ResumeLayout(false);
+            this.tlpSpecsCareer.PerformLayout();
+            this.tlpSpecsCreate.ResumeLayout(false);
+            this.tlpSpecsCreate.PerformLayout();
+            this.pnlAttributes.ResumeLayout(false);
+            this.pnlAttributes.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -260,7 +448,6 @@ namespace Chummer.UI.Skills
         #endregion
 
         private LabelWithToolTip lblName;
-        private System.Windows.Forms.Label lblAttribute;
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
         private LabelWithToolTip lblModifiedRating;
@@ -275,5 +462,13 @@ namespace Chummer.UI.Skills
         private ElasticComboBox cboSelectAttribute;
         private ContextMenuStrip cmsSkillLabel;
         private ToolStripMenuItem tsSkillLabelNotes;
+        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpSpecsCreate;
+        private Panel pnlSpecs;
+        private System.Windows.Forms.TableLayoutPanel tlpSpecsCareer;
+        private Panel pnlButtons;
+        private FlowLayoutPanel flpButtonsCreate;
+        private FlowLayoutPanel flpButtonsCareer;
+        private Panel pnlAttributes;
     }
 }

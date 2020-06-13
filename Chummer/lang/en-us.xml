@@ -4329,6 +4329,10 @@
       <text>Add Exotic Skill</text>
     </string>
     <string>
+      <key>Button_ResetAll</key>
+      <text>Reset Add</text>
+    </string>
+    <string>
       <key>Tip_SkillsSkillGroups</key>
       <text>Skill Groups cost {0} Karma per new rating.</text>
     </string>

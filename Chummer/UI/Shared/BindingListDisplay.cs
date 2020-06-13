@@ -33,171 +33,241 @@ namespace Chummer.UI.Shared
         private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
-        public IComparer<TType> DefaultComparer => _indexComparer;
-
-        private readonly BindingList<TType> _contents; //List of all items supposed to be displayed
-        private readonly Func<TType, Control> _createFunc;  //Function to create a control out of a item
-        private readonly bool _loadVisibleOnly;
-        private readonly List<ControlWithMetaData> _contentList;
-        private readonly List<int> _displayIndex = new List<int>();
+        private bool _blnIsTopmostSuspendLayout;
+        private readonly Func<TType, Control> _funcCreateControl;  //Function to create a control out of a item
+        private readonly bool _blnLoadVisibleOnly;
+        private readonly List<ControlWithMetaData> _lstContentList = new List<ControlWithMetaData>();
+        private readonly List<int> _lstDisplayIndex = new List<int>();
         private readonly IndexComparer _indexComparer;
-        private BitArray _rendered;
-        private int _offScreenChunkSize = 1;
-        private bool _allRendered;
-        private bool _resetAtIdle;
+        private BitArray _ablnRendered;
+        private int _intOffScreenChunkSize = 1;
+        private int _intListItemControlHeight;
+        private bool _blnAllRendered;
         private Predicate<TType> _visibleFilter = x => true;
         private IComparer<TType> _comparison;
 
-        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadVisibleOnly = true)
+        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
             InitializeComponent();
-            _contents = contents ?? throw new ArgumentNullException(nameof(contents));
-            _createFunc = createFunc;
-            _loadVisibleOnly = loadVisibleOnly;
-            pnlDisplay.SuspendLayout();
-            _contentList = new List<ControlWithMetaData>();
-            foreach (TType objLoopTType in _contents)
+            Contents = contents ?? throw new ArgumentNullException(nameof(contents));
+            _funcCreateControl = funcCreateControl;
+            _blnLoadVisibleOnly = blnLoadVisibleOnly;
+            DisplayPanel.SuspendLayout();
+            try
             {
-                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
+                foreach (TType objLoopTType in Contents)
+                {
+                    _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
+                }
+
+                foreach (ControlWithMetaData objLoopControl in _lstContentList)
+                {
+                    int intLoopHeight = objLoopControl.Control.Height;
+                    if (intLoopHeight > 0)
+                    {
+                        ListItemControlHeight = intLoopHeight;
+                        break;
+                    }
+                }
+
+                DisplayPanel.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+                _indexComparer = new IndexComparer(Contents);
+                _comparison = _comparison ?? _indexComparer;
+                Contents.ListChanged += ContentsChanged;
+                ComptuteDisplayIndex();
+                LoadScreenContent();
+                BindingListDisplay_SizeChanged(null, null);
             }
-            _indexComparer = new IndexComparer(_contents);
-            _comparison = _comparison ?? _indexComparer;
-            _contents.ListChanged += ContentsChanged;
-            ComptuteDisplayIndex();
-            LoadScreenContent();
-            BindingListDisplay_SizeChanged(null, null);
-            pnlDisplay.ResumeLayout();
+            finally
+            {
+                _blnIsTopmostSuspendLayout = true;
+                DisplayPanel.ResumeLayout();
+            }
         }
 
         private void BindingListDisplay_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
             Application.Idle += ApplicationOnIdle;
         }
 
         /// <summary>
         /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
         /// </summary>
-        public BindingList<TType> Contents => _contents;
+        public BindingList<TType> Contents { get; }
+
+        public Panel DisplayPanel => pnlDisplay;
+
+        private int ListItemControlHeight
+        {
+            get => _intListItemControlHeight;
+            set
+            {
+                if (_intListItemControlHeight != value)
+                {
+                    _intListItemControlHeight = value;
+                    foreach (ControlWithMetaData objControl in _lstContentList)
+                    {
+                        objControl.UpdateHeight();
+                    }
+                }
+            }
+        }
 
         private void LoadRange(int min, int max)
         {
             min = Math.Max(0, min);
-            max = Math.Min(_displayIndex.Count, max);
-            if (_rendered.FirstMatching(false, min) > max) return;
-            SuspendLayout();
-            for (int i = min; i < max; i++)
+            max = Math.Min(_lstDisplayIndex.Count, max);
+            if (_ablnRendered.FirstMatching(false, min) > max)
+                return;
+            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+            if (blnIsTopmostSuspendLayout)
+                _blnIsTopmostSuspendLayout = false;
+            try
             {
-                if (_rendered[i]) continue;
+                DisplayPanel.SuspendLayout();
+                for (int i = min; i < max; ++i)
+                {
+                    if (_ablnRendered[i])
+                        continue;
 
-                ControlWithMetaData item = _contentList[_displayIndex[i]];
-
-                item.Control.Location = new Point(0, i * _contentList[0].Control.Height);
-                item.Control.Visible = true;
-                _rendered[i] = true;
+                    ControlWithMetaData item = _lstContentList[_lstDisplayIndex[i]];
+                    item.Control.Location = new Point(0, i * ListItemControlHeight);
+                    item.Control.Visible = true;
+                    _ablnRendered[i] = true;
+                }
             }
-            ResumeLayout();
+            finally
+            {
+                if (blnIsTopmostSuspendLayout)
+                {
+                    _blnIsTopmostSuspendLayout = true;
+                    DisplayPanel.ResumeLayout();
+                }
+            }
         }
 
         private void ComptuteDisplayIndex()
         {
-            Dictionary<TType, int> objTTypeIndexDictionary = new Dictionary<TType, int>();
-            List<TType> objTTypeList = new List<TType>();
-            for (int i = 0; i < _contentList.Count; i++)
+            List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>();
+            for (int i = 0; i < _lstContentList.Count; ++i)
             {
-                ControlWithMetaData objLoopControl = _contentList[i];
+                ControlWithMetaData objLoopControl = _lstContentList[i];
                 if (objLoopControl.Visible)
                 {
-                    objTTypeIndexDictionary.Add(objLoopControl.Item, i);
-                    objTTypeList.Add(objLoopControl.Item);
+                    objTTypeList.Add(new Tuple<TType, int>(objLoopControl.Item, i));
                 }
             }
 
-            objTTypeList.Sort(_comparison);
+            objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
-            _displayIndex.Clear();
-            foreach (TType objLoopTType in objTTypeList)
-            {
-                _displayIndex.Add(objTTypeIndexDictionary[objLoopTType]);
-            }
+            int[] lstOldDisplayIndex = _lstDisplayIndex.ToArray();
+            _lstDisplayIndex.Clear();
+            _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
 
-            if (_rendered == null || _rendered.Length != _displayIndex.Count)
-                _rendered = new BitArray(_displayIndex.Count);
+            if (_ablnRendered == null || _ablnRendered.Length != _lstDisplayIndex.Count)
+                _ablnRendered = new BitArray(_lstDisplayIndex.Count);
             else
-                _rendered.SetAll(false);
+            {
+                for (int i = 0; i < _ablnRendered.Count; ++i)
+                {
+                    _ablnRendered[i] = _ablnRendered[i] && _lstDisplayIndex[i] == lstOldDisplayIndex[i];
+                }
+            }
         }
 
         private void LoadScreenContent()
         {
-            if (_contentList.Count == 0) return;
+            if (_lstContentList.Count == 0 || ListItemControlHeight == 0)
+                return;
 
-            int toload = _loadVisibleOnly
-                ? VisibleElements()
-                : _contentList.Count;
+            int toload = _blnLoadVisibleOnly
+                ? NumVisibleElements
+                : _lstContentList.Count;
 
-            int top = VerticalScroll.Value/_contentList[0].Control.Height;
+            int top = VerticalScroll.Value / ListItemControlHeight;
 
             LoadRange(top, top + toload);
         }
 
-        private int VisibleElements()
+        private int NumVisibleElements
         {
-            return _contentList.Count == 0 ? 0 : Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
+            get
+            {
+                if (_lstContentList.Count == 0 || ListItemControlHeight == 0)
+                    return 0;
+                return Math.Min(Height / ListItemControlHeight + 2, _lstContentList.Count);
+            }
         }
 
-        private void ClearCache(IEnumerable<ControlWithMetaData> lstToClear)
+        private void ResetDisplayPanelHeight(int intNumVisible = -1)
         {
-            _allRendered = false;
+            DisplayPanel.Height = Math.Max(Height, (intNumVisible >= 0 ? intNumVisible : _lstContentList.Count(x => x.Visible)) * ListItemControlHeight);
+        }
+
+        private void RedrawControls(IEnumerable<ControlWithMetaData> lstToClear)
+        {
+            _blnAllRendered = false;
+            int intNumVisible = 0;
             foreach (ControlWithMetaData item in lstToClear)
             {
-                item.Reset();
+                item.RefreshVisible();
+                if (item.Visible)
+                    ++intNumVisible;
             }
-            pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
+            ResetDisplayPanelHeight(intNumVisible);
             ComptuteDisplayIndex();
+            LoadScreenContent();
         }
 
         private void ApplicationOnIdle(object sender, EventArgs eventArgs)
         {
-            TimeSpan maxDelay =TimeSpan.FromSeconds(0.1f);
-
-            if (_resetAtIdle)
-            {
-                _resetAtIdle = false;
-                pnlDisplay.SuspendLayout();
-                ClearCache(_contentList);
-                LoadScreenContent();  //TODO: Don't do this and call if becomes visible
-                pnlDisplay.ResumeLayout();
-            }
-
-            if (_allRendered) return;
-            int firstUnrendered = _rendered.FirstMatching(false);
-
+            if (_blnAllRendered)
+                return;
+            int firstUnrendered = _ablnRendered.FirstMatching(false);
             if (firstUnrendered == -1)
             {
-                _allRendered = true;
+                _blnAllRendered = true;
                 return;
             }
 
-            int end = _rendered.FirstMatching(true, firstUnrendered);
-            if (end == -1) end = _displayIndex.Count;
+            int end = _ablnRendered.FirstMatching(true, firstUnrendered);
+            if (end == -1)
+                end = _lstDisplayIndex.Count;
 
-            end = Math.Min(end, firstUnrendered + _offScreenChunkSize);
+            end = Math.Min(end, firstUnrendered + _intOffScreenChunkSize);
             Stopwatch sw = Stopwatch.StartNew();
 
-            pnlDisplay.SuspendLayout();
-            LoadRange(firstUnrendered, end);
-            pnlDisplay.ResumeLayout();
+            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+            if (blnIsTopmostSuspendLayout)
+                _blnIsTopmostSuspendLayout = false;
+            try
+            {
+                DisplayPanel.SuspendLayout();
+                LoadRange(firstUnrendered, end);
+            }
+            finally
+            {
+                if (blnIsTopmostSuspendLayout)
+                {
+                    _blnIsTopmostSuspendLayout = true;
+                    DisplayPanel.ResumeLayout();
+                }
+            }
 
             sw.Stop();
 
-            if (sw.Elapsed > maxDelay && _offScreenChunkSize > 1)
+            if (sw.Elapsed > TimeSpan.FromSeconds(0.1f))
             {
-                _offScreenChunkSize /= 2;
+                if (_intOffScreenChunkSize > 1)
+                {
+                    _intOffScreenChunkSize /= 2;
+                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize);
+                }
             }
-            else if (maxDelay > sw.Elapsed)
+            else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
             {
-                _offScreenChunkSize++;
-                Log.Info("Offscreen chunk render size increased to " + _offScreenChunkSize);
+                _intOffScreenChunkSize *= 2;
+                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize);
             }
         }
 
@@ -206,14 +276,22 @@ namespace Chummer.UI.Shared
             if (_visibleFilter == predicate && !forceRefresh) return;
             _visibleFilter = predicate;
 
-            pnlDisplay.SuspendLayout();
-            ClearCache(_contentList);
-            if (_contentList.Count > 0)
+            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+            if (blnIsTopmostSuspendLayout)
+                _blnIsTopmostSuspendLayout = false;
+            try
             {
-                pnlDisplay.Height = _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
+                DisplayPanel.SuspendLayout();
+                RedrawControls(_lstContentList);
             }
-            LoadScreenContent();
-            pnlDisplay.ResumeLayout();
+            finally
+            {
+                if (blnIsTopmostSuspendLayout)
+                {
+                    _blnIsTopmostSuspendLayout = true;
+                    DisplayPanel.ResumeLayout();
+                }
+            }
         }
 
         public void Sort(IComparer<TType> comparison)
@@ -221,47 +299,106 @@ namespace Chummer.UI.Shared
             if (Equals(_comparison, comparison)) return;
             _comparison = comparison;
 
-            pnlDisplay.SuspendLayout();
-            ClearCache(_contentList);
-            LoadScreenContent();
-            pnlDisplay.ResumeLayout();
+            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+            if (blnIsTopmostSuspendLayout)
+                _blnIsTopmostSuspendLayout = false;
+            try
+            {
+                DisplayPanel.SuspendLayout();
+                RedrawControls(_lstContentList);
+            }
+            finally
+            {
+                if (blnIsTopmostSuspendLayout)
+                {
+                    _blnIsTopmostSuspendLayout = true;
+                    DisplayPanel.ResumeLayout();
+                }
+            }
         }
 
         private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
         {
             int intNewIndex = eventArgs?.NewIndex ?? 0;
-            List<ControlWithMetaData> lstToRedraw = null;
+            IEnumerable<ControlWithMetaData> lstToRedraw;
             switch (eventArgs?.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                    break;
+                    return;
                 case ListChangedType.Reset:
-                    foreach (ControlWithMetaData objLoopControl in _contentList)
+                    bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+                    if (blnIsTopmostSuspendLayout)
+                        _blnIsTopmostSuspendLayout = false;
+                    try
                     {
-                        objLoopControl.Cleanup();
+                        DisplayPanel.SuspendLayout();
+                        foreach (ControlWithMetaData objLoopControl in _lstContentList)
+                        {
+                            objLoopControl.Cleanup();
+                        }
+                        _lstContentList.Clear();
+                        foreach (TType objLoopTType in Contents)
+                        {
+                            _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
+                        }
+                        DisplayPanel.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                     }
-                    _contentList.Clear();
-                    foreach (TType objLoopTType in _contents)
+                    finally
                     {
-                        _contentList.Add(new ControlWithMetaData(objLoopTType, this));
+                        if (blnIsTopmostSuspendLayout)
+                        {
+                            _blnIsTopmostSuspendLayout = true;
+                            DisplayPanel.ResumeLayout();
+                        }
                     }
-                    _indexComparer.Reset(_contents);
-                    lstToRedraw = _contentList;
+                    _indexComparer.Reset(Contents);
+                    lstToRedraw = _lstContentList;
                     break;
                 case ListChangedType.ItemAdded:
-                    _contentList.Insert(intNewIndex, new ControlWithMetaData(_contents[intNewIndex], this));
-                    _indexComparer.Reset(_contents);
-                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
+                    _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
+                    _indexComparer.Reset(Contents);
+                    lstToRedraw = _lstContentList.Skip(intNewIndex);
                     break;
                 case ListChangedType.ItemDeleted:
-                    _contentList[intNewIndex].Cleanup();
-                    _contentList.RemoveAt(intNewIndex);
-                    _indexComparer.Reset(_contents);
-                    lstToRedraw = _contentList;
+                    _lstContentList[intNewIndex].Cleanup();
+                    _lstContentList.RemoveAt(intNewIndex);
+                    _indexComparer.Reset(Contents);
+                    lstToRedraw = _lstContentList.Skip(intNewIndex);
                     break;
-                //case ListChangedType.ItemMoved:
-                //    break;
-
+                case ListChangedType.ItemMoved:
+                    // Refresh the underlying lists, but do not refresh any displays
+                    int intOldIndex = eventArgs.OldIndex;
+                    int intDirection = intOldIndex < intNewIndex ? 1 : -1;
+                    ControlWithMetaData objMovedControl = _lstContentList[intOldIndex];
+                    int intLoopDisplayIndex = _lstDisplayIndex.IndexOf(intOldIndex);
+                    int intFinalDisplayIndexValue = intLoopDisplayIndex >= 0 ? intNewIndex : -1;
+                    bool blnFinalRenderedValue = intLoopDisplayIndex >= 0 && _ablnRendered[intLoopDisplayIndex];
+                    for (int i = intOldIndex; i * intDirection < intNewIndex * intDirection; i += intDirection)
+                    {
+                        _lstContentList[i] = _lstContentList[i + intDirection];
+                        int intDisplayIndex = _lstDisplayIndex.IndexOf(i + intDirection);
+                        if (intDisplayIndex != -1)
+                        {
+                            if (intLoopDisplayIndex != -1)
+                            {
+                                _lstDisplayIndex[intLoopDisplayIndex] = _lstDisplayIndex[intDisplayIndex];
+                                _ablnRendered[intLoopDisplayIndex] = _ablnRendered[intDisplayIndex];
+                            }
+                            else
+                            {
+                                intFinalDisplayIndexValue = i;
+                                blnFinalRenderedValue = _ablnRendered[intDisplayIndex];
+                            }
+                            intLoopDisplayIndex = intDisplayIndex;
+                        }
+                    }
+                    _lstContentList[intNewIndex] = objMovedControl;
+                    if (intLoopDisplayIndex != -1)
+                    {
+                        _lstDisplayIndex[intLoopDisplayIndex] = intFinalDisplayIndexValue;
+                        _ablnRendered[intLoopDisplayIndex] = blnFinalRenderedValue;
+                    }
+                    return;
                 //case ListChangedType.PropertyDescriptorAdded:
                 //    break;
                 //case ListChangedType.PropertyDescriptorDeleted:
@@ -270,36 +407,84 @@ namespace Chummer.UI.Shared
                 //    break;
                 default:
                     Utils.BreakIfDebug();
-                    break;
+                    return;
             }
-            if (lstToRedraw != null && lstToRedraw.Count > 0)
+            if (lstToRedraw != null)
             {
-                pnlDisplay.SuspendLayout();
-                ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-                ClearCache(lstToRedraw);
-                LoadScreenContent();
-                pnlDisplay.ResumeLayout();
+                bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+                if (blnIsTopmostSuspendLayout)
+                    _blnIsTopmostSuspendLayout = false;
+                try
+                {
+                    DisplayPanel.SuspendLayout();
+                    ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Contents)));
+                    RedrawControls(lstToRedraw);
+                }
+                finally
+                {
+                    if (blnIsTopmostSuspendLayout)
+                    {
+                        _blnIsTopmostSuspendLayout = true;
+                        DisplayPanel.ResumeLayout();
+                    }
+                }
             }
         }
 
         private void BindingListDisplay_Scroll(object sender, ScrollEventArgs e)
         {
-            pnlDisplay.SuspendLayout();
-            LoadScreenContent();
-            pnlDisplay.ResumeLayout();
+            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+            if (blnIsTopmostSuspendLayout)
+                _blnIsTopmostSuspendLayout = false;
+            try
+            {
+                DisplayPanel.SuspendLayout();
+                LoadScreenContent();
+            }
+            finally
+            {
+                if (blnIsTopmostSuspendLayout)
+                {
+                    _blnIsTopmostSuspendLayout = true;
+                    DisplayPanel.ResumeLayout();
+                }
+            }
         }
 
         private void BindingListDisplay_SizeChanged(object sender, EventArgs e)
         {
-            pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
-
-            if (_contentList == null) //In some edge case i don't know, this is done before _Load()
-                pnlDisplay.Height = Height;
-            else
-                pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
-            foreach (Control control in pnlDisplay.Controls)
+            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+            if (blnIsTopmostSuspendLayout)
+                _blnIsTopmostSuspendLayout = false;
+            try
             {
-                control.Width = pnlDisplay.Width;
+                DisplayPanel.SuspendLayout();
+                DisplayPanel.Width = Width - SystemInformation.VerticalScrollBarWidth;
+                ResetDisplayPanelHeight();
+                foreach (Control control in DisplayPanel.Controls)
+                {
+                    if (control.AutoSize)
+                    {
+                        if (control.MinimumSize.Width != DisplayPanel.Width)
+                            control.MinimumSize = new Size(DisplayPanel.Width, control.MinimumSize.Height);
+                        if (control.MaximumSize.Width != DisplayPanel.Width)
+                            control.MaximumSize = new Size(DisplayPanel.Width, control.MaximumSize.Height);
+                    }
+                    else
+                    {
+                        control.Width = DisplayPanel.Width;
+                    }
+                }
+                // Needed for safety reasons in case control size is decreased horizontally
+                DisplayPanel.Width = Width - SystemInformation.VerticalScrollBarWidth;
+            }
+            finally
+            {
+                if (blnIsTopmostSuspendLayout)
+                {
+                    _blnIsTopmostSuspendLayout = true;
+                    DisplayPanel.ResumeLayout();
+                }
             }
         }
 
@@ -307,9 +492,15 @@ namespace Chummer.UI.Shared
         {
             public TType Item { get; }
 
-            public Control Control => _control ?? (_control = CreateControl());
-
-            private bool ControlCreated => _control != null;
+            public Control Control
+            {
+                get
+                {
+                    if (_control == null)
+                        CreateControl();
+                    return _control;
+                }
+            }
 
             public bool Visible
             {
@@ -326,11 +517,14 @@ namespace Chummer.UI.Shared
             private Control _control;
             private bool? _visible;
 
-            public ControlWithMetaData(TType item, BindingListDisplay<TType> parent)
+            public ControlWithMetaData(TType item, BindingListDisplay<TType> parent, bool blnAddControlAfterCreation = true)
             {
                 _parent = parent;
                 Item = item;
-
+                // Because binding list displays generally involve syncing the name label of child controls after-the-fact,
+                // we need to create the control in the constructor (even if it isn't rendered) so that we can measure its
+                // elements' widths and/or heights
+                CreateControl(blnAddControlAfterCreation);
                 if (item is INotifyPropertyChanged prop)
                 {
                     prop.PropertyChanged += item_ChangedEvent;
@@ -367,44 +561,98 @@ namespace Chummer.UI.Shared
 
                 //}
 
+                _parent.ChildPropertyChanged?.Invoke(sender, e);
                 if (changes)
                 {
-                    _parent._resetAtIdle = true;
+                    _parent.RedrawControls(new[] { this });
                 }
-
-                _parent.ChildPropertyChanged?.Invoke(sender, e);
             }
 
-            private Control CreateControl()
+            /// <summary>
+            /// Updates the height of the contained control if it exists. Necessary to ensure that the contained control doesn't get created prematurely.
+            /// </summary>
+            public void UpdateHeight()
             {
-                Control control = _parent._createFunc(Item);
-                control.Visible = false;
-                control.Width = _parent.pnlDisplay.Width;
-                _parent.pnlDisplay.Controls.Add(control);
-                return control;
+                if (_control != null)
+                {
+                    if (_control.AutoSize)
+                    {
+                        if (_control.MinimumSize.Height != _parent.ListItemControlHeight)
+                            _control.MinimumSize = new Size(_control.MinimumSize.Width, _parent.ListItemControlHeight);
+                        if (_control.MaximumSize.Height != _parent.ListItemControlHeight)
+                            _control.MaximumSize = new Size(_control.MaximumSize.Width, _parent.ListItemControlHeight);
+                    }
+                    else
+                    {
+                        _control.Height = _parent.ListItemControlHeight;
+                    }
+                }
+            }
+
+            private void CreateControl(bool blnAddControlAfterCreation = true)
+            {
+                _control = _parent._funcCreateControl(Item);
+                _control.SuspendLayout();
+                _control.Visible = false;
+                if (_parent.ListItemControlHeight < _control.Height)
+                {
+                    _parent.ListItemControlHeight = _control.Height;
+                }
+                if (_control.AutoSize)
+                {
+                    _control.MinimumSize = new Size(_parent.DisplayPanel.Width, _parent.ListItemControlHeight);
+                    _control.MaximumSize = new Size(_parent.DisplayPanel.Width, _parent.ListItemControlHeight);
+                }
+                else
+                {
+                    _control.Width = _parent.DisplayPanel.Width;
+                    _control.Height = _parent.ListItemControlHeight;
+                }
+                _control.ResumeLayout();
+                if (blnAddControlAfterCreation)
+                    _parent.DisplayPanel.Controls.Add(_control);
+            }
+
+            public void RefreshVisible()
+            {
+                _visible = _parent._visibleFilter(Item);
+                if (!_visible.Value && _control != null)
+                {
+                    _control.Visible = false;
+                }
             }
 
             public void Reset()
             {
                 _visible = null;
-                if (ControlCreated)
+                if (_control != null)
                 {
-                    Control.Visible = false;
-                    Control.Location = new Point(0, 0);
-                    Control.Width = _parent.pnlDisplay.Width;
+                    _control.Visible = false;
+                    _control.Location = new Point(0, 0);
+                    if (_control.AutoSize)
+                    {
+                        _control.MinimumSize = new Size(_parent.DisplayPanel.Width, _parent.ListItemControlHeight);
+                        _control.MaximumSize = new Size(_parent.DisplayPanel.Width, _parent.ListItemControlHeight);
+                    }
+                    else
+                    {
+                        _control.Width = _parent.DisplayPanel.Width;
+                        _control.Height = _parent.ListItemControlHeight;
+                    }
                 }
             }
 
             public void Cleanup()
             {
-                if (ControlCreated)
+                if (_control != null)
                 {
                     if (Item is INotifyPropertyChanged prop)
                     {
                         prop.PropertyChanged -= item_ChangedEvent;
                     }
-                    _parent.pnlDisplay.Controls.Remove(Control);
-                    Control.Dispose();
+                    _parent.DisplayPanel.Controls.Remove(Control);
+                    _control.Dispose();
+                    _control = null;
                 }
             }
         }
