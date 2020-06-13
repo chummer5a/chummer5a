@@ -15179,22 +15179,6 @@
       <rating>0</rating>
     </accessory>
     <accessory>
-      <id>036742ce-95d8-4510-b25f-5c380ef1076e</id>
-      <name>Imaging Scope (Optical)</name>
-      <mount>Top</mount>
-      <avail>2</avail>
-      <cost>300</cost>
-      <source>SR5</source>
-      <page>432</page>
-      <gears>
-        <usegear>
-          <name>Vision Magnification</name>
-          <category>Vision Enhancements</category>
-        </usegear>
-      </gears>
-      <rating>0</rating>
-    </accessory>
-    <accessory>
       <id>521f9c2e-dfb2-42a6-b707-9808ae4885de</id>
       <name>Laser Sight</name>
       <mount>Top/Under</mount>
