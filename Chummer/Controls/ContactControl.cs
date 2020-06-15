@@ -570,19 +570,19 @@ namespace Chummer
         private void DoDataBindings()
         {
             chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
-            chkGroup.DoDatabinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
+            chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
             chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
-            chkFree.DoDatabinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
+            chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
             chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
-            chkFamily.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+            chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
             chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
-            chkBlackmail.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-            lblQuickStats.DoDatabinding("Text", _objContact, nameof(_objContact.QuickText));
+            chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+            lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
             nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
-            nudLoyalty.DoDatabinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
+            nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
             nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
-            nudConnection.DoDatabinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
-            nudConnection.DoDatabinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
+            nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
+            nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
             txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
             cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
@@ -593,14 +593,14 @@ namespace Chummer
             cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
             cboPreferredPayment.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPreferredPayment));
             cboHobbiesVice.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayHobbiesVice));
-            cmdDelete.DoDatabinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
-            this.DoDatabinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
+            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
-            txtContactName.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboMetatype.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboSex.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboAge.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboSex.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
 
         private void MoveControls()

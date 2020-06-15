@@ -55,7 +55,7 @@ namespace Chummer.UI.Skills
                 tssItem.TranslateToolStripItemsRecursively();
             }
 
-            this.DoDatabinding("Enabled", objSkill, nameof(Skill.Enabled));
+            this.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.Enabled));
 
             //Display
             _fntNormalName = lblName.Font;
@@ -63,15 +63,15 @@ namespace Chummer.UI.Skills
             _fntNormal = btnAttribute.Font;
             _fntItalic = new Font(_fntNormal, FontStyle.Italic);
 
-            this.DoDatabinding("BackColor", objSkill, nameof(Skill.PreferredControlColor));
+            this.DoOneWayDataBinding("BackColor", objSkill, nameof(Skill.PreferredControlColor));
 
             if (!_objSkill.Default)
                 lblName.Font = _fntItalicName;
-            lblName.DoDatabinding("Text", objSkill, nameof(Skill.CurrentDisplayName));
-            lblName.DoDatabinding("ForeColor", objSkill, nameof(Skill.PreferredColor));
-            lblName.DoDatabinding("ToolTipText", objSkill, nameof(Skill.HtmlSkillToolTip));
+            lblName.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplayName));
+            lblName.DoOneWayDataBinding("ForeColor", objSkill, nameof(Skill.PreferredColor));
+            lblName.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.HtmlSkillToolTip));
 
-            btnAttribute.DoDatabinding("Text", objSkill, nameof(Skill.DisplayAttribute));
+            btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
             lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
             lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
@@ -84,14 +84,14 @@ namespace Chummer.UI.Skills
                 flpButtonsCreate.Visible = false;
                 tlpSpecsCreate.Visible = false;
 
-                lblCareerRating.DoDatabinding("Text", objSkill, nameof(Skill.Rating));
-                btnCareerIncrease.DoDatabinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
-                btnCareerIncrease.DoDatabinding("ToolTipText", objSkill, nameof(Skill.UpgradeToolTip));
+                lblCareerRating.DoOneWayDataBinding("Text", objSkill, nameof(Skill.Rating));
+                btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
+                btnCareerIncrease.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.UpgradeToolTip));
 
-                lblCareerSpec.DoDatabinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
-                btnAddSpec.DoDatabinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
-                btnAddSpec.DoDatabinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
-                btnAddSpec.DoDatabinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
+                lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
+                btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
+                btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
+                btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
                 List<ListItem> lstAttributeItems = new List<ListItem>();
                 foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
@@ -116,18 +116,18 @@ namespace Chummer.UI.Skills
                 btnAttribute.FlatAppearance.MouseOverBackColor = btnAttribute.BackColor;
 
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
-                nudSkill.DoDatabinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
-                nudSkill.DoDatabinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
-                nudSkill.DoDatabinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
-                nudKarma.DoDatabinding("Value", objSkill, nameof(Skill.Karma));
-                nudKarma.DoDatabinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
-                nudKarma.DoDatabinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
+                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoOneWayDataBinding("Value", objSkill, nameof(Skill.Karma));
+                nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
+                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
                 if (objSkill.IsExoticSkill)
                 {
                     tlpSpecsCreate.Visible = false;
                     btnAddSpec.Visible = false;
-                    lblCareerSpec.DoDatabinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
+                    lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                 }
                 else
                 {
@@ -139,13 +139,13 @@ namespace Chummer.UI.Skills
                     cboSpec.DataSource = objSkill.CGLSpecializations;
                     cboSpec.SelectedIndex = -1;
                     cboSpec.DoDatabinding("Text", objSkill, nameof(Skill.Specialization));
-                    cboSpec.DoDatabinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                    cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     cboSpec.EndUpdate();
                 }
 
-                chkKarma.DoDatabinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
                 chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
-                chkKarma.DoDatabinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
             }
 
             ResumeLayout(true);

@@ -69,6 +69,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to a property such that only the control's property is ever updated (when the source has OnPropertyChanged)
+        /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoOneWayDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.Never);
+        }
+
+        /// <summary>
         /// Bind a control's property to a property via OnPropertyChanged
         /// </summary>
         /// <param name="objControl">Control to bind</param>
@@ -84,6 +103,25 @@ namespace Chummer
                 objControl.CreateControl();
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        /// <summary>
+        /// Bind a control's property to the OPPOSITE of property such that only the control's property is ever updated (when the source has OnPropertyChanged). Expected to be used exclusively by boolean bindings, other attributes have not been tested.
+        /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoOneWayNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true, true));
         }
 
         /// <summary>

@@ -227,7 +227,7 @@ namespace Chummer
                         //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
 
                         chkJoinGroup.Checked = CharacterObject.GroupMember;
-                        chkInitiationGroup.DoDatabinding("Enabled", CharacterObject, nameof(Character.GroupMember));
+                        chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.
                         if (CharacterObject.Mugshots.Count > 0)
@@ -249,10 +249,10 @@ namespace Chummer
                         nudStreetCred.DoDatabinding("Value", CharacterObject, nameof(Character.StreetCred));
                         nudNotoriety.DoDatabinding("Value", CharacterObject, nameof(Character.Notoriety));
                         nudPublicAware.DoDatabinding("Value", CharacterObject, nameof(Character.PublicAwareness));
-                        cmdAddMetamagic.DoDatabinding("Enabled", CharacterObject,
+                        cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
-                        lblPossessed.DoDatabinding("Visible", CharacterObject, nameof(Character.Possessed));
-                        lblMetatype.DoDatabinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
+                        lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
+                        lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
                     }
 
                     if (!CharacterObjectOptions.BookEnabled("RF"))
@@ -398,18 +398,18 @@ namespace Chummer
                             nameof(Tradition.DrainExpression));
                         cboDrain.EndUpdate();
 
-                        lblDrainAttributes.DoDatabinding("Text", CharacterObject.MagicTradition,
+                        lblDrainAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DisplayDrainExpression));
-                        dpcDrainAttributes.DoDatabinding("DicePool", CharacterObject.MagicTradition,
+                        dpcDrainAttributes.DoOneWayDataBinding("DicePool", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValue));
-                        dpcDrainAttributes.DoDatabinding("ToolTipText", CharacterObject.MagicTradition,
+                        dpcDrainAttributes.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
 
-                        lblFadingAttributes.DoDatabinding("Text", CharacterObject.MagicTradition,
+                        lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DisplayDrainExpression));
-                        dpcFadingAttributes.DoDatabinding("DicePool", CharacterObject.MagicTradition,
+                        dpcFadingAttributes.DoOneWayDataBinding("DicePool", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValue));
-                        dpcFadingAttributes.DoDatabinding("ToolTipText", CharacterObject.MagicTradition,
+                        dpcFadingAttributes.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
 
                         HashSet<string> limit = new HashSet<string>();
@@ -568,9 +568,9 @@ namespace Chummer
                             cboAttributeCategory.SelectedValue = "Standard";
                         }
 
-                        lblMysticAdeptMAGAdept.DoDatabinding("Text", CharacterObject,
+                        lblMysticAdeptMAGAdept.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.MysticAdeptPowerPoints));
-                        cmdIncreasePowerPoints.DoDatabinding("Enabled", CharacterObject,
+                        cmdIncreasePowerPoints.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.CanAffordCareerPP));
 
                     }
@@ -587,8 +587,8 @@ namespace Chummer
                         }
 
                         cboVehicleWeaponFiringMode.BeginUpdate();
-                        cboVehicleWeaponFiringMode.ValueMember = "Value";
-                        cboVehicleWeaponFiringMode.DisplayMember = "Name";
+                        cboVehicleWeaponFiringMode.ValueMember = nameof(ListItem.Value);
+                        cboVehicleWeaponFiringMode.DisplayMember = nameof(ListItem.Name);
                         cboVehicleWeaponFiringMode.DataSource = lstFireModes;
                         cboVehicleWeaponFiringMode.EndUpdate();
 
@@ -667,183 +667,183 @@ namespace Chummer
                                     new PropertyChangedEventArgs(objProperty.Name));
                         }
 
-                        lblCMPenalty.DoDatabinding("Text", CharacterObject, nameof(Character.WoundModifier));
-                        lblCMPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblCMPenalty.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.WoundModifier));
+                        lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.PhysicalCMToolTip));
-                        lblCMPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCM));
-                        lblCMPhysicalLabel.DoDatabinding("Text", CharacterObject,
+                        lblCMPhysical.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.PhysicalCM));
+                        lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.PhysicalCMLabelText));
-                        lblCMStun.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
-                        lblCMStun.DoDatabinding("Text", CharacterObject, nameof(Character.StunCM));
-                        lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
-                        lblCMStunLabel.DoDatabinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
+                        lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
+                        lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
+                        lblCMStun.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+                        lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
-                        lblESSMax.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssence));
-                        lblCyberwareESS.DoDatabinding("Text", CharacterObject,
+                        lblESSMax.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssence));
+                        lblCyberwareESS.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplayCyberwareEssence));
-                        lblBiowareESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
-                        lblEssenceHoleESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssenceHole));
+                        lblBiowareESS.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
+                        lblEssenceHoleESS.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssenceHole));
 
-                        lblArmor.DoDatabinding("Text", CharacterObject, nameof(Character.TotalArmorRating));
-                        lblArmor.DoDatabinding("ToolTipText", CharacterObject,
+                        lblArmor.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.TotalArmorRating));
+                        lblArmor.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.TotalArmorRatingToolTip));
-                        lblCMArmor.DoDatabinding("Text", CharacterObject, nameof(Character.TotalArmorRating));
-                        lblCMArmor.DoDatabinding("ToolTipText", CharacterObject,
+                        lblCMArmor.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.TotalArmorRating));
+                        lblCMArmor.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.TotalArmorRatingToolTip));
 
-                        lblDodge.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayDodge));
-                        lblDodge.DoDatabinding("ToolTipText", CharacterObject,
+                        lblDodge.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayDodge));
+                        lblDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.DodgeToolTip));
 
-                        lblCMDodge.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayDodge));
-                        lblCMDodge.DoDatabinding("ToolTipText", CharacterObject,
+                        lblCMDodge.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayDodge));
+                        lblCMDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.DodgeToolTip));
 
-                        lblSpellDefenseIndirectDodge.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIndirectDodge.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIndirectDodge));
-                        lblSpellDefenseIndirectDodge.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIndirectDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIndirectDodgeToolTip));
-                        lblSpellDefenseIndirectSoak.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIndirectSoak.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIndirectSoak));
-                        lblSpellDefenseIndirectSoak.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIndirectSoak.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIndirectSoakToolTip));
-                        lblSpellDefenseDirectSoakMana.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDirectSoakMana));
-                        lblSpellDefenseDirectSoakMana.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDirectSoakManaToolTip));
-                        lblSpellDefenseDirectSoakPhysical.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
-                        lblSpellDefenseDirectSoakPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
-                        lblSpellDefenseDetection.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDetection.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDetection));
-                        lblSpellDefenseDetection.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDetection.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDetectionToolTip));
-                        lblSpellDefenseDecAttBOD.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttBOD.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseBOD));
-                        lblSpellDefenseDecAttBOD.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttBOD.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseBODToolTip));
-                        lblSpellDefenseDecAttAGI.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttAGI.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseAGI));
-                        lblSpellDefenseDecAttAGI.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttAGI.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseAGIToolTip));
-                        lblSpellDefenseDecAttREA.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttREA.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseREA));
-                        lblSpellDefenseDecAttREA.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttREA.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseREAToolTip));
-                        lblSpellDefenseDecAttSTR.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttSTR.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseSTR));
-                        lblSpellDefenseDecAttSTR.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttSTR.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseSTRToolTip));
-                        lblSpellDefenseDecAttCHA.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttCHA.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseCHA));
-                        lblSpellDefenseDecAttCHA.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttCHA.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseCHAToolTip));
-                        lblSpellDefenseDecAttINT.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttINT.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseINT));
-                        lblSpellDefenseDecAttINT.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttINT.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseINTToolTip));
-                        lblSpellDefenseDecAttLOG.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttLOG.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseLOG));
-                        lblSpellDefenseDecAttLOG.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttLOG.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseLOGToolTip));
-                        lblSpellDefenseDecAttWIL.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseDecAttWIL.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseDecreaseWIL));
-                        lblSpellDefenseDecAttWIL.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseDecAttWIL.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseDecreaseWILToolTip));
-                        lblSpellDefenseIllusionMana.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIllusionMana.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIllusionMana));
-                        lblSpellDefenseIllusionMana.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIllusionMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIllusionManaToolTip));
-                        lblSpellDefenseIllusionPhysical.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIllusionPhysical));
-                        lblSpellDefenseIllusionPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseIllusionPhysicalToolTip));
-                        lblSpellDefenseManipMental.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseManipMental.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseManipulationMental));
-                        lblSpellDefenseManipMental.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseManipMental.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseManipulationMentalToolTip));
-                        lblSpellDefenseManipPhysical.DoDatabinding("Text", CharacterObject,
+                        lblSpellDefenseManipPhysical.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseManipulationPhysical));
-                        lblSpellDefenseManipPhysical.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSpellDefenseManipPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseManipulationPhysicalToolTip));
                         nudCounterspellingDice.DoDatabinding("Value", CharacterObject,
                             nameof(Character.CurrentCounterspellingDice));
 
-                        lblMovement.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayMovement));
-                        lblSwim.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySwim));
-                        lblFly.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayFly));
+                        lblMovement.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayMovement));
+                        lblSwim.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplaySwim));
+                        lblFly.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayFly));
 
-                        lblRemainingNuyen.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayNuyen));
-                        lblCareerKarma.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCareerKarma));
-                        lblCareerNuyen.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCareerNuyen));
+                        lblRemainingNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayNuyen));
+                        lblCareerKarma.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayCareerKarma));
+                        lblCareerNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayCareerNuyen));
 
-                        lblStreetCredTotal.DoDatabinding("Text", CharacterObject, nameof(Character.TotalStreetCred));
-                        lblStreetCredTotal.DoDatabinding("ToolTipText", CharacterObject,
+                        lblStreetCredTotal.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.TotalStreetCred));
+                        lblStreetCredTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.StreetCredTooltip));
-                        lblNotorietyTotal.DoDatabinding("Text", CharacterObject, nameof(Character.TotalNotoriety));
-                        lblNotorietyTotal.DoDatabinding("ToolTipText", CharacterObject,
+                        lblNotorietyTotal.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.TotalNotoriety));
+                        lblNotorietyTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.NotorietyTooltip));
-                        lblPublicAwareTotal.DoDatabinding("Text", CharacterObject,
+                        lblPublicAwareTotal.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.TotalPublicAwareness));
-                        lblPublicAwareTotal.DoDatabinding("ToolTipText", CharacterObject,
+                        lblPublicAwareTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.PublicAwarenessTooltip));
 
-                        lblMentorSpirit.DoDatabinding("Text", CharacterObject,
+                        lblMentorSpirit.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayName));
-                        lblMentorSpiritInformation.DoDatabinding("Text", CharacterObject,
+                        lblMentorSpiritInformation.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayInformation));
-                        lblParagon.DoDatabinding("Text", CharacterObject,
+                        lblParagon.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayName));
-                        lblParagonInformation.DoDatabinding("Text", CharacterObject,
+                        lblParagonInformation.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayInformation));
 
-                        lblSurprise.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SurpriseToolTip));
-                        lblSurprise.DoDatabinding("Text", CharacterObject, nameof(Character.Surprise));
-                        lblComposure.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
-                        lblComposure.DoDatabinding("Text", CharacterObject, nameof(Character.Composure));
-                        lblJudgeIntentions.DoDatabinding("ToolTipText", CharacterObject,
+                        lblSurprise.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.SurpriseToolTip));
+                        lblSurprise.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Surprise));
+                        lblComposure.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
+                        lblComposure.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Composure));
+                        lblJudgeIntentions.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.JudgeIntentionsToolTip));
-                        lblJudgeIntentions.DoDatabinding("Text", CharacterObject, nameof(Character.JudgeIntentions));
-                        lblLiftCarry.DoDatabinding("ToolTipText", CharacterObject,
+                        lblJudgeIntentions.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.JudgeIntentions));
+                        lblLiftCarry.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.LiftAndCarryToolTip));
-                        lblLiftCarry.DoDatabinding("Text", CharacterObject, nameof(Character.LiftAndCarry));
-                        lblMemory.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
-                        lblMemory.DoDatabinding("Text", CharacterObject, nameof(Character.Memory));
+                        lblLiftCarry.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.LiftAndCarry));
+                        lblMemory.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
+                        lblMemory.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Memory));
 
-                        lblINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
-                        lblINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
-                        lblAstralINI.DoDatabinding("ToolTipText", CharacterObject,
+                        lblINI.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+                        lblINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
+                        lblAstralINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.AstralInitiativeToolTip));
-                        lblAstralINI.DoDatabinding("Text", CharacterObject, nameof(Character.AstralInitiative));
-                        lblMatrixINI.DoDatabinding("ToolTipText", CharacterObject,
+                        lblAstralINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.AstralInitiative));
+                        lblMatrixINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.MatrixInitiativeToolTip));
-                        lblMatrixINI.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiative));
-                        lblMatrixINICold.DoDatabinding("ToolTipText", CharacterObject,
+                        lblMatrixINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.MatrixInitiative));
+                        lblMatrixINICold.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.MatrixInitiativeColdToolTip));
-                        lblMatrixINICold.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeCold));
-                        lblMatrixINIHot.DoDatabinding("ToolTipText", CharacterObject,
+                        lblMatrixINICold.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.MatrixInitiativeCold));
+                        lblMatrixINIHot.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.MatrixInitiativeHotToolTip));
-                        lblMatrixINIHot.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeHot));
-                        lblRiggingINI.DoDatabinding("ToolTipText", CharacterObject,
+                        lblMatrixINIHot.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.MatrixInitiativeHot));
+                        lblRiggingINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.InitiativeToolTip));
-                        lblRiggingINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
+                        lblRiggingINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
 
-                        cmdAddCyberware.DoDatabinding("Enabled", CharacterObject,
+                        cmdAddCyberware.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddCyberwareEnabled));
-                        cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
-                        cmdBurnStreetCred.DoDatabinding("Enabled", CharacterObject,
+                        cmdAddBioware.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
+                        cmdBurnStreetCred.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.CanBurnStreetCred));
 
-                        lblEDGInfo.DoDatabinding("Text", CharacterObject.EDG,
+                        lblEDGInfo.DoOneWayDataBinding("Text", CharacterObject.EDG,
                             nameof(CharacterAttrib.CareerRemainingString));
-                        lblCMDamageResistancePool.DoDatabinding("ToolTipText", CharacterObject,
+                        lblCMDamageResistancePool.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.DamageResistancePoolToolTip));
-                        lblCMDamageResistancePool.DoDatabinding("Text", CharacterObject,
+                        lblCMDamageResistancePool.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DamageResistancePool));
-                        lblCMPhysicalRecoveryPool.DoDatabinding("Text", CharacterObject,
+                        lblCMPhysicalRecoveryPool.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.PhysicalCMNaturalRecovery));
-                        lblCMStunRecoveryPool.DoDatabinding("Text", CharacterObject,
+                        lblCMStunRecoveryPool.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.StunCMNaturalRecovery));
                     }
 

@@ -255,11 +255,11 @@ namespace Chummer
         {
             cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
             txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
-            this.DoDatabinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
+            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
-            txtContactName.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboMetatype.DoDatabinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
         #endregion
 

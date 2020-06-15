@@ -100,7 +100,7 @@ namespace Chummer.UI.Powers
             //Visible = false;
             SuspendLayout();
 
-            lblPowerPoints.DoDatabinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
+            lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
 
             parts.TaskEnd("MakePowerDisplay()");
 

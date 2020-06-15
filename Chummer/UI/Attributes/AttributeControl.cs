@@ -50,17 +50,17 @@ namespace Chummer.UI.Attributes
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
             _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
-            lblName.DoDatabinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));
-            lblValue.DoDatabinding("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
-            lblLimits.DoDatabinding("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits));
-            lblValue.DoDatabinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
+            lblName.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));
+            lblValue.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
+            lblLimits.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits));
+            lblValue.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
             if (_objCharacter.Created)
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
-                cmdImproveATT.DoDatabinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
+                cmdImproveATT.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
                 cmdImproveATT.Visible = true;
-                cmdImproveATT.DoDatabinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
+                cmdImproveATT.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
                 cmdBurnEdge.Visible = AttributeName == "EDG";
                 cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge");
             }
@@ -72,17 +72,17 @@ namespace Chummer.UI.Attributes
                 if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
                     _objAttribute.Karma = _objAttribute.KarmaMaximum;
 
-                nudBase.DoDatabinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
-                nudBase.DoDatabinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
+                nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
                 nudBase.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Base));
-                nudBase.DoDatabinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
-                nudBase.DoDatabinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
+                nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
+                nudBase.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
                 nudBase.Visible = true;
 
                 nudKarma.Minimum = 0;
-                nudKarma.DoDatabinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
+                nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
                 nudKarma.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
-                nudKarma.DoDatabinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
                 nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
                 cmdBurnEdge.Visible = false;

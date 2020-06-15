@@ -39,30 +39,30 @@ namespace Chummer.UI.Skills
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DoDatabinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
-            lblName.DoDatabinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
+            lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
+            lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
 
             if (skillGroup.CharacterObject.Created)
             {
                 flpRightCreate.Visible = false;
 
-                btnCareerIncrease.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
-                btnCareerIncrease.DoDatabinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
+                btnCareerIncrease.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
+                btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
 
-                lblGroupRating.DoDatabinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
+                lblGroupRating.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
             }
             else
             {
                 flpRightCareer.Visible = false;
 
                 nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
-                nudKarma.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
-                nudKarma.DoDatabinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
+                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
-                nudSkill.DoDatabinding("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
+                nudSkill.DoOneWayDataBinding("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
                 nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
-                nudSkill.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
-                nudSkill.DoDatabinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
+                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
             }
 
             ResumeLayout();
