@@ -1106,7 +1106,7 @@ namespace Chummer.Backend.Skills
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            IList<Improvement> lstRelevantImprovements = RelevantImprovements(null,"",true).ToList();
+            IList<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
             StringBuilder s;
             if (CyberwareRating > TotalBaseRating)
             {
@@ -1145,15 +1145,16 @@ namespace Chummer.Backend.Skills
                      att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
             if (Default && !Leveled)
             {
-                s.Append(DefaultModifier == 0
+                int intDefaultModifier = DefaultModifier;
+                s.Append(intDefaultModifier == 0
                     ? strSpace +
                       CharacterObject.GetObjectName(
                           CharacterObject.Improvements.FirstOrDefault(x =>
                               x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled),
                           GlobalOptions.Language) + strSpace
-                    : strSpace + '-' + strSpace +
+                    : strSpace + (intDefaultModifier > 0 ? '+' : '-') + strSpace +
                       LanguageManager.GetString("Tip_Skill_Defaulting") + strSpace +
-                      '(' + 1.ToString(GlobalOptions.CultureInfo) + ')');
+                      '(' + Math.Abs(intDefaultModifier).ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             foreach (Improvement source in lstRelevantImprovements.Where(x =>
@@ -1211,7 +1212,8 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            if (att.Abbrev != Attribute) return s.ToString();
+            if (att.Abbrev != Attribute)
+                return s.ToString();
             foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x =>
                 x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute ||
                 x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
@@ -1223,16 +1225,18 @@ namespace Chummer.Backend.Skills
                     strSpace);
                 int intLoopAttribute = CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value;
                 int intBasePool = PoolOtherAttribute(intLoopAttribute, objSwapSkillAttribute.ImprovedName);
-                bool blnHaveSpec = false;
-                if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute &&
-                    Specializations.Any(y =>
+                SkillSpecialization objSpecialization = null;
+                if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                {
+                    objSpecialization = Specializations.FirstOrDefault(y =>
                         y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement =>
                             objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
                             objImprovement.UniqueName == y.Name && string.IsNullOrEmpty(objImprovement.Condition) &&
-                            objImprovement.Enabled)))
-                {
-                    intBasePool += 2;
-                    blnHaveSpec = true;
+                            objImprovement.Enabled));
+                    if (objSpecialization != null)
+                    {
+                        intBasePool += objSpecialization.SpecializationBonus;
+                    }
                 }
 
                 s.Append(intBasePool.ToString(GlobalOptions.CultureInfo));
@@ -1260,9 +1264,9 @@ namespace Chummer.Backend.Skills
                             objSwapSkillAttribute.ImprovedName == "STR"
                                 ? cyberware.TotalStrength
                                 : cyberware.TotalAgility, objSwapSkillAttribute.ImprovedName);
-                    if (blnHaveSpec)
+                    if (objSpecialization != null)
                     {
-                        intLoopPool += 2;
+                        intLoopPool += objSpecialization.SpecializationBonus;
                     }
 
                     if (cyberware.Location == CharacterObject.PrimaryArm || CharacterObject.Ambidextrous ||
