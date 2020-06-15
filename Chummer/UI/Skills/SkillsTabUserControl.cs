@@ -351,7 +351,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = y.Rating.CompareTo(x.Rating);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortDicepool"),
@@ -359,7 +359,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = y.Pool.CompareTo(x.Pool);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
@@ -367,7 +367,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = x.Pool.CompareTo(y.Pool);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
@@ -378,7 +378,7 @@ namespace Chummer.UI.Skills
                         {
                             intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
                             if (intReturn == 0)
-                                intReturn = SkillsSection.CompareSkills(y, x);
+                                intReturn = SkillsSection.CompareSkills(x, y);
                         }
                         return intReturn;
                     })),
@@ -387,7 +387,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupName"),
@@ -395,7 +395,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = SkillsSection.CompareSkillGroups(x.SkillGroupObject, y.SkillGroupObject);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupRating"),
@@ -405,7 +405,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
             };
@@ -492,7 +492,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = y.Rating.CompareTo(x.Rating);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortDicepool"),
@@ -500,7 +500,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = y.Pool.CompareTo(x.Pool);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
@@ -508,7 +508,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = x.Pool.CompareTo(y.Pool);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
@@ -519,7 +519,7 @@ namespace Chummer.UI.Skills
                         {
                             intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
                             if (intReturn == 0)
-                                intReturn = SkillsSection.CompareSkills(y, x);
+                                intReturn = SkillsSection.CompareSkills(x, y);
                         }
                         return intReturn;
                     })),
@@ -528,7 +528,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortCategory"),
@@ -536,7 +536,7 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
                         if (intReturn == 0)
-                            intReturn = SkillsSection.CompareSkills(y, x);
+                            intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
                     })),
             };

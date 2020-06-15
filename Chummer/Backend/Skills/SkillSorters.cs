@@ -107,7 +107,7 @@ namespace Chummer.Backend.Skills
             {
                 intReturn = SkillsSection.CompareSkillGroups(x?.SkillGroupObject, y?.SkillGroupObject);
                 if (intReturn == 0)
-                    intReturn = SkillsSection.CompareSkills(y, x);
+                    intReturn = SkillsSection.CompareSkills(x, y);
             }
 
             return intReturn;
