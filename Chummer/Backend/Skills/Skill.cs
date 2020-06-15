@@ -619,6 +619,11 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string>(nameof(FreeBase)),
                     new DependencyGraphNode<string>(nameof(FreeKarma)),
                     new DependencyGraphNode<string>(nameof(RatingModifiers))
+                ),
+                new DependencyGraphNode<string>(nameof(DictionaryKey),
+                    new DependencyGraphNode<string>(nameof(Name)),
+                    new DependencyGraphNode<string>(nameof(IsExoticSkill)),
+                    new DependencyGraphNode<string>(nameof(DisplaySpecialization), () => IsExoticSkill)
                 )
             );
         }
@@ -923,6 +928,12 @@ namespace Chummer.Backend.Skills
 
         public bool IsKnowledgeSkill => this is KnowledgeSkill;
 
+        private string _strDictionaryKey;
+        public string DictionaryKey => _strDictionaryKey
+                                       ?? (_strDictionaryKey = IsExoticSkill
+                                           ? Name + " (" + DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
+                                           : Name);
+
         public string Name
         {
             get => _strName;
@@ -930,6 +941,7 @@ namespace Chummer.Backend.Skills
             {
                 if (value == _strName) return;
                 _strName = value;
+                _strDictionaryKey = null;
                 _intCachedFreeBase = int.MinValue;
                 _intCachedFreeKarma = int.MinValue;
                 OnPropertyChanged();
@@ -1633,6 +1645,8 @@ namespace Chummer.Backend.Skills
             if (_blnSkipSpecializationRefresh)
                 return;
             _cachedStringSpec.Clear();
+            if (IsExoticSkill)
+                _strDictionaryKey = null;
             _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
             switch (listChangedEventArgs.ListChangedType)
             {

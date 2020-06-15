@@ -98,9 +98,7 @@ namespace Chummer.Backend.Skills
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
-                string strKey = objSkill.IsExoticSkill
-                    ? objSkill.Name + " (" + objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
-                    : objSkill.Name;
+                string strKey = objSkill.DictionaryKey;
                 if (!_dicSkills.ContainsKey(strKey))
                     _dicSkills.Add(strKey, objSkill);
             }
@@ -153,7 +151,7 @@ namespace Chummer.Backend.Skills
                     Skill skill = Skills[i];
                     _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
+                    SkillsDictionary.Remove(skill.DictionaryKey);
 
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
@@ -237,9 +235,7 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstLoadingSkills)
                         {
-                            string strName = objSkill.IsExoticSkill
-                                ? objSkill.Name + " (" + objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
-                                : objSkill.Name;
+                            string strName = objSkill.DictionaryKey;
                             bool blnDoAddToDictionary = true;
                             _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                             {
@@ -356,10 +352,7 @@ namespace Chummer.Backend.Skills
                         foreach (Skill objSkill in lstUnsortedSkills)
                         {
                             _lstSkills.Add(objSkill);
-                            _dicSkills.Add(
-                                objSkill.IsExoticSkill
-                                    ? objSkill.Name + " (" + objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
-                                    : objSkill.Name, objSkill);
+                            _dicSkills.Add(objSkill.DictionaryKey, objSkill);
                         }
 
                         UpdateUndoList(xmlSkillNode);
@@ -514,9 +507,7 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in lstUnsortedSkills)
                 {
-                    string strName = objSkill.IsExoticSkill
-                        ? objSkill.Name + " (" + objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
-                        : objSkill.Name;
+                    string strName = objSkill.DictionaryKey;
                     bool blnDoAddToDictionary = true;
                     _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                     {
@@ -838,9 +829,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objLoopSkill in GetSkillList(FilterOption.NonSpecial))
                     {
                         _lstSkills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.IsExoticSkill
-                            ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
-                            : objLoopSkill.Name, objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.DictionaryKey, objLoopSkill);
                     }
                 }
                 return _lstSkills;
