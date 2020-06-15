@@ -99,17 +99,19 @@ namespace Chummer.UI.Powers
 
             //Visible = false;
             SuspendLayout();
-            DoubleBuffered = true;
 
             lblPowerPoints.DoDatabinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
 
             parts.TaskEnd("MakePowerDisplay()");
 
-            cboDisplayFilter.DataSource = _dropDownList;
+            cboDisplayFilter.BeginUpdate();
+            cboDisplayFilter.DataSource = null;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+            cboDisplayFilter.EndUpdate();
 
             parts.TaskEnd("_ddl databind");
 
@@ -118,8 +120,6 @@ namespace Chummer.UI.Powers
             //this.PerformLayout();
             parts.TaskEnd("visible");
 
-            _table.Height = pnlPowers.Height - _table.Top;
-            _table.Width = pnlPowers.Width - _table.Left;
             _table.Items = _objCharacter.Powers;
 
             parts.TaskEnd("resize");
@@ -134,10 +134,14 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"), power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"), power => power.Rating == 0)
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"),
+                    null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"),
+                    power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                    power => power.Rating > 0),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                    power => power.Rating == 0)
             };
 
             /*
@@ -257,7 +261,7 @@ namespace Chummer.UI.Powers
         {
             _table = new TableView<Power>
             {
-                Location = new Point(3, 3),
+                Dock = DockStyle.Fill,
                 ToolTip = _tipTooltip
             };
             // create columns
@@ -446,7 +450,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(deleteColumn);
             _table.TranslateWinForm();
 
-            pnlPowers.Controls.Add(_table);
+            tlpMain.Controls.Add(_table, 0, 2);
         }
 
         private static Size GetImageSize(Image image)
