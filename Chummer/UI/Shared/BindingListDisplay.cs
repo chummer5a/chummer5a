@@ -55,20 +55,16 @@ namespace Chummer.UI.Shared
             DisplayPanel.SuspendLayout();
             try
             {
+                int intMaxControlHeight = 0;
                 foreach (TType objLoopTType in Contents)
                 {
-                    _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
+                    ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
+                    intMaxControlHeight = Math.Max(objNewControl.Control.Height, intMaxControlHeight);
+                    _lstContentList.Add(objNewControl);
                 }
 
-                foreach (ControlWithMetaData objLoopControl in _lstContentList)
-                {
-                    int intLoopHeight = objLoopControl.Control.Height;
-                    if (intLoopHeight > 0)
-                    {
-                        ListItemControlHeight = intLoopHeight;
-                        break;
-                    }
-                }
+                if (intMaxControlHeight > 0)
+                    ListItemControlHeight = intMaxControlHeight;
 
                 DisplayPanel.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                 _indexComparer = new IndexComparer(Contents);
