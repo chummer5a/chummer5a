@@ -347,21 +347,67 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new SkillSorter(SkillsSection.CompareSkills)),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortRating"),
-                    new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Rating.CompareTo(x.Rating);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortDicepool"),
-                    new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Pool.CompareTo(x.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
-                    new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = x.Pool.CompareTo(y.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
-                    new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
+                        if (intReturn == 0)
+                        {
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                            if (intReturn == 0)
+                                intReturn = SkillsSection.CompareSkills(y, x);
+                        }
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeName"),
-                    new SkillSorter((x, y) => string.Compare(x.DisplayAttribute, y.DisplayAttribute, StringComparison.Ordinal))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupName"),
-                    new SkillSorter((x, y) => SkillsSection.CompareSkillGroups(x.SkillGroupObject, y.SkillGroupObject))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = SkillsSection.CompareSkillGroups(x.SkillGroupObject, y.SkillGroupObject);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupRating"),
                     new SkillSortBySkillGroup()),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortCategory"),
-                    new SkillSorter((x, y) => string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), StringComparison.Ordinal))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
             };
 
             return ret;
@@ -442,17 +488,57 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new KnowledgeSkillSorter(SkillsSection.CompareSkills)),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortRating"),
-                    new KnowledgeSkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Rating.CompareTo(x.Rating);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortDicepool"),
-                    new KnowledgeSkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Pool.CompareTo(x.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
-                    new KnowledgeSkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = x.Pool.CompareTo(y.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
-                    new KnowledgeSkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
+                        if (intReturn == 0)
+                        {
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                            if (intReturn == 0)
+                                intReturn = SkillsSection.CompareSkills(y, x);
+                        }
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeName"),
-                    new KnowledgeSkillSorter((x, y) => string.Compare(x.DisplayAttribute, y.DisplayAttribute, StringComparison.Ordinal))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortCategory"),
-                    new KnowledgeSkillSorter((x, y) => string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), StringComparison.Ordinal))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(y, x);
+                        return intReturn;
+                    })),
             };
 
             return ret;

@@ -1000,9 +1000,9 @@ namespace Chummer.Backend.Skills
             {
                 if (objYGroup == null)
                     return 0;
-                return -1;
+                return 1;
             }
-            return objYGroup == null ? 1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalOptions.CultureInfo);
+            return objYGroup == null ? -1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalOptions.CultureInfo);
         }
 
         public IEnumerable<Skill> GetSkillList(FilterOption filter, string strName = "", bool blnFetchFromBackup = false)
