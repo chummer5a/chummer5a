@@ -82,7 +82,7 @@ namespace Chummer
                 return;
             if (!objControl.IsHandleCreated)
             {
-                objControl.CreateControl();
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.Never);
         }
@@ -100,7 +100,7 @@ namespace Chummer
                 return;
             if (!objControl.IsHandleCreated)
             {
-                objControl.CreateControl();
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
         }
@@ -119,7 +119,7 @@ namespace Chummer
                 return;
             if (!objControl.IsHandleCreated)
             {
-                objControl.CreateControl();
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true, true));
         }
@@ -137,7 +137,7 @@ namespace Chummer
                 return;
             if (!objControl.IsHandleCreated)
             {
-                objControl.CreateControl();
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
         }

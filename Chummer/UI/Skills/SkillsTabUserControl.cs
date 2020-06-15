@@ -274,7 +274,7 @@ namespace Chummer.UI.Skills
                     intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
                     intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
                 }
-                lblActiveSkills.MinimumSize = new Size(intNameLabelWidth, lblActiveSkills.MinimumSize.Height);
+                lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
                 lblActiveKarma.Margin = new Padding(lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width, 0, lblActiveKarma.Margin.Right, 0);
                 foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                 {
@@ -695,14 +695,12 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter.Created)
             {
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills().ToList();
-                lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 using (frmSelectItem form = new frmSelectItem
                 {
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                 })
                 {
-                    form.SetDropdownItemsMode(lstDefaultKnowledgeSkills);
+                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills);
 
                     if (form.ShowDialog() != DialogResult.OK)
                         return;

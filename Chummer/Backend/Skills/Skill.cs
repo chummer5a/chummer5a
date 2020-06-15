@@ -842,32 +842,30 @@ namespace Chummer.Backend.Skills
                 }
                 if (!IsKnowledgeSkill)
                 {
+                    bool blnIsMovementSkill = false;
+                    string strMovementString = string.Empty;
                     if (Name.Contains("Flight"))
                     {
-                        string strFlyString = CharacterObject.GetFly(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
-                        if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage)))
-                        {
-                            _intCachedEnabled = 0;
-                            return false;
-                        }
+                        blnIsMovementSkill = true;
+                        strMovementString = CharacterObject.GetFly(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
                     }
-                    if (Name.Contains("Swimming"))
+                    else if (Name.Contains("Swimming"))
                     {
-                        string strSwimString = CharacterObject.GetSwim(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
-                        if (string.IsNullOrEmpty(strSwimString) || strSwimString == "0" || strSwimString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage)))
-                        {
-                            _intCachedEnabled = 0;
-                            return false;
-                        }
+                        blnIsMovementSkill = true;
+                        strMovementString = CharacterObject.GetSwim(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
                     }
-                    if (Name.Contains("Running"))
+                    else if (Name.Contains("Running"))
                     {
-                        string strMovementString = CharacterObject.GetMovement(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
-                        if (string.IsNullOrEmpty(strMovementString) || strMovementString == "0" || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage)))
-                        {
-                            _intCachedEnabled = 0;
-                            return false;
-                        }
+                        blnIsMovementSkill = true;
+                        strMovementString = CharacterObject.GetMovement(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
+                    }
+                    if (blnIsMovementSkill
+                        && (string.IsNullOrEmpty(strMovementString)
+                            || strMovementString == "0"
+                            || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage))))
+                    {
+                        _intCachedEnabled = 0;
+                        return false;
                     }
                 }
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.

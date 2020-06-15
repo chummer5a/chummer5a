@@ -55,15 +55,11 @@ namespace Chummer.UI.Skills
                 tssItem.TranslateToolStripItemsRecursively();
             }
 
-            this.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.Enabled));
-
             //Display
             _fntNormalName = lblName.Font;
             _fntItalicName = new Font(_fntNormalName, FontStyle.Italic);
             _fntNormal = btnAttribute.Font;
             _fntItalic = new Font(_fntNormal, FontStyle.Italic);
-
-            this.DoOneWayDataBinding("BackColor", objSkill, nameof(Skill.PreferredControlColor));
 
             if (!_objSkill.Default)
                 lblName.Font = _fntItalicName;
@@ -147,6 +143,9 @@ namespace Chummer.UI.Skills
                 chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
                 chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
             }
+
+            this.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.Enabled));
+            this.DoOneWayDataBinding("BackColor", objSkill, nameof(Skill.PreferredControlColor));
 
             ResumeLayout(true);
 

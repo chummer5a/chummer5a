@@ -17,10 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Skills;
@@ -42,25 +40,20 @@ namespace Chummer.UI.Skills
             lblModifiedRating.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.DisplayPool));
             lblModifiedRating.DoOneWayDataBinding("ToolTipText", _skill, nameof(KnowledgeSkill.PoolToolTip));
 
-
-            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes().ToList();
-            lstTypes.Sort(CompareListItems.CompareNames);
-            List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills().ToList();
-            lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
             cmdDelete.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowDelete));
 
             cboType.BeginUpdate();
             cboType.DataSource = null;
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataSource = lstTypes;
+            cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
             cboType.DoDatabinding("SelectedValue", _skill, nameof(KnowledgeSkill.Type));
 
             cboSkill.BeginUpdate();
             cboSkill.DataSource = null;
             cboSkill.DisplayMember = nameof(ListItem.Name);
             cboSkill.ValueMember = nameof(ListItem.Value);
-            cboSkill.DataSource = lstDefaultKnowledgeSkills;
+            cboSkill.DataSource = KnowledgeSkill.DefaultKnowledgeSkills;
             cboSkill.SelectedIndex = -1;
             cboSkill.DoDatabinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
             cboSkill.DoOneWayNegatableDatabinding("Enabled", _skill, nameof(KnowledgeSkill.ForcedName));
