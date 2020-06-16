@@ -460,6 +460,7 @@ namespace Chummer.Backend.Skills
             CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
             CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
             Specializations.ListChanged += SpecializationsOnListChanged;
+            Specializations.BeforeRemove += SpecializationsOnBeforeRemove;
 
             _skillDependencyGraph = new DependencyGraph<string>(
                 new DependencyGraphNode<string>(nameof(PoolToolTip),
@@ -1012,7 +1013,7 @@ namespace Chummer.Backend.Skills
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specializations even if the rules say it is possible?
-        public BindingList<SkillSpecialization> Specializations { get; } = new BindingList<SkillSpecialization>();
+        public CachedBindingList<SkillSpecialization> Specializations { get; } = new CachedBindingList<SkillSpecialization>();
 
         public string Specialization
         {
@@ -1650,17 +1651,19 @@ namespace Chummer.Backend.Skills
             if (IsExoticSkill)
                 _strDictionaryKey = null;
             _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
-            switch (listChangedEventArgs.ListChangedType)
-            {
-                case ListChangedType.ItemAdded:
-                    Specializations[listChangedEventArgs.NewIndex].Parent = this;
-                    break;
-                case ListChangedType.ItemDeleted:
-                    Specializations[listChangedEventArgs.NewIndex].Parent = null;
-                    break;
-            }
+            if (listChangedEventArgs.ListChangedType == ListChangedType.ItemAdded
+                || listChangedEventArgs.ListChangedType == ListChangedType.ItemChanged)
+                Specializations[listChangedEventArgs.NewIndex].Parent = this;
             _blnSkipSpecializationRefresh = false;
             OnPropertyChanged(nameof(Specializations));
+        }
+        private void SpecializationsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            if (_blnSkipSpecializationRefresh)
+                return;
+            _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
+            Specializations[e.OldIndex].Parent = null;
+            _blnSkipSpecializationRefresh = false;
         }
     }
 }
