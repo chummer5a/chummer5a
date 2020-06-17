@@ -44,13 +44,10 @@ namespace Chummer
             {
                 tssItem.TranslateToolStripItemsRecursively();
             }
-            MoveControls();
         }
 
         private void PetControl_Load(object sender, EventArgs e)
         {
-            Width = cmdDelete.Left + cmdDelete.Width;
-
             LoadContactList();
 
             DoDataBindings();
@@ -210,14 +207,6 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private void MoveControls()
-        {
-            txtContactName.Left = lblName.Left + lblName.Width + 6;
-            lblMetatypeLabel.Left = txtContactName.Left + txtContactName.Width + 16;
-            cboMetatype.Left = lblMetatypeLabel.Left + lblMetatypeLabel.Width + 6;
-            cboMetatype.Width = imgLink.Left - 6 - cboMetatype.Left;
-        }
-
         private void LoadContactList()
         {
             List<ListItem> lstMetatypes = new List<ListItem>
@@ -263,10 +252,10 @@ namespace Chummer
         }
         #endregion
 
-            #region Properties
-            /// <summary>
-            /// Contact object this is linked to.
-            /// </summary>
+        #region Properties
+        /// <summary>
+        /// Contact object this is linked to.
+        /// </summary>
         public Contact ContactObject => _objContact;
 
         #endregion

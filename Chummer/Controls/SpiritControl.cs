@@ -51,7 +51,6 @@ namespace Chummer
 
         private void SpiritControl_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
             nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
             chkBound.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Bound));
@@ -426,8 +425,9 @@ namespace Chummer
             }
 
             cboSpiritName.BeginUpdate();
-            cboSpiritName.DisplayMember = "Name";
-            cboSpiritName.ValueMember = "Value";
+            cboSpiritName.DataSource = null;
+            cboSpiritName.DisplayMember = nameof(ListItem.Name);
+            cboSpiritName.ValueMember = nameof(ListItem.Value);
             cboSpiritName.DataSource = lstCritters;
 
             // Set the control back to its original value.
