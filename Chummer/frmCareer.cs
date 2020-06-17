@@ -15862,9 +15862,9 @@ namespace Chummer
                     }
                 }
             }
-            if (chtKarma.ExpenseValues.Count < 2)
+            while (chtKarma.ExpenseValues.Count < 2)
                 chtKarma.ExpenseValues.Add(new DateTimePoint(NuyenLast != DateTime.MinValue ? NuyenLast : DateTime.Now, decimal.ToDouble(decKarmaValue)));
-            if (chtNuyen.ExpenseValues.Count < 2)
+            while (chtNuyen.ExpenseValues.Count < 2)
                 chtNuyen.ExpenseValues.Add(new DateTimePoint(KarmaLast != DateTime.MinValue ? KarmaLast : DateTime.Now, decimal.ToDouble(decNuyenValue)));
             chtKarma.NormalizeYAxis();
             chtNuyen.NormalizeYAxis();
