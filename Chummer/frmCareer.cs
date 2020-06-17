@@ -851,7 +851,7 @@ namespace Chummer
                         Timekeeper.StartSyncron("load_frm_career_finishingStuff", op_load_frm_career))
                     {
 
-                        RefreshAttributes(pnlAttributes);
+                        RefreshAttributes(pnlAttributes, null, lblAttributes, -1, lblAttributesAug.PreferredWidth, lblAttributesMetatype.PreferredWidth);
 
                         CharacterObject.AttributeSection.Attributes.CollectionChanged += AttributeCollectionChanged;
 
@@ -1017,7 +1017,7 @@ namespace Chummer
 
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs);
+            RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs, lblAttributes, -1, lblAttributesAug.PreferredWidth, lblAttributesMetatype.PreferredWidth);
         }
 
         private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -17357,7 +17357,12 @@ namespace Chummer
             pnlAttributes.SuspendLayout();
             foreach (Control objAttributeControl in pnlAttributes.Controls)
             {
-                objAttributeControl.Width = pnlAttributes.ClientSize.Width;
+                if (pnlAttributes.ClientSize.Width < objAttributeControl.MinimumSize.Height)
+                    objAttributeControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
+                if (pnlAttributes.ClientSize.Width != objAttributeControl.MaximumSize.Height)
+                    objAttributeControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MaximumSize.Height);
+                if (pnlAttributes.ClientSize.Width > objAttributeControl.MinimumSize.Height)
+                    objAttributeControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
             }
             pnlAttributes.ResumeLayout();
         }

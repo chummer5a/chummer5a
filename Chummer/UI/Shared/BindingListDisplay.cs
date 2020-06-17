@@ -461,10 +461,12 @@ namespace Chummer.UI.Shared
                 {
                     if (control.AutoSize)
                     {
-                        if (control.MinimumSize.Width != DisplayPanel.Width)
+                        if (control.MinimumSize.Width > DisplayPanel.Width)
                             control.MinimumSize = new Size(DisplayPanel.Width, control.MinimumSize.Height);
                         if (control.MaximumSize.Width != DisplayPanel.Width)
                             control.MaximumSize = new Size(DisplayPanel.Width, control.MaximumSize.Height);
+                        if (control.MinimumSize.Width < DisplayPanel.Width)
+                            control.MinimumSize = new Size(DisplayPanel.Width, control.MinimumSize.Height);
                     }
                     else
                     {
@@ -573,10 +575,12 @@ namespace Chummer.UI.Shared
                 {
                     if (_control.AutoSize)
                     {
-                        if (_control.MinimumSize.Height != _parent.ListItemControlHeight)
+                        if (_control.MinimumSize.Height > _parent.ListItemControlHeight)
                             _control.MinimumSize = new Size(_control.MinimumSize.Width, _parent.ListItemControlHeight);
                         if (_control.MaximumSize.Height != _parent.ListItemControlHeight)
                             _control.MaximumSize = new Size(_control.MaximumSize.Width, _parent.ListItemControlHeight);
+                        if (_control.MinimumSize.Height < _parent.ListItemControlHeight)
+                            _control.MinimumSize = new Size(_control.MinimumSize.Width, _parent.ListItemControlHeight);
                     }
                     else
                     {

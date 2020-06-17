@@ -42,7 +42,11 @@ namespace Chummer.UI.Skills
         public SkillsTabUserControl()
         {
             InitializeComponent();
-            flpSkillGroupLabels.Margin = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
+            flpSkillGroupLabels.Margin = new Padding(
+                flpSkillGroupLabels.Margin.Left,
+                flpSkillGroupLabels.Margin.Top,
+                flpSkillGroupLabels.Margin.Right + SystemInformation.VerticalScrollBarWidth,
+                flpSkillGroupLabels.Margin.Bottom);
 
             this.TranslateWinForm();
 
@@ -275,7 +279,11 @@ namespace Chummer.UI.Skills
                     intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
                 }
                 lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
-                lblActiveKarma.Margin = new Padding(lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width, 0, lblActiveKarma.Margin.Right, 0);
+                lblActiveKarma.Margin = new Padding(
+                    lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width,
+                    lblActiveKarma.Margin.Top,
+                    lblActiveKarma.Margin.Right,
+                    lblActiveKarma.Margin.Bottom);
                 foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                 {
                     objSkillControl.MoveControls(intNameLabelWidth);
@@ -297,8 +305,16 @@ namespace Chummer.UI.Skills
                     intRightButtonsWidth = Math.Max(intRightButtonsWidth, objKnowledgeSkillControl.RightButtonsWidth);
                 }
                 lblKnowledgeSkills.MinimumSize = new Size(intNameLabelWidth, lblKnowledgeSkills.MinimumSize.Height);
-                lblKnoKarma.Margin = new Padding(lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width, 0, lblKnoKarma.Margin.Right, 0);
-                lblKnoBwk.Margin = new Padding(lblKnoBwk.Margin.Left, 0, Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + lblKnoBwk.Width / 2), 0);
+                lblKnoKarma.Margin = new Padding(
+                    lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width,
+                    lblKnoKarma.Margin.Top,
+                    lblKnoKarma.Margin.Right,
+                    lblKnoKarma.Margin.Bottom);
+                lblKnoBwk.Margin = new Padding(
+                    lblKnoBwk.Margin.Left,
+                    lblKnoBwk.Margin.Top,
+                    Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + lblKnoBwk.Width / 2),
+                    lblKnoBwk.Margin.Bottom);
                 foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
                 {
                     objKnowledgeSkillControl.MoveControls(intNameLabelWidth);
