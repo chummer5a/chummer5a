@@ -68,8 +68,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex"
             BindingList<ListItem> templist = new BindingList<ListItem>(_lstCategory);
             cboCategory.DataSource = templist;
@@ -436,8 +436,8 @@ namespace Chummer
             string strOldSelectedQuality = lstQualities.SelectedValue?.ToString();
             _blnLoading = true;
             lstQualities.BeginUpdate();
-            lstQualities.ValueMember = "Value";
-            lstQualities.DisplayMember = "Name";
+            lstQualities.ValueMember = nameof(ListItem.Value);
+            lstQualities.DisplayMember = nameof(ListItem.Name);
             lstQualities.DataSource = lstQuality;
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelectedQuality))

@@ -1156,8 +1156,8 @@ namespace Chummer
                 string strOldSelected = lstCyberware.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstCyberware.BeginUpdate();
-                lstCyberware.ValueMember = "Value";
-                lstCyberware.DisplayMember = "Name";
+                lstCyberware.ValueMember = nameof(ListItem.Value);
+                lstCyberware.DisplayMember = nameof(ListItem.Name);
                 lstCyberware.DataSource = lstCyberwares;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
@@ -1333,8 +1333,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = "Value";
-                cboGrade.DisplayMember = "Name";
+                cboGrade.ValueMember = nameof(ListItem.Value);
+                cboGrade.DisplayMember = nameof(ListItem.Name);
                 cboGrade.DataSource = lstGrade;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))
@@ -1391,8 +1391,8 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstCategory;
             _blnLoading = blnOldLoading;
             cboCategory.SelectedValue = strOldSelected;

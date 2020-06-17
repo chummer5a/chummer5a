@@ -98,15 +98,15 @@ namespace Chummer
                     }
 
                     cboChoice1.Visible = true;
-                    cboChoice1.ValueMember = "Value";
-                    cboChoice1.DisplayMember = "Name";
+                    cboChoice1.ValueMember = nameof(ListItem.Value);
+                    cboChoice1.DisplayMember = nameof(ListItem.Name);
                     cboChoice1.DataSource = lstChoice1;
 
                     if (lstChoice2.Count > 0)
                     {
                         cboChoice2.Visible = true;
-                        cboChoice2.ValueMember = "Value";
-                        cboChoice2.DisplayMember = "Name";
+                        cboChoice2.ValueMember = nameof(ListItem.Value);
+                        cboChoice2.DisplayMember = nameof(ListItem.Name);
                         cboChoice2.DataSource = lstChoice2;
                     }
                     else
@@ -242,8 +242,8 @@ namespace Chummer
             string strOldSelected = lstMentor.SelectedValue?.ToString();
             _blnSkipRefresh = true;
             lstMentor.BeginUpdate();
-            lstMentor.ValueMember = "Value";
-            lstMentor.DisplayMember = "Name";
+            lstMentor.ValueMember = nameof(ListItem.Value);
+            lstMentor.DisplayMember = nameof(ListItem.Name);
             lstMentor.DataSource = lstMentors;
             _blnSkipRefresh = false;
             if (!string.IsNullOrEmpty(strOldSelected))

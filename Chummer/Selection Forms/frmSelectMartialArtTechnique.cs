@@ -203,8 +203,8 @@ namespace Chummer
             string strOldSelected = lstTechniques.SelectedValue?.ToString();
             _blnLoading = true;
             lstTechniques.BeginUpdate();
-            lstTechniques.ValueMember = "Value";
-            lstTechniques.DisplayMember = "Name";
+            lstTechniques.ValueMember = nameof(ListItem.Value);
+            lstTechniques.DisplayMember = nameof(ListItem.Name);
             lstTechniques.DataSource = lstTechniqueItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

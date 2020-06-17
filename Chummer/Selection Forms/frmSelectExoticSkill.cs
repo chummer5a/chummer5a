@@ -62,8 +62,8 @@ namespace Chummer
                     }
             lstSkills.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstSkills;
 
             // Select the first Skill in the list.
@@ -140,8 +140,8 @@ namespace Chummer
             lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
             lstSkillSpecializations.Sort(Comparer<ListItem>.Create((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal)));
             cboSkillSpecialisations.BeginUpdate();
-            cboSkillSpecialisations.ValueMember = "Value";
-            cboSkillSpecialisations.DisplayMember = "Name";
+            cboSkillSpecialisations.ValueMember = nameof(ListItem.Value);
+            cboSkillSpecialisations.DisplayMember = nameof(ListItem.Name);
             cboSkillSpecialisations.DataSource = lstSkillSpecializations;
 
             // Select the first Skill in the list.

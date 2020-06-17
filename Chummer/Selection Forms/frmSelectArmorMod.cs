@@ -480,8 +480,8 @@ namespace Chummer
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.ValueMember = "Value";
-            lstMod.DisplayMember = "Name";
+            lstMod.ValueMember = nameof(ListItem.Value);
+            lstMod.DisplayMember = nameof(ListItem.Name);
             lstMod.DataSource = lstMods;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

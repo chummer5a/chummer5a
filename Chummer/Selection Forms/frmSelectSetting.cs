@@ -64,8 +64,8 @@ namespace Chummer
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
-            cboSetting.ValueMember = "Value";
-            cboSetting.DisplayMember = "Name";
+            cboSetting.ValueMember = nameof(ListItem.Value);
+            cboSetting.DisplayMember = nameof(ListItem.Name);
             cboSetting.DataSource = lstSettings;
             cboSetting.EndUpdate();
 

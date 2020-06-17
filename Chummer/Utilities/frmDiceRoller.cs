@@ -50,8 +50,8 @@ namespace Chummer
             };
 
             cboMethod.BeginUpdate();
-            cboMethod.ValueMember = "Value";
-            cboMethod.DisplayMember = "Name";
+            cboMethod.ValueMember = nameof(ListItem.Value);
+            cboMethod.DisplayMember = nameof(ListItem.Name);
             cboMethod.DataSource = lstMethod;
             cboMethod.SelectedIndex = 0;
             cboMethod.EndUpdate();
@@ -172,8 +172,8 @@ namespace Chummer
             lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + lstRandom.Sum().ToString(GlobalOptions.CultureInfo);
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
-            lstResults.ValueMember = "Value";
-            lstResults.DisplayMember = "Name";
+            lstResults.ValueMember = nameof(ListItem.Value);
+            lstResults.DisplayMember = nameof(ListItem.Name);
             lstResults.DataSource = _lstResults;
             lstResults.EndUpdate();
         }
@@ -329,8 +329,8 @@ namespace Chummer
             lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + (lstRandom.Sum() + intKeepSum).ToString(GlobalOptions.CultureInfo);
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
-            lstResults.ValueMember = "Value";
-            lstResults.DisplayMember = "Name";
+            lstResults.ValueMember = nameof(ListItem.Value);
+            lstResults.DisplayMember = nameof(ListItem.Name);
             lstResults.DataSource = _lstResults;
             lstResults.EndUpdate();
         }

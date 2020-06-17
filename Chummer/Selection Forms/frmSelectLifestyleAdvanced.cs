@@ -403,8 +403,8 @@ namespace Chummer
             nudBonusLP.DoDatabinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
-            cboBaseLifestyle.ValueMember = "Value";
-            cboBaseLifestyle.DisplayMember = "Name";
+            cboBaseLifestyle.ValueMember = nameof(ListItem.Value);
+            cboBaseLifestyle.DisplayMember = nameof(ListItem.Name);
             cboBaseLifestyle.DataSource = lstLifestyles;
 
             cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;

@@ -1190,8 +1190,8 @@ namespace Chummer
             string strOldSelected = cboLimbCount.SelectedValue?.ToString();
 
             cboLimbCount.BeginUpdate();
-            cboLimbCount.ValueMember = "Value";
-            cboLimbCount.DisplayMember = "Name";
+            cboLimbCount.ValueMember = nameof(ListItem.Value);
+            cboLimbCount.DisplayMember = nameof(ListItem.Name);
             cboLimbCount.DataSource = lstLimbCount;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -1215,8 +1215,8 @@ namespace Chummer
             string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
 
             cboMugshotCompression.BeginUpdate();
-            cboMugshotCompression.ValueMember = "Value";
-            cboMugshotCompression.DisplayMember = "Name";
+            cboMugshotCompression.ValueMember = nameof(ListItem.Value);
+            cboMugshotCompression.DisplayMember = nameof(ListItem.Name);
             cboMugshotCompression.DataSource = lstMugshotCompressionOptions;
 
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -1254,8 +1254,8 @@ namespace Chummer
             string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
 
             cboPDFParameters.BeginUpdate();
-            cboPDFParameters.ValueMember = "Value";
-            cboPDFParameters.DisplayMember = "Name";
+            cboPDFParameters.ValueMember = nameof(ListItem.Value);
+            cboPDFParameters.DisplayMember = nameof(ListItem.Name);
             cboPDFParameters.DataSource = lstPdfParameters;
             cboPDFParameters.SelectedIndex = intIndex;
 
@@ -1373,8 +1373,8 @@ namespace Chummer
             string strOldSelected = cboSetting.SelectedValue?.ToString();
 
             cboSetting.BeginUpdate();
-            cboSetting.ValueMember = "Value";
-            cboSetting.DisplayMember = "Name";
+            cboSetting.ValueMember = nameof(ListItem.Value);
+            cboSetting.DisplayMember = nameof(ListItem.Name);
             cboSetting.DataSource = lstSettings;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -1423,8 +1423,8 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
+            cboLanguage.ValueMember = nameof(ListItem.Value);
+            cboLanguage.DisplayMember = nameof(ListItem.Name);
             cboLanguage.DataSource = lstLanguages;
             cboLanguage.EndUpdate();
         }
@@ -1432,8 +1432,8 @@ namespace Chummer
         private void PopulateSheetLanguageList()
         {
             cboSheetLanguage.BeginUpdate();
-            cboSheetLanguage.ValueMember = "Value";
-            cboSheetLanguage.DisplayMember = "Name";
+            cboSheetLanguage.ValueMember = nameof(ListItem.Value);
+            cboSheetLanguage.DisplayMember = nameof(ListItem.Name);
             cboSheetLanguage.DataSource = GetSheetLanguageList();
             cboSheetLanguage.EndUpdate();
         }
@@ -1608,8 +1608,8 @@ namespace Chummer
                 strOldSelected = strOldSelected.Substring(intPos + 1);
 
             cboXSLT.BeginUpdate();
-            cboXSLT.ValueMember = "Value";
-            cboXSLT.DisplayMember = "Name";
+            cboXSLT.ValueMember = nameof(ListItem.Value);
+            cboXSLT.DisplayMember = nameof(ListItem.Name);
             cboXSLT.DataSource = lstFiles;
 
             if(!string.IsNullOrEmpty(strOldSelected))

@@ -89,8 +89,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
@@ -135,8 +135,8 @@ namespace Chummer
             lstKit.Sort(CompareListItems.CompareNames);
             lstKits.BeginUpdate();
             lstKits.DataSource = null;
-            lstKits.ValueMember = "Value";
-            lstKits.DisplayMember = "Name";
+            lstKits.ValueMember = nameof(ListItem.Value);
+            lstKits.DisplayMember = nameof(ListItem.Name);
             lstKits.DataSource = lstKit;
             lstKits.EndUpdate();
 

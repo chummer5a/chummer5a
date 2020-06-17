@@ -64,8 +64,8 @@ namespace Chummer
             };
 
             cboSortOrder.DataSource = lstSort;
-            cboSortOrder.ValueMember = "Value";
-            cboSortOrder.DisplayMember = "Name";
+            cboSortOrder.ValueMember = nameof(ListItem.Value);
+            cboSortOrder.DisplayMember = nameof(ListItem.Name);
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace Chummer
             };
 
             cboFilterMode.DataSource = lstMode;
-            cboFilterMode.ValueMember = "Value";
-            cboFilterMode.DisplayMember = "Name";
+            cboFilterMode.ValueMember = nameof(ListItem.Value);
+            cboFilterMode.DisplayMember = nameof(ListItem.Name);
         }
 
         /// <summary>
@@ -169,8 +169,8 @@ namespace Chummer
 
                 cboCharacterTypes.Items.Clear();
                 cboCharacterTypes.DataSource = _lstCharacterTypes;
-                cboCharacterTypes.ValueMember = "Value";
-                cboCharacterTypes.DisplayMember = "Name";
+                cboCharacterTypes.ValueMember = nameof(ListItem.Value);
+                cboCharacterTypes.DisplayMember = nameof(ListItem.Name);
             }
             catch (EndpointNotFoundException)
             {

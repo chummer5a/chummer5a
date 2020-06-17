@@ -44,8 +44,8 @@ namespace Chummer
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }
             cboPower.BeginUpdate();
-            cboPower.ValueMember = "Value";
-            cboPower.DisplayMember = "Name";
+            cboPower.ValueMember = nameof(ListItem.Value);
+            cboPower.DisplayMember = nameof(ListItem.Name);
             cboPower.DataSource = _lstPowerItems;
             if (_lstPowerItems.Count >= 1)
                 cboPower.SelectedIndex = 0;

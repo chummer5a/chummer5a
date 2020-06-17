@@ -742,8 +742,8 @@ namespace Chummer
             string strOldSelected = lstDrug.SelectedValue?.ToString();
             _blnLoading = true;
             lstDrug.BeginUpdate();
-            lstDrug.ValueMember = "Value";
-            lstDrug.DisplayMember = "Name";
+            lstDrug.ValueMember = nameof(ListItem.Value);
+            lstDrug.DisplayMember = nameof(ListItem.Name);
             lstDrug.DataSource = lstDrug;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -856,8 +856,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = "Value";
-                cboGrade.DisplayMember = "Name";
+                cboGrade.ValueMember = nameof(ListItem.Value);
+                cboGrade.DisplayMember = nameof(ListItem.Name);
                 cboGrade.DataSource = lstGrade;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))

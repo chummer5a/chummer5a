@@ -100,8 +100,8 @@ namespace Chummer
             }
 
             cboGamePlay.BeginUpdate();
-            cboGamePlay.ValueMember = "Value";
-            cboGamePlay.DisplayMember = "Name";
+            cboGamePlay.ValueMember = nameof(ListItem.Value);
+            cboGamePlay.DisplayMember = nameof(ListItem.Name);
             cboGamePlay.DataSource = lstGameplayOptions;
             cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();

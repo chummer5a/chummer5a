@@ -57,8 +57,8 @@ namespace Chummer
             lstManeuver.Sort(CompareListItems.CompareNames);
             lstManeuvers.BeginUpdate();
             lstManeuvers.DataSource = null;
-            lstManeuvers.ValueMember = "Value";
-            lstManeuvers.DisplayMember = "Name";
+            lstManeuvers.ValueMember = nameof(ListItem.Value);
+            lstManeuvers.DisplayMember = nameof(ListItem.Name);
             lstManeuvers.DataSource = lstManeuver;
             lstManeuvers.EndUpdate();
         }

@@ -410,8 +410,8 @@ namespace Chummer
                             lstTraditions.Insert(0,
                                 new ListItem("None", LanguageManager.GetString("String_None")));
                             cboTradition.BeginUpdate();
-                            cboTradition.ValueMember = "Value";
-                            cboTradition.DisplayMember = "Name";
+                            cboTradition.ValueMember = nameof(ListItem.Value);
+                            cboTradition.DisplayMember = nameof(ListItem.Name);
                             cboTradition.DataSource = lstTraditions;
                             cboTradition.EndUpdate();
                         }
@@ -500,8 +500,8 @@ namespace Chummer
 
                         List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
                         cboSpiritCombat.BeginUpdate();
-                        cboSpiritCombat.ValueMember = "Value";
-                        cboSpiritCombat.DisplayMember = "Name";
+                        cboSpiritCombat.ValueMember = nameof(ListItem.Value);
+                        cboSpiritCombat.DisplayMember = nameof(ListItem.Name);
                         cboSpiritCombat.DataSource = lstCombat;
                         cboSpiritCombat.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritCombat));
@@ -512,8 +512,8 @@ namespace Chummer
 
                         List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
                         cboSpiritDetection.BeginUpdate();
-                        cboSpiritDetection.ValueMember = "Value";
-                        cboSpiritDetection.DisplayMember = "Name";
+                        cboSpiritDetection.ValueMember = nameof(ListItem.Value);
+                        cboSpiritDetection.DisplayMember = nameof(ListItem.Name);
                         cboSpiritDetection.DataSource = lstDetection;
                         cboSpiritDetection.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritDetection));
@@ -524,8 +524,8 @@ namespace Chummer
 
                         List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
                         cboSpiritHealth.BeginUpdate();
-                        cboSpiritHealth.ValueMember = "Value";
-                        cboSpiritHealth.DisplayMember = "Name";
+                        cboSpiritHealth.ValueMember = nameof(ListItem.Value);
+                        cboSpiritHealth.DisplayMember = nameof(ListItem.Name);
                         cboSpiritHealth.DataSource = lstHealth;
                         cboSpiritHealth.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritHealth));
@@ -536,8 +536,8 @@ namespace Chummer
 
                         List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
                         cboSpiritIllusion.BeginUpdate();
-                        cboSpiritIllusion.ValueMember = "Value";
-                        cboSpiritIllusion.DisplayMember = "Name";
+                        cboSpiritIllusion.ValueMember = nameof(ListItem.Value);
+                        cboSpiritIllusion.DisplayMember = nameof(ListItem.Name);
                         cboSpiritIllusion.DataSource = lstIllusion;
                         cboSpiritIllusion.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritIllusion));
@@ -548,8 +548,8 @@ namespace Chummer
 
                         List<ListItem> lstManip = new List<ListItem>(lstSpirit);
                         cboSpiritManipulation.BeginUpdate();
-                        cboSpiritManipulation.ValueMember = "Value";
-                        cboSpiritManipulation.DisplayMember = "Name";
+                        cboSpiritManipulation.ValueMember = nameof(ListItem.Value);
+                        cboSpiritManipulation.DisplayMember = nameof(ListItem.Name);
                         cboSpiritManipulation.DataSource = lstManip;
                         cboSpiritManipulation.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritManipulation));
@@ -580,8 +580,8 @@ namespace Chummer
                             lstStreams.Insert(0,
                                 new ListItem("None", LanguageManager.GetString("String_None")));
                             cboStream.BeginUpdate();
-                            cboStream.ValueMember = "Value";
-                            cboStream.DisplayMember = "Name";
+                            cboStream.ValueMember = nameof(ListItem.Value);
+                            cboStream.DisplayMember = nameof(ListItem.Name);
                             cboStream.DataSource = lstStreams;
                             cboStream.EndUpdate();
                         }
@@ -1248,8 +1248,8 @@ namespace Chummer
 
                         string strPrimaryArm = CharacterObject.PrimaryArm;
 
-                        cboPrimaryArm.ValueMember = "Value";
-                        cboPrimaryArm.DisplayMember = "Name";
+                        cboPrimaryArm.ValueMember = nameof(ListItem.Value);
+                        cboPrimaryArm.DisplayMember = nameof(ListItem.Name);
                         cboPrimaryArm.DataSource = lstPrimaryArm;
                         cboPrimaryArm.SelectedValue = strPrimaryArm;
                         if (cboPrimaryArm.SelectedIndex == -1)
@@ -11950,8 +11950,8 @@ namespace Chummer
             }
             cboCyberwareGrade.BeginUpdate();
             //cboCyberwareGrade.DataSource = null;
-            cboCyberwareGrade.ValueMember = "Value";
-            cboCyberwareGrade.DisplayMember = "Name";
+            cboCyberwareGrade.ValueMember = nameof(ListItem.Value);
+            cboCyberwareGrade.DisplayMember = nameof(ListItem.Name);
             cboCyberwareGrade.DataSource = lstCyberwareGrades;
             cboCyberwareGrade.EndUpdate();
         }

@@ -243,8 +243,8 @@ namespace Chummer
             _blnLoading = true;
             string strOldSelected = lstPowers.SelectedValue?.ToString();
             lstPowers.BeginUpdate();
-            lstPowers.ValueMember = "Value";
-            lstPowers.DisplayMember = "Name";
+            lstPowers.ValueMember = nameof(ListItem.Value);
+            lstPowers.DisplayMember = nameof(ListItem.Name);
             lstPowers.DataSource = lstPower;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

@@ -620,8 +620,8 @@ namespace Chummer
             }
 
             cboXSLT.BeginUpdate();
-            cboXSLT.ValueMember = "Value";
-            cboXSLT.DisplayMember = "Name";
+            cboXSLT.ValueMember = nameof(ListItem.Value);
+            cboXSLT.DisplayMember = nameof(ListItem.Name);
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
@@ -640,8 +640,8 @@ namespace Chummer
             }
 
             myCboLanguage.BeginUpdate();
-            myCboLanguage.ValueMember = "Value";
-            myCboLanguage.DisplayMember = "Name";
+            myCboLanguage.ValueMember = nameof(ListItem.Value);
+            myCboLanguage.DisplayMember = nameof(ListItem.Name);
             myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (myCboLanguage.SelectedIndex == -1)

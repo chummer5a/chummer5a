@@ -107,8 +107,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -472,8 +472,8 @@ namespace Chummer
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstWeapon.BeginUpdate();
-                lstWeapon.ValueMember = "Value";
-                lstWeapon.DisplayMember = "Name";
+                lstWeapon.ValueMember = nameof(ListItem.Value);
+                lstWeapon.DisplayMember = nameof(ListItem.Name);
                 lstWeapon.DataSource = lstWeapons;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))

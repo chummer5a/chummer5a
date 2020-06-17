@@ -133,8 +133,8 @@ namespace Chummer
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
             _blnLoading = true;
             lstAccessory.BeginUpdate();
-            lstAccessory.ValueMember = "Value";
-            lstAccessory.DisplayMember = "Name";
+            lstAccessory.ValueMember = nameof(ListItem.Value);
+            lstAccessory.DisplayMember = nameof(ListItem.Name);
             lstAccessory.DataSource = lstAccessories;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

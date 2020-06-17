@@ -516,50 +516,50 @@ namespace Chummer
             lstPreferredPayments.Sort(CompareListItems.CompareNames);
 
             cboContactRole.BeginUpdate();
-            cboContactRole.ValueMember = "Value";
-            cboContactRole.DisplayMember = "Name";
+            cboContactRole.ValueMember = nameof(ListItem.Value);
+            cboContactRole.DisplayMember = nameof(ListItem.Name);
             cboContactRole.DataSource = new BindingSource { DataSource = ContactArchetypes };
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();
-            cboMetatype.ValueMember = "Value";
-            cboMetatype.DisplayMember = "Name";
+            cboMetatype.ValueMember = nameof(ListItem.Value);
+            cboMetatype.DisplayMember = nameof(ListItem.Name);
             cboMetatype.DataSource = lstMetatypes;
             cboMetatype.EndUpdate();
 
             cboSex.BeginUpdate();
-            cboSex.ValueMember = "Value";
-            cboSex.DisplayMember = "Name";
+            cboSex.ValueMember = nameof(ListItem.Value);
+            cboSex.DisplayMember = nameof(ListItem.Name);
             cboSex.DataSource = lstSexes;
             cboSex.EndUpdate();
 
             cboAge.BeginUpdate();
-            cboAge.ValueMember = "Value";
-            cboAge.DisplayMember = "Name";
+            cboAge.ValueMember = nameof(ListItem.Value);
+            cboAge.DisplayMember = nameof(ListItem.Name);
             cboAge.DataSource = lstAges;
             cboAge.EndUpdate();
 
             cboPersonalLife.BeginUpdate();
-            cboPersonalLife.ValueMember = "Value";
-            cboPersonalLife.DisplayMember = "Name";
+            cboPersonalLife.ValueMember = nameof(ListItem.Value);
+            cboPersonalLife.DisplayMember = nameof(ListItem.Name);
             cboPersonalLife.DataSource = lstPersonalLives;
             cboPersonalLife.EndUpdate();
 
             cboType.BeginUpdate();
-            cboType.ValueMember = "Value";
-            cboType.DisplayMember = "Name";
+            cboType.ValueMember = nameof(ListItem.Value);
+            cboType.DisplayMember = nameof(ListItem.Name);
             cboType.DataSource = lstTypes;
             cboType.EndUpdate();
 
             cboPreferredPayment.BeginUpdate();
-            cboPreferredPayment.ValueMember = "Value";
-            cboPreferredPayment.DisplayMember = "Name";
+            cboPreferredPayment.ValueMember = nameof(ListItem.Value);
+            cboPreferredPayment.DisplayMember = nameof(ListItem.Name);
             cboPreferredPayment.DataSource = lstPreferredPayments;
             cboPreferredPayment.EndUpdate();
 
             cboHobbiesVice.BeginUpdate();
-            cboHobbiesVice.ValueMember = "Value";
-            cboHobbiesVice.DisplayMember = "Name";
+            cboHobbiesVice.ValueMember = nameof(ListItem.Value);
+            cboHobbiesVice.DisplayMember = nameof(ListItem.Name);
             cboHobbiesVice.DataSource = lstHobbiesVices;
             cboHobbiesVice.EndUpdate();
         }

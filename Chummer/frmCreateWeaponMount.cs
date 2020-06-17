@@ -84,8 +84,8 @@ namespace Chummer
                     }
 
             cboSize.BeginUpdate();
-            cboSize.ValueMember = "Value";
-            cboSize.DisplayMember = "Name";
+            cboSize.ValueMember = nameof(ListItem.Value);
+            cboSize.DisplayMember = nameof(ListItem.Name);
             cboSize.DataSource = lstSize;
             cboSize.Enabled = lstSize.Count > 1;
             cboSize.EndUpdate();
@@ -866,8 +866,8 @@ namespace Chummer
             string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
             string strOldControl = cboControl.SelectedValue?.ToString();
             cboVisibility.BeginUpdate();
-            cboVisibility.ValueMember = "Value";
-            cboVisibility.DisplayMember = "Name";
+            cboVisibility.ValueMember = nameof(ListItem.Value);
+            cboVisibility.DisplayMember = nameof(ListItem.Name);
             cboVisibility.DataSource = lstVisibility;
             cboVisibility.Enabled = lstVisibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldVisibility))
@@ -877,8 +877,8 @@ namespace Chummer
             cboVisibility.EndUpdate();
 
             cboFlexibility.BeginUpdate();
-            cboFlexibility.ValueMember = "Value";
-            cboFlexibility.DisplayMember = "Name";
+            cboFlexibility.ValueMember = nameof(ListItem.Value);
+            cboFlexibility.DisplayMember = nameof(ListItem.Name);
             cboFlexibility.DataSource = lstFlexibility;
             cboFlexibility.Enabled = lstFlexibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldFlexibility))
@@ -888,8 +888,8 @@ namespace Chummer
             cboFlexibility.EndUpdate();
 
             cboControl.BeginUpdate();
-            cboControl.ValueMember = "Value";
-            cboControl.DisplayMember = "Name";
+            cboControl.ValueMember = nameof(ListItem.Value);
+            cboControl.DisplayMember = nameof(ListItem.Name);
             cboControl.DataSource = lstControl;
             cboControl.Enabled = lstControl.Count > 1;
             if (!string.IsNullOrEmpty(strOldControl))

@@ -205,8 +205,8 @@ namespace Chummer
             string strOldSelected = lstMetamagic.SelectedValue?.ToString();
             _blnLoading = true;
             lstMetamagic.BeginUpdate();
-            lstMetamagic.ValueMember = "Value";
-            lstMetamagic.DisplayMember = "Name";
+            lstMetamagic.ValueMember = nameof(ListItem.Value);
+            lstMetamagic.DisplayMember = nameof(ListItem.Name);
             lstMetamagic.DataSource = lstMetamagics;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

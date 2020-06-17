@@ -68,8 +68,8 @@ namespace Chummer
                     }
 
             cboLifestyle.BeginUpdate();
-            cboLifestyle.ValueMember = "Value";
-            cboLifestyle.DisplayMember = "Name";
+            cboLifestyle.ValueMember = nameof(ListItem.Value);
+            cboLifestyle.DisplayMember = nameof(ListItem.Name);
             cboLifestyle.DataSource = lstLifestyle;
 
             if (!string.IsNullOrEmpty(strSelectedId))

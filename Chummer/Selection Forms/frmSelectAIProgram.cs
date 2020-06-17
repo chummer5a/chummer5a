@@ -78,8 +78,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
 
@@ -347,8 +347,8 @@ namespace Chummer
             lstPrograms.Sort(CompareListItems.CompareNames);
             lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;
-            lstAIPrograms.ValueMember = "Value";
-            lstAIPrograms.DisplayMember = "Name";
+            lstAIPrograms.ValueMember = nameof(ListItem.Value);
+            lstAIPrograms.DisplayMember = nameof(ListItem.Name);
             lstAIPrograms.DataSource = lstPrograms;
             lstAIPrograms.EndUpdate();
         }

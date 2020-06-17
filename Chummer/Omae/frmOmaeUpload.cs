@@ -91,8 +91,8 @@ namespace Chummer
         {
             cboCharacterTypes.DataSource = null;
             cboCharacterTypes.DataSource = _lstCharacterTypes;
-            cboCharacterTypes.ValueMember = "Value";
-            cboCharacterTypes.DisplayMember = "Name";
+            cboCharacterTypes.ValueMember = nameof(ListItem.Value);
+            cboCharacterTypes.DisplayMember = nameof(ListItem.Name);
 
             string strName = string.Empty;
             foreach (ListItem objItem in _lstCharacterTypes)

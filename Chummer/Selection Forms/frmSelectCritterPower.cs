@@ -93,8 +93,8 @@ namespace Chummer
 
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
 

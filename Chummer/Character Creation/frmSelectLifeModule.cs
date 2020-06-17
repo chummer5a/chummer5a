@@ -232,8 +232,8 @@ namespace Chummer
                         return 0;
                     });
 
-                    cboStage.ValueMember = "Value";
-                    cboStage.DisplayMember = "Name";
+                    cboStage.ValueMember = nameof(ListItem.Value);
+                    cboStage.DisplayMember = nameof(ListItem.Name);
                     cboStage.DataSource = Stages;
                 }
 
