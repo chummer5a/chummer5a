@@ -63,8 +63,8 @@ namespace Chummer
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version") + strSpaceCharacter + _strCurrentVersion;
+                string strSpace = LanguageManager.GetString("String_Space");
+                string title = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion;
 #if DEBUG
                 title += " DEBUG BUILD";
 #endif
@@ -79,7 +79,7 @@ namespace Chummer
             InitializeComponent();
 
             _strCurrentVersion =
-                $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+                string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
             if (GlobalOptions.HideCharacterRoster)
@@ -95,44 +95,41 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        public void FormMainInitialize(PageViewTelemetry pvt = null)
+        private void frmChummerMain_Load(object sender, EventArgs e)
         {
-            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
+            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
                     op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
                     op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
-                    if (pvt != null)
+                    if (MyStartupPVT != null)
                     {
-                        pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
-                        op_frmChummerMain.tc.TrackPageView(pvt);
+                        MyStartupPVT.Duration = DateTimeOffset.UtcNow - MyStartupPVT.Timestamp;
+                        op_frmChummerMain.tc.TrackPageView(MyStartupPVT);
                     }
 
                     Text = MainTitle;
 
 
 
-                    LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+                    this.TranslateWinForm();
 
                     //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
                     // If Automatic Updates are enabled, check for updates immediately.
 
 #if !DEBUG
-            _workerVersionUpdateChecker.WorkerReportsProgress = false;
-            _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
-            _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
-            _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
-            Application.Idle += IdleUpdateCheck;
-            _workerVersionUpdateChecker.RunWorkerAsync();
+                    _workerVersionUpdateChecker.WorkerReportsProgress = false;
+                    _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
+                    _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
+                    _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
+                    Application.Idle += IdleUpdateCheck;
+                    _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
-                    GlobalOptions.MRUChanged += (sender, e) =>
-                    {
-                        this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
-                    };
+                    GlobalOptions.MRUChanged += (senderInner, eInner) => { this.DoThreadSafe(() => { PopulateMRUToolstripMenu(senderInner, eInner); }); };
 
                     try
                     {
@@ -146,24 +143,24 @@ namespace Chummer
                                 if (File.Exists(strLoopOldFilePath))
                                     File.Delete(strLoopOldFilePath);
                             }
-                            catch (UnauthorizedAccessException e)
+                            catch (UnauthorizedAccessException ex)
                             {
                                 //we will just delete it the next time
                                 //its probably the "used by another process"
-                                Log.Trace(e,
+                                Log.Trace(ex,
                                     "UnauthorizedAccessException can be ignored - probably used by another process.");
                             }
                         }
                     }
-                    catch (UnauthorizedAccessException e)
+                    catch (UnauthorizedAccessException ex)
                     {
-                        Log.Trace(e,
+                        Log.Trace(ex,
                             "UnauthorizedAccessException in " + Utils.GetStartupPath +
                             "can be ignored - probably a weird path like Recycle.Bin or something...");
                     }
-                    catch (IOException e)
+                    catch (IOException ex)
                     {
-                        Log.Trace(e,
+                        Log.Trace(ex,
                             "IOException in " + Utils.GetStartupPath +
                             "can be ignored - probably another instance blocking it...");
                     }
@@ -179,7 +176,7 @@ namespace Chummer
                     }
 
 
-                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text})
+                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text })
                     {
                         frmLoadingForm.Reset(3);
                         frmLoadingForm.Show();
@@ -279,18 +276,18 @@ namespace Chummer
                                     }
                                 });
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 if (op_frmChummerMain.MyDependencyTelemetry != null)
                                     op_frmChummerMain.MyDependencyTelemetry.Success = false;
                                 if (op_frmChummerMain.MyRequestTelemetry != null)
                                     op_frmChummerMain.MyRequestTelemetry.Success = false;
-                                ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                                ExceptionTelemetry ext = new ExceptionTelemetry(ex)
                                 {
                                     SeverityLevel = SeverityLevel.Warning
                                 };
-                                op_frmChummerMain.tc.TrackException(ex);
-                                Log.Warn(e);
+                                op_frmChummerMain.tc.TrackException(ext);
+                                Log.Warn(ex);
                             }
                         }
 
@@ -312,12 +309,12 @@ namespace Chummer
                     Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
 
                     // Set the Tag for each ToolStrip item so it can be translated.
-                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                    foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     if (op_frmChummerMain != null)
                     {
@@ -325,15 +322,56 @@ namespace Chummer
                             op_frmChummerMain.MyDependencyTelemetry.Success = false;
                         if (op_frmChummerMain.MyRequestTelemetry != null)
                             op_frmChummerMain.MyRequestTelemetry.Success = false;
-                        op_frmChummerMain.tc.TrackException(e);
+                        op_frmChummerMain.tc.TrackException(ex);
                     }
-                    Log.Error(e);
+
+                    Log.Error(ex);
                     throw;
                 }
 
-            }
+                //sometimes the Configuration gets messed up - make sure it is valid!
+                try
+                {
+                    Size _ = Properties.Settings.Default.Size;
+                }
+                catch (ArgumentException ex)
+                {
+                    //the config is invalid - reset it!
+                    Properties.Settings.Default.Reset();
+                    Properties.Settings.Default.Save();
+                    Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                }
+                catch (System.Configuration.ConfigurationErrorsException ex)
+                {
+                    //the config is invalid - reset it!
+                    Properties.Settings.Default.Reset();
+                    Properties.Settings.Default.Save();
+                    Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                }
 
+                if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
+                {
+                    Size = new Size(1280, 720);
+                    StartPosition = FormStartPosition.CenterScreen;
+                }
+                else
+                {
+                    WindowState = Properties.Settings.Default.WindowState;
+
+                    if (WindowState == FormWindowState.Minimized) WindowState = FormWindowState.Normal;
+
+                    Location = Properties.Settings.Default.Location;
+                    Size = Properties.Settings.Default.Size;
+                }
+
+                if (GlobalOptions.StartupFullscreen)
+                    WindowState = FormWindowState.Maximized;
+
+                mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
+            }
         }
+
+        public PageViewTelemetry MyStartupPVT { get; set; }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -580,9 +618,9 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter +
-                       LanguageManager.GetString("String_Version") + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
+                string strSpace = LanguageManager.GetString("String_Space");
+                Text = Application.ProductName + strSpace + '-' + strSpace +
+                       LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion + strSpace + '-' + strSpace +
                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
             }
         }
@@ -963,9 +1001,9 @@ namespace Chummer
         private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             // Translate the items in the menu by finding their Tags in the translation file.
-            foreach(ToolStripItem objItem in menuStrip.Items.OfType<ToolStripItem>())
+            foreach(ToolStripItem tssItem in menuStrip.Items.OfType<ToolStripItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 
@@ -974,9 +1012,9 @@ namespace Chummer
             // ToolStrip Items.
             foreach(ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
             {
-                foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
+                foreach(ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                    tssItem.TranslateToolStripItemsRecursively();
                 }
             }
         }
@@ -986,53 +1024,11 @@ namespace Chummer
             // ToolStrip Items.
             foreach(ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
             {
-                foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
+                foreach(ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                    tssItem.TranslateToolStripItemsRecursively();
                 }
             }
-        }
-
-        private void frmChummerMain_Load(object sender, EventArgs e)
-        {
-            //sometimes the Configuration gets messed up - make sure it is valid!
-            try
-            {
-                Size si = Properties.Settings.Default.Size;
-            }
-            catch (ArgumentException ex)
-            {
-                //the config is invalid - reset it!
-                Properties.Settings.Default.Reset();
-                Properties.Settings.Default.Save();
-                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
-            }
-            catch (System.Configuration.ConfigurationErrorsException ex)
-            {
-                //the config is invalid - reset it!
-                Properties.Settings.Default.Reset();
-                Properties.Settings.Default.Save();
-                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
-            }
-            if(Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
-            {
-                Size = new Size(1280, 720);
-                StartPosition = FormStartPosition.CenterScreen;
-            }
-            else
-            {
-                WindowState = Properties.Settings.Default.WindowState;
-
-                if(WindowState == FormWindowState.Minimized) WindowState = FormWindowState.Normal;
-
-                Location = Properties.Settings.Default.Location;
-                Size = Properties.Settings.Default.Size;
-            }
-
-            if(GlobalOptions.StartupFullscreen)
-                WindowState = FormWindowState.Maximized;
-
-            mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
         }
 
         private static bool IsVisibleOnAnyScreen()
@@ -1138,7 +1134,6 @@ namespace Chummer
                     msg += "Exception: " + e;
                     Log.Fatal(e, msg);
                 }
-
             }
 
             using (Form objForm = new Form {TopMost = true})
@@ -1566,7 +1561,7 @@ namespace Chummer
             }
             else
             {
-                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter.Qualities, intDice);
+                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
                 frmRoller.Show();
             }
         }
@@ -1631,7 +1626,14 @@ namespace Chummer
                 Properties.Settings.Default.Size = RestoreBounds.Size;
             }
 
-            Properties.Settings.Default.Save();
+            try
+            {
+                Properties.Settings.Default.Save();
+            }
+            catch (IOException ex)
+            {
+                Log.Warn(ex, ex.Message);
+            }
         }
 
         private void mnuHeroLabImporter_Click(object sender, EventArgs e)

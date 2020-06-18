@@ -28,7 +28,7 @@ namespace Chummer
         public frmHistory()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmHistory_Load(object sender, EventArgs e)

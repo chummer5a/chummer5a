@@ -168,9 +168,9 @@ namespace Chummer.UI.Table
         private class ColumnHolder
         {
             public readonly HeaderCell header;
-            public readonly List<TableCell> cells;
+            public readonly IList<TableCell> cells;
 
-            public ColumnHolder(HeaderCell header, List<TableCell> cells)
+            public ColumnHolder(HeaderCell header, IList<TableCell> cells)
             {
                 this.header = header;
                 this.cells = cells;
@@ -282,7 +282,7 @@ namespace Chummer.UI.Table
         {
             for (int i = 0; i < _columns.Count; i++)
             {
-                List<TableCell> cells = _lstCells[i].cells;
+                IList<TableCell> cells = _lstCells[i].cells;
                 TableColumn<T> column = _columns[i];
                 TableCell cell = cells[index];
                 UpdateCell(column, cell, item);
@@ -498,7 +498,7 @@ namespace Chummer.UI.Table
                     for (int i = 0; i < _columns.Count; i++)
                     {
                         TableColumn<T> column = _columns[i];
-                        List<TableCell> cells = _lstCells[i].cells;
+                        IList<TableCell> cells = _lstCells[i].cells;
                         TableCell newCell = CreateCell(item, column);
                         cells.Insert(e.NewIndex, newCell);
                         row.Controls.Add(newCell);
@@ -512,7 +512,7 @@ namespace Chummer.UI.Table
                     SuspendLayout();
                     for (int i = 0; i < _columns.Count; i++)
                     {
-                        List<TableCell> cells = _lstCells[i].cells;
+                        IList<TableCell> cells = _lstCells[i].cells;
                         cells.RemoveAt(e.NewIndex);
                     }
                     row = _lstRowCells[e.NewIndex];
@@ -529,7 +529,7 @@ namespace Chummer.UI.Table
                 case ListChangedType.ItemMoved:
                     foreach (ColumnHolder col in _lstCells)
                     {
-                        List<TableCell> cells = col.cells;
+                        IList<TableCell> cells = col.cells;
                         TableCell cell = cells[e.OldIndex];
                         cells.RemoveAt(e.OldIndex);
                         cells.Insert(e.NewIndex, cell);
@@ -601,7 +601,7 @@ namespace Chummer.UI.Table
                     for (int i = 0; i < _columns.Count; i++)
                     {
                         TableColumn<T> column = _columns[i];
-                        List<TableCell> cells = _lstCells[i].cells;
+                        IList<TableCell> cells = _lstCells[i].cells;
                         for (int j = intOldCount; j < intNewCount; j++)
                         {
                             TableCell cell = CreateCell(_lstItems[j], column);
@@ -615,7 +615,7 @@ namespace Chummer.UI.Table
                     intLimit = intNewCount;
                     foreach (ColumnHolder col in _lstCells)
                     {
-                        List<TableCell> cells = col.cells;
+                        IList<TableCell> cells = col.cells;
                         cells.RemoveRange(intNewCount, intOldCount - intNewCount);
                     }
                     for (int i = intNewCount; i < intOldCount; i++)

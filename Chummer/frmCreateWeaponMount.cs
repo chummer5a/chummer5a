@@ -84,8 +84,8 @@ namespace Chummer
                     }
 
             cboSize.BeginUpdate();
-            cboSize.ValueMember = "Value";
-            cboSize.DisplayMember = "Name";
+            cboSize.ValueMember = nameof(ListItem.Value);
+            cboSize.DisplayMember = nameof(ListItem.Name);
             cboSize.DataSource = lstSize;
             cboSize.Enabled = lstSize.Count > 1;
             cboSize.EndUpdate();
@@ -140,7 +140,7 @@ namespace Chummer
 
             _blnLoading = false;
             UpdateInfo();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -385,7 +385,7 @@ namespace Chummer
 
             cmdDeleteMod.Enabled = false;
             string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedModId);
@@ -514,9 +514,9 @@ namespace Chummer
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter +
-                LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace +
+                LanguageManager.GetString("String_Page") + strSpace + strPage);
 	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 	    }
 
@@ -548,119 +548,119 @@ namespace Chummer
                 intSlots += objMod.CalculatedSlots;
             }
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
             do
             {
-                frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, _objMount?.Mods)
+                using (frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
                 {
                     // Pass the selected vehicle on to the form.
-                    SelectedVehicle = _objVehicle,
                     VehicleMountMods = true,
                     WeaponMountSlots = intSlots
-                };
-
-                frmPickVehicleMod.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                })
                 {
-                    frmPickVehicleMod.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickVehicleMod.AddAgain;
-                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
+                    frmPickVehicleMod.ShowDialog(this);
 
-                VehicleMod objMod = new VehicleMod(_objCharacter)
-                {
-                    DiscountCost = frmPickVehicleMod.BlackMarketDiscount
-                };
-                objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
-                // Check the item's Cost and make sure the character can afford it.
-                decimal decOriginalCost = _objVehicle.TotalCost;
-                if (frmPickVehicleMod.FreeCost)
-                    objMod.Cost = "0";
-                frmPickVehicleMod.Dispose();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                        break;
 
-                // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-                if (_objCharacter.Options.EnforceCapacity)
-                {
-                    bool blnOverCapacity = false;
-                    if (_objCharacter.Options.BookEnabled("R5"))
+                    blnAddAgain = frmPickVehicleMod.AddAgain;
+                    XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
+
+                    VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
-                        if (_objVehicle.IsDrone && GlobalOptions.Dronemods)
-                        {
-                            if (_objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots)
-                                blnOverCapacity = true;
-                        }
-                        else
-                        {
-                            int intUsed = _objVehicle.CalcCategoryUsed(objMod.Category);
-                            int intAvail = _objVehicle.CalcCategoryAvail(objMod.Category);
-                            if (intUsed > intAvail)
-                                blnOverCapacity = true;
-                        }
-                    }
-                    else if (_objVehicle.Slots < _objVehicle.SlotsUsed)
-                    {
-                        blnOverCapacity = true;
-                    }
-
-                    if (blnOverCapacity)
-                    {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        continue;
-                    }
-                }
-                if (_objCharacter.Created)
-                {
-                    decimal decCost = _objVehicle.TotalCost - decOriginalCost;
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = objMod.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
-                        decCost *= _objCharacter.Options.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
-                        decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
-
-                    if (decCost > _objCharacter.Nuyen)
-                    {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
-                            LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        continue;
-                    }
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                    objExpense.Create(decCost * -1,
-                        LanguageManager.GetString("String_ExpensePurchaseVehicleMod") +
-                        strSpaceCharacter + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                    _objCharacter.Nuyen -= decCost;
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMountMod, objMod.InternalId);
-                    objExpense.Undo = objUndo;
-                }
-                _lstMods.Add(objMod);
-                intSlots += objMod.CalculatedSlots;
-
-                TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
-
-                if (objModsParentNode == null)
-                {
-                    objModsParentNode = new TreeNode
-                    {
-                        Tag = "Node_AdditionalMods",
-                        Text = LanguageManager.GetString("Node_AdditionalMods")
+                        DiscountCost = frmPickVehicleMod.BlackMarketDiscount
                     };
-                    treMods.Nodes.Add(objModsParentNode);
-                    objModsParentNode.Expand();
-                }
+                    objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
+                    // Check the item's Cost and make sure the character can afford it.
+                    decimal decOriginalCost = _objVehicle.TotalCost;
+                    if (frmPickVehicleMod.FreeCost)
+                        objMod.Cost = "0";
 
-                objModsParentNode.Nodes.Add(objNewNode);
-                treMods.SelectedNode = objNewNode;
+                    // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
+                    if (_objCharacter.Options.EnforceCapacity)
+                    {
+                        bool blnOverCapacity = false;
+                        if (_objCharacter.Options.BookEnabled("R5"))
+                        {
+                            if (_objVehicle.IsDrone && GlobalOptions.Dronemods)
+                            {
+                                if (_objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots)
+                                    blnOverCapacity = true;
+                            }
+                            else
+                            {
+                                int intUsed = _objVehicle.CalcCategoryUsed(objMod.Category);
+                                int intAvail = _objVehicle.CalcCategoryAvail(objMod.Category);
+                                if (intUsed > intAvail)
+                                    blnOverCapacity = true;
+                            }
+                        }
+                        else if (_objVehicle.Slots < _objVehicle.SlotsUsed)
+                        {
+                            blnOverCapacity = true;
+                        }
+
+                        if (blnOverCapacity)
+                        {
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            continue;
+                        }
+                    }
+
+                    if (_objCharacter.Created)
+                    {
+                        decimal decCost = _objVehicle.TotalCost - decOriginalCost;
+
+                        // Multiply the cost if applicable.
+                        char chrAvail = objMod.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
+                            decCost *= _objCharacter.Options.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
+                            decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+
+                        if (decCost > _objCharacter.Nuyen)
+                        {
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
+                                LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            continue;
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                        objExpense.Create(decCost * -1,
+                            LanguageManager.GetString("String_ExpensePurchaseVehicleMod") +
+                            strSpace + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                        _objCharacter.Nuyen -= decCost;
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMountMod, objMod.InternalId);
+                        objExpense.Undo = objUndo;
+                    }
+
+                    _lstMods.Add(objMod);
+                    intSlots += objMod.CalculatedSlots;
+
+                    TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
+
+                    if (objModsParentNode == null)
+                    {
+                        objModsParentNode = new TreeNode
+                        {
+                            Tag = "Node_AdditionalMods",
+                            Text = LanguageManager.GetString("Node_AdditionalMods")
+                        };
+                        treMods.Nodes.Add(objModsParentNode);
+                        objModsParentNode.Expand();
+                    }
+
+                    objModsParentNode.Nodes.Add(objNewNode);
+                    treMods.SelectedNode = objNewNode;
+                }
             }
             while (blnAddAgain);
         }
@@ -867,8 +867,8 @@ namespace Chummer
             string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
             string strOldControl = cboControl.SelectedValue?.ToString();
             cboVisibility.BeginUpdate();
-            cboVisibility.ValueMember = "Value";
-            cboVisibility.DisplayMember = "Name";
+            cboVisibility.ValueMember = nameof(ListItem.Value);
+            cboVisibility.DisplayMember = nameof(ListItem.Name);
             cboVisibility.DataSource = lstVisibility;
             cboVisibility.Enabled = lstVisibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldVisibility))
@@ -878,8 +878,8 @@ namespace Chummer
             cboVisibility.EndUpdate();
 
             cboFlexibility.BeginUpdate();
-            cboFlexibility.ValueMember = "Value";
-            cboFlexibility.DisplayMember = "Name";
+            cboFlexibility.ValueMember = nameof(ListItem.Value);
+            cboFlexibility.DisplayMember = nameof(ListItem.Name);
             cboFlexibility.DataSource = lstFlexibility;
             cboFlexibility.Enabled = lstFlexibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldFlexibility))
@@ -889,8 +889,8 @@ namespace Chummer
             cboFlexibility.EndUpdate();
 
             cboControl.BeginUpdate();
-            cboControl.ValueMember = "Value";
-            cboControl.DisplayMember = "Name";
+            cboControl.ValueMember = nameof(ListItem.Value);
+            cboControl.DisplayMember = nameof(ListItem.Name);
             cboControl.DataSource = lstControl;
             cboControl.Enabled = lstControl.Count > 1;
             if (!string.IsNullOrEmpty(strOldControl))

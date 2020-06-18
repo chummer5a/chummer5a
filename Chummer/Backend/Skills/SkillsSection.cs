@@ -98,7 +98,7 @@ namespace Chummer.Backend.Skills
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
-                string strKey = objSkill.IsExoticSkill ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})" : objSkill.Name;
+                string strKey = objSkill.DictionaryKey;
                 if (!_dicSkills.ContainsKey(strKey))
                     _dicSkills.Add(strKey, objSkill);
             }
@@ -151,7 +151,7 @@ namespace Chummer.Backend.Skills
                     Skill skill = Skills[i];
                     _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.IsExoticSkill ? $"{skill.Name} ({skill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})" : skill.Name);
+                    SkillsDictionary.Remove(skill.DictionaryKey);
 
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
@@ -235,9 +235,7 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstLoadingSkills)
                         {
-                            string strName = objSkill.IsExoticSkill
-                                ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
-                                : objSkill.Name;
+                            string strName = objSkill.DictionaryKey;
                             bool blnDoAddToDictionary = true;
                             _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                             {
@@ -354,10 +352,7 @@ namespace Chummer.Backend.Skills
                         foreach (Skill objSkill in lstUnsortedSkills)
                         {
                             _lstSkills.Add(objSkill);
-                            _dicSkills.Add(
-                                objSkill.IsExoticSkill
-                                    ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
-                                    : objSkill.Name, objSkill);
+                            _dicSkills.Add(objSkill.DictionaryKey, objSkill);
                         }
 
                         UpdateUndoList(xmlSkillNode);
@@ -367,7 +362,9 @@ namespace Chummer.Backend.Skills
                 HashSet<string> hashSkillGuids = new HashSet<string>();
                 XmlDocument skillsDoc = XmlManager.Load("skills.xml");
                 XmlNodeList xmlSkillList = skillsDoc.SelectNodes(
-                    $"/chummer/skills/skill[not(exotic) and ({_objCharacter.Options.BookXPath()}) {SkillFilter(FilterOption.NonSpecial)}]");
+                    "/chummer/skills/skill[not(exotic) and ("
+                    + _objCharacter.Options.BookXPath() + ')'
+                    + SkillFilter(FilterOption.NonSpecial) + "]");
                 if (xmlSkillList != null)
                 {
                     foreach (XmlNode node in xmlSkillList)
@@ -380,7 +377,7 @@ namespace Chummer.Backend.Skills
 
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                 {
-                    XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{skillId}\"]");
+                    XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = \"" + skillId + "\"]");
                     if (objXmlSkillNode != null)
                     {
                         Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter);
@@ -510,9 +507,7 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in lstUnsortedSkills)
                 {
-                    string strName = objSkill.IsExoticSkill
-                        ? $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
-                        : objSkill.Name;
+                    string strName = objSkill.DictionaryKey;
                     bool blnDoAddToDictionary = true;
                     _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                     {
@@ -734,7 +729,9 @@ namespace Chummer.Backend.Skills
         {
             //Build a crazy xpath to get everything we want to convert
 
-            string strXPath = $"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
+            string strXPath = "/character/expenses/expense[type = \'Karma\']/undo["
+                              + string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'"))
+                              + "]/objectid";
 
             //Find everything
             XmlNodeList lstNodesToChange = doc.SelectNodes(strXPath);
@@ -742,7 +739,9 @@ namespace Chummer.Backend.Skills
             {
                 for (int i = 0; i < lstNodesToChange.Count; i++)
                 {
-                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop) ? guidLoop.ToString("D", GlobalOptions.InvariantCultureInfo) : StringExtensions.EmptyGuid;
+                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                        ? guidLoop.ToString("D", GlobalOptions.InvariantCultureInfo)
+                        : StringExtensions.EmptyGuid;
                 }
             }
         }
@@ -755,27 +754,35 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteStartElement("skills");
-            foreach (Skill objSkill in Skills)
+            List<Skill> lstSkillsOrdered = new List<Skill>(Skills);
+            lstSkillsOrdered.Sort(CompareSkills);
+            foreach (Skill objSkill in lstSkillsOrdered)
             {
                 objSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("knoskills");
-            foreach (KnowledgeSkill objKnowledgeSkill in KnowledgeSkills)
+            List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowledgeSkills);
+            lstKnoSkillsOrdered.Sort(CompareSkills);
+            foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
             {
                 objKnowledgeSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
 
             objWriter.WriteStartElement("skilljackknowledgeskills");
-            foreach (KnowledgeSkill objSkill in KnowsoftSkills)
+            lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowsoftSkills);
+            lstKnoSkillsOrdered.Sort(CompareSkills);
+            foreach (KnowledgeSkill objSkill in lstKnoSkillsOrdered)
             {
                 objSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
 
             objWriter.WriteStartElement("groups");
-            foreach (SkillGroup objSkillGroup in SkillGroups)
+            List<SkillGroup> lstSkillGroups = new List<SkillGroup>(SkillGroups);
+            lstSkillGroups.Sort(CompareSkillGroups);
+            foreach (SkillGroup objSkillGroup in lstSkillGroups)
             {
                 objSkillGroup.WriteTo(objWriter);
             }
@@ -822,9 +829,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objLoopSkill in GetSkillList(FilterOption.NonSpecial))
                     {
                         _lstSkills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.IsExoticSkill
-                            ? $"{objLoopSkill.Name} ({objLoopSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})"
-                            : objLoopSkill.Name, objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.DictionaryKey, objLoopSkill);
                     }
                 }
                 return _lstSkills;
@@ -995,9 +1000,9 @@ namespace Chummer.Backend.Skills
             {
                 if (objYGroup == null)
                     return 0;
-                return -1;
+                return 1;
             }
-            return objYGroup == null ? 1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalOptions.CultureInfo);
+            return objYGroup == null ? -1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalOptions.CultureInfo);
         }
 
         public IEnumerable<Skill> GetSkillList(FilterOption filter, string strName = "", bool blnFetchFromBackup = false)
@@ -1072,9 +1077,9 @@ namespace Chummer.Backend.Skills
                 case FilterOption.Technomancer:
                     return " and category = 'Resonance Active'";
                 case FilterOption.Name:
-                    return $" and name = '{strName}'";
+                    return " and name = '" + strName + "'";
                 case FilterOption.XPath:
-                    return $" and ({strName})";
+                    return " and (" + strName + ')';
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eFilter), eFilter, null);
             }

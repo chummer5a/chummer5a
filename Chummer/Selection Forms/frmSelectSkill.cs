@@ -51,7 +51,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
@@ -208,8 +208,8 @@ namespace Chummer
 
             lstSkills.Sort(CompareListItems.CompareNames);
             cboSkill.BeginUpdate();
-            cboSkill.ValueMember = "Value";
-            cboSkill.DisplayMember = "Name";
+            cboSkill.ValueMember = nameof(ListItem.Value);
+            cboSkill.DisplayMember = nameof(ListItem.Name);
             cboSkill.DataSource = lstSkills;
 
             // Select the first Skill in the list.

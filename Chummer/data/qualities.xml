@@ -2578,7 +2578,9 @@
       <name>Inspired</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <selectexpertise limittoskill="Artisan" />
+      </bonus>
       <source>SASS</source>
       <page>31</page>
     </quality>
@@ -3237,7 +3239,7 @@
       <limit>False</limit>
       <bonus>
         <selectcontact />
-        <selecttext select="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -17278,7 +17280,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Air</spirit>
         </limitspiritcategory>
@@ -17306,7 +17308,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Earth</spirit>
         </limitspiritcategory>
@@ -17334,7 +17336,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Fire</spirit>
         </limitspiritcategory>
@@ -17362,7 +17364,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Water</spirit>
         </limitspiritcategory>

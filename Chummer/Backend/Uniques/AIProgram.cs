@@ -142,6 +142,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("aiprogram");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("name_english", Name);
@@ -315,9 +317,9 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("programs.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/programs/program[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]")
                     : XmlManager.Load("programs.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/programs/program[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/programs/program[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -47,7 +47,7 @@ namespace Chummer
 	        }
 	        _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             LoadData();
 
             _lstSelectedDrugComponents = new List<clsNodeData>();
@@ -60,7 +60,7 @@ namespace Chummer
                 TreeNode nodCategoryNode = treAvailableComponents.FindNode("Node_" + strCategory);
                 if (nodCategoryNode == null)
                 {
-                    Log.Warn($"Unknown category {strCategory} in component {objItem.Key}");
+                    Log.Warn("Unknown category " + strCategory + " in component " + objItem.Key);
                     return;
                 }
                 TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
@@ -114,8 +114,8 @@ namespace Chummer
 			}
             cboGrade.BeginUpdate();
 			cboGrade.DataSource = null;
-			cboGrade.ValueMember = "Value";
-			cboGrade.DisplayMember = "Name";
+			cboGrade.ValueMember = nameof(ListItem.Value);
+			cboGrade.DisplayMember = nameof(ListItem.Name);
 			cboGrade.DataSource = _lstGrade;
             cboGrade.EndUpdate();
 		}
@@ -170,7 +170,7 @@ namespace Chummer
             TreeNode nodCategoryNode = treChosenComponents.FindNode("Node_" + strCategory);
             if (nodCategoryNode == null)
             {
-                Log.Warn($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
+                Log.Warn("Unknown category " + strCategory + " in component " + objNodeData.DrugComponent.Name);
                 return;
             }
 

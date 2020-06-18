@@ -21,12 +21,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using iText.Kernel.Pdf;
 using Microsoft.Win32;
-using iTextSharp.text.pdf;
 using MersenneTwister;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
@@ -58,8 +60,8 @@ namespace Chummer
 
     public sealed class SourcebookInfo : IDisposable
     {
-        string _strPath = string.Empty;
-        PdfReader _objPdfReader;
+        private string _strPath = string.Empty;
+        private PdfDocument _objPdfDocument;
 
         #region Properties
         public string Code { get; set; } = string.Empty;
@@ -72,28 +74,27 @@ namespace Chummer
                 if(_strPath != value)
                 {
                     _strPath = value;
-                    _objPdfReader?.Close();
-                    _objPdfReader = null;
+                    _objPdfDocument?.Close();
+                    _objPdfDocument = null;
                 }
             }
         }
 
         public int Offset { get; set; }
 
-        internal PdfReader CachedPdfReader
+        internal PdfDocument CachedPdfDocument
         {
             get
             {
-                if(_objPdfReader == null)
+                if (_objPdfDocument == null)
                 {
                     Uri uriPath = new Uri(Path);
-                    if(File.Exists(uriPath.LocalPath))
+                    if (File.Exists(uriPath.LocalPath))
                     {
-                        // using the "partial" param it runs much faster and I couldn't find any downsides to it
-                        _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
+                        _objPdfDocument = new PdfDocument(new PdfReader(uriPath.LocalPath));
                     }
                 }
-                return _objPdfReader;
+                return _objPdfDocument;
             }
         }
 
@@ -106,7 +107,7 @@ namespace Chummer
             {
                 if(disposing)
                 {
-                    _objPdfReader?.Dispose();
+                    _objPdfDocument?.Close();
                 }
 
                 disposedValue = true;
@@ -267,6 +268,7 @@ namespace Chummer
         private static string _strCustomTimeFormat;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
+        private static int _intSavedImageQuality = int.MaxValue;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
@@ -558,12 +560,15 @@ namespace Chummer
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
-            // Prefer Nightly Updates.
+            // Hide or show Expenses charts.
             LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
 
             LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "customdatetimeformats");
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
             LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
+
+            // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg
+            LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality");
 
             RebuildCustomDataDirectoryInfoList();
 
@@ -781,6 +786,9 @@ namespace Chummer
                     {
                         s_ObjLanguageCultureInfo = SystemCultureInfo;
                     }
+                    // Set default cultures based on the currently set language
+                    CultureInfo.DefaultThreadCurrentCulture = s_ObjLanguageCultureInfo;
+                    CultureInfo.DefaultThreadCurrentUICulture = s_ObjLanguageCultureInfo;
                 }
             }
         }
@@ -811,12 +819,12 @@ namespace Chummer
         /// <summary>
         /// Invariant CultureInfo for saving and loading of numbers.
         /// </summary>
-        public static CultureInfo InvariantCultureInfo { get; } = CultureInfo.InvariantCulture;
+        public static CultureInfo InvariantCultureInfo => CultureInfo.InvariantCulture;
 
         /// <summary>
         /// CultureInfo of the user's current system.
         /// </summary>
-        public static CultureInfo SystemCultureInfo { get; } = CultureInfo.CurrentCulture;
+        public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument {XmlResolver = null};
 
@@ -1041,6 +1049,19 @@ namespace Chummer
         }
 
         public static string PDFArguments { get; internal set; }
+
+        public static int SavedImageQuality
+        {
+            get => _intSavedImageQuality;
+            set => _intSavedImageQuality = value;
+        }
+
+        public static string ImageToBase64StringForStorage(Image objImageToSave)
+        {
+            return SavedImageQuality == int.MaxValue
+                ? objImageToSave.ToBase64String(ImageFormat.Png)
+                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+        }
         #endregion
 
         #region MRU Methods

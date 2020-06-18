@@ -165,7 +165,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Minimum = decMin,
                             Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), CurrentDisplayNameShort),
                             AllowCancel = false
                         })
                         {
@@ -191,7 +191,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -205,7 +205,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -414,6 +414,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
             objNode.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
+            // Compatibility sweep for older versions where some special modifications weren't flagged as such
+            if (!_blnSpecialModification && _objCharacter.LastSavedVersion < new Version(5, 212, 11) && _strName.Contains("Special Modification"))
+            {
+                GetNode()?.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
+            }
             if (!_blnEquipped)
             {
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
@@ -488,6 +493,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("accessory");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("mount", Mount);
             objWriter.WriteElementString("extramount", ExtraMount);
@@ -668,6 +675,11 @@ namespace Chummer.Backend.Equipment
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
+
+        /// <summary>
+        /// The name of the object as it should appear on printouts in the program's current language.
+        /// </summary>
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
@@ -1240,9 +1252,9 @@ namespace Chummer.Backend.Equipment
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/accessories/accessory[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]")
                     : XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/accessories/accessory[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/accessories/accessory[id = \"" + SourceIDString +  "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1293,7 +1305,7 @@ namespace Chummer.Backend.Equipment
                 if (WirelessBonus?.InnerText != null)
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory,
-                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
+                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
                 }
 
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
@@ -1343,7 +1355,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                            strAvailItems += Environment.NewLine + "\t\t" + CurrentDisplayNameShort;
                         }
                     }
                 }
@@ -1438,7 +1450,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteWeaponAccessory() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }

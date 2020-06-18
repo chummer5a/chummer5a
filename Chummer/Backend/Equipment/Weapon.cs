@@ -222,7 +222,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -236,7 +236,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -570,7 +570,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
-            objWriter.WriteElementString("rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
             {
@@ -730,8 +730,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
-            objNode.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
+            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             if (objNode["firingmode"] != null)
                 _eFiringMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
@@ -1009,6 +1010,8 @@ namespace Chummer.Backend.Equipment
             Gear objGear = lstGearToSearch.DeepFindById(ParentID);
 
             objWriter.WriteStartElement("weapon");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -1928,9 +1931,9 @@ namespace Chummer.Backend.Equipment
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/weapons/weapon[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/weapons/weapon[name = \"" + Name + "\"]")
                     : XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/weapons/weapon[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/weapons/weapon[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -2193,15 +2196,16 @@ namespace Chummer.Backend.Equipment
 
                 string strUseSkill = Skill?.Name;
 
+                string strExoticMelee = "Exotic Melee Weapon (" + UseSkillSpec + ')';
+                string strExoticRanged = "Exotic Ranged Weapon (" + UseSkillSpec + ')';
                 intImprove += _objCharacter.Improvements.Where(objImprovement =>
                         objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV &&
-                        objImprovement.Enabled && (objImprovement.ImprovedName == strCategory ||
-                                                   objImprovement.ImprovedName == strUseSkill ||
-                                                   Skill?.IsExoticSkill == true && objImprovement.ImprovedName ==
-                                                   $"Exotic Melee Weapon ({UseSkillSpec})" ||
-                                                   Skill?.IsExoticSkill == true && objImprovement.ImprovedName ==
-                                                   $"Exotic Ranged Weapon ({UseSkillSpec})" ||
-                                                   "Cyberware " + objImprovement.ImprovedName == strCategory))
+                        objImprovement.Enabled && (objImprovement.ImprovedName == strCategory
+                                                   || objImprovement.ImprovedName == strUseSkill
+                                                   || (Skill?.IsExoticSkill == true
+                                                       && (objImprovement.ImprovedName == strExoticMelee
+                                                           || objImprovement.ImprovedName == strExoticRanged))
+                                                   || "Cyberware " + objImprovement.ImprovedName == strCategory))
                     .Sum(objImprovement => objImprovement.Value);
             }
 
@@ -3641,10 +3645,8 @@ namespace Chummer.Backend.Equipment
 
                 if (strSkill.StartsWith("Exotic", StringComparison.Ordinal))
                 {
-                    if (!string.IsNullOrEmpty(strSpec))
-                        strSkill += $" ({strSpec})";
-                    else
-                        strSkill += $" ({UseSkillSpec})";
+                    strSkill += LanguageManager.GetString("String_Space")
+                                + '(' + (!string.IsNullOrEmpty(strSpec) ? strSpec : UseSkillSpec) + ')';
                 }
                 intAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill);
 
@@ -3875,7 +3877,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                objRange.Append($" + {ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange)}");
+                objRange.Append(" + " + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange).ToString(GlobalOptions.InvariantCultureInfo));
 
             // Replace the division sign with "div" since we're using XPath.
             objRange.Replace("/", " div ");
@@ -3914,18 +3916,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public string RangeModifier(string range)
+        public string RangeModifier(string strRange)
         {
-            if (string.IsNullOrEmpty(range))
+            if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
             int i = Convert.ToInt32(XmlManager.Load("ranges.xml")
-                .SelectSingleNode($"chummer/modifiers/{range.ToLowerInvariant()}")
+                .SelectSingleNode("chummer/modifiers/" + strRange.ToLowerInvariant())
                 ?.InnerText, GlobalOptions.InvariantCultureInfo);
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
             i = Math.Min(0, i);
-            string strReturn = LanguageManager.GetString($"Label_Range{range}")
-                .Replace("{0}", i.ToString(GlobalOptions.InvariantCultureInfo));
-            return strReturn;
+            return string.Format(GlobalOptions.InvariantCultureInfo, LanguageManager.GetString("Label_Range" + strRange), i);
         }
 
         /// <summary>
@@ -4172,14 +4172,20 @@ namespace Chummer.Backend.Equipment
                                 // If the character has a Specialization, include it in the Dice Pool string.
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {
-                                    if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) ||
-                                        objSkill.HasSpecialization(Name) ||
-                                        objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ||
-                                        objSkill.HasSpecialization(Category) ||
-                                        !string.IsNullOrEmpty(objSkill.Specialization) &&
-                                        (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2)))
+                                    SkillSpecialization objSpec =
+                                        objSkill.GetSpecialization(DisplayNameShort(GlobalOptions.Language)) ??
+                                        objSkill.GetSpecialization(Name) ??
+                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ??
+                                        objSkill.GetSpecialization(Category);
+
+                                    if (objSpec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
                                     {
-                                        intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
+                                        objSpec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
+                                    }
+
+                                    if (objSpec != null)
+                                    {
+                                        intDicePoolModifier += objSpec.SpecializationBonus;
                                     }
                                 }
                             }
@@ -4192,14 +4198,10 @@ namespace Chummer.Backend.Equipment
                 if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
                     FireMode == FiringMode.ManualOperation)
                 {
-                    if (_objCharacter.SkillsSection.GetActiveSkill("Gunnery").Specializations.Count > 0 &&
-                        RelevantSpecialization != "None")
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                    if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
                     {
-                        if (_objCharacter.SkillsSection.GetActiveSkill("Gunnery").Specializations
-                            .Any(s => s.Name == RelevantSpecialization))
-                        {
-                            intDicePool += _objCharacter.Options.SpecializationBonus;
-                        }
+                        intDicePool += objSkill.GetSpecializationBonus(RelevantSpecialization);
                     }
                 }
 
@@ -4224,15 +4226,15 @@ namespace Chummer.Backend.Equipment
                     return _strRelevantSpec;
                 }
 
-                string spec = GetNode()?["category"]?.Attributes["gunneryspec"]?.InnerText;
-                if (string.IsNullOrEmpty(spec))
+                string strGunnerySpec = GetNode()?.SelectSingleNode("category/@gunneryspec")?.InnerText;
+                if (string.IsNullOrEmpty(strGunnerySpec))
                 {
-                    spec = XmlManager.Load("weapons.xml")
-                               .SelectSingleNode($"/chummer/categories/category[. = \"{Category}\"]")
-                               ?.Attributes?["gunneryspec"]?.InnerText ?? "None";
+                    strGunnerySpec = XmlManager.Load("weapons.xml")
+                        .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@gunneryspec")?.InnerText
+                                     ?? "None";
                 }
 
-                _strRelevantSpec = spec;
+                _strRelevantSpec = strGunnerySpec;
                 return _strRelevantSpec;
             }
         }
@@ -4390,8 +4392,10 @@ namespace Chummer.Backend.Equipment
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
                                 if (spec != null)
                                 {
-                                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, spec.CurrentDisplayName, _objCharacter.Options.SpecializationBonus);
+                                    int intSpecBonus = spec.SpecializationBonus;
+                                    if (intSpecBonus != 0)
+                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, spec.CurrentDisplayName, intSpecBonus);
                                 }
                             }
                             break;
@@ -4406,8 +4410,10 @@ namespace Chummer.Backend.Equipment
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
                                 if (spec != null)
                                 {
-                                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, spec.CurrentDisplayName, _objCharacter.Options.SpecializationBonus);
+                                    int intSpecBonus = spec.SpecializationBonus;
+                                    if (intSpecBonus != 0)
+                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, spec.CurrentDisplayName, intSpecBonus);
                                 }
                             }
                             break;
@@ -4434,8 +4440,10 @@ namespace Chummer.Backend.Equipment
                                     }
                                     if (spec != null)
                                     {
-                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                            strSpace, spec.CurrentDisplayName, _objCharacter.Options.SpecializationBonus);
+                                        int intSpecBonus = spec.SpecializationBonus;
+                                        if (intSpecBonus != 0)
+                                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                                strSpace, spec.CurrentDisplayName, intSpecBonus);
                                     }
                                 }
                             }
@@ -5266,7 +5274,7 @@ namespace Chummer.Backend.Equipment
             strOutRestrictedItem = strRestrictedItem;
         }
 
-        public void Reload(IList<Gear> lstGears, TreeView treGearView)
+        public void Reload(ICollection<Gear> lstGears, TreeView treGearView)
         {
             List<Gear> lstAmmo = new List<Gear>();
             List<string> lstCount = new List<string>();

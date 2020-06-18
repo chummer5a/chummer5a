@@ -142,10 +142,7 @@
   <xsl:template name="vehicles">
       <xsl:param name="vehicle"/>
       <xsl:param name="VehicleNumber"/>
-    <div class="block">
-      <xsl:attribute name="id">
-        <xsl:value-of select="$VehicleNumber"/>
-      </xsl:attribute>
+    <div class="block" id="{VehicleNumber}">
       <xsl:variable name="cntmods">
         <xsl:if test="mods/mod">
           <xsl:value-of select="count(mods/mod) + 1"/>

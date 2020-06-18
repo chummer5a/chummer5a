@@ -41,7 +41,7 @@ namespace Chummer
         {
             InitializeComponent();
             _eSource = eSource;
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
@@ -95,8 +95,8 @@ namespace Chummer
                             lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
-            lstCyberware.ValueMember = "Value";
-            lstCyberware.DisplayMember = "Name";
+            lstCyberware.ValueMember = nameof(ListItem.Value);
+            lstCyberware.DisplayMember = nameof(ListItem.Name);
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)

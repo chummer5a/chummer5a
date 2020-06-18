@@ -5,7 +5,8 @@ branches:
 skip_tags: true
 image: Visual Studio 2017
 configuration: Release
-platform: x86
+platform: Any CPU
+
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -101,6 +102,8 @@ build:
   verbosity: normal
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
+on_failure:
+- ps: Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
 artifacts:
 - path: Chummer.Nightly.zip
   name: Chummer
@@ -112,9 +115,5 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
-test:
-  # all except assemblies to test
-  assemblies:
-    except:
-      - ChummerHub.Client.Tests.dll
-      - '**\ChummerHub.Client.Tests.dll'
+test_script:
+- cmd: vstest.console /logger:Appveyor "%APPVEYOR_BUILD_FOLDER%\Chummer.Tests\bin\Release\Chummer.Tests.dll"

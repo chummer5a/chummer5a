@@ -37,7 +37,7 @@ namespace Chummer
         public OmaeRecord(XmlNode objNode, int intTypeID, OmaeMode objMode)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Populate the basic information.
             _intCharacterID = Convert.ToInt32(objNode["id"].InnerText);

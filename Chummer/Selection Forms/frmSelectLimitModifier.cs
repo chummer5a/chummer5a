@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Build the list of Limits.
             List<ListItem> lstLimitItems = new List<ListItem>();
@@ -43,8 +43,8 @@ namespace Chummer
             }
 
             cboLimit.BeginUpdate();
-            cboLimit.ValueMember = "Value";
-            cboLimit.DisplayMember = "Name";
+            cboLimit.ValueMember = nameof(ListItem.Value);
+            cboLimit.DisplayMember = nameof(ListItem.Name);
             cboLimit.DataSource = lstLimitItems;
             if (lstLimitItems.Count >= 1)
                 cboLimit.SelectedIndex = 0;

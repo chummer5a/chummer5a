@@ -9696,7 +9696,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Options_BrowserVersion</key>
-			<text>Aperçu utilise la version d'Internet Explorer</text>
+			<text>Aperçu utilise la version d'Internet Explorer:</text>
 		</string>
 		<string>
 			<key>Label_OtherSurprise</key>

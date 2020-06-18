@@ -4329,6 +4329,10 @@
       <text>Add Exotic Skill</text>
     </string>
     <string>
+      <key>Button_ResetAll</key>
+      <text>Reset Add</text>
+    </string>
+    <string>
       <key>Tip_SkillsSkillGroups</key>
       <text>Skill Groups cost {0} Karma per new rating.</text>
     </string>
@@ -7927,7 +7931,7 @@
     </string>
     <string>
       <key>Label_Options_BrowserVersion</key>
-      <text>Preview uses Internet Explorer version</text>
+      <text>Preview uses Internet Explorer version:</text>
     </string>
     <string>
       <key>Label_Options_EssenceDecimals</key>
@@ -8060,6 +8064,22 @@
     <string>
       <key>String_AvailablePlugins</key>
       <text>Available Plugins</text>
+    </string>
+    <string>
+      <key>Label_Options_MugshotCompression</key>
+      <text>Mugshot Storage Format:</text>
+    </string>
+    <string>
+      <key>Label_Options_ImageQuality</key>
+      <text>Image Quality:</text>
+    </string>
+    <string>
+      <key>String_Lossless_Compression_Option</key>
+      <text>Lossless (PNG)</text>
+    </string>
+    <string>
+      <key>String_Lossy_Compression_Option</key>
+      <text>Lossy (JPG)</text>
     </string>
     <!-- End Region-->
     <!-- Region Print Multiple Window -->
@@ -9767,6 +9787,60 @@
     <string>
       <key>String_SuppressedBy</key>
       <text>Suppressed by {0}</text>
+    </string>
+    <!-- End Region -->
+    <!-- Region Text Editor -->
+    <string>
+      <key>String_Bold</key>
+      <text>Bold</text>
+    </string>
+    <string>
+      <key>String_Italic</key>
+      <text>Italic</text>
+    </string>
+    <string>
+      <key>String_Underline</key>
+      <text>Underline</text>
+    </string>
+    <string>
+      <key>String_Strikethrough</key>
+      <text>Strikethrough</text>
+    </string>
+    <string>
+      <key>String_Font</key>
+      <text>Font</text>
+    </string>
+    <string>
+      <key>String_ForeColor</key>
+      <text>Foreground Color</text>
+    </string>
+    <string>
+      <key>String_BackColor</key>
+      <text>Background Color</text>
+    </string>
+    <string>
+      <key>String_AlignLeft</key>
+      <text>Align Left</text>
+    </string>
+    <string>
+      <key>String_AlignCenter</key>
+      <text>Align Center</text>
+    </string>
+    <string>
+      <key>String_AlignRight</key>
+      <text>Align Right</text>
+    </string>
+    <string>
+      <key>String_UnorderedList</key>
+      <text>Toggle List</text>
+    </string>
+    <string>
+      <key>String_IncreaseIndent</key>
+      <text>Increase Indent</text>
+    </string>
+    <string>
+      <key>String_DecreaseIndent</key>
+      <text>Decrease Indent</text>
     </string>
     <!-- End Region -->
     <!-- Region Loading Form -->

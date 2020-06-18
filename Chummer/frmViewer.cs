@@ -85,7 +85,7 @@ namespace Chummer
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
@@ -94,9 +94,9 @@ namespace Chummer
             {
                 if (objCMS != null)
                 {
-                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
             }
@@ -293,6 +293,11 @@ namespace Chummer
         private void AsyncRefresh(object sender, DoWorkEventArgs e)
         {
             _blnQueueRefresherRun = false;
+            if (_lstCharacters.Count <= 0)
+            {
+                _objCharacterXml = null;
+                return;
+            }
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
             {
@@ -312,7 +317,7 @@ namespace Chummer
                             return;
                         }
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
+                        objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
 #else
                         objCharacter.PrintToStream(objWriter, _objPrintCulture, _strPrintLanguage);
 #endif
@@ -379,7 +384,7 @@ namespace Chummer
             string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
-                string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
+                string strReturn = "File not found when attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
                 Program.MainForm.ShowMessageBox(strReturn);
                 return;
@@ -395,7 +400,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                string strReturn = $"Error attempting to load {_strSelectedSheet}{Environment.NewLine}";
+                string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
@@ -409,39 +414,44 @@ namespace Chummer
                 return;
             }
 
-            MemoryStream objStream = new MemoryStream();
-            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+            using (MemoryStream objStream = new MemoryStream())
             {
-                objXslTransform.Transform(_objCharacterXml, objWriter);
-                if (_workerOutputGenerator.CancellationPending)
+                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
                 {
-                    e.Cancel = true;
-                    return;
-                }
-
-                objStream.Position = 0;
-
-                // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
-                //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
-                //webBrowser1.Navigate("D:\\temp\\output.htm");
-
-                if (!GlobalOptions.PrintToFileFirst)
-                {
-                    // Populate the browser using the DocumentStream.
-                    webBrowser1.DocumentStream = objStream;
-                }
-                else
-                {
-                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-                    // Read in the resulting code and pass it to the browser.
-
-                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                    objXslTransform.Transform(_objCharacterXml, objWriter);
+                    if (_workerOutputGenerator.CancellationPending)
                     {
-                        string strOutput = objReader.ReadToEnd();
-                        File.WriteAllText(_strFilePathName, strOutput);
+                        e.Cancel = true;
+                        return;
                     }
 
-                    webBrowser1.Url = new Uri($"file:///{_strFilePathName}");
+                    objStream.Position = 0;
+
+                    // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
+                    //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
+                    //webBrowser1.Navigate("D:\\temp\\output.htm");
+
+                    if (!GlobalOptions.PrintToFileFirst)
+                    {
+                        // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
+                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                        {
+                            webBrowser1.DocumentText = objReader.ReadToEnd();
+                        }
+                    }
+                    else
+                    {
+                        // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+                        // Read in the resulting code and pass it to the browser.
+
+                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                        {
+                            string strOutput = objReader.ReadToEnd();
+                            File.WriteAllText(_strFilePathName, strOutput);
+                        }
+
+                        webBrowser1.Url = new Uri("file:///" + _strFilePathName);
+                    }
                 }
             }
         }
@@ -516,7 +526,7 @@ namespace Chummer
             objPdfDocument.ExtraParams.Add("margin-left", "13");
             objPdfDocument.ExtraParams.Add("margin-right", "13");
             objPdfDocument.ExtraParams.Add("image-quality", "100");
-            objPdfDocument.ExtraParams.Add("print-media-type", "");
+            objPdfDocument.ExtraParams.Add("print-media-type", string.Empty);
 
             try
             {
@@ -558,7 +568,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
                 if (lstSheetNodes != null)
                 {
@@ -610,8 +620,8 @@ namespace Chummer
             }
 
             cboXSLT.BeginUpdate();
-            cboXSLT.ValueMember = "Value";
-            cboXSLT.DisplayMember = "Name";
+            cboXSLT.ValueMember = nameof(ListItem.Value);
+            cboXSLT.DisplayMember = nameof(ListItem.Name);
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
@@ -630,8 +640,8 @@ namespace Chummer
             }
 
             myCboLanguage.BeginUpdate();
-            myCboLanguage.ValueMember = "Value";
-            myCboLanguage.DisplayMember = "Name";
+            myCboLanguage.ValueMember = nameof(ListItem.Value);
+            myCboLanguage.DisplayMember = nameof(ListItem.Name);
             myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (myCboLanguage.SelectedIndex == -1)
@@ -705,7 +715,7 @@ namespace Chummer
         /// </summary>
         public void SetCharacters(params Character[] lstCharacters)
         {
-            _lstCharacters = new List<Character>(lstCharacters);
+            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>();
         }
         #endregion
 

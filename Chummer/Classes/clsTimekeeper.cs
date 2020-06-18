@@ -70,7 +70,8 @@ namespace Chummer
             {
                 final = s_Time.Elapsed - objStartTimeSpan;
 
-                string logentry = $"Task \"{taskname}\" finished in {final}";
+                string logentry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+                    taskname, final);
                 //Logger.Trace(logentry);
 
                 Debug.WriteLine(logentry);
@@ -97,7 +98,8 @@ namespace Chummer
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
-                sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
+                sb.AppendLine(string.Format(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}",
+                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1));
             }
 
             string strined = sb.ToString();

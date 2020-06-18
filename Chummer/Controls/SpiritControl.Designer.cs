@@ -45,21 +45,23 @@ namespace Chummer
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.txtCritterName = new System.Windows.Forms.TextBox();
             this.chkFettered = new System.Windows.Forms.CheckBox();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             this.cmsSpirit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdDelete
             // 
+            this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDelete.Location = new System.Drawing.Point(730, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(734, 3);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(48, 24);
             this.cmdDelete.TabIndex = 6;
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
@@ -69,10 +71,10 @@ namespace Chummer
             // lblServices
             // 
             this.lblServices.AutoSize = true;
-            this.lblServices.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblServices.Dock = System.Windows.Forms.DockStyle.Right;
             this.lblServices.Location = new System.Drawing.Point(418, 0);
             this.lblServices.Name = "lblServices";
-            this.lblServices.Size = new System.Drawing.Size(82, 29);
+            this.lblServices.Size = new System.Drawing.Size(82, 30);
             this.lblServices.TabIndex = 3;
             this.lblServices.Tag = "Label_Spirit_ServicesOwed";
             this.lblServices.Text = "Services Owed:";
@@ -80,7 +82,9 @@ namespace Chummer
             // 
             // nudServices
             // 
-            this.nudServices.Location = new System.Drawing.Point(506, 3);
+            this.nudServices.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudServices.Location = new System.Drawing.Point(506, 5);
+            this.nudServices.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudServices.Maximum = new decimal(new int[] {
             -1,
             -1,
@@ -94,10 +98,10 @@ namespace Chummer
             // lblForce
             // 
             this.lblForce.AutoSize = true;
-            this.lblForce.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblForce.Dock = System.Windows.Forms.DockStyle.Right;
             this.lblForce.Location = new System.Drawing.Point(329, 0);
             this.lblForce.Name = "lblForce";
-            this.lblForce.Size = new System.Drawing.Size(37, 29);
+            this.lblForce.Size = new System.Drawing.Size(37, 30);
             this.lblForce.TabIndex = 1;
             this.lblForce.Tag = "Label_Spirit_Force";
             this.lblForce.Text = "Force:";
@@ -105,9 +109,10 @@ namespace Chummer
             // 
             // nudForce
             // 
-            this.nudForce.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudForce.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudForce.Enabled = false;
-            this.nudForce.Location = new System.Drawing.Point(372, 3);
+            this.nudForce.Location = new System.Drawing.Point(372, 5);
+            this.nudForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudForce.Maximum = new decimal(new int[] {
             6,
             0,
@@ -125,14 +130,14 @@ namespace Chummer
             // 
             // chkBound
             // 
+            this.chkBound.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBound.AutoSize = true;
             this.chkBound.Checked = true;
             this.chkBound.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBound.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkBound.Enabled = false;
-            this.chkBound.Location = new System.Drawing.Point(552, 3);
+            this.chkBound.Location = new System.Drawing.Point(552, 6);
             this.chkBound.Name = "chkBound";
-            this.chkBound.Size = new System.Drawing.Size(57, 23);
+            this.chkBound.Size = new System.Drawing.Size(57, 17);
             this.chkBound.TabIndex = 5;
             this.chkBound.Tag = "Checkbox_Spirit_Bound";
             this.chkBound.Text = "Bound";
@@ -141,10 +146,10 @@ namespace Chummer
             // 
             // cboSpiritName
             // 
-            this.cboSpiritName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboSpiritName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSpiritName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpiritName.FormattingEnabled = true;
-            this.cboSpiritName.Location = new System.Drawing.Point(3, 3);
+            this.cboSpiritName.Location = new System.Drawing.Point(3, 4);
             this.cboSpiritName.Name = "cboSpiritName";
             this.cboSpiritName.Size = new System.Drawing.Size(148, 21);
             this.cboSpiritName.TabIndex = 7;
@@ -153,10 +158,14 @@ namespace Chummer
             // 
             // imgLink
             // 
+            this.imgLink.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(686, 3);
+            this.imgLink.Location = new System.Drawing.Point(683, 0);
+            this.imgLink.Margin = new System.Windows.Forms.Padding(0);
+            this.imgLink.MinimumSize = new System.Drawing.Size(24, 24);
             this.imgLink.Name = "imgLink";
-            this.imgLink.Size = new System.Drawing.Size(16, 16);
+            this.imgLink.Size = new System.Drawing.Size(24, 30);
+            this.imgLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgLink.TabIndex = 8;
             this.imgLink.TabStop = false;
             this.imgLink.Click += new System.EventHandler(this.imgLink_Click);
@@ -209,18 +218,22 @@ namespace Chummer
             // 
             // imgNotes
             // 
+            this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(708, 3);
+            this.imgNotes.Location = new System.Drawing.Point(707, 0);
+            this.imgNotes.Margin = new System.Windows.Forms.Padding(0);
+            this.imgNotes.MinimumSize = new System.Drawing.Size(24, 24);
             this.imgNotes.Name = "imgNotes";
-            this.imgNotes.Size = new System.Drawing.Size(16, 16);
+            this.imgNotes.Size = new System.Drawing.Size(24, 30);
+            this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgNotes.TabIndex = 11;
             this.imgNotes.TabStop = false;
             this.imgNotes.Click += new System.EventHandler(this.imgNotes_Click);
             // 
             // txtCritterName
             // 
-            this.txtCritterName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCritterName.Location = new System.Drawing.Point(157, 3);
+            this.txtCritterName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCritterName.Location = new System.Drawing.Point(157, 5);
             this.txtCritterName.Name = "txtCritterName";
             this.txtCritterName.Size = new System.Drawing.Size(166, 20);
             this.txtCritterName.TabIndex = 12;
@@ -228,52 +241,52 @@ namespace Chummer
             // 
             // chkFettered
             // 
+            this.chkFettered.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFettered.AutoSize = true;
-            this.chkFettered.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkFettered.Location = new System.Drawing.Point(615, 3);
+            this.chkFettered.Location = new System.Drawing.Point(615, 6);
             this.chkFettered.Name = "chkFettered";
-            this.chkFettered.Size = new System.Drawing.Size(65, 23);
+            this.chkFettered.Size = new System.Drawing.Size(65, 17);
             this.chkFettered.TabIndex = 13;
             this.chkFettered.Tag = "Checkbox_Spirit_Fettered";
             this.chkFettered.Text = "Fettered";
             this.chkFettered.UseVisualStyleBackColor = true;
             this.chkFettered.CheckedChanged += new System.EventHandler(this.chkFettered_CheckedChanged);
             // 
-            // bufferedTableLayoutPanel1
+            // tlpMain
             // 
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 12;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdDelete, 10, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.imgNotes, 9, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.cboSpiritName, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.txtCritterName, 1, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkFettered, 7, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.imgLink, 8, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.lblForce, 2, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkBound, 6, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.nudForce, 3, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.nudServices, 5, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.lblServices, 4, 0);
-            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 1;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(808, 29);
-            this.bufferedTableLayoutPanel1.TabIndex = 14;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 12;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.cmdDelete, 10, 0);
+            this.tlpMain.Controls.Add(this.imgNotes, 9, 0);
+            this.tlpMain.Controls.Add(this.cboSpiritName, 0, 0);
+            this.tlpMain.Controls.Add(this.txtCritterName, 1, 0);
+            this.tlpMain.Controls.Add(this.chkFettered, 7, 0);
+            this.tlpMain.Controls.Add(this.imgLink, 8, 0);
+            this.tlpMain.Controls.Add(this.lblForce, 2, 0);
+            this.tlpMain.Controls.Add(this.chkBound, 6, 0);
+            this.tlpMain.Controls.Add(this.nudForce, 3, 0);
+            this.tlpMain.Controls.Add(this.nudServices, 5, 0);
+            this.tlpMain.Controls.Add(this.lblServices, 4, 0);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(0, 0);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 1;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Size = new System.Drawing.Size(785, 30);
+            this.tlpMain.TabIndex = 14;
             // 
             // SpiritControl
             // 
@@ -281,17 +294,19 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this.bufferedTableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
+            this.MinimumSize = new System.Drawing.Size(0, 30);
             this.Name = "SpiritControl";
-            this.Size = new System.Drawing.Size(808, 29);
+            this.Size = new System.Drawing.Size(785, 30);
             this.Load += new System.EventHandler(this.SpiritControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).EndInit();
             this.cmsSpirit.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).EndInit();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -315,6 +330,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsCreateCharacter;
         private System.Windows.Forms.TextBox txtCritterName;
         private System.Windows.Forms.CheckBox chkFettered;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private BufferedTableLayoutPanel tlpMain;
     }
 }

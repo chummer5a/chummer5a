@@ -88,10 +88,10 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */
@@ -163,6 +163,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("enhancement");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -326,9 +328,9 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("powers.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/enhancements/enhancement[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + Name + "\"]")
                     : XmlManager.Load("powers.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/enhancements/enhancement[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/enhancements/enhancement[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

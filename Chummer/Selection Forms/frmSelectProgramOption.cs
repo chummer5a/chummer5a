@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectProgramOption(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.
@@ -73,8 +73,8 @@ namespace Chummer
             }
             lstOption.Sort(CompareListItems.CompareNames);
             lstOptions.BeginUpdate();
-            lstOptions.ValueMember = "Value";
-            lstOptions.DisplayMember = "Name";
+            lstOptions.ValueMember = nameof(ListItem.Value);
+            lstOptions.DisplayMember = nameof(ListItem.Name);
             lstOptions.DataSource = lstOption;
             lstOptions.EndUpdate();
         }
@@ -90,9 +90,9 @@ namespace Chummer
             {
                 string strSource = xmlOption["source"].InnerText;
                 string strPage = xmlOption["altpage"]?.InnerText ?? xmlOption["page"].InnerText;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {

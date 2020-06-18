@@ -30,7 +30,7 @@ namespace Chummer
         public frmSelectSide()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Create a list for the sides.
             List<ListItem> lstSides = new List<ListItem>
@@ -40,8 +40,8 @@ namespace Chummer
             };
 
             cboSide.BeginUpdate();
-            cboSide.ValueMember = "Value";
-            cboSide.DisplayMember = "Name";
+            cboSide.ValueMember = nameof(ListItem.Value);
+            cboSide.DisplayMember = nameof(ListItem.Name);
             cboSide.DataSource = lstSides;
             cboSide.EndUpdate();
         }

@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.
@@ -120,9 +120,9 @@ namespace Chummer
                 {
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
@@ -203,8 +203,8 @@ namespace Chummer
             string strOldSelected = lstTechniques.SelectedValue?.ToString();
             _blnLoading = true;
             lstTechniques.BeginUpdate();
-            lstTechniques.ValueMember = "Value";
-            lstTechniques.DisplayMember = "Name";
+            lstTechniques.ValueMember = nameof(ListItem.Value);
+            lstTechniques.DisplayMember = nameof(ListItem.Name);
             lstTechniques.DataSource = lstTechniqueItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

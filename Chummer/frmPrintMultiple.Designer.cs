@@ -18,6 +18,9 @@ namespace Chummer
                 components?.Dispose();
                 _workerPrinter?.Dispose();
                 _frmPrintView?.Dispose();
+                if (_lstCharacters?.Count > 0)
+                    foreach (Character objCharacter in _lstCharacters)
+                        objCharacter.Dispose();
             }
             base.Dispose(disposing);
         }

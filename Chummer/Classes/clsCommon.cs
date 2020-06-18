@@ -27,8 +27,9 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
 using Chummer.Annotations;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
 namespace Chummer
 {
@@ -132,7 +133,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstGear">List of Gear to search.</param>
-        public static Drug FindDrug(string strGuid, List<Drug> lstGear)
+        public static Drug FindDrug(string strGuid, IEnumerable<Drug> lstGear)
         {
             if (lstGear == null)
                 throw new ArgumentNullException(nameof(lstGear));
@@ -884,10 +885,10 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
-            if (!string.IsNullOrEmpty(strSpaceCharacter))
-                astrSourceParts = strSource.Split(strSpaceCharacter[0]);
+            if (!string.IsNullOrEmpty(strSpace))
+                astrSourceParts = strSource.Split(strSpace[0]);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
             {
                 astrSourceParts = new [] { "SR5", strSource.Substring(3) };
@@ -990,7 +991,7 @@ namespace Chummer
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
-            PdfReader reader = objBookInfo.CachedPdfReader;
+            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
             List<string> lstStringFromPDF = new List<string>();
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
@@ -998,7 +999,7 @@ namespace Chummer
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
             int intMaxPagesToRead = 3;  // parse at most 3 pages of content
             // Loop through each page, starting at the listed page + offset.
-            for (; intPage <= reader.NumberOfPages; ++intPage)
+            for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
             {
                 // failsafe if something goes wrong, I guess no description takes more than two full pages?
                 if (intMaxPagesToRead-- == 0)
@@ -1008,7 +1009,7 @@ namespace Chummer
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
+                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                 lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
@@ -1202,34 +1203,35 @@ namespace Chummer
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
         /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
-        public static string GetTimescaleString(Timescale strValue, bool blnSingle)
+        /// <param name="strLanguage">Language to use. If left empty, will use current program language.</param>
+        public static string GetTimescaleString(Timescale strValue, bool blnSingle, string strLanguage = "")
         {
             switch (strValue)
             {
                 case Timescale.Seconds when blnSingle:
-                    return LanguageManager.GetString("String_Second");
+                    return LanguageManager.GetString("String_Second", strLanguage);
                 case Timescale.Seconds:
-                    return LanguageManager.GetString("String_Seconds");
+                    return LanguageManager.GetString("String_Seconds", strLanguage);
                 case Timescale.CombatTurns when blnSingle:
-                    return LanguageManager.GetString("String_CombatTurn");
+                    return LanguageManager.GetString("String_CombatTurn", strLanguage);
                 case Timescale.CombatTurns:
-                    return LanguageManager.GetString("String_CombatTurns");
+                    return LanguageManager.GetString("String_CombatTurns", strLanguage);
                 case Timescale.Minutes when blnSingle:
-                    return LanguageManager.GetString("String_Minute");
+                    return LanguageManager.GetString("String_Minute", strLanguage);
                 case Timescale.Minutes:
-                    return LanguageManager.GetString("String_Minutes");
+                    return LanguageManager.GetString("String_Minutes", strLanguage);
                 case Timescale.Hours when blnSingle:
-                    return LanguageManager.GetString("String_Hour");
+                    return LanguageManager.GetString("String_Hour", strLanguage);
                 case Timescale.Hours:
-                    return LanguageManager.GetString("String_Hours");
+                    return LanguageManager.GetString("String_Hours", strLanguage);
                 case Timescale.Days when blnSingle:
-                    return LanguageManager.GetString("String_Day");
+                    return LanguageManager.GetString("String_Day", strLanguage);
                 case Timescale.Days:
-                    return LanguageManager.GetString("String_Days");
+                    return LanguageManager.GetString("String_Days", strLanguage);
                 case Timescale.Instant:
-                    return LanguageManager.GetString("String_Immediate");
+                    return LanguageManager.GetString("String_Immediate", strLanguage);
                 default:
-                    return LanguageManager.GetString("String_Immediate");
+                    return LanguageManager.GetString("String_Immediate", strLanguage);
             }
         }
         #endregion

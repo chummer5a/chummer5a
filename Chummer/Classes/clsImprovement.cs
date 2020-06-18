@@ -43,7 +43,8 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private string DisplayDebug()
         {
-            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+            return string.Format(GlobalOptions.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
+                _objImprovementType, _intVal, _intRating, _objImprovementSource, _strSourceName, _strImprovedName);
         }
 
         public enum ImprovementType
@@ -196,6 +197,7 @@ namespace Chummer
             Ambidextrous,
             UnarmedReach,
             SkillSpecialization,
+            SkillExpertise, // SASS' Inspired, adds a specialization that gives a +3 bonus instead of the usual +2
             SkillSpecializationOption,
             NativeLanguageLimit,
             AdeptPowerFreeLevels,
@@ -1544,6 +1546,8 @@ namespace Chummer
                 case ImprovementType.UnarmedReach:
                     break;
                 case ImprovementType.SkillSpecialization:
+                    break;
+                case ImprovementType.SkillExpertise:
                     break;
                 case ImprovementType.SkillSpecializationOption:
                 {
@@ -4442,6 +4446,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
+                    case Improvement.ImprovementType.SkillExpertise:
                         {
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
                             SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);

@@ -112,6 +112,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("initiationgrade");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("group", Group.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalOptions.InvariantCultureInfo));
@@ -214,24 +215,24 @@ namespace Chummer
         /// </summary>
         public string Text(string strLanguage)
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
-            strReturn.Append(strSpaceCharacter);
+            strReturn.Append(strSpace);
             strReturn.Append(Grade.ToString(GlobalOptions.CultureInfo));
             if (Group || Ordeal)
             {
-                strReturn.Append(strSpaceCharacter + '(');
+                strReturn.Append(strSpace + '(');
                 if (Group)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
                     if (Ordeal || Schooling)
-                        strReturn.Append(',' + strSpaceCharacter);
+                        strReturn.Append(',' + strSpace);
                 }
                 if (Ordeal)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
                     if (Schooling)
-                        strReturn.Append(',' + strSpaceCharacter);
+                        strReturn.Append(',' + strSpace);
                 }
                 if (Schooling)
                 {

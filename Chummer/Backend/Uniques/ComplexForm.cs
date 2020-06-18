@@ -161,6 +161,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("complexform");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -395,14 +397,14 @@ namespace Chummer
                     }
                     foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FadingValue && i.Enabled))
                     {
-                        strFV += $" + {imp.Value:0;-0;0}";
+                        strFV += " + " + imp.Value.ToString("0;-0;0", GlobalOptions.InvariantCultureInfo);
                     }
                     object xprResult = CommonFunctions.EvaluateInvariantXPath(strFV.TrimStart('+'), out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
                         if (force)
                         {
-                            strReturn = $"L{xprResult:+0;-0;}";
+                            strReturn = string.Format(GlobalOptions.CultureInfo, "L{0:+0;-0;}", xprResult);
                         }
                         else if (xprResult.ToString() != "0")
                         {
@@ -504,10 +506,9 @@ namespace Chummer
                 int intReturn = 0;
                 if (Skill != null)
                 {
-                  intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
-                  // Add any Specialization bonus if applicable.
-                  if (Skill.HasSpecialization(CurrentDisplayName))
-                    intReturn += _objCharacter.Options.SpecializationBonus;
+                    intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
+                    // Add any Specialization bonus if applicable.
+                    intReturn += Skill.GetSpecializationBonus(CurrentDisplayName);
                 }
 
                 // Include any Improvements to Threading.
@@ -558,9 +559,9 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("complexforms.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/complexforms/complexform[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]")
                     : XmlManager.Load("complexforms.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/complexforms/complexform[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode("/chummer/complexforms/complexform[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

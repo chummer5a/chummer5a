@@ -38,8 +38,8 @@ namespace Chummer.Backend.Equipment
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
-        private string _strName = "";
-        private string _strCategory = "";
+        private string _strName = string.Empty;
+        private string _strCategory = string.Empty;
         private string _strAvailability = "0";
         private string _strDuration;
         private string _strDescription = string.Empty;
@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
         private List<string> _lstCachedInfos = new List<string>();
         private Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
         private List<XmlNode> _lstCachedQualities = new List<XmlNode>();
-        private string _strGrade = "";
+        private string _strGrade = string.Empty;
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
@@ -197,7 +197,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("drug");
-
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -599,7 +600,7 @@ namespace Chummer.Backend.Equipment
                 decimal decMultiplier = 1;
                 decMultiplier = _objCharacter.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DrugDurationMultiplier && objImprovement.Enabled)
-                    .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                    .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - objImprovement.Value / 100m));
                 _intCachedDuration *= Convert.ToInt32(1.0m - decMultiplier);
                 return _intCachedDuration;
             }
@@ -612,16 +613,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration)) return _strCachedDisplayDuration;
+                if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration))
+                    return _strCachedDisplayDuration;
+                string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder sb = new StringBuilder();
                 if (Duration > 0)
                 {
-                    sb.Append(Duration);
-                    sb.Append(LanguageManager.GetString("String_Space"));
+                    sb.Append(Duration.ToString(GlobalOptions.CultureInfo) + strSpace);
                     if (DurationDice > 0)
                     {
-                        sb.Append($"x {DurationDice}{LanguageManager.GetString("String_D6")}");
-                        sb.Append(LanguageManager.GetString("String_Space"));
+                        sb.Append('x' + strSpace + DurationDice.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_D6") + strSpace);
                     }
                 }
 
@@ -667,15 +668,17 @@ namespace Chummer.Backend.Equipment
             return LanguageManager.TranslateExtra(Name, strLanguage);
         }
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
+
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1)
-                strReturn = Quantity.ToString("#,0.##", objCulture) + strSpaceCharacter + strReturn;
+                strReturn = Quantity.ToString("#,0.##", objCulture) + strSpace + strReturn;
             return strReturn;
         }
 
@@ -893,17 +896,19 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId)) return;
             _objCharacter.ImprovementGroups.Add(Name);
-            List<Improvement> lstImprovements = (from objAttribute in Attributes
-            where objAttribute.Value != 0
-            select new Improvement(_objCharacter)
-            {
-                ImproveSource = Improvement.ImprovementSource.Drug,
-                ImproveType = Improvement.ImprovementType.Attribute,
-                SourceName = InternalId,
-                Augmented = objAttribute.Value,
-                ImprovedName = objAttribute.Key,
-                CustomName = $"{_strName} - {objAttribute.Key} {objAttribute.Value:+#;-#;0}"
-            }).ToList();
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strNamePrefix = CurrentDisplayNameShort + strSpace + '-' + strSpace;
+            List<Improvement> lstImprovements = Attributes.Where(objAttribute => objAttribute.Value != 0)
+                .Select(objAttribute => new Improvement(_objCharacter)
+                {
+                    ImproveSource = Improvement.ImprovementSource.Drug,
+                    ImproveType = Improvement.ImprovementType.Attribute,
+                    SourceName = InternalId,
+                    Augmented = objAttribute.Value,
+                    ImprovedName = objAttribute.Key,
+                    CustomName = strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short")
+                                               + strSpace + objAttribute.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)
+                }).ToList();
 
             foreach (KeyValuePair<string, int> objLimit in Limits)
             {
@@ -913,7 +918,8 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     Value = objLimit.Value,
-                    CustomName = $"{_strName} - {objLimit.Key} {objLimit.Value:+#;-#;0}"
+                    CustomName = strNamePrefix + LanguageManager.GetString("Node_" + objLimit.Key)
+                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)
                 };
                 switch (objLimit.Key)
                 {
@@ -938,7 +944,8 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
                     Value = Initiative,
-                    CustomName = $"{_strName} - {LanguageManager.GetString("String_Initiative")} {Initiative:+#;-#;0}"
+                    CustomName = strNamePrefix + LanguageManager.GetString("String_Initiative")
+                                               + strSpace + Initiative.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)
                 };
                 lstImprovements.Add(i);
             }
@@ -951,7 +958,8 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.InitiativeDice,
                     Value = InitiativeDice,
-                    CustomName = $"{_strName} - {LanguageManager.GetString("Label_InitiativeDice")} {InitiativeDice:+#;-#;0}"
+                    CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
+                                               + strSpace + InitiativeDice.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)
                 };
                 lstImprovements.Add(i);
             }
@@ -994,8 +1002,8 @@ namespace Chummer.Backend.Equipment
                                 ImproveSource = Improvement.ImprovementSource.Drug,
                                 SourceName = InternalId,
                                 ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                CustomName =
-                                    $"{_strName} - {LanguageManager.GetString("String_InitiativeDice")} {objAddQuality.Name}"
+                                CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
+                                                           + strSpace + objAddQuality.Name
                             };
                             lstImprovements.Add(objImprovement);
                         }
@@ -1025,9 +1033,9 @@ namespace Chummer.Backend.Equipment
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[name = \"" + Name + "\"]")
                     : XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString + "\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }
@@ -1155,7 +1163,7 @@ namespace Chummer.Backend.Equipment
                                     break;
                                 }
                                 default:
-                                    Log.Warn($"Unknown drug effect {objXmlEffect.Name} in component {strEffectName}");
+                                    Log.Warn("Unknown drug effect " + objXmlEffect.Name + " in component " + strEffectName);
                                     break;
                             }
                         }
@@ -1271,8 +1279,8 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             if (Level != 0)
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpaceCharacter + Level.ToString(objCulture) + ')';
+                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                strReturn += strSpace + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture) + ')';
             }
 
             return strReturn;
@@ -1600,9 +1608,9 @@ namespace Chummer.Backend.Equipment
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
+                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[name = \"" + Name + "\"]")
                     : XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

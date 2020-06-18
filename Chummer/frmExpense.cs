@@ -33,7 +33,7 @@ namespace Chummer
             _objCharacterOptions = objCharacterOptions;
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
 

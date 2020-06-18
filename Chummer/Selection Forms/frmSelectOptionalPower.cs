@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
@@ -44,8 +44,8 @@ namespace Chummer
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }
             cboPower.BeginUpdate();
-            cboPower.ValueMember = "Value";
-            cboPower.DisplayMember = "Name";
+            cboPower.ValueMember = nameof(ListItem.Value);
+            cboPower.DisplayMember = nameof(ListItem.Name);
             cboPower.DataSource = _lstPowerItems;
             if (_lstPowerItems.Count >= 1)
                 cboPower.SelectedIndex = 0;

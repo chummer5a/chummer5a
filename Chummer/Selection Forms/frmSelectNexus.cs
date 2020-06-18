@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectNexus(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _objGear = new Gear(objCharacter);
             MoveControls();

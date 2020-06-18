@@ -35,7 +35,7 @@ namespace Chummer
         public frmSelectSkillGroup()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
@@ -78,8 +78,8 @@ namespace Chummer
             }
             lstGroups.Sort(CompareListItems.CompareNames);
             cboSkillGroup.BeginUpdate();
-            cboSkillGroup.ValueMember = "Value";
-            cboSkillGroup.DisplayMember = "Name";
+            cboSkillGroup.ValueMember = nameof(ListItem.Value);
+            cboSkillGroup.DisplayMember = nameof(ListItem.Name);
             cboSkillGroup.DataSource = lstGroups;
             cboSkillGroup.EndUpdate();
 

@@ -731,6 +731,29 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="selectexpertise" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="excludeskill" type="xs:string" use="optional" />
+          <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
+          <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+          <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+          <xs:attribute name="limittospecialization" type="xs:string" use="optional" />
+          <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+          <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+          <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+          <xs:attribute name="skillgroup" type="xs:string" use="optional" />
+        </xs:complexType>
+      </xs:element>
       <xs:element name="selectinherentaiprogram" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectmentorspirit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectparagon" type="xs:string" minOccurs="0" maxOccurs="1" />

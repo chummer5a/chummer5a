@@ -44,7 +44,7 @@ namespace Chummer
         public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
@@ -78,8 +78,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
 
@@ -220,9 +220,9 @@ namespace Chummer
                         string strPage = objXmlProgram.SelectSingleNode("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
-                            string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + " " + strPage);
+                            string strSpace = LanguageManager.GetString("String_Space");
+                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + " " + strPage);
                         }
                         else
                         {
@@ -347,8 +347,8 @@ namespace Chummer
             lstPrograms.Sort(CompareListItems.CompareNames);
             lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;
-            lstAIPrograms.ValueMember = "Value";
-            lstAIPrograms.DisplayMember = "Name";
+            lstAIPrograms.ValueMember = nameof(ListItem.Value);
+            lstAIPrograms.DisplayMember = nameof(ListItem.Name);
             lstAIPrograms.DataSource = lstPrograms;
             lstAIPrograms.EndUpdate();
         }

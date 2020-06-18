@@ -222,7 +222,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -236,7 +236,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -370,7 +370,7 @@ namespace Chummer.Backend.Equipment
                                                 foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                                                 {
                                                     XmlNode objXmlSubsystem = objXmlWareDocument.SelectSingleNode(
-                                                        $"/chummer/cyberwares/cyberware[name = \"{objXmlSubsystemNode["name"]?.InnerText}\"]");
+                                                        "/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemNode["name"]?.InnerText + "\"]");
 
                                                     if (objXmlSubsystem == null) continue;
                                                     Cyberware objSubsystem = new Cyberware(_objCharacter);
@@ -873,6 +873,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("vehicle");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -2468,7 +2470,7 @@ namespace Chummer.Backend.Equipment
         public string PowertrainModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddPowertrainModSlots;
-            return $"{intTotal - PowertrainModSlots + intModSlots}/{intTotal}";
+            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - PowertrainModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2498,7 +2500,7 @@ namespace Chummer.Backend.Equipment
         public string ProtectionModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddProtectionModSlots;
-            return $"{intTotal - ProtectionModSlots + intModSlots}/{intTotal}";
+            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - ProtectionModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2527,7 +2529,7 @@ namespace Chummer.Backend.Equipment
         public string WeaponModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddWeaponModSlots;
-            return $"{intTotal - WeaponModSlots + intModSlots}/{intTotal}";
+            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - WeaponModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2564,7 +2566,7 @@ namespace Chummer.Backend.Equipment
         public string BodyModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddBodyModSlots;
-            return $"{intTotal - BodyModSlots + intModSlots}/{intTotal}";
+            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - BodyModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2594,7 +2596,7 @@ namespace Chummer.Backend.Equipment
         public string ElectromagneticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddElectromagneticModSlots;
-            return $"{intTotal - ElectromagneticModSlots + intModSlots}/{intTotal}";
+            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - ElectromagneticModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2645,7 +2647,7 @@ namespace Chummer.Backend.Equipment
         public string CosmeticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddCosmeticModSlots;
-            return $"{intTotal - CosmeticModSlots + intModSlots}/{intTotal}";
+            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - CosmeticModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2677,9 +2679,9 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("vehicles.xml", strLanguage)
-                    .SelectSingleNode($"/chummer/vehicles/vehicle[name = \"{Name}\"]")
+                    .SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]")
                 : XmlManager.Load("vehicles.xml", strLanguage)
-                    .SelectSingleNode($"/chummer/vehicles/vehicle[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                    .SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

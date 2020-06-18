@@ -44,9 +44,12 @@ namespace Chummer.UI.Shared
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.pnlDisplay);
+            this.DoubleBuffered = true;
             this.Name = "BindingListDisplay";
-            this.Size = new System.Drawing.Size(606, 433);
+            this.Size = new System.Drawing.Size(609, 436);
             this.Load += new System.EventHandler(this.BindingListDisplay_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.BindingListDisplay_Scroll);
             this.SizeChanged += new System.EventHandler(this.BindingListDisplay_SizeChanged);

@@ -163,10 +163,10 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */
@@ -268,6 +268,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("mentorspirit");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("mentortype", _eMentorType.ToString());
             objWriter.WriteElementString("name_english", Name);
@@ -462,8 +464,8 @@ namespace Chummer
                     _eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml",
                     strLanguage);
                 _objCachedMyXmlNode = xdoc.SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/mentors/mentor[name = \"{Name}\"]"
-                        : $"/chummer/mentors/mentor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        ? "/chummer/mentors/mentor[name = \"" + Name + "\"]"
+                        : "/chummer/mentors/mentor[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

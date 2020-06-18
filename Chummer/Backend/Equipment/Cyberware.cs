@@ -378,7 +378,19 @@ namespace Chummer.Backend.Equipment
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    foreach (Gear objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(IsModularCurrentlyEquipped);
+                    }
+
+                    this.RefreshMatrixAttributeArray();
+                    break;
                 case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                    }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
@@ -388,6 +400,13 @@ namespace Chummer.Backend.Equipment
                     this.RefreshMatrixAttributeArray();
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                    }
+
+                    this.RefreshMatrixAttributeArray();
+                    break;
                 case NotifyCollectionChangedAction.Reset:
                     this.RefreshMatrixAttributeArray();
                     break;
@@ -438,7 +457,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -452,7 +471,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -788,8 +807,7 @@ namespace Chummer.Backend.Equipment
                                 Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
                             .Aggregate(decMultiplier,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                     }
 
@@ -801,7 +819,7 @@ namespace Chummer.Backend.Equipment
                             Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive))
                         {
                             _decExtraESSMultiplicativeMultiplier *=
-                                (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m);
+                                objImprovement.Value / 100m;
                         }
                     }
                 }
@@ -819,8 +837,7 @@ namespace Chummer.Backend.Equipment
                                 Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
                             .Aggregate(decMultiplier,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                     }
 
@@ -832,7 +849,7 @@ namespace Chummer.Backend.Equipment
                             Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive))
                         {
                             _decExtraESSMultiplicativeMultiplier *=
-                                (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m);
+                                objImprovement.Value / 100m;
                         }
                     }
                 }
@@ -950,8 +967,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("cyberware");
-            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("limbslot", _strLimbSlot);
@@ -1115,7 +1132,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Legacy shim for mis-formatted name of Reflex Recorder
-            if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version("5.198.31"))
+            if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version(5, 198, 31))
             {
                 // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
                 XmlNode xmlReflexRecorderNode = _objImprovementSource == Improvement.ImprovementSource.Bioware
@@ -1440,16 +1457,16 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             else
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguageToPrint);
+                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) /
                                3;
                 objWriter.WriteElementString("name",
-                    DisplayNameShort(strLanguageToPrint) + strSpaceCharacter + '(' +
-                    _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter +
-                    TotalAgility.ToString(objCulture) + ',' + strSpaceCharacter +
-                    _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter +
-                    TotalStrength.ToString(objCulture) + ',' + strSpaceCharacter +
-                    LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpaceCharacter +
+                    DisplayNameShort(strLanguageToPrint) + strSpace + '(' +
+                    _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpace +
+                    TotalAgility.ToString(objCulture) + ',' + strSpace +
+                    _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpace +
+                    TotalStrength.ToString(objCulture) + ',' + strSpace +
+                    LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpace +
                     intLimit.ToString(objCulture) + ')');
             }
 
@@ -1698,17 +1715,17 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) +
-                             strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) +
+                             strSpace + Rating.ToString(objCulture) + ')';
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             if (!string.IsNullOrEmpty(Location))
@@ -1719,7 +1736,7 @@ namespace Chummer.Backend.Equipment
                 else if (Location == "Right")
                     strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
                 if (!string.IsNullOrEmpty(strSide))
-                    strReturn += strSpaceCharacter + '(' + strSide + ')';
+                    strReturn += strSpace + '(' + strSide + ')';
             }
 
             return strReturn;
@@ -1854,7 +1871,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How many limbs does this cyberware have?
         /// </summary>
-        public int GetCyberlimbCount(List<string> lstExcludeLimbs)
+        public int GetCyberlimbCount(IReadOnlyCollection<string> lstExcludeLimbs)
         {
             int intCount = 0;
             if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs.All(l => l != LimbSlot))
@@ -3149,12 +3166,12 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 if (SourceID == EssenceHoleGUID) // Essence hole
                 {
-                    return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
+                    return Rating / 100m;
                 }
 
                 if (SourceID == EssenceAntiHoleGUID) // Essence anti-hole
                 {
-                    return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m * -1;
+                    return Rating / -100m;
                 }
 
                 decimal decReturn;
@@ -3196,7 +3213,7 @@ namespace Chummer.Backend.Equipment
 
                 if (ESSDiscount != 0)
                 {
-                    decimal decDiscount = Convert.ToDecimal(ESSDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
+                    decimal decDiscount = ESSDiscount * 0.01m;
                     decTotalESSMultiplier *= 1.0m - decDiscount;
                 }
 
@@ -3210,8 +3227,7 @@ namespace Chummer.Backend.Equipment
                                 objImprovement.Enabled)
                             .Aggregate(decMultiplier,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                        GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
                     }
 
@@ -3222,8 +3238,7 @@ namespace Chummer.Backend.Equipment
                             .Where(x => x.Enabled && x.ImproveType == totalMultiplier)
                             .Aggregate(decTotalESSMultiplier,
                                 (current, objImprovement) =>
-                                    current * (Convert.ToDecimal(objImprovement.Value,
-                                        GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current * (objImprovement.Value / 100m));
                     }
                 }
 
@@ -3262,8 +3277,7 @@ namespace Chummer.Backend.Equipment
                                 objImprovement.Enabled)
                             .Aggregate<Improvement, decimal>(1,
                                 (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                        GlobalOptions.InvariantCultureInfo) / 100m));
+                                    current - (1m - objImprovement.Value / 100m));
                         decESSMultiplier -= 1.0m - decBasicMultiplier;
                     }
                 }
@@ -3524,8 +3538,7 @@ namespace Chummer.Backend.Equipment
                         if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier &&
                             objImprovement.Enabled)
                             decMultiplier -=
-                                (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) /
-                                         100.0m));
+                                1.0m - (objImprovement.Value / 100.0m);
                     }
 
                     decReturn *= decMultiplier;

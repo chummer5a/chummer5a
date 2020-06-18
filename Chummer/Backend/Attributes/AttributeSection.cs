@@ -414,7 +414,7 @@ namespace Chummer.Backend.Attributes
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
                 // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
-                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
                 {
                     CharacterAttrib objAttribute;
                     switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
@@ -678,6 +678,8 @@ namespace Chummer.Backend.Attributes
         {
             if (objNewAttribute == null)
                 return null;
+            if (objCharacterNode == null)
+                throw new ArgumentNullException(nameof(objCharacterNode));
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
                 strAttributeLower = "mag";
@@ -735,7 +737,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = \"" + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }
@@ -784,9 +786,9 @@ namespace Chummer.Backend.Attributes
             XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc?.SelectSingleNode(strMetavariantXPath) : null;
             if (node != null)
             {
-                objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeMinimum = Convert.ToInt32(node[strSourceAbbrev + "min"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeMaximum = Convert.ToInt32(node[strSourceAbbrev + "max"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[strSourceAbbrev + "aug"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             }
 
             objTarget.Base = objSource.Base;

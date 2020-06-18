@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectContactConnection()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)

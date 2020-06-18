@@ -152,7 +152,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Rating of the item.</param>
         /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
-        public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
+        public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
             if (!objXmlArmorNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -199,7 +199,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage);
                     }
                 }
@@ -453,7 +453,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("armor");
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("guid",InternalId);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("armor", _strArmorValue);
@@ -656,6 +656,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("armor");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -1151,14 +1153,14 @@ namespace Chummer.Backend.Equipment
                 string strArmorOverrideValue = ArmorOverrideValue;
                 if (!string.IsNullOrWhiteSpace(strArmorOverrideValue))
                 {
-                    return $"{TotalArmor}/{strArmorOverrideValue}";
+                    return TotalArmor.ToString(GlobalOptions.CultureInfo) + '/' + strArmorOverrideValue;
                 }
 
                 string strArmor = ArmorValue;
                 char chrFirstArmorChar = strArmor.Length > 0 ? strArmor[0] : ' ';
                 if (chrFirstArmorChar == '+' || chrFirstArmorChar == '-')
                 {
-                    return $"{TotalArmor:+0;-0;0}";
+                    return TotalArmor.ToString("+0;-0;0", GlobalOptions.CultureInfo);
                 }
                 return TotalArmor.ToString(GlobalOptions.CultureInfo);
             }
@@ -1531,13 +1533,13 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(CustomName))
-                strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
+                strReturn += strSpace + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -1565,9 +1567,9 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("armor.xml", strLanguage)
-                    .SelectSingleNode($"/chummer/armors/armor[name = \"{Name}\"]")
+                    .SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]")
                 : XmlManager.Load("armor.xml", strLanguage)
-                    .SelectSingleNode($"/chummer/armors/armor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                    .SelectSingleNode("/chummer/armors/armor[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

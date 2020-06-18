@@ -5849,7 +5849,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[Type = 'Ranged']" allowedit="True"/>
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Ranged']" allowedit="True"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>

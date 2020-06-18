@@ -16,43 +16,44 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
+    // We use RTFEditor for its shortcuts, but because notes are often displayed as TreeNode tooltips,
+    // and because TreeNode tooltips only support plaintext and not any kind of formatting, frmNotes
+    // and Notes items in general use plaintext instead of RTF or HTML formatted text.
     public partial class frmNotes : Form
-    {
-        private static int s_IntWidth = 534;
-        private static int s_IntHeight = 278;
-        private readonly bool _blnLoading;
+	{
+		private static int s_IntWidth = 640;
+		private static int s_IntHeight = 360;
+	    private readonly bool _blnLoading;
+        private string _strNotes;
 
         #region Control Events
         public frmNotes()
-        {
+		{
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            rtfNotes.ContentKeyDown += rtfNotes_KeyDown;
+            this.TranslateWinForm();
             _blnLoading = true;
-            Width = s_IntWidth;
-            Height = s_IntHeight;
+			Width = s_IntWidth;
+			Height = s_IntHeight;
             _blnLoading = false;
         }
 
-        private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
-        {
+		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
+		{
+            Notes = rtfNotes.Text;
             DialogResult = DialogResult.OK;
-        }
+		}
 
-        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+        private void rtfNotes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
                 DialogResult = DialogResult.OK;
-
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                e.SuppressKeyPress = true;
-                ((TextBox) sender)?.SelectAll();
-            }
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -63,19 +64,28 @@ namespace Chummer
             s_IntWidth = Width;
             s_IntHeight = Height;
         }
+
+        private void frmNotes_Shown(object sender, EventArgs e)
+        {
+            rtfNotes.FocusContent();
+        }
         #endregion
 
         #region Properties
+
         /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
         {
-            get => txtNotes.Text;
+            get => _strNotes;
             set
             {
-                txtNotes.Text = value;
-                txtNotes.Select(value?.Length ?? 0, 0);
+                if (_strNotes != value)
+                {
+                    _strNotes = value;
+                    rtfNotes.Text = value;
+                }
             }
         }
         #endregion

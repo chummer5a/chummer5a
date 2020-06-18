@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _intStage = intStage;
         }
@@ -195,7 +195,7 @@ namespace Chummer
             {
                 if (cboStage.DataSource == null)
                 {
-                    List<ListItem> Stages = new List<ListItem>()
+                    List<ListItem> Stages = new List<ListItem>
                     {
                         new ListItem("0", LanguageManager.GetString("String_All"))
                     };
@@ -232,8 +232,8 @@ namespace Chummer
                         return 0;
                     });
 
-                    cboStage.ValueMember = "Value";
-                    cboStage.DisplayMember = "Name";
+                    cboStage.ValueMember = nameof(ListItem.Value);
+                    cboStage.DisplayMember = nameof(ListItem.Name);
                     cboStage.DataSource = Stages;
                 }
 

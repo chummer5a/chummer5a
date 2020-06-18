@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace Chummer
             // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
-            LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
+            this.TranslateWinForm(_strSelectedLanguage);
 
             _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();
             foreach(CustomDataDirectoryInfo objInfo in GlobalOptions.CustomDataDirectoryInfo)
@@ -85,6 +86,7 @@ namespace Chummer
             PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
             PopulateLimbCountList();
+            PopulateMugshotCompressionOptions();
             SetToolTips();
             PopulateSettingsList();
             SetDefaultValueForSettingsList();
@@ -495,13 +497,13 @@ namespace Chummer
 
             if (objSource != null)
             {
-                grpSelectedSourcebook.Visible = true;
+                grpSelectedSourcebook.Enabled = true;
                 txtPDFLocation.Text = objSource.Path;
                 nudPDFOffset.Value = objSource.Offset;
             }
             else
             {
-                grpSelectedSourcebook.Visible = false;
+                grpSelectedSourcebook.Enabled = false;
             }
         }
 
@@ -541,7 +543,7 @@ namespace Chummer
         #region Methods
         private void TranslateForm()
         {
-            LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
+            this.TranslateWinForm(_strSelectedLanguage);
             PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
 
@@ -563,6 +565,7 @@ namespace Chummer
             }
 
             PopulateLimbCountList();
+            PopulateMugshotCompressionOptions();
             SetToolTips();
 
             string strSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
@@ -848,7 +851,7 @@ namespace Chummer
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
-            if (Enum.TryParse(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out UseAILogging useAI))
+            if (Enum.TryParse(cboUseLoggingApplicationInsights.SelectedValue.ToString(), out UseAILogging useAI))
                 GlobalOptions.UseLoggingApplicationInsights = useAI;
 
             if (string.IsNullOrEmpty(_strSelectedLanguage))
@@ -884,6 +887,7 @@ namespace Chummer
             GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
             GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue + "\"]/name")?.InnerText ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
+            GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;
         }
 
         /// <summary>
@@ -901,7 +905,7 @@ namespace Chummer
                     objRegistry.SetValue("livecustomdata", chkLiveCustomData.Checked);
                     objRegistry.SetValue("liveupdatecleancharacterfiles", chkLiveUpdateCleanCharacterFiles.Checked);
                     objRegistry.SetValue("uselogging", chkUseLogging.Checked);
-                    var useAI = cbUseLoggingApplicationInsights.SelectedItem.ToString();
+                    var useAI = cboUseLoggingApplicationInsights.SelectedItem.ToString();
                     objRegistry.SetValue("useloggingApplicationInsights", useAI);
                     objRegistry.SetValue("language", _strSelectedLanguage);
                     objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked);
@@ -927,6 +931,9 @@ namespace Chummer
                     objRegistry.SetValue("usecustomdatetime", chkCustomDateTimeFormats.Checked);
                     objRegistry.SetValue("customdateformat", txtDateFormat.Text);
                     objRegistry.SetValue("customtimeformat", txtTimeFormat.Text);
+                    objRegistry.SetValue("savedimagequality", nudMugshotCompressionQuality.Enabled
+                        ? decimal.ToInt32(nudMugshotCompressionQuality.Value).ToString(GlobalOptions.InvariantCultureInfo)
+                        : int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
 
                     //Save the Plugins-Dictionary
                     string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
@@ -1183,8 +1190,8 @@ namespace Chummer
             string strOldSelected = cboLimbCount.SelectedValue?.ToString();
 
             cboLimbCount.BeginUpdate();
-            cboLimbCount.ValueMember = "Value";
-            cboLimbCount.DisplayMember = "Name";
+            cboLimbCount.ValueMember = nameof(ListItem.Value);
+            cboLimbCount.DisplayMember = nameof(ListItem.Name);
             cboLimbCount.DataSource = lstLimbCount;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -1195,6 +1202,31 @@ namespace Chummer
             }
 
             cboLimbCount.EndUpdate();
+        }
+
+        private void PopulateMugshotCompressionOptions()
+        {
+            List<ListItem> lstMugshotCompressionOptions = new List<ListItem>
+            {
+                new ListItem(ImageFormat.Png.ToString(), LanguageManager.GetString("String_Lossless_Compression_Option")),
+                new ListItem(ImageFormat.Jpeg.ToString(), LanguageManager.GetString("String_Lossy_Compression_Option"))
+            };
+
+            string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
+
+            cboMugshotCompression.BeginUpdate();
+            cboMugshotCompression.ValueMember = nameof(ListItem.Value);
+            cboMugshotCompression.DisplayMember = nameof(ListItem.Name);
+            cboMugshotCompression.DataSource = lstMugshotCompressionOptions;
+
+            if (!string.IsNullOrEmpty(strOldSelected))
+            {
+                cboMugshotCompression.SelectedValue = strOldSelected;
+                if (cboMugshotCompression.SelectedIndex == -1 && lstMugshotCompressionOptions.Count > 0)
+                    cboMugshotCompression.SelectedIndex = 0;
+            }
+
+            cboMugshotCompression.EndUpdate();
         }
 
         private void PopulatePDFParameters()
@@ -1222,8 +1254,8 @@ namespace Chummer
             string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
 
             cboPDFParameters.BeginUpdate();
-            cboPDFParameters.ValueMember = "Value";
-            cboPDFParameters.DisplayMember = "Name";
+            cboPDFParameters.ValueMember = nameof(ListItem.Value);
+            cboPDFParameters.DisplayMember = nameof(ListItem.Name);
             cboPDFParameters.DataSource = lstPdfParameters;
             cboPDFParameters.SelectedIndex = intIndex;
 
@@ -1239,7 +1271,7 @@ namespace Chummer
 
         private void PopulateApplicationInsightsOptions()
         {
-            string strOldSelected = cbUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalOptions.UseLoggingApplicationInsights.ToString();
+            string strOldSelected = cboUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalOptions.UseLoggingApplicationInsights.ToString();
 
             List<ListItem> lstUseAIOptions = new List<ListItem>();
             foreach (var myoption in Enum.GetValues(typeof(UseAILogging)))
@@ -1247,17 +1279,17 @@ namespace Chummer
                 lstUseAIOptions.Add(new ListItem(myoption, LanguageManager.GetString("String_ApplicationInsights_" + myoption, _strSelectedLanguage)));
             }
 
-            cbUseLoggingApplicationInsights.BeginUpdate();
-            cbUseLoggingApplicationInsights.DataSource = null;
-            cbUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
-            cbUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
-            cbUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
+            cboUseLoggingApplicationInsights.BeginUpdate();
+            cboUseLoggingApplicationInsights.DataSource = null;
+            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
+            cboUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
+            cboUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
 
             if (!string.IsNullOrEmpty(strOldSelected))
-                cbUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
-            if (cbUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
-                cbUseLoggingApplicationInsights.SelectedIndex = 0;
-            cbUseLoggingApplicationInsights.EndUpdate();
+                cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
+            if (cboUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
+                cboUseLoggingApplicationInsights.SelectedIndex = 0;
+            cboUseLoggingApplicationInsights.EndUpdate();
         }
 
         private void SetToolTips()
@@ -1272,7 +1304,7 @@ namespace Chummer
             chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
             chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
             chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
-            cbUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage).WordWrap(width), Properties.Settings.Default.UploadClientId));
+            cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage).WordWrap(width), Properties.Settings.Default.UploadClientId));
         }
 
         private void PopulateSettingsList()
@@ -1341,8 +1373,8 @@ namespace Chummer
             string strOldSelected = cboSetting.SelectedValue?.ToString();
 
             cboSetting.BeginUpdate();
-            cboSetting.ValueMember = "Value";
-            cboSetting.DisplayMember = "Name";
+            cboSetting.ValueMember = nameof(ListItem.Value);
+            cboSetting.DisplayMember = nameof(ListItem.Name);
             cboSetting.DataSource = lstSettings;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -1391,8 +1423,8 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
+            cboLanguage.ValueMember = nameof(ListItem.Value);
+            cboLanguage.DisplayMember = nameof(ListItem.Name);
             cboLanguage.DataSource = lstLanguages;
             cboLanguage.EndUpdate();
         }
@@ -1400,8 +1432,8 @@ namespace Chummer
         private void PopulateSheetLanguageList()
         {
             cboSheetLanguage.BeginUpdate();
-            cboSheetLanguage.ValueMember = "Value";
-            cboSheetLanguage.DisplayMember = "Name";
+            cboSheetLanguage.ValueMember = nameof(ListItem.Value);
+            cboSheetLanguage.DisplayMember = nameof(ListItem.Name);
             cboSheetLanguage.DataSource = GetSheetLanguageList();
             cboSheetLanguage.EndUpdate();
         }
@@ -1471,7 +1503,7 @@ namespace Chummer
             chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
-            cbUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
+            cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
             PopulateApplicationInsightsOptions();
 
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
@@ -1491,8 +1523,16 @@ namespace Chummer
             chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
             chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
             chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
-            txtDateFormat.Text = GlobalOptions.CustomDateFormat;
-            txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
+            if (!chkCustomDateTimeFormats.Checked)
+            {
+                txtDateFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern;
+                txtTimeFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern;
+            }
+            else
+            {
+                txtDateFormat.Text = GlobalOptions.CustomDateFormat;
+                txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
+            }
             PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
@@ -1516,7 +1556,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", strLanguage).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", strLanguage).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
                 if (xmlSheetList != null)
                 {
@@ -1568,8 +1608,8 @@ namespace Chummer
                 strOldSelected = strOldSelected.Substring(intPos + 1);
 
             cboXSLT.BeginUpdate();
-            cboXSLT.ValueMember = "Value";
-            cboXSLT.DisplayMember = "Name";
+            cboXSLT.ValueMember = nameof(ListItem.Value);
+            cboXSLT.DisplayMember = nameof(ListItem.Name);
             cboXSLT.DataSource = lstFiles;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -2002,11 +2042,11 @@ namespace Chummer
 
         }
 
-        private void cbUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
+            UseAILogging useAI = (UseAILogging) ((ListItem) cboUseLoggingApplicationInsights.SelectedItem).Value;
             if (useAI > UseAILogging.Info && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info)
             {
                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
@@ -2015,7 +2055,7 @@ namespace Chummer
                     MessageBoxButtons.YesNo))
                 {
                     _blnLoading = true;
-                    cbUseLoggingApplicationInsights.SelectedItem = UseAILogging.Info;
+                    cboUseLoggingApplicationInsights.SelectedItem = UseAILogging.Info;
                     _blnLoading = false;
                     return;
                 }
@@ -2023,7 +2063,7 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void ChkUseLogging_CheckedChanged(object sender, EventArgs e)
+        private void chkUseLogging_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -2040,22 +2080,22 @@ namespace Chummer
                     return;
                 }
             }
-            cbUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
+            cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
             OptionsChanged(sender, e);
         }
 
-        private void CbUseLoggingHelp_Click(object sender, EventArgs e)
+        private void cboUseLoggingHelp_Click(object sender, EventArgs e)
         {
             //open the telemetry document
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
         }
 
-        private void cbPluginsHelp_Click(object sender, EventArgs e)
+        private void cmdPluginsHelp_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
         }
 
-        private void ChkCyberlimbAttributeBonusCap_CheckedChanged(object sender, EventArgs e)
+        private void chkCyberlimbAttributeBonusCap_CheckedChanged(object sender, EventArgs e)
         {
             nudCyberlimbAttributeBonusCap.Enabled = chkCyberlimbAttributeBonusCap.Checked;
             if (!chkCyberlimbAttributeBonusCap.Checked)
@@ -2079,13 +2119,33 @@ namespace Chummer
 
         private void txtDateFormat_TextChanged(object sender, EventArgs e)
         {
-            txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
+            try
+            {
+                txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
+            }
+            catch (Exception)
+            {
+                txtDateFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+            }
             OptionsChanged(sender, e);
         }
 
         private void txtTimeFormat_TextChanged(object sender, EventArgs e)
         {
-            txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
+            try
+            {
+                txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
+            }
+            catch (Exception)
+            {
+                txtTimeFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+            }
+            OptionsChanged(sender, e);
+        }
+
+        private void cboMugshotCompression_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
             OptionsChanged(sender, e);
         }
     }

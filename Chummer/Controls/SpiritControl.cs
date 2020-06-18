@@ -42,29 +42,27 @@ namespace Chummer
         {
             _objSpirit = objSpirit;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            foreach (ToolStripItem objItem in cmsSpirit.Items)
+            this.TranslateWinForm();
+            foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 
         private void SpiritControl_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
-            nudForce.DoDatabinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
+            nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
             chkBound.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Bound));
-            chkBound.DoDatabinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
+            chkBound.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
             cboSpiritName.DoDatabinding("Text", _objSpirit, nameof(_objSpirit.Name));
             txtCritterName.DoDatabinding("Text", _objSpirit, nameof(_objSpirit.CritterName));
-            txtCritterName.DoDatabinding("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter));
-            nudForce.DoDatabinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
+            txtCritterName.DoOneWayDataBinding("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter));
+            nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
             nudServices.DoDatabinding("Value", _objSpirit, nameof(_objSpirit.ServicesOwed));
-            nudForce.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.Force), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            nudForce.DoDatabinding("Value", _objSpirit, nameof(_objSpirit.Force));
             Width = cmdDelete.Left + cmdDelete.Width;
-            chkFettered.DoDatabinding("Enabled",_objSpirit.CharacterObject, nameof(Character.AllowSpriteFettering));
+            chkFettered.DoOneWayDataBinding("Enabled",_objSpirit.CharacterObject, nameof(Character.AllowSpriteFettering));
             chkFettered.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Fettered));
             if (blnIsSpirit)
             {
@@ -273,26 +271,26 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmSpritNotes = new frmNotes
-            {
-                Notes = _objSpirit.Notes
-            })
+            string strOldValue = _objSpirit.Notes;
+            using (frmNotes frmSpritNotes = new frmNotes { Notes = strOldValue })
             {
                 frmSpritNotes.ShowDialog(this);
+                if (frmSpritNotes.DialogResult != DialogResult.OK)
+                    return;
+                frmSpritNotes.ShowDialog(this);
 
-                if (frmSpritNotes.DialogResult == DialogResult.OK && _objSpirit.Notes != frmSpritNotes.Notes)
-                {
-                    _objSpirit.Notes = frmSpritNotes.Notes;
-
-                    string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
-
-                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                    imgNotes.SetToolTip(strTooltip.WordWrap(100));
-
-                    ContactDetailChanged?.Invoke(this, e);
-                }
+                _objSpirit.Notes = frmSpritNotes.Notes;
+                if (strOldValue == _objSpirit.Notes)
+                    return;
             }
+
+            string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
+
+            if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+            imgNotes.SetToolTip(strTooltip.WordWrap(100));
+
+            ContactDetailChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -427,8 +425,9 @@ namespace Chummer
             }
 
             cboSpiritName.BeginUpdate();
-            cboSpiritName.DisplayMember = "Name";
-            cboSpiritName.ValueMember = "Value";
+            cboSpiritName.DataSource = null;
+            cboSpiritName.DisplayMember = nameof(ListItem.Name);
+            cboSpiritName.ValueMember = nameof(ListItem.Value);
             cboSpiritName.DataSource = lstCritters;
 
             // Set the control back to its original value.
@@ -469,11 +468,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(txtCritterName.Text))
                     objCharacter.Name = txtCritterName.Text;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                string strSpace = LanguageManager.GetString("String_Space");
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                    FileName = strCritterName + strSpaceCharacter + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpaceCharacter + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
+                    FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
                 })
                 {
                     if (saveFileDialog.ShowDialog(this) != DialogResult.OK)

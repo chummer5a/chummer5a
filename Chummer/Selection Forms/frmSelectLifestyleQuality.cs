@@ -36,7 +36,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = string.Empty;
         private readonly string _strSelectedLifestyle;
-        private readonly IList<LifestyleQuality> _lstExistingQualities;
+        private readonly IReadOnlyCollection<LifestyleQuality> _lstExistingQualities;
 
         private readonly XmlDocument _objXmlDocument;
 
@@ -50,10 +50,10 @@ namespace Chummer
         private readonly XmlDocument _objCritterDocument;
 
         #region Control Events
-        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IList<LifestyleQuality> lstExistingQualities)
+        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
             _lstExistingQualities = lstExistingQualities;
@@ -84,8 +84,8 @@ namespace Chummer
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             cboCategory.Enabled = _lstCategory.Count > 1;
 
@@ -154,9 +154,9 @@ namespace Chummer
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {
@@ -281,9 +281,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex -= 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
+                }
             }
         }
 
@@ -388,8 +388,8 @@ namespace Chummer
                 string strOldSelectedQuality = lstLifestyleQualities.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstLifestyleQualities.BeginUpdate();
-                lstLifestyleQualities.ValueMember = "Value";
-                lstLifestyleQualities.DisplayMember = "Name";
+                lstLifestyleQualities.ValueMember = nameof(ListItem.Value);
+                lstLifestyleQualities.DisplayMember = nameof(ListItem.Name);
                 lstLifestyleQualities.DataSource = lstLifestyleQuality;
                 _blnLoading = false;
                 if (string.IsNullOrEmpty(strOldSelectedQuality))

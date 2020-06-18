@@ -28,7 +28,7 @@ namespace Chummer
     public sealed partial class frmOmaeUpload : Form
     {
         private readonly Character _objCharacter = new Character();
-        private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
+        private readonly List<ListItem> _lstCharacterTypes;
 
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
@@ -44,10 +44,10 @@ namespace Chummer
         private int _intCreated = 0;
 
         #region Control Events
-        public frmOmaeUpload(string strUserName, List<ListItem> lstCharacterTypes, int intCharacterType, int intCharacterID = 0, string strDescription = "")
+        public frmOmaeUpload(string strUserName, IReadOnlyCollection<ListItem> lstCharacterTypes, int intCharacterType, int intCharacterID = 0, string strDescription = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _strUserName = strUserName;
 
             // Remove the items that cannot actually be uploaded through this window.
@@ -76,7 +76,7 @@ namespace Chummer
                 }
             }
 
-            _lstCharacterTypes = lstCharacterTypes;
+            _lstCharacterTypes = new List<ListItem>(lstCharacterTypes);
             _intCharacterID = intCharacterID;
             txtDescription.Text = strDescription;
             _intCharacterType = intCharacterType;
@@ -91,8 +91,8 @@ namespace Chummer
         {
             cboCharacterTypes.DataSource = null;
             cboCharacterTypes.DataSource = _lstCharacterTypes;
-            cboCharacterTypes.ValueMember = "Value";
-            cboCharacterTypes.DisplayMember = "Name";
+            cboCharacterTypes.ValueMember = nameof(ListItem.Value);
+            cboCharacterTypes.DisplayMember = nameof(ListItem.Name);
 
             string strName = string.Empty;
             foreach (ListItem objItem in _lstCharacterTypes)

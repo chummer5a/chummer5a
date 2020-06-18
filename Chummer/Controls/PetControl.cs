@@ -39,18 +39,15 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            foreach (ToolStripItem objItem in cmsContact.Items)
+            this.TranslateWinForm();
+            foreach (ToolStripItem tssItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
-            MoveControls();
         }
 
         private void PetControl_Load(object sender, EventArgs e)
         {
-            Width = cmdDelete.Left + cmdDelete.Width;
-
             LoadContactList();
 
             DoDataBindings();
@@ -188,42 +185,35 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmContactNotes = new frmNotes
-            {
-                Notes = _objContact.Notes
-            })
+            string strOldValue = _objContact.Notes;
+            using (frmNotes frmContactNotes = new frmNotes { Notes = strOldValue })
             {
                 frmContactNotes.ShowDialog(this);
-
-                if (frmContactNotes.DialogResult != DialogResult.OK || _objContact.Notes == frmContactNotes.Notes)
+                if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
-                _objContact.Notes = frmContactNotes.Notes;
+                frmContactNotes.ShowDialog(this);
 
-                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
-                if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
+                _objContact.Notes = frmContactNotes.Notes;
+                if (strOldValue == _objContact.Notes)
+                    return;
             }
+
+            string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+            if (!string.IsNullOrEmpty(_objContact.Notes))
+                strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+            imgNotes.SetToolTip(strTooltip.WordWrap(100));
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
         #endregion
 
         #region Methods
-        private void MoveControls()
-        {
-            txtContactName.Left = lblName.Left + lblName.Width + 6;
-            lblMetatypeLabel.Left = txtContactName.Left + txtContactName.Width + 16;
-            cboMetatype.Left = lblMetatypeLabel.Left + lblMetatypeLabel.Width + 6;
-            cboMetatype.Width = imgLink.Left - 6 - cboMetatype.Left;
-        }
-
         private void LoadContactList()
         {
             List<ListItem> lstMetatypes = new List<ListItem>
             {
                 ListItem.Blank
             };
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             using (XmlNodeList xmlMetatypesList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypesList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypesList)
@@ -237,40 +227,35 @@ namespace Chummer
                             {
                                 string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
                                 if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpace + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                             }
                     }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);
 
             cboMetatype.BeginUpdate();
-            cboMetatype.ValueMember = "Value";
-            cboMetatype.DisplayMember = "Name";
+            cboMetatype.ValueMember = nameof(ListItem.Value);
+            cboMetatype.DisplayMember = nameof(ListItem.Name);
             cboMetatype.DataSource = lstMetatypes;
             cboMetatype.EndUpdate();
         }
 
         private void DoDataBindings()
         {
-            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
+            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
+            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
-            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboMetatype.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
         #endregion
 
-            #region Properties
-            /// <summary>
-            /// Contact object this is linked to.
-            /// </summary>
+        #region Properties
+        /// <summary>
+        /// Contact object this is linked to.
+        /// </summary>
         public Contact ContactObject => _objContact;
 
         #endregion

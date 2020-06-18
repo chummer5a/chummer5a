@@ -49,11 +49,7 @@ namespace Chummer
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
-        public static PluginControl PluginLoader
-        {
-            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
-            set => _pluginLoader = value;
-        }
+        public static PluginControl PluginLoader => _pluginLoader ?? (_pluginLoader = new PluginControl());
 
 
         /// <summary>
@@ -67,6 +63,9 @@ namespace Chummer
             var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
+                // Set default cultures based on the currently set language
+                CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
+                CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
                 string strPostErrorMessage = string.Empty;
                 string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
                 if (!Directory.Exists(settingsDirectoryPath))
@@ -117,7 +116,8 @@ namespace Chummer
                 sw.TaskEnd("appdomain 2");
 
                 string strInfo =
-                    $"Application Chummer5a build {Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
+                    string.Format(GlobalOptions.InvariantCultureInfo, "Application Chummer5a build {0} started at {1} with command line arguments {2}",
+                        Assembly.GetExecutingAssembly().GetName().Version, DateTime.UtcNow, Environment.CommandLine);
                 sw.TaskEnd("infogen");
 
                 sw.TaskEnd("infoprnt");
@@ -146,12 +146,11 @@ namespace Chummer
                             ExceptionTelemetry et = new ExceptionTelemetry(myException)
                             {
                                 SeverityLevel = SeverityLevel.Critical
-
                             };
                             //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                             foreach (DictionaryEntry d in myException.Data)
                             {
-                                if ((d.Key != null) && (d.Value != null))
+                                if (d.Key != null && d.Value != null)
                                     et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                             }
                             ChummerTelemetryClient.TrackException(myException);
@@ -171,19 +170,25 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
-                    MainForm.ShowMessageBox(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MainForm is null at the moment, so we have to show error box manually
+                    using (Form objForm = new Form {TopMost = true})
+                        MessageBox.Show(objForm, LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MainForm.ShowMessageBox(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MainForm is null at the moment, so we have to show error box manually
+                    using (Form objForm = new Form { TopMost = true })
+                        MessageBox.Show(objForm, GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(strPostErrorMessage))
                 {
-                    MainForm.ShowMessageBox(strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // MainForm is null at the moment, so we have to show error box manually
+                    using (Form objForm = new Form { TopMost = true })
+                        MessageBox.Show(objForm, strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                     return;
                 }
 
@@ -285,6 +290,9 @@ namespace Chummer
                 {
                     Console.WriteLine(e);
                     Log.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
 
                 //load the plugins and maybe work of any command line arguments
@@ -293,7 +301,7 @@ namespace Chummer
                 //              /plugin:SINners:RegisterUriScheme:0
                 bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
+                LanguageManager.LoadLanguage(GlobalOptions.Language);
                 MainForm = new frmChummerMain();
                 try
                 {
@@ -362,10 +370,10 @@ namespace Chummer
                 }
                 if (showMainForm)
                 {
-                    MainForm.FormMainInitialize(pvt);
+                    MainForm.MyStartupPVT = pvt;
                     Application.Run(MainForm);
                 }
-                _pluginLoader?.Dispose();
+                PluginLoader?.Dispose();
                 Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
@@ -401,10 +409,12 @@ namespace Chummer
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
                             break;
-                        case 5: Log.Warn(exception);
+                        case 5:
+                            Log.Warn(exception);
                             allUnblocked = false;
                             break;
-                        default: Log.Error(exception);
+                        default:
+                            Log.Error(exception);
                             allUnblocked = false;
                             break;
                     }
