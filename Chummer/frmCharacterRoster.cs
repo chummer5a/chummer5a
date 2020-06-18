@@ -167,7 +167,7 @@ namespace Chummer
                                                                                 objCache.ErrorText;
                         }
                         else
-                            objCharacterNode.ForeColor = SystemColors.Window;
+                            objCharacterNode.ForeColor = SystemColors.WindowText;
                     }
                 }
             }
