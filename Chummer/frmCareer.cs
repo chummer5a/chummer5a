@@ -14837,7 +14837,7 @@ namespace Chummer
                 // If this is Ammunition, see if the character already has it on them.
                 if (objGear.Category == "Ammunition")
                 {
-                    IList<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
+                    IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
                     objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                 }
 

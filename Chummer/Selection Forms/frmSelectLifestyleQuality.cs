@@ -36,7 +36,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = string.Empty;
         private readonly string _strSelectedLifestyle;
-        private readonly IList<LifestyleQuality> _lstExistingQualities;
+        private readonly IReadOnlyCollection<LifestyleQuality> _lstExistingQualities;
 
         private readonly XmlDocument _objXmlDocument;
 
@@ -50,7 +50,7 @@ namespace Chummer
         private readonly XmlDocument _objCritterDocument;
 
         #region Control Events
-        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IList<LifestyleQuality> lstExistingQualities)
+        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
             this.TranslateWinForm();
@@ -281,9 +281,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex -= 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
+                }
             }
         }
 

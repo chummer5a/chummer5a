@@ -93,7 +93,7 @@ namespace Chummer.Backend.Uniques
             _strPage = string.Empty;
             DrainExpression = string.Empty;
             SpiritForm = "Materialization";
-            AvailableSpirits.Clear();
+            _lstAvailableSpirits.Clear();
             Type = TraditionType.None;
             _objCachedSourceDetail = null;
         }
@@ -649,7 +649,7 @@ namespace Chummer.Backend.Uniques
                 OnPropertyChanged(nameof(DrainValue));
         }
 
-        public IList<string> AvailableSpirits => _lstAvailableSpirits;
+        public IReadOnlyList<string> AvailableSpirits => _lstAvailableSpirits;
 
         /// <summary>
         /// Magician's Combat Spirit (for Custom Traditions) in English.

@@ -133,7 +133,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstGear">List of Gear to search.</param>
-        public static Drug FindDrug(string strGuid, List<Drug> lstGear)
+        public static Drug FindDrug(string strGuid, IEnumerable<Drug> lstGear)
         {
             if (lstGear == null)
                 throw new ArgumentNullException(nameof(lstGear));

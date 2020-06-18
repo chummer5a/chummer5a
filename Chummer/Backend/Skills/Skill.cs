@@ -1105,7 +1105,7 @@ namespace Chummer.Backend.Skills
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            IList<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
+            IReadOnlyCollection<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
             StringBuilder s;
             if (CyberwareRating > TotalBaseRating)
             {

@@ -1074,7 +1074,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="lstBooks">List of books.</param>
-        public static void Verify(string strLanguage, List<string> lstBooks)
+        public static void Verify(string strLanguage, IReadOnlyCollection<string> lstBooks)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return;

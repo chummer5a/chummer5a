@@ -685,12 +685,12 @@ namespace Chummer.UI.Shared
                 }
             }
 
-            public IndexComparer(IList<TType> list)
+            public IndexComparer(IReadOnlyList<TType> list)
             {
                 Reset(list);
             }
 
-            public void Reset(IList<TType> source)
+            public void Reset(IReadOnlyList<TType> source)
             {
                 _index = new Dictionary<TType, int>();
                 for (int i = 0; i < source.Count; i++)

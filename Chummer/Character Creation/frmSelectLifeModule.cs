@@ -195,7 +195,7 @@ namespace Chummer
             {
                 if (cboStage.DataSource == null)
                 {
-                    List<ListItem> Stages = new List<ListItem>()
+                    List<ListItem> Stages = new List<ListItem>
                     {
                         new ListItem("0", LanguageManager.GetString("String_All"))
                     };

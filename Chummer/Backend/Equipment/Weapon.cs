@@ -5274,7 +5274,7 @@ namespace Chummer.Backend.Equipment
             strOutRestrictedItem = strRestrictedItem;
         }
 
-        public void Reload(IList<Gear> lstGears, TreeView treGearView)
+        public void Reload(ICollection<Gear> lstGears, TreeView treGearView)
         {
             List<Gear> lstAmmo = new List<Gear>();
             List<string> lstCount = new List<string>();
