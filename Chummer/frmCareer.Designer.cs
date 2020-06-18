@@ -10043,7 +10043,6 @@ namespace Chummer
             this.cboGearOverclocker.TooltipText = "";
             this.cboGearOverclocker.Visible = false;
             this.cboGearOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboGearOverclocker_SelectedIndexChanged);
-            this.cboGearOverclocker.SizeChanged += new System.EventHandler(this.cboGearOverclocker_SizeChanged);
             // 
             // cboGearAttack
             // 

@@ -3106,10 +3106,7 @@ namespace Chummer
                     }
 
                     if (objSpell.InternalId.IsEmptyGuid())
-                    {
-                        frmPickSpell.Dispose();
                         continue;
-                    }
 
                     if (CharacterObject.Karma < intSpellKarmaCost)
                     {
@@ -3124,7 +3121,6 @@ namespace Chummer
                             , objSpell.CurrentDisplayName
                             , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
                         {
-                            frmPickSpell.Dispose();
                             continue;
                         }
                     }
@@ -9388,7 +9384,6 @@ namespace Chummer
                         {
                             objGear.DeleteGear();
                             Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            frmPickGear.Dispose();
                             continue;
                         }
 
@@ -16388,53 +16383,53 @@ namespace Chummer
                     return;
             }
 
-            frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled ? frmSelectMetamagic.Mode.Echo : frmSelectMetamagic.Mode.Metamagic);
-            frmPickMetamagic.ShowDialog(this);
-
-            // Make sure a value was selected.
-            if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled
+                ? frmSelectMetamagic.Mode.Echo
+                : frmSelectMetamagic.Mode.Metamagic))
             {
-                frmPickMetamagic.Dispose();
-                return;
-            }
+                frmPickMetamagic.ShowDialog(this);
 
-            Metamagic objNewMetamagic = new Metamagic(CharacterObject);
+                // Make sure a value was selected.
+                if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                    return;
 
-            XmlNode objXmlMetamagic;
-            Improvement.ImprovementSource objSource;
-            if (CharacterObject.RESEnabled)
-            {
-                objXmlMetamagic = XmlManager.Load("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
-                objSource = Improvement.ImprovementSource.Echo;
-            }
-            else
-            {
-                objXmlMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
-                objSource = Improvement.ImprovementSource.Metamagic;
-            }
-            frmPickMetamagic.Dispose();
+                Metamagic objNewMetamagic = new Metamagic(CharacterObject);
 
-            objNewMetamagic.Create(objXmlMetamagic, objSource);
-            objNewMetamagic.Grade = intGrade;
-            if (objNewMetamagic.InternalId.IsEmptyGuid())
-                return;
+                XmlNode objXmlMetamagic;
+                Improvement.ImprovementSource objSource;
+                if (CharacterObject.RESEnabled)
+                {
+                    objXmlMetamagic = XmlManager.Load("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objSource = Improvement.ImprovementSource.Echo;
+                }
+                else
+                {
+                    objXmlMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objSource = Improvement.ImprovementSource.Metamagic;
+                }
 
-            CharacterObject.Metamagics.Add(objNewMetamagic);
+                objNewMetamagic.Create(objXmlMetamagic, objSource);
+                objNewMetamagic.Grade = intGrade;
+                if (objNewMetamagic.InternalId.IsEmptyGuid())
+                    return;
 
-            if (blnPayWithKarma)
-            {
-                string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic");
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objNewMetamagic.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                CharacterObject.Metamagics.Add(objNewMetamagic);
 
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
-                objEntry.Undo = objUndo;
+                if (blnPayWithKarma)
+                {
+                    string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic");
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
+                    objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objNewMetamagic.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    CharacterObject.ExpenseEntries.AddWithSort(objEntry);
 
-                // Adjust the character's Karma total.
-                CharacterObject.Karma -= CharacterObjectOptions.KarmaMetamagic;
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
+                    objEntry.Undo = objUndo;
+
+                    // Adjust the character's Karma total.
+                    CharacterObject.Karma -= CharacterObjectOptions.KarmaMetamagic;
+                }
             }
 
             IsCharacterUpdateRequested = true;
@@ -16821,60 +16816,60 @@ namespace Chummer
                     break;
                 }
                 // Let the user select a Program.
-                frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost);
-                frmPickProgram.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost))
                 {
-                    frmPickProgram.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickProgram.AddAgain;
+                    frmPickProgram.ShowDialog(this);
 
-                XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
-                frmPickProgram.Dispose();
-                if (objXmlProgram == null)
-                    continue;
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                        break;
 
-                // Check for SelectText.
-                string strExtra = string.Empty;
-                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
-                if (xmlSelectText != null)
-                {
-                    using (frmSelectText frmPickText = new frmSelectText
+                    blnAddAgain = frmPickProgram.AddAgain;
+
+                    XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                    if (objXmlProgram == null)
+                        continue;
+
+                    // Check for SelectText.
+                    string strExtra = string.Empty;
+                    XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                    if (xmlSelectText != null)
                     {
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText")
-                            , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown"))
-                    })
-                    {
-                        frmPickText.ShowDialog(this);
-                        strExtra = frmPickText.SelectedValue;
+                        using (frmSelectText frmPickText = new frmSelectText
+                        {
+                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText")
+                                , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown"))
+                        })
+                        {
+                            frmPickText.ShowDialog(this);
+                            strExtra = frmPickText.SelectedValue;
+                        }
                     }
+
+                    AIProgram objProgram = new AIProgram(CharacterObject);
+                    objProgram.Create(objXmlProgram, strExtra);
+                    if (objProgram.InternalId.IsEmptyGuid())
+                        continue;
+
+                    bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
+                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                        , objProgram.DisplayName
+                        , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalOptions.CultureInfo))))
+                        continue;
+
+                    CharacterObject.AIPrograms.Add(objProgram);
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
+                    objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram") + LanguageManager.GetString("String_Space") + objProgram.Name,
+                        ExpenseType.Karma, DateTime.Now);
+                    CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                    CharacterObject.Karma -= boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(boolIsAdvancedProgram ? KarmaExpenseType.AddAIAdvancedProgram : KarmaExpenseType.AddAIProgram, objProgram.InternalId);
+                    objEntry.Undo = objUndo;
                 }
-
-                AIProgram objProgram = new AIProgram(CharacterObject);
-                objProgram.Create(objXmlProgram, strExtra);
-                if (objProgram.InternalId.IsEmptyGuid())
-                    continue;
-
-                bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
-                    , objProgram.DisplayName
-                    , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalOptions.CultureInfo))))
-                    continue;
-
-                CharacterObject.AIPrograms.Add(objProgram);
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram") + LanguageManager.GetString("String_Space") + objProgram.Name, ExpenseType.Karma, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
-                CharacterObject.Karma -= boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost;
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(boolIsAdvancedProgram ? KarmaExpenseType.AddAIAdvancedProgram : KarmaExpenseType.AddAIProgram, objProgram.InternalId);
-                objEntry.Undo = objUndo;
 
                 IsCharacterUpdateRequested = true;
 
@@ -17365,11 +17360,6 @@ namespace Chummer
                     objAttributeControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
             }
             pnlAttributes.ResumeLayout();
-        }
-
-        private void cboGearOverclocker_SizeChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void tsCyberwareUpgrade_Click(object sender, EventArgs e)

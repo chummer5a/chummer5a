@@ -2596,38 +2596,35 @@ namespace Chummer
 
             do
             {
-                frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject);
-                frmPickSpell.ShowDialog(this);
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSpell.DialogResult == DialogResult.Cancel)
+                using (frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject))
                 {
-                    frmPickSpell.Dispose();
-                    break;
-                }
-                blnAddAgain = frmPickSpell.AddAgain;
+                    frmPickSpell.ShowDialog(this);
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSpell.DialogResult == DialogResult.Cancel)
+                        break;
 
-                XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
+                    blnAddAgain = frmPickSpell.AddAgain;
 
-                Spell objSpell = new Spell(CharacterObject);
-                objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
-                if (objSpell.InternalId.IsEmptyGuid())
-                {
-                    frmPickSpell.Dispose();
-                    continue;
-                }
+                    XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
 
-                objSpell.FreeBonus = frmPickSpell.FreeBonus;
-                // Barehanded Adept
-                if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && objSpell.Range == "T")
-                {
-                    objSpell.UsesUnarmed = true;
+                    Spell objSpell = new Spell(CharacterObject);
+                    objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
+                    if (objSpell.InternalId.IsEmptyGuid())
+                        continue;
+
+                    objSpell.FreeBonus = frmPickSpell.FreeBonus;
+                    // Barehanded Adept
+                    if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && objSpell.Range == "T")
+                    {
+                        objSpell.UsesUnarmed = true;
+                    }
+
+                    CharacterObject.Spells.Add(objSpell);
                 }
-                CharacterObject.Spells.Add(objSpell);
 
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
-                frmPickSpell.Dispose();
             }
             while (blnAddAgain);
         }
@@ -2714,10 +2711,7 @@ namespace Chummer
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
-                    {
-                        frmPickComplexForm.Dispose();
                         break;
-                    }
 
                     blnAddAgain = frmPickComplexForm.AddAgain;
 
@@ -3356,10 +3350,7 @@ namespace Chummer
                     frmSelectLifeModule.ShowDialog(this);
 
                     if (frmSelectLifeModule.DialogResult == DialogResult.Cancel)
-                    {
-                        frmSelectLifeModule.Dispose();
                         break;
-                    }
 
                     blnAddAgain = frmSelectLifeModule.AddAgain;
                     objXmlLifeModule = frmSelectLifeModule.SelectedNode;
@@ -13954,38 +13945,38 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
-            frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled ? frmSelectMetamagic.Mode.Echo : frmSelectMetamagic.Mode.Metamagic);
-            frmPickMetamagic.ShowDialog(this);
-
-            // Make sure a value was selected.
-            if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled
+                ? frmSelectMetamagic.Mode.Echo
+                : frmSelectMetamagic.Mode.Metamagic))
             {
-                frmPickMetamagic.Dispose();
-                return;
+                frmPickMetamagic.ShowDialog(this);
+
+                // Make sure a value was selected.
+                if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                    return;
+
+                Metamagic objNewMetamagic = new Metamagic(CharacterObject);
+
+                XmlNode objXmlMetamagic;
+                Improvement.ImprovementSource objSource;
+                if (CharacterObject.RESEnabled)
+                {
+                    objXmlMetamagic = XmlManager.Load("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objSource = Improvement.ImprovementSource.Echo;
+                }
+                else
+                {
+                    objXmlMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objSource = Improvement.ImprovementSource.Metamagic;
+                }
+
+                objNewMetamagic.Create(objXmlMetamagic, objSource);
+                objNewMetamagic.Grade = objGrade.Grade;
+                if (objNewMetamagic.InternalId.IsEmptyGuid())
+                    return;
+
+                CharacterObject.Metamagics.Add(objNewMetamagic);
             }
-
-            Metamagic objNewMetamagic = new Metamagic(CharacterObject);
-
-            XmlNode objXmlMetamagic;
-            Improvement.ImprovementSource objSource;
-            if (CharacterObject.RESEnabled)
-            {
-                objXmlMetamagic = XmlManager.Load("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
-                objSource = Improvement.ImprovementSource.Echo;
-            }
-            else
-            {
-                objXmlMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
-                objSource = Improvement.ImprovementSource.Metamagic;
-            }
-            frmPickMetamagic.Dispose();
-
-            objNewMetamagic.Create(objXmlMetamagic, objSource);
-            objNewMetamagic.Grade = objGrade.Grade;
-            if (objNewMetamagic.InternalId.IsEmptyGuid())
-                return;
-
-            CharacterObject.Metamagics.Add(objNewMetamagic);
 
             IsCharacterUpdateRequested = true;
 
