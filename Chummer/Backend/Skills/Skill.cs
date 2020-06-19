@@ -503,6 +503,7 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string>(nameof(CanHaveSpecs),
                     new DependencyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill),
+                    new DependencyGraphNode<string>(nameof(Enabled)),
                     new DependencyGraphNode<string>(nameof(IsExoticSkill)),
                     new DependencyGraphNode<string>(nameof(KarmaUnlocked)),
                     new DependencyGraphNode<string>(nameof(TotalBaseRating),
@@ -578,7 +579,8 @@ namespace Chummer.Backend.Skills
                         )
                     )),
                 new DependencyGraphNode<string>(nameof(PreferredControlColor),
-                    new DependencyGraphNode<string>(nameof(Leveled))
+                    new DependencyGraphNode<string>(nameof(Leveled)),
+                    new DependencyGraphNode<string>(nameof(Enabled))
                 ),
                 new DependencyGraphNode<string>(nameof(PreferredColor),
                     new DependencyGraphNode<string>(nameof(Notes))
@@ -770,7 +772,7 @@ namespace Chummer.Backend.Skills
 
         public bool Leveled => Rating > 0;
 
-        public Color PreferredControlColor => Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
+        public Color PreferredControlColor => Leveled && Enabled ? SystemColors.ButtonHighlight : SystemColors.Control;
 
         private int _intCachedCanHaveSpecs = -1;
 
@@ -780,7 +782,13 @@ namespace Chummer.Backend.Skills
             {
                 if ((this as KnowledgeSkill)?.AllowUpgrade == false)
                     return false;
-                if (_intCachedCanHaveSpecs >= 0) return _intCachedCanHaveSpecs > 0;
+                if (_intCachedCanHaveSpecs >= 0)
+                    return _intCachedCanHaveSpecs > 0;
+                if (!Enabled)
+                {
+                    _intCachedCanHaveSpecs = 0;
+                    return _intCachedCanHaveSpecs > 0;
+                }
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
                                          !CharacterObject.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) ||
                                                                                  (x.ImproveType == Improvement.ImprovementType.BlockSkillCategorySpecializations && x.ImprovedName == SkillCategory)) && x.Enabled) ? 1 : 0;
