@@ -655,7 +655,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            blnReturn = AmendNodeChildern(xmlDataDoc, objNode, "/chummer", new List<Tuple<XmlNode, string>>()) || blnReturn;
+                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", new List<Tuple<XmlNode, string>>()) || blnReturn;
                         }
                     }
                 }
@@ -673,7 +673,7 @@ namespace Chummer
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
         /// <param name="lstExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
-        private static bool AmendNodeChildern(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound)
+        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound)
         {
             bool blnReturn = false;
             string strFilter = string.Empty;
@@ -852,7 +852,7 @@ namespace Chummer
                         lstExtraNodesToAddIfNotFound.Add(objMyData);
                         foreach (XmlNode objChild in lstElementChildren)
                         {
-                            blnReturn = AmendNodeChildern(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
+                            blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
                         }
                         // Remove our info in case we weren't added.
                         // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found

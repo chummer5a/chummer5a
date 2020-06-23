@@ -3526,11 +3526,6 @@
           </OR>
         </parentdetails>
       </required>
-      <forbidden>
-        <parentdetails>
-          <name>Centaur Rear Leg</name>
-        </parentdetails>
-      </forbidden>
     </cyberware>
     <cyberware>
       <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>

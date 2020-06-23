@@ -38,6 +38,7 @@ Data Changes:
 - All lifestyle assets that require the character to specify for what they are purchased for (e.g. Grid Subscription, Patron of the Arts) can now properly be purchased multiple times.
 - The lifestyle assets "Merchandise: Goods (Avail X)" are now correctly named "Merchandise: Goods (Specific Item) (Avail X)" and now appropriately require the character to select the specific legal good that is being sold.
 - Optical imaging scopes have been moved to a custom ruleset to abide by RAW. Optical binoculars are explicitly mentioned by RAW, but not optical imaging scopes.
+- Fixed liminal centaur rear legs not being able to take digigrade leg modification. Implemented existing behaviour as a customdata entry. 
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

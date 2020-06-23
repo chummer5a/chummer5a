@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <cyberwares>
+    <cyberware>
+      <id>87475df7-b371-4a89-8623-2582137b5906</id>
+      <forbidden>
+        <parentdetails>
+          <name>Centaur Rear Leg</name>
+        </parentdetails>
+      </forbidden>
+    </cyberware>
+  </cyberwares>
+</chummer>
