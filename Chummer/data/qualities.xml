@@ -14440,7 +14440,11 @@
         <value>-5</value>
       </costdiscount>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addspirit />
+        <addspirit />
+        <skilldisable>Binding</skilldisable>
+      </bonus>
       <required>
         <allof>
           <attribute>
