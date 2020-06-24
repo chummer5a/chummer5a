@@ -156,19 +156,19 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="addspell" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="addspirit" minOccurs="0" maxOccurs="1">
+      <xs:element name="addspirit" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="addtoselected" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="spirit" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="spirit" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="addsprite" minOccurs="0" maxOccurs="1">
+      <xs:element name="addsprite" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="addtoselected" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="spirit" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="spirit" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>

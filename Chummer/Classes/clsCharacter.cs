@@ -3147,6 +3147,14 @@ namespace Chummer
                                         // so add the quality to the list for processing when the character is opened.
                                         _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                     }
+
+                                    if (LastSavedVersion <= new Version(5, 212, 56)
+                                        && objQuality.Name == "Chain Breaker"
+                                        && objQuality.Bonus == null)
+                                    {
+                                        // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
+                                        _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                                    }
                                 }
                             }
                             else
