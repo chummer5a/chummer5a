@@ -397,6 +397,7 @@ namespace Chummer
             Tradition,
             Weapon,
             WeaponAccessory,
+            AstralReputation,
             NumImprovementSources // 🡐 This one should always be the last defined enum
             ,
         }

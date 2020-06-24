@@ -320,6 +320,17 @@ namespace Chummer
                             cmdAddLifestyle.SplitMenuStrip = null;
                         }
 
+                        if (!CharacterObjectOptions.BookEnabled("FA"))
+                        {
+                            lblWildReputation.Visible = false;
+                            lblWildReputationTotal.Visible = false;
+                            if (!CharacterObjectOptions.BookEnabled("SG"))
+                            {
+                                lblAstralReputation.Visible = false;
+                                lblAstralReputationTotal.Visible = false;
+                            }
+                        }
+
                         RefreshQualities(treQualities, cmsQuality);
                         RefreshSpirits(panSpirits, panSprites);
                         RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
@@ -776,6 +787,14 @@ namespace Chummer
                             nameof(Character.TotalPublicAwareness));
                         lblPublicAwareTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.PublicAwarenessTooltip));
+                        lblAstralReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
+                            nameof(Character.TotalAstralReputation));
+                        lblAstralReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                            nameof(Character.AstralReputationTooltip));
+                        lblWildReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
+                            nameof(Character.TotalWildReputation));
+                        lblWildReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                            nameof(Character.WildReputationTooltip));
 
                         lblMentorSpirit.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayName));

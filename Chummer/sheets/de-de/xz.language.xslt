@@ -281,6 +281,7 @@
   <xsl:variable name="lang.ArmorValue"    select="'Panzerungswert'"/>
   <xsl:variable name="lang.AspectedMagician"    select="'Angesehener Magier'"/>
   <xsl:variable name="lang.AstralInitiative"  select="'Astrale Initiative'"/>
+  <xsl:variable name="lang.AstralReputation"    select="'Astral Reputation'"/>
   <xsl:variable name="lang.CombatSkill"    select="'Kampffertigkeit'"/>
   <xsl:variable name="lang.ComplexForm"    select="'Komplexe Form'"/>
   <xsl:variable name="lang.ComplexForms"    select="'Komplexe Formen'"/>
@@ -355,6 +356,7 @@
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unbenannter Charakter'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Rumpf'"/>
   <xsl:variable name="lang.VehicleCost"    select="'Fahrzeugkosten'"/>
+  <xsl:variable name="lang.WildReputation"    select="'Wild Reputation'"/>
 
   <!-- "limits" list -->
   <xsl:variable name="lang.AstralLimit"    select="'Astrales Limit'"/>

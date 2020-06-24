@@ -71,6 +71,10 @@
           <br/><xsl:value-of select="$lang.StreetCred"/>: <xsl:value-of select="totalstreetcred"/>
           <br/><xsl:value-of select="$lang.Notoriety"/>: <xsl:value-of select="totalnotoriety"/>
           <br/><xsl:value-of select="$lang.PublicAwareness"/>: <xsl:value-of select="totalpublicawareness"/>
+          <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+            <br/><xsl:value-of select="$lang.AstralReputation"/>: <xsl:value-of select="totalastralreputation"/>
+            <br/><xsl:value-of select="$lang.WildReputation"/>: <xsl:value-of select="totalwildreputation"/>
+          </xsl:if>
           <br/><xsl:value-of select="metatype"/>
             <xsl:if test="metavariant != ''">
               (<xsl:value-of select="metavariant"/>)
