@@ -352,6 +352,8 @@ namespace Chummer
             MetamagicLimit,
             DisableQuality,
             FreeQuality,
+            AstralReputation,
+            AstralReputationWild,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
@@ -395,6 +397,7 @@ namespace Chummer
             Tradition,
             Weapon,
             WeaponAccessory,
+            AstralReputation,
             NumImprovementSources // 🡐 This one should always be the last defined enum
             ,
         }
@@ -2169,6 +2172,18 @@ namespace Chummer
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
                         nameof(Character.Surprise));
                     break;
+                }
+                case ImprovementType.AstralReputation:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        nameof(Character.AstralReputation));
+                        break;
+                }
+                case ImprovementType.AstralReputationWild:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        nameof(Character.WildReputation));
+                        break;
                 }
             }
         }

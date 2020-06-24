@@ -439,6 +439,13 @@
         <td style="white-space: nowrap;"><strong><xsl:value-of select="totalnotoriety" /></strong></td>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.PublicAwareness" /></td>
         <td style="white-space: nowrap;"><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
+      <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+        <tr>
+        <td style="white-space: nowrap;"><xsl:value-of select="$lang.AstralReputation" /></td>
+        <td style="white-space: nowrap;"><strong><xsl:value-of select="totalastralreputation" /></strong></td>
+        <td style="white-space: nowrap;"><xsl:value-of select="$lang.WildReputation" /></td>
+        <td style="white-space: nowrap;"><strong><xsl:value-of select="totalwildreputation" /></strong></td></tr>
+      </xsl:if>
       <tr><td colspan="4"><hr /></td></tr>
       <tr>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.Composure" /></td>

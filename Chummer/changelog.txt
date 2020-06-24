@@ -25,6 +25,7 @@ Application Fixes:
 - The internal GUIDs for all items that have them are now included in all print- and export-information as the "guid" field. For items that also have references to the GUID of the XML data entry off of which they are based, they will also print this information: this is the "suid" field for skills, the "metatype_guid" field for metatypes, the "metavariant_guid" field for metavariants, and the "sourceid" field for everything else.
 - Negative qualities that do not give Karma but still contribute to the negative quality karma limit at character creation are now properly taken into account when new negative qualities are attempted to be added or an existing negative quality is attempted to have its level increased.
 - Added a new bonus node called "selectexpertise". It lets the user select a specialization to add to their character with a +3 bonus instead of a +2. The syntax for this node is similar to that of "selectskill", but there is also the possibility for a "limittospecialization" attribute that limits the selection of specializations that can be chosen.
+- Added support for Astral Reputation (from Street Grimoire) and Wild Reputation (from Forbidden Arcana). They currently still need to be adjusted manually, especially because Spirit Index is information that players are not expected to accurately have, but dicepools are adjusted accordingly, and Chain Breaker's effects are appropraitely disabled for characters who have an Astral Reputation of 3 or greater.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -60,6 +61,10 @@ Changed/New Strings:
 - String_UnorderedList
 - String_IncreaseIndent
 - String_DecreaseIndent
+- String_AstralReputation
+- String_WildReputation
+- Label_AstralReputation
+- Label_WildReputation
 
 Build 212
 Application Changes:

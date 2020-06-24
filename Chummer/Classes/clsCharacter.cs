@@ -183,6 +183,10 @@ namespace Chummer
         private int _intPhysicalCMFilled;
         private int _intStunCMFilled;
 
+        // Spirit Reputation
+        private int _intBaseAstralReputation;
+        private int _intBaseWildReputation;
+
         // Priority Selections.
         private string _strGameplayOption = "Standard";
         private string _strPriorityMetatype = "A,4";
@@ -881,6 +885,16 @@ namespace Chummer
                             new DependencyGraphNode<string>(nameof(IsChangeling)),
                             new DependencyGraphNode<string>(nameof(Qualities))
                         ))
+                    ),
+                    new DependencyGraphNode<string>(nameof(AstralReputationTooltip),
+                        new DependencyGraphNode<string>(nameof(TotalAstralReputation),
+                            new DependencyGraphNode<string>(nameof(AstralReputation))
+                        )
+                    ),
+                    new DependencyGraphNode<string>(nameof(WildReputationTooltip),
+                        new DependencyGraphNode<string>(nameof(TotalWildReputation),
+                            new DependencyGraphNode<string>(nameof(WildReputation))
+                        )
                     )
                 );
             #endregion
@@ -1858,6 +1872,10 @@ namespace Chummer
                     objWriter.WriteElementString("publicawareness", _intPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
                     // <burntstreetcred />
                     objWriter.WriteElementString("burntstreetcred", _intBurntStreetCred.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <baseastralreputation />
+                    objWriter.WriteElementString("baseastralreputation", _intBaseAstralReputation.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <basewildreputation />
+                    objWriter.WriteElementString("basewildreputation", _intBaseWildReputation.ToString(GlobalOptions.InvariantCultureInfo));
                     // <created />
                     objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
                     // <maxavail />
@@ -2408,6 +2426,8 @@ namespace Chummer
 
         public bool IsLoading { get; set; }
 
+        public Queue<Action> PostLoadMethods => new Queue<Action>();
+
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
@@ -2848,6 +2868,8 @@ namespace Chummer
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("baseastralreputation", ref _intBaseAstralReputation);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("basewildreputation", ref _intBaseWildReputation);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
                         xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
@@ -4220,9 +4242,6 @@ namespace Chummer
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
                         IsLoading = false;
-                        // Refresh Redliner now if a refresh was queued during loading
-                        if (_intCachedRedlinerBonus == int.MaxValue)
-                            RefreshRedlinerImprovements();
                         // Refresh permanent attribute changes due to essence loss
                         RefreshEssenceLossImprovements();
                         // Refresh dicepool modifiers due to filled condition monitor boxes
@@ -4239,6 +4258,9 @@ namespace Chummer
 
                         if (!InitiationEnabled || !AddInitiationsAllowed)
                             ClearInitiations();
+                        foreach (Action funcToCall in PostLoadMethods)
+                            funcToCall.Invoke();
+                        PostLoadMethods.Clear();
                         //Timekeeper.Finish("load_char_improvementrefreshers");
                     }
 
@@ -4478,6 +4500,14 @@ namespace Chummer
             objWriter.WriteElementString("calculatedpublicawareness", CalculatedPublicAwareness.ToString(objCulture));
             // <totalpublicawareness />
             objWriter.WriteElementString("totalpublicawareness", TotalPublicAwareness.ToString(objCulture));
+            // <astralreputation />
+            objWriter.WriteElementString("astralreputation", AstralReputation.ToString(objCulture));
+            // <totalastralreputation />
+            objWriter.WriteElementString("totalastralreputation", TotalAstralReputation.ToString(objCulture));
+            // <wildreputation />
+            objWriter.WriteElementString("wildreputation", WildReputation.ToString(objCulture));
+            // <totalwildreputation />
+            objWriter.WriteElementString("totalwildreputation", TotalWildReputation.ToString(objCulture));
             // <created />
             objWriter.WriteElementString("created", Created.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyen />
@@ -5735,6 +5765,8 @@ namespace Chummer
                     return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
                 case Improvement.ImprovementSource.Tradition:
                     return LanguageManager.GetString("String_Tradition", strLanguage);
+                case Improvement.ImprovementSource.AstralReputation:
+                    return LanguageManager.GetString("String_AstralReputation", strLanguage);
                 default:
                     if(objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
@@ -7765,6 +7797,126 @@ namespace Chummer
                 if(_intPublicAwareness != value)
                 {
                     _intPublicAwareness = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private void RefreshAstralReputationImprovements()
+        {
+            if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
+            {
+                PostLoadMethods.Enqueue(RefreshAstralReputationImprovements);
+                return;
+            }
+            int intCurrentTotalAstralReputation = TotalAstralReputation;
+            List<Improvement> lstCurrentAstralReputationImprovements = Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AstralReputation).ToList();
+            if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
+                return;
+            ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements);
+            ImprovementManager.CreateImprovement(this, "Summoning", Improvement.ImprovementSource.AstralReputation,
+                nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.Skill, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
+                -intCurrentTotalAstralReputation);
+            ImprovementManager.CreateImprovement(this, "Binding", Improvement.ImprovementSource.AstralReputation,
+                nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.Skill, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
+                -intCurrentTotalAstralReputation);
+            ImprovementManager.CreateImprovement(this, "Banishing", Improvement.ImprovementSource.AstralReputation,
+                nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.Skill, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
+                -intCurrentTotalAstralReputation);
+            if (intCurrentTotalAstralReputation >= 3)
+                ImprovementManager.CreateImprovement(this, "Chain Breaker", Improvement.ImprovementSource.AstralReputation,
+                    nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.DisableQuality, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
+                    -intCurrentTotalAstralReputation);
+        }
+
+        /// <summary>
+        /// Tooltip to use for Astral Reputation total.
+        /// </summary>
+        public string AstralReputationTooltip
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                StringBuilder objReturn = new StringBuilder(AstralReputation.ToString(GlobalOptions.CultureInfo));
+
+                foreach (Improvement objImprovement in _lstImprovements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.AstralReputation && objImprovement.Enabled)
+                        objReturn.Append(strSpace + '+' + strSpace +
+                                         GetObjectName(objImprovement) + strSpace +
+                                         '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                string strReturn = objReturn.ToString();
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Astral Reputation (SG 207).
+        /// </summary>
+        public int TotalAstralReputation => Math.Max(0, AstralReputation + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation));
+
+        /// <summary>
+        /// Points of Astral Reputation that have added or removed manually (latter usually by burning Wild Reputation).
+        /// </summary>
+        public int AstralReputation
+        {
+            get => _intBaseAstralReputation;
+            set
+            {
+                if (_intBaseAstralReputation != value)
+                {
+                    _intBaseAstralReputation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tooltip to use for Wild Reputation total.
+        /// </summary>
+        public string WildReputationTooltip
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                StringBuilder objReturn = new StringBuilder(WildReputation.ToString(GlobalOptions.CultureInfo));
+
+                foreach (Improvement objImprovement in _lstImprovements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.AstralReputationWild && objImprovement.Enabled)
+                        objReturn.Append(strSpace + '+' + strSpace +
+                                         GetObjectName(objImprovement) + strSpace +
+                                         '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                }
+
+                string strReturn = objReturn.ToString();
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Total Reputation with Wild Spirits (FA 175).
+        /// </summary>
+        public int TotalWildReputation =>
+            Math.Max(0,
+                WildReputation
+                + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild));
+
+        /// <summary>
+        /// Points of Wild Reputation that have added or removed manually (latter usually by burning it to lower Astral Reputation).
+        /// </summary>
+        public int WildReputation
+        {
+            get => _intBaseWildReputation;
+            set
+            {
+                if (_intBaseWildReputation != value)
+                {
+                    _intBaseWildReputation = value;
                     OnPropertyChanged();
                 }
             }
@@ -14242,11 +14394,11 @@ namespace Chummer
             }
         }
 
-        public void RefreshRedlinerImprovements()
+        private void RefreshRedlinerImprovements()
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
-                _intCachedRedlinerBonus = int.MaxValue;
+                PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
                 return;
             }
             //Get attributes affected by redliner/cyber singularity seeker
@@ -15335,7 +15487,10 @@ namespace Chummer
                 _intCachedMetagenicPositiveQualities = int.MinValue;
             }
 
-            foreach(string strPropertyToChange in lstNamesOfChangedProperties)
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
+                RefreshAstralReputationImprovements();
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }

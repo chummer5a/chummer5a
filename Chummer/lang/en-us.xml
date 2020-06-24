@@ -4077,6 +4077,14 @@
       <key>String_DamageResistance</key>
       <text>Damage Resistance</text>
     </string>
+    <string>
+      <key>String_AstralReputation</key>
+      <text>Astral Reputation</text>
+    </string>
+    <string>
+      <key>String_WildReputation</key>
+      <text>Wild Reputation</text>
+    </string>
     <!-- End Region -->
     <!-- Region Common Tab -->
     <string>
@@ -5311,6 +5319,14 @@
     <string>
       <key>Label_PublicAwareness</key>
       <text>Public Aware:</text>
+    </string>
+    <string>
+      <key>Label_AstralReputation</key>
+      <text>Astral Reputation:</text>
+    </string>
+    <string>
+      <key>Label_WildReputation</key>
+      <text>Wild Reputation:</text>
     </string>
     <string>
       <key>Label_Handedness</key>

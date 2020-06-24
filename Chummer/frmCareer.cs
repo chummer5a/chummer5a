@@ -249,6 +249,8 @@ namespace Chummer
                         nudStreetCred.DoDatabinding("Value", CharacterObject, nameof(Character.StreetCred));
                         nudNotoriety.DoDatabinding("Value", CharacterObject, nameof(Character.Notoriety));
                         nudPublicAware.DoDatabinding("Value", CharacterObject, nameof(Character.PublicAwareness));
+                        nudAstralReputation.DoDatabinding("Value", CharacterObject, nameof(Character.AstralReputation));
+                        nudWildReputation.DoDatabinding("Value", CharacterObject, nameof(Character.WildReputation));
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
                         lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
@@ -258,6 +260,18 @@ namespace Chummer
                     if (!CharacterObjectOptions.BookEnabled("RF"))
                     {
                         cmdAddLifestyle.SplitMenuStrip = null;
+                    }
+                    if (!CharacterObjectOptions.BookEnabled("FA"))
+                    {
+                        lblWildReputation.Visible = false;
+                        nudWildReputation.Visible = false;
+                        lblWildReputationTotal.Visible = false;
+                        if (!CharacterObjectOptions.BookEnabled("SG"))
+                        {
+                            lblAstralReputation.Visible = false;
+                            nudAstralReputation.Visible = false;
+                            lblAstralReputationTotal.Visible = false;
+                        }
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_refresh", op_load_frm_career))
@@ -788,6 +802,14 @@ namespace Chummer
                             nameof(Character.TotalPublicAwareness));
                         lblPublicAwareTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.PublicAwarenessTooltip));
+                        lblAstralReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
+                            nameof(Character.TotalAstralReputation));
+                        lblAstralReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                            nameof(Character.AstralReputationTooltip));
+                        lblWildReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
+                            nameof(Character.TotalWildReputation));
+                        lblWildReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                            nameof(Character.WildReputationTooltip));
 
                         lblMentorSpirit.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayName));
