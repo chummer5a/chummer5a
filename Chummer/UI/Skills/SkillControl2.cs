@@ -79,6 +79,8 @@ namespace Chummer.UI.Skills
             {
                 flpButtonsCreate.Visible = false;
                 tlpSpecsCreate.Visible = false;
+                flpButtonsCareer.Dock = DockStyle.Fill;
+                tlpSpecsCareer.Dock = DockStyle.Fill;
 
                 lblCareerRating.DoOneWayDataBinding("Text", objSkill, nameof(Skill.Rating));
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
@@ -106,6 +108,7 @@ namespace Chummer.UI.Skills
             else
             {
                 flpButtonsCareer.Visible = false;
+                flpButtonsCreate.Dock = DockStyle.Fill;
 
                 // Trick to make it seem like the button is a label (+ onclick method not doing anything in Create mode)
                 btnAttribute.FlatAppearance.MouseDownBackColor = btnAttribute.BackColor;
@@ -122,12 +125,14 @@ namespace Chummer.UI.Skills
                 if (objSkill.IsExoticSkill)
                 {
                     tlpSpecsCreate.Visible = false;
+                    tlpSpecsCareer.Dock = DockStyle.Fill;
                     btnAddSpec.Visible = false;
                     lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                 }
                 else
                 {
                     tlpSpecsCareer.Visible = false;
+                    tlpSpecsCreate.Dock = DockStyle.Fill;
                     cboSpec.BeginUpdate();
                     cboSpec.DataSource = null;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
@@ -338,6 +343,11 @@ namespace Chummer.UI.Skills
 
                 _objSkill.Notes = frmItemNotes.Notes;
             }
+        }
+
+        private void cboSpec_Paint(object sender, PaintEventArgs e)
+        {
+            cboSpec.SelectionLength = 0;
         }
 
         private void lblName_Click(object sender, EventArgs e)

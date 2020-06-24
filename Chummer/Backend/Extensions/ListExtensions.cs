@@ -87,6 +87,8 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
+            if (lstCollection.Count == 0)
+                return;
             if (index >= lstCollection.Count)
                 throw new ArgumentException(nameof(index));
             if (count == 0)

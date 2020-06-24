@@ -604,6 +604,9 @@
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Liminal Centaur Legs Prevent Digigrade\amend_digigradeleg_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Morrissey Alta Availability\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
