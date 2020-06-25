@@ -247,7 +247,7 @@ namespace Chummer.Backend.Skills
                     return objLoadingSkill;
                 foreach (XmlNode xmlSpec in xmlSpecList)
                 {
-                    objLoadingSkill.Specializations.Add(SkillSpecialization.Load(xmlSpec));
+                    objLoadingSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpec));
                 }
             }
 
@@ -318,7 +318,7 @@ namespace Chummer.Backend.Skills
                 {
                     foreach (XmlNode xmlSpecializationNode in xmlSpecList)
                     {
-                        objSkill.Specializations.Add(SkillSpecialization.Load(xmlSpecializationNode));
+                        objSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpecializationNode));
                     }
                 }
             }
@@ -390,7 +390,7 @@ namespace Chummer.Backend.Skills
                         int intLastPlus = strSpecializationName.LastIndexOf('+');
                         if (intLastPlus > strSpecializationName.Length)
                             strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                        lstSpecializations.Add(new SkillSpecialization(strSpecializationName));
+                        lstSpecializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
                     }
             if (lstSpecializations.Count != 0)
             {
@@ -1054,13 +1054,13 @@ namespace Chummer.Backend.Skills
                 }
                 else if (Specializations.Count == 0)
                 {
-                    Specializations.Add(new SkillSpecialization(value));
+                    Specializations.Add(new SkillSpecialization(CharacterObject, value));
                 }
                 else
                 {
                     if (Specializations[0].Free)
                     {
-                        Specializations.MergeInto(new SkillSpecialization(value), (x, y) =>
+                        Specializations.MergeInto(new SkillSpecialization(CharacterObject, value), (x, y) =>
                             x.Free == y.Free
                             ? x.Expertise == y.Expertise
                                 ? 0
@@ -1073,7 +1073,7 @@ namespace Chummer.Backend.Skills
                     }
                     else
                     {
-                        Specializations[0] = new SkillSpecialization(value);
+                        Specializations[0] = new SkillSpecialization(CharacterObject, value);
                     }
                 }
             }

@@ -701,7 +701,7 @@ namespace Chummer.Backend.Skills
 
         public void AddSpecialization(string strName)
         {
-            SkillSpecialization nspec = new SkillSpecialization(strName);
+            SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
             if (CharacterObject.Created)
             {
                 int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;

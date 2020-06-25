@@ -6198,7 +6198,7 @@ namespace Chummer.Classes
                 Log.Info("Calling CreateImprovement");
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
                 CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization nspec = new SkillSpecialization(strSpec, true);
+                SkillSpecialization nspec = new SkillSpecialization(_objCharacter, strSpec, true);
                 objSkill.Specializations.Add(nspec);
             }
         }
@@ -6240,7 +6240,7 @@ namespace Chummer.Classes
                     if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                        SkillSpecialization nspec = new SkillSpecialization(strSpec, true);
+                        SkillSpecialization nspec = new SkillSpecialization(_objCharacter, strSpec, true);
                         objSkill.Specializations.Add(nspec);
                     }
                 }
@@ -7450,7 +7450,7 @@ namespace Chummer.Classes
             // Create the Improvement.
             Log.Info("Calling CreateImprovement");
             CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, SelectedValue);
-            SkillSpecialization objExpertise = new SkillSpecialization(SelectedValue, true, true);
+            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
             objSkill.Specializations.Add(objExpertise);
         }
 #pragma warning restore IDE1006 // Naming Styles

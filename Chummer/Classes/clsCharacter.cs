@@ -1389,7 +1389,7 @@ namespace Chummer
                 if (objSkill == null) continue;
                 string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                 ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization spec = new SkillSpecialization(strSpec, true);
+                SkillSpecialization spec = new SkillSpecialization(this, strSpec, true);
                 objSkill.Specializations.Add(spec);
             }
             //Set the Skill Group Ratings for the Critter.

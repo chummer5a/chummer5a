@@ -3923,7 +3923,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
             int i = Convert.ToInt32(_objCharacter.LoadData("ranges.xml")
-                .SelectSingleNode($"chummer/modifiers/{range.ToLowerInvariant()}")
+                .SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")
                 ?.InnerText, GlobalOptions.InvariantCultureInfo);
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
             i = Math.Min(0, i);

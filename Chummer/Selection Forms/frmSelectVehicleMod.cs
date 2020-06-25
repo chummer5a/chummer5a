@@ -685,8 +685,7 @@ namespace Chummer
 
                 lblRatingLabel.Text = xmlVehicleMod.SelectSingleNode("ratinglabel") != null
                     ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
-                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value,
-                            GlobalOptions.Language))
+                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value))
                     : LanguageManager.GetString("Label_Rating");
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
