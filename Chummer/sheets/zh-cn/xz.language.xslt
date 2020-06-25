@@ -281,6 +281,7 @@
   <xsl:variable name="lang.ArmorValue"    select="'护甲值'"/>
   <xsl:variable name="lang.AspectedMagician"    select="'Aspected Magician'"/>
   <xsl:variable name="lang.AstralInitiative"  select="'星界主动性'"/>
+  <xsl:variable name="lang.AstralReputation"    select="'Astral Reputation'"/>
   <xsl:variable name="lang.CombatSkill"    select="'战斗法术'"/>
   <xsl:variable name="lang.ComplexForm"    select="'复合程式'"/>
   <xsl:variable name="lang.ComplexForms"    select="'复合程式'"/>
@@ -355,6 +356,7 @@
   <xsl:variable name="lang.UnnamedCharacter"  select="'未命名角色'"/>
   <xsl:variable name="lang.VehicleBody"    select="'机体'"/>
   <xsl:variable name="lang.VehicleCost"    select="'载具售价'"/>
+  <xsl:variable name="lang.WildReputation"    select="'Wild Reputation'"/>
 
   <!-- "limits" list -->
   <xsl:variable name="lang.AstralLimit"    select="'星界界限'"/>

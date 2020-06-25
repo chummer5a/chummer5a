@@ -53,7 +53,7 @@ namespace Chummer
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -107,8 +107,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -160,6 +160,7 @@ namespace Chummer
             if (_blnLoading || _blnSkipUpdate)
                 return;
             _blnSkipUpdate = true;
+            SuspendLayout();
             if (_objSelectedWeapon != null)
             {
                 chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
@@ -222,7 +223,7 @@ namespace Chummer
                     strAccessories.Length -= Environment.NewLine.Length;
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None") : strAccessories.ToString();
-                lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
+                gpbIncludedAccessories.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
             else
             {
@@ -251,14 +252,16 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSourceLabel.Visible = false;
                 lblIncludedAccessories.Text = string.Empty;
-                lblIncludedAccessoriesLabel.Visible = false;
+                gpbIncludedAccessories.Visible = false;
                 lblSource.SetToolTip(string.Empty);
             }
+            ResumeLayout();
             _blnSkipUpdate = false;
         }
 
         private void BuildWeaponList(XmlNodeList objNodeList)
         {
+            SuspendLayout();
             if (tabControl.SelectedIndex == 1)
             {
                 DataTable tabWeapons = new DataTable("weapons");
@@ -280,7 +283,7 @@ namespace Chummer
                 tabWeapons.Columns.Add("Cost");
                 tabWeapons.Columns["Cost"].DataType = typeof(NuyenString);
 
-                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
+                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + ParentWeapon?.SourceIDString + "\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
@@ -329,7 +332,7 @@ namespace Chummer
 
                     string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.CurrentDisplayName;
-                    string strDice = objWeapon.DisplayDicePool;
+                    string strDice = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
                     string strAccuracy = objWeapon.DisplayAccuracy;
                     string strDamage = objWeapon.DisplayDamage;
                     string strAP = objWeapon.DisplayTotalAP;
@@ -391,7 +394,7 @@ namespace Chummer
             {
                 int intOverLimit = 0;
                 List<ListItem> lstWeapons = new List<ListItem>();
-                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
+                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + ParentWeapon?.SourceIDString + "\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
@@ -469,8 +472,8 @@ namespace Chummer
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstWeapon.BeginUpdate();
-                lstWeapon.ValueMember = "Value";
-                lstWeapon.DisplayMember = "Name";
+                lstWeapon.ValueMember = nameof(ListItem.Value);
+                lstWeapon.DisplayMember = nameof(ListItem.Name);
                 lstWeapon.DataSource = lstWeapons;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
@@ -479,6 +482,7 @@ namespace Chummer
                     lstWeapon.SelectedIndex = -1;
                 lstWeapon.EndUpdate();
             }
+            ResumeLayout();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

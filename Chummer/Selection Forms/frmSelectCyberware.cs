@@ -92,7 +92,7 @@ namespace Chummer
                     break;
             }
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceIDString;
@@ -324,9 +324,9 @@ namespace Chummer
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -1114,20 +1114,24 @@ namespace Chummer
                         }
                     }
                 }
-                if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(xmlCyberware, _objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+
+                if (blnDoUIUpdate)
                 {
-                    ++intOverLimit;
-                    continue;
-                }
-                if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
-                {
-                    decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
-                        decCostMultiplier *= 0.9m;
-                    if (!SelectionShared.CheckNuyenRestriction(xmlCyberware, _objCharacter.Nuyen, decCostMultiplier))
+                    if (chkHideOverAvailLimit.Checked && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
                     {
                         ++intOverLimit;
                         continue;
+                    }
+                    if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
+                            decCostMultiplier *= 0.9m;
+                        if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                        {
+                            ++intOverLimit;
+                            continue;
+                        }
                     }
                 }
 
@@ -1152,8 +1156,8 @@ namespace Chummer
                 string strOldSelected = lstCyberware.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstCyberware.BeginUpdate();
-                lstCyberware.ValueMember = "Value";
-                lstCyberware.DisplayMember = "Name";
+                lstCyberware.ValueMember = nameof(ListItem.Value);
+                lstCyberware.DisplayMember = nameof(ListItem.Name);
                 lstCyberware.DataSource = lstCyberwares;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
@@ -1329,8 +1333,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = "Value";
-                cboGrade.DisplayMember = "Name";
+                cboGrade.ValueMember = nameof(ListItem.Value);
+                cboGrade.DisplayMember = nameof(ListItem.Name);
                 cboGrade.DataSource = lstGrade;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))
@@ -1357,7 +1361,7 @@ namespace Chummer
             if (_strSubsystems.Length > 0)
             {
                 // Populate the Cyberware Category list.
-                string strSubsystem = $"categories/category[. = \"{_strSubsystems.Replace(",", "\" or . = \"")}\"]";
+                string strSubsystem = "categories/category[. = \"" + _strSubsystems.Replace(",", "\" or . = \"") + "\"]";
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.Select(strSubsystem);
             }
             else
@@ -1368,7 +1372,7 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 // Make sure the category contains items that we can actually display
-                if (RefreshList(objXmlCategory.Value, false, true).Count > 0)
+                if (RefreshList(objXmlCategory.Value, false, true)?.Count > 0)
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
@@ -1387,8 +1391,8 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstCategory;
             _blnLoading = blnOldLoading;
             cboCategory.SelectedValue = strOldSelected;

@@ -42,7 +42,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _dropDownList = GenerateDropdownFilter();
 
@@ -99,17 +99,19 @@ namespace Chummer.UI.Powers
 
             //Visible = false;
             SuspendLayout();
-            DoubleBuffered = true;
 
-            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
 
             parts.TaskEnd("MakePowerDisplay()");
 
-            cboDisplayFilter.DataSource = _dropDownList;
+            cboDisplayFilter.BeginUpdate();
+            cboDisplayFilter.DataSource = null;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+            cboDisplayFilter.EndUpdate();
 
             parts.TaskEnd("_ddl databind");
 
@@ -118,8 +120,6 @@ namespace Chummer.UI.Powers
             //this.PerformLayout();
             parts.TaskEnd("visible");
 
-            _table.Height = pnlPowers.Height - _table.Top;
-            _table.Width = pnlPowers.Width - _table.Left;
             _table.Items = _objCharacter.Powers;
 
             parts.TaskEnd("resize");
@@ -134,10 +134,14 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"), power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"), power => power.Rating == 0)
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"),
+                    null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"),
+                    power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                    power => power.Rating > 0),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                    power => power.Rating == 0)
             };
 
             /*
@@ -147,7 +151,7 @@ namespace Chummer.UI.Powers
                     {
                         string strName = xmlCategoryNode.InnerText;
                         ret.Add(new Tuple<string, Predicate<Power>>(
-                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
+                            LanguageManager.GetString("Label_Category") + LanguageManager.GetString("String_Space") + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
                             power => power.Category == strName));
                     }
                     */
@@ -226,8 +230,8 @@ namespace Chummer.UI.Powers
         {
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{0}" + strSpace + "({1}" + strSpace + LanguageManager.GetString("String_Remaining") + ')', intPowerPointsTotal, decPowerPointsRemaining);
+            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{1}{0}({2}{0}{3})",
+                LanguageManager.GetString("String_Space"), intPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
         }
 
         private int PowerPointsTotal
@@ -257,7 +261,7 @@ namespace Chummer.UI.Powers
         {
             _table = new TableView<Power>
             {
-                Location = new Point(3, 3),
+                Dock = DockStyle.Fill,
                 ToolTip = _tipTooltip
             };
             // create columns
@@ -386,14 +390,13 @@ namespace Chummer.UI.Powers
             })
             {
                 ClickHandler = p => {
-                    frmNotes frmPowerNotes = new frmNotes
+                    using (frmNotes frmPowerNotes = new frmNotes { Notes = p.Notes })
                     {
-                        Notes = p.Notes
-                    };
-                    frmPowerNotes.ShowDialog(this);
+                        frmPowerNotes.ShowDialog(this);
 
-                    if (frmPowerNotes.DialogResult == DialogResult.OK)
-                        p.Notes = frmPowerNotes.Notes;
+                        if (frmPowerNotes.DialogResult == DialogResult.OK)
+                            p.Notes = frmPowerNotes.Notes;
+                    }
                 },
                 Alignment = Alignment.Center
             })
@@ -403,7 +406,7 @@ namespace Chummer.UI.Powers
                 ToolTipExtractor = (p => {
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
+                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
                     return strTooltip.WordWrap(100);
                 })
             };
@@ -445,9 +448,9 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
+            _table.TranslateWinForm();
 
-            pnlPowers.Controls.Add(_table);
+            tlpMain.Controls.Add(_table, 0, 2);
         }
 
         private static Size GetImageSize(Image image)

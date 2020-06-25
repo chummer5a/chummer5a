@@ -2476,6 +2476,22 @@
       <source>SG</source>
       <page>199</page>
     </quality>
+    <quality>
+      <id>3b25b895-d700-457e-ac89-8d5a65248c94</id>
+      <name>Conjuring Geas</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+        <astralreputation>-1</astralreputation>
+      </bonus>
+      <required>
+        <oneof>
+          <careeronly />
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>199</page>
+    </quality>
     <!-- End Region -->
     <!--Region Bullets and Bandages Positive Qualities -->
     <quality>
@@ -2562,7 +2578,9 @@
       <name>Inspired</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <selectexpertise limittoskill="Artisan" />
+      </bonus>
       <source>SASS</source>
       <page>31</page>
     </quality>
@@ -3221,7 +3239,7 @@
       <limit>False</limit>
       <bonus>
         <selectcontact />
-        <selecttext select="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skillgroups/* | /chummer/skills/skill" allowedit="True" />
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -14422,7 +14440,11 @@
         <value>-5</value>
       </costdiscount>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addspirit />
+        <addspirit />
+        <skilldisable>Binding</skilldisable>
+      </bonus>
       <required>
         <allof>
           <attribute>
@@ -17262,7 +17284,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Air</spirit>
         </limitspiritcategory>
@@ -17290,7 +17312,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Earth</spirit>
         </limitspiritcategory>
@@ -17318,7 +17340,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Fire</spirit>
         </limitspiritcategory>
@@ -17346,7 +17368,7 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspellcategory />
         <limitspiritcategory>
           <spirit>Spirit of Water</spirit>
         </limitspiritcategory>

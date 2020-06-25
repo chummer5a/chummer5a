@@ -37,7 +37,7 @@ namespace Chummer
             _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
@@ -88,8 +88,8 @@ namespace Chummer
 
             // Populate the lists.
             cboSpec.BeginUpdate();
-            cboSpec.ValueMember = "Value";
-            cboSpec.DisplayMember = "Name";
+            cboSpec.ValueMember = nameof(ListItem.Value);
+            cboSpec.DisplayMember = nameof(ListItem.Name);
             cboSpec.DataSource = lstItems;
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
@@ -108,8 +108,8 @@ namespace Chummer
                     {
                         new ListItem(_strForceItem, _strForceItem)
                     };
-                    cboSpec.ValueMember = "Value";
-                    cboSpec.DisplayMember = "Name";
+                    cboSpec.ValueMember = nameof(ListItem.Value);
+                    cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.DataSource = lstSingle;
                     cboSpec.SelectedIndex = 0;
                     AcceptForm();

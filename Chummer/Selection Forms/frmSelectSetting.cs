@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectSetting()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmSelectSetting_Load(object sender, EventArgs e)
@@ -64,8 +64,8 @@ namespace Chummer
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
-            cboSetting.ValueMember = "Value";
-            cboSetting.DisplayMember = "Name";
+            cboSetting.ValueMember = nameof(ListItem.Value);
+            cboSetting.DisplayMember = nameof(ListItem.Name);
             cboSetting.DataSource = lstSettings;
             cboSetting.EndUpdate();
 

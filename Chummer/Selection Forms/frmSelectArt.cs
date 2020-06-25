@@ -47,7 +47,7 @@ namespace Chummer
         public frmSelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Metamagic information.
@@ -115,9 +115,9 @@ namespace Chummer
 
             string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -178,8 +178,8 @@ namespace Chummer
             string strOldSelected = lstArt.SelectedValue?.ToString();
             _blnLoading = true;
             lstArt.BeginUpdate();
-            lstArt.ValueMember = "Value";
-            lstArt.DisplayMember = "Name";
+            lstArt.ValueMember = nameof(ListItem.Value);
+            lstArt.DisplayMember = nameof(ListItem.Name);
             lstArt.DataSource = lstArts;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

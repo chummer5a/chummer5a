@@ -10,6 +10,7 @@
   <xsl:output method="html" indent="yes" version="4.0"/>
 
   <xsl:template match="/characters/character">
+    <xsl:variable name="ImageFormat" select="imageformat" />
     <xsl:variable name="TitleName">
       <xsl:call-template name="TitleName">
         <xsl:with-param name="name" select="name"/>
@@ -223,7 +224,9 @@
               <xsl:call-template name="print_attributes" />
             </td>
             <td class="fill33">
-              <xsl:call-template name="print_mugshot_and_priorities" />
+              <xsl:call-template name="print_mugshot_and_priorities">
+                <xsl:with-param name="ImageFormat" select="$ImageFormat" />
+              </xsl:call-template>
             </td>
           </tr>
           <xsl:call-template name="page_breaker" />
@@ -363,7 +366,9 @@
           <xsl:call-template name="page_breaker" />
           <tr>
             <td class="fill100" colspan="3">
-              <xsl:call-template name="print_description" />
+              <xsl:call-template name="print_description">
+                <xsl:with-param name="ImageFormat" select="$ImageFormat" />
+              </xsl:call-template>
             </td>
           </tr>
         </table>
@@ -434,6 +439,13 @@
         <td style="white-space: nowrap;"><strong><xsl:value-of select="totalnotoriety" /></strong></td>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.PublicAwareness" /></td>
         <td style="white-space: nowrap;"><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
+      <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+        <tr>
+        <td style="white-space: nowrap;"><xsl:value-of select="$lang.AstralReputation" /></td>
+        <td style="white-space: nowrap;"><strong><xsl:value-of select="totalastralreputation" /></strong></td>
+        <td style="white-space: nowrap;"><xsl:value-of select="$lang.WildReputation" /></td>
+        <td style="white-space: nowrap;"><strong><xsl:value-of select="totalwildreputation" /></strong></td></tr>
+      </xsl:if>
       <tr><td colspan="4"><hr /></td></tr>
       <tr>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.Composure" /></td>
@@ -616,11 +628,12 @@
   </xsl:template>
 
   <xsl:template name="print_mugshot_and_priorities">
+    <xsl:param name="ImageFormat" />
     <table class="stats general">
       <xsl:if test="mainmugshotbase64 != ''">
         <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Mugshot" />]</div></td></tr>
         <tr><td colspan="2" style="text-align:center; width: 100%;">
-          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
+          <img src="data:image/{$ImageFormat};base64,{mainmugshotbase64}" class="mugshot" />
         </td></tr>
       </xsl:if>
       <xsl:if test="prioritymetatype != ''">
@@ -712,13 +725,12 @@
             </xsl:if>
             <span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="displayattribute" /></span>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
-              <xsl:variable name="SpecializationBonus" select="specbonus"/>
               <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
                   </xsl:if>
-                  (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+                  (<xsl:value-of select="name"/> +<xsl:value-of select="specbonus"/>)
                 </xsl:for-each>
               </p>
             </xsl:if>
@@ -758,13 +770,12 @@
               (<xsl:value-of select="spec" />)
             </xsl:if>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
-              <xsl:variable name="SpecializationBonus" select="specbonus"/>
               <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
                   </xsl:if>
-                  (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+                  (<xsl:value-of select="name"/> +<xsl:value-of select="specbonus"/>)
                 </xsl:for-each>
               </p>
             </xsl:if>
@@ -2121,6 +2132,7 @@
   </xsl:template>
 
   <xsl:template name="print_description">
+    <xsl:param name="ImageFormat" />
     <xsl:if test="description!=''">
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Description"/>]</div></td></tr>
@@ -2166,13 +2178,11 @@
               <td width="33%" style="text-align:center;">
                 <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
-                    <tr><td width="100%" style="text-align:center; width: 100%;">
-                      <img class="mugshot">
-                        <xsl:attribute name="src">
-                          data:image/png;base64,<xsl:value-of select='stringbase64' />
-                        </xsl:attribute>
-                      </img>
-                    </td></tr>
+                    <tr>
+                      <td width="100%" style="text-align:center; width: 100%;">
+                        <img src="data:image/{$ImageFormat};base64,{stringbase64}" class="mugshot" />
+                      </td>
+                    </tr>
                   </xsl:for-each>
                 </table>
               </td>
@@ -2182,13 +2192,11 @@
                     <tr><td/></tr>
                   </xsl:if>
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
-                    <tr><td width="100%" style="text-align:center; width: 100%;">
-                      <img class="mugshot">
-                        <xsl:attribute name="src">
-                          data:image/png;base64,<xsl:value-of select='stringbase64' />
-                        </xsl:attribute>
-                      </img>
-                    </td></tr>
+                    <tr>
+                      <td width="100%" style="text-align:center; width: 100%;">
+                        <img src="data:image/{$ImageFormat};base64,{stringbase64}" class="mugshot" />
+                      </td>
+                    </tr>
                   </xsl:for-each>
                 </table>
               </td>
@@ -2198,13 +2206,11 @@
                     <tr><td/></tr>
                   </xsl:if>
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
-                    <tr><td width="100%" style="text-align:center; width: 100%;">
-                      <img class="mugshot">
-                        <xsl:attribute name="src">
-                          data:image/png;base64,<xsl:value-of select='stringbase64' />
-                        </xsl:attribute>
-                      </img>
-                    </td></tr>
+                    <tr>
+                      <td width="100%" style="text-align:center; width: 100%;">
+                        <img src="data:image/{$ImageFormat};base64,{stringbase64}" class="mugshot" />
+                      </td>
+                    </tr>
                   </xsl:for-each>
                 </table>
               </td>
@@ -2340,9 +2346,7 @@
 
   <xsl:template name="make_grey_lines">
     <xsl:if test="(position() mod 2) = 0">
-      <xsl:attribute name="style">
-        background-color:lightgrey;
-      </xsl:attribute>
+      <xsl:attribute name="style">background-color:lightgrey;</xsl:attribute>
     </xsl:if>
   </xsl:template>
 

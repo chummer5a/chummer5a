@@ -44,6 +44,7 @@
   </xsl:variable>
 
   <xsl:template match="/characters/character">
+    <xsl:variable name="ImageFormat" select="imageformat" />
     <xsl:variable name="TitleName">
       <xsl:call-template name="TitleName">
         <xsl:with-param name="name" select="name"/>
@@ -166,6 +167,23 @@
                 </td>
                 <td width="16.67%"><xsl:value-of select="totalpublicawareness"/></td>
               </tr>
+              <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+                <tr>
+                  <td width="16.66%" class="upper">
+                    <xsl:value-of select="$lang.AstralReputation"/>:
+                  </td>
+                  <td width="16.67%">
+                    <xsl:value-of select="totalastralreputation"/>
+                  </td>
+                  <td width="16.67%" class="upper">
+                    <xsl:value-of select="$lang.WildReputation"/>:
+                  </td>
+                  <td width="16.67%">
+                    <xsl:value-of select="totalwildreputation"/>
+                  </td>
+                  <td width="33.33%" class="upper" colspan="2" />
+                </tr>
+              </xsl:if>
               <tr>
                 <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Composure"/>:
@@ -234,7 +252,7 @@
                     <table class="tablestyle" style="cellpadding: 0;">
                       <tr>
                         <td style = "text-align: center; vertical-align: middle;">
-                          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
+                          <img src="data:image/{$ImageFormat};base64,{mainmugshotbase64}" class="mugshot" />
                         </td>
                       </tr>
                     </table>
@@ -1467,7 +1485,9 @@
 
         <xsl:if test="hasothermugshots = 'True'">
           <div class="block" id="OtherMugshotsBlock">
-            <xsl:call-template name="othermugshots"/>
+            <xsl:call-template name="othermugshots">
+              <xsl:with-param name="ImageFormat" select="$ImageFormat" />
+            </xsl:call-template>
           </div>
           <xsl:call-template name="RowSummary">
             <xsl:with-param name="text" select="$lang.OtherMugshots"/>
@@ -2116,10 +2136,7 @@
   <xsl:template name="vehicles">
       <xsl:param name="vehicle"/>
       <xsl:param name="VehicleNumber"/>
-    <div class="block">
-      <xsl:attribute name="id">
-        <xsl:value-of select="$VehicleNumber"/>
-      </xsl:attribute>
+    <div class="block" id="{VehicleNumber}">
       <table class="tablestyle">
         <tr>
           <th width="35%" style="text-align: left">
@@ -2861,18 +2878,17 @@
   </xsl:template>
 
   <xsl:template name="othermugshots">
+    <xsl:param name="ImageFormat" />
     <table class="tablestyle" style="border-collapse: none;">
       <tr>
         <td width="33%" style="text-align:center;">
           <table class="tablestyle" style="border-width: 0; empty-cells:show;">
             <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
-              <tr><td style="text-align:center; width: 100%;">
-                <img class="mugshot">
-                  <xsl:attribute name="src">
-                    data:image/png;base64,<xsl:value-of select='stringbase64' />
-                  </xsl:attribute>
-                </img>
-              </td></tr>
+              <tr>
+                <td style="text-align:center; width: 100%;">
+                  <img src="data:image/{$ImageFormat};base64,{stringbase64}" class="mugshot" />
+                </td>
+              </tr>
             </xsl:for-each>
           </table>
         </td>
@@ -2882,13 +2898,11 @@
               <tr><td/></tr>
             </xsl:if>
             <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
-              <tr><td style="text-align:center; width: 100%;">
-                <img class="mugshot">
-                  <xsl:attribute name="src">
-                    data:image/png;base64,<xsl:value-of select='stringbase64' />
-                  </xsl:attribute>
-                </img>
-              </td></tr>
+              <tr>
+                <td style="text-align:center; width: 100%;">
+                  <img src="data:image/{$ImageFormat};base64,{stringbase64}" class="mugshot" />
+                </td>
+              </tr>
             </xsl:for-each>
           </table>
         </td>
@@ -2898,13 +2912,11 @@
               <tr><td/></tr>
             </xsl:if>
             <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
-              <tr><td style="text-align:center; width: 100%;">
-                <img class="mugshot">
-                  <xsl:attribute name="src">
-                    data:image/png;base64,<xsl:value-of select='stringbase64' />
-                  </xsl:attribute>
-                </img>
-              </td></tr>
+              <tr>
+                <td style="text-align:center; width: 100%;">
+                  <img src="data:image/{$ImageFormat};base64,{stringbase64}" class="mugshot" />
+                </td>
+              </tr>
             </xsl:for-each>
           </table>
         </td>

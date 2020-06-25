@@ -97,10 +97,7 @@
 
   <xsl:template name="spiritdetails">
       <xsl:param name="SpiritNumber"/>
-    <div class="block">
-      <xsl:attribute name="id">
-        <xsl:value-of select="$SpiritNumber"/>
-      </xsl:attribute>
+    <div class="block" id="{SpiritNumber}">
       <table class="tablestyle">
         <tr>
           <td width="50%" style="text-align: left">
@@ -444,10 +441,7 @@
 
   <xsl:template name="spritedetails">
       <xsl:param name="SpriteNumber"/>
-    <div class="block">
-      <xsl:attribute name="id">
-        <xsl:value-of select="$SpriteNumber"/>
-      </xsl:attribute>
+    <div class="block" id="{SpriteNumber}">
       <table class="tablestyle">
         <tr>
           <td width="50%" style="text-align: left">

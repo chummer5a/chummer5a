@@ -34,7 +34,7 @@ namespace Chummer
         public frmSelectSpellCategory(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = objCharacter?.LoadData("spells.xml") ?? XmlManager.Load("spells.xml");
         }
 
@@ -53,8 +53,8 @@ namespace Chummer
                     }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstCategory;
 
             // Select the first Skill in the list.

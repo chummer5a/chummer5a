@@ -28,7 +28,7 @@ namespace Chummer
             sw.Stop();
 
             TimeSpan elapsed = sw.Elapsed;
-            Trace.WriteLine($"{task} finished in {elapsed.TotalMilliseconds} ms");
+            Trace.WriteLine(string.Format(GlobalOptions.InvariantCultureInfo, "{0} finished in {1} ms", task, elapsed.TotalMilliseconds));
 
             sw.Restart();
             return elapsed;

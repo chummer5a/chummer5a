@@ -299,6 +299,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("mod");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -335,12 +337,12 @@ namespace Chummer.Backend.Equipment
                 throw new ArgumentNullException(nameof(xmlNode));
             XmlDocument xmlDoc = _objCharacter.LoadData("vehicles.xml");
             WeaponMount objMount = this;
-            XmlNode xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["size"]?.InnerText}\" and category = \"Size\"]");
+            XmlNode xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["size"]?.InnerText + "\" and category = \"Size\"]");
             if (xmlDataNode != null)
             {
                 objMount.Create(xmlDataNode);
 
-                xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["flexibility"]?.InnerText}\" and category = \"Flexibility\"]");
+                xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["flexibility"]?.InnerText + "\" and category = \"Flexibility\"]");
                 if (xmlDataNode != null)
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
@@ -349,7 +351,7 @@ namespace Chummer.Backend.Equipment
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
 
-                xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["control"]?.InnerText}\" and category = \"Control\"]");
+                xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["control"]?.InnerText + "\" and category = \"Control\"]");
                 if (xmlDataNode != null)
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
@@ -358,7 +360,7 @@ namespace Chummer.Backend.Equipment
                     objMount.WeaponMountOptions.Add(objWeaponMountOption);
                 }
 
-                xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["visibility"]?.InnerText}\" and category = \"Visibility\"]");
+                xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["visibility"]?.InnerText + "\" and category = \"Visibility\"]");
                 if (xmlDataNode != null)
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
@@ -382,7 +384,7 @@ namespace Chummer.Backend.Equipment
                                 Parent = Parent,
                                 WeaponMountParent = this
                             };
-                            xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{xmlModNode.InnerText}\"]");
+                            xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = \"" + xmlModNode.InnerText + "\"]");
                             objMod.Load(xmlDataNode);
                             _lstMods.Add(objMod);
                         }
@@ -813,10 +815,10 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             StringBuilder strReturn = new StringBuilder(DisplayNameShort(strLanguage));
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (WeaponMountOptions.Count > 0)
             {
-                strReturn.Append(strSpaceCharacter + '(');
+                strReturn.Append(strSpace + '(');
                 bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
@@ -824,15 +826,15 @@ namespace Chummer.Backend.Equipment
                     {
                         blnCloseParantheses = true;
                         strReturn.Append(objOption.DisplayName(strLanguage));
-                        strReturn.Append(',' + strSpaceCharacter);
+                        strReturn.Append(',' + strSpace);
                     }
                 }
-                strReturn.Length -= 1 + strSpaceCharacter.Length;
+                strReturn.Length -= 1 + strSpace.Length;
                 if (blnCloseParantheses)
                     strReturn.Append(')');
                 if (!string.IsNullOrWhiteSpace(Location))
                 {
-                    strReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter + Location);
+                    strReturn.Append(strSpace + '-' + strSpace + Location);
                 }
             }
 

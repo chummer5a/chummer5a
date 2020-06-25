@@ -19,6 +19,9 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using RtfPipe;
 
 namespace Chummer
 {
@@ -905,5 +908,105 @@ namespace Chummer
                 .Replace("\n", "<br />")
                 .Replace("\r", "<br />");
         }
+
+        /// <summary>
+        /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
+        public static string PlainTextToRtf(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (strInput.IsRtf())
+                return strInput;
+            if (!rtbRtfManipulator.IsHandleCreated)
+                rtbRtfManipulator.CreateControl();
+            rtbRtfManipulator.Text = strInput;
+            return rtbRtfManipulator.Rtf;
+        }
+
+        /// <summary>
+        /// Strips RTF formatting from a string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
+        public static string RtfToPlainText(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
+                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+            {
+                if (!rtbRtfManipulator.IsHandleCreated)
+                    rtbRtfManipulator.CreateControl();
+                try
+                {
+                    rtbRtfManipulator.Rtf = strInput;
+                }
+                catch (ArgumentException)
+                {
+                    return strInput;
+                }
+
+                return rtbRtfManipulator.Text;
+            }
+            return strInput;
+        }
+
+        public static string RtfToHtml(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHTML();
+        }
+
+        /// <summary>
+        /// Whether or not a string is an RTF document
+        /// </summary>
+        /// <param name="strInput">The string to check.</param>
+        /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
+        public static bool IsRtf(this string strInput)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                string strInputTrimmed = strInput.TrimStart();
+                if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
+                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                {
+                    if (!rtbRtfManipulator.IsHandleCreated)
+                        rtbRtfManipulator.CreateControl();
+                    try
+                    {
+                        rtbRtfManipulator.Rtf = strInput;
+                    }
+                    catch (ArgumentException)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if a string contains any HTML tags
+        /// </summary>
+        /// <param name="strInput">The string to check.</param>
+        /// <returns>True if the string contains HTML tags, False otherwise.</returns>
+        public static bool ContainsHtmlTags(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            return rgxHtmlTagExpression.IsMatch(strInput);
+        }
+
+        private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
     }
 }

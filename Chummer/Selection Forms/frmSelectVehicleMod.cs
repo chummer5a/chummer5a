@@ -49,11 +49,12 @@ namespace Chummer
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
-        public frmSelectVehicleMod(Character objCharacter, IEnumerable<VehicleMod> lstExistingMods)
+        public frmSelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").CreateNavigator().SelectSingleNode("/chummer");
             if (_xmlBaseVehicleDataNode != null)
@@ -99,8 +100,8 @@ namespace Chummer
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
@@ -232,14 +233,6 @@ namespace Chummer
         /// Whether or not the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount => _blnBlackMarketDiscount;
-
-        /// <summary>
-        /// Vehicle's Cost.
-        /// </summary>
-        public Vehicle SelectedVehicle
-        {
-            set => _objVehicle = value;
-        }
 
         /// <summary>
         /// The slots taken up by a weapon mount to which the vehicle mod might be being added
@@ -379,8 +372,8 @@ namespace Chummer
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter)) &&
-                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
+                if ((!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter)) &&
+                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
@@ -398,8 +391,8 @@ namespace Chummer
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.ValueMember = "Value";
-            lstMod.DisplayMember = "Name";
+            lstMod.ValueMember = nameof(ListItem.Value);
+            lstMod.DisplayMember = nameof(ListItem.Name);
             lstMod.DataSource = lstMods;
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelected))
@@ -439,6 +432,7 @@ namespace Chummer
                 return;
 
             _blnSkipUpdate = true;
+            string strSpace = LanguageManager.GetString("String_Space");
             XPathNavigator xmlVehicleMod = null;
             string strSelectedId = lstMod.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -446,8 +440,8 @@ namespace Chummer
                 // Retireve the information for the selected Mod.
                 // Filtering is also done on the Category in case there are non-unique names across categories.
                 xmlVehicleMod = VehicleMountMods
-                    ? _xmlBaseVehicleDataNode.SelectSingleNode($"weaponmountmods/mod[id = \"{strSelectedId}\"]")
-                    : _xmlBaseVehicleDataNode.SelectSingleNode($"mods/mod[id = \"{strSelectedId}\"]");
+                    ? _xmlBaseVehicleDataNode.SelectSingleNode("weaponmountmods/mod[id = \"" + strSelectedId + "\"]")
+                    : _xmlBaseVehicleDataNode.SelectSingleNode("mods/mod[id = \"" + strSelectedId + "\"]");
             }
 
             if (xmlVehicleMod != null)
@@ -534,7 +528,7 @@ namespace Chummer
                 {
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckAvailRestriction(xmlVehicleMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -545,7 +539,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckNuyenRestriction(xmlVehicleMod, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -598,7 +592,9 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
+                                           + strSpace + '-' + strSpace
+                                           + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                         strCost = decMin.ToString(GlobalOptions.InvariantCultureInfo);
                     }
@@ -695,9 +691,8 @@ namespace Chummer
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

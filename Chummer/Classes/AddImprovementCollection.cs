@@ -712,13 +712,14 @@ namespace Chummer.Classes
                 foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
                 {
                     ExoticSkill objSkill = (ExoticSkill) objLoopSkill;
-                    if ($"{objSkill.Name} ({objSkill.Specific})" != strSelectedSkill)
+                    string strSpecificName = objSkill.Name + " (" + objSkill.Specific + ')';
+                    if (strSpecificName != strSelectedSkill)
                         continue;
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        CreateImprovement(strSpecificName, _objImprovementSource,
                             SourceName,
                             Improvement.ImprovementType.Skill, _strUnique,
                             ImprovementManager.ValueToInt(_objCharacter, strVal, _intRating), 1,
@@ -728,7 +729,7 @@ namespace Chummer.Classes
                     if (blnDisableSpec)
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        CreateImprovement(strSpecificName, _objImprovementSource,
                             SourceName,
                             Improvement.ImprovementType.DisableSpecializationEffects,
                             _strUnique);
@@ -737,7 +738,7 @@ namespace Chummer.Classes
                     if (!string.IsNullOrEmpty(strMax))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        CreateImprovement(strSpecificName, _objImprovementSource,
                             SourceName,
                             Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
                             ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
@@ -959,6 +960,7 @@ namespace Chummer.Classes
                 }
             }
 
+            string strSpace = LanguageManager.GetString("String_Space");
             StringBuilder sBld = new StringBuilder();
             foreach (string s in AttributeSection.AttributeStrings)
             {
@@ -967,9 +969,9 @@ namespace Chummer.Classes
                 {
                     if (sBld.Length > 0)
                     {
-                        sBld.Append(", ");
+                        sBld.Append(',' + strSpace);
                     }
-                    sBld.Append($"{s} ({i})");
+                    sBld.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})", s, strSpace, i);
                 }
             }
 
@@ -2340,7 +2342,7 @@ namespace Chummer.Classes
                 foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
                 {
                     ExoticSkill objExoticSkill = (ExoticSkill)objLoopSkill;
-                    if ($"{objExoticSkill.Name} ({objExoticSkill.Specific})" != SelectedValue)
+                    if (objExoticSkill.Name + " (" + objExoticSkill.Specific + ')' != SelectedValue)
                         continue;
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
@@ -4218,7 +4220,7 @@ namespace Chummer.Classes
                                 Log.Info("selectpower = " + objNode.OuterXml);
 
                                 frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
-                                
+
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
                                     frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -5623,8 +5625,8 @@ namespace Chummer.Classes
             // Display the Select Item window and record the value that was entered.
             string strCategory = bonusNode["category"]?.InnerText;
             XmlNodeList objXmlNodeList = _objCharacter.LoadData("cyberware.xml").SelectNodes(!string.IsNullOrEmpty(strCategory)
-            ? $"/chummer/cyberwares/cyberware[(category = '{strCategory}') and ({_objCharacter.Options.BookXPath()})]"
-            : $"/chummer/cyberwares/cyberware[({_objCharacter.Options.BookXPath()})]");
+                ? "/chummer/cyberwares/cyberware[(category = '" + strCategory + "') and (" + _objCharacter.Options.BookXPath() + ")]"
+                : "/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ")]");
 
             List<ListItem> list = new List<ListItem>();
             if (objXmlNodeList != null)
@@ -6196,7 +6198,7 @@ namespace Chummer.Classes
                 Log.Info("Calling CreateImprovement");
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
                 CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
+                SkillSpecialization nspec = new SkillSpecialization(strSpec, true);
                 objSkill.Specializations.Add(nspec);
             }
         }
@@ -6238,7 +6240,7 @@ namespace Chummer.Classes
                     if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                        SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
+                        SkillSpecialization nspec = new SkillSpecialization(strSpec, true);
                         objSkill.Specializations.Add(nspec);
                     }
                 }
@@ -7392,6 +7394,8 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("disablequality");
+            Log.Info("disablequality = " + bonusNode.OuterXml);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique);
         }
 
@@ -7399,7 +7403,55 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("freequality");
+            Log.Info("freequality = " + bonusNode.OuterXml);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique);
+        }
+
+        public void selectexpertise(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("selectexpertise");
+            Log.Info("selectexpertise = " + bonusNode.OuterXml);
+
+            // Select the skill to get the expertise
+            bool blnIsKnowledgeSkill = false;
+            string strForcedValue = ForcedValue;
+            ForcedValue = string.Empty; // Temporarily clear Forced Value because the Forced Value should be for the specialization name, not the skill
+            string strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
+            ForcedValue = strForcedValue;
+            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+            if (objSkill == null)
+                throw new AbortedException();
+            // Select the actual specialization to add as an expertise
+            using (frmSelectItem frmPickItem = new frmSelectItem())
+            {
+                string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLimitToSpecialization))
+                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.Split(',').Select(x => x.Trim())
+                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, LanguageManager.TranslateExtra(x))));
+                else
+                    frmPickItem.SetGeneralItemsMode(objSkill.CGLSpecializations);
+                if (!string.IsNullOrEmpty(ForcedValue))
+                    frmPickItem.ForceItem(ForcedValue);
+
+                frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
+                frmPickItem.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.SelectedName))
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickItem.SelectedName;
+            }
+            // Create the Improvement.
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, SelectedValue);
+            SkillSpecialization objExpertise = new SkillSpecialization(SelectedValue, true, true);
+            objSkill.Specializations.Add(objExpertise);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

@@ -136,22 +136,10 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
-        <td width="30%" class="rowsummarybutton" style="text-align: left">
-          <xsl:attribute name="onClick">
-            showhide(this,'<xsl:value-of select="$blk"/>',
-                    '<xsl:value-of select="$lang.Yes"/>',
-                    '<xsl:value-of select="$lang.No"/>',
-                    '<xsl:value-of select="$lang.Show"/>');
-          </xsl:attribute>
+        <td width="30%" class="rowsummarybutton" style="text-align: left" onClick="showhide(this,{blk},{lang.Yes},{lang.No},{lang.Show});">
           <xsl:value-of select="concat($lang.Show,$lang.Yes)"/>
         </td>
-        <td width="40%" class="rowsummarybutton" style="text-align: left">
-          <xsl:attribute name="onClick">
-            zalomit(this,'<xsl:value-of select="$blk"/>',
-                    '<xsl:value-of select="$lang.Yes"/>',
-                    '<xsl:value-of select="$lang.No"/>',
-                    '<xsl:value-of select="$lang.PageBreak"/>');
-          </xsl:attribute>
+        <td width="40%" class="rowsummarybutton" style="text-align: left" onClick="zalomit(this,{blk},{lang.Yes},{lang.No},{lang.PageBreak});">
           <xsl:value-of select="concat($lang.PageBreak,$lang.No)"/>
         </td>
       </xsl:if>

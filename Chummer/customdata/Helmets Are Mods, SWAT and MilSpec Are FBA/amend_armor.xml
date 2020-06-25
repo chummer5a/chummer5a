@@ -67,6 +67,10 @@
       <name>SWAT Helmet</name>
       <hide />
     </armor>
+	<armor>
+      <name>Urban Explorer Jumpsuit: Helmet</name>
+      <hide />
+    </armor>
     <armor>
       <name>Urban Explorer Daedalus: Helmet</name>
       <hide />

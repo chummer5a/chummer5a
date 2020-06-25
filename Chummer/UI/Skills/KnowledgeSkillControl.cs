@@ -17,11 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using Chummer.Backend.Skills;
 
 namespace Chummer.UI.Skills
@@ -36,134 +35,126 @@ namespace Chummer.UI.Skills
             _skill = skill;
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
-            //Display
-            lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));
-            lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(KnowledgeSkill.PoolToolTip));
+            lblModifiedRating.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.DisplayPool));
+            lblModifiedRating.DoOneWayDataBinding("ToolTipText", _skill, nameof(KnowledgeSkill.PoolToolTip));
 
-            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(skill.CharacterObject).ToList();
-            lstTypes.Sort(CompareListItems.CompareNames);
+            cmdDelete.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowDelete));
 
             cboType.BeginUpdate();
-            cboSkill.BeginUpdate();
-            cboSpec.BeginUpdate();
-            cboType.DataSource = lstTypes;
+            cboType.DataSource = null;
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
+            cboType.DataSource = _skill.MyKnowledgeTypes;
+            cboType.DoDatabinding("SelectedValue", _skill, nameof(KnowledgeSkill.Type));
 
-            nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.SkillsSection.HasKnowledgePoints;
-            nudKarma.Visible = !skill.CharacterObject.Created;
-            chkKarma.Visible = !skill.CharacterObject.Created;
-            cboSpec.Visible = !skill.CharacterObject.Created;
-            //cboType.Visible = !skill.CharacterObject.Created;
-
-            btnCareerIncrease.Visible = skill.CharacterObject.Created;
-            lblSpec.Visible = skill.CharacterObject.Created;
-            btnAddSpec.Visible = skill.CharacterObject.Created;
-            lblRating.Visible = skill.CharacterObject.Created;
-
-            if (skill.CharacterObject.Created)
+            if (_skill.CharacterObject.Created)
             {
-                nudKarma.Visible = false;
-                nudSkill.Visible = false;
+                //New knowledge_skills start at 0. Leave the Type selector unlocked until they spend Karma on the_skill.
+                cboType.Enabled = (_skill.Karma == 0 && _skill.Base == 0 && !_skill.ForcedName) || string.IsNullOrWhiteSpace(_skill.Type);
+            }
+            if (_skill.ForcedName)
+            {
+                this.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.Enabled));
+                if (!_skill.CharacterObject.Created)
+                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
+            }
+            cboType.EndUpdate();
 
-                lblRating.Visible = true;
-                lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
+            if (_skill.CharacterObject.Created || !_skill.AllowUpgrade)
+            {
+                flpButtonsCreate.Visible = false;
+                tlpSpecsCreate.Visible = false;
+                flpButtonsCareer.Dock = DockStyle.Fill;
+                tlpSpecsCareer.Dock = DockStyle.Fill;
 
-                //New knowledge skills start at 0. Leave the Type selector unlocked until they spend Karma on the skill.
-                cboType.Enabled = (skill.Karma == 0 && skill.Base == 0 || string.IsNullOrWhiteSpace(_skill.Type));
+                lblRating.DoOneWayDataBinding("Text", _skill, nameof(Skill.Rating));
+                lblSpec.DoOneWayDataBinding("Text", _skill, nameof(Skill.CurrentDisplaySpecialization));
 
-                lblName.Visible = true;
-                lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
-                lblName.DataBindings.Add("ForeColor", skill, nameof(Skill.PreferredColor));
-                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
+                if (_skill.AllowUpgrade)
+                {
+                    if (_skill.Karma == 0 && _skill.Base == 0 && !_skill.ForcedName)
+                    {
+                        lblName.Visible = false;
+                        cboName.BeginUpdate();
+                        cboName.DataSource = null;
+                        cboName.DisplayMember = nameof(ListItem.Name);
+                        cboName.ValueMember = nameof(ListItem.Value);
+                        cboName.DataSource = _skill.MyDefaultKnowledgeSkills;
+                        cboName.SelectedIndex = -1;
+                        cboName.DoDatabinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+                        cboName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
+                        cboName.EndUpdate();
+                    }
+                    else
+                    {
+                        cboName.Visible = false;
+                        lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+                        lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
+                    }
+                    btnCareerIncrease.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanUpgradeCareer));
+                    btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.UpgradeToolTip));
 
-                lblSpec.Visible = true;
-                lblSpec.DataBindings.Add("Text", skill, nameof(Skill.CurrentDisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                cboSkill.Visible = false;
-                chkKarma.Visible = false;
-                cboSpec.Visible = false;
-
-                lblModifiedRating.Location = new Point(294 - 30, 4);
-
-                btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
-                btnCareerIncrease.DataBindings.Add("ToolTipText", skill, nameof(Skill.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                    btnAddSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanAffordSpecialization));
+                    btnAddSpec.DoOneWayDataBinding("Visible", _skill, nameof(Skill.CanHaveSpecs));
+                    btnAddSpec.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.AddSpecToolTip));
+                }
+                else
+                {
+                    btnCareerIncrease.Visible = false;
+                    btnAddSpec.Visible = false;
+                }
             }
             else
             {
-                //Up down boxes
-                nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                flpButtonsCareer.Visible = false;
+                tlpSpecsCareer.Visible = false;
+                flpButtonsCreate.Dock = DockStyle.Fill;
+                tlpSpecsCreate.Dock = DockStyle.Fill;
 
-                nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Enabled", skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                if (!_skill.ForcedName)
+                {
+                    lblName.Visible = false;
+                    cboName.BeginUpdate();
+                    cboName.DataSource = null;
+                    cboName.DisplayMember = nameof(ListItem.Name);
+                    cboName.ValueMember = nameof(ListItem.Value);
+                    cboName.DataSource = _skill.MyDefaultKnowledgeSkills;
+                    cboName.SelectedIndex = -1;
+                    cboName.DoDatabinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+                    cboName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
+                    cboName.EndUpdate();
+                }
+                else
+                {
+                    cboName.Visible = false;
+                    lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+                    lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
+                }
 
-                chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
-                        DataSourceUpdateMode.OnPropertyChanged);
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(skill.CharacterObject).ToList();
-                lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
-                cboSkill.DataSource = lstDefaultKnowledgeSkills;
-                cboSkill.DisplayMember = nameof(ListItem.Name);
-                cboSkill.ValueMember = nameof(ListItem.Value);
-                cboSkill.SelectedIndex = -1;
-                cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
-                cboSkill.DataBindings.Add(new NegatableBinding("Enabled", skill, nameof(KnowledgeSkill.ForcedName), true));
+                nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                nudSkill.DoDatabinding("Value", _skill, nameof(Skill.Base));
+                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", _skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoDatabinding("Value", _skill, nameof(Skill.Karma));
+                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
-                //dropdown/spec
-                cboSpec.DataSource = skill.CGLSpecializations;
+                cboSpec.BeginUpdate();
+                cboSpec.DataSource = null;
                 cboSpec.DisplayMember = nameof(ListItem.Name);
                 cboSpec.ValueMember = nameof(ListItem.Value);
+                cboSpec.DataSource = _skill.CGLSpecializations;
                 cboSpec.SelectedIndex = -1;
-
-                cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                skill.PropertyChanged += Skill_PropertyChanged;
+                cboSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
+                cboSpec.DoDatabinding("Text", _skill, nameof(Skill.Specialization));
+                cboSpec.EndUpdate();
+                chkKarma.DoDatabinding("Checked", _skill, nameof(Skill.BuyWithKarma));
             }
 
-            cmdDelete.DataBindings.Add("Visible", skill, nameof(Skill.AllowDelete), false, DataSourceUpdateMode.OnPropertyChanged);
-            cmdDelete.Click += (sender, args) =>
-            {
-                if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill",
-                    GlobalOptions.Language)))
-                    return;
-                skill.UnbindSkill();
-                skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
-            };
-            if (skill.ForcedName)
-            {
-                DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
-                if (!skill.CharacterObject.Created)
-                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
-            }
-            if (!skill.AllowUpgrade)
-            {
-                nudKarma.Visible = false;
-                nudSkill.Visible = false;
-                cboSkill.Enabled = false;
-                chkKarma.Visible = false;
-                btnAddSpec.Enabled = false;
-                btnCareerIncrease.Enabled = false;
-
-                if (!skill.CharacterObject.Created)
-                {
-                    lblRating.Visible = true;
-                    lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
-                }
-            }
-            cboType.EndUpdate();
-            cboSkill.EndUpdate();
-            cboSpec.EndUpdate();
+            _skill.PropertyChanged += Skill_PropertyChanged;
         }
 
-        public void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             bool all = false;
             switch (e?.PropertyName)
@@ -175,11 +166,11 @@ namespace Chummer.UI.Skills
                     if (!_skill.CharacterObject.Created)
                     {
                         string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
-                        cboSpec.SuspendLayout();
+                        cboSpec.BeginUpdate();
                         cboSpec.DataSource = null;
-                        cboSpec.DataSource = _skill.CGLSpecializations;
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.DataSource = _skill.CGLSpecializations;
                         cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
                         if (string.IsNullOrEmpty(strOldSpec))
                             cboSpec.SelectedIndex = -1;
@@ -189,21 +180,19 @@ namespace Chummer.UI.Skills
                             if (cboSpec.SelectedIndex == -1)
                                 cboSpec.Text = strOldSpec;
                         }
-
-                        cboSpec.ResumeLayout();
+                        cboSpec.EndUpdate();
                     }
-
                     if (all)
                         goto case nameof(KnowledgeSkill.Type);
                     break;
                 case nameof(KnowledgeSkill.Type):
-                    if (!cboSkill.Enabled)
+                    if (!cboName.Visible || lblName.Visible)
                         cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
                     break;
             }
         }
 
-        public void UnbindKnowledgeSkillControl()
+        private void UnbindKnowledgeSkillControl()
         {
             _skill.PropertyChanged -= Skill_PropertyChanged;
             foreach (Control objControl in Controls)
@@ -224,7 +213,17 @@ namespace Chummer.UI.Skills
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
+            SuspendLayout();
+            if (cboName.Visible || !lblName.Visible)
+            {
+                lblName.Visible = true;
+                cboName.Visible = false;
+                cboName.DataBindings.Clear();
+                lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+                lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
+            }
             cboType.Enabled = false;
+            ResumeLayout();
 
             _skill.Upgrade();
         }
@@ -239,7 +238,10 @@ namespace Chummer.UI.Skills
             foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
             {
                 if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                     || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created
+                     || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created)
+                    && objLoopImprovement.Enabled)
                 {
                     if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
                     {
@@ -259,10 +261,7 @@ namespace Chummer.UI.Skills
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            using (frmSelectSpec selectForm = new frmSelectSpec(_skill)
-            {
-                Mode = "Knowledge"
-            })
+            using (frmSelectSpec selectForm = new frmSelectSpec(_skill) { Mode = "Knowledge" })
             {
                 selectForm.ShowDialog();
 
@@ -276,10 +275,30 @@ namespace Chummer.UI.Skills
                 frmParent.IsCharacterUpdateRequested = true;
         }
 
+        private void cmdDelete_Click(object sender, EventArgs e)
+        {
+            if (!_skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
+                return;
+            _skill.UnbindSkill();
+            _skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_skill);
+        }
+
         public void MoveControls(int i)
         {
-            lblName.Width = i;
+            if (cboName.Visible)
+                cboName.Width = i;
         }
+
+        [UsedImplicitly]
+        public int NameWidth => tlpName.Width;
+
+        [UsedImplicitly]
+        public int NudSkillWidth => !_skill.CharacterObject.Created && _skill.AllowUpgrade && _skill.CharacterObject.SkillsSection.HasKnowledgePoints
+            ? nudSkill.Width
+            : 0;
+
+        [UsedImplicitly]
+        public int RightButtonsWidth => tlpRight.Width;
 
         /// <summary>
         /// I'm not super pleased with how this works, but it's functional so w/e.

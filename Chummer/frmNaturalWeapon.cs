@@ -40,7 +40,7 @@ namespace Chummer
             _objXmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml").CreateNavigator().SelectSingleNode("/chummer");
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             MoveControls();
         }
 
@@ -73,22 +73,22 @@ namespace Chummer
 
             // Bind the Lists to the ComboBoxes.
             cboSkill.BeginUpdate();
-            cboSkill.ValueMember = "Value";
-            cboSkill.DisplayMember = "Name";
+            cboSkill.ValueMember = nameof(ListItem.Value);
+            cboSkill.DisplayMember = nameof(ListItem.Name);
             cboSkill.DataSource = lstSkills;
             cboSkill.SelectedIndex = 0;
             cboSkill.EndUpdate();
 
             cboDVBase.BeginUpdate();
-            cboDVBase.ValueMember = "Value";
-            cboDVBase.DisplayMember = "Name";
+            cboDVBase.ValueMember = nameof(ListItem.Value);
+            cboDVBase.DisplayMember = nameof(ListItem.Name);
             cboDVBase.DataSource = lstDVBase;
             cboDVBase.SelectedIndex = 0;
             cboDVBase.EndUpdate();
 
             cboDVType.BeginUpdate();
-            cboDVType.ValueMember = "Value";
-            cboDVType.DisplayMember = "Name";
+            cboDVType.ValueMember = nameof(ListItem.Value);
+            cboDVType.DisplayMember = nameof(ListItem.Name);
             cboDVType.DataSource = lstDVType;
             cboDVType.SelectedIndex = 0;
             cboDVType.EndUpdate();

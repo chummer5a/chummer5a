@@ -23,6 +23,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace Codaxy.WkHtmlToPdf
@@ -145,12 +146,12 @@ namespace Codaxy.WkHtmlToPdf
             }
             else
             {
-                strOutputPdfFilePath = Path.Combine(environment.TempFolderPath, $"{Guid.NewGuid()}.pdf");
+                strOutputPdfFilePath = Path.Combine(environment.TempFolderPath, Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture) + ".pdf");
                 blnDelete = true;
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
-                throw new PdfConvertException($"File '{environment.WkHtmlToPdfPath}' not found. Check if wkhtmltopdf application is installed.");
+                throw new PdfConvertException("File '" + environment.WkHtmlToPdfPath + "' not found. Check if wkhtmltopdf application is installed.");
 
             StringBuilder sbdParamsBuilder = new StringBuilder("--page-size A4 ");
 
@@ -271,7 +272,9 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 if (process.ExitCode != 0 && !File.Exists(strOutputPdfFilePath))
                                 {
-                                    throw new PdfConvertException($"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output:{System.Environment.NewLine}{sbdError}");
+                                    throw new PdfConvertException(
+                                        string.Format(CultureInfo.InvariantCulture, "Html to PDF conversion of '{0}' failed. Wkhtmltopdf output:{1}{2}",
+                                            document.Url, System.Environment.NewLine, sbdError));
                                 }
                             }
                             else

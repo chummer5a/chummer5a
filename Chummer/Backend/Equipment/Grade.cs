@@ -73,23 +73,27 @@ namespace Chummer.Backend.Equipment
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
             }
-            objNode.TryGetDecFieldQuickly("ess", ref _decEss);
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
-            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            if (_eSource == Improvement.ImprovementSource.Drug)
+                objNode.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold);
+            else
             {
-                if (Name.Contains("Alphaware"))
-                    _intDeviceRating = 3;
-                else if (Name.Contains("Betaware"))
-                    _intDeviceRating = 4;
-                else if (Name.Contains("Deltaware"))
-                    _intDeviceRating = 5;
-                else if (Name.Contains("Gammaware"))
-                    _intDeviceRating = 6;
-                else
-                    _intDeviceRating = 2;
+                objNode.TryGetDecFieldQuickly("ess", ref _decEss);
+                if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+                {
+                    if (Name.Contains("Alphaware"))
+                        _intDeviceRating = 3;
+                    else if (Name.Contains("Betaware"))
+                        _intDeviceRating = 4;
+                    else if (Name.Contains("Deltaware"))
+                        _intDeviceRating = 5;
+                    else if (Name.Contains("Gammaware"))
+                        _intDeviceRating = 6;
+                    else
+                        _intDeviceRating = 2;
+                }
             }
         }
 

@@ -38,7 +38,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             // Load the Martial Art information.
             _objXmlDocument = XmlManager.Load("martialarts.xml", objCharacter.Options.CustomDataDictionary);
         }
@@ -57,8 +57,8 @@ namespace Chummer
             lstManeuver.Sort(CompareListItems.CompareNames);
             lstManeuvers.BeginUpdate();
             lstManeuvers.DataSource = null;
-            lstManeuvers.ValueMember = "Value";
-            lstManeuvers.DisplayMember = "Name";
+            lstManeuvers.ValueMember = nameof(ListItem.Value);
+            lstManeuvers.DisplayMember = nameof(ListItem.Name);
             lstManeuvers.DataSource = lstManeuver;
             lstManeuvers.EndUpdate();
         }
@@ -93,9 +93,9 @@ namespace Chummer
             {
                 string strSource = xmlManeuver["source"].InnerText;
                 string strPage = xmlManeuver["altpage"]?.InnerText ?? xmlManeuver["page"].InnerText;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpaceCharacter + strPage;
-                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {

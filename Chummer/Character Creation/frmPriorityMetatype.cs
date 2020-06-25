@@ -50,7 +50,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
             XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);
@@ -143,36 +143,36 @@ namespace Chummer
                         {
                             case "Heritage":
                                 cboHeritage.BeginUpdate();
-                                cboHeritage.ValueMember = "Value";
-                                cboHeritage.DisplayMember = "Name";
+                                cboHeritage.ValueMember = nameof(ListItem.Value);
+                                cboHeritage.DisplayMember = nameof(ListItem.Name);
                                 cboHeritage.DataSource = lstItems;
                                 cboHeritage.EndUpdate();
                                 break;
                             case "Talent":
                                 cboTalent.BeginUpdate();
-                                cboTalent.ValueMember = "Value";
-                                cboTalent.DisplayMember = "Name";
+                                cboTalent.ValueMember = nameof(ListItem.Value);
+                                cboTalent.DisplayMember = nameof(ListItem.Name);
                                 cboTalent.DataSource = lstItems;
                                 cboTalent.EndUpdate();
                                 break;
                             case "Attributes":
                                 cboAttributes.BeginUpdate();
-                                cboAttributes.ValueMember = "Value";
-                                cboAttributes.DisplayMember = "Name";
+                                cboAttributes.ValueMember = nameof(ListItem.Value);
+                                cboAttributes.DisplayMember = nameof(ListItem.Name);
                                 cboAttributes.DataSource = lstItems;
                                 cboAttributes.EndUpdate();
                                 break;
                             case "Skills":
                                 cboSkills.BeginUpdate();
-                                cboSkills.ValueMember = "Value";
-                                cboSkills.DisplayMember = "Name";
+                                cboSkills.ValueMember = nameof(ListItem.Value);
+                                cboSkills.DisplayMember = nameof(ListItem.Name);
                                 cboSkills.DataSource = lstItems;
                                 cboSkills.EndUpdate();
                                 break;
                             case "Resources":
                                 cboResources.BeginUpdate();
-                                cboResources.ValueMember = "Value";
-                                cboResources.DisplayMember = "Name";
+                                cboResources.ValueMember = nameof(ListItem.Value);
+                                cboResources.DisplayMember = nameof(ListItem.Name);
                                 cboResources.DataSource = lstItems;
                                 cboResources.EndUpdate();
                                 break;
@@ -362,8 +362,8 @@ namespace Chummer
                             bool blnOldLoading = _blnLoading;
                             int intOldSelectedIndex = cboSkill1.SelectedIndex;
                             int intOldDataSourceSize = cboSkill1.Items.Count;
-                            cboSkill1.ValueMember = "Value";
-                            cboSkill1.DisplayMember = "Name";
+                            cboSkill1.ValueMember = nameof(ListItem.Value);
+                            cboSkill1.DisplayMember = nameof(ListItem.Name);
                             cboSkill1.DataSource = lstSkills;
                             cboSkill1.Visible = true;
                             if (intOldDataSourceSize == cboSkill1.Items.Count)
@@ -378,8 +378,8 @@ namespace Chummer
                                 intOldSelectedIndex = cboSkill2.SelectedIndex;
                                 intOldDataSourceSize = cboSkill2.Items.Count;
                                 cboSkill2.BindingContext = new BindingContext();
-                                cboSkill2.ValueMember = "Value";
-                                cboSkill2.DisplayMember = "Name";
+                                cboSkill2.ValueMember = nameof(ListItem.Value);
+                                cboSkill2.DisplayMember = nameof(ListItem.Name);
                                 cboSkill2.DataSource = lstSkills;
                                 cboSkill2.Visible = true;
                                 if (intOldDataSourceSize == cboSkill2.Items.Count)
@@ -400,8 +400,8 @@ namespace Chummer
                                     intOldSelectedIndex = cboSkill3.SelectedIndex;
                                     intOldDataSourceSize = cboSkill3.Items.Count;
                                     cboSkill3.BindingContext = new BindingContext();
-                                    cboSkill3.ValueMember = "Value";
-                                    cboSkill3.DisplayMember = "Name";
+                                    cboSkill3.ValueMember = nameof(ListItem.Value);
+                                    cboSkill3.DisplayMember = nameof(ListItem.Name);
                                     cboSkill3.DataSource = lstSkills;
                                     cboSkill3.Visible = true;
                                     if (intOldDataSourceSize == cboSkill3.Items.Count)
@@ -960,7 +960,7 @@ namespace Chummer
 
         void RefreshSelectedMetatype()
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
@@ -980,7 +980,7 @@ namespace Chummer
                 }
             }
 
-            string strAttributeFormat = "{0}/{1}" + strSpaceCharacter + "({2})";
+            string strAttributeFormat = "{0}/{1}" + strSpace + "({2})";
             if (objXmlMetavariant != null)
             {
                 if (objXmlMetavariantPriorityNode == null)
@@ -1044,14 +1044,14 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
+                            strQuality += strSpace + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.Value;
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + strSelect + ')';
+                            strQuality += strSpace + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -1069,10 +1069,10 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(strSpaceCharacter);
+                            strQualities.Append(strSpace);
                             strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
-                        strQualities.Append(',' + strSpaceCharacter);
+                        strQualities.Append(',' + strSpace);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();
@@ -1116,14 +1116,14 @@ namespace Chummer
 
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
+                            strQuality += strSpace + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
                     }
                     else
                     {
                         strQuality = xmlQuality.Value;
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + strSelect + ')';
+                            strQuality += strSpace + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -1141,10 +1141,10 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(strSpaceCharacter);
+                            strQualities.Append(strSpace);
                             strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
-                        strQualities.Append(',' + strSpaceCharacter);
+                        strQualities.Append(',' + strSpace);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();
@@ -1356,8 +1356,8 @@ namespace Chummer
             int intOldDataSourceSize = cboTalents.Items.Count;
             cboTalents.BeginUpdate();
             cboTalents.DataSource = null;
-            cboTalents.ValueMember = "Value";
-            cboTalents.DisplayMember = "Name";
+            cboTalents.ValueMember = nameof(ListItem.Value);
+            cboTalents.DisplayMember = nameof(ListItem.Name);
             cboTalents.DataSource = lstTalent;
             if (intOldDataSourceSize == cboTalents.Items.Count)
             {
@@ -1409,8 +1409,8 @@ namespace Chummer
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.ValueMember = "Value";
-                    cboMetavariant.DisplayMember = "Name";
+                    cboMetavariant.ValueMember = nameof(ListItem.Value);
+                    cboMetavariant.DisplayMember = nameof(ListItem.Name);
                     cboMetavariant.DataSource = lstMetavariants;
                     cboMetavariant.Enabled = lstMetavariants.Count > 1;
                     _blnLoading = blnOldLoading;
@@ -1457,8 +1457,8 @@ namespace Chummer
                 else
                 {
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.ValueMember = "Value";
-                    cboMetavariant.DisplayMember = "Name";
+                    cboMetavariant.ValueMember = nameof(ListItem.Value);
+                    cboMetavariant.DisplayMember = nameof(ListItem.Name);
                     cboMetavariant.DataSource = lstMetavariants;
                     cboMetavariant.Enabled = false;
                     cboMetavariant.EndUpdate();
@@ -1476,8 +1476,8 @@ namespace Chummer
                 };
 
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.ValueMember = "Value";
-                cboMetavariant.DisplayMember = "Name";
+                cboMetavariant.ValueMember = nameof(ListItem.Value);
+                cboMetavariant.DisplayMember = nameof(ListItem.Name);
                 cboMetavariant.DataSource = lstMetavariants;
                 cboMetavariant.Enabled = false;
                 cboMetavariant.EndUpdate();
@@ -1519,8 +1519,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 lstMetatypes.BeginUpdate();
-                lstMetatypes.ValueMember = "Value";
-                lstMetatypes.DisplayMember = "Name";
+                lstMetatypes.ValueMember = nameof(ListItem.Value);
+                lstMetatypes.DisplayMember = nameof(ListItem.Name);
                 lstMetatypes.DataSource = lstMetatype;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -1578,8 +1578,8 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstCategory;
             _blnLoading = blnOldLoading;
             if (!string.IsNullOrEmpty(strOldSelected))

@@ -36,7 +36,7 @@ namespace Chummer
         public frmSelectWeaponCategory(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objXmlDocument = objCharacter?.LoadData("weapons.xml") ?? XmlManager.Load("weapons.xml");
         }
 
@@ -67,8 +67,8 @@ namespace Chummer
                 lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstCategory;
 
             // Select the first Skill in the list.

@@ -369,6 +369,7 @@ namespace Chummer.Backend.Skills
                 return;
             objWriter.WriteStartElement("skillgroup");
 
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
@@ -558,8 +559,8 @@ namespace Chummer.Backend.Skills
             {
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
                 }
                 return _strToolTip;
             }

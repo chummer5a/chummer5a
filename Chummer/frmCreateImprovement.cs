@@ -39,7 +39,7 @@ namespace Chummer
         public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strCustomGroup = strCustomGroup;
             _objDocument = XmlManager.Load("improvements.xml");
@@ -57,8 +57,8 @@ namespace Chummer
 
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
-            cboImprovemetType.ValueMember = "Value";
-            cboImprovemetType.DisplayMember = "Name";
+            cboImprovemetType.ValueMember = nameof(ListItem.Value);
+            cboImprovemetType.DisplayMember = nameof(ListItem.Name);
             cboImprovemetType.DataSource = lstTypes;
 
             // Load the information from the passed Improvement if one has been given.
@@ -481,54 +481,59 @@ namespace Chummer
                 return;
             }
 
-            MemoryStream objStream = new MemoryStream();
             XmlDocument objBonusXml = new XmlDocument
             {
                 XmlResolver = null
             };
-            using (XmlWriter objWriter = XmlWriter.Create(objStream))
+            using (MemoryStream objStream = new MemoryStream())
             {
-                // Build the XML for the Improvement.
-                XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
-                string strInternal = objFetchNode?["internal"]?.InnerText;
-                if (string.IsNullOrEmpty(strInternal))
-                    return;
-                objWriter.WriteStartDocument();
-                // <bonus>
-                objWriter.WriteStartElement("bonus");
-                // <whatever element>
-                objWriter.WriteStartElement(strInternal);
-
-                string strRating = string.Empty;
-                if (chkApplyToRating.Checked)
-                    strRating = "<applytorating>True</applytorating>";
-
-                // Retrieve the XML data from the document and replace the values as necessary.
-                // ReSharper disable once PossibleNullReferenceException
-                string strXml = objFetchNode["xml"].InnerText
-                    .Replace("{val}", nudVal.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                    .Replace("{min}", nudMin.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                    .Replace("{max}", nudMax.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                    .Replace("{aug}", nudAug.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                    .Replace("{free}", chkFree.Checked.ToString(GlobalOptions.InvariantCultureInfo).ToLowerInvariant())
-                    .Replace("{select}", txtSelect.Text)
-                    .Replace("{applytorating}", strRating);
-                objWriter.WriteRaw(strXml);
-
-                // Write the rest of the document.
-                // </whatever element>
-                objWriter.WriteEndElement();
-                // </bonus>
-                objWriter.WriteEndElement();
-                objWriter.WriteEndDocument();
-                objWriter.Flush();
-
-                objStream.Position = 0;
-
-                // Read it back in as an XmlDocument.
+                // Here instead of later because objWriter.Close() needs Stream to not be disposed, but StreamReader.Close() will dispose the Stream.
                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
-                        objBonusXml.Load(objXmlReader);
+                {
+                    using (XmlWriter objWriter = XmlWriter.Create(objStream))
+                    {
+                        // Build the XML for the Improvement.
+                        XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
+                        string strInternal = objFetchNode?["internal"]?.InnerText;
+                        if (string.IsNullOrEmpty(strInternal))
+                            return;
+                        objWriter.WriteStartDocument();
+                        // <bonus>
+                        objWriter.WriteStartElement("bonus");
+                        // <whatever element>
+                        objWriter.WriteStartElement(strInternal);
+
+                        string strRating = string.Empty;
+                        if (chkApplyToRating.Checked)
+                            strRating = "<applytorating>True</applytorating>";
+
+                        // Retrieve the XML data from the document and replace the values as necessary.
+                        // ReSharper disable once PossibleNullReferenceException
+                        string strXml = objFetchNode["xml"].InnerText
+                            .Replace("{val}", nudVal.Value.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("{min}", nudMin.Value.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("{max}", nudMax.Value.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("{aug}", nudAug.Value.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("{free}", chkFree.Checked.ToString(GlobalOptions.InvariantCultureInfo).ToLowerInvariant())
+                            .Replace("{select}", txtSelect.Text)
+                            .Replace("{applytorating}", strRating);
+                        objWriter.WriteRaw(strXml);
+
+                        // Write the rest of the document.
+                        // </whatever element>
+                        objWriter.WriteEndElement();
+                        // </bonus>
+                        objWriter.WriteEndElement();
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        objStream.Position = 0;
+
+                        // Read it back in as an XmlDocument.
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                            objBonusXml.Load(objXmlReader);
+                    }
+                }
             }
 
             // Pluck out the bonus information.
@@ -597,7 +602,7 @@ namespace Chummer
                         objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
                         string strFirstPartTranslated = objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? astrToTranslateParts[0];
 
-                        return $"{strFirstPartTranslated}{LanguageManager.GetString("String_Space")}({LanguageManager.TranslateExtra(astrToTranslateParts[1], _objCharacter)})";
+                        return strFirstPartTranslated + LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(astrToTranslateParts[1], _objCharacter) + ')';
                     }
                     else
                     {

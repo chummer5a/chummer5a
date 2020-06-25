@@ -169,19 +169,19 @@ namespace Chummer.Backend.Equipment
 
             XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
             XmlNode xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode($"/chummer/comforts/comfort[name = \"{_strBaseLifestyle}\"]");
+                xmlLifestyleDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
             // Area.
             xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode($"/chummer/neighborhoods/neighborhood[name = \"{_strBaseLifestyle}\"]");
+                xmlLifestyleDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + _strBaseLifestyle + "\"]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
             // Security.
             xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode($"/chummer/securities/security[name = \"{_strBaseLifestyle}\"]");
+                xmlLifestyleDocument.SelectSingleNode("/chummer/securities/security[name = \"" + _strBaseLifestyle + "\"]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             if (_objCharacter.Options.BookEnabled("HT") || _objCharacter.Options.AllowFreeGrids)
@@ -336,7 +336,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
                     List<ListItem> lstQualities = new List<ListItem>();
-                    using (XmlNodeList xmlLifestyleList = _objCharacter.LoadData("lifestyles.xml").SelectNodes("/chummer/lifestyles/lifestyle"))
+                    using (XmlNodeList xmlLifestyleList = xmlLifestyles.SelectNodes("/chummer/lifestyles/lifestyle"))
                     {
                         if (xmlLifestyleList != null)
                         {
@@ -370,30 +370,28 @@ namespace Chummer.Backend.Equipment
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
-                XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                 XmlNode xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{_strBaseLifestyle}\"]");
+                    xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
                 {
                     xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
                 }
             }
             if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
             {
-                XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                 XmlNode xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/comforts/comfort[name = \"{_strBaseLifestyle}\"]");
+                    xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                 // Area.
                 xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/neighborhoods/neighborhood[name = \"{_strBaseLifestyle}\"]");
+                    xmlLifestyles.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + _strBaseLifestyle + "\"]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                 // Security.
                 xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/securities/security[name = \"{_strBaseLifestyle}\"]");
+                    xmlLifestyles.SelectSingleNode("/chummer/securities/security[name = \"" + _strBaseLifestyle + "\"]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             }
@@ -465,7 +463,7 @@ namespace Chummer.Backend.Equipment
         private void LegacyShim(XmlNode xmlLifestyleNode)
         {
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
-            if (_objCharacter.LastSavedVersion > new Version("5.197.0") ||
+            if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
                 xmlLifestyleNode["costforarea"] != null) return;
             XmlDocument objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
             XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
@@ -536,6 +534,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("lifestyle");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", CustomName);
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -1060,15 +1060,11 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
-                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true), GlobalOptions.InvariantCultureInfo);
+                d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true);
                 if (_eType == LifestyleType.Standard)
                 {
-                    d += Convert.ToDecimal(
-                        ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost),
-                        GlobalOptions.InvariantCultureInfo);
-                    d += Convert.ToDecimal(
-                        ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false,
-                            BaseLifestyle), GlobalOptions.InvariantCultureInfo);
+                    d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost);
+                    d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false, BaseLifestyle);
                 }
 
                 d += LifestyleQualities.Sum(lq => lq.Multiplier);
@@ -1114,7 +1110,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100.0m, GlobalOptions.InvariantCultureInfo);
+        public decimal BaseCostMultiplier => LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100.0m;
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.

@@ -43,7 +43,7 @@ namespace Chummer
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
@@ -98,15 +98,15 @@ namespace Chummer
                     }
 
                     cboChoice1.Visible = true;
-                    cboChoice1.ValueMember = "Value";
-                    cboChoice1.DisplayMember = "Name";
+                    cboChoice1.ValueMember = nameof(ListItem.Value);
+                    cboChoice1.DisplayMember = nameof(ListItem.Name);
                     cboChoice1.DataSource = lstChoice1;
 
                     if (lstChoice2.Count > 0)
                     {
                         cboChoice2.Visible = true;
-                        cboChoice2.ValueMember = "Value";
-                        cboChoice2.DisplayMember = "Name";
+                        cboChoice2.ValueMember = nameof(ListItem.Value);
+                        cboChoice2.DisplayMember = nameof(ListItem.Name);
                         cboChoice2.DataSource = lstChoice2;
                     }
                     else
@@ -140,9 +140,9 @@ namespace Chummer
 
                 string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 cmdOK.Enabled = true;
             }
@@ -242,8 +242,8 @@ namespace Chummer
             string strOldSelected = lstMentor.SelectedValue?.ToString();
             _blnSkipRefresh = true;
             lstMentor.BeginUpdate();
-            lstMentor.ValueMember = "Value";
-            lstMentor.DisplayMember = "Name";
+            lstMentor.ValueMember = nameof(ListItem.Value);
+            lstMentor.DisplayMember = nameof(ListItem.Name);
             lstMentor.DataSource = lstMentors;
             _blnSkipRefresh = false;
             if (!string.IsNullOrEmpty(strOldSelected))

@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectItem()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void frmSelectItem_Load(object sender, EventArgs e)
@@ -242,8 +242,8 @@ namespace Chummer
 
             // Populate the lists.
             cboAmmo.BeginUpdate();
-            cboAmmo.ValueMember = "Value";
-            cboAmmo.DisplayMember = "Name";
+            cboAmmo.ValueMember = nameof(ListItem.Value);
+            cboAmmo.DisplayMember = nameof(ListItem.Name);
             cboAmmo.DataSource = lstItems;
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.

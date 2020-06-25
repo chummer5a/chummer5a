@@ -301,6 +301,9 @@ namespace Chummer.Plugins
                     catch (Exception e)
                     {
                         Log.Error(e);
+#if DEBUG
+                        throw;
+#endif
                     }
                 }
                 Log.Info("Initializing Plugins finished.");

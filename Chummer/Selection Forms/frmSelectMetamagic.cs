@@ -52,7 +52,7 @@ namespace Chummer
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMode = objMode;
 
@@ -106,9 +106,9 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 }
                 else
                 {
@@ -205,8 +205,8 @@ namespace Chummer
             string strOldSelected = lstMetamagic.SelectedValue?.ToString();
             _blnLoading = true;
             lstMetamagic.BeginUpdate();
-            lstMetamagic.ValueMember = "Value";
-            lstMetamagic.DisplayMember = "Name";
+            lstMetamagic.ValueMember = nameof(ListItem.Value);
+            lstMetamagic.DisplayMember = nameof(ListItem.Name);
             lstMetamagic.DataSource = lstMetamagics;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -227,7 +227,7 @@ namespace Chummer
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
 
-                if (!objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter, _strType))
+                if (objXmlMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, _strType) != true)
                     return;
 
                 _strSelectedMetamagic = strSelectedId;

@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectComplexForm(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").CreateNavigator().SelectSingleNode("/chummer/complexforms");
@@ -49,7 +49,9 @@ namespace Chummer
             if (_xmlOptionalComplexFormNode == null) return;
             if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
-                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = \""
+                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                                                                                 + "\"]");
                 if (xmlMetavariantNode != null)
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
@@ -138,11 +140,11 @@ namespace Chummer
 
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
 
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter +
-                    LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace +
+                    LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {
@@ -267,8 +269,8 @@ namespace Chummer
             _blnLoading = true;
             string strOldSelected = lstComplexForms.SelectedValue?.ToString();
             lstComplexForms.BeginUpdate();
-            lstComplexForms.ValueMember = "Value";
-            lstComplexForms.DisplayMember = "Name";
+            lstComplexForms.ValueMember = nameof(ListItem.Value);
+            lstComplexForms.DisplayMember = nameof(ListItem.Name);
             lstComplexForms.DataSource = lstComplexFormItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

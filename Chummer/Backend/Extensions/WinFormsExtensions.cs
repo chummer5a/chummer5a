@@ -69,6 +69,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to a property such that only the control's property is ever updated (when the source has OnPropertyChanged)
+        /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoOneWayDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+            }
+            objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.Never);
+        }
+
+        /// <summary>
         /// Bind a control's property to a property via OnPropertyChanged
         /// </summary>
         /// <param name="objControl">Control to bind</param>
@@ -81,9 +100,28 @@ namespace Chummer
                 return;
             if (!objControl.IsHandleCreated)
             {
-                objControl.CreateControl();
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        /// <summary>
+        /// Bind a control's property to the OPPOSITE of property such that only the control's property is ever updated (when the source has OnPropertyChanged). Expected to be used exclusively by boolean bindings, other attributes have not been tested.
+        /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoOneWayNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+            }
+            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true, true));
         }
 
         /// <summary>
@@ -99,7 +137,7 @@ namespace Chummer
                 return;
             if (!objControl.IsHandleCreated)
             {
-                objControl.CreateControl();
+                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
         }
@@ -291,16 +329,10 @@ namespace Chummer
         {
             public int Compare(object x, object y)
             {
-                ICanSort lhs = (x as TreeNode)?.Tag as ICanSort;
-                ICanSort rhs = (y as TreeNode)?.Tag as ICanSort;
-
                 // Sort any non-sortables first
-                if (lhs == null)
+                if (!((x as TreeNode)?.Tag is ICanSort lhs))
                     return -1;
-                if (rhs == null)
-                    return 1;
-
-                return lhs.SortOrder.CompareTo(rhs.SortOrder);
+                return !((y as TreeNode)?.Tag is ICanSort rhs) ? 1 : lhs.SortOrder.CompareTo(rhs.SortOrder);
             }
         }
 

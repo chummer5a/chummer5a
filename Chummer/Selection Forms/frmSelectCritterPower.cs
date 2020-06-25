@@ -43,13 +43,15 @@ namespace Chummer
         public frmSelectCritterPower(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").CreateNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNode();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode($"/metavariants/metavariant[name = \"{_objCharacter.MetavariantGuid}\"]");
+            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = \""
+                                                                                      + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
+                                                                                      + "\"]");
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
@@ -91,8 +93,8 @@ namespace Chummer
 
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
 
@@ -201,9 +203,9 @@ namespace Chummer
 
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 

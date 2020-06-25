@@ -156,12 +156,12 @@ namespace Chummer
                     if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
                     {
                         intExtraKarmaCost = -2;
-                        strFocusName = strFocusName.Replace(", Individualized, Complete", "");
+                        strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
                     }
                     else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
                     {
                         intExtraKarmaCost = -1;
-                        strFocusName = strFocusName.Replace(", Individualized, Partial", "");
+                        strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
                     }
 
                     int intKarmaMultiplier;

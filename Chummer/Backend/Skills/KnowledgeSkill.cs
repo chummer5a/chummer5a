@@ -55,8 +55,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public static IEnumerable<ListItem> DefaultKnowledgeSkills(Character objCharacter = null, string strLanguage = "")
+        private IReadOnlyList<ListItem> _lstDefaultKnowledgeSkills;
+
+        public IReadOnlyList<ListItem> MyDefaultKnowledgeSkills
         {
+            get
+            {
+                if (GlobalOptions.LiveCustomData || _lstDefaultKnowledgeSkills == null)
+                {
+                    return _lstDefaultKnowledgeSkills = DefaultKnowledgeSkills(CharacterObject);
+                }
+                return _lstDefaultKnowledgeSkills;
+            }
+        }
+
+        public static IReadOnlyList<ListItem> DefaultKnowledgeSkills(Character objCharacter = null, string strLanguage = "")
+        {
+            List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
             XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
@@ -67,9 +82,26 @@ namespace Chummer.Backend.Skills
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
                         string strName = xmlSkill["name"]?.InnerText ?? string.Empty;
-                        yield return new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName);
+                        lstReturn.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
                     }
                 }
+            }
+
+            lstReturn.Sort(CompareListItems.CompareNames);
+            return lstReturn;
+        }
+
+        private IReadOnlyList<ListItem> _lstKnowledgeTypes;
+
+        public IReadOnlyList<ListItem> MyKnowledgeTypes
+        {
+            get
+            {
+                if (GlobalOptions.LiveCustomData || _lstKnowledgeTypes == null)
+                {
+                    return _lstKnowledgeTypes = KnowledgeTypes(CharacterObject);
+                }
+                return _lstKnowledgeTypes;
             }
         }
 
@@ -79,8 +111,9 @@ namespace Chummer.Backend.Skills
         /// <param name="objCharacter"></param>
         /// <param name="strLanguage"></param>
         /// <returns></returns>
-        public static IEnumerable<ListItem> KnowledgeTypes(Character objCharacter = null, string strLanguage = "")
+        public static IReadOnlyList<ListItem> KnowledgeTypes(Character objCharacter = null, string strLanguage = "")
         {
+            List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
             XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
@@ -91,10 +124,13 @@ namespace Chummer.Backend.Skills
                     foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
-                        yield return new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText);
+                        lstReturn.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
             }
+
+            lstReturn.Sort(CompareListItems.CompareNames);
+            return lstReturn;
         }
 
         public override bool AllowDelete => !ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0;

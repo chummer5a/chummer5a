@@ -186,7 +186,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page}", strEnglishNameOnPage, _objCharacter);
+                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -200,7 +200,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF($"{Source} {DisplayPage(GlobalOptions.Language)}",
+                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage, _objCharacter);
                     }
                 }
@@ -809,16 +809,18 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalOptions.InvariantCultureInfo));
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            if (_nodBonus != null)
+            if (!string.IsNullOrEmpty(_nodBonus?.InnerXml))
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
-            if (_nodWirelessBonus != null)
+            if (!string.IsNullOrEmpty(_nodWirelessBonus?.InnerXml))
                 objWriter.WriteRaw("<wirelessbonus>" + _nodWirelessBonus.InnerXml + "</wirelessbonus>");
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
-            if (_nodWeaponBonus != null)
+            if (!string.IsNullOrEmpty(_nodWeaponBonus?.InnerXml))
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
+            else
+                objWriter.WriteElementString("weaponbonus", string.Empty);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("canformpersona", _strCanFormPersona);
@@ -1229,7 +1231,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("gear");
-
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ')');
             else
@@ -2071,12 +2074,13 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objDoc = _objCharacter.LoadData("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
-                    ? objDoc.SelectSingleNode($"/chummer/gears/gear[(name = \"{strName}\" and category = \"{strCategory}\")]")
-                    : objDoc.SelectSingleNode($"/chummer/gears/gear[(id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\") or (name = {strNameWithQuotes} and category = \"{Category}\")]");
+                    ? objDoc.SelectSingleNode("/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]")
+                    : objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
+                                              + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[name = {strNameWithQuotes}]") ??
-                                          objDoc.SelectSingleNode($"/chummer/gears/gear[contains(name, {strNameWithQuotes})]");
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
+                                          objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
                     _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
@@ -2552,17 +2556,17 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1.0m || Category == "Currency")
-                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
+                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpace + strReturn;
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
+                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
 
             if (!string.IsNullOrEmpty(GearName))
             {
-                strReturn += strSpaceCharacter + "(\"" + GearName + "\")";
+                strReturn += strSpace + "(\"" + GearName + "\")";
             }
 
             return strReturn;
@@ -2939,7 +2943,7 @@ namespace Chummer.Backend.Equipment
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
                                 ? CurrentDisplayName
-                                : $"{CurrentDisplayName} ({Parent})";
+                                : CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + Parent + ')';
                         }
                         else
                         {

@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
@@ -121,9 +121,9 @@ namespace Chummer
 
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
@@ -232,8 +232,8 @@ namespace Chummer
             string strOldSelected = lstMartialArts.SelectedValue?.ToString();
             _blnLoading = true;
             lstMartialArts.BeginUpdate();
-            lstMartialArts.ValueMember = "Value";
-            lstMartialArts.DisplayMember = "Name";
+            lstMartialArts.ValueMember = nameof(ListItem.Value);
+            lstMartialArts.DisplayMember = nameof(ListItem.Name);
             lstMartialArts.DataSource = lstMartialArt;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

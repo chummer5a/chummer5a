@@ -138,6 +138,15 @@
         </xsl:call-template>
         <xsl:value-of select="$lang.Memory"/>: <xsl:value-of select="memory"/>
 
+        <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+          <br/>
+          <xsl:call-template name="fnx-pad-r">
+            <xsl:with-param name="string" select="concat($lang.AstralReputation,': ',totalastralreputation)"/>
+            <xsl:with-param name="length" select="40"/>
+          </xsl:call-template>
+          <xsl:value-of select="$lang.WildReputation"/>: <xsl:value-of select="totalwildreputation"/>
+        </xsl:if>
+
                 <br/>
         <xsl:call-template name="fnx-pad-r">
           <xsl:with-param name="string" select="concat($lang.Karma,': ',totalkarma)"/>

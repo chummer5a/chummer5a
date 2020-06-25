@@ -1104,7 +1104,7 @@ namespace Chummer
             }
             else if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                strPath += $" and {_strBookXPath}";
+                strPath += " and " + _strBookXPath;
             }
             else
             {

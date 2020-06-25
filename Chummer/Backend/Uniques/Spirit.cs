@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -167,6 +168,7 @@ namespace Chummer
             }
 
             objWriter.WriteStartElement("spirit");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("crittername", CritterName);
@@ -920,7 +922,7 @@ namespace Chummer
             objWriter.WriteStartElement("mugshots");
             foreach (Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", imgMugshot.ToBase64String());
+                objWriter.WriteElementString("mugshot", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
             }
             // </mugshot>
             objWriter.WriteEndElement();
@@ -944,13 +946,13 @@ namespace Chummer
                 Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
                 Parallel.For(0, lstMugshotsBase64.Count, i =>
                 {
-                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
                 });
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if (lstMugshotsBase64.Count == 1)
             {
-                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
             }
         }
 
@@ -986,7 +988,7 @@ namespace Chummer
                     // <mainmugshotpath />
                     objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
+                    objWriter.WriteElementString("mainmugshotbase64", GlobalOptions.ImageToBase64StringForStorage(imgMainMugshot));
                 }
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalOptions.InvariantCultureInfo));
@@ -998,7 +1000,7 @@ namespace Chummer
                     Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
 
-                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
+                    objWriter.WriteElementString("stringbase64", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
 
                     imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + i.ToString(GlobalOptions.InvariantCultureInfo) + ".img");
                     imgMugshot.Save(imgMugshotPath);

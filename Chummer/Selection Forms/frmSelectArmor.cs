@@ -52,7 +52,7 @@ namespace Chummer
         public frmSelectArmor(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
@@ -103,8 +103,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
@@ -476,7 +476,7 @@ namespace Chummer
                         else
                             ++intOverLimit;
                     }
-                    
+
                     lstArmors.Sort(CompareListItems.CompareNames);
                     if (intOverLimit > 0)
                     {
@@ -488,8 +488,8 @@ namespace Chummer
                     _blnLoading = true;
                     string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
-                    lstArmor.ValueMember = "Value";
-                    lstArmor.DisplayMember = "Name";
+                    lstArmor.ValueMember = nameof(ListItem.Value);
+                    lstArmor.DisplayMember = nameof(ListItem.Name);
                     lstArmor.DataSource = lstArmors;
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))

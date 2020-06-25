@@ -49,22 +49,19 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             MoveControls();
 
             _objContact = objContact;
 
-            foreach (ToolStripItem objItem in cmsContact.Items)
+            foreach (ToolStripItem tssItem in cmsContact.Items)
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem);
+                tssItem.TranslateToolStripItemsRecursively();
             }
         }
 
         private void ContactControl_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
-            Width = cmdDelete.Left + cmdDelete.Width;
-
             LoadContactList();
 
             DoDataBindings();
@@ -302,16 +299,17 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmContactNotes = new frmNotes
-            {
-                Notes = _objContact.Notes
-            })
+            string strOldValue = _objContact.Notes;
+            using (frmNotes frmContactNotes = new frmNotes { Notes = strOldValue })
             {
                 frmContactNotes.ShowDialog(this);
-
-                if (frmContactNotes.DialogResult != DialogResult.OK || _objContact.Notes == frmContactNotes.Notes)
+                if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
+                frmContactNotes.ShowDialog(this);
+
                 _objContact.Notes = frmContactNotes.Notes;
+                if (strOldValue == _objContact.Notes)
+                    return;
             }
 
             string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
@@ -460,7 +458,7 @@ namespace Chummer
                         }
             }
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             using (XmlNodeList xmlMetatypeList = _objContact.CharacterObject.LoadData("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypeList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
@@ -475,7 +473,7 @@ namespace Chummer
                             {
                                 string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
                                 if (lstMetatypes.All(x => x.Value != null && x.Value.ToString() != strMetavariantName))
-                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpace + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                             }
                         }
                     }
@@ -489,118 +487,88 @@ namespace Chummer
             lstPreferredPayments.Sort(CompareListItems.CompareNames);
 
             cboContactRole.BeginUpdate();
-            cboContactRole.ValueMember = "Value";
-            cboContactRole.DisplayMember = "Name";
+            cboContactRole.ValueMember = nameof(ListItem.Value);
+            cboContactRole.DisplayMember = nameof(ListItem.Name);
             cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();
-            cboMetatype.ValueMember = "Value";
-            cboMetatype.DisplayMember = "Name";
+            cboMetatype.ValueMember = nameof(ListItem.Value);
+            cboMetatype.DisplayMember = nameof(ListItem.Name);
             cboMetatype.DataSource = lstMetatypes;
             cboMetatype.EndUpdate();
 
             cboSex.BeginUpdate();
-            cboSex.ValueMember = "Value";
-            cboSex.DisplayMember = "Name";
+            cboSex.ValueMember = nameof(ListItem.Value);
+            cboSex.DisplayMember = nameof(ListItem.Name);
             cboSex.DataSource = lstSexes;
             cboSex.EndUpdate();
 
             cboAge.BeginUpdate();
-            cboAge.ValueMember = "Value";
-            cboAge.DisplayMember = "Name";
+            cboAge.ValueMember = nameof(ListItem.Value);
+            cboAge.DisplayMember = nameof(ListItem.Name);
             cboAge.DataSource = lstAges;
             cboAge.EndUpdate();
 
             cboPersonalLife.BeginUpdate();
-            cboPersonalLife.ValueMember = "Value";
-            cboPersonalLife.DisplayMember = "Name";
+            cboPersonalLife.ValueMember = nameof(ListItem.Value);
+            cboPersonalLife.DisplayMember = nameof(ListItem.Name);
             cboPersonalLife.DataSource = lstPersonalLives;
             cboPersonalLife.EndUpdate();
 
             cboType.BeginUpdate();
-            cboType.ValueMember = "Value";
-            cboType.DisplayMember = "Name";
+            cboType.ValueMember = nameof(ListItem.Value);
+            cboType.DisplayMember = nameof(ListItem.Name);
             cboType.DataSource = lstTypes;
             cboType.EndUpdate();
 
             cboPreferredPayment.BeginUpdate();
-            cboPreferredPayment.ValueMember = "Value";
-            cboPreferredPayment.DisplayMember = "Name";
+            cboPreferredPayment.ValueMember = nameof(ListItem.Value);
+            cboPreferredPayment.DisplayMember = nameof(ListItem.Name);
             cboPreferredPayment.DataSource = lstPreferredPayments;
             cboPreferredPayment.EndUpdate();
 
             cboHobbiesVice.BeginUpdate();
-            cboHobbiesVice.ValueMember = "Value";
-            cboHobbiesVice.DisplayMember = "Name";
+            cboHobbiesVice.ValueMember = nameof(ListItem.Value);
+            cboHobbiesVice.DisplayMember = nameof(ListItem.Name);
             cboHobbiesVice.DataSource = lstHobbiesVices;
             cboHobbiesVice.EndUpdate();
         }
 
         private void DoDataBindings()
         {
-            chkGroup.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsGroup), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkGroup.DataBindings.Add("Enabled", _objContact, nameof(_objContact.GroupEnabled), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.FreeEnabled), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkFamily.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkBlackmail.DataBindings.Add("Checked", _objContact, nameof(_objContact.Blackmail), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            chkBlackmail.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            lblQuickStats.DataBindings.Add("Text", _objContact, nameof(_objContact.QuickText), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            nudLoyalty.DataBindings.Add("Value", _objContact, nameof(_objContact.Loyalty), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            nudLoyalty.DataBindings.Add("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            nudConnection.DataBindings.Add("Value", _objContact, nameof(_objContact.Connection), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            nudConnection.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotReadOnly), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            nudConnection.DataBindings.Add("Maximum", _objContact, nameof(_objContact.ConnectionMaximum), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactLocation.DataBindings.Add("Text", _objContact, nameof(_objContact.Location), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayRole), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplaySex), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboAge.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayAge), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboPersonalLife.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPersonalLife), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboType.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayType), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPreferredPayment), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.NotReadOnly), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
+            chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
+            chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
+            chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
+            chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
+            chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+            chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
+            chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+            lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
+            nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
+            nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
+            nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
+            nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
+            nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
+            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
+            txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
+            cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
+            cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
+            cboSex.DoDatabinding("Text", _objContact, nameof(_objContact.DisplaySex));
+            cboAge.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayAge));
+            cboPersonalLife.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPersonalLife));
+            cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
+            cboPreferredPayment.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPreferredPayment));
+            cboHobbiesVice.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayHobbiesVice));
+            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
-            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboMetatype.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboSex.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            cboAge.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboSex.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
 
         private void MoveControls()

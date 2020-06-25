@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             // Build the list of Attributes.
             _lstAttributes = new List<ListItem>(lstAttributeAbbrevs.Length);
@@ -45,8 +45,8 @@ namespace Chummer
             }
 
             cboAttribute.BeginUpdate();
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
+            cboAttribute.ValueMember = nameof(ListItem.Value);
+            cboAttribute.DisplayMember = nameof(ListItem.Name);
             cboAttribute.DataSource = _lstAttributes;
             if (_lstAttributes.Count >= 1)
                 cboAttribute.SelectedIndex = 0;

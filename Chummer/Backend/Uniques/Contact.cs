@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -364,6 +365,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("contact");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
@@ -537,8 +539,10 @@ namespace Chummer
 
                 strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, _objCharacter, strLanguage);
 
-                if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
-                objMetatypeNode = objMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
+                if (LinkedCharacter.MetavariantGuid == Guid.Empty)
+                    return strReturn;
+                objMetatypeNode = objMetatypeNode
+                    .SelectSingleNode("metavariants/metavariant[id = \"" + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
@@ -795,7 +799,7 @@ namespace Chummer
 
         public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
-        public string QuickText => $"({Connection}/{(IsGroup ? $"{Loyalty}G" : Loyalty.ToString(GlobalOptions.CultureInfo))})";
+        public string QuickText => string.Format(GlobalOptions.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", Connection, Loyalty);
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
@@ -1174,7 +1178,7 @@ namespace Chummer
             objWriter.WriteStartElement("mugshots");
             foreach (Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", imgMugshot.ToBase64String());
+                objWriter.WriteElementString("mugshot", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
             }
             // </mugshot>
             objWriter.WriteEndElement();
@@ -1198,13 +1202,13 @@ namespace Chummer
                 Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
                 Parallel.For(0, lstMugshotsBase64.Count, i =>
                 {
-                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
                 });
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if (lstMugshotsBase64.Count == 1)
             {
-                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
             }
         }
 
@@ -1240,7 +1244,7 @@ namespace Chummer
                     // <mainmugshotpath />
                     objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
+                    objWriter.WriteElementString("mainmugshotbase64", GlobalOptions.ImageToBase64StringForStorage(imgMainMugshot));
                 }
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalOptions.InvariantCultureInfo));
@@ -1252,7 +1256,7 @@ namespace Chummer
                     Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
 
-                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
+                    objWriter.WriteElementString("stringbase64", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
 
                     imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + i.ToString(GlobalOptions.InvariantCultureInfo) + ".img");
                     imgMugshot.Save(imgMugshotPath);

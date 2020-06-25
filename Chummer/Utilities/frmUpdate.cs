@@ -54,8 +54,9 @@ namespace Chummer
         {
             Log.Info("frmUpdate");
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            CurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+            this.TranslateWinForm();
+            CurrentVersion = string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}",
+                _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
             _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
             _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
 
@@ -384,16 +385,16 @@ namespace Chummer
             if (Version.TryParse(strLatestVersion, out Version objLatestVersion))
                 intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space");
             if (intResult > 0)
             {
-                lblUpdaterStatus.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), strLatestVersion) + strSpaceCharacter +
+                lblUpdaterStatus.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), strLatestVersion) + strSpace +
                                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion);
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpaceCharacter +
-                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion) + strSpaceCharacter +
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpace +
+                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion) + strSpace +
                                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"), LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
@@ -403,7 +404,7 @@ namespace Chummer
                 cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += strSpaceCharacter + LanguageManager.GetString("String_Nightly_Changelog_Warning");
+                lblUpdaterStatus.Text += strSpace + LanguageManager.GetString("String_Nightly_Changelog_Warning");
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)

@@ -43,7 +43,7 @@ namespace Chummer.UI.Shared
         {
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
         }
 
         private void VehiclesTabUserControl_Load(object sender, EventArgs e)
@@ -1089,8 +1089,8 @@ namespace Chummer.UI.Shared
                     cmdVehicleMoveToInventory.Enabled = true;
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboVehicleWeaponAmmo.BeginUpdate();
-                    cboVehicleWeaponAmmo.ValueMember = "Value";
-                    cboVehicleWeaponAmmo.DisplayMember = "Name";
+                    cboVehicleWeaponAmmo.ValueMember = nameof(ListItem.Value);
+                    cboVehicleWeaponAmmo.DisplayMember = nameof(ListItem.Name);
                     cboVehicleWeaponAmmo.DataSource = lstAmmo;
                     cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
                     if (cboVehicleWeaponAmmo.SelectedIndex == -1)

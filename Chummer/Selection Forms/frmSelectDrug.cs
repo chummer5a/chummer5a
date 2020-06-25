@@ -62,7 +62,7 @@ namespace Chummer
 
             _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").CreateNavigator().SelectSingleNode("/chummer");
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
@@ -206,7 +206,7 @@ namespace Chummer
                     if (chkHideOverAvailLimit.Checked)
                     {
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckAvailRestriction(xmlDrug, _objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
+                        while (nudRating.Maximum > intMinRating && !xmlDrug.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -214,10 +214,10 @@ namespace Chummer
 
                     if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
                     {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        decimal decCostMultiplier = 1 + nudMarkup.Value / 100.0m;
                         if (chkBlackMarketDiscount.Checked)
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckNuyenRestriction(xmlDrug, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -239,9 +239,9 @@ namespace Chummer
 
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                string strSpace = LanguageManager.GetString("String_Space");
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -278,7 +278,7 @@ namespace Chummer
                 }
 
                 // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
-                PopulateGrades(xmlDrug.SelectSingleNode("nosecondhand") != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade);
+                PopulateGrades(xmlDrug.SelectSingleNode("nosecondhand") != null || !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade);
                 /*
                 string strNotes = xmlDrug.SelectSingleNode("altnotes")?.Value ?? xmlDrug.SelectSingleNode("notes")?.Value;
                 if (!string.IsNullOrEmpty(strNotes))
@@ -500,7 +500,7 @@ namespace Chummer
             string strSelectedId = lstDrug.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                // Retireve the information for the selected piece of Drug.
+                // Retrieve the information for the selected piece of Drug.
                 objXmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
             }
             if (objXmlDrug == null)
@@ -514,7 +514,7 @@ namespace Chummer
                 return;
             }
 
-            // Extract the Avil and Cost values from the Drug info since these may contain formulas and/or be based off of the Rating.
+            // Extract the Avail and Cost values from the Drug info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
             int intRating = decimal.ToInt32(nudRating.Value);
@@ -581,7 +581,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = 0.0m.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {
@@ -623,7 +623,7 @@ namespace Chummer
                         if (blnIsSuccess)
                         {
                             decItemCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decCostMultiplier;
-                            decItemCost *= 1 + (nudMarkup.Value / 100.0m);
+                            decItemCost *= 1 + nudMarkup.Value / 100.0m;
 
                             if (chkBlackMarketDiscount.Checked)
                             {
@@ -639,7 +639,7 @@ namespace Chummer
                     }
                 }
                 else
-                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCost.Text = 0.0m.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -683,7 +683,7 @@ namespace Chummer
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
                 if (objCurrentGrade != null && blnIsForceGrade)
                 {
-                    if (_objCharacter.Improvements.Any(x => (x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled)))
+                    if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                         continue;
                 }
 
@@ -691,7 +691,7 @@ namespace Chummer
                 string strMinRating = xmlDrug.SelectSingleNode("minrating")?.Value;
                 int intMinRating = 1;
                 // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
-                if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)) || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
+                if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating) || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                 {
                     var objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
                     intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
@@ -701,22 +701,27 @@ namespace Chummer
                         continue;
                 }
 
-                if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(xmlDrug, _objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+                if (blnDoUIUpdate)
                 {
-                    ++intOverLimit;
-                    continue;
-                }
-                if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
-                {
-                    decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value))
-                        decCostMultiplier *= 0.9m;
-                    if (!SelectionShared.CheckNuyenRestriction(xmlDrug, _objCharacter.Nuyen, decCostMultiplier))
+                    if (chkHideOverAvailLimit.Checked && !xmlDrug.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
                     {
                         ++intOverLimit;
                         continue;
                     }
+
+                    if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + nudMarkup.Value / 100.0m;
+                        if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value))
+                            decCostMultiplier *= 0.9m;
+                        if (!xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                        {
+                            ++intOverLimit;
+                            continue;
+                        }
+                    }
                 }
+
                 if (ParentVehicle == null && !xmlDrug.RequirementsMet(_objCharacter))
                     continue;
                 lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value, xmlDrug.SelectSingleNode("translate")?.Value ?? xmlDrug.SelectSingleNode("name")?.Value));
@@ -724,7 +729,8 @@ namespace Chummer
                     break;
             }
 
-            if (!blnDoUIUpdate) return lstDrugs;
+            if (!blnDoUIUpdate)
+                return lstDrugs;
             lstDrugs.Sort(CompareListItems.CompareNames);
             if (intOverLimit > 0)
             {
@@ -736,8 +742,8 @@ namespace Chummer
             string strOldSelected = lstDrug.SelectedValue?.ToString();
             _blnLoading = true;
             lstDrug.BeginUpdate();
-            lstDrug.ValueMember = "Value";
-            lstDrug.DisplayMember = "Name";
+            lstDrug.ValueMember = nameof(ListItem.Value);
+            lstDrug.DisplayMember = nameof(ListItem.Name);
             lstDrug.DataSource = lstDrug;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -850,8 +856,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = "Value";
-                cboGrade.DisplayMember = "Name";
+                cboGrade.ValueMember = nameof(ListItem.Value);
+                cboGrade.DisplayMember = nameof(ListItem.Name);
                 cboGrade.DataSource = lstGrade;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))

@@ -18,8 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -44,38 +42,18 @@ namespace Chummer.UI.Skills
         public SkillsTabUserControl()
         {
             InitializeComponent();
+            flpSkillGroupLabels.Margin = new Padding(
+                flpSkillGroupLabels.Margin.Left,
+                flpSkillGroupLabels.Margin.Top,
+                flpSkillGroupLabels.Margin.Right + SystemInformation.VerticalScrollBarWidth,
+                flpSkillGroupLabels.Margin.Bottom);
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
 
             _lstDropDownActiveSkills = GenerateDropdownFilter();
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter();
             _sortList = GenerateSortList();
             _lstSortKnowledgeList = GenerateKnowledgeSortList();
-
-            _lstSkillControls.CollectionChanged += LstSkillControlsOnCollectionChanged;
-        }
-
-        private void LstSkillControlsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!HasLoaded)
-                return;
-            int intNameLabelWidth = _lstSkillControls.DefaultIfEmpty().Max(i => i.NameWidth);
-
-            foreach (SkillControl2 objSkillControl in _lstSkillControls)
-            {
-                objSkillControl.MoveControls(intNameLabelWidth);
-            }
-
-            if (_objCharacter.Created)
-                return;
-            int intRatingLabelWidth = _lstSkillControls.DefaultIfEmpty().Max(i => i.NudSkillWidth);
-            lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
-            lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
-            //When in karma mode, we will occasionally fail to load the proper size; break if this is the case during debug and try a fallback.
-            if (lblActiveKarma.Left >= intNameLabelWidth)
-                return;
-            Utils.BreakIfDebug();
-            lblActiveKarma.Left = intNameLabelWidth + 6;
         }
 
         public void MissingDatabindingsWorkaround()
@@ -91,11 +69,9 @@ namespace Chummer.UI.Skills
                                            + _objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo);
         }
 
-        public bool HasLoaded => _objCharacter != null;
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
         private readonly IList<Tuple<string, IComparer<Skill>>>  _sortList;
-        private readonly ObservableCollection<SkillControl2> _lstSkillControls = new ObservableCollection<SkillControl2>();
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
         private readonly IList<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
@@ -135,190 +111,248 @@ namespace Chummer.UI.Skills
             SuspendLayout();
 
             Stopwatch swDisplays = Stopwatch.StartNew();
-            // Load the active skills first, since Skill Groups are created from querying Skills.
-            // TODO: Skill groups need to be able to be generated without referring to a skill.
+            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
+            {
+                _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
+                    group => new SkillGroupControl(group))
+                {
+                    Dock = DockStyle.Fill
+                };
+                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+                _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
+                RefreshSkillGroupLabels();
+
+                swDisplays.TaskEnd("_lstSkillGroups");
+
+                tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
+                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 2);
+
+                swDisplays.TaskEnd("_lstSkillGroups add");
+            }
+            else
+            {
+                tlpSkillGroups.Visible = false;
+                tlpActiveSkills.Margin = new Padding(0);
+                tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
+                tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
+            }
+
             _lstActiveSkills = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
             {
-                Location = new Point(265, 42),
+                Dock = DockStyle.Fill
             };
-            _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups, group => new SkillGroupControl(group))
+            Control MakeActiveSkill(Skill arg)
             {
-                Location = new Point(0, 15),
-            };
-            _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
-            _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
-            int intNameLabelWidth = 0;
-            int intRatingLabelWidth = 0;
-            foreach (SkillGroupControl sg in _lstSkillGroups.Controls[0].Controls)
-            {
-                intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
-                intRatingLabelWidth = Math.Max(sg.RatingWidth, intRatingLabelWidth);
+                SkillControl2 objSkillControl = new SkillControl2(arg);
+                objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
+                return objSkillControl;
             }
-
-            foreach (SkillGroupControl s in _lstSkillGroups.Controls[0].Controls)
-            {
-                s.MoveControls(intNameLabelWidth, intRatingLabelWidth);
-            }
-            lblGroupsSp.Left = _lstSkillGroups.Controls[0].Left + intNameLabelWidth + 6;
-            lblGroupKarma.Left = lblGroupsSp.Left + intRatingLabelWidth + 6;
-
-            swDisplays.TaskEnd("_lstSkillGroups");
-
-            splitSkills.Panel1.Controls.Add(_lstSkillGroups);
-
-            swDisplays.TaskEnd("_lstSkillGroups add");
-            intNameLabelWidth = 0;
-            foreach (SkillControl2 objSkillControl in _lstSkillControls)
-            {
-                intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
-            }
-            foreach (SkillControl2 objSkillControl in _lstSkillControls)
-            {
-                objSkillControl.MoveControls(intNameLabelWidth);
-            }
-
-            lblActiveSkills.Left = _lstActiveSkills.Left;
-            if (!_objCharacter.Created)
-            {
-                intRatingLabelWidth = 0;
-                foreach (SkillControl2 objSkillControl in _lstSkillControls)
-                {
-                    intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
-                }
-                lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
-                lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
-                lblBuyWithKarma.Left = splitSkills.Panel1.Width - lblBuyWithKarma.Width;
-            }
+            RefreshSkillLabels();
 
             swDisplays.TaskEnd("_lstActiveSkills");
 
-            splitSkills.Panel1.Controls.Add(_lstActiveSkills);
+            tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
+            tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 3);
 
             swDisplays.TaskEnd("_lstActiveSkills add");
 
             _lstKnowledgeSkills = new BindingListDisplay<KnowledgeSkill>(_objCharacter.SkillsSection.KnowledgeSkills,
-                knoSkill => new KnowledgeSkillControl(knoSkill) {Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top})
+                knoSkill => new KnowledgeSkillControl(knoSkill))
             {
-                Location = new Point(3, 50),
+                Dock = DockStyle.Fill
             };
-            if (_objCharacter.SkillsSection.KnowledgeSkills.Count > 0)
-            {
-                intNameLabelWidth = 0;
-                foreach (KnowledgeSkill objLoopSkill in _objCharacter.SkillsSection.KnowledgeSkills)
-                {
-                    intNameLabelWidth = Math.Max(intNameLabelWidth, objLoopSkill.CurrentDisplayName.Length);
-                }
-                foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.Controls[0].Controls)
-                {
-                    objKnowledgeSkillControl.MoveControls(intNameLabelWidth);
-                }
-            }
+            RefreshKnowledgeSkillLabels();
 
             swDisplays.TaskEnd("_lstKnowledgeSkills");
 
-            splitSkills.Panel2.Controls.Add(_lstKnowledgeSkills);
+            tlpBottomPanel.Controls.Add(_lstKnowledgeSkills, 0, 2);
+            tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 3);
 
             swDisplays.TaskEnd("_lstKnowledgeSkills add");
 
             parts.TaskEnd("MakeSkillDisplay()");
 
             cboDisplayFilter.BeginUpdate();
-            cboDisplayFilterKnowledge.BeginUpdate();
-            cboSort.BeginUpdate();
-            cboSortKnowledge.BeginUpdate();
-
-            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
+            cboDisplayFilter.DataSource = null;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
+            cboDisplayFilter.EndUpdate();
 
-            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
+            cboDisplayFilterKnowledge.BeginUpdate();
+            cboDisplayFilterKnowledge.DataSource = null;
             cboDisplayFilterKnowledge.ValueMember = "Item2";
             cboDisplayFilterKnowledge.DisplayMember = "Item1";
+            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
             cboDisplayFilterKnowledge.SelectedIndex = 1;
             cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
+            cboDisplayFilterKnowledge.EndUpdate();
             parts.TaskEnd("_ddl databind");
 
-            cboSort.DataSource = _sortList;
+            cboSort.BeginUpdate();
+            cboSort.DataSource = null;
             cboSort.ValueMember = "Item2";
             cboSort.DisplayMember = "Item1";
+            cboSort.DataSource = _sortList;
             cboSort.SelectedIndex = 0;
             cboSort.MaxDropDownItems = _sortList.Count;
+            cboSort.EndUpdate();
 
-            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
+            cboSortKnowledge.BeginUpdate();
+            cboSortKnowledge.DataSource = null;
             cboSortKnowledge.ValueMember = "Item2";
             cboSortKnowledge.DisplayMember = "Item1";
+            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
             cboSortKnowledge.SelectedIndex = 0;
             cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
-
-            cboDisplayFilter.EndUpdate();
-            cboDisplayFilterKnowledge.EndUpdate();
-            cboSort.EndUpdate();
             cboSortKnowledge.EndUpdate();
 
             parts.TaskEnd("_sort databind");
 
+            if (_lstSkillGroups != null)
+                _lstSkillGroups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
             _lstActiveSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-            _lstSkillGroups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
             _lstKnowledgeSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-
-            //Visible = true;
-            //this.ResumeLayout(false);
-            //this.PerformLayout();
-            parts.TaskEnd("visible");
-            Panel1_Resize(null, null);
-            Panel2_Resize(null, null);
-            parts.TaskEnd("resize");
-            //this.Update();
-            //this.ResumeLayout(true);
-            //this.PerformLayout();
 
             if (!_objCharacter.Created)
             {
-                lblKnoKarma.Visible = true;
-                lblActiveKarma.Visible = true;
-                lblGroupKarma.Visible = true;
+                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
 
-                lblGroupsSp.Visible = _objCharacter.BuildMethodHasSkillPoints;
-                lblGroupsSp.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                lblActiveSp.Visible = _objCharacter.BuildMethodHasSkillPoints;
-                lblActiveSp.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                lblBuyWithKarma.Visible = _objCharacter.BuildMethodHasSkillPoints;
-                lblBuyWithKarma.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                //Because visible is broken in databindings
-                _objCharacter.SkillsSection.PropertyChanged += RefreshKnowledgePointsLabels;
-                lblKnoSp.Visible = true;
-                lblKnoSp.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                lblKnoBwk.Visible = true;
-                lblKnoBwk.DataBindings.Add("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 UpdateKnoSkillRemaining();
             }
             else
             {
+                flpSkillGroupLabels.Visible = false;
+
+                lblActiveSp.Visible = false;
+                lblActiveKarma.Visible = false;
+                lblBuyWithKarma.Visible = false;
+
+                flpKnowledgeSkillsLabels.Visible = false;
+                lblKnoBwk.Visible = false;
                 lblKnowledgeSkillPoints.Visible = false;
                 lblKnowledgeSkillPointsTitle.Visible = false;
             }
+
+            btnExotic.Visible = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
+
+            _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
+            _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
+            _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
             ResumeLayout(true);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
-        public void RefreshKnowledgePointsLabels(object sender, PropertyChangedEventArgs e)
+        private void RefreshSkillGroupLabels()
         {
-            if (e?.PropertyName == nameof(SkillsSection.HasKnowledgePoints))
+            if (_lstSkillGroups != null)
             {
-                lblKnoSp.Visible = _objCharacter.SkillsSection.HasKnowledgePoints;
-                lblKnoBwk.Visible = _objCharacter.SkillsSection.HasKnowledgePoints;
+                int intNameLabelWidth = lblSkillGroups.PreferredWidth;
+                foreach (SkillGroupControl sg in _lstSkillGroups.DisplayPanel.Controls)
+                {
+                    intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
+                }
+                lblSkillGroups.MinimumSize = new Size(intNameLabelWidth, lblSkillGroups.MinimumSize.Height);
+                foreach (SkillGroupControl s in _lstSkillGroups.DisplayPanel.Controls)
+                {
+                    s.MoveControls(intNameLabelWidth);
+                }
             }
         }
 
-        public void UnbindSkillsTabUserControl()
+        private void RefreshSkillLabels()
+        {
+            if (_lstActiveSkills != null)
+            {
+                int intNameLabelWidth = lblActiveSkills.PreferredWidth;
+                int intRatingLabelWidth = lblActiveSp.PreferredWidth;
+                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                {
+                    intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
+                    intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
+                }
+                lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
+                lblActiveKarma.Margin = new Padding(
+                    lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width,
+                    lblActiveKarma.Margin.Top,
+                    lblActiveKarma.Margin.Right,
+                    lblActiveKarma.Margin.Bottom);
+                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                {
+                    objSkillControl.MoveControls(intNameLabelWidth);
+                }
+            }
+        }
+
+        private void RefreshKnowledgeSkillLabels()
+        {
+            if (_lstKnowledgeSkills != null)
+            {
+                int intNameLabelWidth = lblKnowledgeSkills.PreferredWidth;
+                int intRatingLabelWidth = lblKnoSp.PreferredWidth;
+                int intRightButtonsWidth = 0;
+                foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
+                {
+                    intNameLabelWidth = Math.Max(intNameLabelWidth, objKnowledgeSkillControl.NameWidth);
+                    intRatingLabelWidth = Math.Max(intRatingLabelWidth, objKnowledgeSkillControl.NudSkillWidth);
+                    intRightButtonsWidth = Math.Max(intRightButtonsWidth, objKnowledgeSkillControl.RightButtonsWidth);
+                }
+                lblKnowledgeSkills.MinimumSize = new Size(intNameLabelWidth, lblKnowledgeSkills.MinimumSize.Height);
+                lblKnoKarma.Margin = new Padding(
+                    lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width,
+                    lblKnoKarma.Margin.Top,
+                    lblKnoKarma.Margin.Right,
+                    lblKnoKarma.Margin.Bottom);
+                lblKnoBwk.Margin = new Padding(
+                    lblKnoBwk.Margin.Left,
+                    lblKnoBwk.Margin.Top,
+                    Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + lblKnoBwk.Width / 2),
+                    lblKnoBwk.Margin.Bottom);
+                foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
+                {
+                    objKnowledgeSkillControl.MoveControls(intNameLabelWidth);
+                }
+            }
+        }
+
+        private void SkillGroupsOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.Reset
+                || e.ListChangedType == ListChangedType.ItemAdded
+                || e.ListChangedType == ListChangedType.ItemDeleted)
+                RefreshSkillGroupLabels();
+        }
+
+        private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.Reset
+                || e.ListChangedType == ListChangedType.ItemAdded
+                || e.ListChangedType == ListChangedType.ItemDeleted)
+                RefreshSkillLabels();
+        }
+
+        private void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.Reset
+                || e.ListChangedType == ListChangedType.ItemAdded
+                || e.ListChangedType == ListChangedType.ItemDeleted)
+                RefreshKnowledgeSkillLabels();
+        }
+
+        private void UnbindSkillsTabUserControl()
         {
             if (_objCharacter != null)
             {
-                _objCharacter.SkillsSection.PropertyChanged -= RefreshKnowledgePointsLabels;
+                _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
+                _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
+                _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
             }
         }
 
@@ -329,21 +363,67 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new SkillSorter(SkillsSection.CompareSkills)),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortRating"),
-                    new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Rating.CompareTo(x.Rating);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortDicepool"),
-                    new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Pool.CompareTo(x.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
-                    new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = x.Pool.CompareTo(y.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
-                    new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
+                        if (intReturn == 0)
+                        {
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                            if (intReturn == 0)
+                                intReturn = SkillsSection.CompareSkills(x, y);
+                        }
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeName"),
-                    new SkillSorter((x, y) => string.Compare(x.DisplayAttribute, y.DisplayAttribute, StringComparison.Ordinal))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupName"),
-                    new SkillSorter((x, y) => SkillsSection.CompareSkillGroups(x.SkillGroupObject, y.SkillGroupObject))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = SkillsSection.CompareSkillGroups(x.SkillGroupObject, y.SkillGroupObject);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupRating"),
                     new SkillSortBySkillGroup()),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortCategory"),
-                    new SkillSorter((x, y) => string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), StringComparison.Ordinal))),
+                    new SkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
             };
 
             return ret;
@@ -353,8 +433,10 @@ namespace Chummer.UI.Skills
         {
             List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
             {
-                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterAll"), skill => true),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_Search"),
+                    null),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterAll"),
+                    skill => true),
                 new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterRatingAboveZero"),
                     skill => skill.Rating > 0),
                 new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterTotalRatingAboveZero"),
@@ -364,39 +446,53 @@ namespace Chummer.UI.Skills
                 new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterNoSkillGroup"),
                     skill => skill.SkillGroup.Length == 0),
                 new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterBrokenSkillGroup"),
-                    skill => skill.Pool > 0 && (skill.SkillGroup.Length == 0 || skill.SkillGroupObject != null && skill.Rating > skill.SkillGroupObject.Rating))
+                    skill => skill.Pool > 0 && (skill.SkillGroup.Length == 0 || (skill.SkillGroupObject != null && skill.Rating > skill.SkillGroupObject.Rating)))
             };
             //TODO: TRANSLATIONS
 
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strColon = LanguageManager.GetString("String_Colon");
+
             using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            {
                 if (xmlSkillCategoryList != null)
+                {
+                    string strCategory = LanguageManager.GetString("Label_Category");
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<Skill>>(
-                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
-                            skill => skill.SkillCategory == strName));
+                        if (!string.IsNullOrEmpty(strName))
+                            ret.Add(new Tuple<string, Predicate<Skill>>(
+                                strCategory + strSpace + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
+                                skill => skill.SkillCategory == strName));
                     }
-
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-            {
-                string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", GlobalOptions.Language, false);
-                if (!string.IsNullOrEmpty(strAttributeShort))
-                {
-                    ret.Add(new Tuple<string, Predicate<Skill>>($"{LanguageManager.GetString("String_ExpenseAttribute")}: {strAttributeShort}",
-                        skill => skill.Attribute == strAttribute));
                 }
             }
 
+            string strAttributeLabel = LanguageManager.GetString("String_ExpenseAttribute");
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
+            {
+                string strAttributeShort = LanguageManager.GetString("String_Attribute" + strAttribute + "Short", GlobalOptions.Language, false);
+                if (!string.IsNullOrEmpty(strAttributeShort))
+                    ret.Add(new Tuple<string, Predicate<Skill>>(strAttributeLabel + strColon + strSpace + strAttributeShort,
+                        skill => skill.Attribute == strAttribute));
+            }
+
             using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            {
                 if (xmlSkillGroupList != null)
+                {
+                    string strSkillGroupLabel = LanguageManager.GetString("String_ExpenseSkillGroup");
                     foreach (XmlNode xmlSkillGroupNode in xmlSkillGroupList)
                     {
                         string strName = xmlSkillGroupNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<Skill>>(
-                            $"{LanguageManager.GetString("String_ExpenseSkillGroup")} {xmlSkillGroupNode.Attributes?["translate"]?.InnerText ?? strName}",
-                            skill => skill.SkillGroup == strName));
+                        if (!string.IsNullOrEmpty(strName))
+                            ret.Add(new Tuple<string, Predicate<Skill>>(
+                                strSkillGroupLabel + strSpace + (xmlSkillGroupNode.Attributes?["translate"]?.InnerText ?? strName),
+                                skill => skill.SkillGroup == strName));
                     }
+                }
+            }
 
             return ret;
         }
@@ -408,17 +504,57 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new KnowledgeSkillSorter(SkillsSection.CompareSkills)),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortRating"),
-                    new KnowledgeSkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Rating.CompareTo(x.Rating);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortDicepool"),
-                    new KnowledgeSkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = y.Pool.CompareTo(x.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
-                    new KnowledgeSkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = x.Pool.CompareTo(y.Pool);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
-                    new KnowledgeSkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
+                        if (intReturn == 0)
+                        {
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                            if (intReturn == 0)
+                                intReturn = SkillsSection.CompareSkills(x, y);
+                        }
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeName"),
-                    new KnowledgeSkillSorter((x, y) => string.Compare(x.DisplayAttribute, y.DisplayAttribute, StringComparison.Ordinal))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortCategory"),
-                    new KnowledgeSkillSorter((x, y) => string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), StringComparison.Ordinal))),
+                    new KnowledgeSkillSorter((x, y) =>
+                    {
+                        int intReturn = string.Compare(x.DisplayCategory(GlobalOptions.Language), y.DisplayCategory(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
+                        if (intReturn == 0)
+                            intReturn = SkillsSection.CompareSkills(x, y);
+                        return intReturn;
+                    })),
             };
 
             return ret;
@@ -429,8 +565,10 @@ namespace Chummer.UI.Skills
             List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>
             {
                 //TODO: Search doesn't play nice with writable name
-                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterAll"), skill => true),
+                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_Search"),
+                    null),
+                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterAll"),
+                    skill => true),
                 new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterRatingAboveZero"),
                     skill => skill.Rating > 0),
                 new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterTotalRatingAboveZero"),
@@ -439,111 +577,61 @@ namespace Chummer.UI.Skills
                     skill => skill.Rating == 0)
             };
             //TODO: TRANSLATIONS
+
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strColon = LanguageManager.GetString("String_Colon");
+
             using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
+                    string strCategory = LanguageManager.GetString("Label_Category");
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(
-                            $"{LanguageManager.GetString("Label_Category")} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
-                            skill => skill.SkillCategory == strName));
+                        if (!string.IsNullOrEmpty(strName))
+                            ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(
+                                strCategory + strSpace + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
+                                skill => skill.SkillCategory == strName));
                     }
                 }
             }
 
+            string strAttributeLabel = LanguageManager.GetString("String_ExpenseAttribute");
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
-                string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", GlobalOptions.Language, false);
+                string strAttributeShort = LanguageManager.GetString("String_Attribute" + strAttribute + "Short", GlobalOptions.Language, false);
                 if (!string.IsNullOrEmpty(strAttributeShort))
-                {
-                    ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>($"{LanguageManager.GetString("String_ExpenseAttribute")}: {strAttributeShort}",
+                    ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(strAttributeLabel + strColon + strSpace + strAttributeShort,
                         skill => skill.Attribute == strAttribute));
-                }
             }
 
             return ret;
         }
 
-        private Control MakeActiveSkill(Skill arg)
-        {
-            SkillControl2 objSkillControl = new SkillControl2(arg) {Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top};
-            _lstSkillControls.Add(objSkillControl);
-            objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
-            return objSkillControl;
-        }
-
         private void Control_CustomAttributeChanged(object sender, EventArgs e)
         {
-            btnResetCustomDisplayAttribute.Visible = _lstSkillControls.Any(x => x.CustomAttributeSet);
+            bool blnVisible = false;
+            foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            {
+                if (objSkillControl.CustomAttributeSet)
+                {
+                    blnVisible = true;
+                    break;
+                }
+            }
+            btnResetCustomDisplayAttribute.Visible = blnVisible;
         }
 
         private void Panel1_Resize(object sender, EventArgs e)
         {
-            int intPanelHeight = splitSkills.Panel1.Height;
-            int intSkillGroupsWidth = 255;
-            if (_lstSkillGroups != null)
-            {
-                foreach (SkillGroupControl objSkillGroupControl in _lstSkillGroups.Controls[0].Controls)
-                {
-                    intSkillGroupsWidth = Math.Max(intSkillGroupsWidth, objSkillGroupControl.PreferredSize.Width);
-                }
-                _lstSkillGroups.Size = new Size(intSkillGroupsWidth, intPanelHeight - _lstSkillGroups.Top);
-            }
-
-            if (_lstActiveSkills != null)
-            {
-                _lstActiveSkills.Size = new Size(splitSkills.Panel1.Width - (intSkillGroupsWidth + 10), intPanelHeight - _lstActiveSkills.Top);
-                if (_objCharacter.SkillsSection.Skills.Count > 0)
-                {
-                    int intNameLabelWidth = 0;
-                    foreach (SkillControl2 objSkillControl in _lstSkillControls)
-                    {
-                        intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
-                    }
-
-                    foreach (SkillControl2 objSkillControl in _lstSkillControls)
-                    {
-                        objSkillControl.MoveControls(intNameLabelWidth);
-                    }
-
-                    if (!_objCharacter.Created)
-                    {
-                        int intRatingLabelWidth = 0;
-                        foreach (SkillControl2 objSkillControl in _lstSkillControls)
-                        {
-                            intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
-                        }
-                        lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
-                        lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
-                        lblBuyWithKarma.Left = splitSkills.Panel1.Width - lblBuyWithKarma.Width;
-                    }
-                }
-            }
+            RefreshSkillGroupLabels();
+            RefreshSkillLabels();
         }
 
         private void Panel2_Resize(object sender, EventArgs e)
         {
-            if (_lstKnowledgeSkills != null)
-            {
-                //_knoSkills.Height = splitSkills.Panel2.Height - 53;
-                _lstKnowledgeSkills.Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height - 53);
-
-                if (_objCharacter.SkillsSection.KnowledgeSkills.Count > 0)
-                {
-                    int intNameLabelWidth = 0;
-                    foreach (KnowledgeSkill objLoopSkill in _objCharacter.SkillsSection.KnowledgeSkills)
-                    {
-                        intNameLabelWidth = Math.Max(intNameLabelWidth, objLoopSkill.CurrentDisplayName.Length);
-                    }
-
-                    foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.Controls[0].Controls)
-                    {
-                        objKnowledgeSkillControl.MoveControls(intNameLabelWidth);
-                    }
-                }
-            }
+            RefreshKnowledgeSkillLabels();
         }
 
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -560,7 +648,9 @@ namespace Chummer.UI.Skills
                 {
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnActiveSkillSearchMode = false;
+                    _lstActiveSkills.SuspendLayout();
                     _lstActiveSkills.Filter(selectedItem.Item2);
+                    _lstActiveSkills.ResumeLayout();
                 }
             }
         }
@@ -569,14 +659,20 @@ namespace Chummer.UI.Skills
         {
             if (_blnActiveSkillSearchMode)
             {
+                _lstActiveSkills.SuspendLayout();
                 _lstActiveSkills.Filter(skill => GlobalOptions.CultureInfo.CompareInfo.IndexOf(skill.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _lstActiveSkills.ResumeLayout();
             }
         }
 
         private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboSort.SelectedItem is Tuple<string, IComparer<Skill>> selectedItem)
+            {
+                _lstActiveSkills.SuspendLayout();
                 _lstActiveSkills.Sort(selectedItem.Item2);
+                _lstActiveSkills.ResumeLayout();
+            }
         }
 
         private void btnExotic_Click(object sender, EventArgs e)
@@ -606,7 +702,7 @@ namespace Chummer.UI.Skills
             }
             objSkill.Upgrade();
             _objCharacter.SkillsSection.Skills.Add(objSkill);
-            string key = $"{objSkill.Name} ({objSkill.DisplaySpecialization(GlobalOptions.DefaultLanguage)})";
+            string key = objSkill.DictionaryKey;
             if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
                 _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
@@ -615,14 +711,12 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter.Created)
             {
-                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter).ToList();
-                lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 using (frmSelectItem form = new frmSelectItem
                 {
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                 })
                 {
-                    form.SetDropdownItemsMode(lstDefaultKnowledgeSkills);
+                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter));
 
                     if (form.ShowDialog() != DialogResult.OK)
                         return;
@@ -642,16 +736,23 @@ namespace Chummer.UI.Skills
 
         private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
         {
-            foreach (SkillControl2 control2 in _lstSkillControls.Where(x => x.CustomAttributeSet))
+            _lstActiveSkills.SuspendLayout();
+            foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
             {
-                control2.ResetSelectAttribute();
+                if (objSkillControl.CustomAttributeSet)
+                    objSkillControl.ResetSelectAttribute(sender, e);
             }
+            _lstActiveSkills.ResumeLayout();
         }
 
         private void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboSortKnowledge.SelectedItem is Tuple<string, IComparer<KnowledgeSkill>> selectedItem)
+            {
+                _lstKnowledgeSkills.SuspendLayout();
                 _lstKnowledgeSkills.Sort(selectedItem.Item2);
+                _lstKnowledgeSkills.ResumeLayout();
+            }
         }
 
         private void cboDisplayFilterKnowledge_SelectedIndexChanged(object sender, EventArgs e)
@@ -668,7 +769,9 @@ namespace Chummer.UI.Skills
                 {
                     cboDisplayFilterKnowledge.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnKnowledgeSkillSearchMode = false;
+                    _lstKnowledgeSkills.SuspendLayout();
                     _lstKnowledgeSkills.Filter(selectedItem.Item2);
+                    _lstKnowledgeSkills.ResumeLayout();
                 }
             }
         }
@@ -677,7 +780,9 @@ namespace Chummer.UI.Skills
         {
             if (_blnKnowledgeSkillSearchMode)
             {
+                _lstKnowledgeSkills.SuspendLayout();
                 _lstKnowledgeSkills.Filter(skill => GlobalOptions.CultureInfo.CompareInfo.IndexOf(skill.CurrentDisplayName, cboDisplayFilterKnowledge.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _lstKnowledgeSkills.ResumeLayout();
             }
         }
     }

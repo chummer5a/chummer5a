@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             // Load the Lifestyles information.
@@ -403,8 +403,8 @@ namespace Chummer
             nudBonusLP.DoDatabinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
-            cboBaseLifestyle.ValueMember = "Value";
-            cboBaseLifestyle.DisplayMember = "Name";
+            cboBaseLifestyle.ValueMember = nameof(ListItem.Value);
+            cboBaseLifestyle.DisplayMember = nameof(ListItem.Name);
             cboBaseLifestyle.DataSource = lstLifestyles;
 
             cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
@@ -414,21 +414,21 @@ namespace Chummer
             nudArea.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
             nudComforts.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
             nudSecurity.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
-            nudArea.DoDatabinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
-            nudComforts.DoDatabinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
-            nudSecurity.DoDatabinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
+            nudArea.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
+            nudComforts.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
+            nudSecurity.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
             cboBaseLifestyle.DoDatabinding("SelectedValue",_objLifestyle,nameof(Lifestyle.BaseLifestyle));
             chkTrustFund.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
-            chkTrustFund.DoDatabinding("Enabled",_objLifestyle,nameof(Lifestyle.IsTrustFundEligible));
+            chkTrustFund.DoOneWayDataBinding("Enabled",_objLifestyle,nameof(Lifestyle.IsTrustFundEligible));
             chkPrimaryTenant.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
-            lblCost.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
-            lblArea.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
-            lblComforts.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
-            lblSecurity.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.FormattedSecurity));
-            lblAreaTotal.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalArea));
-            lblComfortTotal.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
-            lblSecurityTotal.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
-            lblTotalLP.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
+            lblCost.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
+            lblArea.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
+            lblComforts.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
+            lblSecurity.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedSecurity));
+            lblAreaTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalArea));
+            lblComfortTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
+            lblSecurityTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
+            lblTotalLP.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
             if (cboBaseLifestyle.SelectedIndex == -1)
                 cboBaseLifestyle.SelectedIndex = 0;
             cboBaseLifestyle.EndUpdate();
@@ -664,9 +664,9 @@ namespace Chummer
                 string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpaceCharacter + LanguageManager.GetString("String_Page") + strSpaceCharacter + strPage);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 }
                 else
                 {
