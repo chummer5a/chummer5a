@@ -248,7 +248,7 @@ namespace Chummer.Backend.Equipment
             foreach (XmlNode nodQuality in Qualities)
             {
                 objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", LanguageManager.TranslateExtra(nodQuality.InnerText, _objCharacter, strLanguageToPrint));
+                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(nodQuality.InnerText, strLanguageToPrint));
                 objWriter.WriteElementString("name_english", nodQuality.InnerText);
                 objWriter.WriteEndElement();
             }
@@ -258,7 +258,7 @@ namespace Chummer.Backend.Equipment
             foreach (string strInfo in Infos)
             {
                 objWriter.WriteStartElement("info");
-                objWriter.WriteElementString("name", LanguageManager.TranslateExtra(strInfo, _objCharacter, strLanguageToPrint));
+                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strInfo, strLanguageToPrint));
                 objWriter.WriteElementString("name_english", strInfo);
                 objWriter.WriteEndElement();
             }
@@ -320,7 +320,7 @@ namespace Chummer.Backend.Equipment
         public string Name
         {
             get => _strName;
-            set => _strName = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => _strName = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -665,7 +665,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return LanguageManager.TranslateExtra(Name, _objCharacter, strLanguage);
+            return _objCharacter.TranslateExtra(Name, strLanguage);
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
@@ -842,9 +842,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 foreach (XmlNode nodQuality in Qualities)
-                    sbdDescription.Append(LanguageManager.TranslateExtra(nodQuality.InnerText, _objCharacter, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
+                    sbdDescription.Append(_objCharacter.TranslateExtra(nodQuality.InnerText, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
                 foreach (string strInfo in Infos)
-                    sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, _objCharacter, strLanguage));
+                    sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo, strLanguage));
 
                 if (Category == "Custom Drug" || Duration != 0)
                     sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).AppendLine(DisplayDuration);
@@ -1264,7 +1264,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode = GetNode(strLanguage);
             if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
             {
-                return LanguageManager.TranslateExtra(Name, _objCharacter, strLanguage);
+                return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
             return xmlGearDataNode?["translate"]?.InnerText ?? Name;
@@ -1552,9 +1552,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 foreach (XmlNode strQuality in objDrugEffect.Qualities)
-                    sbdDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText, _objCharacter)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
+                    sbdDescription.Append(_objCharacter.TranslateExtra(strQuality.InnerText)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
                 foreach (string strInfo in objDrugEffect.Infos)
-                    sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, _objCharacter));
+                    sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo));
 
                 if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
                     sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColonString).Append(strSpaceString)

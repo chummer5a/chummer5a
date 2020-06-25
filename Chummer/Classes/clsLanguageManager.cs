@@ -363,7 +363,7 @@ namespace Chummer
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
         /// <returns></returns>
-        public static string ProcessCompoundString(string strInput, Character objCharacter = null, string strLanguage = "", bool blnUseTranslateExtra = false)
+        public static string ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -441,11 +441,11 @@ namespace Chummer
                         // Inner string is a compound string in and of itself, so recurse this method
                         if (strLoop.IndexOfAny('{', '}') != -1)
                         {
-                            strLoop = ProcessCompoundString(strLoop, objCharacter, strLanguage, blnUseTranslateExtra);
+                            strLoop = ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
                         }
                         // Use more expensive TranslateExtra if flag is set to use that
                         objReturn.Append(blnUseTranslateExtra
-                            ? TranslateExtra(strLoop, objCharacter, strLanguage)
+                            ? TranslateExtra(strLoop, strLanguage, objCharacter)
                             : GetString(strLoop, strLanguage, false));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
@@ -664,7 +664,7 @@ namespace Chummer
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        public static string TranslateExtra(string strExtra, Character objCharacter = null, string strIntoLanguage = "")
+        public static string TranslateExtra(string strExtra, string strIntoLanguage = "", Character objCharacter = null)
         {
             if (string.IsNullOrEmpty(strExtra))
                 return string.Empty;
@@ -784,7 +784,7 @@ namespace Chummer
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
-        public static string ReverseTranslateExtra(string strExtra, Character objCharacter = null, string strFromLanguage = "")
+        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", Character objCharacter = null)
         {
             if (string.IsNullOrEmpty(strFromLanguage))
                 strFromLanguage = GlobalOptions.Language;

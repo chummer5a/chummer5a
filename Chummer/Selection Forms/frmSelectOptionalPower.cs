@@ -36,10 +36,10 @@ namespace Chummer
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
-                string strName = LanguageManager.TranslateExtra(lstObject.Item1, objCharacter);
+                string strName = objCharacter.TranslateExtra(lstObject.Item1);
                 if (!string.IsNullOrEmpty(lstObject.Item2))
                 {
-                    strName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(lstObject.Item2, objCharacter) + ')';
+                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(lstObject.Item2) + ')';
                 }
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }

@@ -454,7 +454,7 @@ namespace Chummer
         public string DisplayRole
         {
             get => DisplayRoleMethod(GlobalOptions.Language);
-            set => Role = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => Role = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -537,7 +537,7 @@ namespace Chummer
                 // Update character information fields.
                 XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, _objCharacter, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
@@ -547,17 +547,17 @@ namespace Chummer
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
                     ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
-                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, _objCharacter, strLanguage) + ')';
+                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
             }
             else
-                strReturn = LanguageManager.TranslateExtra(strReturn, _objCharacter, strLanguage);
+                strReturn = _objCharacter.TranslateExtra(strReturn, strLanguage);
             return strReturn;
         }
 
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => Metatype = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => Metatype = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -600,7 +600,7 @@ namespace Chummer
         public string DisplaySex
         {
             get => DisplaySexMethod(GlobalOptions.Language);
-            set => Sex = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => Sex = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -635,7 +635,7 @@ namespace Chummer
         public string DisplayAge
         {
             get => DisplayAgeMethod(GlobalOptions.Language);
-            set => Age = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => Age = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -670,7 +670,7 @@ namespace Chummer
         public string DisplayType
         {
             get => DisplayTypeMethod(GlobalOptions.Language);
-            set => Type = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => Type = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -700,7 +700,7 @@ namespace Chummer
         public string DisplayPreferredPayment
         {
             get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => PreferredPayment = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace Chummer
         public string DisplayHobbiesVice
         {
             get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => HobbiesVice = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -760,7 +760,7 @@ namespace Chummer
         public string DisplayPersonalLife
         {
             get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => PersonalLife = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>

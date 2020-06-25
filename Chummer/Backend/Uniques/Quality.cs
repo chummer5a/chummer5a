@@ -494,7 +494,7 @@ namespace Chummer
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
-                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguageToPrint) + strRatingString + strSourceName);
+                objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", BP.ToString(objCulture));
                 string strQualityType = Type.ToString();
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
@@ -507,7 +507,7 @@ namespace Chummer
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", Type.ToString());
                 objWriter.WriteElementString("qualitysource", OriginSource.ToString());
-                objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
+                objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
                 objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
                 if (_objCharacter.Options.PrintNotes)
                     objWriter.WriteElementString("notes", Notes);
@@ -565,7 +565,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+            set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace Chummer
         /// </summary>
         public string GetSourceName(string strLanguage)
         {
-            return LanguageManager.TranslateExtra(_strSourceName, _objCharacter, strLanguage);
+            return _objCharacter.TranslateExtra(_strSourceName, strLanguage);
         }
 
         /// <summary>
@@ -704,7 +704,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             int intLevels = Levels;

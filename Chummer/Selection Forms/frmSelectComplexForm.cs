@@ -141,10 +141,10 @@ namespace Chummer
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
 
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace +
-                    LanguageManager.GetString("String_Page") + strSpace + strPage);
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
+                                     LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {

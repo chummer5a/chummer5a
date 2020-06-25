@@ -265,7 +265,7 @@ namespace Chummer
                 string strPage = string.Empty;
 
                 if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                    objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(strSource, CharacterObject, strLanguageToPrint));
+                    objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
                 if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
                     objWriter.WriteElementString("page", strPage);
             }
@@ -284,7 +284,7 @@ namespace Chummer
             StringBuilder strExtra = new StringBuilder();
             string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
             if (!string.IsNullOrEmpty(strSelect))
-                strExtra.Append(LanguageManager.TranslateExtra(strSelect, CharacterObject, strLanguageToPrint));
+                strExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
             string strSource = string.Empty;
             string strPage = string.Empty;
             string strPowerName = xmlPowerEntryNode.InnerText;
@@ -310,7 +310,7 @@ namespace Chummer
                 foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').Split(','))
                 {
                     blnExtrasAdded = true;
-                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, CharacterObject, strLanguageToPrint));
+                    strExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint));
                     strExtra.Append(", ");
                 }
                 if (blnExtrasAdded)
@@ -393,7 +393,7 @@ namespace Chummer
             objWriter.WriteElementString("action", strDisplayAction);
             objWriter.WriteElementString("range", strDisplayRange);
             objWriter.WriteElementString("duration", strDisplayDuration);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(strSource, CharacterObject, strLanguageToPrint));
+            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
             objWriter.WriteElementString("page", strPage);
             objWriter.WriteEndElement();
         }

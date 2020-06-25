@@ -221,8 +221,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPage))
                         {
                             string strSpace = LanguageManager.GetString("String_Space");
-                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, _objCharacter) + strSpace + strPage;
-                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, _objCharacter) + strSpace + LanguageManager.GetString("String_Page") + " " + strPage);
+                            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                         }
                         else
                         {

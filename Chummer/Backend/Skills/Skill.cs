@@ -143,7 +143,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("displayattribute", DisplayAttributeMethod(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, CharacterObject, strLanguageToPrint));
+            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
             objWriter.WriteElementString("ratingmod", (intRatingModifiers + intDicePoolModifiers).ToString(objCulture));
@@ -999,7 +999,7 @@ namespace Chummer.Backend.Skills
                     lstSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
                 {
                     string strSpecializationName = objImprovement.UniqueName;
-                    lstSuggestedSpecializations.Add(new ListItem(strSpecializationName, LanguageManager.TranslateExtra(strSpecializationName, CharacterObject)));
+                    lstSuggestedSpecializations.Add(new ListItem(strSpecializationName, CharacterObject.TranslateExtra(strSpecializationName)));
                 }
                 return lstSuggestedSpecializations;
             }
@@ -1348,7 +1348,7 @@ namespace Chummer.Backend.Skills
                     strReturn = LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine + Environment.NewLine;
                 }
 
-                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle + CommonFunctions.LanguageBookLong(Source, CharacterObject) + strSpace + LanguageManager.GetString("String_Page") + strSpace + DisplayPage(GlobalOptions.Language);
+                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle + CharacterObject.LanguageBookLong(Source) + strSpace + LanguageManager.GetString("String_Page") + strSpace + DisplayPage(GlobalOptions.Language);
                 return strReturn;
             }
         }

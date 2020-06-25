@@ -41,9 +41,9 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
             }
 
-            Code = CommonFunctions.LanguageBookShort(strCode, objCharacter, Language);
+            Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, objCharacter, Language) +
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
@@ -55,9 +55,9 @@ namespace Chummer
             Language = strLanguage;
             int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
-            Code = CommonFunctions.LanguageBookShort(strSource, objCharacter, Language);
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, objCharacter, Language) +
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
@@ -68,9 +68,9 @@ namespace Chummer
             Language = strLanguage;
             _intPage = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, objCharacter, Language);
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, objCharacter, Language) +
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 

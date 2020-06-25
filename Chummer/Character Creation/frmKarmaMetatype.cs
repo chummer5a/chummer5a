@@ -283,7 +283,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect, _objCharacter));
+                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
                             sbdQualities.Append(')');
                         }
                     }
@@ -355,7 +355,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect, _objCharacter));
+                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
                             sbdQualities.Append(')');
                         }
                     }

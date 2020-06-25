@@ -1044,7 +1044,7 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
+                            strQuality += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
                     }
                     else
                     {
@@ -1116,7 +1116,7 @@ namespace Chummer
 
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + LanguageManager.TranslateExtra(strSelect, _objCharacter) + ')';
+                            strQuality += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
                     }
                     else
                     {

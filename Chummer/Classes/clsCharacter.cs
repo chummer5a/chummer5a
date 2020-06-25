@@ -4446,33 +4446,19 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("sex",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Sex, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("sex", TranslateExtra(ReverseTranslateExtra(Sex), strLanguageToPrint));
             // <age />
-            objWriter.WriteElementString("age",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Age, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age), strLanguageToPrint));
             // <eyes />
-            objWriter.WriteElementString("eyes",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Eyes, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("eyes", TranslateExtra(ReverseTranslateExtra(Eyes), strLanguageToPrint));
             // <height />
-            objWriter.WriteElementString("height",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Height, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("height", TranslateExtra(ReverseTranslateExtra(Height), strLanguageToPrint));
             // <weight />
-            objWriter.WriteElementString("weight",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Weight, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("weight", TranslateExtra(ReverseTranslateExtra(Weight), strLanguageToPrint));
             // <skin />
-            objWriter.WriteElementString("skin",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Skin, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("skin", TranslateExtra(ReverseTranslateExtra(Skin), strLanguageToPrint));
             // <hair />
-            objWriter.WriteElementString("hair",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Hair, this), this,
-                    strLanguageToPrint));
+            objWriter.WriteElementString("hair", TranslateExtra(ReverseTranslateExtra(Hair), strLanguageToPrint));
             // <description />
             objWriter.WriteElementString("description", Description.RtfToHtml());
             // <background />
@@ -6410,6 +6396,55 @@ namespace Chummer
             return setBlackMarketMaps;
         }
 
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookCodeFromAltCode(strAltCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public string LanguageBookShort(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public string LanguageBookLong(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        public string TranslateExtra(string strExtra, string strIntoLanguage = "")
+        {
+            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
+        {
+            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this);
+        }
         #endregion
 
         #region UI Methods
@@ -7513,7 +7548,7 @@ namespace Chummer
             {
                 if(!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
                     return _strCachedCharacterGrammaticGender;
-                switch(LanguageManager.ReverseTranslateExtra(Sex, this).ToUpperInvariant())
+                switch(ReverseTranslateExtra(Sex).ToUpperInvariant())
                 {
                     case "M":
                     case "MALE":

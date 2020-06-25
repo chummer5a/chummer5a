@@ -261,7 +261,7 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                 {
-                    return LanguageManager.ReverseTranslateExtra(strArguments, _objCharacter);
+                    return _objCharacter.ReverseTranslateExtra(strArguments);
                 }
                 case "$XmlNameFriendly":
                 {
@@ -375,7 +375,7 @@ namespace Chummer
                         _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
                     if (!string.IsNullOrEmpty(strExtra))
                     {
-                        return LanguageManager.TranslateExtra(strExtra, _objCharacter, strLanguage);
+                        return _objCharacter.TranslateExtra(strExtra, strLanguage);
                     }
 
                     return string.Empty;

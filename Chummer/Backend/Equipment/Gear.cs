@@ -239,8 +239,7 @@ namespace Chummer.Backend.Equipment
                                 GlobalOptions.DefaultLanguage, false);
                             if (string.IsNullOrEmpty(strCustomName))
                                 strCustomName =
-                                    LanguageManager.ReverseTranslateExtra(frmPickText.SelectedValue,
-                                        _objCharacter);
+                                    _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
                             _strName = strCustomName;
                             _objCachedMyXmlNode = null;
                         }
@@ -528,7 +527,7 @@ namespace Chummer.Backend.Equipment
                                 string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
                                 string strDisplayName = LanguageManager.GetString(strName, false);
                                 if (string.IsNullOrEmpty(strDisplayName))
-                                    strDisplayName = LanguageManager.TranslateExtra(strName, _objCharacter);
+                                    strDisplayName = _objCharacter.TranslateExtra(strName);
                                 lstGears.Add(new ListItem(strName, strDisplayName));
                             }
 
@@ -546,7 +545,7 @@ namespace Chummer.Backend.Equipment
                             string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
                             string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                             if (string.IsNullOrEmpty(strFriendlyName))
-                                strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName, _objCharacter);
+                                strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
                             using (frmSelectItem frmPickItem = new frmSelectItem
                             {
                                 Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
@@ -1259,13 +1258,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail_english", TotalAvail(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguageToPrint));
+            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("bonded", Bonded.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", Equipped.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("location", Location?.DisplayName());
             objWriter.WriteElementString("gearname", GearName);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, _objCharacter, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in Children)
@@ -1615,7 +1614,7 @@ namespace Chummer.Backend.Equipment
             get => _strExtra;
             set
             {
-                string strNewValue = LanguageManager.ReverseTranslateExtra(value, _objCharacter);
+                string strNewValue = _objCharacter.ReverseTranslateExtra(value);
                 if (_strExtra != strNewValue)
                 {
                     _strExtra = strNewValue;
@@ -2542,7 +2541,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode = GetNode(strLanguage);
             if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
             {
-                return LanguageManager.TranslateExtra(Name, _objCharacter, strLanguage);
+                return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
             return xmlGearDataNode?["translate"]?.InnerText ?? Name;
@@ -2562,7 +2561,7 @@ namespace Chummer.Backend.Equipment
             if (Rating > 0)
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, _objCharacter, strLanguage) + ')';
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
 
             if (!string.IsNullOrEmpty(GearName))
             {

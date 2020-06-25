@@ -219,7 +219,7 @@ namespace Chummer.Backend.Skills
 
             if (xmlSkillTranslationNode == null)
             {
-                return LanguageManager.ReverseTranslateExtra(strInputSkillName, CharacterObject);
+                return CharacterObject.ReverseTranslateExtra(strInputSkillName);
             }
 
             return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
@@ -233,7 +233,7 @@ namespace Chummer.Backend.Skills
             {
                 if (Rating == 0 && Type == "Language")
                 {
-                    return LanguageManager.GetString("Skill_NativeLanguageShort",GlobalOptions.Language);
+                    return LanguageManager.GetString("Skill_NativeLanguageShort");
                 }
                 else
                 {

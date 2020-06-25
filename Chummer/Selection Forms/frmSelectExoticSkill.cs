@@ -93,7 +93,7 @@ namespace Chummer
         /// Skill specialisation that was selected in the dialogue.
         /// </summary>
         public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString()
-                                                           ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text, _objCharacter);
+                                                           ?? _objCharacter.ReverseTranslateExtra(cboSkillSpecialisations.Text);
 
         #endregion
 
