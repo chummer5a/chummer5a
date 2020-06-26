@@ -373,7 +373,7 @@ namespace Chummer
                 return false;
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt")))
                     return false;
             }
 

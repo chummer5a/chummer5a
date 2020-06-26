@@ -858,6 +858,26 @@ namespace Chummer
             return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
 
+        /// <summary>
+        /// Verify that the user wants to delete an item.
+        /// </summary>
+        public static bool ConfirmDelete(string strMessage)
+        {
+            return !GlobalOptions.ConfirmDelete ||
+                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
+        /// </summary>
+        public static bool ConfirmKarmaExpense(string strMessage)
+        {
+            return !GlobalOptions.ConfirmKarmaExpense ||
+                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.

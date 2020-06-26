@@ -5978,11 +5978,11 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (!CanBeRemoved()) return false;
+            if (!CanBeRemoved)
+                return false;
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                     return false;
             }
 
@@ -6003,40 +6003,43 @@ namespace Chummer.Backend.Equipment
         /// Check whether the weapon is not removable due to various restrictions.
         /// </summary>
         /// <returns></returns>
-        private bool CanBeRemoved()
+        private bool CanBeRemoved
         {
-            // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
-            if (Cyberware)
+            get
             {
-                Program.MainForm.ShowMessageBox(
-                    LanguageManager.GetString("Message_CannotRemoveCyberweapon"),
-                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+                // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
+                if (Cyberware)
+                {
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_CannotRemoveCyberweapon"),
+                        LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
 
-            // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
-            if (Category.StartsWith("Quality", StringComparison.Ordinal))
-            {
-                Program.MainForm.ShowMessageBox(
-                    LanguageManager.GetString("Message_CannotRemoveQualityWeapon"),
-                    LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+                // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
+                if (Category.StartsWith("Quality", StringComparison.Ordinal))
+                {
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_CannotRemoveQualityWeapon"),
+                        LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
 
-            if (Category == "Gear")
-            {
-                string message = LanguageManager.GetString(
-                    ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
-                    GlobalOptions.Language);
-                Program.MainForm.ShowMessageBox(message,
-                    LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+                if (Category == "Gear")
+                {
+                    string message = LanguageManager.GetString(
+                        ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
+                        GlobalOptions.Language);
+                    Program.MainForm.ShowMessageBox(message,
+                        LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
 
-            return true;
+                return true;
+            }
         }
 
         public void Sell(decimal percentage)

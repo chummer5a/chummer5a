@@ -4849,18 +4849,10 @@ namespace Chummer.Backend.Equipment
 
             if (blnConfirmDelete)
             {
-                if (SourceType == Improvement.ImprovementSource.Bioware)
-                {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware",
-                        GlobalOptions.Language)))
-                        return false;
-                }
-                else
-                {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware",
-                        GlobalOptions.Language)))
-                        return false;
-                }
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Bioware
+                    ? "Message_DeleteBioware"
+                    : "Message_DeleteCyberware")))
+                    return false;
             }
 
             if (ParentVehicle != null)

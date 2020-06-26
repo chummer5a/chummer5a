@@ -6449,30 +6449,6 @@ namespace Chummer
 
         #region UI Methods
 
-        /// <summary>
-        /// Verify that the user wants to delete an item.
-        /// </summary>
-        public bool ConfirmDelete(string strMessage)
-        {
-            return !Options.ConfirmDelete ||
-                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
-                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-        }
-
-        /// <summary>
-        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
-        /// </summary>
-        public bool ConfirmKarmaExpense(string strMessage)
-        {
-            if(Options.ConfirmKarmaExpense &&
-                Program.MainForm.ShowMessageBox(strMessage,
-                    LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return false;
-            else
-                return true;
-        }
-
         #region Move TreeNodes
 
         /// <summary>

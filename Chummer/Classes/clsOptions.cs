@@ -156,8 +156,6 @@ namespace Chummer
         private static bool _blnPrintToFileFirst;
         private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
-        private static bool _blnDronemods;
-        private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
         private static bool _blnHideCharacterRoster;
@@ -171,6 +169,11 @@ namespace Chummer
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
+        private static bool _blnConfirmDelete = true;
+        private static bool _blnConfirmKarmaExpense = true;
+        private static bool _blnHideItemsOverAvailLimit = true;
+        private static bool _blnAllowHoverIncrement;
+        private static bool _blnSearchInCategoryOnly = true;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
@@ -368,8 +371,6 @@ namespace Chummer
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
-            LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
-            LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
@@ -388,6 +389,13 @@ namespace Chummer
             LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
+            // Confirm delete.
+            LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete");
+            // Confirm Karma Expense.
+            LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense");
+            LoadBoolFromRegistry(ref _blnHideItemsOverAvailLimit, "hideitemsoveravaillimit");
+            LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
+            LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
 
             // Omae Settings.
             // Username.
@@ -569,6 +577,54 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not confirmation messages are shown when deleting an object.
+        /// </summary>
+        public static bool ConfirmDelete
+        {
+            get => _blnConfirmDelete;
+            set => _blnConfirmDelete = value;
+        }
+
+        /// <summary>
+        /// Whether or not confirmation messages are shown for Karma Expenses.
+        /// </summary>
+        public static bool ConfirmKarmaExpense
+        {
+            get => _blnConfirmKarmaExpense;
+            set => _blnConfirmKarmaExpense = value;
+        }
+
+        /// <summary>
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
+        /// </summary>
+        public static bool HideItemsOverAvailLimit
+        {
+            get => _blnHideItemsOverAvailLimit;
+            set => _blnHideItemsOverAvailLimit = value;
+        }
+
+        /// <summary>
+        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+        /// </summary>
+        public static bool AllowHoverIncrement
+        {
+            get => _blnAllowHoverIncrement;
+            set => _blnAllowHoverIncrement = value;
+        }
+
+        /// <summary>
+        /// Whether searching in a selection form will limit itself to the current Category that's selected.
+        /// </summary>
+        public static bool SearchInCategoryOnly
+        {
+            get => _blnSearchInCategoryOnly;
+            set => _blnSearchInCategoryOnly = value;
+        }
+
+        public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+
+        /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
         public static bool UseLogging
@@ -609,18 +665,6 @@ namespace Chummer
         {
             get => _blnDatesIncludeTime;
             set => _blnDatesIncludeTime = value;
-        }
-
-        public static bool Dronemods
-        {
-            get => _blnDronemods;
-            set => _blnDronemods = value;
-        }
-
-        public static bool DronemodsMaximumPilot
-        {
-            get => _blnDronemodsMaximumPilot;
-            set => _blnDronemodsMaximumPilot = value;
         }
 
 

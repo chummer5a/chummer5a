@@ -1030,7 +1030,8 @@ namespace Chummer
             if (blnConfirmDelete)
             {
                 string strMessage = LanguageManager.GetString("Message_DeleteSpell");
-                if (!_objCharacter.ConfirmDelete(strMessage)) return false;
+                if (!CommonFunctions.ConfirmDelete(strMessage))
+                    return false;
             }
 
             _objCharacter.Spells.Remove(this);

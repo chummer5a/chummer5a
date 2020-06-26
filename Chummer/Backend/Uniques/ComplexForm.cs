@@ -608,8 +608,7 @@ namespace Chummer
         {
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
                     return false;
             }
 

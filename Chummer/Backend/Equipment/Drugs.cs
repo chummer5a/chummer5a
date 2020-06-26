@@ -1043,8 +1043,7 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete)
         {
-            if (blnConfirmDelete && !_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug",
-                    GlobalOptions.Language)))
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug")))
             {
                 return false;
             }

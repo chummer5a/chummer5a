@@ -135,9 +135,9 @@ namespace Chummer.UI.Skills
 
                 nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 nudSkill.DoDatabinding("Value", _skill, nameof(Skill.Base));
-                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", _skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
                 nudKarma.DoDatabinding("Value", _skill, nameof(Skill.Karma));
-                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 cboSpec.BeginUpdate();
                 cboSpec.DataSource = null;
@@ -210,7 +210,7 @@ namespace Chummer.UI.Skills
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                 _skill.CurrentDisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
-            if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             SuspendLayout();
@@ -258,7 +258,7 @@ namespace Chummer.UI.Skills
 
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
-            if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             using (frmSelectSpec selectForm = new frmSelectSpec(_skill) { Mode = "Knowledge" })
@@ -277,7 +277,7 @@ namespace Chummer.UI.Skills
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (!_skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
+            if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
                 return;
             _skill.UnbindSkill();
             _skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_skill);

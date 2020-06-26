@@ -35,20 +35,23 @@ using NLog;
 
 namespace Chummer
 {
-    public partial class frmOptions : Form
+    public partial class frmCharacterOptions : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly Character _objCharacter;
+        private readonly CharacterOptions _objCharacterOptions;
         // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
         private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos = new List<Tuple<object, bool>>();
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
         private bool _blnSkipRefresh;
         private bool _blnDirty;
         private bool _blnLoading = true;
+        private bool _blnSourcebookToggle = true;
         private string _strSelectedLanguage = GlobalOptions.Language;
         private CultureInfo _objSelectedCultureInfo = GlobalOptions.CultureInfo;
 
         #region Form Events
-        public frmOptions()
+        public frmCharacterOptions(Character objCharacter)
         {
             InitializeComponent();
 #if !DEBUG
@@ -57,17 +60,40 @@ namespace Chummer
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
             this.TranslateWinForm(_strSelectedLanguage);
+            _objCharacter = objCharacter;
+            _objCharacterOptions = objCharacter?.Options ?? new CharacterOptions(null);
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfos);
+            foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
+            {
+                CustomDataDirectoryInfo objLoopInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
+                if (objLoopInfo != null)
+                {
+                    _lstCharacterCustomDataDirectoryInfos.Add(
+                        new Tuple<object, bool>(
+                            objLoopInfo,
+                            kvpCustomDataDirectory.Value.Item2));
+                }
+                else
+                {
+                    _lstCharacterCustomDataDirectoryInfos.Add(
+                        new Tuple<object, bool>(
+                            kvpCustomDataDirectory.Key,
+                            kvpCustomDataDirectory.Value.Item2));
+                }
+            }
         }
 
-        private void frmOptions_Load(object sender, EventArgs e)
+        private void frmCharacterOptions_Load(object sender, EventArgs e)
         {
             PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
+            PopulateLimbCountList();
             PopulateMugshotCompressionOptions();
             SetToolTips();
-            PopulateOptions();
+            PopulateSettingsList();
+            SetDefaultValueForSettingsList();
+            PopulateGlobalOptions();
             PopulateLanguageList();
             SetDefaultValueForLanguageList();
             PopulateSheetLanguageList();
@@ -82,6 +108,17 @@ namespace Chummer
         #region Control Events
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            // Make sure the current Setting has a name.
+            if(string.IsNullOrWhiteSpace(txtSettingName.Text))
+            {
+                string text = LanguageManager.GetString("Message_Options_SettingsName", _strSelectedLanguage);
+                string caption = LanguageManager.GetString("MessageTitle_Options_SettingsName", _strSelectedLanguage);
+
+                Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtSettingName.Focus();
+                return;
+            }
+
             if(_blnDirty)
             {
                 string text = LanguageManager.GetString("Message_Options_SaveForms", _strSelectedLanguage);
@@ -92,10 +129,193 @@ namespace Chummer
             }
 
             DialogResult = DialogResult.OK;
+
+            BuildBooksList();
+            BuildCustomDataDirectoryNamesList();
             SaveRegistrySettings();
+
+            _objCharacterOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
+            _objCharacterOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
+            _objCharacterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
+            _objCharacterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
+            _objCharacterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
+            _objCharacterOptions.CyberlegMovement = chkCyberlegMovement.Checked;
+            _objCharacterOptions.UseTotalValueForFreeContacts = chkUseTotalValueForFreeContacts.Checked;
+            _objCharacterOptions.UseTotalValueForFreeKnowledge = chkUseTotalValueForFreeKnowledge.Checked;
+            _objCharacterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
+            _objCharacterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
+            _objCharacterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
+            try
+            {
+                _objCharacterOptions.FreeContactsMultiplier = decimal.ToInt32(nudContactMultiplier.Value);
+                _objCharacterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
+                _objCharacterOptions.DroneArmorMultiplier = decimal.ToInt32(nudDroneArmorMultiplier.Value);
+                _objCharacterOptions.FreeKnowledgeMultiplier = decimal.ToInt32(nudKnowledgeMultiplier.Value);
+                _objCharacterOptions.MetatypeCostsKarmaMultiplier = decimal.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
+                _objCharacterOptions.NuyenPerBP = decimal.ToInt32(nudKarmaNuyenPer.Value);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Log.Error(ex.Message);
+            }
+
+            _objCharacterOptions.DontRoundEssenceInternally = chkDontRoundEssenceInternally.Checked;
+            _objCharacterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
+            _objCharacterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
+            _objCharacterOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
+            _objCharacterOptions.ExceedPositiveQualities = chkExceedPositiveQualities.Checked;
+            _objCharacterOptions.ExceedPositiveQualitiesCostDoubled = chkExceedPositiveQualitiesCostDoubled.Checked;
+            _objCharacterOptions.ExtendAnyDetectionSpell = chkExtendAnyDetectionSpell.Checked;
+
+            _objCharacterOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
+            if(chkContactMultiplier.Checked)
+                nudContactMultiplier.Enabled = true;
+
+            _objCharacterOptions.DroneArmorMultiplierEnabled = chkDroneArmorMultiplier.Checked;
+            nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
+            _objCharacterOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
+            if(chkKnowledgeMultiplier.Checked)
+                chkKnowledgeMultiplier.Enabled = true;
+
+            _objCharacterOptions.IgnoreArt = chkIgnoreArt.Checked;
+            _objCharacterOptions.IgnoreComplexFormLimit = chkIgnoreComplexFormLimit.Checked;
+            _objCharacterOptions.UnarmedImprovementsApplyToWeapons = chkUnarmedSkillImprovements.Checked;
+            _objCharacterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
+            _objCharacterOptions.ReverseAttributePriorityOrder = chkReverseAttributePriorityOrder.Checked;
+
+            _objCharacterOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
+            _objCharacterOptions.NoArmorEncumbrance = chkNoArmorEncumbrance.Checked;
+
+            _objCharacterOptions.PrintExpenses = chkPrintExpenses.Checked;
+            _objCharacterOptions.PrintFreeExpenses = chkPrintFreeExpenses.Checked;
+            _objCharacterOptions.PrintNotes = chkPrintNotes.Checked;
+            _objCharacterOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
+            _objCharacterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
+            _objCharacterOptions.SpecialKarmaCostBasedOnShownValue = chkSpecialKarmaCost.Checked;
+            _objCharacterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
+            _objCharacterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
+            _objCharacterOptions.AllowPointBuySpecializationsOnKarmaSkills = chkAllowPointBuySpecializationsOnKarmaSkills.Checked;
+            _objCharacterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
+            _objCharacterOptions.CompensateSkillGroupKarmaDifference = chkCompensateSkillGroupKarmaDifference.Checked;
+            _objCharacterOptions.MysAdeptAllowPPCareer = chkMysAdPp.Checked;
+            _objCharacterOptions.MysAdeptSecondMAGAttribute = chkMysAdeptSecondMAGAttribute.Checked;
+            _objCharacterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
+            _objCharacterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
+            _objCharacterOptions.EnemyKarmaQualityLimit = chkEnemyKarmaQualityLimit.Checked;
+            _objCharacterOptions.IncreasedImprovedAbilityMultiplier = chkIncreasedImprovedAbilityModifier.Checked;
+            _objCharacterOptions.AllowFreeGrids = chkAllowFreeGrids.Checked;
+            _objCharacterOptions.AllowTechnomancerSchooling = chkAllowTechnomancerSchooling.Checked;
+            _objCharacterOptions.CyberlimbAttributeBonusCap = decimal.ToInt32(nudCyberlimbAttributeBonusCap.Value);
+            _objCharacterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
+
+            string strLimbCount = cboLimbCount.SelectedValue?.ToString();
+            if(string.IsNullOrEmpty(strLimbCount))
+            {
+                _objCharacterOptions.LimbCount = 6;
+                _objCharacterOptions.ExcludeLimbSlot = string.Empty;
+            }
+            else
+            {
+                int intSeparatorIndex = strLimbCount.IndexOf('<');
+                if(intSeparatorIndex == -1)
+                {
+                    _objCharacterOptions.LimbCount = Convert.ToInt32(strLimbCount, GlobalOptions.InvariantCultureInfo);
+                    _objCharacterOptions.ExcludeLimbSlot = string.Empty;
+                }
+                else
+                {
+                    _objCharacterOptions.LimbCount = Convert.ToInt32(strLimbCount.Substring(0, intSeparatorIndex), GlobalOptions.InvariantCultureInfo);
+                    _objCharacterOptions.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length ? strLimbCount.Substring(intSeparatorIndex + 1) : string.Empty;
+                }
+            }
+            _objCharacterOptions.DroneMods = chkDronemods.Checked;
+            _objCharacterOptions.DroneModsMaximumPilot = chkDronemodsMaximumPilot.Checked;
+
+            try
+            {
+                StringBuilder objNuyenFormat = new StringBuilder("#,0");
+                int intNuyenDecimalPlacesMaximum = decimal.ToInt32(nudNuyenDecimalsMaximum.Value);
+                int intNuyenDecimalPlacesMinimum = decimal.ToInt32(nudNuyenDecimalsMinimum.Value);
+                if (intNuyenDecimalPlacesMaximum > 0)
+                {
+                    objNuyenFormat.Append(".");
+                    for (int i = 0; i < intNuyenDecimalPlacesMaximum; ++i)
+                    {
+                        objNuyenFormat.Append(i < intNuyenDecimalPlacesMinimum ? "0" : "#");
+                    }
+                }
+
+                _objCharacterOptions.NuyenFormat = objNuyenFormat.ToString();
+
+                // Karma options.
+                _objCharacterOptions.KarmaAttribute = decimal.ToInt32(nudKarmaAttribute.Value);
+                _objCharacterOptions.KarmaQuality = decimal.ToInt32(nudKarmaQuality.Value);
+                _objCharacterOptions.KarmaSpecialization = decimal.ToInt32(nudKarmaSpecialization.Value);
+                _objCharacterOptions.KarmaKnowledgeSpecialization = decimal.ToInt32(nudKarmaKnowledgeSpecialization.Value);
+                _objCharacterOptions.KarmaNewKnowledgeSkill = decimal.ToInt32(nudKarmaNewKnowledgeSkill.Value);
+                _objCharacterOptions.KarmaNewActiveSkill = decimal.ToInt32(nudKarmaNewActiveSkill.Value);
+                _objCharacterOptions.KarmaNewSkillGroup = decimal.ToInt32(nudKarmaNewSkillGroup.Value);
+                _objCharacterOptions.KarmaImproveKnowledgeSkill = decimal.ToInt32(nudKarmaImproveKnowledgeSkill.Value);
+                _objCharacterOptions.KarmaImproveActiveSkill = decimal.ToInt32(nudKarmaImproveActiveSkill.Value);
+                _objCharacterOptions.KarmaImproveSkillGroup = decimal.ToInt32(nudKarmaImproveSkillGroup.Value);
+                _objCharacterOptions.KarmaSpell = decimal.ToInt32(nudKarmaSpell.Value);
+                _objCharacterOptions.KarmaNewComplexForm = decimal.ToInt32(nudKarmaNewComplexForm.Value);
+                _objCharacterOptions.KarmaImproveComplexForm = decimal.ToInt32(nudKarmaImproveComplexForm.Value);
+                _objCharacterOptions.KarmaNewAIProgram = decimal.ToInt32(nudKarmaNewAIProgram.Value);
+                _objCharacterOptions.KarmaNewAIAdvancedProgram = decimal.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
+                _objCharacterOptions.KarmaMetamagic = decimal.ToInt32(nudKarmaMetamagic.Value);
+                _objCharacterOptions.KarmaNuyenPer = decimal.ToInt32(nudKarmaNuyenPer.Value);
+                _objCharacterOptions.KarmaContact = decimal.ToInt32(nudKarmaContact.Value);
+                _objCharacterOptions.KarmaEnemy = decimal.ToInt32(nudKarmaEnemy.Value);
+                _objCharacterOptions.KarmaCarryover = decimal.ToInt32(nudKarmaCarryover.Value);
+                _objCharacterOptions.KarmaSpirit = decimal.ToInt32(nudKarmaSpirit.Value);
+                _objCharacterOptions.KarmaManeuver = decimal.ToInt32(nudKarmaManeuver.Value);
+                _objCharacterOptions.KarmaInitiation = decimal.ToInt32(nudKarmaInitiation.Value);
+                _objCharacterOptions.KarmaInitiationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
+                _objCharacterOptions.KarmaComplexFormOption = decimal.ToInt32(nudKarmaComplexFormOption.Value);
+                _objCharacterOptions.KarmaComplexFormSkillsoft = decimal.ToInt32(nudKarmaComplexFormSkillsoft.Value);
+                _objCharacterOptions.KarmaJoinGroup = decimal.ToInt32(nudKarmaJoinGroup.Value);
+                _objCharacterOptions.KarmaLeaveGroup = decimal.ToInt32(nudKarmaLeaveGroup.Value);
+                _objCharacterOptions.KarmaMysticAdeptPowerPoint = (int) nudKarmaMysticAdeptPowerPoint.Value;
+
+                // Focus costs
+                _objCharacterOptions.KarmaAlchemicalFocus = decimal.ToInt32(nudKarmaAlchemicalFocus.Value);
+                _objCharacterOptions.KarmaBanishingFocus = decimal.ToInt32(nudKarmaBanishingFocus.Value);
+                _objCharacterOptions.KarmaBindingFocus = decimal.ToInt32(nudKarmaBindingFocus.Value);
+                _objCharacterOptions.KarmaCenteringFocus = decimal.ToInt32(nudKarmaCenteringFocus.Value);
+                _objCharacterOptions.KarmaCounterspellingFocus = decimal.ToInt32(nudKarmaCounterspellingFocus.Value);
+                _objCharacterOptions.KarmaDisenchantingFocus = decimal.ToInt32(nudKarmaDisenchantingFocus.Value);
+                _objCharacterOptions.KarmaFlexibleSignatureFocus = decimal.ToInt32(nudKarmaFlexibleSignatureFocus.Value);
+                _objCharacterOptions.KarmaMaskingFocus = decimal.ToInt32(nudKarmaMaskingFocus.Value);
+                _objCharacterOptions.KarmaPowerFocus = decimal.ToInt32(nudKarmaPowerFocus.Value);
+                _objCharacterOptions.KarmaQiFocus = decimal.ToInt32(nudKarmaQiFocus.Value);
+                _objCharacterOptions.KarmaRitualSpellcastingFocus = decimal.ToInt32(nudKarmaRitualSpellcastingFocus.Value);
+                _objCharacterOptions.KarmaSpellcastingFocus = decimal.ToInt32(nudKarmaSpellcastingFocus.Value);
+                _objCharacterOptions.KarmaSpellShapingFocus = decimal.ToInt32(nudKarmaSpellShapingFocus.Value);
+                _objCharacterOptions.KarmaSummoningFocus = decimal.ToInt32(nudKarmaSummoningFocus.Value);
+                _objCharacterOptions.KarmaSustainingFocus = decimal.ToInt32(nudKarmaSustainingFocus.Value);
+                _objCharacterOptions.KarmaWeaponFocus = decimal.ToInt32(nudKarmaWeaponFocus.Value);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Log.Error(ex.Message);
+            }
+
+            _objCharacterOptions.Name = txtSettingName.Text;
+            _objCharacterOptions.Save();
 
             if(_blnDirty)
                 Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
+        }
+
+        private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string strSelectedFile = cboSetting.SelectedValue?.ToString();
+            if(strSelectedFile?.Contains(".xml") != true)
+                return;
+
+            _objCharacterOptions.Load(strSelectedFile);
+            PopulateOptions();
         }
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
@@ -143,21 +363,88 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             // Build a list of Sourcebooks that will be passed to the Verify method.
             // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-            HashSet<string> setBooks = new HashSet<string> { "SR5" };
+            List<string> lstBooks = new List<string>();
+            bool blnSR5Included = false;
 
             foreach(ListItem objItem in lstGlobalSourcebookInfos.Items)
             {
                 string strItemValue = objItem.Value?.ToString();
-                setBooks.Add(strItemValue);
+                lstBooks.Add(strItemValue);
+                if(strItemValue == "SR5")
+                    blnSR5Included = true;
             }
 
+            // If the SR5 book was somehow missed, add it back.
+            if(!blnSR5Included)
+                _objCharacterOptions.Books.Add("SR5");
+            _objCharacterOptions.RecalculateBookXPath();
+
             string strSelectedLanguage = _strSelectedLanguage;
-            XmlManager.Verify(strSelectedLanguage, setBooks);
+            XmlManager.Verify(strSelectedLanguage, lstBooks);
 
             string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
             Program.MainForm.ShowMessageBox(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
                 LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             Cursor = Cursors.Default;
+        }
+
+        private void chkExceedNegativeQualities_CheckedChanged(object sender, EventArgs e)
+        {
+            chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
+            if(!chkExceedNegativeQualitiesLimit.Enabled)
+                chkExceedNegativeQualitiesLimit.Checked = false;
+            OptionsChanged(sender, e);
+        }
+
+        private void chkExceedPositiveQualities_CheckedChanged(object sender, EventArgs e)
+        {
+            chkExceedPositiveQualitiesCostDoubled.Enabled = chkExceedPositiveQualities.Checked;
+            if(!chkExceedPositiveQualitiesCostDoubled.Enabled)
+                chkExceedPositiveQualitiesCostDoubled.Checked = false;
+            OptionsChanged(sender, e);
+        }
+
+        private void chkContactMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            nudContactMultiplier.Enabled = chkContactMultiplier.Checked;
+            if(!chkContactMultiplier.Checked)
+            {
+                nudContactMultiplier.Value = 3;
+                nudContactMultiplier.Enabled = false;
+            }
+        }
+
+        private void chkKnowledgeMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            nudKnowledgeMultiplier.Enabled = chkKnowledgeMultiplier.Checked;
+            if(!chkKnowledgeMultiplier.Checked)
+            {
+                nudKnowledgeMultiplier.Value = 2;
+                nudKnowledgeMultiplier.Enabled = false;
+            }
+        }
+
+        private void chkDroneArmorMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
+            if(!chkDroneArmorMultiplier.Checked)
+            {
+                nudDroneArmorMultiplier.Value = 2;
+            }
+            OptionsChanged(sender, e);
+        }
+
+        private void cmdRestoreDefaultsKarma_Click(object sender, EventArgs e)
+        {
+            string text = LanguageManager.GetString("Message_Options_RestoreDefaults", _strSelectedLanguage);
+            string caption = LanguageManager.GetString("MessageTitle_Options_RestoreDefaults", _strSelectedLanguage);
+
+            // Verify that the user wants to reset these values.
+            if(MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+
+            RestoreDefaultKarmaValues();
+            RestoreDefaultKarmaFociValues();
         }
 
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
@@ -249,7 +536,7 @@ namespace Chummer
             if(string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
 
-            CommonFunctions.OpenPDF(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+            CommonFunctions.OpenPDF(lstGlobalSourcebookInfos.SelectedValue + " 5", _objCharacter, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
         #endregion
 
@@ -259,6 +546,25 @@ namespace Chummer
             this.TranslateWinForm(_strSelectedLanguage);
             PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
+
+            XmlNode xmlBooksNode = XmlManager.Load("books.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage).SelectSingleNode("/chummer/books");
+            if(xmlBooksNode != null)
+            {
+                RefreshGlobalSourcebookInfosListView();
+
+                foreach(TreeNode nodBook in treSourcebook.Nodes)
+                {
+                    XmlNode xmlBook = xmlBooksNode.SelectSingleNode("book[code = \"" + nodBook.Tag + "\"]");
+                    if(xmlBook != null)
+                    {
+                        nodBook.Text = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText ?? string.Empty;
+                    }
+                }
+
+                treSourcebook.Sort();
+            }
+
+            PopulateLimbCountList();
             PopulateMugshotCompressionOptions();
             SetToolTips();
 
@@ -279,7 +585,7 @@ namespace Chummer
         private void RefreshGlobalSourcebookInfosListView()
         {
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", null, _strSelectedLanguage);
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage);
 
             // Put the Sourcebooks into a List so they can first be sorted.
             List<ListItem> lstSourcebookInfos = new List<ListItem>();
@@ -315,6 +621,39 @@ namespace Chummer
             else
                 lstGlobalSourcebookInfos.SelectedValue = strOldSelected;
             lstGlobalSourcebookInfos.EndUpdate();
+        }
+
+        private void PopulateSourcebookTreeView()
+        {
+            // Load the Sourcebook information.
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage);
+
+            // Put the Sourcebooks into a List so they can first be sorted.
+
+            treSourcebook.Nodes.Clear();
+
+            using(XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book"))
+            {
+                if(objXmlBookList != null)
+                {
+                    foreach(XmlNode objXmlBook in objXmlBookList)
+                    {
+                        if(objXmlBook["hide"] != null)
+                            continue;
+                        string strCode = objXmlBook["code"]?.InnerText;
+                        bool blnChecked = _objCharacterOptions.Books.Contains(strCode);
+                        TreeNode objNode = new TreeNode
+                        {
+                            Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? string.Empty,
+                            Tag = strCode,
+                            Checked = blnChecked
+                        };
+                        treSourcebook.Nodes.Add(objNode);
+                    }
+                }
+            }
+
+            treSourcebook.Sort();
         }
 
         private void PopulateCustomDataDirectoryTreeView()
@@ -373,46 +712,148 @@ namespace Chummer
         private void PopulateOptions()
         {
             RefreshGlobalSourcebookInfosListView();
+            PopulateSourcebookTreeView();
             PopulateCustomDataDirectoryTreeView();
 
-            chkAutomaticUpdate.Checked = GlobalOptions.AutomaticUpdate;
-            chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
-            chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
-            chkUseLogging.Checked = GlobalOptions.UseLogging;
-            cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
-            PopulateApplicationInsightsOptions();
+            nudEssenceDecimals.Value = _objCharacterOptions.EssenceDecimals == 0 ? 2 : _objCharacterOptions.EssenceDecimals;
+            chkDontRoundEssenceInternally.Checked = _objCharacterOptions.DontRoundEssenceInternally;
+            chkAllowCyberwareESSDiscounts.Checked = _objCharacterOptions.AllowCyberwareESSDiscounts;
+            chkAllowInitiation.Checked = _objCharacterOptions.AllowInitiationInCreateMode;
+            chkAllowSkillDiceRolling.Checked = _objCharacterOptions.AllowSkillDiceRolling;
+            chkDontUseCyberlimbCalculation.Checked = _objCharacterOptions.DontUseCyberlimbCalculation;
+            chkAllowSkillRegrouping.Checked = _objCharacterOptions.AllowSkillRegrouping;
+            chkUseTotalValueForFreeContacts.Checked = _objCharacterOptions.UseTotalValueForFreeContacts;
+            chkUseTotalValueForFreeKnowledge.Checked = _objCharacterOptions.UseTotalValueForFreeKnowledge;
+            chkContactMultiplier.Checked = _objCharacterOptions.FreeContactsMultiplierEnabled;
+            chkDroneArmorMultiplier.Checked = _objCharacterOptions.DroneArmorMultiplierEnabled;
+            chkCyberlegMovement.Checked = _objCharacterOptions.CyberlegMovement;
+            chkMysAdPp.Checked = _objCharacterOptions.MysAdeptAllowPPCareer;
+            chkMysAdeptSecondMAGAttribute.Checked = _objCharacterOptions.MysAdeptSecondMAGAttribute;
+            chkFreeMartialArtSpecialization.Checked = _objCharacterOptions.FreeMartialArtSpecialization;
+            chkPrioritySpellsAsAdeptPowers.Checked = _objCharacterOptions.PrioritySpellsAsAdeptPowers;
+            chkDontDoubleQualityPurchases.Checked = _objCharacterOptions.DontDoubleQualityPurchases;
+            chkDontDoubleQualityRefunds.Checked = _objCharacterOptions.DontDoubleQualityRefunds;
+            chkEnforceCapacity.Checked = _objCharacterOptions.EnforceCapacity;
+            chkESSLossReducesMaximumOnly.Checked = _objCharacterOptions.ESSLossReducesMaximumOnly;
+            chkExceedNegativeQualities.Checked = _objCharacterOptions.ExceedNegativeQualities;
+            chkExceedNegativeQualitiesLimit.Checked = _objCharacterOptions.ExceedNegativeQualitiesLimit;
+            chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
+            chkExceedPositiveQualities.Checked = _objCharacterOptions.ExceedPositiveQualities;
+            chkExceedPositiveQualitiesCostDoubled.Checked = _objCharacterOptions.ExceedPositiveQualitiesCostDoubled;
+            chkExceedPositiveQualitiesCostDoubled.Enabled = chkExceedPositiveQualities.Checked;
+            chkExtendAnyDetectionSpell.Checked = _objCharacterOptions.ExtendAnyDetectionSpell;
+            chkIgnoreArt.Checked = _objCharacterOptions.IgnoreArt;
+            chkIgnoreComplexFormLimit.Checked = _objCharacterOptions.IgnoreComplexFormLimit;
+            chkKnowledgeMultiplier.Checked = _objCharacterOptions.FreeKnowledgeMultiplierEnabled;
+            chkUnarmedSkillImprovements.Checked = _objCharacterOptions.UnarmedImprovementsApplyToWeapons;
+            chkLicenseEachRestrictedItem.Checked = _objCharacterOptions.LicenseRestricted;
+            chkMoreLethalGameplay.Checked = _objCharacterOptions.MoreLethalGameplay;
+            chkNoArmorEncumbrance.Checked = _objCharacterOptions.NoArmorEncumbrance;
+            chkPrintExpenses.Checked = _objCharacterOptions.PrintExpenses;
+            chkPrintFreeExpenses.Checked = _objCharacterOptions.PrintFreeExpenses;
+            chkPrintFreeExpenses.Enabled = chkPrintExpenses.Checked;
+            chkPrintNotes.Checked = _objCharacterOptions.PrintNotes;
+            chkPrintSkillsWithZeroRating.Checked = _objCharacterOptions.PrintSkillsWithZeroRating;
+            chkRestrictRecoil.Checked = _objCharacterOptions.RestrictRecoil;
+            chkSpecialKarmaCost.Checked = _objCharacterOptions.SpecialKarmaCostBasedOnShownValue;
+            chkUseCalculatedPublicAwareness.Checked = _objCharacterOptions.UseCalculatedPublicAwareness;
+            chkAllowPointBuySpecializationsOnKarmaSkills.Checked = _objCharacterOptions.AllowPointBuySpecializationsOnKarmaSkills;
+            chkStrictSkillGroups.Checked = _objCharacterOptions.StrictSkillGroupsInCreateMode;
+            chkAlternateMetatypeAttributeKarma.Checked = _objCharacterOptions.AlternateMetatypeAttributeKarma;
+            chkCompensateSkillGroupKarmaDifference.Checked = _objCharacterOptions.CompensateSkillGroupKarmaDifference;
+            chkEnemyKarmaQualityLimit.Checked = _objCharacterOptions.EnemyKarmaQualityLimit;
+            chkAllowTechnomancerSchooling.Checked = _objCharacterOptions.AllowTechnomancerSchooling;
+            chkCyberlimbAttributeBonusCap.Checked = _objCharacterOptions.CyberlimbAttributeBonusCap != 4;
+            nudCyberlimbAttributeBonusCap.Enabled = chkCyberlimbAttributeBonusCap.Checked;
+            nudCyberlimbAttributeBonusCap.Value = _objCharacterOptions.CyberlimbAttributeBonusCap;
+            chkReverseAttributePriorityOrder.Checked = _objCharacterOptions.ReverseAttributePriorityOrder;
+            chkDronemods.Checked = _objCharacterOptions.DroneMods;
+            chkDronemodsMaximumPilot.Checked = _objCharacterOptions.DroneModsMaximumPilot;
+            chkIncreasedImprovedAbilityModifier.Checked = _objCharacterOptions.IncreasedImprovedAbilityMultiplier;
+            chkAllowFreeGrids.Checked = _objCharacterOptions.AllowFreeGrids;
+            nudContactMultiplier.Enabled = _objCharacterOptions.FreeContactsMultiplierEnabled;
+            nudContactMultiplier.Value = _objCharacterOptions.FreeContactsMultiplier;
+            nudKnowledgeMultiplier.Enabled = _objCharacterOptions.FreeKnowledgeMultiplierEnabled;
+            nudKnowledgeMultiplier.Value = _objCharacterOptions.FreeKnowledgeMultiplier;
+            nudDroneArmorMultiplier.Enabled = _objCharacterOptions.DroneArmorMultiplierEnabled;
+            nudDroneArmorMultiplier.Value = _objCharacterOptions.DroneArmorMultiplier;
+            nudMetatypeCostsKarmaMultiplier.Value = _objCharacterOptions.MetatypeCostsKarmaMultiplier;
+            nudNuyenPerBP.Value = _objCharacterOptions.NuyenPerBP;
+            chkUsePointsOnBrokenGroups.Checked = _objCharacterOptions.UsePointsOnBrokenGroups;
 
-            chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
-            chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
-            chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
-            chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
-            chkSingleDiceRoller.Checked = GlobalOptions.SingleDiceRoller;
-            chkDatesIncludeTime.Checked = GlobalOptions.DatesIncludeTime;
-            chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;
-            nudBrowserVersion.Value = GlobalOptions.EmulatedBrowserVersion;
-            txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
-            txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
-            chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;
-            chkCreateBackupOnCareer.Checked = GlobalOptions.CreateBackupOnCareer;
-            chkConfirmDelete.Checked = GlobalOptions.ConfirmDelete;
-            chkConfirmKarmaExpense.Checked = GlobalOptions.ConfirmKarmaExpense;
-            chkHideItemsOverAvail.Checked = GlobalOptions.HideItemsOverAvailLimit;
-            chkAllowHoverIncrement.Checked = GlobalOptions.AllowHoverIncrement;
-            chkSearchInCategoryOnly.Checked = GlobalOptions.SearchInCategoryOnly;
-            chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
-            chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
-            chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
-            if (!chkCustomDateTimeFormats.Checked)
+            txtSettingName.Enabled = cboSetting.SelectedValue?.ToString() != "default.xml";
+            txtSettingName.Text = _objCharacterOptions.Name;
+
+            int intNuyenDecimalPlacesMaximum = 0;
+            int intNuyenDecimalPlacesAlways = 0;
+            string strNuyenFormat = _objCharacterOptions.NuyenFormat;
+            int intDecimalIndex = strNuyenFormat.IndexOf('.');
+            if(intDecimalIndex != -1)
             {
-                txtDateFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern;
-                txtTimeFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern;
+                strNuyenFormat = strNuyenFormat.Substring(intDecimalIndex);
+                intNuyenDecimalPlacesMaximum = strNuyenFormat.Length - 1;
+                intNuyenDecimalPlacesAlways = strNuyenFormat.IndexOf('#') - 1;
+                if(intNuyenDecimalPlacesAlways < 0)
+                    intNuyenDecimalPlacesAlways = intNuyenDecimalPlacesMaximum;
             }
-            else
-            {
-                txtDateFormat.Text = GlobalOptions.CustomDateFormat;
-                txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
-            }
-            PluginsShowOrHide(chkEnablePlugins.Checked);
+            nudNuyenDecimalsMaximum.Value = intNuyenDecimalPlacesMaximum;
+            nudNuyenDecimalsMinimum.Value = intNuyenDecimalPlacesAlways;
+
+            string strLimbSlot = _objCharacterOptions.LimbCount.ToString(GlobalOptions.InvariantCultureInfo);
+            if(!string.IsNullOrEmpty(_objCharacterOptions.ExcludeLimbSlot))
+                strLimbSlot += '<' + _objCharacterOptions.ExcludeLimbSlot;
+            cboLimbCount.SelectedValue = strLimbSlot;
+
+            PopulateKarmaFields();
+        }
+
+        private void PopulateKarmaFields()
+        {
+            nudKarmaAttribute.Value = _objCharacterOptions.KarmaAttribute;
+            nudKarmaQuality.Value = _objCharacterOptions.KarmaQuality;
+            nudKarmaSpecialization.Value = _objCharacterOptions.KarmaSpecialization;
+            nudKarmaKnowledgeSpecialization.Value = _objCharacterOptions.KarmaKnowledgeSpecialization;
+            nudKarmaNewKnowledgeSkill.Value = _objCharacterOptions.KarmaNewKnowledgeSkill;
+            nudKarmaNewActiveSkill.Value = _objCharacterOptions.KarmaNewActiveSkill;
+            nudKarmaNewSkillGroup.Value = _objCharacterOptions.KarmaNewSkillGroup;
+            nudKarmaImproveKnowledgeSkill.Value = _objCharacterOptions.KarmaImproveKnowledgeSkill;
+            nudKarmaImproveActiveSkill.Value = _objCharacterOptions.KarmaImproveActiveSkill;
+            nudKarmaImproveSkillGroup.Value = _objCharacterOptions.KarmaImproveSkillGroup;
+            nudKarmaSpell.Value = _objCharacterOptions.KarmaSpell;
+            nudKarmaNewComplexForm.Value = _objCharacterOptions.KarmaNewComplexForm;
+            nudKarmaImproveComplexForm.Value = _objCharacterOptions.KarmaImproveComplexForm;
+            nudKarmaNewAIProgram.Value = _objCharacterOptions.KarmaNewAIProgram;
+            nudKarmaNewAIAdvancedProgram.Value = _objCharacterOptions.KarmaNewAIAdvancedProgram;
+            nudKarmaComplexFormOption.Value = _objCharacterOptions.KarmaComplexFormOption;
+            nudKarmaComplexFormSkillsoft.Value = _objCharacterOptions.KarmaComplexFormSkillsoft;
+            nudKarmaNuyenPer.Value = _objCharacterOptions.KarmaNuyenPer;
+            nudKarmaContact.Value = _objCharacterOptions.KarmaContact;
+            nudKarmaEnemy.Value = _objCharacterOptions.KarmaEnemy;
+            nudKarmaCarryover.Value = _objCharacterOptions.KarmaCarryover;
+            nudKarmaSpirit.Value = _objCharacterOptions.KarmaSpirit;
+            nudKarmaManeuver.Value = _objCharacterOptions.KarmaManeuver;
+            nudKarmaInitiation.Value = _objCharacterOptions.KarmaInitiation;
+            nudKarmaInitiationFlat.Value = _objCharacterOptions.KarmaInitiationFlat;
+            nudKarmaMetamagic.Value = _objCharacterOptions.KarmaMetamagic;
+            nudKarmaJoinGroup.Value = _objCharacterOptions.KarmaJoinGroup;
+            nudKarmaLeaveGroup.Value = _objCharacterOptions.KarmaLeaveGroup;
+            nudKarmaAlchemicalFocus.Value = _objCharacterOptions.KarmaAlchemicalFocus;
+            nudKarmaBanishingFocus.Value = _objCharacterOptions.KarmaBanishingFocus;
+            nudKarmaBindingFocus.Value = _objCharacterOptions.KarmaBindingFocus;
+            nudKarmaCenteringFocus.Value = _objCharacterOptions.KarmaCenteringFocus;
+            nudKarmaCounterspellingFocus.Value = _objCharacterOptions.KarmaCounterspellingFocus;
+            nudKarmaDisenchantingFocus.Value = _objCharacterOptions.KarmaDisenchantingFocus;
+            nudKarmaFlexibleSignatureFocus.Value = _objCharacterOptions.KarmaFlexibleSignatureFocus;
+            nudKarmaMaskingFocus.Value = _objCharacterOptions.KarmaMaskingFocus;
+            nudKarmaPowerFocus.Value = _objCharacterOptions.KarmaPowerFocus;
+            nudKarmaQiFocus.Value = _objCharacterOptions.KarmaQiFocus;
+            nudKarmaRitualSpellcastingFocus.Value = _objCharacterOptions.KarmaRitualSpellcastingFocus;
+            nudKarmaSpellcastingFocus.Value = _objCharacterOptions.KarmaSpellcastingFocus;
+            nudKarmaSpellShapingFocus.Value = _objCharacterOptions.KarmaSpellShapingFocus;
+            nudKarmaSummoningFocus.Value = _objCharacterOptions.KarmaSummoningFocus;
+            nudKarmaSustainingFocus.Value = _objCharacterOptions.KarmaSustainingFocus;
+            nudKarmaWeaponFocus.Value = _objCharacterOptions.KarmaWeaponFocus;
+            nudKarmaMysticAdeptPowerPoint.Value = _objCharacterOptions.KarmaMysticAdeptPowerPoint;
         }
 
         private void SaveGlobalOptions()
@@ -452,11 +893,6 @@ namespace Chummer
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
             GlobalOptions.HideCharacterRoster = chkHideCharacterRoster.Checked;
             GlobalOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
-            GlobalOptions.ConfirmDelete = chkConfirmDelete.Checked;
-            GlobalOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
-            GlobalOptions.HideItemsOverAvailLimit = chkHideItemsOverAvail.Checked;
-            GlobalOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
-            GlobalOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
             GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
             GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage)
                 .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue + "\"]/name")?.InnerText
@@ -495,14 +931,11 @@ namespace Chummer
                     objRegistry.SetValue("lifemodule", chkLifeModule.Checked);
                     objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked);
                     objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked);
+                    objRegistry.SetValue("dronemods", chkDronemods.Checked);
+                    objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked);
                     objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
                     objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
                     objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
-                    objRegistry.SetValue("confirmdelete", chkConfirmDelete.Checked);
-                    objRegistry.SetValue("confirmkarmaexpense", chkConfirmKarmaExpense.Checked);
-                    objRegistry.SetValue("hideitemsoveravaillimit", chkHideItemsOverAvail.Checked);
-                    objRegistry.SetValue("allowhoverincrement", chkAllowHoverIncrement.Checked);
-                    objRegistry.SetValue("searchincategoryonly", chkSearchInCategoryOnly.Checked);
                     objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
                     objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked);
                     objRegistry.SetValue("hidecharts", chkHideCharts.Checked);
@@ -551,6 +984,94 @@ namespace Chummer
                     GlobalOptions.RebuildCustomDataDirectoryInfoList();
                 }
             }
+        }
+
+        private void BuildBooksList()
+        {
+            _objCharacterOptions.Books.Clear();
+
+            bool blnSR5Included = false;
+            foreach(TreeNode objNode in treSourcebook.Nodes)
+            {
+                if(!objNode.Checked)
+                    continue;
+
+                _objCharacterOptions.Books.Add(objNode.Tag.ToString());
+
+                if(objNode.Tag.ToString() == "SR5")
+                    blnSR5Included = true;
+            }
+
+            // If the SR5 book was somehow missed, add it back.
+            if(!blnSR5Included)
+                _objCharacterOptions.Books.Add("SR5");
+            _objCharacterOptions.RecalculateBookXPath();
+        }
+
+        private void BuildCustomDataDirectoryNamesList()
+        {
+            _objCharacterOptions.CustomDataDirectoryNames.Clear();
+            for (int i = 0; i < _lstCharacterCustomDataDirectoryInfos.Count; ++i)
+            {
+                Tuple<object, bool> objTupleInfo = _lstCharacterCustomDataDirectoryInfos[i];
+                CustomDataDirectoryInfo objCustomDataDirectory = objTupleInfo.Item1 as CustomDataDirectoryInfo;
+                _objCharacterOptions.CustomDataDirectoryNames.Add(objCustomDataDirectory != null ? objCustomDataDirectory.Name : objTupleInfo.Item1.ToString(),
+                    new Tuple<int, bool>(i, objTupleInfo.Item2));
+            }
+            _objCharacterOptions.RecalculateEnabledCustomDataDirectories();
+        }
+
+        private void RestoreDefaultKarmaValues()
+        {
+            nudKarmaSpecialization.Value = 7;
+            nudKarmaKnowledgeSpecialization.Value = 7;
+            nudKarmaNewKnowledgeSkill.Value = 1;
+            nudKarmaNewActiveSkill.Value = 2;
+            nudKarmaNewSkillGroup.Value = 5;
+            nudKarmaImproveKnowledgeSkill.Value = 1;
+            nudKarmaImproveActiveSkill.Value = 2;
+            nudKarmaImproveSkillGroup.Value = 5;
+            nudKarmaAttribute.Value = 5;
+            nudKarmaQuality.Value = 1;
+            nudKarmaSpell.Value = 5;
+            nudKarmaNewComplexForm.Value = 4;
+            nudKarmaImproveComplexForm.Value = 1;
+            nudKarmaNewAIProgram.Value = 5;
+            nudKarmaNewAIAdvancedProgram.Value = 8;
+            nudKarmaComplexFormOption.Value = 2;
+            nudKarmaComplexFormSkillsoft.Value = 1;
+            nudKarmaSpirit.Value = 1;
+            nudKarmaManeuver.Value = 4;
+            nudKarmaNuyenPer.Value = 2000;
+            nudKarmaContact.Value = 1;
+            nudKarmaEnemy.Value = 1;
+            nudKarmaCarryover.Value = 7;
+            nudKarmaInitiation.Value = 3;
+            nudKarmaInitiationFlat.Value = 10;
+            nudKarmaMetamagic.Value = 15;
+            nudKarmaJoinGroup.Value = 5;
+            nudKarmaLeaveGroup.Value = 1;
+            nudKarmaMysticAdeptPowerPoint.Value = 5;
+        }
+
+        private void RestoreDefaultKarmaFociValues()
+        {
+            nudKarmaAlchemicalFocus.Value = 3;
+            nudKarmaBanishingFocus.Value = 2;
+            nudKarmaBindingFocus.Value = 2;
+            nudKarmaCenteringFocus.Value = 3;
+            nudKarmaCounterspellingFocus.Value = 2;
+            nudKarmaDisenchantingFocus.Value = 3;
+            nudKarmaFlexibleSignatureFocus.Value = 3;
+            nudKarmaMaskingFocus.Value = 3;
+            nudKarmaPowerFocus.Value = 6;
+            nudKarmaQiFocus.Value = 2;
+            nudKarmaRitualSpellcastingFocus.Value = 2;
+            nudKarmaSpellcastingFocus.Value = 2;
+            nudKarmaSpellShapingFocus.Value = 3;
+            nudKarmaSummoningFocus.Value = 2;
+            nudKarmaSustainingFocus.Value = 2;
+            nudKarmaWeaponFocus.Value = 3;
         }
 
         private void PopulateBuildMethodList()
@@ -635,6 +1156,42 @@ namespace Chummer
             cboDefaultGameplayOption.EndUpdate();
         }
 
+        private void PopulateLimbCountList()
+        {
+            List<ListItem> lstLimbCount = new List<ListItem>();
+
+            using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage)
+                .SelectNodes("/chummer/limbcounts/limb"))
+            {
+                if (objXmlNodeList != null)
+                {
+                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                    {
+                        string strExclude = objXmlNode["exclude"]?.InnerText ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strExclude))
+                            strExclude = '<' + strExclude;
+                        lstLimbCount.Add(new ListItem(objXmlNode["limbcount"]?.InnerText + strExclude, objXmlNode["translate"]?.InnerText ?? objXmlNode["name"]?.InnerText ?? string.Empty));
+                    }
+                }
+            }
+
+            string strOldSelected = cboLimbCount.SelectedValue?.ToString();
+
+            cboLimbCount.BeginUpdate();
+            cboLimbCount.ValueMember = nameof(ListItem.Value);
+            cboLimbCount.DisplayMember = nameof(ListItem.Name);
+            cboLimbCount.DataSource = lstLimbCount;
+
+            if(!string.IsNullOrEmpty(strOldSelected))
+            {
+                cboLimbCount.SelectedValue = strOldSelected;
+                if(cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
+                    cboLimbCount.SelectedIndex = 0;
+            }
+
+            cboLimbCount.EndUpdate();
+        }
+
         private void PopulateMugshotCompressionOptions()
         {
             List<ListItem> lstMugshotCompressionOptions = new List<ListItem>
@@ -666,7 +1223,8 @@ namespace Chummer
 
             int intIndex = 0;
 
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", null, _strSelectedLanguage).SelectNodes("/chummer/pdfarguments/pdfargument"))
+            using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage)
+                .SelectNodes("/chummer/pdfarguments/pdfargument"))
             {
                 if (objXmlNodeList != null)
                 {
@@ -726,7 +1284,94 @@ namespace Chummer
         private void SetToolTips()
         {
             const int width = 100;
+            chkUnarmedSkillImprovements.SetToolTip(LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
+            chkIgnoreArt.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
+            chkIgnoreComplexFormLimit.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreComplexFormLimit", _strSelectedLanguage).WordWrap(width));
+            chkCyberlegMovement.SetToolTip(LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
+            chkDontDoubleQualityPurchases.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap(width));
+            chkDontDoubleQualityRefunds.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap(width));
+            chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
+            chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
+            chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
             cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage).WordWrap(width), Properties.Settings.Default.UploadClientId));
+        }
+
+        private void PopulateSettingsList()
+        {
+            List<ListItem> lstSettings = new List<ListItem>();
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
+            string[] settingsFilePaths = Directory.GetFiles(settingsDirectoryPath, "*.xml");
+
+            foreach(string filePath in settingsFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument
+                {
+                    XmlResolver = null
+                };
+
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            xmlDocument.Load(objXmlReader);
+                }
+                catch(IOException)
+                {
+                    continue;
+                }
+                catch(XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/settings/name");
+                if(node != null)
+                    lstSettings.Add(new ListItem(Path.GetFileName(filePath), node.InnerText));
+            }
+
+            if(lstSettings.Count == 0)
+            {
+                string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
+                if(!File.Exists(strFilePath) || !_objCharacterOptions.Load("default.xml"))
+                {
+                    _blnDirty = true;
+                    _objCharacterOptions.LoadFromRegistry();
+                    _objCharacterOptions.Save();
+                    XmlDocument xmlDocument = new XmlDocument
+                    {
+                        XmlResolver = null
+                    };
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                xmlDocument.Load(objXmlReader);
+                    }
+                    catch(IOException)
+                    {
+                    }
+                    catch(XmlException)
+                    {
+                    }
+                    XmlNode node = xmlDocument.SelectSingleNode("/settings/name");
+                    if(node != null)
+                        lstSettings.Add(new ListItem(Path.GetFileName(strFilePath), node.InnerText));
+                }
+            }
+
+            string strOldSelected = cboSetting.SelectedValue?.ToString();
+
+            cboSetting.BeginUpdate();
+            cboSetting.ValueMember = nameof(ListItem.Value);
+            cboSetting.DisplayMember = nameof(ListItem.Name);
+            cboSetting.DataSource = lstSettings;
+
+            if(!string.IsNullOrEmpty(strOldSelected))
+                cboSetting.SelectedValue = strOldSelected;
+            if(cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
+                cboSetting.SelectedIndex = 0;
+
+            cboSetting.EndUpdate();
         }
 
         private void PopulateLanguageList()
@@ -841,6 +1486,43 @@ namespace Chummer
             return lstSheetLanguages;
         }
 
+        private void PopulateGlobalOptions()
+        {
+            chkAutomaticUpdate.Checked = GlobalOptions.AutomaticUpdate;
+            chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
+            chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
+            chkUseLogging.Checked = GlobalOptions.UseLogging;
+            cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
+            PopulateApplicationInsightsOptions();
+
+            chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
+            chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
+            chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
+            chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
+            chkSingleDiceRoller.Checked = GlobalOptions.SingleDiceRoller;
+            chkDatesIncludeTime.Checked = GlobalOptions.DatesIncludeTime;
+            chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;
+            nudBrowserVersion.Value = GlobalOptions.EmulatedBrowserVersion;
+            txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
+            txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
+            chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;
+            chkCreateBackupOnCareer.Checked = GlobalOptions.CreateBackupOnCareer;
+            chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
+            chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
+            chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
+            if (!chkCustomDateTimeFormats.Checked)
+            {
+                txtDateFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern;
+                txtTimeFormat.Text = GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern;
+            }
+            else
+            {
+                txtDateFormat.Text = GlobalOptions.CustomDateFormat;
+                txtTimeFormat.Text = GlobalOptions.CustomTimeFormat;
+            }
+            PluginsShowOrHide(chkEnablePlugins.Checked);
+        }
+
         private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             List<string> names = new List<string>();
@@ -861,7 +1543,8 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", null, strLanguage).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, strLanguage)
+                .SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
             {
                 if (xmlSheetList != null)
                 {
@@ -932,6 +1615,15 @@ namespace Chummer
             }
 
             cboXSLT.EndUpdate();
+        }
+
+        private void SetDefaultValueForSettingsList()
+        {
+            // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
+            cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
+
+            if(cboSetting.SelectedIndex == -1 && cboSetting.Items.Count > 0)
+                cboSetting.SelectedIndex = 0;
         }
 
         private void SetDefaultValueForLanguageList()
@@ -1075,6 +1767,18 @@ namespace Chummer
             }
         }
 
+        private void cmdEnableSourcebooks_Click(object sender, EventArgs e)
+        {
+            foreach(TreeNode objNode in treSourcebook.Nodes)
+            {
+                if(objNode.Tag.ToString() != "SR5")
+                {
+                    objNode.Checked = _blnSourcebookToggle;
+                }
+            }
+            _blnSourcebookToggle = !_blnSourcebookToggle;
+        }
+
         private void cmdCharacterRoster_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
@@ -1160,6 +1864,66 @@ namespace Chummer
                     PopulateCustomDataDirectoryTreeView();
                 }
             }
+        }
+
+        private void cmdIncreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        {
+            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            if (nodSelected == null)
+                return;
+            int intIndex = nodSelected.Index;
+            if (intIndex <= 0)
+                return;
+            bool blnOptionsChanged = nodSelected.Checked || (nodSelected.Parent?.Nodes[intIndex - 1].Checked ?? treCustomDataDirectories.Nodes[intIndex - 1].Checked);
+            _lstCharacterCustomDataDirectoryInfos.Reverse(intIndex - 1, 2);
+            PopulateCustomDataDirectoryTreeView();
+            if(blnOptionsChanged)
+                OptionsChanged(sender, e);
+        }
+
+        private void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        {
+            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            if (nodSelected == null)
+                return;
+            int intIndex = nodSelected.Index;
+            if (intIndex >= _lstCharacterCustomDataDirectoryInfos.Count)
+                return;
+            bool blnOptionsChanged = nodSelected.Checked || (nodSelected.Parent?.Nodes[intIndex + 1].Checked ?? treCustomDataDirectories.Nodes[intIndex + 1].Checked);
+            _lstCharacterCustomDataDirectoryInfos.Reverse(intIndex, 2);
+            PopulateCustomDataDirectoryTreeView();
+            if (blnOptionsChanged)
+                OptionsChanged(sender, e);
+        }
+
+        private void nudNuyenDecimalsMaximum_ValueChanged(object sender, EventArgs e)
+        {
+            if(nudNuyenDecimalsMinimum.Value > nudNuyenDecimalsMaximum.Value)
+                nudNuyenDecimalsMinimum.Value = nudNuyenDecimalsMaximum.Value;
+            OptionsChanged(sender, e);
+        }
+
+        private void nudNuyenDecimalsMinimum_ValueChanged(object sender, EventArgs e)
+        {
+            if(nudNuyenDecimalsMaximum.Value < nudNuyenDecimalsMinimum.Value)
+                nudNuyenDecimalsMaximum.Value = nudNuyenDecimalsMinimum.Value;
+            OptionsChanged(sender, e);
+        }
+
+        private void chkPrintFreeExpenses_CheckedChanged(object sender, EventArgs e)
+        {
+            chkPrintFreeExpenses.Enabled = chkPrintExpenses.Checked;
+            if(!chkPrintFreeExpenses.Enabled)
+                chkPrintFreeExpenses.Checked = true;
+            OptionsChanged(sender, e);
+        }
+
+        private void treCustomDataDirectories_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            TreeNode objNode = e.Node;
+            if (objNode == null)
+                return;
+            OptionsChanged(sender, e);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -1295,6 +2059,16 @@ namespace Chummer
         private void cmdPluginsHelp_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
+        }
+
+        private void chkCyberlimbAttributeBonusCap_CheckedChanged(object sender, EventArgs e)
+        {
+            nudCyberlimbAttributeBonusCap.Enabled = chkCyberlimbAttributeBonusCap.Checked;
+            if (!chkCyberlimbAttributeBonusCap.Checked)
+            {
+                nudCyberlimbAttributeBonusCap.Value = 4;
+                nudCyberlimbAttributeBonusCap.Enabled = false;
+            }
         }
 
         private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)

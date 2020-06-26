@@ -641,8 +641,7 @@ namespace Chummer
         {
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower")))
                     return false;
             }
 

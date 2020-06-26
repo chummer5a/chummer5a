@@ -72,7 +72,7 @@ namespace Chummer
             else
             {
                 chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;

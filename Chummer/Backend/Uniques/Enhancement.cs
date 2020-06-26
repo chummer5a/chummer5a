@@ -382,8 +382,7 @@ namespace Chummer
                 return false;
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement")))
                     return false;
             }
 

@@ -87,7 +87,7 @@ namespace Chummer
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
                 chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             if (!string.IsNullOrEmpty(DefaultSearchText))

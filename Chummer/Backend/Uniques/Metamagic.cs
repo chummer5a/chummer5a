@@ -425,7 +425,7 @@ namespace Chummer
                     strMessage = LanguageManager.GetString("Message_DeleteEcho");
                 else
                     return false;
-                if (!_objCharacter.ConfirmDelete(strMessage))
+                if (!CommonFunctions.ConfirmDelete(strMessage))
                     return false;
             }
 

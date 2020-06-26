@@ -7282,6 +7282,10 @@
       <text>Plugins</text>
     </string>
     <string>
+      <key>Tab_Options_CustomDataDirectories</key>
+      <text>Custom Data Directories</text>
+    </string>
+    <string>
       <key>Label_Options_EditSourcebookInfo</key>
       <text>Edit Sourcebook Info</text>
     </string>

@@ -1341,8 +1341,9 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (!blnConfirmDelete) return _objCharacter.Lifestyles.Remove(this);
-            return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")) && _objCharacter.Lifestyles.Remove(this);
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
+                return false;
+            return _objCharacter.Lifestyles.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

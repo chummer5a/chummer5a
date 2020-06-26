@@ -78,12 +78,12 @@ namespace Chummer.UI.Attributes
                 nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
                 nudBase.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Base));
                 nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
-                nudBase.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
+                nudBase.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 nudKarma.Minimum = 0;
                 nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
                 nudKarma.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
-                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
             }
         }
 
@@ -163,7 +163,7 @@ namespace Chummer.UI.Attributes
             }
 
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
-            if (!attrib.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
 		    attrib.Upgrade();

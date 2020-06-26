@@ -104,7 +104,7 @@ namespace Chummer
             else
             {
                 chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             XPathNodeIterator objXmlCategoryList;
@@ -950,7 +950,7 @@ namespace Chummer
         private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             StringBuilder strFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strFilter.Append(" and category = \"" + strCategory + '\"');
             else if (_setAllowedCategories.Count > 0)
             {
@@ -1058,7 +1058,7 @@ namespace Chummer
                 {
                     string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 
-                    if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                    if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
                         string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
                         if (!string.IsNullOrEmpty(strCategory))
@@ -1114,7 +1114,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 _strSelectedGear = strSelectedId;
-                s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                     ? cboCategory.SelectedValue?.ToString()
                     : _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = \"" + strSelectedId + "\"]/category")?.Value;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;

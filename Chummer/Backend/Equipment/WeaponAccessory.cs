@@ -1433,8 +1433,7 @@ namespace Chummer.Backend.Equipment
         {
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                     return false;
             }
             DeleteWeaponAccessory();

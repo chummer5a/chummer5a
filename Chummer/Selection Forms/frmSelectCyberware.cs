@@ -117,7 +117,7 @@ namespace Chummer
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
                 chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             if (!string.IsNullOrEmpty(DefaultSearchText))
@@ -935,7 +935,7 @@ namespace Chummer
 
             string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
             string strCategoryFilter = "(";
-            if (strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strCategoryFilter += "category = \"" + strCategory + '\"';
             else
             {
@@ -1256,7 +1256,7 @@ namespace Chummer
                 else
                     return;
             }
-            _sStrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
+            _sStrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
             SelectedRating = decimal.ToInt32(nudRating.Value);

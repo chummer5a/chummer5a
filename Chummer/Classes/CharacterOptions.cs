@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -26,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+
 // ReSharper disable StringLiteralTypo
 
 namespace Chummer
@@ -54,8 +54,6 @@ namespace Chummer
         private bool _blnStrictSkillGroupsInCreateMode;
         private bool _blnAllowPointBuySpecializationsOnKarmaSkills;
         private bool _blnCalculateCommlinkResponse = true;
-        private bool _blnConfirmDelete = true;
-        private bool _blnConfirmKarmaExpense = true;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
@@ -111,9 +109,6 @@ namespace Chummer
         private bool _blnMysAdeptAllowPPCareer;
         private bool _blnMysAdeptSecondMAGAttribute;
         private bool _blnReverseAttributePriorityOrder;
-        private bool _blnHideItemsOverAvailLimit = true;
-        private bool _blnAllowHoverIncrement;
-        private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
         private bool _cyberwareRounding;
@@ -124,6 +119,8 @@ namespace Chummer
         private string _strExcludeLimbSlot = string.Empty;
         private int _intCyberlimbAttributeBonusCap = 4;
         private bool _blnUnclampAttributeMinimum;
+        private bool _blnDroneMods;
+        private bool _blnDroneModsMaximumPilot;
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
@@ -258,12 +255,8 @@ namespace Chummer
                         objWriter.WriteElementString("recentimagefolder", _strImageFolder);
                     }
 
-                    // <confirmdelete />
-                    objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString(GlobalOptions.InvariantCultureInfo));
                     // <licenserestricted />
                     objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <confirmkarmaexpense />
-                    objWriter.WriteElementString("confirmkarmaexpense", _blnConfirmKarmaExpense.ToString(GlobalOptions.InvariantCultureInfo));
                     // <printzeroratingskills />
                     objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString(GlobalOptions.InvariantCultureInfo));
                     // <morelethalgameplay />
@@ -276,8 +269,6 @@ namespace Chummer
                     objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nuyenperbp />
                     objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <hideitemsoveravaillimit />
-                    objWriter.WriteElementString("hideitemsoveravaillimit", _blnHideItemsOverAvailLimit.ToString(GlobalOptions.InvariantCultureInfo));
                     // <UnarmedImprovementsApplyToWeapons />
                     objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowinitiationincreatemode />
@@ -402,10 +393,6 @@ namespace Chummer
                     objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString(GlobalOptions.InvariantCultureInfo));
                     // <freespiritpowerpointsmag />
                     objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <allowhoverincrement />
-                    objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <searchincategoryonly />
-                    objWriter.WriteElementString("searchincategoryonly", SearchInCategoryOnly.ToString(GlobalOptions.InvariantCultureInfo));
                     // <compensateskillgroupkarmadifference />
                     objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString(GlobalOptions.InvariantCultureInfo));
                     // <autobackstory />
@@ -426,6 +413,10 @@ namespace Chummer
                     objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalOptions.InvariantCultureInfo));
                     // <clampattributeminimum />
                     objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dronemods />
+                    objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <dronemodsmaximumpilot />
+                    objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <karmacost>
                     objWriter.WriteStartElement("karmacost");
@@ -631,12 +622,8 @@ namespace Chummer
             _strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
             // Most recent image folder location used.
             objXmlNode.TryGetStringFieldQuickly("recentimagefolder", ref _strImageFolder);
-            // Confirm delete.
-            objXmlNode.TryGetBoolFieldQuickly("confirmdelete", ref _blnConfirmDelete);
             // License Restricted items.
             objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
-            // Confirm Karma ExpenseTryGetField
-            objXmlNode.TryGetBoolFieldQuickly("confirmkarmaexpense", ref _blnConfirmKarmaExpense);
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
             objXmlNode.TryGetBoolFieldQuickly("printzeroratingskills", ref _blnPrintSkillsWithZeroRating);
             // More Lethal Gameplay.
@@ -649,8 +636,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("printfreeexpenses", ref _blnPrintFreeExpenses);
             // Nuyen per Build Point
             objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
-            // Hide Items Over Avail Limit in Create Mode
-            objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHideItemsOverAvailLimit);
             // Knucks use Unarmed
             objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
             // Allow Initiation in Create Mode
@@ -784,10 +769,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
             // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
             objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
-            // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
-            objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
-            // Optional Rule: Whether searching in a selection form will limit itself to the current Category that's selected.
-            objXmlNode.TryGetBoolFieldQuickly("searchincategoryonly", ref _blnSearchInCategoryOnly);
             // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
             objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference", ref _blnCompensateSkillGroupKarmaDifference);
             // Optional Rule: Whether Life Modules should automatically create a character back story.
@@ -804,6 +785,14 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
             // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
             objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
+            // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
+            // Use Rigger 5.0 drone mods
+            if (!objXmlNode.TryGetBoolFieldQuickly("dronemods", ref _blnDroneMods))
+                GlobalOptions.LoadBoolFromRegistry(ref _blnDroneMods, "dronemods", string.Empty, true);
+            // Apply maximum drone attribute improvement rule to Pilot, too
+            if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
+                GlobalOptions.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
+
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
             if (objXmlNode != null)
@@ -963,12 +952,6 @@ namespace Chummer
         {
             if (GlobalOptions.ChummerRegistryKey == null)
                 return;
-            // Confirm delete.
-            GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete", string.Empty, true);
-
-            // Confirm Karma Expense.
-            GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense", string.Empty, true);
-
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
             GlobalOptions.LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills", string.Empty, true);
 
@@ -1111,7 +1094,7 @@ namespace Chummer
                 // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
                 Utils.BreakIfDebug();
             }
-            if (!GlobalOptions.Dronemods)
+            if (!DroneMods)
             {
                 if (string.IsNullOrEmpty(strPath))
                     strPath = "not(optionaldrone)";
@@ -1451,24 +1434,6 @@ namespace Chummer
         {
             get => _blnAllowSkillRegrouping;
             set => _blnAllowSkillRegrouping = value;
-        }
-
-        /// <summary>
-        /// Whether or not confirmation messages are shown when deleting an object.
-        /// </summary>
-        public bool ConfirmDelete
-        {
-            get => _blnConfirmDelete;
-            set => _blnConfirmDelete = value;
-        }
-
-        /// <summary>
-        /// Whether or not confirmation messages are shown for Karma Expenses.
-        /// </summary>
-        public bool ConfirmKarmaExpense
-        {
-            get => _blnConfirmKarmaExpense;
-            set => _blnConfirmKarmaExpense = value;
         }
 
         /// <summary>
@@ -1966,6 +1931,24 @@ namespace Chummer
         {
             get => _blnUnclampAttributeMinimum;
             set => _blnUnclampAttributeMinimum = value;
+        }
+
+        /// <summary>
+        /// Use Rigger 5.0 drone modding rules
+        /// </summary>
+        public bool DroneMods
+        {
+            get => _blnDroneMods;
+            set => _blnDroneMods = value;
+        }
+
+        /// <summary>
+        /// Apply drone mod attribute maximum rule to Pilot, too
+        /// </summary>
+        public bool DroneModsMaximumPilot
+        {
+            get => _blnDroneModsMaximumPilot;
+            set => _blnDroneModsMaximumPilot = value;
         }
         #endregion
 
@@ -2472,34 +2455,6 @@ namespace Chummer
             get => _blnReverseAttributePriorityOrder;
             internal set => _blnReverseAttributePriorityOrder = value;
         }
-
-        /// <summary>
-        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
-        /// </summary>
-        public bool HideItemsOverAvailLimit
-        {
-            get => _blnHideItemsOverAvailLimit;
-            set => _blnHideItemsOverAvailLimit = value;
-        }
-
-        /// <summary>
-        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
-        /// </summary>
-        public bool AllowHoverIncrement
-        {
-            get => _blnAllowHoverIncrement;
-            internal set => _blnAllowHoverIncrement = value;
-        }
-        /// <summary>
-        /// Whether searching in a selection form will limit itself to the current Category that's selected.
-        /// </summary>
-        public bool SearchInCategoryOnly
-        {
-            get => _blnSearchInCategoryOnly;
-            internal set => _blnSearchInCategoryOnly = value;
-        }
-
-        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         /// <summary>
         /// Whether to use floor-based rounding for Cyberware. If enabled,

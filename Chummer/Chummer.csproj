@@ -336,6 +336,12 @@
     <Compile Include="frmLoading.Designer.cs">
       <DependentUpon>frmLoading.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmCharacterOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCharacterOptions.Designer.cs">
+      <DependentUpon>frmCharacterOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\Application Insights\CustomActivity.cs" />
     <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
     <Compile Include="helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
@@ -1265,6 +1271,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmLoading.resx">
       <DependentUpon>frmLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCharacterOptions.resx">
+      <DependentUpon>frmCharacterOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectDrug.resx">
       <DependentUpon>frmSelectDrug.cs</DependentUpon>

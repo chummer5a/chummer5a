@@ -78,7 +78,7 @@ namespace Chummer
             else
             {
                 chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             // Populate the Vehicle Category list.
@@ -252,7 +252,7 @@ namespace Chummer
         public decimal UsedCost => _decUsedCost;
 
         /// <summary>
-        /// Vehicle's Aavailability when it is used.
+        /// Vehicle's Availability when it is used.
         /// </summary>
         public string UsedAvail => _strUsedAvail;
 
@@ -407,7 +407,7 @@ namespace Chummer
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strFilter += " and category = \"" + strCategory + '\"';
             else
             {
@@ -459,7 +459,7 @@ namespace Chummer
 
                 string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 
-                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     string strCategory = objXmlVehicle.SelectSingleNode("category")?.Value;
                     if (!string.IsNullOrEmpty(strCategory))
@@ -520,7 +520,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
+            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
             _strSelectedVehicle = strSelectedId;
             _decMarkup = nudMarkup.Value;
 

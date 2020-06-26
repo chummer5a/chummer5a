@@ -306,8 +306,7 @@ namespace Chummer
 
                 if (blnConfirmDelete)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
-                        GlobalOptions.Language)))
+                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
                         return false;
                 }
 
@@ -323,8 +322,7 @@ namespace Chummer
 
                 if (blnConfirmDelete)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
-                        GlobalOptions.Language)))
+                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
                         return false;
                 }
 

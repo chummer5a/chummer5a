@@ -117,10 +117,10 @@ namespace Chummer.UI.Skills
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
                 nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
                 nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
-                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
                 nudKarma.DoOneWayDataBinding("Value", objSkill, nameof(Skill.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
-                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 if (objSkill.IsExoticSkill)
                 {
@@ -228,7 +228,7 @@ namespace Chummer.UI.Skills
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _objSkill.CurrentDisplayName, _objSkill.Rating + 1, _objSkill.UpgradeKarmaCost);
 
-            if (!_objSkill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             _objSkill.Upgrade();
@@ -261,7 +261,7 @@ namespace Chummer.UI.Skills
 
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
-            if (!_objSkill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
@@ -325,7 +325,7 @@ namespace Chummer.UI.Skills
         {
             if (_objSkill.AllowDelete)
             {
-                if (!_objSkill.CharacterObject.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
                     return;
                 _objSkill.UnbindSkill();
                 _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
@@ -343,11 +343,6 @@ namespace Chummer.UI.Skills
 
                 _objSkill.Notes = frmItemNotes.Notes;
             }
-        }
-
-        private void cboSpec_Paint(object sender, PaintEventArgs e)
-        {
-            cboSpec.SelectionLength = 0;
         }
 
         private void lblName_Click(object sender, EventArgs e)

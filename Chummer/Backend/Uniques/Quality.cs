@@ -1189,7 +1189,7 @@ namespace Chummer
 
                 if (blnAddItem)
                 {
-                    if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
                         , objOldQuality.DisplayNameShort(GlobalOptions.Language)
                         , DisplayNameShort(GlobalOptions.Language))))
                         blnAddItem = false;
@@ -1225,7 +1225,7 @@ namespace Chummer
 
                     if (blnAddItem)
                     {
-                        if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
                 }

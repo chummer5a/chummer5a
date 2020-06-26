@@ -57,12 +57,12 @@ namespace Chummer.UI.Skills
 
                 nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
-                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 nudSkill.DoOneWayDataBinding("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
                 nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
                 nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
-                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
             }
 
             ResumeLayout();
@@ -83,7 +83,7 @@ namespace Chummer.UI.Skills
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
-            if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             _skillGroup.Upgrade();

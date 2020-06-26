@@ -270,9 +270,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex += 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = 0;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = 0;
+                }
             }
             if (e.KeyCode == Keys.Up)
             {
@@ -341,7 +341,7 @@ namespace Chummer
         private IList<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
                 strFilter += " and category = \"" + strCategory + '\"';
             }
@@ -416,7 +416,7 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
             DialogResult = DialogResult.OK;
         }

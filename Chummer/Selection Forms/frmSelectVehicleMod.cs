@@ -79,7 +79,7 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -277,7 +277,7 @@ namespace Chummer
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || _objCharacter.Options.SearchInCategoryOnly))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || GlobalOptions.SearchInCategoryOnly))
                 strFilter += " and category = \"" + strCategory + '\"';
             /*
             else if (!string.IsNullOrEmpty(AllowedCategories))
@@ -417,7 +417,7 @@ namespace Chummer
                     SelectedRating = decimal.ToInt32(nudRating.Value);
                     _intMarkup = decimal.ToInt32(nudMarkup.Value);
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
+                    s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
                     DialogResult = DialogResult.OK;
                 }
             }

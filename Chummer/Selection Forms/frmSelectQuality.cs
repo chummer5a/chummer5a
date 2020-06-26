@@ -359,7 +359,7 @@ namespace Chummer
             StringBuilder strFilter = new StringBuilder("(");
             strFilter.Append(_objCharacter.Options.BookXPath());
             strFilter.Append(')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
             {
                 strFilter.Append(" and category = \"");
                 strFilter.Append(strCategory);
@@ -462,7 +462,7 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedQuality;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
+            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
         }
 

@@ -315,8 +315,7 @@ namespace Chummer
             {
                 if (blnConfirmDelete)
                 {
-                    return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
-                               GlobalOptions.Language)) && _objCharacter.LimitModifiers.Remove(this);
+                    return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier")) && _objCharacter.LimitModifiers.Remove(this);
                 }
             }
 

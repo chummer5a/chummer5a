@@ -51,7 +51,7 @@ namespace Chummer
             List<ListItem> lstSize = new List<ListItem>();
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
-            if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
+            if (!_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
                 strSizeFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlSizeNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
                 if (xmlSizeNodeList?.Count > 0)
@@ -565,9 +565,9 @@ namespace Chummer
                     if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                         break;
 
-                blnAddAgain = frmPickVehicleMod.AddAgain;
-                XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
-                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
+                    blnAddAgain = frmPickVehicleMod.AddAgain;
+                    XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
@@ -585,7 +585,7 @@ namespace Chummer
                         bool blnOverCapacity = false;
                         if (_objCharacter.Options.BookEnabled("R5"))
                         {
-                            if (_objVehicle.IsDrone && GlobalOptions.Dronemods)
+                            if (_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
                             {
                                 if (_objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots)
                                     blnOverCapacity = true;
@@ -674,7 +674,7 @@ namespace Chummer
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
                 if (objMod != null && !objMod.IncludedInVehicle)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
+                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
                         return;
 
                     _lstMods.Remove(objMod);
@@ -719,8 +719,8 @@ namespace Chummer
             List<ListItem> lstFlexibility = new List<ListItem>();
             List<ListItem> lstControl = new List<ListItem>();
             // Populate the Weapon Mount Category list.
-            string strFilter = "category != \"Size\" and not(hide)";
-            if (!_objVehicle.IsDrone || !GlobalOptions.Dronemods)
+            string strFilter = "category != \"Size\" and " + _objCharacter.Options.BookXPath();
+            if (!_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
                 strFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlWeaponMountOptionNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
                 if (xmlWeaponMountOptionNodeList?.Count > 0)

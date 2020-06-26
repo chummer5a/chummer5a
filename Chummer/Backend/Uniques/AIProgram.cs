@@ -368,8 +368,7 @@ namespace Chummer
             if (!CanDelete) return false;
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram")))
                     return false;
             }
 

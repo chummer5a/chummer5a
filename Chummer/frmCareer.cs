@@ -3139,7 +3139,7 @@ namespace Chummer
                     objSpell.FreeBonus = frmPickSpell.FreeBonus;
                     if (!objSpell.FreeBonus)
                     {
-                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , objSpell.CurrentDisplayName
                             , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
                         {
@@ -3180,7 +3180,7 @@ namespace Chummer
             if (!(treSpells.SelectedNode?.Tag is Spell objSpell)) return;
             // Spells that come from Initiation Grades can't be deleted normally.
             if (objSpell.Grade != 0) return;
-            if (!objSpell.Remove(CharacterObjectOptions.ConfirmDelete)) return;
+            if (!objSpell.Remove(GlobalOptions.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -3240,16 +3240,10 @@ namespace Chummer
                         return;
                     }
 
-                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                    {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware")))
-                            return;
-                    }
-                    else
-                    {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware")))
-                            return;
-                    }
+                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                        ? "Message_DeleteBioware"
+                        : "Message_DeleteCyberware")))
+                        return;
 
                     objCyberware.DeleteCyberware();
 
@@ -3270,7 +3264,7 @@ namespace Chummer
             else if (treCyberware.SelectedNode?.Tag is Gear objGear)
             {
                 // Find and remove the selected piece of Gear.
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
                     return;
 
                 objGear.DeleteGear();
@@ -3336,7 +3330,7 @@ namespace Chummer
 
                 CharacterObject.ComplexForms.Add(objComplexForm);
 
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend"), objComplexForm.DisplayNameShort(GlobalOptions.Language), intComplexFormKarmaCost.ToString(GlobalOptions.CultureInfo))))
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend"), objComplexForm.DisplayNameShort(GlobalOptions.Language), intComplexFormKarmaCost.ToString(GlobalOptions.CultureInfo))))
                 {
                     // Remove the Improvements created by the Complex Form.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
@@ -3489,7 +3483,7 @@ namespace Chummer
         {
             if (selectedObject is ICanRemove iRemovable)
             {
-                if (!iRemovable.Remove(CharacterObjectOptions.ConfirmDelete)) return;
+                if (!iRemovable.Remove(GlobalOptions.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3641,7 +3635,7 @@ namespace Chummer
 
             if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
-                selectedObject.Remove(CharacterObjectOptions.ConfirmDelete);
+                selectedObject.Remove(GlobalOptions.ConfirmDelete);
             }
             else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
@@ -3930,7 +3924,7 @@ namespace Chummer
 
                 if (chkInitiationSchooling.Checked)
                 {
-                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaandNuyenExpense")
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaandNuyenExpense")
                         , LanguageManager.GetString("String_InitiateGrade")
                         , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
                         , intKarmaExpense.ToString(GlobalOptions.CultureInfo)
@@ -3939,7 +3933,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense")
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense")
                         , LanguageManager.GetString("String_InitiateGrade")
                         , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
                         , intKarmaExpense.ToString(GlobalOptions.CultureInfo))))
@@ -4009,7 +4003,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense")
                     , LanguageManager.GetString("String_SubmersionGrade")
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)
                     , intKarmaExpense.ToString(GlobalOptions.CultureInfo))))
@@ -4324,7 +4318,7 @@ namespace Chummer
                         continue;
                     }
 
-                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                         , objPower.CurrentDisplayName
                         , objPower.Karma.ToString(GlobalOptions.CultureInfo))))
                         continue;
@@ -4353,7 +4347,7 @@ namespace Chummer
         {
             // If the selected object is not a complex form or it comes from an initiate grade, we don't want to remove it.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0) return;
-            if (!objCritterPower.Remove(CharacterObjectOptions.ConfirmDelete)) return;
+            if (!objCritterPower.Remove(GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -4363,7 +4357,7 @@ namespace Chummer
         {
             // If the selected object is not a complex form or it comes from an initiate grade, we don't want to remove it.
             if (!(treComplexForms.SelectedNode?.Tag is ComplexForm objComplexForm) || objComplexForm.Grade != 0) return;
-            if (!objComplexForm.Remove(CharacterObjectOptions.ConfirmDelete)) return;
+            if (!objComplexForm.Remove(GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -4387,7 +4381,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , intKarmaCost.ToString(GlobalOptions.CultureInfo)
                     , objComplexForm.DisplayNameShort(GlobalOptions.Language))))
                     return;
@@ -4442,7 +4436,7 @@ namespace Chummer
                 decSelectedValue = frmPickNumber.SelectedValue;
             }
 
-            if (!CharacterObject.ConfirmDelete(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ReduceQty"), decSelectedValue.ToString(GlobalOptions.CultureInfo))))
+            if (!CommonFunctions.ConfirmDelete(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ReduceQty"), decSelectedValue.ToString(GlobalOptions.CultureInfo))))
                 return;
 
             objGear.Quantity -= decSelectedValue;
@@ -4901,7 +4895,7 @@ namespace Chummer
                 decSelectedValue = frmPickNumber.SelectedValue;
             }
 
-            if (!CharacterObject.ConfirmDelete(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ReduceQty"), decSelectedValue.ToString(GlobalOptions.CultureInfo))))
+            if (!CommonFunctions.ConfirmDelete(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ReduceQty"), decSelectedValue.ToString(GlobalOptions.CultureInfo))))
                 return;
 
             objGear.Quantity -= decSelectedValue;
@@ -5003,7 +4997,7 @@ namespace Chummer
                         }
 
                         string strDisplayName = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend"), strDisplayName, intKarmaCost.ToString(GlobalOptions.CultureInfo))))
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend"), strDisplayName, intKarmaCost.ToString(GlobalOptions.CultureInfo))))
                             continue;
                     }
                 }
@@ -5179,7 +5173,7 @@ namespace Chummer
                 }
                 string strBP = intBP.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
 
-                if (blnConfirmDelete && !CharacterObject.ConfirmDelete(
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString(blnCompleteDelete ? "Message_DeleteMetatypeQuality" : "Message_LowerMetatypeQualityLevel"), strBP)))
                     return false;
 
@@ -5211,7 +5205,7 @@ namespace Chummer
                 }
                 else if (!blnMetatypeQuality)
                 {
-                    if (blnConfirmDelete && !CharacterObject.ConfirmDelete(blnCompleteDelete ?
+                    if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(blnCompleteDelete ?
                                                                         LanguageManager.GetString("Message_DeletePositiveQualityCareer") :
                                                                         LanguageManager.GetString("Message_LowerPositiveQualityLevelCareer")))
                         return false;
@@ -5236,7 +5230,7 @@ namespace Chummer
 
                 if (!blnMetatypeQuality)
                 {
-                    if (blnConfirmDelete && !CharacterObject.ConfirmKarmaExpense(blnCompleteDelete ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") :
+                    if (blnConfirmDelete && !CommonFunctions.ConfirmKarmaExpense(blnCompleteDelete ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") :
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseLowerLevel"), objSelectedQuality.DisplayNameShort(GlobalOptions.Language), intTotalKarmaCost.ToString(GlobalOptions.CultureInfo))))
                         return false;
                 }
@@ -5431,7 +5425,7 @@ namespace Chummer
                             }
 
                             string strDisplayName = objXmlSelectedQuality["translate"]?.InnerText ?? objXmlSelectedQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-                            if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                                 , strDisplayName
                                 , intKarmaCost.ToString(GlobalOptions.CultureInfo))))
                             {
@@ -5612,7 +5606,7 @@ namespace Chummer
 
             if (objCharacterWeek != null)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCalendarWeek")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCalendarWeek")))
                     return;
 
                 CharacterObject.Calendar.Remove(objCharacterWeek);
@@ -5882,7 +5876,7 @@ namespace Chummer
             TreeNode nodSelectedImprovement = treImprovements.SelectedNode;
             if (nodSelectedImprovement?.Tag is Improvement objImprovement)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")))
                     return;
 
                 // Remove the Improvement from the character.
@@ -5895,7 +5889,7 @@ namespace Chummer
                 if (strSelectedId == "Node_SelectedImprovements")
                     return;
 
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")))
                     return;
 
                 foreach (Improvement imp in CharacterObject.Improvements)
@@ -6100,7 +6094,7 @@ namespace Chummer
                 return;
             }
 
-            if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseQuickeningMetamagic")
+            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseQuickeningMetamagic")
                 , intKarmaCost.ToString(GlobalOptions.CultureInfo)
                 , treSpells.SelectedNode.Text)))
                 return;
@@ -6624,7 +6618,7 @@ namespace Chummer
                         bool blnOverCapacity = false;
                         if (CharacterObjectOptions.BookEnabled("R5"))
                         {
-                            if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                            if (objVehicle.IsDrone && CharacterObjectOptions.DroneMods)
                             {
                                 if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
                                     blnOverCapacity = true;
@@ -9241,7 +9235,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , objSpell.CurrentDisplayName
                     , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
                     return;
@@ -11594,7 +11588,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus")
                     , intKarmaExpense.ToString(GlobalOptions.CultureInfo)
                     , objSelectedFocus.DisplayNameShort(GlobalOptions.Language))))
                 {
@@ -11690,7 +11684,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus")
                     , intKarmaExpense.ToString(GlobalOptions.CultureInfo)
                     , LanguageManager.GetString("String_StackedFocus") + LanguageManager.GetString("String_Space") + objStackedFocus.CurrentDisplayName)))
                 {
@@ -11974,7 +11968,7 @@ namespace Chummer
                         strExpense = LanguageManager.GetString("String_ExpenseJoinNetwork");
                     }
 
-                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalOptions.CultureInfo))))
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalOptions.CultureInfo))))
                     {
                         IsRefreshing = true;
                         chkJoinGroup.Checked = false;
@@ -12020,7 +12014,7 @@ namespace Chummer
                         strExpense = LanguageManager.GetString("String_ExpenseLeaveNetwork");
                     }
 
-                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalOptions.CultureInfo))))
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalOptions.CultureInfo))))
                     {
                         IsRefreshing = true;
                         chkJoinGroup.Checked = true;
@@ -15117,7 +15111,7 @@ namespace Chummer
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalOptions.CultureInfo);
                 if (CharacterObjectOptions.BookEnabled("R5"))
                 {
-                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                    if (objVehicle.IsDrone && CharacterObjectOptions.DroneMods)
                     {
                         lblVehiclePowertrainLabel.Visible = false;
                         lblVehiclePowertrain.Visible = false;
@@ -16327,7 +16321,7 @@ namespace Chummer
                 return;
             }
 
-            if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                 , LanguageManager.GetString("String_PowerPoint")
                 , intKarmaCost.ToString(GlobalOptions.CultureInfo))))
                 return;
@@ -16392,14 +16386,14 @@ namespace Chummer
 
             if (CharacterObject.MAGEnabled && blnPayWithKarma)
             {
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , LanguageManager.GetString("String_Metamagic")
                     , CharacterObjectOptions.KarmaMetamagic.ToString(GlobalOptions.CultureInfo))))
                     return;
             }
             else if (blnPayWithKarma)
             {
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , LanguageManager.GetString("String_Echo")
                     , CharacterObjectOptions.KarmaMetamagic.ToString(GlobalOptions.CultureInfo))))
                     return;
@@ -16558,7 +16552,7 @@ namespace Chummer
             }
 
             if (blnPayWithKarma)
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , LanguageManager.GetString("String_Enchantment")
                     , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
                     return;
@@ -16649,7 +16643,7 @@ namespace Chummer
             }
 
             if (blnPayWithKarma)
-                if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , LanguageManager.GetString("String_Ritual")
                     , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
                     return;
@@ -16721,7 +16715,7 @@ namespace Chummer
                 return;
             }
 
-            if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                 , LanguageManager.GetString("String_Enhancement")
                 , CharacterObjectOptions.KarmaEnhancement.ToString(GlobalOptions.CultureInfo))))
                 return;
@@ -16874,7 +16868,7 @@ namespace Chummer
                         continue;
 
                     bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
-                    if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                         , objProgram.DisplayName
                         , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalOptions.CultureInfo))))
                         continue;
@@ -16905,7 +16899,7 @@ namespace Chummer
             // Delete the selected AI Program.
             if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove(CharacterObjectOptions.ConfirmDelete))
+            if (!selectedObject.Remove(GlobalOptions.ConfirmDelete))
                 return;
 
             IsCharacterUpdateRequested = true;
@@ -17312,7 +17306,7 @@ namespace Chummer
 
                 decimal decSelectedValue = frmPickNumber.SelectedValue;
 
-                if (!CharacterObject.ConfirmDelete(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ReduceQty"), decSelectedValue.ToString(GlobalOptions.CultureInfo))))
+                if (!CommonFunctions.ConfirmDelete(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ReduceQty"), decSelectedValue.ToString(GlobalOptions.CultureInfo))))
                     return;
 
                 objDrug.Quantity -= decSelectedValue;
