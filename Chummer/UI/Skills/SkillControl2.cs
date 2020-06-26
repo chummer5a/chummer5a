@@ -114,11 +114,11 @@ namespace Chummer.UI.Skills
                 btnAttribute.FlatAppearance.MouseDownBackColor = btnAttribute.BackColor;
                 btnAttribute.FlatAppearance.MouseOverBackColor = btnAttribute.BackColor;
 
-                nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
                 nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
                 nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
                 nudSkill.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
-                nudKarma.DoOneWayDataBinding("Value", objSkill, nameof(Skill.Karma));
+                nudKarma.DoDatabinding("Value", objSkill, nameof(Skill.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
                 nudKarma.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
 
