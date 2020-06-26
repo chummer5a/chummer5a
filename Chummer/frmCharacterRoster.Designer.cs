@@ -35,10 +35,15 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.tabCharacterText = new System.Windows.Forms.TabControl();
             this.panCharacterBio = new System.Windows.Forms.TabPage();
+            this.rtbCharacterBio = new System.Windows.Forms.RichTextBox();
             this.panCharacterConcept = new System.Windows.Forms.TabPage();
+            this.rtbCharacterConcept = new System.Windows.Forms.RichTextBox();
             this.panCharacterBackground = new System.Windows.Forms.TabPage();
+            this.rtbCharacterBackground = new System.Windows.Forms.RichTextBox();
             this.panCharacterNotes = new System.Windows.Forms.TabPage();
+            this.rtbCharacterNotes = new System.Windows.Forms.RichTextBox();
             this.panGameNotes = new System.Windows.Forms.TabPage();
+            this.rtbGameNotes = new System.Windows.Forms.RichTextBox();
             this.lblCharacterName = new System.Windows.Forms.Label();
             this.lblCharacterNameLabel = new System.Windows.Forms.Label();
             this.lblMetatype = new System.Windows.Forms.Label();
@@ -58,11 +63,6 @@ namespace Chummer
             this.lblSettingsLabel = new System.Windows.Forms.Label();
             this.tlpCharacterRoster = new Chummer.BufferedTableLayoutPanel(this.components);
             this.picMugshot = new System.Windows.Forms.PictureBox();
-            this.rtbCharacterBio = new System.Windows.Forms.RichTextBox();
-            this.rtbCharacterConcept = new System.Windows.Forms.RichTextBox();
-            this.rtbCharacterBackground = new System.Windows.Forms.RichTextBox();
-            this.rtbCharacterNotes = new System.Windows.Forms.RichTextBox();
-            this.rtbGameNotes = new System.Windows.Forms.RichTextBox();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
             this.panCharacterConcept.SuspendLayout();
@@ -100,6 +100,18 @@ namespace Chummer
             this.panCharacterBio.Text = "Description";
             this.panCharacterBio.UseVisualStyleBackColor = true;
             // 
+            // rtbCharacterBio
+            // 
+            this.rtbCharacterBio.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbCharacterBio.Location = new System.Drawing.Point(3, 3);
+            this.rtbCharacterBio.Name = "rtbCharacterBio";
+            this.rtbCharacterBio.ReadOnly = true;
+            this.rtbCharacterBio.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbCharacterBio.Size = new System.Drawing.Size(445, 199);
+            this.rtbCharacterBio.TabIndex = 0;
+            this.rtbCharacterBio.Text = "";
+            // 
             // panCharacterConcept
             // 
             this.panCharacterConcept.Controls.Add(this.rtbCharacterConcept);
@@ -111,6 +123,18 @@ namespace Chummer
             this.panCharacterConcept.Tag = "Tab_Roster_Concept";
             this.panCharacterConcept.Text = "Concept";
             this.panCharacterConcept.UseVisualStyleBackColor = true;
+            // 
+            // rtbCharacterConcept
+            // 
+            this.rtbCharacterConcept.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbCharacterConcept.Location = new System.Drawing.Point(3, 3);
+            this.rtbCharacterConcept.Name = "rtbCharacterConcept";
+            this.rtbCharacterConcept.ReadOnly = true;
+            this.rtbCharacterConcept.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbCharacterConcept.Size = new System.Drawing.Size(445, 199);
+            this.rtbCharacterConcept.TabIndex = 0;
+            this.rtbCharacterConcept.Text = "";
             // 
             // panCharacterBackground
             // 
@@ -124,6 +148,18 @@ namespace Chummer
             this.panCharacterBackground.Text = "Background";
             this.panCharacterBackground.UseVisualStyleBackColor = true;
             // 
+            // rtbCharacterBackground
+            // 
+            this.rtbCharacterBackground.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbCharacterBackground.Location = new System.Drawing.Point(3, 3);
+            this.rtbCharacterBackground.Name = "rtbCharacterBackground";
+            this.rtbCharacterBackground.ReadOnly = true;
+            this.rtbCharacterBackground.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbCharacterBackground.Size = new System.Drawing.Size(445, 199);
+            this.rtbCharacterBackground.TabIndex = 0;
+            this.rtbCharacterBackground.Text = "";
+            // 
             // panCharacterNotes
             // 
             this.panCharacterNotes.Controls.Add(this.rtbCharacterNotes);
@@ -136,6 +172,18 @@ namespace Chummer
             this.panCharacterNotes.Text = "Character Notes";
             this.panCharacterNotes.UseVisualStyleBackColor = true;
             // 
+            // rtbCharacterNotes
+            // 
+            this.rtbCharacterNotes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbCharacterNotes.Location = new System.Drawing.Point(3, 3);
+            this.rtbCharacterNotes.Name = "rtbCharacterNotes";
+            this.rtbCharacterNotes.ReadOnly = true;
+            this.rtbCharacterNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbCharacterNotes.Size = new System.Drawing.Size(445, 199);
+            this.rtbCharacterNotes.TabIndex = 0;
+            this.rtbCharacterNotes.Text = "";
+            // 
             // panGameNotes
             // 
             this.panGameNotes.Controls.Add(this.rtbGameNotes);
@@ -147,6 +195,18 @@ namespace Chummer
             this.panGameNotes.Tag = "Tab_Roster_GameNotes";
             this.panGameNotes.Text = "Game Notes";
             this.panGameNotes.UseVisualStyleBackColor = true;
+            // 
+            // rtbGameNotes
+            // 
+            this.rtbGameNotes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbGameNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbGameNotes.Location = new System.Drawing.Point(3, 3);
+            this.rtbGameNotes.Name = "rtbGameNotes";
+            this.rtbGameNotes.ReadOnly = true;
+            this.rtbGameNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbGameNotes.Size = new System.Drawing.Size(445, 199);
+            this.rtbGameNotes.TabIndex = 0;
+            this.rtbGameNotes.Text = "";
             // 
             // lblCharacterName
             // 
@@ -396,66 +456,6 @@ namespace Chummer
             this.picMugshot.TabStop = false;
             this.picMugshot.SizeChanged += new System.EventHandler(this.picMugshot_SizeChanged);
             // 
-            // rtbCharacterBio
-            // 
-            this.rtbCharacterBio.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbCharacterBio.Location = new System.Drawing.Point(3, 3);
-            this.rtbCharacterBio.Name = "rtbCharacterBio";
-            this.rtbCharacterBio.ReadOnly = true;
-            this.rtbCharacterBio.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbCharacterBio.Size = new System.Drawing.Size(445, 199);
-            this.rtbCharacterBio.TabIndex = 0;
-            this.rtbCharacterBio.Text = "";
-            // 
-            // rtbCharacterConcept
-            // 
-            this.rtbCharacterConcept.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbCharacterConcept.Location = new System.Drawing.Point(3, 3);
-            this.rtbCharacterConcept.Name = "rtbCharacterConcept";
-            this.rtbCharacterConcept.ReadOnly = true;
-            this.rtbCharacterConcept.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbCharacterConcept.Size = new System.Drawing.Size(445, 199);
-            this.rtbCharacterConcept.TabIndex = 0;
-            this.rtbCharacterConcept.Text = "";
-            // 
-            // rtbCharacterBackground
-            // 
-            this.rtbCharacterBackground.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbCharacterBackground.Location = new System.Drawing.Point(3, 3);
-            this.rtbCharacterBackground.Name = "rtbCharacterBackground";
-            this.rtbCharacterBackground.ReadOnly = true;
-            this.rtbCharacterBackground.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbCharacterBackground.Size = new System.Drawing.Size(445, 199);
-            this.rtbCharacterBackground.TabIndex = 0;
-            this.rtbCharacterBackground.Text = "";
-            // 
-            // rtbCharacterNotes
-            // 
-            this.rtbCharacterNotes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbCharacterNotes.Location = new System.Drawing.Point(3, 3);
-            this.rtbCharacterNotes.Name = "rtbCharacterNotes";
-            this.rtbCharacterNotes.ReadOnly = true;
-            this.rtbCharacterNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbCharacterNotes.Size = new System.Drawing.Size(445, 199);
-            this.rtbCharacterNotes.TabIndex = 0;
-            this.rtbCharacterNotes.Text = "";
-            // 
-            // rtbGameNotes
-            // 
-            this.rtbGameNotes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rtbGameNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbGameNotes.Location = new System.Drawing.Point(3, 3);
-            this.rtbGameNotes.Name = "rtbGameNotes";
-            this.rtbGameNotes.ReadOnly = true;
-            this.rtbGameNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbGameNotes.Size = new System.Drawing.Size(445, 199);
-            this.rtbGameNotes.TabIndex = 0;
-            this.rtbGameNotes.Text = "";
-            // 
             // frmCharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -463,6 +463,7 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.ControlBox = false;
             this.Controls.Add(this.tlpCharacterRoster);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "frmCharacterRoster";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "String_CharacterRoster";

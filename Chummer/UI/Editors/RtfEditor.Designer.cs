@@ -134,7 +134,7 @@ namespace Chummer.UI.Editors
             // tss1
             // 
             this.tss1.Name = "tss1";
-            this.tss1.Size = new System.Drawing.Size(6, 25);
+            this.tss1.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbFont
             // 
@@ -172,7 +172,7 @@ namespace Chummer.UI.Editors
             // tss2
             // 
             this.tss2.Name = "tss2";
-            this.tss2.Size = new System.Drawing.Size(6, 25);
+            this.tss2.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbAlignLeft
             // 
@@ -216,7 +216,7 @@ namespace Chummer.UI.Editors
             // tss3
             // 
             this.tss3.Name = "tss3";
-            this.tss3.Size = new System.Drawing.Size(6, 25);
+            this.tss3.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbUnorderedList
             // 
@@ -288,11 +288,12 @@ namespace Chummer.UI.Editors
             // 
             // RtfEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(0, 120);
             this.Name = "RtfEditor";
             this.Size = new System.Drawing.Size(480, 120);

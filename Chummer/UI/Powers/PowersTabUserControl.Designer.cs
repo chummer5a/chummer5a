@@ -147,10 +147,10 @@ namespace Chummer.UI.Powers
             // 
             // PowersTabUserControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "PowersTabUserControl";
             this.Size = new System.Drawing.Size(830, 611);
             this.Load += new System.EventHandler(this.PowersTabUserControl_Load);
