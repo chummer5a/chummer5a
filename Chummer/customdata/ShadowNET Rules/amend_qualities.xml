@@ -18,8 +18,96 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
-  <!--Region Shadowrun Core Positive Qualities -->
   <qualities>
+    <!--Region Shadowrun Core -->
+    <!--Region Shadowrun Core Positive Qualities -->
+	<quality>
+	  <name>Double Jointed</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>High Pain Tolerance</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Magic Resistance</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Natural Hardening</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Natural Immunity (Natural)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Natural Immunity (Synthetic)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Quick Healer</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Resistance to Pathogens</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Resistance to Toxins</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Toughness</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<!-- End Region-->
+	<!--Region Shadowrun Core Negative Qualities -->
+	<quality>
+	  <name>Allergy (Uncommon, Mild)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Uncommon, Moderate)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Uncommon, Severe)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Uncommon, Extreme)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Common, Mild)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Common, Moderate)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Common, Severe)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Allergy (Common, Extreme)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Low Pain Tolerance</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Sensitive System</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Weak Immune System</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<!-- End Region-->
     <!--Region Bullets and Bandages Negative Qualities -->
     <quality>
       <name>Pregnant</name>
@@ -56,6 +144,14 @@
       <name>Amnesia (Surface Loss)</name>
       <hide />
     </quality> -->
+	<quality>
+	  <name>Albinism I</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Albinism II</name>
+	  <metagenic>True</metagenic>
+	</quality>
     <quality>
       <name>Amnesia (Neural Deletion)</name>
       <hide />
@@ -64,6 +160,10 @@
       <name>Amnesia (Surface Loss)</name>
       <hide />
     </quality>
+	<quality>
+	  <name>Asthma</name>
+	  <metagenic>True</metagenic>
+	</quality>
     <quality>
       <name>Carrier (HMHVV Strain II)</name>
       <hide />
@@ -92,6 +192,30 @@
       <name>In Debt</name>
       <hide />
     </quality>
+	<quality>
+	  <name>Reduced Sense (Smell)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Reduced Sense (Taste)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Reduced Sense (Touch)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Reduced Sense (Hearing)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Reduced Sense (Sight)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Reduced Sense (Astral Sight)</name>
+	  <metagenic>True</metagenic>
+	</quality>
     <!-- End Region -->
     <!-- Region Run Faster Infected Qualities -->
     <quality>
@@ -196,6 +320,14 @@
       <name>Better to be Feared Than Loved</name>
       <hide />
     </quality>
+	<quality>
+	  <name>Biocompatability (Cyberware)</name>
+	  <metagenic>True</metagenic>
+	</quality>
+	<quality>
+	  <name>Biocompatability (Bioware)</name>
+	  <metagenic>True</metagenic>
+	</quality>
     <quality>
       <name>Revels in Murder</name>
       <hide />
@@ -218,6 +350,10 @@
       <name>One of Them</name>
       <hide />
     </quality>
+	<quality>
+	  <name>Quasimodo</name>
+	  <metagenic>True</metagenic>
+	</quality>
     <quality>
       <name>So Jacked Up</name>
       <hide />
