@@ -43,20 +43,20 @@ namespace Chummer
             // 
             // lblAmmoLabel
             // 
-            this.lblAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAmmoLabel.AutoSize = true;
-            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 6);
             this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 7);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
             this.lblAmmoLabel.Size = new System.Drawing.Size(39, 13);
             this.lblAmmoLabel.TabIndex = 0;
             this.lblAmmoLabel.Tag = "Label_Ammo";
             this.lblAmmoLabel.Text = "Ammo:";
+            this.lblAmmoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cboAmmo
             // 
-            this.cboAmmo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboAmmo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAmmo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAmmo.DropDownWidth = 252;
             this.cboAmmo.FormattingEnabled = true;
@@ -68,20 +68,20 @@ namespace Chummer
             // 
             // lblTypeLabel
             // 
-            this.lblTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTypeLabel.AutoSize = true;
-            this.lblTypeLabel.Location = new System.Drawing.Point(16, 33);
             this.lblTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTypeLabel.Location = new System.Drawing.Point(16, 34);
             this.lblTypeLabel.Name = "lblTypeLabel";
             this.lblTypeLabel.Size = new System.Drawing.Size(26, 13);
             this.lblTypeLabel.TabIndex = 2;
             this.lblTypeLabel.Tag = "Label_Qty";
             this.lblTypeLabel.Text = "Qty:";
+            this.lblTypeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cboType
             // 
-            this.cboType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboType.FormattingEnabled = true;
             this.cboType.Location = new System.Drawing.Point(48, 30);
@@ -92,7 +92,7 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(0, 0);
@@ -107,7 +107,7 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
             this.cmdOK.Location = new System.Drawing.Point(81, 0);
             this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -144,6 +144,7 @@ namespace Chummer
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
@@ -162,6 +163,8 @@ namespace Chummer
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(344, 111);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

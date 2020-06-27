@@ -47,21 +47,22 @@ namespace Chummer
             // textBoxDescription
             // 
             this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxDescription.Location = new System.Drawing.Point(271, 192);
+            this.textBoxDescription.Location = new System.Drawing.Point(271, 185);
             this.textBoxDescription.MaxLength = 2147483647;
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.ReadOnly = true;
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxDescription.Size = new System.Drawing.Size(492, 139);
+            this.textBoxDescription.Size = new System.Drawing.Size(492, 142);
             this.textBoxDescription.TabIndex = 23;
             this.textBoxDescription.Text = "[Description]";
             this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
             // labelCompanyName
             // 
+            this.labelCompanyName.AutoSize = true;
             this.labelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCompanyName.Location = new System.Drawing.Point(271, 93);
+            this.labelCompanyName.Location = new System.Drawing.Point(271, 84);
             this.labelCompanyName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.labelCompanyName.MaximumSize = new System.Drawing.Size(0, 65);
             this.labelCompanyName.Name = "labelCompanyName";
@@ -71,12 +72,12 @@ namespace Chummer
             // 
             // labelCopyright
             // 
-            this.labelCopyright.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCopyright.Location = new System.Drawing.Point(271, 64);
+            this.labelCopyright.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.labelCopyright.AutoSize = true;
+            this.labelCopyright.Location = new System.Drawing.Point(271, 59);
             this.labelCopyright.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.labelCopyright.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelCopyright.Name = "labelCopyright";
-            this.labelCopyright.Size = new System.Drawing.Size(492, 17);
+            this.labelCopyright.Size = new System.Drawing.Size(57, 13);
             this.labelCopyright.TabIndex = 21;
             this.labelCopyright.Text = "[Copyright]";
             this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -84,9 +85,8 @@ namespace Chummer
             // labelVersion
             // 
             this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVersion.Location = new System.Drawing.Point(271, 35);
+            this.labelVersion.Location = new System.Drawing.Point(271, 30);
             this.labelVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.labelVersion.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(492, 17);
             this.labelVersion.TabIndex = 0;
@@ -96,17 +96,18 @@ namespace Chummer
             // labelProductName
             // 
             this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelProductName.Location = new System.Drawing.Point(271, 6);
-            this.labelProductName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.labelProductName.Location = new System.Drawing.Point(271, 0);
             this.labelProductName.MaximumSize = new System.Drawing.Size(0, 17);
+            this.labelProductName.MinimumSize = new System.Drawing.Size(0, 24);
             this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(492, 17);
+            this.labelProductName.Size = new System.Drawing.Size(492, 24);
             this.labelProductName.TabIndex = 19;
             this.labelProductName.Text = "[Product Name]";
             this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel
             // 
+            this.tableLayoutPanel.AutoSize = true;
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
@@ -136,16 +137,14 @@ namespace Chummer
             // 
             // textBoxContributors
             // 
-            this.textBoxContributors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxContributors.Location = new System.Drawing.Point(3, 337);
+            this.textBoxContributors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxContributors.Location = new System.Drawing.Point(3, 333);
             this.textBoxContributors.MaxLength = 2147483647;
             this.textBoxContributors.Multiline = true;
             this.textBoxContributors.Name = "textBoxContributors";
             this.textBoxContributors.ReadOnly = true;
             this.textBoxContributors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxContributors.Size = new System.Drawing.Size(262, 173);
+            this.textBoxContributors.Size = new System.Drawing.Size(262, 177);
             this.textBoxContributors.TabIndex = 25;
             this.textBoxContributors.Tag = "About_Label_Contributors";
             this.textBoxContributors.Text = "Thank You to All GitHub Contributors!";
@@ -157,23 +156,21 @@ namespace Chummer
             this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
             this.logoPictureBox.Name = "logoPictureBox";
             this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 5);
-            this.logoPictureBox.Size = new System.Drawing.Size(262, 328);
+            this.logoPictureBox.Size = new System.Drawing.Size(262, 324);
             this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.logoPictureBox.TabIndex = 12;
             this.logoPictureBox.TabStop = false;
             // 
             // txtDisclaimer
             // 
-            this.txtDisclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDisclaimer.Location = new System.Drawing.Point(271, 337);
+            this.txtDisclaimer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDisclaimer.Location = new System.Drawing.Point(271, 333);
             this.txtDisclaimer.MaxLength = 2147483647;
             this.txtDisclaimer.Multiline = true;
             this.txtDisclaimer.Name = "txtDisclaimer";
             this.txtDisclaimer.ReadOnly = true;
             this.txtDisclaimer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDisclaimer.Size = new System.Drawing.Size(492, 173);
+            this.txtDisclaimer.Size = new System.Drawing.Size(492, 177);
             this.txtDisclaimer.TabIndex = 26;
             this.txtDisclaimer.Tag = "About_Label_Disclaimer";
             this.txtDisclaimer.Text = "Disclaimer";
@@ -183,6 +180,7 @@ namespace Chummer
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.okButton);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(680, 514);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -192,7 +190,7 @@ namespace Chummer
             // 
             // okButton
             // 
-            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.okButton.AutoSize = true;
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.okButton.Location = new System.Drawing.Point(3, 3);
@@ -208,6 +206,7 @@ namespace Chummer
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tableLayoutPanel);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -225,6 +224,7 @@ namespace Chummer
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

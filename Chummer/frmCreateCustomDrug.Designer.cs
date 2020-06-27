@@ -75,7 +75,7 @@ namespace Chummer
             treeNode4,
             treeNode5,
             treeNode6});
-            this.treAvailableComponents.Size = new System.Drawing.Size(336, 243);
+            this.treAvailableComponents.Size = new System.Drawing.Size(344, 243);
             this.treAvailableComponents.TabIndex = 0;
             this.treAvailableComponents.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAvailableComponents_AfterSelect);
             this.treAvailableComponents.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treAvailableComponents_NodeMouseDoubleClick);
@@ -83,9 +83,11 @@ namespace Chummer
             // btnAddComponent
             // 
             this.btnAddComponent.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnAddComponent.AutoSize = true;
+            this.btnAddComponent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAddComponent.Location = new System.Drawing.Point(3, 127);
             this.btnAddComponent.Name = "btnAddComponent";
-            this.btnAddComponent.Size = new System.Drawing.Size(44, 23);
+            this.btnAddComponent.Size = new System.Drawing.Size(29, 23);
             this.btnAddComponent.TabIndex = 2;
             this.btnAddComponent.Text = ">>";
             this.btnAddComponent.UseVisualStyleBackColor = true;
@@ -94,9 +96,11 @@ namespace Chummer
             // btnRemoveComponent
             // 
             this.btnRemoveComponent.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnRemoveComponent.AutoSize = true;
+            this.btnRemoveComponent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnRemoveComponent.Location = new System.Drawing.Point(3, 98);
             this.btnRemoveComponent.Name = "btnRemoveComponent";
-            this.btnRemoveComponent.Size = new System.Drawing.Size(44, 23);
+            this.btnRemoveComponent.Size = new System.Drawing.Size(29, 23);
             this.btnRemoveComponent.TabIndex = 2;
             this.btnRemoveComponent.Text = "<<";
             this.btnRemoveComponent.UseVisualStyleBackColor = true;
@@ -107,7 +111,7 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.treChosenComponents, 2);
             this.treChosenComponents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treChosenComponents.HideSelection = false;
-            this.treChosenComponents.Location = new System.Drawing.Point(395, 30);
+            this.treChosenComponents.Location = new System.Drawing.Point(388, 30);
             this.treChosenComponents.Name = "treChosenComponents";
             treeNode1.Name = "Node_Foundation";
             treeNode1.Tag = "Node_Foundation";
@@ -122,13 +126,14 @@ namespace Chummer
             treeNode1,
             treeNode2,
             treeNode3});
-            this.treChosenComponents.Size = new System.Drawing.Size(336, 243);
+            this.treChosenComponents.Size = new System.Drawing.Size(343, 243);
             this.treChosenComponents.TabIndex = 0;
             this.treChosenComponents.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treChoosenComponents_AfterSelect);
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.AutoSize = true;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
             this.btnCancel.Name = "btnCancel";
@@ -141,7 +146,8 @@ namespace Chummer
             // 
             // btnAdd
             // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnAdd.AutoSize = true;
             this.btnAdd.Location = new System.Drawing.Point(84, 3);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 23);
@@ -155,9 +161,9 @@ namespace Chummer
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.lblDrugDescription, 2);
             this.lblDrugDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugDescription.Location = new System.Drawing.Point(395, 276);
+            this.lblDrugDescription.Location = new System.Drawing.Point(388, 276);
             this.lblDrugDescription.Name = "lblDrugDescription";
-            this.lblDrugDescription.Size = new System.Drawing.Size(336, 214);
+            this.lblDrugDescription.Size = new System.Drawing.Size(343, 214);
             this.lblDrugDescription.TabIndex = 4;
             // 
             // lblBlockDescription
@@ -166,53 +172,52 @@ namespace Chummer
             this.lblBlockDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBlockDescription.Location = new System.Drawing.Point(3, 276);
             this.lblBlockDescription.Name = "lblBlockDescription";
-            this.lblBlockDescription.Size = new System.Drawing.Size(336, 214);
+            this.lblBlockDescription.Size = new System.Drawing.Size(344, 214);
             this.lblBlockDescription.TabIndex = 5;
             // 
             // lblDrugNameLabel
             // 
-            this.lblDrugNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDrugNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDrugNameLabel.AutoSize = true;
-            this.lblDrugNameLabel.Location = new System.Drawing.Point(395, 6);
             this.lblDrugNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugNameLabel.Location = new System.Drawing.Point(388, 7);
             this.lblDrugNameLabel.Name = "lblDrugNameLabel";
             this.lblDrugNameLabel.Size = new System.Drawing.Size(38, 13);
             this.lblDrugNameLabel.TabIndex = 6;
             this.lblDrugNameLabel.Tag = "Label_Name";
             this.lblDrugNameLabel.Text = "Name:";
+            this.lblDrugNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtDrugName
             // 
-            this.txtDrugName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDrugName.Location = new System.Drawing.Point(439, 3);
+            this.txtDrugName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDrugName.Location = new System.Drawing.Point(432, 3);
             this.txtDrugName.Name = "txtDrugName";
-            this.txtDrugName.Size = new System.Drawing.Size(292, 20);
+            this.txtDrugName.Size = new System.Drawing.Size(299, 20);
             this.txtDrugName.TabIndex = 7;
             this.txtDrugName.TextChanged += new System.EventHandler(this.txtDrugName_TextChanged);
             // 
             // lblGrade
             // 
-            this.lblGrade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblGrade.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblGrade.AutoSize = true;
-            this.lblGrade.Location = new System.Drawing.Point(3, 6);
             this.lblGrade.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblGrade.Location = new System.Drawing.Point(3, 7);
             this.lblGrade.Name = "lblGrade";
-            this.lblGrade.Size = new System.Drawing.Size(39, 15);
+            this.lblGrade.Size = new System.Drawing.Size(39, 13);
             this.lblGrade.TabIndex = 26;
             this.lblGrade.Tag = "Label_Grade";
             this.lblGrade.Text = "Grade:";
+            this.lblGrade.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cboGrade
             // 
-            this.cboGrade.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboGrade.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboGrade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGrade.FormattingEnabled = true;
             this.cboGrade.Location = new System.Drawing.Point(48, 3);
             this.cboGrade.Name = "cboGrade";
-            this.cboGrade.Size = new System.Drawing.Size(291, 21);
+            this.cboGrade.Size = new System.Drawing.Size(299, 21);
             this.cboGrade.TabIndex = 27;
             this.cboGrade.TooltipText = "";
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
@@ -265,18 +270,19 @@ namespace Chummer
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Controls.Add(this.btnAddComponent, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.btnRemoveComponent, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(342, 27);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(350, 27);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(50, 249);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(35, 249);
             this.tableLayoutPanel2.TabIndex = 30;
             // 
             // frmCreateCustomDrug
@@ -287,6 +293,8 @@ namespace Chummer
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(752, 537);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(768, 576);
             this.Name = "frmCreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -295,7 +303,9 @@ namespace Chummer
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
