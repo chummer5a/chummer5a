@@ -97,26 +97,18 @@ namespace Chummer.UI.Charts
                 else if (dblActualMin > dblValue)
                     dblActualMin = dblValue;
             }
-            if (dblActualMin.Equals(dblActualMax))
+            if (NuyenMode)
             {
-                _objYAxis.MinValue = double.NaN;
-                _objYAxis.MaxValue = double.NaN;
+                dblActualMax = Math.Max(Math.Ceiling(dblActualMax / 5000.0), Math.Floor(dblActualMin / 5000.0) + 1) * 5000.0;
+                dblActualMin = Math.Floor(dblActualMin / 5000.0) * 5000.0;
             }
             else
             {
-                if (NuyenMode)
-                {
-                    dblActualMin = Math.Floor(dblActualMin / 5000.0) * 5000.0;
-                    dblActualMax = Math.Ceiling(dblActualMax / 5000.0) * 5000.0;
-                }
-                else
-                {
-                    dblActualMin = Math.Floor(dblActualMin / 5.0) * 5.0;
-                    dblActualMax = Math.Ceiling(dblActualMax / 5.0) * 5.0;
-                }
-                _objYAxis.MinValue = dblActualMin;
-                _objYAxis.MaxValue = dblActualMax;
+                dblActualMax = Math.Max(Math.Ceiling(dblActualMax / 5.0), Math.Floor(dblActualMin / 5.0) + 1) * 5.0;
+                dblActualMin = Math.Floor(dblActualMin / 5.0) * 5.0;
             }
+            _objYAxis.MinValue = dblActualMin;
+            _objYAxis.MaxValue = dblActualMax;
         }
 
         #region Properties
