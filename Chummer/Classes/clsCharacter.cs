@@ -14425,7 +14425,7 @@ namespace Chummer
             int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
 
             intCount = Math.Min(intCount / 2, 2);
-            _intCachedRedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI")
+            _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
                 ? intCount
                 : 0;
 
