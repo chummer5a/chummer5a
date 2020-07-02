@@ -14419,7 +14419,7 @@ namespace Chummer
             XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
                 .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
 
-            List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList() ?? new List<string>{string.Empty};
+            List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList();
 
             //Calculate bonus from cyberlimbs
             int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
