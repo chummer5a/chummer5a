@@ -22,9 +22,13 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
+using Chummer.Annotations;
 
 // ReSharper disable StringLiteralTypo
 
@@ -32,9 +36,9 @@ namespace Chummer
 {
     public class CharacterOptions : INotifyPropertyChanged
     {
-        private readonly Character _character;
-        private string _strFileName = "default.xml";
-        private string _strName = "Default Settings";
+        private Guid _guiSourceId = Guid.Empty;
+        private string _strFileName = string.Empty;
+        private string _strName = "Standard";
         private string _strImageFolder = string.Empty;
 
         // Settings.
@@ -46,7 +50,6 @@ namespace Chummer
         private bool _blnAllowHigherStackedFoci;
         private bool _blnAllowInitiationInCreateMode;
         private bool _blnAllowObsolescentUpgrade;
-        private bool _blnAllowSkillDiceRolling;
         private bool _blnDontUseCyberlimbCalculation;
         private bool _blnAllowSkillRegrouping = true;
         private bool _blnAlternateMetatypeAttributeKarma;
@@ -64,9 +67,7 @@ namespace Chummer
         private bool _blnExceedPositiveQualities;
         private bool _blnExceedPositiveQualitiesCostDoubled;
         private bool _blnExtendAnyDetectionSpell;
-        private bool _blnFreeContactsMultiplierEnabled;
         private bool _blnDroneArmorMultiplierEnabled;
-        private bool _blnFreeKnowledgeMultiplierEnabled;
         private bool _blnFreeSpiritPowerPointsMAG;
         private bool _blnNoArmorEncumbrance;
         private bool _blnIgnoreArt;
@@ -89,16 +90,13 @@ namespace Chummer
         private bool _blnUnrestrictedNuyen;
         private bool _blnUseCalculatedPublicAwareness;
         private bool _blnUsePointsOnBrokenGroups;
-        private bool _blnUseTotalValueForFreeContacts;
-        private bool _blnUseTotalValueForFreeKnowledge;
+        private string _strContactPointsExpression = "{CHAUnaug} * 3";
+        private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
         private int _intForbiddenCostMultiplier = 1;
-        private readonly int _intFreeContactsFlatNumber = 0;
-        private int _intFreeContactsMultiplier = 3;
         private int _intDroneArmorMultiplier = 2;
-        private int _intFreeKnowledgeMultiplier = 2;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
         private decimal _decNuyenPerBP = 2000.0m;
@@ -111,7 +109,6 @@ namespace Chummer
         private bool _blnReverseAttributePriorityOrder;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
-        private bool _cyberwareRounding;
         private bool _increasedImprovedAbilityMultiplier;
         private bool _allowFreeGrids;
         private bool _blnAllowTechnomancerSchooling;
@@ -126,7 +123,7 @@ namespace Chummer
         private int _intKarmaAttribute = 5;
         private int _intKarmaCarryover = 7;
         private int _intKarmaComplexFormOption = 2;
-        private int _intKarmaComplexFormSkillfot = 1;
+        private int _intKarmaComplexFormSkillsoft = 1;
         private int _intKarmaContact = 1;
         private int _intKarmaEnemy = 1;
         private int _intKarmaEnhancement = 2;
@@ -180,8 +177,8 @@ namespace Chummer
         private int _intKarmaWeaponFocus = 3;
 
         // Default build settings.
-        private string _strBuildMethod = "Karma";
-        private int _intBuildPoints = 800;
+        private string _strBuildMethod = "Priority";
+        private int _intBuildPoints = 25;
         private int _intAvailability = 12;
 
         // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
@@ -195,17 +192,101 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #region Initialization, Save, and Load Methods
-        public CharacterOptions(Character character)
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            _character = character;
+            OnMultiplePropertyChanged(strPropertyName);
+        }
 
-            if (Utils.IsRunningInVisualStudio)
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = s_CharacterOptionsDependencyGraph.GetWithAllDependents(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in s_CharacterOptionsDependencyGraph.GetWithAllDependents(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
+            if (lstNamesOfChangedProperties.Contains(nameof(NuyenDecimals)))
+                _intCachedNuyenDecimals = -1;
+            if (lstNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
+                _intCachedEssenceDecimals = -1;
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+        }
+
+        //A tree of dependencies. Once some of the properties are changed,
+        //anything they depend on, also needs to raise OnChanged
+        //This tree keeps track of dependencies
+        private static readonly DependencyGraph<string> s_CharacterOptionsDependencyGraph =
+            new DependencyGraph<string>(
+                new DependencyGraphNode<string>(nameof(NuyenDecimals),
+                    new DependencyGraphNode<string>(nameof(NuyenFormat))
+                ),
+                new DependencyGraphNode<string>(nameof(EssenceDecimals),
+                    new DependencyGraphNode<string>(nameof(EssenceFormat))
+                )
+            );
+
+        #region Initialization, Save, and Load Methods
+        public CharacterOptions(CharacterOptions objOther = null)
+        {
+            if (objOther != null)
+                CopyValues(objOther);
+        }
+
+        public void CopyValues(CharacterOptions objOther)
+        {
+            if (objOther == null)
+                return;
+            _guiSourceId = objOther._guiSourceId;
+            _strFileName = objOther._strFileName;
+
+            // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+            PropertyInfo[] aobjProperties = GetType().GetProperties();
+            PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
+            foreach (PropertyInfo objProperty in GetType().GetProperties())
+            {
+                PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
+                if (objOtherProperty != null && objProperty.PropertyType.IsAssignableFrom(objOtherProperty.PropertyType))
+                {
+                    objProperty.SetValue(aobjProperties, objOtherProperty.GetValue(objOtherProperty));
+                }
+            }
+
+            _dicCustomDataDirectoryNames.Clear();
+            foreach (var kvpOther in objOther.CustomDataDirectoryNames)
+            {
+                _dicCustomDataDirectoryNames.Add(kvpOther.Key, new Tuple<int, bool>(kvpOther.Value.Item1, kvpOther.Value.Item2));
+            }
+            RecalculateEnabledCustomDataDirectories();
+
+            _lstBooks.Clear();
+            foreach (string strBook in objOther._lstBooks)
+            {
+                _lstBooks.Add(strBook);
+            }
+            RecalculateBookXPath();
+        }
+
+        /// <summary>
+        /// Save the current settings to the settings file.
+        /// </summary>
+        public bool Save()
+        {
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            if (!Directory.Exists(settingsDirectoryPath))
+            if (!Directory.Exists(settingsDirectoryPath) && !Utils.IsRunningInVisualStudio)
             {
                 try
                 {
@@ -214,24 +295,9 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    return false;
                 }
             }
-
-            // If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
-            string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
-            if (!File.Exists(strFilePath) || !Load("default.xml"))
-            {
-                _strFileName = "default.xml";
-                LoadFromRegistry();
-                Save();
-            }
-        }
-
-        /// <summary>
-        /// Save the current settings to the settings file.
-        /// </summary>
-        public void Save()
-        {
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
@@ -247,6 +313,8 @@ namespace Chummer
                     // <settings>
                     objWriter.WriteStartElement("settings");
 
+                    // <id />
+                    objWriter.WriteElementString("id", _guiSourceId.ToString("D", GlobalOptions.InvariantCultureInfo));
                     // <name />
                     objWriter.WriteElementString("name", _strName);
                     // <recentimagefolder />
@@ -285,24 +353,14 @@ namespace Chummer
                     objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allow2ndmaxattribute />
                     objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <freekarmacontactsmultiplier />
-                    objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <freekarmaknowledgemultiplier />
-                    objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <freekarmaknowledgemultiplierenabled />
-                    objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <freecontactsmultiplierenabled />
-                    objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <freecontactsflatnumber />
-                    objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <contactpointsexpression />
+                    objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
+                    // <knowledgepointsexpression />
+                    objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
                     // <dronearmormultiplierenabled />
                     objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronearmorflatnumber />
                     objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <usetotalvalueforknowledge />
-                    objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <usetotalvalueforcontacts />
-                    objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nosinglearmorencumbrance />
                     objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString(GlobalOptions.InvariantCultureInfo));
                     // <ignorecomplexformlimit />
@@ -377,8 +435,6 @@ namespace Chummer
                     objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(GlobalOptions.InvariantCultureInfo));
                     // <extendanydetectionspell />
                     objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <allowskilldicerolling />
-                    objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString(GlobalOptions.InvariantCultureInfo));
                     //<dontusecyberlimbcalculation />
                     objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString(GlobalOptions.InvariantCultureInfo));
                     // <alternatemetatypeattributekarma />
@@ -473,7 +529,7 @@ namespace Chummer
                     // <karmacomplexformoption />
                     objWriter.WriteElementString("karmacomplexformoption", _intKarmaComplexFormOption.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmacomplexformskillsoft />
-                    objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillfot.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillsoft.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmajoingroup />
                     objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmaleavegroup />
@@ -553,13 +609,16 @@ namespace Chummer
                     objWriter.WriteEndDocument();
                 }
             }
+
+            return true;
         }
 
         /// <summary>
         /// Load the settings from the settings file.
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
-        public bool Load(string strFileName)
+        /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
+        public bool Load(string strFileName, bool blnShowDialogs = true)
         {
             _strFileName = strFileName;
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
@@ -573,53 +632,49 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
-                            objXmlDocument.Load(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (blnShowDialogs)
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                     return false;
                 }
                 catch (XmlException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (blnShowDialogs)
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-                else
-                {
-                    _strFileName = "default.xml";
-                    strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
-                    try
-                    {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
-                                objXmlDocument.Load(objXmlReader);
-                    }
-                    catch (IOException)
-                    {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return false;
-                    }
-                    catch (XmlException)
-                    {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return false;
-                    }
-                }
+                if (blnShowDialogs)
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                return false;
             }
 
-            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
+            return Load(objXmlDocument.GetFastNavigator().SelectSingleNode("//settings"));
+        }
+
+        /// <summary>
+        /// Load the settings from a settings node.
+        /// </summary>
+        /// <param name="objXmlNode">Settings node to load from.</param>
+        public bool Load(XPathNavigator objXmlNode)
+        {
+            if (objXmlNode == null)
+                return false;
+            // Setting id.
+            string strId = string.Empty;
+            if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
+                _guiSourceId = guidTemp;
             // Setting name.
-            _strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
+            objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
             // Most recent image folder location used.
             objXmlNode.TryGetStringFieldQuickly("recentimagefolder", ref _strImageFolder);
             // License Restricted items.
@@ -652,23 +707,36 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
             // Allow a 2nd Max Attribute
             objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref _blnAllow2ndMaxAttribute);
-            // Free Contacts Multiplier
-            objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
-            // Free Contacts use Total Value instead of Value
-            objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref _blnUseTotalValueForFreeContacts);
-            // Free Contacts Multiplier Enabled
-            objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref _blnFreeContactsMultiplierEnabled);
+            // XPath expression for contact points
+            if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
+            {
+                // Legacy shim
+                int intTemp = 3;
+                bool blnTemp = false;
+                string strTemp = "{CHAUnaug}";
+                if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref blnTemp) && blnTemp)
+                    strTemp = "{CHA}";
+                if (objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref blnTemp) && blnTemp)
+                    objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref intTemp);
+                _strContactPointsExpression = strTemp + " * " + intTemp.ToString(GlobalOptions.InvariantCultureInfo);
+            }
+            // XPath expression for knowledge points
+            if (!objXmlNode.TryGetStringFieldQuickly("knowledgepointsexpression", ref _strKnowledgePointsExpression))
+            {
+                // Legacy shim
+                int intTemp = 2;
+                bool blnTemp = false;
+                string strTemp = "({INTUnaug} + {LOGUnaug})";
+                if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref blnTemp) && blnTemp)
+                    strTemp = "({INT} + {LOG})";
+                if (objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref blnTemp) && blnTemp)
+                    objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref intTemp);
+                _strKnowledgePointsExpression = strTemp + " * " + intTemp.ToString(GlobalOptions.InvariantCultureInfo);
+            }
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
             // Drone Armor Multiplier Value
             objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
-            // Free Knowledge Multiplier Enabled
-            objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref _blnFreeKnowledgeMultiplierEnabled);
-            objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref _intFreeContactsMultiplier);
-            // Free Knowledge uses Total Value instead of Value
-            objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref _blnUseTotalValueForFreeKnowledge);
-            // Free Contacts Multiplier
-            objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref _intFreeKnowledgeMultiplier);
             // No Single Armor Encumbrance
             objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
             // Ignore Armor Encumbrance
@@ -755,8 +823,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills", ref _blnAllowPointBuySpecializationsOnKarmaSkills);
             // Whether or not any Detection Spell can be taken as Extended range version.
             objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
-            // Whether or not dice rolling id allowed for Skills.
-            objXmlNode.TryGetBoolFieldQuickly("allowskilldicerolling", ref _blnAllowSkillDiceRolling);
             // Whether or not cyberlimbs are used for augmented attribute calculation.
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
@@ -793,115 +859,111 @@ namespace Chummer
             if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
                 GlobalOptions.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
 
-            objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
+            XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNode("karmacost");
             // Attempt to populate the Karma values.
-            if (objXmlNode != null)
+            if (xmlKarmaCostNode != null)
             {
-                objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
-                objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
-                objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
-                objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
-                objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
-                objXmlNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
-                objXmlNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
-                objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
-                objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
-                objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-                objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
-                objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
-                objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
-                objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
-                objXmlNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
-                objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
-                objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
-                objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-                objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
-                objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
-                objXmlNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
-                objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
-                objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
-                objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
-                objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
-                objXmlNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillsoft);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
 
                 // Attempt to load the Karma costs for Foci.
-                objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
-                objXmlNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
             }
 
             // Load Books.
             _lstBooks.Clear();
-            using (XmlNodeList xmlBookList = objXmlDocument.SelectNodes("/settings/books/book"))
-                if (xmlBookList != null)
-                    foreach (XmlNode objXmlBook in xmlBookList)
-                        _lstBooks.Add(objXmlBook.InnerText);
+            foreach (XPathNavigator xmlBook in objXmlNode.Select("books/book"))
+                _lstBooks.Add(xmlBook.Value);
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
             int intTopMostLoadOrder = 0;
             _dicCustomDataDirectoryNames.Clear();
-            using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/customdatadirectoryname"))
+            bool blnNeedToProcessInfosWithoutLoadOrder = false;
+            foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
             {
-                if (xmlDirectoryList != null)
+                string strDirectoryName = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
+                if (!string.IsNullOrEmpty(strDirectoryName))
                 {
-                    bool blnNeedToProcessInfosWithoutLoadOrder = false;
-                    foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
+                    // Only load in directories that are either present in our GlobalOptions or are enabled
+                    bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
+                    if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
                     {
-                        string strDirectoryName = objXmlDirectoryName["directoryname"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strDirectoryName))
+                        string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
+                        if (!string.IsNullOrEmpty(strOrder)
+                            && int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
+                        {
+                            intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
+                            _dicCustomDataDirectoryNames.Add(strDirectoryName,
+                                new Tuple<int, bool>(intOrder, blnLoopEnabled));
+                        }
+                        else
+                            blnNeedToProcessInfosWithoutLoadOrder = true;
+                    }
+                }
+            }
+            // Add in the stragglers that didn't have any load order info
+            if (blnNeedToProcessInfosWithoutLoadOrder)
+            {
+                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
+                {
+                    string strDirectoryName = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
+                    if (!string.IsNullOrEmpty(strDirectoryName))
+                    {
+                        string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
+                        if (string.IsNullOrEmpty(strOrder)
+                            || !int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _))
                         {
                             // Only load in directories that are either present in our GlobalOptions or are enabled
-                            bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName["enabled"]?.InnerText);
+                            bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
                             if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
                             {
-                                if (objXmlDirectoryName["order"] != null
-                                    && int.TryParse(objXmlDirectoryName["order"].InnerText, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
-                                {
-                                    intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
-                                    _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                                        new Tuple<int, bool>(intOrder, blnLoopEnabled));
-                                }
-                                else
-                                    blnNeedToProcessInfosWithoutLoadOrder = true;
-                            }
-                        }
-                    }
-                    // Add in the stragglers that didn't have any load order info
-                    if (blnNeedToProcessInfosWithoutLoadOrder)
-                    {
-                        foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
-                        {
-                            string strDirectoryName = objXmlDirectoryName["directoryname"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strDirectoryName)
-                                && (objXmlDirectoryName["order"] == null
-                                    || !int.TryParse(objXmlDirectoryName["order"].InnerText, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _)))
-                            {
-                                // Only load in directories that are either present in our GlobalOptions or are enabled
-                                bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName["enabled"]?.InnerText);
-                                if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
-                                {
-                                    _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                                        new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
-                                    ++intTopMostLoadOrder;
-                                }
+                                _dicCustomDataDirectoryNames.Add(strDirectoryName,
+                                    new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
+                                ++intTopMostLoadOrder;
                             }
                         }
                     }
@@ -910,17 +972,10 @@ namespace Chummer
 
             if (_dicCustomDataDirectoryNames.Count == 0)
             {
-                using (XmlNodeList xmlDirectoryList =
-                    objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/directoryname"))
                 {
-                    if (xmlDirectoryList != null)
-                    {
-                        foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
-                        {
-                            _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText, new Tuple<int, bool>(intTopMostLoadOrder, true));
-                            ++intTopMostLoadOrder;
-                        }
-                    }
+                    _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.Value, new Tuple<int, bool>(intTopMostLoadOrder, true));
+                    ++intTopMostLoadOrder;
                 }
             }
 
@@ -932,12 +987,12 @@ namespace Chummer
             }
 
             // Load default build settings.
-            objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
-            if (objXmlNode != null)
+            XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNode("defaultbuild");
+            if (xmlDefaultBuildNode != null)
             {
-                objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
-                objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
-                objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+                xmlDefaultBuildNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
+                xmlDefaultBuildNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                xmlDefaultBuildNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
             }
 
             return true;
@@ -973,21 +1028,6 @@ namespace Chummer
 
             // Nuyen per Build Point
             GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp", string.Empty, true);
-
-            // Free Contacts Multiplier Enabled
-            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled", string.Empty, true);
-
-            // Free Contacts Multiplier Value
-            GlobalOptions.LoadInt32FromRegistry(ref _intFreeContactsMultiplier, "freekarmacontactsmultiplier", string.Empty, true);
-
-            // Free Knowledge Multiplier Enabled
-            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freekarmaknowledgemultiplierenabled", string.Empty, true);
-
-            // Free Knowledge Multiplier Value
-            GlobalOptions.LoadInt32FromRegistry(ref _intFreeKnowledgeMultiplier, "freekarmaknowledgemultiplier", string.Empty, true);
-
-            // Karma Free Knowledge Multiplier Enabled
-            GlobalOptions.LoadBoolFromRegistry(ref _blnFreeKnowledgeMultiplierEnabled, "freeknowledgemultiplierenabled", string.Empty, true);
 
             // No Single Armor Encumbrance
             GlobalOptions.LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance", string.Empty, true);
@@ -1154,13 +1194,22 @@ namespace Chummer
             }
         }
 
+        public string SourceId => _guiSourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// Whether or not all Active Skills with a total score higher than 0 should be printed.
         /// </summary>
         public bool PrintSkillsWithZeroRating
         {
             get => _blnPrintSkillsWithZeroRating;
-            set => _blnPrintSkillsWithZeroRating = value;
+            set
+            {
+                if (_blnPrintSkillsWithZeroRating != value)
+                {
+                    _blnPrintSkillsWithZeroRating = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1169,7 +1218,14 @@ namespace Chummer
         public bool MoreLethalGameplay
         {
             get => _blnMoreLethalGameplay;
-            set => _blnMoreLethalGameplay = value;
+            set
+            {
+                if (_blnMoreLethalGameplay != value)
+                {
+                    _blnMoreLethalGameplay = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1178,7 +1234,14 @@ namespace Chummer
         public bool LicenseRestricted
         {
             get => _blnLicenseRestrictedItems;
-            set => _blnLicenseRestrictedItems = value;
+            set
+            {
+                if (_blnLicenseRestrictedItems != value)
+                {
+                    _blnLicenseRestrictedItems = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1187,7 +1250,14 @@ namespace Chummer
         public bool SpiritForceBasedOnTotalMAG
         {
             get => _blnSpiritForceBasedOnTotalMAG;
-            set => _blnSpiritForceBasedOnTotalMAG = value;
+            set
+            {
+                if (_blnSpiritForceBasedOnTotalMAG != value)
+                {
+                    _blnSpiritForceBasedOnTotalMAG = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1196,7 +1266,14 @@ namespace Chummer
         public bool PrintExpenses
         {
             get => _blnPrintExpenses;
-            set => _blnPrintExpenses = value;
+            set
+            {
+                if (_blnPrintExpenses != value)
+                {
+                    _blnPrintExpenses = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1205,7 +1282,14 @@ namespace Chummer
         public bool PrintFreeExpenses
         {
             get => _blnPrintFreeExpenses;
-            set => _blnPrintFreeExpenses = value;
+            set
+            {
+                if (_blnPrintFreeExpenses != value)
+                {
+                    _blnPrintFreeExpenses = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1214,7 +1298,14 @@ namespace Chummer
         public decimal NuyenPerBP
         {
             get => _decNuyenPerBP;
-            set => _decNuyenPerBP = value;
+            set
+            {
+                if (_decNuyenPerBP != value)
+                {
+                    _decNuyenPerBP = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1223,7 +1314,14 @@ namespace Chummer
         public bool UnarmedImprovementsApplyToWeapons
         {
             get => _blnUnarmedImprovementsApplyToWeapons;
-            set => _blnUnarmedImprovementsApplyToWeapons = value;
+            set
+            {
+                if (_blnUnarmedImprovementsApplyToWeapons != value)
+                {
+                    _blnUnarmedImprovementsApplyToWeapons = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1237,7 +1335,7 @@ namespace Chummer
                 if (_blnAllowInitiationInCreateMode != value)
                 {
                     _blnAllowInitiationInCreateMode = value;
-                    _character?.OnPropertyChanged(nameof(Character.AddInitiationsAllowed));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1248,7 +1346,14 @@ namespace Chummer
         public bool UsePointsOnBrokenGroups
         {
             get => _blnUsePointsOnBrokenGroups;
-            set => _blnUsePointsOnBrokenGroups = value;
+            set
+            {
+                if (_blnUsePointsOnBrokenGroups != value)
+                {
+                    _blnUsePointsOnBrokenGroups = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1257,7 +1362,14 @@ namespace Chummer
         public bool DontDoubleQualityPurchases
         {
             get => _blnDontDoubleQualityPurchaseCost;
-            set => _blnDontDoubleQualityPurchaseCost = value;
+            set
+            {
+                if (_blnDontDoubleQualityPurchaseCost != value)
+                {
+                    _blnDontDoubleQualityPurchaseCost = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1266,7 +1378,14 @@ namespace Chummer
         public bool DontDoubleQualityRefunds
         {
             get => _blnDontDoubleQualityRefundCost;
-            set => _blnDontDoubleQualityRefundCost = value;
+            set
+            {
+                if (_blnDontDoubleQualityRefundCost != value)
+                {
+                    _blnDontDoubleQualityRefundCost = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1275,7 +1394,14 @@ namespace Chummer
         public bool IgnoreArt
         {
             get => _blnIgnoreArt;
-            set => _blnIgnoreArt = value;
+            set
+            {
+                if (_blnIgnoreArt != value)
+                {
+                    _blnIgnoreArt = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1284,7 +1410,14 @@ namespace Chummer
         public bool IgnoreComplexFormLimit
         {
             get => _blnIgnoreComplexFormLimit;
-            set => _blnIgnoreComplexFormLimit = value;
+            set
+            {
+                if (_blnIgnoreComplexFormLimit != value)
+                {
+                    _blnIgnoreComplexFormLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1293,7 +1426,14 @@ namespace Chummer
         public bool CyberlegMovement
         {
             get => _blnCyberlegMovement;
-            set => _blnCyberlegMovement = value;
+            set
+            {
+                if (_blnCyberlegMovement != value)
+                {
+                    _blnCyberlegMovement = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1307,7 +1447,7 @@ namespace Chummer
                 if (_blnMysAdeptAllowPPCareer != value)
                 {
                     _blnMysAdeptAllowPPCareer = value;
-                    _character?.OnPropertyChanged(nameof(Character.MysAdeptAllowPPCareer));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1323,7 +1463,7 @@ namespace Chummer
                 if (_blnMysAdeptSecondMAGAttribute != value)
                 {
                     _blnMysAdeptSecondMAGAttribute = value;
-                    _character?.OnPropertyChanged(nameof(Character.UseMysticAdeptPPs));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1335,42 +1475,48 @@ namespace Chummer
         public bool Allow2ndMaxAttribute
         {
             get => _blnAllow2ndMaxAttribute;
-            set => _blnAllow2ndMaxAttribute = value;
-        }
-
-        /// <summary>
-        /// The CHA multiplier to be used with the Free Contacts Option.
-        /// </summary>
-        public int FreeContactsMultiplier
-        {
-            get
-            {
-                if (_character?.GameplayOption == "Prime Runner") return _intFreeContactsMultiplier*2;  //HACK. Should really read from gameplayoptions
-                return _intFreeContactsMultiplier;
-            }
             set
             {
-                //As this is a hack, not quite sure how this is glued together.
-                //If i understand it right (COMMUNICATING THROUGH FUCKING FILES?) this should never happen.
-                //Keyword should
-                if (_character == null)
+                if (_blnAllow2ndMaxAttribute != value)
                 {
-                    _intFreeContactsMultiplier = value;
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
+                    _blnAllow2ndMaxAttribute = value;
+                    OnPropertyChanged();
                 }
             }
         }
 
         /// <summary>
-        /// Whether or not characters get a flat number of BP for free Contacts.
+        /// The XPath expression to use to determine how many contact points the character has
         /// </summary>
-        public bool FreeContactsMultiplierEnabled
+        public string ContactPointsExpression
         {
-            get => _blnFreeContactsMultiplierEnabled;
-            set => _blnFreeContactsMultiplierEnabled = value;
+            get => _strContactPointsExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath();
+                if (_strContactPointsExpression != strNewValue)
+                {
+                    _strContactPointsExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many knowledge points the character has
+        /// </summary>
+        public string KnowledgePointsExpression
+        {
+            get => _strKnowledgePointsExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath();
+                if (_strKnowledgePointsExpression != strNewValue)
+                {
+                    _strKnowledgePointsExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1379,7 +1525,14 @@ namespace Chummer
         public int DroneArmorMultiplier
         {
             get => _intDroneArmorMultiplier;
-            set => _intDroneArmorMultiplier = value;
+            set
+            {
+                if (_intDroneArmorMultiplier != value)
+                {
+                    _intDroneArmorMultiplier = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1388,25 +1541,14 @@ namespace Chummer
         public bool DroneArmorMultiplierEnabled
         {
             get => _blnDroneArmorMultiplierEnabled;
-            set => _blnDroneArmorMultiplierEnabled = value;
-        }
-
-        /// <summary>
-        /// Whether or not the multiplier for Free Knowledge points are used.
-        /// </summary>
-        public bool FreeKnowledgeMultiplierEnabled
-        {
-            get => _blnFreeKnowledgeMultiplierEnabled;
-            set => _blnFreeKnowledgeMultiplierEnabled = value;
-        }
-
-        /// <summary>
-        /// The INT+LOG multiplier to be used with the Free Knowledge Option.
-        /// </summary>
-        public int FreeKnowledgeMultiplier
-        {
-            get => _intFreeKnowledgeMultiplier;
-            set => _intFreeKnowledgeMultiplier = value;
+            set
+            {
+                if (_blnDroneArmorMultiplierEnabled != value)
+                {
+                    _blnDroneArmorMultiplierEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1415,7 +1557,14 @@ namespace Chummer
         public bool NoArmorEncumbrance
         {
             get => _blnNoArmorEncumbrance;
-            set => _blnNoArmorEncumbrance = value;
+            set
+            {
+                if (_blnNoArmorEncumbrance != value)
+                {
+                    _blnNoArmorEncumbrance = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1424,7 +1573,14 @@ namespace Chummer
         public bool ESSLossReducesMaximumOnly
         {
             get => _blnESSLossReducesMaximumOnly;
-            set => _blnESSLossReducesMaximumOnly = value;
+            set
+            {
+                if (_blnESSLossReducesMaximumOnly != value)
+                {
+                    _blnESSLossReducesMaximumOnly = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1433,7 +1589,14 @@ namespace Chummer
         public bool AllowSkillRegrouping
         {
             get => _blnAllowSkillRegrouping;
-            set => _blnAllowSkillRegrouping = value;
+            set
+            {
+                if (_blnAllowSkillRegrouping != value)
+                {
+                    _blnAllowSkillRegrouping = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1447,7 +1610,14 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                {
+                    _strName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1456,7 +1626,14 @@ namespace Chummer
         public bool MetatypeCostsKarma
         {
             get => _blnMetatypeCostsKarma;
-            set => _blnMetatypeCostsKarma = value;
+            set
+            {
+                if (_blnMetatypeCostsKarma != value)
+                {
+                    _blnMetatypeCostsKarma = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1465,7 +1642,14 @@ namespace Chummer
         public int MetatypeCostsKarmaMultiplier
         {
             get => _intMetatypeCostMultiplier;
-            set => _intMetatypeCostMultiplier = value;
+            set
+            {
+                if (_intMetatypeCostMultiplier != value)
+                {
+                    _intMetatypeCostMultiplier = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1474,7 +1658,14 @@ namespace Chummer
         public int LimbCount
         {
             get => _intLimbCount;
-            set => _intLimbCount = value;
+            set
+            {
+                if (_intLimbCount != value)
+                {
+                    _intLimbCount = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1483,7 +1674,14 @@ namespace Chummer
         public string ExcludeLimbSlot
         {
             get => _strExcludeLimbSlot;
-            set => _strExcludeLimbSlot = value;
+            set
+            {
+                if (_strExcludeLimbSlot != value)
+                {
+                    _strExcludeLimbSlot = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1492,7 +1690,14 @@ namespace Chummer
         public bool AllowCyberwareESSDiscounts
         {
             get => _blnAllowCyberwareESSDiscounts;
-            set => _blnAllowCyberwareESSDiscounts = value;
+            set
+            {
+                if (_blnAllowCyberwareESSDiscounts != value)
+                {
+                    _blnAllowCyberwareESSDiscounts = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1506,7 +1711,7 @@ namespace Chummer
                 if (_blnArmorDegradation != value)
                 {
                     _blnArmorDegradation = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ArmorDegradation)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1522,7 +1727,7 @@ namespace Chummer
                 if (_blnSpecialKarmaCostBasedOnShownValue != value)
                 {
                     _blnSpecialKarmaCostBasedOnShownValue = value;
-                    _character?.RefreshEssenceLossImprovements();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1533,7 +1738,14 @@ namespace Chummer
         public bool ExceedPositiveQualities
         {
             get => _blnExceedPositiveQualities;
-            set => _blnExceedPositiveQualities = value;
+            set
+            {
+                if (_blnExceedPositiveQualities != value)
+                {
+                    _blnExceedPositiveQualities = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1542,7 +1754,14 @@ namespace Chummer
         public bool ExceedPositiveQualitiesCostDoubled
         {
             get => _blnExceedPositiveQualitiesCostDoubled;
-            set => _blnExceedPositiveQualitiesCostDoubled = value;
+            set
+            {
+                if (_blnExceedPositiveQualitiesCostDoubled != value)
+                {
+                    _blnExceedPositiveQualitiesCostDoubled = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1551,7 +1770,14 @@ namespace Chummer
         public bool ExceedNegativeQualities
         {
             get => _blnExceedNegativeQualities;
-            set => _blnExceedNegativeQualities = value;
+            set
+            {
+                if (_blnExceedNegativeQualities != value)
+                {
+                    _blnExceedNegativeQualities = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1560,7 +1786,14 @@ namespace Chummer
         public bool ExceedNegativeQualitiesLimit
         {
             get => _blnExceedNegativeQualitiesLimit;
-            set => _blnExceedNegativeQualitiesLimit = value;
+            set
+            {
+                if (_blnExceedNegativeQualitiesLimit != value)
+                {
+                    _blnExceedNegativeQualitiesLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1569,7 +1802,14 @@ namespace Chummer
         public bool MultiplyRestrictedCost
         {
             get => _blnMultiplyRestrictedCost;
-            set => _blnMultiplyRestrictedCost = value;
+            set
+            {
+                if (_blnMultiplyRestrictedCost != value)
+                {
+                    _blnMultiplyRestrictedCost = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1578,7 +1818,14 @@ namespace Chummer
         public bool MultiplyForbiddenCost
         {
             get => _blnMultiplyForbiddenCost;
-            set => _blnMultiplyForbiddenCost = value;
+            set
+            {
+                if (_blnMultiplyForbiddenCost != value)
+                {
+                    _blnMultiplyForbiddenCost = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1587,7 +1834,14 @@ namespace Chummer
         public int RestrictedCostMultiplier
         {
             get => _intRestrictedCostMultiplier;
-            set => _intRestrictedCostMultiplier = value;
+            set
+            {
+                if (_intRestrictedCostMultiplier != value)
+                {
+                    _intRestrictedCostMultiplier = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1596,7 +1850,14 @@ namespace Chummer
         public int ForbiddenCostMultiplier
         {
             get => _intForbiddenCostMultiplier;
-            set => _intForbiddenCostMultiplier = value;
+            set
+            {
+                if (_intForbiddenCostMultiplier != value)
+                {
+                    _intForbiddenCostMultiplier = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private int _intCachedNuyenDecimals = -1;
@@ -1669,8 +1930,7 @@ namespace Chummer
                 if (_strNuyenFormat != value)
                 {
                     _strNuyenFormat = value;
-                    _intCachedNuyenDecimals = -1;
-                    _character?.OnMultiplePropertyChanged(nameof(Character.DisplayNuyen), nameof(Character.DisplayCareerNuyen));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1742,8 +2002,7 @@ namespace Chummer
                 if (_strEssenceFormat != value)
                 {
                     _strEssenceFormat = value;
-                    _intCachedEssenceDecimals = -1;
-                    _character?.OnMultiplePropertyChanged(nameof(Character.PrototypeTranshumanEssenceUsed), nameof(Character.Essence));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1759,7 +2018,7 @@ namespace Chummer
                 if (_blnDoNotRoundEssenceInternally != value)
                 {
                     _blnDoNotRoundEssenceInternally = value;
-                    _character?.OnMultiplePropertyChanged(nameof(Character.PrototypeTranshumanEssenceUsed), nameof(Character.Essence));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1770,7 +2029,14 @@ namespace Chummer
         public bool EnemyKarmaQualityLimit
         {
             get => _blnEnemyKarmaQualityLimit;
-            set => _blnEnemyKarmaQualityLimit = value;
+            set
+            {
+                if (_blnEnemyKarmaQualityLimit != value)
+                {
+                    _blnEnemyKarmaQualityLimit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1779,7 +2045,14 @@ namespace Chummer
         public bool EnforceCapacity
         {
             get => _blnEnforceCapacity;
-            set => _blnEnforceCapacity = value;
+            set
+            {
+                if (_blnEnforceCapacity != value)
+                {
+                    _blnEnforceCapacity = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1788,7 +2061,14 @@ namespace Chummer
         public bool RestrictRecoil
         {
             get => _blnRestrictRecoil;
-            set => _blnRestrictRecoil = value;
+            set
+            {
+                if (_blnRestrictRecoil != value)
+                {
+                    _blnRestrictRecoil = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1802,7 +2082,7 @@ namespace Chummer
                 if (_blnUnrestrictedNuyen != value)
                 {
                     _blnUnrestrictedNuyen = value;
-                    _character?.OnPropertyChanged(nameof(Character.TotalNuyenMaximumBP));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1813,7 +2093,14 @@ namespace Chummer
         public bool AllowHigherStackedFoci
         {
             get => _blnAllowHigherStackedFoci;
-            set => _blnAllowHigherStackedFoci = value;
+            set
+            {
+                if (_blnAllowHigherStackedFoci != value)
+                {
+                    _blnAllowHigherStackedFoci = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1822,7 +2109,14 @@ namespace Chummer
         public bool AllowEditPartOfBaseWeapon
         {
             get => _blnAllowEditPartOfBaseWeapon;
-            set => _blnAllowEditPartOfBaseWeapon = value;
+            set
+            {
+                if (_blnAllowEditPartOfBaseWeapon != value)
+                {
+                    _blnAllowEditPartOfBaseWeapon = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1831,7 +2125,14 @@ namespace Chummer
         public bool StrictSkillGroupsInCreateMode
         {
             get => _blnStrictSkillGroupsInCreateMode;
-            set => _blnStrictSkillGroupsInCreateMode = value;
+            set
+            {
+                if (_blnStrictSkillGroupsInCreateMode != value)
+                {
+                    _blnStrictSkillGroupsInCreateMode = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1840,7 +2141,14 @@ namespace Chummer
         public bool AllowPointBuySpecializationsOnKarmaSkills
         {
             get => _blnAllowPointBuySpecializationsOnKarmaSkills;
-            set => _blnAllowPointBuySpecializationsOnKarmaSkills = value;
+            set
+            {
+                if (_blnAllowPointBuySpecializationsOnKarmaSkills != value)
+                {
+                    _blnAllowPointBuySpecializationsOnKarmaSkills = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1849,16 +2157,14 @@ namespace Chummer
         public bool ExtendAnyDetectionSpell
         {
             get => _blnExtendAnyDetectionSpell;
-            set => _blnExtendAnyDetectionSpell = value;
-        }
-
-        /// <summary>
-        /// Whether or not dice rolling is allowed for Skills.
-        /// </summary>
-        public bool AllowSkillDiceRolling
-        {
-            get => _blnAllowSkillDiceRolling;
-            set => _blnAllowSkillDiceRolling = value;
+            set
+            {
+                if (_blnExtendAnyDetectionSpell != value)
+                {
+                    _blnExtendAnyDetectionSpell = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1867,7 +2173,14 @@ namespace Chummer
         public bool DontUseCyberlimbCalculation
         {
             get => _blnDontUseCyberlimbCalculation;
-            set => _blnDontUseCyberlimbCalculation = value;
+            set
+            {
+                if (_blnDontUseCyberlimbCalculation != value)
+                {
+                    _blnDontUseCyberlimbCalculation = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1876,7 +2189,14 @@ namespace Chummer
         public bool AlternateMetatypeAttributeKarma
         {
             get => _blnAlternateMetatypeAttributeKarma;
-            set => _blnAlternateMetatypeAttributeKarma = value;
+            set
+            {
+                if (_blnAlternateMetatypeAttributeKarma != value)
+                {
+                    _blnAlternateMetatypeAttributeKarma = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1885,7 +2205,14 @@ namespace Chummer
         public bool CompensateSkillGroupKarmaDifference
         {
             get => _blnCompensateSkillGroupKarmaDifference;
-            set => _blnCompensateSkillGroupKarmaDifference = value;
+            set
+            {
+                if (_blnCompensateSkillGroupKarmaDifference != value)
+                {
+                    _blnCompensateSkillGroupKarmaDifference = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1894,7 +2221,14 @@ namespace Chummer
         public bool PrintNotes
         {
             get => _blnPrintNotes;
-            set => _blnPrintNotes = value;
+            set
+            {
+                if (_blnPrintNotes != value)
+                {
+                    _blnPrintNotes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1903,7 +2237,14 @@ namespace Chummer
         public bool AllowObsolescentUpgrade
         {
             get => _blnAllowObsolescentUpgrade;
-            set => _blnAllowObsolescentUpgrade = value;
+            set
+            {
+                if (_blnAllowObsolescentUpgrade != value)
+                {
+                    _blnAllowObsolescentUpgrade = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1912,7 +2253,14 @@ namespace Chummer
         public bool AllowBiowareSuites
         {
             get => _blnAllowBiowareSuites;
-            set => _blnAllowBiowareSuites = value;
+            set
+            {
+                if (_blnAllowBiowareSuites != value)
+                {
+                    _blnAllowBiowareSuites = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1921,7 +2269,14 @@ namespace Chummer
         public bool FreeSpiritPowerPointsMAG
         {
             get => _blnFreeSpiritPowerPointsMAG;
-            set => _blnFreeSpiritPowerPointsMAG = value;
+            set
+            {
+                if (_blnFreeSpiritPowerPointsMAG != value)
+                {
+                    _blnFreeSpiritPowerPointsMAG = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1930,7 +2285,14 @@ namespace Chummer
         public bool UnclampAttributeMinimum
         {
             get => _blnUnclampAttributeMinimum;
-            set => _blnUnclampAttributeMinimum = value;
+            set
+            {
+                if (_blnUnclampAttributeMinimum != value)
+                {
+                    _blnUnclampAttributeMinimum = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1939,7 +2301,14 @@ namespace Chummer
         public bool DroneMods
         {
             get => _blnDroneMods;
-            set => _blnDroneMods = value;
+            set
+            {
+                if (_blnDroneMods != value)
+                {
+                    _blnDroneMods = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1948,7 +2317,14 @@ namespace Chummer
         public bool DroneModsMaximumPilot
         {
             get => _blnDroneModsMaximumPilot;
-            set => _blnDroneModsMaximumPilot = value;
+            set
+            {
+                if (_blnDroneModsMaximumPilot != value)
+                {
+                    _blnDroneModsMaximumPilot = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         #endregion
 
@@ -1959,7 +2335,14 @@ namespace Chummer
         public int KarmaAttribute
         {
             get => _intKarmaAttribute;
-            set => _intKarmaAttribute = value;
+            set
+            {
+                if (_intKarmaAttribute != value)
+                {
+                    _intKarmaAttribute = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1968,7 +2351,14 @@ namespace Chummer
         public int KarmaQuality
         {
             get => _intKarmaQuality;
-            set => _intKarmaQuality = value;
+            set
+            {
+                if (_intKarmaQuality != value)
+                {
+                    _intKarmaQuality = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1977,7 +2367,14 @@ namespace Chummer
         public int KarmaSpecialization
         {
             get => _intKarmaSpecialization;
-            set => _intKarmaSpecialization = value;
+            set
+            {
+                if (_intKarmaSpecialization != value)
+                {
+                    _intKarmaSpecialization = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1986,7 +2383,14 @@ namespace Chummer
         public int KarmaKnowledgeSpecialization
         {
             get => _intKarmaKnoSpecialization;
-            set => _intKarmaKnoSpecialization = value;
+            set
+            {
+                if (_intKarmaKnoSpecialization != value)
+                {
+                    _intKarmaKnoSpecialization = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1995,7 +2399,14 @@ namespace Chummer
         public int KarmaNewKnowledgeSkill
         {
             get => _intKarmaNewKnowledgeSkill;
-            set => _intKarmaNewKnowledgeSkill = value;
+            set
+            {
+                if (_intKarmaNewKnowledgeSkill != value)
+                {
+                    _intKarmaNewKnowledgeSkill = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2004,7 +2415,14 @@ namespace Chummer
         public int KarmaNewActiveSkill
         {
             get => _intKarmaNewActiveSkill;
-            set => _intKarmaNewActiveSkill = value;
+            set
+            {
+                if (_intKarmaNewActiveSkill != value)
+                {
+                    _intKarmaNewActiveSkill = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2013,7 +2431,14 @@ namespace Chummer
         public int KarmaNewSkillGroup
         {
             get => _intKarmaNewSkillGroup;
-            set => _intKarmaNewSkillGroup = value;
+            set
+            {
+                if (_intKarmaNewSkillGroup != value)
+                {
+                    _intKarmaNewSkillGroup = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2022,7 +2447,14 @@ namespace Chummer
         public int KarmaImproveKnowledgeSkill
         {
             get => _intKarmaImproveKnowledgeSkill;
-            set => _intKarmaImproveKnowledgeSkill = value;
+            set
+            {
+                if (_intKarmaImproveKnowledgeSkill != value)
+                {
+                    _intKarmaImproveKnowledgeSkill = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2031,7 +2463,14 @@ namespace Chummer
         public int KarmaImproveActiveSkill
         {
             get => _intKarmaImproveActiveSkill;
-            set => _intKarmaImproveActiveSkill = value;
+            set
+            {
+                if (_intKarmaImproveActiveSkill != value)
+                {
+                    _intKarmaImproveActiveSkill = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2040,7 +2479,14 @@ namespace Chummer
         public int KarmaImproveSkillGroup
         {
             get => _intKarmaImproveSkillGroup;
-            set => _intKarmaImproveSkillGroup = value;
+            set
+            {
+                if (_intKarmaImproveSkillGroup != value)
+                {
+                    _intKarmaImproveSkillGroup = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2049,7 +2495,14 @@ namespace Chummer
         public int KarmaSpell
         {
             get => _intKarmaSpell;
-            set => _intKarmaSpell = value;
+            set
+            {
+                if (_intKarmaSpell != value)
+                {
+                    _intKarmaSpell = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2058,7 +2511,14 @@ namespace Chummer
         public int KarmaEnhancement
         {
             get => _intKarmaEnhancement;
-            set => _intKarmaEnhancement = value;
+            set
+            {
+                if (_intKarmaEnhancement != value)
+                {
+                    _intKarmaEnhancement = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2067,7 +2527,14 @@ namespace Chummer
         public int KarmaNewComplexForm
         {
             get => _intKarmaNewComplexForm;
-            set => _intKarmaNewComplexForm = value;
+            set
+            {
+                if (_intKarmaNewComplexForm != value)
+                {
+                    _intKarmaNewComplexForm = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2076,7 +2543,14 @@ namespace Chummer
         public int KarmaImproveComplexForm
         {
             get => _intKarmaImproveComplexForm;
-            set => _intKarmaImproveComplexForm = value;
+            set
+            {
+                if (_intKarmaImproveComplexForm != value)
+                {
+                    _intKarmaImproveComplexForm = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2085,7 +2559,14 @@ namespace Chummer
         public int KarmaComplexFormOption
         {
             get => _intKarmaComplexFormOption;
-            set => _intKarmaComplexFormOption = value;
+            set
+            {
+                if (_intKarmaComplexFormOption != value)
+                {
+                    _intKarmaComplexFormOption = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2093,8 +2574,15 @@ namespace Chummer
         /// </summary>
         public int KarmaComplexFormSkillsoft
         {
-            get => _intKarmaComplexFormSkillfot;
-            set => _intKarmaComplexFormSkillfot = value;
+            get => _intKarmaComplexFormSkillsoft;
+            set
+            {
+                if (_intKarmaComplexFormSkillsoft != value)
+                {
+                    _intKarmaComplexFormSkillsoft = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2103,7 +2591,14 @@ namespace Chummer
         public int KarmaNewAIProgram
         {
             get => _intKarmaNewAIProgram;
-            set => _intKarmaNewAIProgram = value;
+            set
+            {
+                if (_intKarmaNewAIProgram != value)
+                {
+                    _intKarmaNewAIProgram = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2112,7 +2607,14 @@ namespace Chummer
         public int KarmaNewAIAdvancedProgram
         {
             get => _intKarmaNewAIAdvancedProgram;
-            set => _intKarmaNewAIAdvancedProgram = value;
+            set
+            {
+                if (_intKarmaNewAIAdvancedProgram != value)
+                {
+                    _intKarmaNewAIAdvancedProgram = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2121,7 +2623,14 @@ namespace Chummer
         public int KarmaNuyenPer
         {
             get => _intKarmaNuyenPer;
-            set => _intKarmaNuyenPer = value;
+            set
+            {
+                if (_intKarmaNuyenPer != value)
+                {
+                    _intKarmaNuyenPer = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2130,7 +2639,14 @@ namespace Chummer
         public int KarmaContact
         {
             get => _intKarmaContact;
-            set => _intKarmaContact = value;
+            set
+            {
+                if (_intKarmaContact != value)
+                {
+                    _intKarmaContact = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2139,7 +2655,14 @@ namespace Chummer
         public int KarmaEnemy
         {
             get => _intKarmaEnemy;
-            set => _intKarmaEnemy = value;
+            set
+            {
+                if (_intKarmaEnemy != value)
+                {
+                    _intKarmaEnemy = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2148,7 +2671,14 @@ namespace Chummer
         public int KarmaCarryover
         {
             get => _intKarmaCarryover;
-            set => _intKarmaCarryover = value;
+            set
+            {
+                if (_intKarmaCarryover != value)
+                {
+                    _intKarmaCarryover = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2157,7 +2687,14 @@ namespace Chummer
         public int KarmaSpirit
         {
             get => _intKarmaSpirit;
-            set => _intKarmaSpirit = value;
+            set
+            {
+                if (_intKarmaSpirit != value)
+                {
+                    _intKarmaSpirit = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2166,7 +2703,14 @@ namespace Chummer
         public int KarmaManeuver
         {
             get => _intKarmaManeuver;
-            set => _intKarmaManeuver = value;
+            set
+            {
+                if (_intKarmaManeuver != value)
+                {
+                    _intKarmaManeuver = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2175,7 +2719,14 @@ namespace Chummer
         public int KarmaInitiation
         {
             get => _intKarmaInitiation;
-            set => _intKarmaInitiation = value;
+            set
+            {
+                if (_intKarmaInitiation != value)
+                {
+                    _intKarmaInitiation = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2184,7 +2735,14 @@ namespace Chummer
         public int KarmaInitiationFlat
         {
             get => _intKarmaInitiationFlat;
-            set => _intKarmaInitiationFlat = value;
+            set
+            {
+                if (_intKarmaInitiationFlat != value)
+                {
+                    _intKarmaInitiationFlat = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2193,7 +2751,14 @@ namespace Chummer
         public int KarmaMetamagic
         {
             get => _intKarmaMetamagic;
-            set => _intKarmaMetamagic = value;
+            set
+            {
+                if (_intKarmaMetamagic != value)
+                {
+                    _intKarmaMetamagic = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2202,7 +2767,14 @@ namespace Chummer
         public int KarmaJoinGroup
         {
             get => _intKarmaJoinGroup;
-            set => _intKarmaJoinGroup = value;
+            set
+            {
+                if (_intKarmaJoinGroup != value)
+                {
+                    _intKarmaJoinGroup = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2211,7 +2783,14 @@ namespace Chummer
         public int KarmaLeaveGroup
         {
             get => _intKarmaLeaveGroup;
-            set => _intKarmaLeaveGroup = value;
+            set
+            {
+                if (_intKarmaLeaveGroup != value)
+                {
+                    _intKarmaLeaveGroup = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2220,7 +2799,14 @@ namespace Chummer
         public int KarmaAlchemicalFocus
         {
             get => _intKarmaAlchemicalFocus;
-            set => _intKarmaAlchemicalFocus = value;
+            set
+            {
+                if (_intKarmaAlchemicalFocus != value)
+                {
+                    _intKarmaAlchemicalFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2229,7 +2815,14 @@ namespace Chummer
         public int KarmaBanishingFocus
         {
             get => _intKarmaBanishingFocus;
-            set => _intKarmaBanishingFocus = value;
+            set
+            {
+                if (_intKarmaBanishingFocus != value)
+                {
+                    _intKarmaBanishingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2238,7 +2831,14 @@ namespace Chummer
         public int KarmaBindingFocus
         {
             get => _intKarmaBindingFocus;
-            set => _intKarmaBindingFocus = value;
+            set
+            {
+                if (_intKarmaBindingFocus != value)
+                {
+                    _intKarmaBindingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2247,7 +2847,14 @@ namespace Chummer
         public int KarmaCenteringFocus
         {
             get => _intKarmaCenteringFocus;
-            set => _intKarmaCenteringFocus = value;
+            set
+            {
+                if (_intKarmaCenteringFocus != value)
+                {
+                    _intKarmaCenteringFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2256,7 +2863,14 @@ namespace Chummer
         public int KarmaCounterspellingFocus
         {
             get => _intKarmaCounterspellingFocus;
-            set => _intKarmaCounterspellingFocus = value;
+            set
+            {
+                if (_intKarmaCounterspellingFocus != value)
+                {
+                    _intKarmaCounterspellingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2265,7 +2879,14 @@ namespace Chummer
         public int KarmaDisenchantingFocus
         {
             get => _intKarmaDisenchantingFocus;
-            set => _intKarmaDisenchantingFocus = value;
+            set
+            {
+                if (_intKarmaDisenchantingFocus != value)
+                {
+                    _intKarmaDisenchantingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2274,7 +2895,14 @@ namespace Chummer
         public int KarmaFlexibleSignatureFocus
         {
             get => _intKarmaFlexibleSignatureFocus;
-            set => _intKarmaFlexibleSignatureFocus = value;
+            set
+            {
+                if (_intKarmaFlexibleSignatureFocus != value)
+                {
+                    _intKarmaFlexibleSignatureFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2283,7 +2911,14 @@ namespace Chummer
         public int KarmaMaskingFocus
         {
             get => _intKarmaMaskingFocus;
-            set => _intKarmaMaskingFocus = value;
+            set
+            {
+                if (_intKarmaMaskingFocus != value)
+                {
+                    _intKarmaMaskingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2292,7 +2927,14 @@ namespace Chummer
         public int KarmaPowerFocus
         {
             get => _intKarmaPowerFocus;
-            set => _intKarmaPowerFocus = value;
+            set
+            {
+                if (_intKarmaPowerFocus != value)
+                {
+                    _intKarmaPowerFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2301,7 +2943,14 @@ namespace Chummer
         public int KarmaQiFocus
         {
             get => _intKarmaQiFocus;
-            set => _intKarmaQiFocus = value;
+            set
+            {
+                if (_intKarmaQiFocus != value)
+                {
+                    _intKarmaQiFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2310,7 +2959,14 @@ namespace Chummer
         public int KarmaRitualSpellcastingFocus
         {
             get => _intKarmaRitualSpellcastingFocus;
-            set => _intKarmaRitualSpellcastingFocus = value;
+            set
+            {
+                if (_intKarmaRitualSpellcastingFocus != value)
+                {
+                    _intKarmaRitualSpellcastingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2319,7 +2975,14 @@ namespace Chummer
         public int KarmaSpellcastingFocus
         {
             get => _intKarmaSpellcastingFocus;
-            set => _intKarmaSpellcastingFocus = value;
+            set
+            {
+                if (_intKarmaSpellcastingFocus != value)
+                {
+                    _intKarmaSpellcastingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2328,7 +2991,14 @@ namespace Chummer
         public int KarmaSpellShapingFocus
         {
             get => _intKarmaSpellShapingFocus;
-            set => _intKarmaSpellShapingFocus = value;
+            set
+            {
+                if (_intKarmaSpellShapingFocus != value)
+                {
+                    _intKarmaSpellShapingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2337,7 +3007,14 @@ namespace Chummer
         public int KarmaSummoningFocus
         {
             get => _intKarmaSummoningFocus;
-            set => _intKarmaSummoningFocus = value;
+            set
+            {
+                if (_intKarmaSummoningFocus != value)
+                {
+                    _intKarmaSummoningFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2346,7 +3023,14 @@ namespace Chummer
         public int KarmaSustainingFocus
         {
             get => _intKarmaSustainingFocus;
-            set => _intKarmaSustainingFocus = value;
+            set
+            {
+                if (_intKarmaSustainingFocus != value)
+                {
+                    _intKarmaSustainingFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2355,7 +3039,14 @@ namespace Chummer
         public int KarmaWeaponFocus
         {
             get => _intKarmaWeaponFocus;
-            set => _intKarmaWeaponFocus = value;
+            set
+            {
+                if (_intKarmaWeaponFocus != value)
+                {
+                    _intKarmaWeaponFocus = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2369,7 +3060,7 @@ namespace Chummer
                 if (_intKarmaMysticAdeptPowerPoint != value)
                 {
                     _intKarmaMysticAdeptPowerPoint = value;
-                    _character?.OnPropertyChanged(nameof(Character.CanAffordCareerPP));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -2383,7 +3074,14 @@ namespace Chummer
         public bool AutomaticBackstory
         {
             get => _blnAutomaticBackstory;
-            set => _blnAutomaticBackstory = value;
+            set
+            {
+                if (_blnAutomaticBackstory != value)
+                {
+                    _blnAutomaticBackstory = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2392,32 +3090,14 @@ namespace Chummer
         public bool UseCalculatedPublicAwareness
         {
             get => _blnUseCalculatedPublicAwareness;
-            set => _blnUseCalculatedPublicAwareness = value;
-        }
-
-        /// <summary>
-        /// Whether you benefit from augmented values for contact points.
-        /// </summary>
-        public bool UseTotalValueForFreeContacts
-        {
-            get => _blnUseTotalValueForFreeContacts;
             set
             {
-                if (_blnUseTotalValueForFreeContacts != value)
+                if (_blnUseCalculatedPublicAwareness != value)
                 {
-                    _blnUseTotalValueForFreeContacts = value;
-                    _character?.OnPropertyChanged(nameof(Character.ContactPoints));
+                    _blnUseCalculatedPublicAwareness = value;
+                    OnPropertyChanged();
                 }
             }
-        }
-
-        /// <summary>
-        /// Whether you benefit from augmented values for free knowledge points.
-        /// </summary>
-        public bool UseTotalValueForFreeKnowledge
-        {
-            get => _blnUseTotalValueForFreeKnowledge;
-            set => _blnUseTotalValueForFreeKnowledge = value;
         }
 
         /// <summary>
@@ -2426,7 +3106,14 @@ namespace Chummer
         public bool FreeMartialArtSpecialization
         {
             get => _blnFreeMartialArtSpecialization;
-            set => _blnFreeMartialArtSpecialization = value;
+            set
+            {
+                if (_blnFreeMartialArtSpecialization != value)
+                {
+                    _blnFreeMartialArtSpecialization = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2435,7 +3122,14 @@ namespace Chummer
         public bool PrioritySpellsAsAdeptPowers
         {
             get => _blnPrioritySpellsAsAdeptPowers;
-            set => _blnPrioritySpellsAsAdeptPowers = value;
+            set
+            {
+                if (_blnPrioritySpellsAsAdeptPowers != value)
+                {
+                    _blnPrioritySpellsAsAdeptPowers = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2444,7 +3138,14 @@ namespace Chummer
         public string RecentImageFolder
         {
             get => _strImageFolder;
-            set => _strImageFolder = value;
+            set
+            {
+                if (_strImageFolder != value)
+                {
+                    _strImageFolder = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2453,16 +3154,14 @@ namespace Chummer
         public bool ReverseAttributePriorityOrder
         {
             get => _blnReverseAttributePriorityOrder;
-            internal set => _blnReverseAttributePriorityOrder = value;
-        }
-
-        /// <summary>
-        /// Whether to use floor-based rounding for Cyberware. If enabled,
-        /// </summary>
-        public bool CyberwareRounding
-        {
-            get => _cyberwareRounding;
-            set => _cyberwareRounding = value;
+            set
+            {
+                if (_blnReverseAttributePriorityOrder != value)
+                {
+                    _blnReverseAttributePriorityOrder = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2471,7 +3170,14 @@ namespace Chummer
         public bool IncreasedImprovedAbilityMultiplier
         {
             get => _increasedImprovedAbilityMultiplier;
-            set => _increasedImprovedAbilityMultiplier = value;
+            set
+            {
+                if (_increasedImprovedAbilityMultiplier != value)
+                {
+                    _increasedImprovedAbilityMultiplier = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         /// <summary>
         /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
@@ -2479,7 +3185,14 @@ namespace Chummer
         public bool AllowFreeGrids
         {
             get => _allowFreeGrids;
-            set => _allowFreeGrids = value;
+            set
+            {
+                if (_allowFreeGrids != value)
+                {
+                    _allowFreeGrids = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -2488,7 +3201,14 @@ namespace Chummer
         public bool AllowTechnomancerSchooling
         {
             get => _blnAllowTechnomancerSchooling;
-            set => _blnAllowTechnomancerSchooling = value;
+            set
+            {
+                if (_blnAllowTechnomancerSchooling != value)
+                {
+                    _blnAllowTechnomancerSchooling = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         /// <summary>
         /// Maximum value of bonuses that can affect cyberlimbs.
@@ -2496,7 +3216,14 @@ namespace Chummer
         public int CyberlimbAttributeBonusCap
         {
             get => _intCyberlimbAttributeBonusCap;
-            set => _intCyberlimbAttributeBonusCap = value;
+            set
+            {
+                if (_intCyberlimbAttributeBonusCap != value)
+                {
+                    _intCyberlimbAttributeBonusCap = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>

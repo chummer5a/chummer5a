@@ -5792,16 +5792,9 @@ namespace Chummer.Classes
             if (string.IsNullOrEmpty(strForcePower) && bonusNode.Attributes?["count"] != null)
             {
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
+                strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
 
-                StringBuilder objCountString = new StringBuilder(bonusNode.Attributes?["count"]?.InnerText);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
-                    objCountString.CheapReplace(strCount, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objCountString.CheapReplace(strCount, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
-
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCountString.ToString(), out bool blnIsSuccess);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCount, out bool blnIsSuccess);
                 powerCount = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
             }
 

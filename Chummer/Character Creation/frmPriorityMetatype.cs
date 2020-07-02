@@ -807,7 +807,6 @@ namespace Chummer
                 {
                     _objCharacter.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText, GlobalOptions.InvariantCultureInfo);
                     _objCharacter.MaxNuyen = Convert.ToInt32(objXmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
-                    _objCharacter.ContactMultiplier = Convert.ToInt32(objXmlGameplayOption["contactmultiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
                 }
 
                 // Set free contact points

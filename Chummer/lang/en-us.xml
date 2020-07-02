@@ -4350,7 +4350,7 @@
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating. A Language with a Rating of 0 is considered to be your Native Language.</text>
+      <text>Characters receive some free points (amount depends on the gameplay option chosen) to spend on general Knowledge Skills, including Languages. Additional Knowledge Skills cost {0} Karma per new rating  and {1} Karma for a Specialization. A Language with a Rating of 0 is considered to be your Native Language.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -7258,6 +7258,10 @@
       <text>Optional Rules</text>
     </string>
     <string>
+      <key>Tab_Options_CustomData</key>
+      <text>Custom Data</text>
+    </string>
+    <string>
       <key>Tab_Options_HouseRules</key>
       <text>House Rules</text>
     </string>
@@ -7284,6 +7288,10 @@
     <string>
       <key>Tab_Options_CustomDataDirectories</key>
       <text>Custom Data Directories</text>
+    </string>
+    <string>
+      <key>Tab_Options_Basic</key>
+      <text>Basic Options</text>
     </string>
     <string>
       <key>Label_Options_EditSourcebookInfo</key>
@@ -7343,7 +7351,7 @@
     </string>
     <string>
       <key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
-      <text>Automatically load changes from open characters' save files if there are no pending changes to be saved</text>
+      <text>Automatically load changes from open characters' save\nfiles if there are no pending changes to be saved</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLogging</key>
@@ -7388,6 +7396,10 @@
     <string>
       <key>Checkbox_Options_PrintFreeExpenses</key>
       <text>Print Free Karma and Nuyen Expenses</text>
+    </string>
+    <string>
+      <key>Label_Options_DefaultGameplayOption</key>
+      <text>Default Gameplay Option for New Characters:</text>
     </string>
     <string>
       <key>Label_Options_BPAttribute</key>
@@ -8258,12 +8270,20 @@
       <text>Select Build Method</text>
     </string>
     <string>
+      <key>Label_SelectBP_BuildMethod</key>
+      <text>Build Method</text>
+    </string>
+    <string>
       <key>Label_SelectBP_MaxAvail</key>
       <text>Maximum Availability</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
       <text>Starting Karma</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_Priorities</key>
+      <text>Priorities</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>
@@ -8274,20 +8294,24 @@
       <text>Nuyen Karma Max</text>
     </string>
     <string>
+      <key>Label_SelectBP_MaxDR</key>
+      <text>Maximum Device Rating</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_EnabledBooks</key>
+      <text>Enabled Books</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_CustomData</key>
+      <text>Custom Data</text>
+    </string>
+    <string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignore Character Creation Rules</text>
     </string>
     <string>
-      <key>String_SelectBP_BPSummary</key>
-      <text>Enter the amount of Build Points with which you are allowed to create your character (Default {0}).</text>
-    </string>
-    <string>
-      <key>String_SelectBP_KarmaSummary</key>
-      <text>Enter the amount of Karma with which you are allowed to create your character (Default {0}).</text>
-    </string>
-    <string>
-      <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maximum availability with which you are allowed to create your character.</text>
+      <key>String_SelectBP_Summary</key>
+      <text>Brief Summary of Selected Gameplay Option:</text>
     </string>
     <string>
       <key>Tip_SelectKarma_IgnoreRules</key>

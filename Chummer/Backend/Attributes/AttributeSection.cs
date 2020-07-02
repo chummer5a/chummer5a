@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -793,6 +794,47 @@ namespace Chummer.Backend.Attributes
 
             objTarget.Base = objSource.Base;
             objTarget.Karma = objSource.Karma;
+        }
+
+        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            string strReturn = strInput;
+            foreach (string strCharAttributeName in AttributeStrings)
+            {
+                strReturn = strReturn
+                    .CheapReplace('{' + strCharAttributeName + '}', () => (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                            ? dicValueOverrides[strCharAttributeName]
+                            : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalOptions.InvariantCultureInfo))
+                    .CheapReplace('{' + strCharAttributeName + "Unaug}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                        ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                        : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalOptions.InvariantCultureInfo))
+                    .CheapReplace('{' + strCharAttributeName + "Base}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                        ? dicValueOverrides[strCharAttributeName + "Base"]
+                        : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalOptions.InvariantCultureInfo));
+            }
+            return strReturn;
+        }
+
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            foreach (string strCharAttributeName in AttributeStrings)
+            {
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () => (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                    ? dicValueOverrides[strCharAttributeName]
+                    : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalOptions.InvariantCultureInfo));
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                    ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                    : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalOptions.InvariantCultureInfo));
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                    ? dicValueOverrides[strCharAttributeName + "Base"]
+                    : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalOptions.InvariantCultureInfo));
+            }
         }
 
         internal void Reset()

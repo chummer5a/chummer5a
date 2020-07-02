@@ -1499,13 +1499,7 @@ namespace Chummer.Backend.Equipment
                 objValue.CheapReplace(strExpression, "{Parent Rating}",
                     () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ??
                           int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}',
-                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}",
-                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
 
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                 {

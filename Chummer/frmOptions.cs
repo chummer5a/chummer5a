@@ -63,7 +63,6 @@ namespace Chummer
 
         private void frmOptions_Load(object sender, EventArgs e)
         {
-            PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
             PopulateMugshotCompressionOptions();
             SetToolTips();
@@ -257,7 +256,6 @@ namespace Chummer
         private void TranslateForm()
         {
             this.TranslateWinForm(_strSelectedLanguage);
-            PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
             PopulateMugshotCompressionOptions();
             SetToolTips();
@@ -383,7 +381,6 @@ namespace Chummer
             PopulateApplicationInsightsOptions();
 
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
-            chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
             chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.SingleDiceRoller;
@@ -399,6 +396,7 @@ namespace Chummer
             chkHideItemsOverAvail.Checked = GlobalOptions.HideItemsOverAvailLimit;
             chkAllowHoverIncrement.Checked = GlobalOptions.AllowHoverIncrement;
             chkSearchInCategoryOnly.Checked = GlobalOptions.SearchInCategoryOnly;
+            chkAllowSkillDiceRolling.Checked = GlobalOptions.AllowSkillDiceRolling;
             chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
             chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
             chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
@@ -447,7 +445,6 @@ namespace Chummer
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
-            GlobalOptions.OmaeEnabled = chkOmaeEnabled.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
             GlobalOptions.HideCharacterRoster = chkHideCharacterRoster.Checked;
@@ -457,9 +454,8 @@ namespace Chummer
             GlobalOptions.HideItemsOverAvailLimit = chkHideItemsOverAvail.Checked;
             GlobalOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
             GlobalOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
-            GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
-            GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage)
-                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue + "\"]/name")?.InnerText
+            GlobalOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
+            GlobalOptions.DefaultGameplayOption = OptionsManager.LoadedCharacterOptions.Values.FirstOrDefault(x => x.Name == cboDefaultGameplayOption.SelectedValue.ToString())?.Name
                                                   ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
             GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;
@@ -486,14 +482,12 @@ namespace Chummer
                     objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked);
                     objRegistry.SetValue("singlediceroller", chkSingleDiceRoller.Checked);
                     objRegistry.SetValue("defaultsheet", cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue);
-                    objRegistry.SetValue("defaultbuildmethod", cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue);
                     objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked);
                     objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked);
                     objRegistry.SetValue("emulatedbrowserversion", nudBrowserVersion.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
                     objRegistry.SetValue("pdfparameters", cboPDFParameters.SelectedValue.ToString());
                     objRegistry.SetValue("lifemodule", chkLifeModule.Checked);
-                    objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked);
                     objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked);
                     objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
                     objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
@@ -503,6 +497,7 @@ namespace Chummer
                     objRegistry.SetValue("hideitemsoveravaillimit", chkHideItemsOverAvail.Checked);
                     objRegistry.SetValue("allowhoverincrement", chkAllowHoverIncrement.Checked);
                     objRegistry.SetValue("searchincategoryonly", chkSearchInCategoryOnly.Checked);
+                    objRegistry.SetValue("allowskilldicerolling", chkAllowSkillDiceRolling.Checked);
                     objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
                     objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked);
                     objRegistry.SetValue("hidecharts", chkHideCharts.Checked);
@@ -553,64 +548,24 @@ namespace Chummer
             }
         }
 
-        private void PopulateBuildMethodList()
-        {
-            // Populate the Build Method list.
-            List<ListItem> lstBuildMethod = new List<ListItem>
-            {
-                new ListItem("Karma", LanguageManager.GetString("String_Karma", _strSelectedLanguage)),
-                new ListItem("Priority", LanguageManager.GetString("String_Priority", _strSelectedLanguage)),
-                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", _strSelectedLanguage)),
-            };
-
-            if(GlobalOptions.LifeModuleEnabled)
-            {
-                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", _strSelectedLanguage)));
-            }
-
-            string strOldSelected = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethod;
-
-            cboBuildMethod.BeginUpdate();
-            cboBuildMethod.DataSource = null;
-            cboBuildMethod.DataSource = lstBuildMethod;
-            cboBuildMethod.ValueMember = nameof(ListItem.Value);
-            cboBuildMethod.DisplayMember = nameof(ListItem.Name);
-
-            if(!string.IsNullOrEmpty(strOldSelected))
-            {
-                cboBuildMethod.SelectedValue = strOldSelected;
-                if (cboBuildMethod.SelectedIndex == -1 && lstBuildMethod.Count > 0)
-                {
-                    cboBuildMethod.SelectedIndex = 0;
-                }
-            }
-
-            cboBuildMethod.EndUpdate();
-        }
-
         private void PopulateDefaultGameplayOptionList()
         {
             List<ListItem> lstGameplayOptions = new List<ListItem>();
 
             int intIndex = 0;
 
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("gameplayoptions.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths, _strSelectedLanguage)
-                .SelectNodes("/chummer/gameplayoptions/gameplayoption"))
+            foreach (CharacterOptions objLoopCharacterOptions in OptionsManager.LoadedCharacterOptions.Values)
             {
-                if (objXmlNodeList != null)
+                string strId = objLoopCharacterOptions.Name;
+                if (!string.IsNullOrEmpty(strId))
                 {
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                    string strName = strId;
+                    if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
+                        strName = LanguageManager.GetString(strName.TrimStartOnce('{').TrimEndOnce('}'), _strSelectedLanguage);
+                    lstGameplayOptions.Add(new ListItem(strId, strName));
+                    if (!string.IsNullOrWhiteSpace(GlobalOptions.DefaultGameplayOption) && GlobalOptions.DefaultGameplayOption == strId)
                     {
-                        string strId = objXmlNode["id"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strId))
-                        {
-                            string strName = objXmlNode["translate"]?.InnerText ?? objXmlNode["name"]?.InnerText ?? strId;
-                            lstGameplayOptions.Add(new ListItem(strId, strName));
-                            if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == strName)
-                            {
-                                intIndex = lstGameplayOptions.Count - 1;
-                            }
-                        }
+                        intIndex = lstGameplayOptions.Count - 1;
                     }
                 }
             }
@@ -1057,18 +1012,6 @@ namespace Chummer
             if(MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                 chkLifeModule.Checked = false;
-            else
-            {
-                OptionsChanged(sender, e);
-            }
-        }
-
-        private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!chkOmaeEnabled.Checked || _blnLoading) return;
-            if(MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName,
-                   MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
-                chkOmaeEnabled.Checked = false;
             else
             {
                 OptionsChanged(sender, e);

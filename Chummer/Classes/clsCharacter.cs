@@ -70,7 +70,7 @@ namespace Chummer
         private XmlNode _oldSkillGroupBackup;
         private string _strFileName = string.Empty;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
-        private string _strSettingsFileName = "default.xml";
+        private string _strSettingsFileName = "standard.xml";
         private bool _blnIgnoreRules;
         private int _intKarma;
         private int _intTotalKarma;
@@ -198,7 +198,6 @@ namespace Chummer
         private readonly List<string> _lstPrioritySkills = new List<string>();
         private decimal _decMaxNuyen;
         private int _intMaxKarma;
-        private int _intContactMultiplier;
 
         // Lists.
         private readonly List<string> _lstSources = new List<string>();
@@ -278,7 +277,8 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            Options = new CharacterOptions(this);
+            Options = new CharacterOptions();
+            Options.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
             AttributeSection.Reset();
             AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
@@ -735,9 +735,6 @@ namespace Chummer
                     new DependencyGraphNode<string>(nameof(DisplayCareerKarma),
                         new DependencyGraphNode<string>(nameof(CareerKarma))
                     ),
-                    new DependencyGraphNode<string>(nameof(ContactPoints),
-                        new DependencyGraphNode<string>(nameof(ContactMultiplier))
-                    ),
                     new DependencyGraphNode<string>(nameof(StreetCredTooltip),
                         new DependencyGraphNode<string>(nameof(TotalStreetCred),
                             new DependencyGraphNode<string>(nameof(StreetCred)),
@@ -938,6 +935,7 @@ namespace Chummer
             INT.PropertyChanged += RefreshINTDependentProperties;
             LOG.PropertyChanged += RefreshLOGDependentProperties;
             WIL.PropertyChanged += RefreshWILDependentProperties;
+            EDG.PropertyChanged += RefreshEDGDependentProperties;
             MAG.PropertyChanged += RefreshMAGDependentProperties;
             RES.PropertyChanged += RefreshRESDependentProperties;
             DEP.PropertyChanged += RefreshDEPDependentProperties;
@@ -945,16 +943,51 @@ namespace Chummer
             // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
             AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged += RefreshMAGAdeptDependentProperties;
         }
+        private void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e?.PropertyName)
+            {
+                case nameof(CharacterOptions.AllowInitiationInCreateMode):
+                    OnPropertyChanged(nameof(AddInitiationsAllowed));
+                    break;
+                case nameof(CharacterOptions.MysAdeptAllowPPCareer):
+                    OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
+                    break;
+                case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
+                    OnPropertyChanged(nameof(UseMysticAdeptPPs));
+                    break;
+                case nameof(CharacterOptions.ContactPointsExpression):
+                    OnPropertyChanged(nameof(ContactPoints));
+                    break;
+                case nameof(CharacterOptions.SpecialKarmaCostBasedOnShownValue):
+                    RefreshEssenceLossImprovements();
+                    break;
+                case nameof(CharacterOptions.NuyenFormat):
+                    OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen));
+                    break;
+                case nameof(CharacterOptions.EssenceFormat):
+                case nameof(CharacterOptions.DontRoundEssenceInternally):
+                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(Essence));
+                    break;
+                case nameof(CharacterOptions.UnrestrictedNuyen):
+                    OnPropertyChanged(nameof(TotalNuyenMaximumBP));
+                    break;
+                case nameof(CharacterOptions.KarmaMysticAdeptPowerPoint):
+                    OnPropertyChanged(nameof(CanAffordCareerPP));
+                    break;
+            }
+        }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
                 OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
                     nameof(CurrentRunningRateString),
                     nameof(CurrentSprintingRateString));
             }
         }
+
         private void ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Move)
@@ -1899,8 +1932,6 @@ namespace Chummer
                     objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
                     // <maxkarma />
                     objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <contactmultiplier />
-                    objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <bannedwaregrades >
                     objWriter.WriteStartElement("bannedwaregrades");
@@ -2785,7 +2816,6 @@ namespace Chummer
                         if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) ||
                             _decMaxNuyen == 0)
                             _decMaxNuyen = 25;
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
                         if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) ||
@@ -4184,32 +4214,6 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_dwarffix");
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_char_cfix", loadActivity))
-                    {
-                        // load issue where the contact multiplier was set to 0
-                        if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
-                        {
-                            XmlNode objXmlGameplayOption = LoadData("gameplayoptions.xml")
-                                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
-                                                  _strGameplayOption +
-                                                  "\"]");
-                            if (objXmlGameplayOption != null)
-                            {
-                                string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                                string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                                string strContactMultiplier = Options.FreeContactsMultiplierEnabled
-                                    ? Options.FreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo)
-                                    : objXmlGameplayOption["contactmultiplier"]?.InnerText;
-                                _intMaxKarma = Convert.ToInt32(strKarma, GlobalOptions.InvariantCultureInfo);
-                                _decMaxNuyen = Convert.ToDecimal(strNuyen, GlobalOptions.InvariantCultureInfo);
-                                _intContactMultiplier = Convert.ToInt32(strContactMultiplier, GlobalOptions.InvariantCultureInfo);
-                                _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
-                            }
-                        }
-
-                        //Timekeeper.Finish("load_char_cfix");
-                    }
-
                     using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", loadActivity))
                     {
                         //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
@@ -4397,8 +4401,6 @@ namespace Chummer
             objWriter.WriteElementString("maxkarma", MaxKarma.ToString(objCulture));
             // <maxnuyen />
             objWriter.WriteElementString("maxnuyen", MaxNuyen.ToString(Options.NuyenFormat, objCulture));
-            // <contactmultiplier />
-            objWriter.WriteElementString("contactmultiplier", ContactMultiplier.ToString(objCulture));
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", MetatypePriority);
             // <priorityattributes />
@@ -7378,22 +7380,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's contact point multiplier.
-        /// </summary>
-        public int ContactMultiplier
-        {
-            get => _intContactMultiplier;
-            set
-            {
-                if(_intContactMultiplier != value)
-                {
-                    _intContactMultiplier = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
         /// Character's Metatype Priority.
         /// </summary>
         [HubTag]
@@ -8067,8 +8053,18 @@ namespace Chummer
             {
                 if(_intCachedContactPoints == int.MinValue)
                 {
-                    _intCachedContactPoints = (Options.UseTotalValueForFreeContacts ? CHA.TotalValue : CHA.Value) *
-                                              ContactMultiplier;
+                    string strExpression = Options.ContactPointsExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        _intCachedContactPoints = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                    }
+                    else
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int _intCachedContactPoints);
                 }
 
                 return _intCachedContactPoints;
@@ -15025,7 +15021,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitPhysical),
                     nameof(DamageResistancePool),
                     nameof(LiftAndCarry),
                     nameof(FatigueResist),
@@ -15039,7 +15037,16 @@ namespace Chummer
                     nameof(SpellDefenseIndirectSoak),
                     nameof(SpellDefenseDirectSoakPhysical),
                     nameof(SpellDefenseDecreaseBOD),
-                    nameof(SpellDefenseManipulationPhysical));
+                    nameof(SpellDefenseManipulationPhysical)
+                };
+                if (Options.ContactPointsExpression.Contains("{BOD}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
@@ -15052,7 +15059,18 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnPropertyChanged(nameof(SpellDefenseDecreaseAGI));
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(SpellDefenseDecreaseAGI)
+                };
+                if (Options.ContactPointsExpression.Contains("{AGI}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
@@ -15060,11 +15078,22 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitPhysical),
                     nameof(InitiativeValue),
                     nameof(Dodge),
                     nameof(SpellDefenseDecreaseREA),
-                    nameof(Surprise));
+                    nameof(Surprise)
+                };
+                if (Options.ContactPointsExpression.Contains("{REA}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
@@ -15074,10 +15103,21 @@ namespace Chummer
             {
                 // Encumbrance is only affected by STR.TotalValue when it comes to attributes
                 RefreshEncumbrance();
-                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitPhysical),
                     nameof(LiftAndCarry),
                     nameof(SpellDefenseDecreaseSTR),
-                    nameof(SpellDefenseManipulationPhysical));
+                    nameof(SpellDefenseManipulationPhysical)
+                };
+                if (Options.ContactPointsExpression.Contains("{STR}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
@@ -15085,23 +15125,21 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                if(Options.UseTotalValueForFreeContacts)
-                    OnMultiplePropertyChanged(nameof(ContactPoints),
-                        nameof(LimitSocial),
-                        nameof(Composure),
-                        nameof(JudgeIntentions),
-                        nameof(JudgeIntentionsResist),
-                        nameof(SpellDefenseDecreaseCHA));
-                else
-                    OnMultiplePropertyChanged(nameof(LimitSocial),
-                        nameof(Composure),
-                        nameof(JudgeIntentions),
-                        nameof(JudgeIntentionsResist),
-                        nameof(SpellDefenseDecreaseCHA));
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitSocial),
+                    nameof(Composure),
+                    nameof(JudgeIntentions),
+                    nameof(JudgeIntentionsResist),
+                    nameof(SpellDefenseDecreaseCHA)
+                };
+                if (Options.ContactPointsExpression.Contains("{CHA}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.Value))
             {
-                if(!Options.UseTotalValueForFreeContacts)
+                if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
             }
         }
@@ -15110,7 +15148,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitMental),
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitMental),
                     nameof(JudgeIntentions),
                     nameof(InitiativeValue),
                     nameof(AstralInitiativeValue),
@@ -15120,7 +15160,16 @@ namespace Chummer
                     nameof(Dodge),
                     nameof(SpellDefenseDecreaseINT),
                     nameof(SpellDefenseIllusionPhysical),
-                    nameof(Surprise));
+                    nameof(Surprise)
+                };
+                if (Options.ContactPointsExpression.Contains("{INT}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
@@ -15128,7 +15177,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitMental),
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitMental),
                     nameof(Memory),
                     nameof(PsychologicalAddictionResistFirstTime),
                     nameof(PsychologicalAddictionResistAlreadyAddicted),
@@ -15136,7 +15187,16 @@ namespace Chummer
                     nameof(SpellDefenseDecreaseLOG),
                     nameof(SpellDefenseIllusionMana),
                     nameof(SpellDefenseIllusionPhysical),
-                    nameof(SpellDefenseManipulationMental));
+                    nameof(SpellDefenseManipulationMental)
+                };
+                if (Options.ContactPointsExpression.Contains("{LOG}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
@@ -15144,7 +15204,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitSocial),
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(LimitSocial),
                     nameof(LimitMental),
                     nameof(Composure),
                     nameof(Memory),
@@ -15169,7 +15231,30 @@ namespace Chummer
                     nameof(SpellDefenseDecreaseLOG),
                     nameof(SpellDefenseDecreaseWIL),
                     nameof(SpellDefenseIllusionMana),
-                    nameof(SpellDefenseManipulationMental));
+                    nameof(SpellDefenseManipulationMental)
+                };
+                if (Options.ContactPointsExpression.Contains("{WIL}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+            }
+        }
+
+        public void RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (Options.ContactPointsExpression.Contains("{EDG}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
@@ -15184,23 +15269,27 @@ namespace Chummer
                         MysticAdeptPowerPoints = intMAGTotalValue;
                 }
 
-                HashSet<string> setPropertiesChanged = new HashSet<string>();
+                List<string> lstProperties = new List<string>();
                 if(Options.SpiritForceBasedOnTotalMAG)
-                    setPropertiesChanged.Add(nameof(MaxSpiritForce));
+                    lstProperties.Add(nameof(MaxSpiritForce));
                 if(MysAdeptAllowPPCareer)
-                    setPropertiesChanged.Add(nameof(CanAffordCareerPP));
+                    lstProperties.Add(nameof(CanAffordCareerPP));
                 if(!UseMysticAdeptPPs && MAG == MAGAdept)
-                    setPropertiesChanged.Add(nameof(PowerPointsTotal));
+                    lstProperties.Add(nameof(PowerPointsTotal));
                 if (AnyPowerAdeptWayDiscountEnabled)
-                {
-                    setPropertiesChanged.Add(nameof(AllowAdeptWayPowerDiscount));
-                }
-                OnMultiplePropertyChanged(setPropertiesChanged.ToArray());
+                    lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                if (Options.ContactPointsExpression.Contains("{MAG}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.Value))
             {
-                if(!Options.SpiritForceBasedOnTotalMAG)
-                    OnPropertyChanged(nameof(MaxSpiritForce));
+                List<string> lstProperties = new List<string>();
+                if (!Options.SpiritForceBasedOnTotalMAG)
+                    lstProperties.Add(nameof(MaxSpiritForce));
+                if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
             }
         }
 
@@ -15211,21 +15300,53 @@ namespace Chummer
 
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                if(!UseMysticAdeptPPs)
-                    OnPropertyChanged(nameof(PowerPointsTotal));
+                List<string> lstProperties = new List<string>();
+                if (!UseMysticAdeptPPs)
+                    lstProperties.Add(nameof(MaxSpiritForce));
+                if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
             }
         }
 
         public void RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(MaxSpriteLevel));
+            {
+                List<string> lstProperties = new List<string>
+                {
+                    nameof(MaxSpriteLevel)
+                };
+                if (Options.ContactPointsExpression.Contains("{RES}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+            }
         }
 
         public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if(IsAI && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
+            else if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (Options.ContactPointsExpression.Contains("{DEP}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+            }
         }
 
         public void RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e)
@@ -16068,9 +16189,6 @@ namespace Chummer
                                 foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
                                     BannedWareGrades.Add(xmlNode.InnerText);
 
-                                if (!Options.FreeContactsMultiplierEnabled)
-                                    _intContactMultiplier =
-                                        Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
                                 _intGameplayOptionQualityLimit =
                                     _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText, GlobalOptions.InvariantCultureInfo);
                                 _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(
@@ -17568,30 +17686,6 @@ namespace Chummer
                         }
 
                         //Timekeeper.Finish("load_char_unarmed");
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_char_cfix", op_load))
-                    {
-                        // load issue where the contact multiplier was set to 0
-                        if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
-                        {
-                            XmlNode objXmlGameplayOption = LoadData("gameplayoptions.xml")
-                                .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{_strGameplayOption}\"]");
-                            if (objXmlGameplayOption != null)
-                            {
-                                string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                                string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                                string strContactMultiplier = Options.FreeContactsMultiplierEnabled
-                                    ? Options.FreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo)
-                                    : objXmlGameplayOption["contactmultiplier"]?.InnerText;
-                                _intMaxKarma = Convert.ToInt32(strKarma, GlobalOptions.InvariantCultureInfo);
-                                _decMaxNuyen = Convert.ToDecimal(strNuyen, GlobalOptions.InvariantCultureInfo);
-                                _intContactMultiplier = Convert.ToInt32(strContactMultiplier, GlobalOptions.InvariantCultureInfo);
-                                _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
-                            }
-                        }
-
-                        //Timekeeper.Finish("load_char_cfix");
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", op_load))

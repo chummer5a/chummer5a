@@ -2989,7 +2989,7 @@
     <bioware>
       <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
       <name>Immunization</name>
-      <limit>{BODBase}</limit>
+      <limit>{BODUnaug}</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>

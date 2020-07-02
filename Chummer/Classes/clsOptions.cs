@@ -143,7 +143,6 @@ namespace Chummer
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
-        public const string DefaultBuildMethodDefaultValue = "Priority";
         public const string DefaultGameplayOptionDefaultValue = "Standard";
 
         private static bool _blnAutomaticUpdate;
@@ -166,7 +165,6 @@ namespace Chummer
         private static bool _blnCustomDateTimeFormats;
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
-        private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
         private static bool _blnConfirmDelete = true;
@@ -174,6 +172,7 @@ namespace Chummer
         private static bool _blnHideItemsOverAvailLimit = true;
         private static bool _blnAllowHoverIncrement;
         private static bool _blnSearchInCategoryOnly = true;
+        private static bool _blnAllowSkillDiceRolling;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
@@ -385,7 +384,6 @@ namespace Chummer
             if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
-            LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
             LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
@@ -396,6 +394,8 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnHideItemsOverAvailLimit, "hideitemsoveravaillimit");
             LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
             LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
+            // Whether or not dice rolling is allowed for Skills.
+            LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
 
             // Omae Settings.
             // Username.
@@ -623,6 +623,14 @@ namespace Chummer
 
         public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
+        /// <summary>
+        /// Whether or not dice rolling is allowed for Skills.
+        /// </summary>
+        public static bool AllowSkillDiceRolling
+        {
+            get => _blnAllowSkillDiceRolling;
+            set => _blnAllowSkillDiceRolling = value;
+        }
 
         /// <summary>
         /// Whether or not the app should use logging.
@@ -802,15 +810,6 @@ namespace Chummer
         {
             get => _strDefaultCharacterSheet;
             set => _strDefaultCharacterSheet = value;
-        }
-
-        /// <summary>
-        /// Default build method to select when creating a new character
-        /// </summary>
-        public static string DefaultBuildMethod
-        {
-            get => _strDefaultBuildMethod;
-            set => _strDefaultBuildMethod = value;
         }
 
         /// <summary>

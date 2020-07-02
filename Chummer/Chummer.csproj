@@ -314,6 +314,7 @@
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ITranslatable.cs" />
+    <Compile Include="Classes\OptionsManager.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>

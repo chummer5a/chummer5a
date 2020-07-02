@@ -47,7 +47,7 @@ namespace Chummer.UI.Shared.Components
                 _objCharacter = new Character();
             }
 
-            CanEverBeRolled = CanEverBeRolled || _objCharacter?.Options.AllowSkillDiceRolling != false;
+            CanEverBeRolled = CanEverBeRolled || GlobalOptions.AllowSkillDiceRolling;
 
             cmdRoll.SetToolTip(LanguageManager.GetString("Tip_DiceRoller"));
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;

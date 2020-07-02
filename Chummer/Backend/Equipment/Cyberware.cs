@@ -3359,13 +3359,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}",
-                        () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}",
-                        () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
@@ -3755,6 +3749,36 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Unaugmented Cyberlimb Strength (before modifiers).
+        /// </summary>
+        public int StrengthValue
+        {
+            get
+            {
+                int intValue = BaseStrength;
+                if (Children.Count > 0)
+                {
+                    List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
+                    foreach (Cyberware objChild in Children)
+                    {
+                        if (s_StrengthCustomizationStrings.Contains(objChild.Name))
+                            lstCustomizationWare.Add(objChild);
+                    }
+                    if (lstCustomizationWare.Count > 0)
+                    {
+                        intValue = lstCustomizationWare.Count > 1
+                            ? lstCustomizationWare.Max(s => s.Rating)
+                            : lstCustomizationWare.First().Rating;
+                    }
+                }
+
+                return ParentVehicle == null
+                    ? Math.Min(intValue, _objCharacter.STR.TotalMaximum)
+                    : Math.Min(intValue, Math.Max(ParentVehicle.TotalBody * 2, 1));
+            }
+        }
+
+        /// <summary>
         /// Cyberlimb Strength.
         /// </summary>
         public int TotalStrength
@@ -3783,25 +3807,15 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 }
 
-                int intAttribute = BaseStrength;
                 int intBonus = 0;
 
                 if (Children.Count > 0)
                 {
-                    List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
                     List<Cyberware> lstEnhancementWare = new List<Cyberware>(Children.Count);
                     foreach (Cyberware objChild in Children)
                     {
-                        if (s_StrengthCustomizationStrings.Contains(objChild.Name))
-                            lstCustomizationWare.Add(objChild);
                         if (s_StrengthEnhancementStrings.Contains(objChild.Name))
                             lstEnhancementWare.Add(objChild);
-                    }
-                    if (lstCustomizationWare.Count > 0)
-                    {
-                        intAttribute = lstCustomizationWare.Count > 1
-                            ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare.First().Rating;
                     }
                     if (lstEnhancementWare.Count > 0)
                     {
@@ -3817,8 +3831,8 @@ namespace Chummer.Backend.Equipment
                 intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
                 return ParentVehicle == null
-                    ? Math.Min(intAttribute + intBonus, _objCharacter.STR.TotalAugmentedMaximum)
-                    : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
+                    ? Math.Min(StrengthValue + intBonus, _objCharacter.STR.TotalAugmentedMaximum)
+                    : Math.Min(StrengthValue + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
 
@@ -3835,6 +3849,36 @@ namespace Chummer.Backend.Equipment
                     return Math.Max(ParentVehicle.Pilot, 0);
                 // Base Agility for any limb is 3.
                 return 3;
+            }
+        }
+
+        /// <summary>
+        /// Unaugmented Cyberlimb Agility (before modifiers).
+        /// </summary>
+        public int AgilityValue
+        {
+            get
+            {
+                int intValue = BaseAgility;
+                if (Children.Count > 0)
+                {
+                    List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
+                    foreach (Cyberware objChild in Children)
+                    {
+                        if (s_StrengthCustomizationStrings.Contains(objChild.Name))
+                            lstCustomizationWare.Add(objChild);
+                    }
+                    if (lstCustomizationWare.Count > 0)
+                    {
+                        intValue = lstCustomizationWare.Count > 1
+                            ? lstCustomizationWare.Max(s => s.Rating)
+                            : lstCustomizationWare.First().Rating;
+                    }
+                }
+
+                return ParentVehicle == null
+                    ? Math.Min(intValue, _objCharacter.AGI.TotalMaximum)
+                    : Math.Min(intValue, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
 
@@ -3867,25 +3911,15 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 }
 
-                int intAttribute = BaseAgility;
                 int intBonus = 0;
 
                 if (Children.Count > 0)
                 {
-                    List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
                     List<Cyberware> lstEnhancementWare = new List<Cyberware>(Children.Count);
                     foreach (Cyberware objChild in Children)
                     {
-                        if (s_AgilityCustomizationStrings.Contains(objChild.Name))
-                            lstCustomizationWare.Add(objChild);
                         if (s_AgilityEnhancementStrings.Contains(objChild.Name))
                             lstEnhancementWare.Add(objChild);
-                    }
-                    if (lstCustomizationWare.Count > 0)
-                    {
-                        intAttribute = lstCustomizationWare.Count > 1
-                            ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare.First().Rating;
                     }
                     if (lstEnhancementWare.Count > 0)
                     {
@@ -3901,8 +3935,8 @@ namespace Chummer.Backend.Equipment
                 intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
                 return ParentVehicle == null
-                    ? Math.Min(intAttribute + intBonus, _objCharacter.AGI.TotalAugmentedMaximum)
-                    : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
+                    ? Math.Min(AgilityValue + intBonus, _objCharacter.AGI.TotalAugmentedMaximum)
+                    : Math.Min(AgilityValue + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
             }
         }
 

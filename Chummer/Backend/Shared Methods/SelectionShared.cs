@@ -177,12 +177,7 @@ namespace Chummer
                 if (strLimitString != bool.FalseString)
                 {
                     StringBuilder objLimitString = new StringBuilder(strLimitString);
-                    foreach (string strAttribute in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objLoopAttribute = objCharacter.GetAttribute(strAttribute);
-                        objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                        objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
+                    objCharacter.AttributeSection.ProcessAttributesInXPath(objLimitString, strLimitString);
                     foreach (string strLimb in Character.LimbStrings)
                     {
                         objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString(GlobalOptions.InvariantCultureInfo));

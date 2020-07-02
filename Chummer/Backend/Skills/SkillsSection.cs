@@ -24,6 +24,7 @@ using System.Linq;
 using System.Xml;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -40,8 +41,21 @@ namespace Chummer.Backend.Skills
             _objCharacter = character;
             if (_objCharacter != null)
             {
-                _objCharacter.LOG.PropertyChanged += UpdateKnowledgePointsFromAttributes;
-                _objCharacter.INT.PropertyChanged += UpdateKnowledgePointsFromAttributes;
+                _objCharacter.Options.PropertyChanged += OptionsOnPropertyChanged;
+                _objCharacter.BOD.PropertyChanged += RefreshBODDependentProperties;
+                _objCharacter.AGI.PropertyChanged += RefreshAGIDependentProperties;
+                _objCharacter.REA.PropertyChanged += RefreshREADependentProperties;
+                _objCharacter.STR.PropertyChanged += RefreshSTRDependentProperties;
+                _objCharacter.CHA.PropertyChanged += RefreshCHADependentProperties;
+                _objCharacter.LOG.PropertyChanged += RefreshLOGDependentProperties;
+                _objCharacter.INT.PropertyChanged += RefreshINTDependentProperties;
+                _objCharacter.WIL.PropertyChanged += RefreshWILDependentProperties;
+                _objCharacter.EDG.PropertyChanged += RefreshEDGDependentProperties;
+                _objCharacter.MAG.PropertyChanged += RefreshMAGDependentProperties;
+                _objCharacter.RES.PropertyChanged += RefreshRESDependentProperties;
+                _objCharacter.DEP.PropertyChanged += RefreshDEPDependentProperties;
+                // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
+                _objCharacter.AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged += RefreshMAGAdeptDependentProperties;
             }
         }
 
@@ -49,10 +63,29 @@ namespace Chummer.Backend.Skills
         {
             if (_objCharacter != null)
             {
-                _objCharacter.LOG.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
-                _objCharacter.INT.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
+                _objCharacter.Options.PropertyChanged -= OptionsOnPropertyChanged;
+                _objCharacter.BOD.PropertyChanged -= RefreshBODDependentProperties;
+                _objCharacter.AGI.PropertyChanged -= RefreshAGIDependentProperties;
+                _objCharacter.REA.PropertyChanged -= RefreshREADependentProperties;
+                _objCharacter.STR.PropertyChanged -= RefreshSTRDependentProperties;
+                _objCharacter.CHA.PropertyChanged -= RefreshCHADependentProperties;
+                _objCharacter.LOG.PropertyChanged -= RefreshLOGDependentProperties;
+                _objCharacter.INT.PropertyChanged -= RefreshINTDependentProperties;
+                _objCharacter.WIL.PropertyChanged -= RefreshWILDependentProperties;
+                _objCharacter.EDG.PropertyChanged -= RefreshEDGDependentProperties;
+                _objCharacter.MAG.PropertyChanged -= RefreshMAGDependentProperties;
+                _objCharacter.RES.PropertyChanged -= RefreshRESDependentProperties;
+                _objCharacter.DEP.PropertyChanged -= RefreshDEPDependentProperties;
+                // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
+                _objCharacter.AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged -= RefreshMAGAdeptDependentProperties;
             }
             _dicSkillBackups.Clear();
+        }
+
+        private void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterOptions.KnowledgePointsExpression))
+                OnPropertyChanged(nameof(KnowledgeSkillPoints));
         }
 
         [NotifyPropertyChangedInvocator]
@@ -77,6 +110,8 @@ namespace Chummer.Backend.Skills
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
+            if (lstNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
+                _intCachedKnowledgePoints = int.MinValue;
 
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
@@ -885,6 +920,8 @@ namespace Chummer.Backend.Skills
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
+        private int _intCachedKnowledgePoints = int.MinValue;
+
         /// <summary>
         /// Number of free Knowledge Skill Points the character has.
         /// </summary>
@@ -892,19 +929,25 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                int fromAttributes = _objCharacter.Options.FreeKnowledgeMultiplier;
-                // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-                if (_objCharacter.Options.UseTotalValueForFreeKnowledge)
+                if (_intCachedKnowledgePoints == int.MinValue)
                 {
-                    fromAttributes *= (_objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue);
-                }
-                else
-                {
-                    fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
+                    string strExpression = _objCharacter.Options.KnowledgePointsExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        _intCachedKnowledgePoints = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                    }
+                    else
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int _intCachedKnowledgePoints);
+
+                    _intCachedKnowledgePoints += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
                 }
 
-                int val = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
-                return fromAttributes + val;
+                return _intCachedKnowledgePoints;
             }
         }
 
@@ -1134,12 +1177,188 @@ namespace Chummer.Backend.Skills
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void UpdateKnowledgePointsFromAttributes(object sender, PropertyChangedEventArgs e)
+        public void RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if ((_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.TotalValue)) ||
-                 (!_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.Value)))
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnPropertyChanged(nameof(KnowledgeSkillPoints));
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{BOD}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshAGIDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{AGI}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshREADependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{REA}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshSTRDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{STR}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshCHADependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{CHA}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshINTDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{INT}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshLOGDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{LOG}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshWILDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{WIL}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{EDG}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshMAGDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{MAG}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (_objCharacter.MAG == _objCharacter.MAGAdept)
+                return;
+
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{RES}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{DEP}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (_objCharacter.Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
             }
         }
 
