@@ -12,7 +12,7 @@
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
-            <xsl:call-template name="PreserveLineBreaks">
+            <xsl:call-template name="PreserveHtml">
               <xsl:with-param name="text" select="notes"/>
             </xsl:call-template>
           </td></tr>
@@ -34,7 +34,7 @@
             </td></tr>
           </xsl:if>
           <tr><td colspan="100%" class="notesrow">
-            <xsl:call-template name="PreserveLineBreaks">
+            <xsl:call-template name="PreserveHtml">
               <xsl:with-param name="text" select="gamenotes"/>
             </xsl:call-template>
           </td></tr>
@@ -54,7 +54,7 @@
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
-            <xsl:call-template name="PreserveLineBreaks">
+            <xsl:call-template name="PreserveHtml">
               <xsl:with-param name="text" select="concept"/>
             </xsl:call-template>
           </td></tr>
@@ -74,7 +74,7 @@
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
-            <xsl:call-template name="PreserveLineBreaks">
+            <xsl:call-template name="PreserveHtml">
               <xsl:with-param name="text" select="description"/>
             </xsl:call-template>
           </td></tr>
@@ -94,7 +94,7 @@
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
-            <xsl:call-template name="PreserveLineBreaks">
+            <xsl:call-template name="PreserveHtml">
               <xsl:with-param name="text" select="background"/>
             </xsl:call-template>
           </td></tr>

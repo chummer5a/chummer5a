@@ -17,6 +17,7 @@
   <xsl:include href="xt.Lifestyles.xslt"/>
   <xsl:include href="xt.MovementRate.xslt"/>
   <xsl:include href="xt.Notes.xslt"/>
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xt.Qualities.xslt"/>
   <xsl:include href="xt.RangedWeapons.xslt"/>
