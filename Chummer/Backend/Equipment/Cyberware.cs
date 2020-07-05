@@ -3155,7 +3155,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (PrototypeTranshuman)
                     return 0;
-                return CalculatedESS;
+                return CalculatedESSPrototypeInvariant;
             }
         }
 
