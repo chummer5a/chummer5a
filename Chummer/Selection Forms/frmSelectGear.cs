@@ -225,7 +225,7 @@ namespace Chummer
                     }
                     if (strName.StartsWith("Nuyen", StringComparison.Ordinal))
                     {
-                        int intDecimalPlaces = _objCharacter.Options.NuyenDecimals;
+                        int intDecimalPlaces = _objCharacter.Options.MaxNuyenDecimals;
                         if (intDecimalPlaces <= 0)
                         {
                             nudGearQty.DecimalPlaces = 0;

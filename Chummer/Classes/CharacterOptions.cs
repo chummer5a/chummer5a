@@ -34,7 +34,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class CharacterOptions : INotifyPropertyChanged
+    public class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -109,9 +109,10 @@ namespace Chummer
         private bool _blnReverseAttributePriorityOrder;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
-        private bool _increasedImprovedAbilityMultiplier;
-        private bool _allowFreeGrids;
+        private bool _blnIncreasedImprovedAbilityMultiplier;
+        private bool _blnAllowFreeGrids;
         private bool _blnAllowTechnomancerSchooling;
+        private bool _blnCyberlimbAttributeBonusCapOverride;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
         private int _intCyberlimbAttributeBonusCap = 4;
@@ -188,7 +189,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private readonly HashSet<string> _lstBooks = new HashSet<string>();
+        private readonly HashSet<string> _lstBooks = new HashSet<string> {"SR5"};
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -215,8 +216,10 @@ namespace Chummer
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(NuyenDecimals)))
-                _intCachedNuyenDecimals = -1;
+            if (lstNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
+                _intCachedMaxNuyenDecimals = -1;
+            if (lstNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
+                _intCachedMinNuyenDecimals = -1;
             if (lstNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
                 _intCachedEssenceDecimals = -1;
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
@@ -230,11 +233,25 @@ namespace Chummer
         //This tree keeps track of dependencies
         private static readonly DependencyGraph<string> s_CharacterOptionsDependencyGraph =
             new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(NuyenDecimals),
-                    new DependencyGraphNode<string>(nameof(NuyenFormat))
+                new DependencyGraphNode<string>(nameof(EnabledCustomDataDirectoryPaths),
+                    new DependencyGraphNode<string>(nameof(CustomDataDirectoryNames))
+                ),
+                new DependencyGraphNode<string>(nameof(EnabledCustomDataDirectoryInfos),
+                    new DependencyGraphNode<string>(nameof(CustomDataDirectoryNames))
+                ),
+                new DependencyGraphNode<string>(nameof(MaxNuyenDecimals),
+                    new DependencyGraphNode<string>(nameof(NuyenFormat)),
+                    new DependencyGraphNode<string>(nameof(MinNuyenDecimals))
+                ),
+                new DependencyGraphNode<string>(nameof(MinNuyenDecimals),
+                    new DependencyGraphNode<string>(nameof(NuyenFormat)),
+                    new DependencyGraphNode<string>(nameof(MaxNuyenDecimals))
                 ),
                 new DependencyGraphNode<string>(nameof(EssenceDecimals),
                     new DependencyGraphNode<string>(nameof(EssenceFormat))
+                ),
+                new DependencyGraphNode<string>(nameof(BuiltInOption),
+                    new DependencyGraphNode<string>(nameof(SourceId))
                 )
             );
 
@@ -255,7 +272,7 @@ namespace Chummer
             // Copy over via properties in order to trigger OnPropertyChanged as appropriate
             PropertyInfo[] aobjProperties = GetType().GetProperties();
             PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
-            foreach (PropertyInfo objProperty in GetType().GetProperties())
+            foreach (PropertyInfo objProperty in GetType().GetProperties().Where(x => x.CanRead && x.CanWrite))
             {
                 PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
                 if (objOtherProperty != null && objProperty.PropertyType.IsAssignableFrom(objOtherProperty.PropertyType))
@@ -263,6 +280,8 @@ namespace Chummer
                     objProperty.SetValue(aobjProperties, objOtherProperty.GetValue(objOtherProperty));
                 }
             }
+
+            OnPropertyChanged(nameof(SourceId));
 
             _dicCustomDataDirectoryNames.Clear();
             foreach (var kvpOther in objOther.CustomDataDirectoryNames)
@@ -272,11 +291,55 @@ namespace Chummer
             RecalculateEnabledCustomDataDirectories();
 
             _lstBooks.Clear();
+            _lstBooks.Add("SR5");
             foreach (string strBook in objOther._lstBooks)
             {
                 _lstBooks.Add(strBook);
             }
             RecalculateBookXPath();
+        }
+
+        public bool Equals(CharacterOptions objOther)
+        {
+            if (objOther == null)
+                return false;
+            if (_guiSourceId != objOther._guiSourceId)
+                return false;
+            if (_strFileName != objOther._strFileName)
+                return false;
+
+            PropertyInfo[] aobjProperties = GetType().GetProperties();
+            PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
+            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
+            {
+                PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
+                if (objOtherProperty == null || objProperty.GetValue(objProperty) != objOtherProperty.GetValue(objOtherProperty))
+                {
+                    return false;
+                }
+            }
+            if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
+                return false;
+
+            foreach (var kvpOther in objOther.CustomDataDirectoryNames)
+            {
+                if (_dicCustomDataDirectoryNames.TryGetValue(kvpOther.Key, out Tuple<int, bool> objMyValue))
+                {
+                    if (objMyValue.Item1 != kvpOther.Value.Item1 || objMyValue.Item2 != kvpOther.Value.Item2)
+                        return false;
+                }
+                else if (kvpOther.Value.Item2)
+                {
+                    return false;
+                }
+            }
+
+            if (_dicCustomDataDirectoryNames.Any(x => x.Value.Item2 && !objOther.CustomDataDirectoryNames.ContainsKey(x.Key)))
+                return false;
+
+            if (_lstBooks.Union(objOther._lstBooks).Count() != _lstBooks.Count)
+                return false;
+            return true;
         }
 
         /// <summary>
@@ -460,11 +523,13 @@ namespace Chummer
                     // <usecalculatedpublicawareness />
                     objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString(GlobalOptions.InvariantCultureInfo));
                     // <increasedimprovedabilitymodifier />
-                    objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("increasedimprovedabilitymodifier", _blnIncreasedImprovedAbilityMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowfreegrids />
-                    objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("allowfreegrids", _blnAllowFreeGrids.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowtechnomancerschooling />
                     objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <cyberlimbattributebonuscapoverride />
+                    objWriter.WriteElementString("cyberlimbattributebonuscapoverride", _blnCyberlimbAttributeBonusCapOverride.ToString(GlobalOptions.InvariantCultureInfo));
                     // <cyberlimbattributebonuscap />
                     objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalOptions.InvariantCultureInfo));
                     // <clampattributeminimum />
@@ -805,6 +870,20 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
                 EssenceDecimals = intTemp;
             }
+            else
+            {
+                int intDecimalPlaces = _strEssenceFormat.IndexOf('.');
+                if (intDecimalPlaces < 2)
+                {
+                    if (intDecimalPlaces == -1)
+                        _strEssenceFormat += ".00";
+                    else
+                    {
+                        for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
+                            _strEssenceFormat += '0';
+                    }
+                }
+            }
             // Whether or not Capacity limits should be enforced.
             objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
             // Whether or not Recoil modifiers are restricted (AR 148).
@@ -842,13 +921,15 @@ namespace Chummer
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
             // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
-            objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _increasedImprovedAbilityMultiplier);
+            objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _blnIncreasedImprovedAbilityMultiplier);
             // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
-            objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _allowFreeGrids);
+            objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _blnAllowFreeGrids);
             // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
             objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
             // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
             objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+            if (!objXmlNode.TryGetBoolFieldQuickly("cyberlimbattributebonuscapoverride", ref _blnCyberlimbAttributeBonusCapOverride))
+                _blnCyberlimbAttributeBonusCapOverride = _intCyberlimbAttributeBonusCap == 4;
             // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
             objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
             // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
@@ -915,6 +996,7 @@ namespace Chummer
 
             // Load Books.
             _lstBooks.Clear();
+            _lstBooks.Add("SR5");
             foreach (XPathNavigator xmlBook in objXmlNode.Select("books/book"))
                 _lstBooks.Add(xmlBook.Value);
             RecalculateBookXPath();
@@ -1196,6 +1278,8 @@ namespace Chummer
 
         public string SourceId => _guiSourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
 
+        public bool BuiltInOption => _guiSourceId != Guid.Empty;
+
         /// <summary>
         /// Whether or not all Active Skills with a total score higher than 0 should be printed.
         /// </summary>
@@ -1272,6 +1356,8 @@ namespace Chummer
                 {
                     _blnPrintExpenses = value;
                     OnPropertyChanged();
+                    if (!value)
+                        PrintFreeExpenses = true;
                 }
             }
         }
@@ -1547,6 +1633,8 @@ namespace Chummer
                 {
                     _blnDroneArmorMultiplierEnabled = value;
                     OnPropertyChanged();
+                    if (!value)
+                        DroneArmorMultiplier = 2;
                 }
             }
         }
@@ -1603,6 +1691,11 @@ namespace Chummer
         /// Sourcebooks.
         /// </summary>
         public ICollection<string> Books => _lstBooks;
+
+        /// <summary>
+        /// File name of the option (if it is not a built-in one).
+        /// </summary>
+        public string FileName => _strFileName;
 
         /// <summary>
         /// Setting name.
@@ -1744,6 +1837,8 @@ namespace Chummer
                 {
                     _blnExceedPositiveQualities = value;
                     OnPropertyChanged();
+                    if (!value)
+                        ExceedPositiveQualitiesCostDoubled = false;
                 }
             }
         }
@@ -1776,6 +1871,8 @@ namespace Chummer
                 {
                     _blnExceedNegativeQualities = value;
                     OnPropertyChanged();
+                    if (!value)
+                        ExceedNegativeQualitiesLimit = false;
                 }
             }
         }
@@ -1860,16 +1957,16 @@ namespace Chummer
             }
         }
 
-        private int _intCachedNuyenDecimals = -1;
+        private int _intCachedMaxNuyenDecimals = -1;
         /// <summary>
-        /// Number of decimal places to round to when displaying nuyen values.
+        /// Maximum number of decimal places to round to when displaying nuyen values.
         /// </summary>
-        public int NuyenDecimals
+        public int MaxNuyenDecimals
         {
             get
             {
-                if (_intCachedNuyenDecimals >= 0)
-                    return _intCachedNuyenDecimals;
+                if (_intCachedMaxNuyenDecimals >= 0)
+                    return _intCachedMaxNuyenDecimals;
                 string strNuyenFormat = NuyenFormat;
                 int intDecimalPlaces = strNuyenFormat.IndexOf('.');
                 if (intDecimalPlaces == -1)
@@ -1877,22 +1974,19 @@ namespace Chummer
                 else
                     intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
 
-                return _intCachedNuyenDecimals = intDecimalPlaces;
+                return _intCachedMaxNuyenDecimals = intDecimalPlaces;
             }
             set
             {
-                int intCurrentNuyenDecimals = NuyenDecimals;
                 int intNewNuyenDecimals = Math.Max(value, 0);
+                if (MinNuyenDecimals > intNewNuyenDecimals)
+                    MinNuyenDecimals = intNewNuyenDecimals;
+                if (intNewNuyenDecimals == 0)
+                    return; // Already taken care of by MinNuyenDecimals
+                int intCurrentNuyenDecimals = MaxNuyenDecimals;
                 if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                 {
-                    if (intNewNuyenDecimals > 0)
-                        NuyenFormat = NuyenFormat.Substring(0, NuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals));
-                    else
-                    {
-                        int intDecimalPlaces = NuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces != -1)
-                            NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
-                    }
+                    NuyenFormat = NuyenFormat.Substring(0, NuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals));
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
@@ -1900,21 +1994,65 @@ namespace Chummer
                     if (intCurrentNuyenDecimals == 0)
                     {
                         objNuyenFormat.Append(".");
-                        for (int i = 0; i < intNewNuyenDecimals; ++i)
-                        {
-                            objNuyenFormat.Append("0");
-                        }
                     }
-                    else
+                    for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
                     {
-                        string strDecimalTypeToAdd = string.IsNullOrEmpty(NuyenFormat) ? "0" : NuyenFormat[NuyenFormat.Length - 1].ToString(GlobalOptions.InvariantCultureInfo);
-                        intNewNuyenDecimals -= intCurrentNuyenDecimals;
-                        for (int i = 0; i < intNewNuyenDecimals; ++i)
-                        {
-                            objNuyenFormat.Append(strDecimalTypeToAdd);
-                        }
+                        objNuyenFormat.Append("#");
                     }
                     NuyenFormat = objNuyenFormat.ToString();
+                }
+            }
+        }
+
+        private int _intCachedMinNuyenDecimals = -1;
+        /// <summary>
+        /// Minimum number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public int MinNuyenDecimals
+        {
+            get
+            {
+                if (_intCachedMinNuyenDecimals >= 0)
+                    return _intCachedMinNuyenDecimals;
+                string strNuyenFormat = NuyenFormat;
+                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    intDecimalPlaces = 0;
+                else
+                {
+                    int intStartOptionalDecimalPlaces = strNuyenFormat.IndexOf('#', intDecimalPlaces);
+                    if (intStartOptionalDecimalPlaces < 0)
+                        intStartOptionalDecimalPlaces = strNuyenFormat.Length;
+                    intDecimalPlaces = intStartOptionalDecimalPlaces - intDecimalPlaces - 1;
+                }
+
+                return _intCachedMinNuyenDecimals = intDecimalPlaces;
+            }
+            set
+            {
+                int intNewNuyenDecimals = Math.Max(value, 0);
+                if (MaxNuyenDecimals < intNewNuyenDecimals)
+                    MaxNuyenDecimals = intNewNuyenDecimals;
+                int intDecimalPlaces = NuyenFormat.IndexOf('.');
+                if (intNewNuyenDecimals == 0)
+                {
+                    if (intDecimalPlaces != -1)
+                        NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
+                    return;
+                }
+                char[] achrNuyenFormat = NuyenFormat.ToCharArray();
+                int intCurrentNuyenDecimals = MinNuyenDecimals;
+                if (intNewNuyenDecimals < intCurrentNuyenDecimals)
+                {
+                    for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
+                        achrNuyenFormat[i] = '0';
+                    NuyenFormat = new string(achrNuyenFormat);
+                }
+                else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
+                {
+                    for (int i = 1; i < intNewNuyenDecimals; ++i)
+                        achrNuyenFormat[intDecimalPlaces + i] = '0';
+                    NuyenFormat = new string(achrNuyenFormat);
                 }
             }
         }
@@ -1948,31 +2086,17 @@ namespace Chummer
                     return _intCachedEssenceDecimals;
                 string strEssenceFormat = EssenceFormat;
                 int intDecimalPlaces = strEssenceFormat.IndexOf('.');
-                if (intDecimalPlaces == -1)
-                    intDecimalPlaces = 0;
-                else
-                    intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
+                intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
 
                 return _intCachedEssenceDecimals = intDecimalPlaces;
             }
             set
             {
                 int intCurrentEssenceDecimals = EssenceDecimals;
-                int intNewEssenceDecimals = Math.Max(value, 0);
+                int intNewEssenceDecimals = Math.Max(value, 2);
                 if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                 {
-                    if (intNewEssenceDecimals > 0)
-                    {
-                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
-                        if (length < 3) length = 3;
-                        EssenceFormat = EssenceFormat.Substring(0, length);
-                    }
-                    else
-                    {
-                        int intDecimalPlaces = EssenceFormat.IndexOf('.');
-                        if (intDecimalPlaces != -1)
-                            EssenceFormat = EssenceFormat.Substring(0, intDecimalPlaces);
-                    }
+                    EssenceFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals));
                 }
                 else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                 {
@@ -1981,8 +2105,7 @@ namespace Chummer
                     {
                         objEssenceFormat.Append(".");
                     }
-                    intNewEssenceDecimals -= intCurrentEssenceDecimals;
-                    for (int i = 0; i < intNewEssenceDecimals; ++i)
+                    for (int i = intCurrentEssenceDecimals; i < intNewEssenceDecimals; ++i)
                     {
                         objEssenceFormat.Append("0");
                     }
@@ -1999,9 +2122,21 @@ namespace Chummer
             get => _strEssenceFormat;
             set
             {
-                if (_strEssenceFormat != value)
+                string strNewValue = value;
+                int intDecimalPlaces = strNewValue.IndexOf('.');
+                if (intDecimalPlaces < 2)
                 {
-                    _strEssenceFormat = value;
+                    if (intDecimalPlaces == -1)
+                        strNewValue += ".00";
+                    else
+                    {
+                        for (int i = strNewValue.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
+                            strNewValue += '0';
+                    }
+                }
+                if (_strEssenceFormat != strNewValue)
+                {
+                    _strEssenceFormat = strNewValue;
                     OnPropertyChanged();
                 }
             }
@@ -3169,12 +3304,12 @@ namespace Chummer
         /// </summary>
         public bool IncreasedImprovedAbilityMultiplier
         {
-            get => _increasedImprovedAbilityMultiplier;
+            get => _blnIncreasedImprovedAbilityMultiplier;
             set
             {
-                if (_increasedImprovedAbilityMultiplier != value)
+                if (_blnIncreasedImprovedAbilityMultiplier != value)
                 {
-                    _increasedImprovedAbilityMultiplier = value;
+                    _blnIncreasedImprovedAbilityMultiplier = value;
                     OnPropertyChanged();
                 }
             }
@@ -3184,12 +3319,12 @@ namespace Chummer
         /// </summary>
         public bool AllowFreeGrids
         {
-            get => _allowFreeGrids;
+            get => _blnAllowFreeGrids;
             set
             {
-                if (_allowFreeGrids != value)
+                if (_blnAllowFreeGrids != value)
                 {
-                    _allowFreeGrids = value;
+                    _blnAllowFreeGrids = value;
                     OnPropertyChanged();
                 }
             }
@@ -3210,6 +3345,25 @@ namespace Chummer
                 }
             }
         }
+
+        /// <summary>
+        /// Override the maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public bool CyberlimbAttributeBonusCapOverride
+        {
+            get => _blnCyberlimbAttributeBonusCapOverride;
+            set
+            {
+                if (_blnCyberlimbAttributeBonusCapOverride != value)
+                {
+                    _blnCyberlimbAttributeBonusCapOverride = value;
+                    OnPropertyChanged();
+                    if (!value)
+                        CyberlimbAttributeBonusCap = 4;
+                }
+            }
+        }
+
         /// <summary>
         /// Maximum value of bonuses that can affect cyberlimbs.
         /// </summary>

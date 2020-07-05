@@ -4413,7 +4413,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
             {
-                intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
+                intDecimalPlaces = CharacterObjectOptions.MaxNuyenDecimals;
             }
             else if (objGear.Category == "Currency")
             {
@@ -4476,7 +4476,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.MaxNuyenDecimals);
                 // Need a for loop instead of a power system to maintain exact precision
                 for (int i = 0; i < intDecimalPlaces; ++i)
                     decMinimumAmount /= 10.0m;
@@ -4584,7 +4584,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.MaxNuyenDecimals);
                 // Need a for loop instead of a power system to maintain exact precision
                 for (int i = 0; i < intDecimalPlaces; ++i)
                     decMinimumAmount /= 10.0m;
@@ -4664,7 +4664,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.MaxNuyenDecimals);
                 // Need a for loop instead of a power system to maintain exact precision
                 for (int i = 0; i < intDecimalPlaces; ++i)
                     decMinimumAmount /= 10.0m;
@@ -4771,7 +4771,7 @@ namespace Chummer
                 int intDecimalPlaces = 0;
                 if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
+                    intDecimalPlaces = Math.Max(0, CharacterObjectOptions.MaxNuyenDecimals);
                     // Need a for loop instead of a power system to maintain exact precision
                     for (int i = 0; i < intDecimalPlaces; ++i)
                         decMinimumAmount /= 10.0m;
@@ -4872,7 +4872,7 @@ namespace Chummer
             int intDecimalPlaces = 0;
             if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
             {
-                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenDecimals);
+                intDecimalPlaces = Math.Max(0, CharacterObjectOptions.MaxNuyenDecimals);
             }
             else if (objGear.Category == "Currency")
             {
@@ -6235,7 +6235,7 @@ namespace Chummer
                         {
                             if (decMax > 1000000)
                                 decMax = 1000000;
-                            using (frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.NuyenDecimals)
+                            using (frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.MaxNuyenDecimals)
                             {
                                 Minimum = decMin,
                                 Maximum = decMax,

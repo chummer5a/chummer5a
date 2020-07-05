@@ -1613,7 +1613,7 @@ namespace Chummer
                 if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
-                    using (frmCharacterOptions frmOptions = new frmCharacterOptions(CharacterObject))
+                    using (frmCharacterOptions frmOptions = new frmCharacterOptions(CharacterObject.Options))
                         frmOptions.ShowDialog();
                     Cursor = Cursors.Default;
                 }
@@ -4126,7 +4126,7 @@ namespace Chummer
                         {
                             if (decMax > 1000000)
                                 decMax = 1000000;
-                            using (frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.NuyenDecimals)
+                            using (frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.MaxNuyenDecimals)
                             {
                                 Minimum = decMin,
                                 Maximum = decMax,
@@ -10338,7 +10338,7 @@ namespace Chummer
                 nudGearQty.Increment = objGear.CostFor;
                 if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    int intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
+                    int intDecimalPlaces = CharacterObjectOptions.MaxNuyenDecimals;
                     if (intDecimalPlaces <= 0)
                     {
                         nudGearQty.DecimalPlaces = 0;
@@ -11724,7 +11724,7 @@ namespace Chummer
                 nudVehicleGearQty.Enabled = !objGear.IncludedInParent;
                 if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    int intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
+                    int intDecimalPlaces = CharacterObjectOptions.MaxNuyenDecimals;
                     if (intDecimalPlaces <= 0)
                     {
                         nudVehicleGearQty.DecimalPlaces = 0;

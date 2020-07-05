@@ -52,16 +52,18 @@ namespace Chummer
             this.txtPriorities = new System.Windows.Forms.TextBox();
             this.nudSumToTen = new System.Windows.Forms.NumericUpDown();
             this.lblStartingKarma = new System.Windows.Forms.Label();
-            this.lblContactPoints = new Chummer.LabelWithToolTip();
-            this.lblKnowledgePoints = new Chummer.LabelWithToolTip();
-            this.txtContactPoints = new System.Windows.Forms.TextBox();
             this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.lblMaxDR = new System.Windows.Forms.Label();
-            this.txtKnowledgePoints = new System.Windows.Forms.TextBox();
             this.nudStartingKarma = new System.Windows.Forms.NumericUpDown();
             this.nudMaxNuyenKarma = new System.Windows.Forms.NumericUpDown();
             this.flpAllowedCyberwareGrades = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblKnowledgePoints = new Chummer.LabelWithToolTip();
+            this.lblContactPoints = new Chummer.LabelWithToolTip();
+            this.txtKnowledgePoints = new System.Windows.Forms.TextBox();
+            this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
+            this.txtContactPoints = new System.Windows.Forms.TextBox();
+            this.nudQualityKarmaLimit = new System.Windows.Forms.NumericUpDown();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkEnemyKarmaQualityLimit = new System.Windows.Forms.CheckBox();
@@ -276,11 +278,10 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.btnRestoreDefaults = new System.Windows.Forms.Button();
+            this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
-            this.btnSaveAs = new System.Windows.Forms.Button();
-            this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
-            this.nudQualityKarmaLimit = new System.Windows.Forms.NumericUpDown();
+            this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -294,6 +295,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsCyberlimbs.SuspendLayout();
@@ -366,7 +368,6 @@ namespace Chummer
             this.flpDroneArmorMultiplier.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             this.tlpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -398,7 +399,7 @@ namespace Chummer
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(83, 638);
             this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(758, 21);
+            this.cboSetting.Size = new System.Drawing.Size(659, 21);
             this.cboSetting.TabIndex = 1;
             this.cboSetting.TooltipText = "";
             this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
@@ -491,7 +492,7 @@ namespace Chummer
             this.treSourcebook.ShowRootLines = false;
             this.treSourcebook.Size = new System.Drawing.Size(289, 530);
             this.treSourcebook.TabIndex = 1;
-            this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
+            this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treSourcebook_AfterCheck);
             // 
             // flpBasicOptions
             // 
@@ -716,41 +717,6 @@ namespace Chummer
             this.lblStartingKarma.Text = "Starting Karma";
             this.lblStartingKarma.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblContactPoints
-            // 
-            this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblContactPoints.AutoSize = true;
-            this.lblContactPoints.Location = new System.Drawing.Point(23, 164);
-            this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblContactPoints.Name = "lblContactPoints";
-            this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
-            this.lblContactPoints.TabIndex = 0;
-            this.lblContactPoints.Text = "Contact Points";
-            this.lblContactPoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblContactPoints.ToolTipText = "";
-            // 
-            // lblKnowledgePoints
-            // 
-            this.lblKnowledgePoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKnowledgePoints.AutoSize = true;
-            this.lblKnowledgePoints.Location = new System.Drawing.Point(7, 190);
-            this.lblKnowledgePoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKnowledgePoints.Name = "lblKnowledgePoints";
-            this.lblKnowledgePoints.Size = new System.Drawing.Size(92, 13);
-            this.lblKnowledgePoints.TabIndex = 1;
-            this.lblKnowledgePoints.Text = "Knowledge Points";
-            this.lblKnowledgePoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblKnowledgePoints.ToolTipText = "";
-            // 
-            // txtContactPoints
-            // 
-            this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactPoints.Location = new System.Drawing.Point(105, 161);
-            this.txtContactPoints.Name = "txtContactPoints";
-            this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
-            this.txtContactPoints.TabIndex = 2;
-            this.txtContactPoints.Text = "{CHAUnaug} * 3";
-            // 
             // lblMaxNuyenKarma
             // 
             this.lblMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -791,15 +757,6 @@ namespace Chummer
             this.lblMaxDR.Text = "Maximum Device Rating";
             this.lblMaxDR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtKnowledgePoints
-            // 
-            this.txtKnowledgePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtKnowledgePoints.Location = new System.Drawing.Point(105, 187);
-            this.txtKnowledgePoints.Name = "txtKnowledgePoints";
-            this.txtKnowledgePoints.Size = new System.Drawing.Size(180, 20);
-            this.txtKnowledgePoints.TabIndex = 3;
-            this.txtKnowledgePoints.Text = "({INTUnaug} + {LOGUnaug}) * 2";
-            // 
             // nudStartingKarma
             // 
             this.nudStartingKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -838,6 +795,77 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.SetRowSpan(this.flpAllowedCyberwareGrades, 3);
             this.flpAllowedCyberwareGrades.Size = new System.Drawing.Size(200, 100);
             this.flpAllowedCyberwareGrades.TabIndex = 29;
+            // 
+            // lblKnowledgePoints
+            // 
+            this.lblKnowledgePoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKnowledgePoints.AutoSize = true;
+            this.lblKnowledgePoints.Location = new System.Drawing.Point(7, 190);
+            this.lblKnowledgePoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKnowledgePoints.Name = "lblKnowledgePoints";
+            this.lblKnowledgePoints.Size = new System.Drawing.Size(92, 13);
+            this.lblKnowledgePoints.TabIndex = 1;
+            this.lblKnowledgePoints.Text = "Knowledge Points";
+            this.lblKnowledgePoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblKnowledgePoints.ToolTipText = "";
+            // 
+            // lblContactPoints
+            // 
+            this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblContactPoints.AutoSize = true;
+            this.lblContactPoints.Location = new System.Drawing.Point(23, 164);
+            this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblContactPoints.Name = "lblContactPoints";
+            this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
+            this.lblContactPoints.TabIndex = 0;
+            this.lblContactPoints.Text = "Contact Points";
+            this.lblContactPoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblContactPoints.ToolTipText = "";
+            // 
+            // txtKnowledgePoints
+            // 
+            this.txtKnowledgePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtKnowledgePoints.Location = new System.Drawing.Point(105, 187);
+            this.txtKnowledgePoints.Name = "txtKnowledgePoints";
+            this.txtKnowledgePoints.Size = new System.Drawing.Size(180, 20);
+            this.txtKnowledgePoints.TabIndex = 3;
+            this.txtKnowledgePoints.Text = "({INTUnaug} + {LOGUnaug}) * 2";
+            // 
+            // lblQualityKarmaLimit
+            // 
+            this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblQualityKarmaLimit.AutoSize = true;
+            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(3, 138);
+            this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
+            this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
+            this.lblQualityKarmaLimit.TabIndex = 30;
+            this.lblQualityKarmaLimit.Tag = "";
+            this.lblQualityKarmaLimit.Text = "Quality Karma Limit";
+            this.lblQualityKarmaLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtContactPoints
+            // 
+            this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtContactPoints.Location = new System.Drawing.Point(105, 161);
+            this.txtContactPoints.Name = "txtContactPoints";
+            this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
+            this.txtContactPoints.TabIndex = 2;
+            this.txtContactPoints.Text = "{CHAUnaug} * 3";
+            // 
+            // nudQualityKarmaLimit
+            // 
+            this.nudQualityKarmaLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudQualityKarmaLimit.AutoSize = true;
+            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(105, 135);
+            this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
+            this.nudQualityKarmaLimit.Size = new System.Drawing.Size(180, 20);
+            this.nudQualityKarmaLimit.TabIndex = 31;
             // 
             // gpbBasicOptionsOfficialRules
             // 
@@ -948,7 +976,6 @@ namespace Chummer
             this.chkEnforceCapacity.Tag = "Checkbox_Option_EnforceCapacity";
             this.chkEnforceCapacity.Text = "Enforce Capacity limits";
             this.chkEnforceCapacity.UseVisualStyleBackColor = true;
-            this.chkEnforceCapacity.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkLicenseEachRestrictedItem
             // 
@@ -961,7 +988,6 @@ namespace Chummer
             this.chkLicenseEachRestrictedItem.Tag = "Checkbox_Options_LicenseRestricted";
             this.chkLicenseEachRestrictedItem.Text = "License each Restricted item";
             this.chkLicenseEachRestrictedItem.UseVisualStyleBackColor = true;
-            this.chkLicenseEachRestrictedItem.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkRestrictRecoil
             // 
@@ -975,7 +1001,6 @@ namespace Chummer
             this.chkRestrictRecoil.Tag = "Checkbox_Options_UseRestrictionsToRecoilCompensation";
             this.chkRestrictRecoil.Text = "Use Restrictions to Recoil Compensation (RG 53)";
             this.chkRestrictRecoil.UseVisualStyleBackColor = true;
-            this.chkRestrictRecoil.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkDronemodsMaximumPilot
             // 
@@ -989,7 +1014,6 @@ namespace Chummer
             this.chkDronemodsMaximumPilot.Tag = "Checkbox_Options_Dronemods_Pilot";
             this.chkDronemodsMaximumPilot.Text = "Use Maximum Attribute for Pilot Attribute";
             this.chkDronemodsMaximumPilot.UseVisualStyleBackColor = true;
-            this.chkDronemodsMaximumPilot.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkDronemods
             // 
@@ -1002,7 +1026,6 @@ namespace Chummer
             this.chkDronemods.Tag = "Checkbox_Options_Dronemods";
             this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
             this.chkDronemods.UseVisualStyleBackColor = true;
-            this.chkDronemods.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // gpbBasicOptionsCyberlimbs
             // 
@@ -1079,7 +1102,6 @@ namespace Chummer
             this.chkDontUseCyberlimbCalculation.Tag = "Checkbox_Options_UseCyberlimbCalculation";
             this.chkDontUseCyberlimbCalculation.Text = "Do not use Cyberlimbs when calculating augmented Attributes";
             this.chkDontUseCyberlimbCalculation.UseVisualStyleBackColor = true;
-            this.chkDontUseCyberlimbCalculation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblLimbCount
             // 
@@ -1103,7 +1125,7 @@ namespace Chummer
             this.cboLimbCount.Size = new System.Drawing.Size(218, 21);
             this.cboLimbCount.TabIndex = 1;
             this.cboLimbCount.TooltipText = "";
-            this.cboLimbCount.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboLimbCount.SelectedIndexChanged += new System.EventHandler(this.cboLimbCount_SelectedIndexChanged);
             // 
             // tlpCyberlimbAttributeBonusCap
             // 
@@ -1168,7 +1190,6 @@ namespace Chummer
             this.chkCyberlimbAttributeBonusCap.Tag = "Checkbox_Options_CyberlimbAttributeBonusCap";
             this.chkCyberlimbAttributeBonusCap.Text = "Override maximum Bonus cap for Cyberlimbs";
             this.chkCyberlimbAttributeBonusCap.UseVisualStyleBackColor = true;
-            this.chkCyberlimbAttributeBonusCap.CheckedChanged += new System.EventHandler(this.chkCyberlimbAttributeBonusCap_CheckedChanged);
             // 
             // lblCyberlimbAttributeBonusCapPlus
             // 
@@ -1293,7 +1314,6 @@ namespace Chummer
             this.chkDontRoundEssenceInternally.Tag = "Checkbox_Option_DontRoundEssenceInternally";
             this.chkDontRoundEssenceInternally.Text = "Only round Essence for display purposes, not for internal calculations";
             this.chkDontRoundEssenceInternally.UseVisualStyleBackColor = true;
-            this.chkDontRoundEssenceInternally.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblNuyenDecimalsMinimumLabel
             // 
@@ -1347,7 +1367,6 @@ namespace Chummer
             this.nudNuyenDecimalsMinimum.Name = "nudNuyenDecimalsMinimum";
             this.nudNuyenDecimalsMinimum.Size = new System.Drawing.Size(85, 20);
             this.nudNuyenDecimalsMinimum.TabIndex = 33;
-            this.nudNuyenDecimalsMinimum.ValueChanged += new System.EventHandler(this.nudNuyenDecimalsMinimum_ValueChanged);
             // 
             // nudNuyenDecimalsMaximum
             // 
@@ -1362,7 +1381,6 @@ namespace Chummer
             this.nudNuyenDecimalsMaximum.Name = "nudNuyenDecimalsMaximum";
             this.nudNuyenDecimalsMaximum.Size = new System.Drawing.Size(85, 20);
             this.nudNuyenDecimalsMaximum.TabIndex = 34;
-            this.nudNuyenDecimalsMaximum.ValueChanged += new System.EventHandler(this.nudNuyenDecimalsMaximum_ValueChanged);
             // 
             // nudEssenceDecimals
             // 
@@ -1374,6 +1392,11 @@ namespace Chummer
             0,
             0,
             0});
+            this.nudEssenceDecimals.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.nudEssenceDecimals.Name = "nudEssenceDecimals";
             this.nudEssenceDecimals.Size = new System.Drawing.Size(85, 20);
             this.nudEssenceDecimals.TabIndex = 17;
@@ -1382,7 +1405,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudEssenceDecimals.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // gpbBasicOptionsPrinting
             // 
@@ -1427,7 +1449,6 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.Tag = "Checkbox_Options_PrintAllSkills";
             this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with Rating 0 or higher";
             this.chkPrintSkillsWithZeroRating.UseVisualStyleBackColor = true;
-            this.chkPrintSkillsWithZeroRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPrintExpenses
             // 
@@ -1440,7 +1461,6 @@ namespace Chummer
             this.chkPrintExpenses.Tag = "Checkbox_Options_PrintExpenses";
             this.chkPrintExpenses.Text = "Print Karma and Nuyen Expenses";
             this.chkPrintExpenses.UseVisualStyleBackColor = true;
-            this.chkPrintExpenses.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPrintFreeExpenses
             // 
@@ -1454,7 +1474,6 @@ namespace Chummer
             this.chkPrintFreeExpenses.Tag = "Checkbox_Options_PrintFreeExpenses";
             this.chkPrintFreeExpenses.Text = "Print Free Karma and Nuyen Expenses";
             this.chkPrintFreeExpenses.UseVisualStyleBackColor = true;
-            this.chkPrintFreeExpenses.CheckedChanged += new System.EventHandler(this.chkPrintFreeExpenses_CheckedChanged);
             // 
             // chkPrintNotes
             // 
@@ -1469,7 +1488,6 @@ namespace Chummer
             this.chkPrintNotes.Text = "Print Notes";
             this.chkPrintNotes.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkPrintNotes.UseVisualStyleBackColor = true;
-            this.chkPrintNotes.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // tabKarmaCosts
             // 
@@ -1659,7 +1677,6 @@ namespace Chummer
             this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
             this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
-            this.nudKarmaMysticAdeptPowerPoint.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSpecialization
             // 
@@ -1695,7 +1712,6 @@ namespace Chummer
             this.nudKarmaSpecialization.Name = "nudKarmaSpecialization";
             this.nudKarmaSpecialization.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSpecialization.TabIndex = 1;
-            this.nudKarmaSpecialization.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaNewAIAdvancedProgram
             // 
@@ -1705,7 +1721,6 @@ namespace Chummer
             this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
             this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNewAIAdvancedProgram.TabIndex = 112;
-            this.nudKarmaNewAIAdvancedProgram.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaWeaponFocusExtra
             // 
@@ -1727,7 +1742,6 @@ namespace Chummer
             this.nudKarmaInitiationFlat.Name = "nudKarmaInitiationFlat";
             this.nudKarmaInitiationFlat.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaInitiationFlat.TabIndex = 121;
-            this.nudKarmaInitiationFlat.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaWeaponFocus
             // 
@@ -1737,7 +1751,6 @@ namespace Chummer
             this.nudKarmaWeaponFocus.Name = "nudKarmaWeaponFocus";
             this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaWeaponFocus.TabIndex = 106;
-            this.nudKarmaWeaponFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaNewAIAdvancedProgram
             // 
@@ -1771,7 +1784,6 @@ namespace Chummer
             this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
             this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNewAIProgram.TabIndex = 111;
-            this.nudKarmaNewAIProgram.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaKnowledgeSpecialization
             // 
@@ -1817,7 +1829,6 @@ namespace Chummer
             this.nudKarmaKnowledgeSpecialization.Name = "nudKarmaKnowledgeSpecialization";
             this.nudKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaKnowledgeSpecialization.TabIndex = 120;
-            this.nudKarmaKnowledgeSpecialization.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaRitualSpellcastingFocus
             // 
@@ -1827,7 +1838,6 @@ namespace Chummer
             this.nudKarmaRitualSpellcastingFocus.Name = "nudKarmaRitualSpellcastingFocus";
             this.nudKarmaRitualSpellcastingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaRitualSpellcastingFocus.TabIndex = 117;
-            this.nudKarmaRitualSpellcastingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaNewKnowledgeSkill
             // 
@@ -1862,7 +1872,6 @@ namespace Chummer
             this.nudKarmaNewKnowledgeSkill.Name = "nudKarmaNewKnowledgeSkill";
             this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNewKnowledgeSkill.TabIndex = 3;
-            this.nudKarmaNewKnowledgeSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblFlexibleSignatureFocusExtra
             // 
@@ -1906,7 +1915,6 @@ namespace Chummer
             this.nudKarmaInitiation.Name = "nudKarmaInitiation";
             this.nudKarmaInitiation.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaInitiation.TabIndex = 55;
-            this.nudKarmaInitiation.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSpellShapingFocusExtra
             // 
@@ -1927,7 +1935,6 @@ namespace Chummer
             this.nudKarmaFlexibleSignatureFocus.Name = "nudKarmaFlexibleSignatureFocus";
             this.nudKarmaFlexibleSignatureFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaFlexibleSignatureFocus.TabIndex = 114;
-            this.nudKarmaFlexibleSignatureFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaSpellShapingFocus
             // 
@@ -1937,7 +1944,6 @@ namespace Chummer
             this.nudKarmaSpellShapingFocus.Name = "nudKarmaSpellShapingFocus";
             this.nudKarmaSpellShapingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSpellShapingFocus.TabIndex = 103;
-            this.nudKarmaSpellShapingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaMetamagic
             // 
@@ -1947,7 +1953,6 @@ namespace Chummer
             this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
             this.nudKarmaMetamagic.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaMetamagic.TabIndex = 58;
-            this.nudKarmaMetamagic.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaCarryoverExtra
             // 
@@ -1981,7 +1986,6 @@ namespace Chummer
             this.nudKarmaCarryover.Name = "nudKarmaCarryover";
             this.nudKarmaCarryover.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaCarryover.TabIndex = 51;
-            this.nudKarmaCarryover.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaFlexibleSignatureFocus
             // 
@@ -2039,7 +2043,6 @@ namespace Chummer
             this.nudKarmaEnemy.Name = "nudKarmaEnemy";
             this.nudKarmaEnemy.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaEnemy.TabIndex = 48;
-            this.nudKarmaEnemy.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaEnemy
             // 
@@ -2074,7 +2077,6 @@ namespace Chummer
             this.nudKarmaContact.Name = "nudKarmaContact";
             this.nudKarmaContact.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaContact.TabIndex = 45;
-            this.nudKarmaContact.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaContact
             // 
@@ -2109,7 +2111,6 @@ namespace Chummer
             this.nudKarmaSustainingFocus.Name = "nudKarmaSustainingFocus";
             this.nudKarmaSustainingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSustainingFocus.TabIndex = 100;
-            this.nudKarmaSustainingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaJoinGroup
             // 
@@ -2119,7 +2120,6 @@ namespace Chummer
             this.nudKarmaJoinGroup.Name = "nudKarmaJoinGroup";
             this.nudKarmaJoinGroup.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaJoinGroup.TabIndex = 57;
-            this.nudKarmaJoinGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSustainingFocus
             // 
@@ -2164,7 +2164,6 @@ namespace Chummer
             this.nudKarmaLeaveGroup.Name = "nudKarmaLeaveGroup";
             this.nudKarmaLeaveGroup.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaLeaveGroup.TabIndex = 59;
-            this.nudKarmaLeaveGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaSummoningFocus
             // 
@@ -2174,7 +2173,6 @@ namespace Chummer
             this.nudKarmaSummoningFocus.Name = "nudKarmaSummoningFocus";
             this.nudKarmaSummoningFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSummoningFocus.TabIndex = 97;
-            this.nudKarmaSummoningFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaNewActiveSkill
             // 
@@ -2197,7 +2195,6 @@ namespace Chummer
             this.nudKarmaManeuver.Name = "nudKarmaManeuver";
             this.nudKarmaManeuver.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaManeuver.TabIndex = 40;
-            this.nudKarmaManeuver.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSummoningFocus
             // 
@@ -2232,7 +2229,6 @@ namespace Chummer
             this.nudKarmaNewActiveSkill.Name = "nudKarmaNewActiveSkill";
             this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNewActiveSkill.TabIndex = 5;
-            this.nudKarmaNewActiveSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaComplexFormSkillsoftExtra
             // 
@@ -2265,7 +2261,6 @@ namespace Chummer
             this.nudKarmaComplexFormSkillsoft.Name = "nudKarmaComplexFormSkillsoft";
             this.nudKarmaComplexFormSkillsoft.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaComplexFormSkillsoft.TabIndex = 34;
-            this.nudKarmaComplexFormSkillsoft.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaAlchemicalFocus
             // 
@@ -2312,7 +2307,6 @@ namespace Chummer
             this.nudKarmaSpellcastingFocus.Name = "nudKarmaSpellcastingFocus";
             this.nudKarmaSpellcastingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSpellcastingFocus.TabIndex = 94;
-            this.nudKarmaSpellcastingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaNuyenPer
             // 
@@ -2327,7 +2321,6 @@ namespace Chummer
             this.nudKarmaNuyenPer.Name = "nudKarmaNuyenPer";
             this.nudKarmaNuyenPer.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNuyenPer.TabIndex = 42;
-            this.nudKarmaNuyenPer.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSpiritExtra
             // 
@@ -2374,7 +2367,6 @@ namespace Chummer
             this.nudKarmaSpirit.Name = "nudKarmaSpirit";
             this.nudKarmaSpirit.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSpirit.TabIndex = 37;
-            this.nudKarmaSpirit.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaAlchemicalFocus
             // 
@@ -2384,7 +2376,6 @@ namespace Chummer
             this.nudKarmaAlchemicalFocus.Name = "nudKarmaAlchemicalFocus";
             this.nudKarmaAlchemicalFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaAlchemicalFocus.TabIndex = 61;
-            this.nudKarmaAlchemicalFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSpirit
             // 
@@ -2407,7 +2398,6 @@ namespace Chummer
             this.nudKarmaComplexFormOption.Name = "nudKarmaComplexFormOption";
             this.nudKarmaComplexFormOption.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaComplexFormOption.TabIndex = 31;
-            this.nudKarmaComplexFormOption.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaSpellcastingFocus
             // 
@@ -2466,7 +2456,6 @@ namespace Chummer
             this.nudKarmaNewSkillGroup.Name = "nudKarmaNewSkillGroup";
             this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNewSkillGroup.TabIndex = 7;
-            this.nudKarmaNewSkillGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaBanishingFocus
             // 
@@ -2488,7 +2477,6 @@ namespace Chummer
             this.nudKarmaBanishingFocus.Name = "nudKarmaBanishingFocus";
             this.nudKarmaBanishingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaBanishingFocus.TabIndex = 64;
-            this.nudKarmaBanishingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaBanishingFocusExtra
             // 
@@ -2533,7 +2521,6 @@ namespace Chummer
             this.nudKarmaImproveKnowledgeSkill.Name = "nudKarmaImproveKnowledgeSkill";
             this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaImproveKnowledgeSkill.TabIndex = 9;
-            this.nudKarmaImproveKnowledgeSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaQiFocus
             // 
@@ -2543,7 +2530,6 @@ namespace Chummer
             this.nudKarmaQiFocus.Name = "nudKarmaQiFocus";
             this.nudKarmaQiFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaQiFocus.TabIndex = 91;
-            this.nudKarmaQiFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaImproveKnowledgeSkillExtra
             // 
@@ -2600,7 +2586,6 @@ namespace Chummer
             this.nudKarmaBindingFocus.Name = "nudKarmaBindingFocus";
             this.nudKarmaBindingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaBindingFocus.TabIndex = 67;
-            this.nudKarmaBindingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaPowerFocus
             // 
@@ -2610,7 +2595,6 @@ namespace Chummer
             this.nudKarmaPowerFocus.Name = "nudKarmaPowerFocus";
             this.nudKarmaPowerFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaPowerFocus.TabIndex = 88;
-            this.nudKarmaPowerFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaBindingFocusExtra
             // 
@@ -2667,7 +2651,6 @@ namespace Chummer
             this.nudKarmaImproveActiveSkill.Name = "nudKarmaImproveActiveSkill";
             this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaImproveActiveSkill.TabIndex = 12;
-            this.nudKarmaImproveActiveSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaMaskingFocus
             // 
@@ -2677,7 +2660,6 @@ namespace Chummer
             this.nudKarmaMaskingFocus.Name = "nudKarmaMaskingFocus";
             this.nudKarmaMaskingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaMaskingFocus.TabIndex = 85;
-            this.nudKarmaMaskingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaImproveActiveSkillExtra
             // 
@@ -2723,7 +2705,6 @@ namespace Chummer
             this.nudKarmaCenteringFocus.Name = "nudKarmaCenteringFocus";
             this.nudKarmaCenteringFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaCenteringFocus.TabIndex = 70;
-            this.nudKarmaCenteringFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaCenteringFocusExtra
             // 
@@ -2756,7 +2737,6 @@ namespace Chummer
             this.nudKarmaCounterspellingFocus.Name = "nudKarmaCounterspellingFocus";
             this.nudKarmaCounterspellingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaCounterspellingFocus.TabIndex = 73;
-            this.nudKarmaCounterspellingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaCounterspellingFocusExtra
             // 
@@ -2801,7 +2781,6 @@ namespace Chummer
             this.nudKarmaImproveSkillGroup.Name = "nudKarmaImproveSkillGroup";
             this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaImproveSkillGroup.TabIndex = 15;
-            this.nudKarmaImproveSkillGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaDisenchantingFocus
             // 
@@ -2811,7 +2790,6 @@ namespace Chummer
             this.nudKarmaDisenchantingFocus.Name = "nudKarmaDisenchantingFocus";
             this.nudKarmaDisenchantingFocus.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaDisenchantingFocus.TabIndex = 82;
-            this.nudKarmaDisenchantingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaImproveSkillGroupExtra
             // 
@@ -2858,7 +2836,6 @@ namespace Chummer
             this.nudKarmaAttribute.Name = "nudKarmaAttribute";
             this.nudKarmaAttribute.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaAttribute.TabIndex = 18;
-            this.nudKarmaAttribute.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaAttributeExtra
             // 
@@ -2905,7 +2882,6 @@ namespace Chummer
             this.nudKarmaQuality.Name = "nudKarmaQuality";
             this.nudKarmaQuality.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaQuality.TabIndex = 21;
-            this.nudKarmaQuality.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudKarmaImproveComplexForm
             // 
@@ -2915,7 +2891,6 @@ namespace Chummer
             this.nudKarmaImproveComplexForm.Name = "nudKarmaImproveComplexForm";
             this.nudKarmaImproveComplexForm.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaImproveComplexForm.TabIndex = 28;
-            this.nudKarmaImproveComplexForm.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaQualityExtra
             // 
@@ -2963,7 +2938,6 @@ namespace Chummer
             this.nudKarmaSpell.Name = "nudKarmaSpell";
             this.nudKarmaSpell.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaSpell.TabIndex = 24;
-            this.nudKarmaSpell.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaNewComplexForm
             // 
@@ -2986,7 +2960,6 @@ namespace Chummer
             this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
             this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(60, 20);
             this.nudKarmaNewComplexForm.TabIndex = 26;
-            this.nudKarmaNewComplexForm.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // nudMetatypeCostsKarmaMultiplier
             // 
@@ -3011,7 +2984,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudMetatypeCostsKarmaMultiplier.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblMetatypeCostsKarmaMultiplierLabel
             // 
@@ -3055,7 +3027,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudNuyenPerBP.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // flpKarmaInitiation
             // 
@@ -3272,7 +3243,6 @@ namespace Chummer
             this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
             this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
             this.chkIgnoreArt.UseVisualStyleBackColor = true;
-            this.chkIgnoreArt.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkExceedNegativeQualities
             // 
@@ -3285,7 +3255,6 @@ namespace Chummer
             this.chkExceedNegativeQualities.Tag = "Checkbox_Options_ExceedNegativeQualities";
             this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
             this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
-            this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.chkExceedNegativeQualities_CheckedChanged);
             // 
             // chkExceedPositiveQualities
             // 
@@ -3298,7 +3267,6 @@ namespace Chummer
             this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
             this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
             this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
-            this.chkExceedPositiveQualities.CheckedChanged += new System.EventHandler(this.chkExceedPositiveQualities_CheckedChanged);
             // 
             // chkUnarmedSkillImprovements
             // 
@@ -3311,7 +3279,6 @@ namespace Chummer
             this.chkUnarmedSkillImprovements.Tag = "Checkbox_Options_UnarmedSkillImprovements";
             this.chkUnarmedSkillImprovements.Text = "Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses";
             this.chkUnarmedSkillImprovements.UseVisualStyleBackColor = true;
-            this.chkUnarmedSkillImprovements.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkDontDoubleQualityPurchases
             // 
@@ -3324,7 +3291,6 @@ namespace Chummer
             this.chkDontDoubleQualityPurchases.Tag = "Checkbox_Options_DontDoubleQualityPurchases";
             this.chkDontDoubleQualityPurchases.Text = "Don\'t double the cost of purchasing Positive Qualities in Career Mode";
             this.chkDontDoubleQualityPurchases.UseVisualStyleBackColor = true;
-            this.chkDontDoubleQualityPurchases.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkDontDoubleQualityRefunds
             // 
@@ -3337,7 +3303,6 @@ namespace Chummer
             this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
             this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
             this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
-            this.chkDontDoubleQualityRefunds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAllowInitiation
             // 
@@ -3350,7 +3315,6 @@ namespace Chummer
             this.chkAllowInitiation.Tag = "Checkbox_Options_AllowInitiation";
             this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
             this.chkAllowInitiation.UseVisualStyleBackColor = true;
-            this.chkAllowInitiation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAllowCyberwareESSDiscounts
             // 
@@ -3363,7 +3327,6 @@ namespace Chummer
             this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
             this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
             this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
-            this.chkAllowCyberwareESSDiscounts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkMysAdPp
             // 
@@ -3376,7 +3339,6 @@ namespace Chummer
             this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
             this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
             this.chkMysAdPp.UseVisualStyleBackColor = true;
-            this.chkMysAdPp.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkESSLossReducesMaximumOnly
             // 
@@ -3389,7 +3351,6 @@ namespace Chummer
             this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
             this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
             this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
-            this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAlternateMetatypeAttributeKarma
             // 
@@ -3402,7 +3363,6 @@ namespace Chummer
             this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
             this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
             this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
-            this.chkAlternateMetatypeAttributeKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkUseCalculatedPublicAwareness
             // 
@@ -3415,7 +3375,6 @@ namespace Chummer
             this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
             this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
             this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
-            this.chkUseCalculatedPublicAwareness.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkMoreLethalGameplay
             // 
@@ -3428,7 +3387,6 @@ namespace Chummer
             this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
             this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
             this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
-            this.chkMoreLethalGameplay.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkExtendAnyDetectionSpell
             // 
@@ -3441,7 +3399,6 @@ namespace Chummer
             this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
             this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
-            this.chkExtendAnyDetectionSpell.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAllowSkillRegrouping
             // 
@@ -3454,7 +3411,6 @@ namespace Chummer
             this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
             this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
             this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
-            this.chkAllowSkillRegrouping.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkNoArmorEncumbrance
             // 
@@ -3467,7 +3423,6 @@ namespace Chummer
             this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
             this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
             this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
-            this.chkNoArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAllowTechnomancerSchooling
             // 
@@ -3480,7 +3435,6 @@ namespace Chummer
             this.chkAllowTechnomancerSchooling.Tag = "Checkbox_Options_AllowTechnomancerSchooling";
             this.chkAllowTechnomancerSchooling.Text = "Technomancer: Allow \'Schooling\' Initiation discounts";
             this.chkAllowTechnomancerSchooling.UseVisualStyleBackColor = true;
-            this.chkAllowTechnomancerSchooling.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkUsePointsOnBrokenGroups
             // 
@@ -3493,7 +3447,6 @@ namespace Chummer
             this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
             this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
-            this.chkUsePointsOnBrokenGroups.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkCompensateSkillGroupKarmaDifference
             // 
@@ -3520,7 +3473,6 @@ namespace Chummer
             this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
     "rules";
             this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
-            this.chkMysAdeptSecondMAGAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkExceedPositiveQualitiesCostDoubled
             // 
@@ -3535,7 +3487,6 @@ namespace Chummer
             this.chkExceedPositiveQualitiesCostDoubled.Tag = "Checkbox_Options_ExceedPositiveQualitiesCostDoubled";
             this.chkExceedPositiveQualitiesCostDoubled.Text = "Use Career costs for all Positive Quality karma costs in excess of the limit";
             this.chkExceedPositiveQualitiesCostDoubled.UseVisualStyleBackColor = true;
-            this.chkExceedPositiveQualitiesCostDoubled.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkExceedNegativeQualitiesLimit
             // 
@@ -3553,7 +3504,6 @@ namespace Chummer
     "meplay Option\'s limit";
             this.chkExceedNegativeQualitiesLimit.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
-            this.chkExceedNegativeQualitiesLimit.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkIgnoreComplexFormLimit
             // 
@@ -3566,7 +3516,6 @@ namespace Chummer
             this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
             this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
             this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
-            this.chkIgnoreComplexFormLimit.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkSpecialKarmaCost
             // 
@@ -3579,7 +3528,6 @@ namespace Chummer
             this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCost";
             this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
             this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
-            this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkIncreasedImprovedAbilityModifier
             // 
@@ -3592,7 +3540,6 @@ namespace Chummer
             this.chkIncreasedImprovedAbilityModifier.Tag = "Checkbox_Options_IncreasedImprovedAbilityModifier";
             this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
             this.chkIncreasedImprovedAbilityModifier.UseVisualStyleBackColor = true;
-            this.chkIncreasedImprovedAbilityModifier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkUnclampAttributeMinimum
             // 
@@ -3605,7 +3552,6 @@ namespace Chummer
             this.chkUnclampAttributeMinimum.Tag = "Checkbox_Options_UnclampAttributeMinimum";
             this.chkUnclampAttributeMinimum.Text = "Attribute values are allowed to go below 0 due to Essence Loss.";
             this.chkUnclampAttributeMinimum.UseVisualStyleBackColor = true;
-            this.chkUnclampAttributeMinimum.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkReverseAttributePriorityOrder
             // 
@@ -3618,7 +3564,6 @@ namespace Chummer
             this.chkReverseAttributePriorityOrder.Tag = "Checkbox_Options_ReverseAttributePriorityOrder";
             this.chkReverseAttributePriorityOrder.Text = "Spend Karma on Attributes before Priority Points";
             this.chkReverseAttributePriorityOrder.UseVisualStyleBackColor = true;
-            this.chkReverseAttributePriorityOrder.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPrioritySpellsAsAdeptPowers
             // 
@@ -3631,7 +3576,6 @@ namespace Chummer
             this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
             this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending of free spells from Magic Priority as power points";
             this.chkPrioritySpellsAsAdeptPowers.UseVisualStyleBackColor = true;
-            this.chkPrioritySpellsAsAdeptPowers.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkFreeMartialArtSpecialization
             // 
@@ -3644,7 +3588,6 @@ namespace Chummer
             this.chkFreeMartialArtSpecialization.Tag = "Checkbox_Option_FreeMartialArtSpecialization";
             this.chkFreeMartialArtSpecialization.Text = "Allow Martial Arts to grant a free specialisation in a skill";
             this.chkFreeMartialArtSpecialization.UseVisualStyleBackColor = true;
-            this.chkFreeMartialArtSpecialization.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // flpDroneArmorMultiplier
             // 
@@ -3671,7 +3614,6 @@ namespace Chummer
             this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
             this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
             this.chkDroneArmorMultiplier.UseVisualStyleBackColor = true;
-            this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.chkDroneArmorMultiplier_CheckedChanged);
             // 
             // label4
             // 
@@ -3709,7 +3651,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudDroneArmorMultiplier.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblSettingName
             // 
@@ -3728,20 +3669,22 @@ namespace Chummer
             // 
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpButtons.ColumnCount = 4;
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpButtons.Controls.Add(this.cmdCancel, 3, 0);
-            this.tlpButtons.Controls.Add(this.btnRestoreDefaults, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdSave, 2, 0);
-            this.tlpButtons.Controls.Add(this.btnSaveAs, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(847, 637);
+            this.tlpButtons.ColumnCount = 5;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpButtons.Controls.Add(this.cmdDelete, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdCancel, 4, 0);
+            this.tlpButtons.Controls.Add(this.cmdRestoreDefaults, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdSave, 3, 0);
+            this.tlpButtons.Controls.Add(this.cmdSaveAs, 2, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(748, 637);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(396, 23);
+            this.tlpButtons.Size = new System.Drawing.Size(495, 23);
             this.tlpButtons.TabIndex = 6;
             // 
             // cmdCancel
@@ -3750,7 +3693,7 @@ namespace Chummer
             this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCancel.Location = new System.Drawing.Point(300, 0);
+            this.cmdCancel.Location = new System.Drawing.Point(399, 0);
             this.cmdCancel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(96, 23);
@@ -3760,26 +3703,27 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // btnRestoreDefaults
+            // cmdRestoreDefaults
             // 
-            this.btnRestoreDefaults.AutoSize = true;
-            this.btnRestoreDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnRestoreDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnRestoreDefaults.Location = new System.Drawing.Point(0, 0);
-            this.btnRestoreDefaults.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.btnRestoreDefaults.Name = "btnRestoreDefaults";
-            this.btnRestoreDefaults.Size = new System.Drawing.Size(96, 23);
-            this.btnRestoreDefaults.TabIndex = 8;
-            this.btnRestoreDefaults.Tag = "";
-            this.btnRestoreDefaults.Text = "Restore Defaults";
-            this.btnRestoreDefaults.UseVisualStyleBackColor = true;
+            this.cmdRestoreDefaults.AutoSize = true;
+            this.cmdRestoreDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRestoreDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRestoreDefaults.Location = new System.Drawing.Point(0, 0);
+            this.cmdRestoreDefaults.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdRestoreDefaults.Name = "cmdRestoreDefaults";
+            this.cmdRestoreDefaults.Size = new System.Drawing.Size(96, 23);
+            this.cmdRestoreDefaults.TabIndex = 8;
+            this.cmdRestoreDefaults.Tag = "";
+            this.cmdRestoreDefaults.Text = "Restore Defaults";
+            this.cmdRestoreDefaults.UseVisualStyleBackColor = true;
+            this.cmdRestoreDefaults.Click += new System.EventHandler(this.cmdRestoreDefaults_Click);
             // 
             // cmdSave
             // 
             this.cmdSave.AutoSize = true;
             this.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdSave.Location = new System.Drawing.Point(201, 0);
+            this.cmdSave.Location = new System.Drawing.Point(300, 0);
             this.cmdSave.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(93, 23);
@@ -3787,47 +3731,37 @@ namespace Chummer
             this.cmdSave.Tag = "";
             this.cmdSave.Text = "Save";
             this.cmdSave.UseVisualStyleBackColor = true;
+            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
             // 
-            // btnSaveAs
+            // cmdSaveAs
             // 
-            this.btnSaveAs.AutoSize = true;
-            this.btnSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSaveAs.Location = new System.Drawing.Point(102, 0);
-            this.btnSaveAs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.btnSaveAs.Name = "btnSaveAs";
-            this.btnSaveAs.Size = new System.Drawing.Size(93, 23);
-            this.btnSaveAs.TabIndex = 7;
-            this.btnSaveAs.Tag = "";
-            this.btnSaveAs.Text = "Save As...";
-            this.btnSaveAs.UseVisualStyleBackColor = true;
+            this.cmdSaveAs.AutoSize = true;
+            this.cmdSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdSaveAs.Location = new System.Drawing.Point(201, 0);
+            this.cmdSaveAs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdSaveAs.Name = "cmdSaveAs";
+            this.cmdSaveAs.Size = new System.Drawing.Size(93, 23);
+            this.cmdSaveAs.TabIndex = 7;
+            this.cmdSaveAs.Tag = "";
+            this.cmdSaveAs.Text = "Save As...";
+            this.cmdSaveAs.UseVisualStyleBackColor = true;
+            this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // lblQualityKarmaLimit
+            // cmdDelete
             // 
-            this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblQualityKarmaLimit.AutoSize = true;
-            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(3, 138);
-            this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
-            this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
-            this.lblQualityKarmaLimit.TabIndex = 30;
-            this.lblQualityKarmaLimit.Tag = "";
-            this.lblQualityKarmaLimit.Text = "Quality Karma Limit";
-            this.lblQualityKarmaLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudQualityKarmaLimit
-            // 
-            this.nudQualityKarmaLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudQualityKarmaLimit.AutoSize = true;
-            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(105, 135);
-            this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
-            this.nudQualityKarmaLimit.Size = new System.Drawing.Size(180, 20);
-            this.nudQualityKarmaLimit.TabIndex = 31;
+            this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDelete.Location = new System.Drawing.Point(102, 0);
+            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(93, 23);
+            this.cmdDelete.TabIndex = 9;
+            this.cmdDelete.Tag = "";
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // frmCharacterOptions
             // 
@@ -3865,6 +3799,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);
@@ -3957,7 +3892,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4210,12 +4144,13 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudMaxAvail;
         private System.Windows.Forms.NumericUpDown nudMaxNuyenKarma;
         private System.Windows.Forms.NumericUpDown nudMaxDR;
-        private System.Windows.Forms.Button btnSaveAs;
-        private System.Windows.Forms.Button btnRestoreDefaults;
+        private System.Windows.Forms.Button cmdSaveAs;
+        private System.Windows.Forms.Button cmdRestoreDefaults;
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.Label lblAllowedCyberwareGrades;
         private System.Windows.Forms.FlowLayoutPanel flpAllowedCyberwareGrades;
         private System.Windows.Forms.Label lblQualityKarmaLimit;
         private System.Windows.Forms.NumericUpDown nudQualityKarmaLimit;
+        private System.Windows.Forms.Button cmdDelete;
     }
 }
