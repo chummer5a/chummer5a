@@ -283,14 +283,8 @@ namespace Chummer.UI.Skills
             _skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_skill);
         }
 
-        public void MoveControls(int i)
-        {
-            if (cboName.Visible)
-                cboName.Width = i;
-        }
-
         [UsedImplicitly]
-        public int NameWidth => tlpName.Width;
+        public int NameWidth => tlpName.Width - lblName.Margin.Left - lblName.Margin.Right;
 
         [UsedImplicitly]
         public int NudSkillWidth => !_skill.CharacterObject.Created && _skill.AllowUpgrade && _skill.CharacterObject.SkillsSection.HasKnowledgePoints

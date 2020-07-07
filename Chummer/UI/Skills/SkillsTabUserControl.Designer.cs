@@ -144,7 +144,7 @@ namespace Chummer.UI.Skills
             // lblSkillGroups
             // 
             this.lblSkillGroups.AutoSize = true;
-            this.lblSkillGroups.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblSkillGroups.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblSkillGroups.Location = new System.Drawing.Point(3, 0);
             this.lblSkillGroups.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblSkillGroups.Name = "lblSkillGroups";
@@ -160,23 +160,22 @@ namespace Chummer.UI.Skills
             this.flpSkillGroupLabels.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpSkillGroupLabels.Controls.Add(this.lblGroupKarma);
             this.flpSkillGroupLabels.Controls.Add(this.lblGroupsSp);
-            this.flpSkillGroupLabels.Dock = System.Windows.Forms.DockStyle.Right;
+            this.flpSkillGroupLabels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpSkillGroupLabels.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpSkillGroupLabels.Location = new System.Drawing.Point(106, 0);
+            this.flpSkillGroupLabels.Location = new System.Drawing.Point(69, 9);
             this.flpSkillGroupLabels.Margin = new System.Windows.Forms.Padding(0);
             this.flpSkillGroupLabels.Name = "flpSkillGroupLabels";
-            this.flpSkillGroupLabels.Size = new System.Drawing.Size(85, 22);
+            this.flpSkillGroupLabels.Size = new System.Drawing.Size(122, 13);
             this.flpSkillGroupLabels.TabIndex = 1;
             this.flpSkillGroupLabels.WrapContents = false;
             // 
             // lblGroupKarma
             // 
             this.lblGroupKarma.AutoSize = true;
-            this.lblGroupKarma.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblGroupKarma.Location = new System.Drawing.Point(45, 0);
-            this.lblGroupKarma.MinimumSize = new System.Drawing.Size(0, 22);
+            this.lblGroupKarma.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblGroupKarma.Location = new System.Drawing.Point(82, 0);
             this.lblGroupKarma.Name = "lblGroupKarma";
-            this.lblGroupKarma.Size = new System.Drawing.Size(37, 22);
+            this.lblGroupKarma.Size = new System.Drawing.Size(37, 13);
             this.lblGroupKarma.TabIndex = 52;
             this.lblGroupKarma.Tag = "String_Karma";
             this.lblGroupKarma.Text = "Karma";
@@ -185,11 +184,10 @@ namespace Chummer.UI.Skills
             // lblGroupsSp
             // 
             this.lblGroupsSp.AutoSize = true;
-            this.lblGroupsSp.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblGroupsSp.Location = new System.Drawing.Point(3, 0);
-            this.lblGroupsSp.MinimumSize = new System.Drawing.Size(0, 22);
+            this.lblGroupsSp.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblGroupsSp.Location = new System.Drawing.Point(40, 0);
             this.lblGroupsSp.Name = "lblGroupsSp";
-            this.lblGroupsSp.Size = new System.Drawing.Size(36, 22);
+            this.lblGroupsSp.Size = new System.Drawing.Size(36, 13);
             this.lblGroupsSp.TabIndex = 51;
             this.lblGroupsSp.Tag = "String_Points";
             this.lblGroupsSp.Text = "Points";
@@ -219,7 +217,7 @@ namespace Chummer.UI.Skills
             // lblActiveSkills
             // 
             this.lblActiveSkills.AutoSize = true;
-            this.lblActiveSkills.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblActiveSkills.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblActiveSkills.Location = new System.Drawing.Point(3, 29);
             this.lblActiveSkills.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblActiveSkills.Name = "lblActiveSkills";
@@ -232,10 +230,10 @@ namespace Chummer.UI.Skills
             // lblBuyWithKarma
             // 
             this.lblBuyWithKarma.AutoSize = true;
-            this.lblBuyWithKarma.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblBuyWithKarma.Location = new System.Drawing.Point(505, 29);
+            this.lblBuyWithKarma.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblBuyWithKarma.Location = new System.Drawing.Point(505, 38);
             this.lblBuyWithKarma.Name = "lblBuyWithKarma";
-            this.lblBuyWithKarma.Size = new System.Drawing.Size(83, 22);
+            this.lblBuyWithKarma.Size = new System.Drawing.Size(83, 13);
             this.lblBuyWithKarma.TabIndex = 50;
             this.lblBuyWithKarma.Tag = "String_BuyWithKarma";
             this.lblBuyWithKarma.Text = "Buy With Karma";
@@ -317,10 +315,10 @@ namespace Chummer.UI.Skills
             // lblActiveSp
             // 
             this.lblActiveSp.AutoSize = true;
-            this.lblActiveSp.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblActiveSp.Location = new System.Drawing.Point(3, 0);
+            this.lblActiveSp.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblActiveSp.Location = new System.Drawing.Point(3, 9);
             this.lblActiveSp.Name = "lblActiveSp";
-            this.lblActiveSp.Size = new System.Drawing.Size(36, 22);
+            this.lblActiveSp.Size = new System.Drawing.Size(36, 13);
             this.lblActiveSp.TabIndex = 46;
             this.lblActiveSp.Tag = "String_Points";
             this.lblActiveSp.Text = "Points";
@@ -329,10 +327,10 @@ namespace Chummer.UI.Skills
             // lblActiveKarma
             // 
             this.lblActiveKarma.AutoSize = true;
-            this.lblActiveKarma.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblActiveKarma.Location = new System.Drawing.Point(45, 0);
+            this.lblActiveKarma.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblActiveKarma.Location = new System.Drawing.Point(45, 9);
             this.lblActiveKarma.Name = "lblActiveKarma";
-            this.lblActiveKarma.Size = new System.Drawing.Size(37, 22);
+            this.lblActiveKarma.Size = new System.Drawing.Size(37, 13);
             this.lblActiveKarma.TabIndex = 47;
             this.lblActiveKarma.Tag = "String_Karma";
             this.lblActiveKarma.Text = "Karma";
@@ -383,8 +381,8 @@ namespace Chummer.UI.Skills
             // 
             // lblKnowledgeSkills
             // 
-            this.lblKnowledgeSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblKnowledgeSkills.AutoSize = true;
+            this.lblKnowledgeSkills.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblKnowledgeSkills.Location = new System.Drawing.Point(3, 29);
             this.lblKnowledgeSkills.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblKnowledgeSkills.Name = "lblKnowledgeSkills";
@@ -478,10 +476,10 @@ namespace Chummer.UI.Skills
             // lblKnoBwk
             // 
             this.lblKnoBwk.AutoSize = true;
-            this.lblKnoBwk.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblKnoBwk.Location = new System.Drawing.Point(714, 29);
+            this.lblKnoBwk.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblKnoBwk.Location = new System.Drawing.Point(714, 38);
             this.lblKnoBwk.Name = "lblKnoBwk";
-            this.lblKnoBwk.Size = new System.Drawing.Size(83, 22);
+            this.lblKnoBwk.Size = new System.Drawing.Size(83, 13);
             this.lblKnoBwk.TabIndex = 53;
             this.lblKnoBwk.Tag = "String_BuyWithKarma";
             this.lblKnoBwk.Text = "Buy With Karma";
