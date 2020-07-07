@@ -57,7 +57,7 @@ namespace Chummer
             // 
             this.tsSaveAsHtml.Enabled = false;
             this.tsSaveAsHtml.Name = "tsSaveAsHtml";
-            this.tsSaveAsHtml.Size = new System.Drawing.Size(148, 22);
+            this.tsSaveAsHtml.Size = new System.Drawing.Size(147, 22);
             this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
             this.tsSaveAsHtml.Text = "Save as &HTML";
             this.tsSaveAsHtml.Click += new System.EventHandler(this.tsSaveAsHTML_Click);
@@ -68,23 +68,23 @@ namespace Chummer
             this.tsSaveAsXml,
             this.tsSaveAsHtml});
             this.cmsSaveButton.Name = "cmsPrintButton";
-            this.cmsSaveButton.Size = new System.Drawing.Size(149, 48);
+            this.cmsSaveButton.Size = new System.Drawing.Size(148, 48);
             // 
             // tsSaveAsXml
             // 
             this.tsSaveAsXml.Enabled = false;
             this.tsSaveAsXml.Name = "tsSaveAsXml";
-            this.tsSaveAsXml.Size = new System.Drawing.Size(148, 22);
+            this.tsSaveAsXml.Size = new System.Drawing.Size(147, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
             this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
             // 
             // cmdSaveAsPdf
             // 
-            this.cmdSaveAsPdf.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdSaveAsPdf.AutoSize = true;
+            this.cmdSaveAsPdf.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAsPdf.ContextMenuStrip = this.cmsSaveButton;
+            this.cmdSaveAsPdf.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSaveAsPdf.Enabled = false;
             this.cmdSaveAsPdf.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.cmdSaveAsPdf.Location = new System.Drawing.Point(65, 3);
@@ -115,10 +115,10 @@ namespace Chummer
             // 
             // cmdPrint
             // 
-            this.cmdPrint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdPrint.AutoSize = true;
+            this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
+            this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdPrint.Enabled = false;
             this.cmdPrint.Location = new System.Drawing.Point(3, 3);
             this.cmdPrint.Name = "cmdPrint";
@@ -132,11 +132,10 @@ namespace Chummer
             // 
             // cboXSLT
             // 
-            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(509, 3);
+            this.cboXSLT.Location = new System.Drawing.Point(509, 4);
             this.cboXSLT.Name = "cboXSLT";
             this.cboXSLT.Size = new System.Drawing.Size(254, 21);
             this.cboXSLT.TabIndex = 4;
@@ -145,9 +144,9 @@ namespace Chummer
             // 
             // lblCharacterSheet
             // 
-            this.lblCharacterSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterSheet.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCharacterSheet.AutoSize = true;
-            this.lblCharacterSheet.Location = new System.Drawing.Point(226, 6);
+            this.lblCharacterSheet.Location = new System.Drawing.Point(226, 8);
             this.lblCharacterSheet.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCharacterSheet.Name = "lblCharacterSheet";
             this.lblCharacterSheet.Size = new System.Drawing.Size(87, 13);
@@ -158,10 +157,8 @@ namespace Chummer
             // 
             // webBrowser1
             // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.webBrowser1, 6);
+            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webBrowser1.Location = new System.Drawing.Point(3, 32);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
@@ -172,11 +169,10 @@ namespace Chummer
             // 
             // cboLanguage
             // 
-            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLanguage.FormattingEnabled = true;
-            this.cboLanguage.Location = new System.Drawing.Point(341, 3);
+            this.cboLanguage.Location = new System.Drawing.Point(341, 4);
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(162, 21);
             this.cboLanguage.TabIndex = 104;
@@ -186,6 +182,7 @@ namespace Chummer
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 6;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -211,9 +208,7 @@ namespace Chummer
             // 
             // imgSheetLanguageFlag
             // 
-            this.imgSheetLanguageFlag.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.imgSheetLanguageFlag.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgSheetLanguageFlag.Location = new System.Drawing.Point(319, 3);
             this.imgSheetLanguageFlag.Name = "imgSheetLanguageFlag";
             this.imgSheetLanguageFlag.Size = new System.Drawing.Size(16, 23);
@@ -228,6 +223,8 @@ namespace Chummer
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(800, 120);
             this.Name = "frmViewer";
             this.Padding = new System.Windows.Forms.Padding(9);

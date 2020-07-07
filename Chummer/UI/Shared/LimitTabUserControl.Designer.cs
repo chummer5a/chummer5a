@@ -275,22 +275,23 @@ namespace Chummer.UI.Shared
             this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssLimitModifierNotesOnlyNotes});
             this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
-            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(181, 48);
+            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
             // 
             // tssLimitModifierNotesOnlyNotes
             // 
             this.tssLimitModifierNotesOnlyNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tssLimitModifierNotesOnlyNotes.Name = "tssLimitModifierNotesOnlyNotes";
-            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(180, 22);
+            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(105, 22);
             this.tssLimitModifierNotesOnlyNotes.Tag = "Menu_Notes";
             this.tssLimitModifierNotesOnlyNotes.Text = "&Notes";
             this.tssLimitModifierNotesOnlyNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
             // 
             // LimitTabUserControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.tlpParent);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "LimitTabUserControl";
             this.Size = new System.Drawing.Size(963, 426);
             this.Load += new System.EventHandler(this.LimitTabUserControl_Load);

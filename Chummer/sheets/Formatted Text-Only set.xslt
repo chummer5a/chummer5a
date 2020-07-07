@@ -8,6 +8,7 @@
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.MovementRate.xslt"/>
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
 
     <xsl:template match="/characters/character">
@@ -592,7 +593,7 @@
                     <br/>
           == <xsl:value-of select="$lang.Description"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="description"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -601,7 +602,7 @@
                     <br/>
                     <br/>== <xsl:value-of select="$lang.Background"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="background"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -610,7 +611,7 @@
                     <br/>
                     <br/>== <xsl:value-of select="$lang.Concept"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="concept"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -619,10 +620,10 @@
                     <br/>
                     <br/>== <xsl:value-of select="$lang.Notes"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="notes"/>
                     </xsl:call-template>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="gamenotes"/>
                     </xsl:call-template>
                 </xsl:if>

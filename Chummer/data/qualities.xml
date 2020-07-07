@@ -2485,9 +2485,7 @@
         <astralreputation>-1</astralreputation>
       </bonus>
       <required>
-        <oneof>
-          <careeronly />
-        </oneof>
+        <careeronly />
       </required>
       <source>SG</source>
       <page>199</page>

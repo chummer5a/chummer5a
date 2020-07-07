@@ -100,13 +100,14 @@ namespace Chummer
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tabForms = new System.Windows.Forms.TabControl();
             this.mnuProcessFile = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsSave = new ToolStripMenuItem();
-            this.tsSaveAs = new ToolStripMenuItem();
-            this.tsClose = new ToolStripMenuItem();
-            this.tsPrint = new ToolStripMenuItem();
-            this.tsExport = new ToolStripMenuItem();
+            this.tsSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsPrint = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsExport = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
+            this.mnuProcessFile.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -119,7 +120,7 @@ namespace Chummer
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.MdiWindowListItem = this.windowsMenu;
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1264, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1174, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "MenuStrip";
             this.menuStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menuStrip_ItemAdded);
@@ -468,7 +469,7 @@ namespace Chummer
             this.mnuToolsTranslator,
             this.mnuHeroLabImporter});
             this.toolsMenu.Name = "toolsMenu";
-            this.toolsMenu.Size = new System.Drawing.Size(47, 20);
+            this.toolsMenu.Size = new System.Drawing.Size(46, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
             this.toolsMenu.Text = "&Tools";
             // 
@@ -640,18 +641,17 @@ namespace Chummer
             // 
             // toolStrip
             // 
+            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
             this.tsbSave,
-            this.toolStripSeparator1,
             this.tsbPrint,
             this.printPreviewToolStripButton,
-            this.toolStripSeparator2,
             this.helpToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1264, 25);
+            this.toolStrip.Size = new System.Drawing.Size(1174, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "ToolStrip";
             this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemAdded);
@@ -691,8 +691,10 @@ namespace Chummer
             // 
             // toolStripSeparator1
             // 
+            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator1.MergeIndex = 5;
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(111, 6);
             this.toolStripSeparator1.Visible = false;
             // 
             // tsbPrint
@@ -717,8 +719,10 @@ namespace Chummer
             // 
             // toolStripSeparator2
             // 
+            this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator2.MergeIndex = 7;
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(111, 6);
             this.toolStripSeparator2.Visible = false;
             // 
             // helpToolStripButton
@@ -737,7 +741,7 @@ namespace Chummer
             this.tabForms.Location = new System.Drawing.Point(0, 49);
             this.tabForms.Name = "tabForms";
             this.tabForms.SelectedIndex = 0;
-            this.tabForms.Size = new System.Drawing.Size(1264, 22);
+            this.tabForms.Size = new System.Drawing.Size(1174, 22);
             this.tabForms.TabIndex = 3;
             this.tabForms.Visible = false;
             this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
@@ -753,7 +757,7 @@ namespace Chummer
             this.toolStripSeparator2,
             this.tsPrint});
             this.mnuProcessFile.Name = "mnuProcessFile";
-            this.mnuProcessFile.Size = new System.Drawing.Size(37, 20);
+            this.mnuProcessFile.Size = new System.Drawing.Size(115, 104);
             this.mnuProcessFile.Tag = "Menu_Main_File";
             this.mnuProcessFile.Text = "&File";
             // 
@@ -764,7 +768,7 @@ namespace Chummer
             this.tsSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsSave.MergeIndex = 3;
             this.tsSave.Name = "tsSave";
-            this.tsSave.Size = new System.Drawing.Size(148, 22);
+            this.tsSave.Size = new System.Drawing.Size(114, 22);
             this.tsSave.Tag = "Menu_FileSave";
             this.tsSave.Text = "&Save";
             this.tsSave.Click += new System.EventHandler(this.tsSave_Click);
@@ -775,17 +779,10 @@ namespace Chummer
             this.tsSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsSaveAs.MergeIndex = 4;
             this.tsSaveAs.Name = "tsSaveAs";
-            this.tsSaveAs.Size = new System.Drawing.Size(148, 22);
+            this.tsSaveAs.Size = new System.Drawing.Size(114, 22);
             this.tsSaveAs.Tag = "Menu_FileSaveAs";
             this.tsSaveAs.Text = "Save &As";
             this.tsSaveAs.Click += new System.EventHandler(this.tsSaveAs_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripSeparator1.MergeIndex = 5;
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
             // 
             // tsClose
             // 
@@ -793,17 +790,10 @@ namespace Chummer
             this.tsClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsClose.MergeIndex = 6;
             this.tsClose.Name = "tsClose";
-            this.tsClose.Size = new System.Drawing.Size(148, 22);
+            this.tsClose.Size = new System.Drawing.Size(114, 22);
             this.tsClose.Tag = "Menu_FileClose";
             this.tsClose.Text = "&Close";
             this.tsClose.Click += new System.EventHandler(this.tsClose_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripSeparator2.MergeIndex = 7;
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
             // 
             // tsPrint
             // 
@@ -811,21 +801,27 @@ namespace Chummer
             this.tsPrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsPrint.MergeIndex = 8;
             this.tsPrint.Name = "tsPrint";
-            this.tsPrint.Size = new System.Drawing.Size(148, 22);
+            this.tsPrint.Size = new System.Drawing.Size(114, 22);
             this.tsPrint.Tag = "Menu_FilePrint";
             this.tsPrint.Text = "&Print";
             this.tsPrint.Click += new System.EventHandler(this.tsPrint_Click);
+            // 
+            // tsExport
+            // 
+            this.tsExport.Name = "tsExport";
+            this.tsExport.Size = new System.Drawing.Size(32, 19);
             // 
             // frmChummerMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.ClientSize = new System.Drawing.Size(1174, 681);
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
             this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
@@ -841,6 +837,7 @@ namespace Chummer
             this.menuStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
+            this.mnuProcessFile.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -913,11 +910,11 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuChummerDiscord;
         private System.Windows.Forms.ToolStripMenuItem mnuHeroLabImporter;
         private System.Windows.Forms.ContextMenuStrip mnuProcessFile;
-        private ToolStripItem tsSave;
-        private ToolStripItem tsSaveAs;
-        private ToolStripItem tsClose;
-        private ToolStripItem tsPrint;
-        private ToolStripItem tsExport;
+        private ToolStripMenuItem tsSave;
+        private ToolStripMenuItem tsSaveAs;
+        private ToolStripMenuItem tsClose;
+        private ToolStripMenuItem tsPrint;
+        private ToolStripMenuItem tsExport;
     }
 }
 

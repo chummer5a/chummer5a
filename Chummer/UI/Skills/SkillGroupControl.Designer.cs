@@ -36,15 +36,15 @@ namespace Chummer.UI.Skills
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flpRightCreate = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlRight = new System.Windows.Forms.Panel();
             this.flpRightCareer = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpRightCreate = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
             this.tlpMain.SuspendLayout();
-            this.flpRightCreate.SuspendLayout();
             this.pnlRight.SuspendLayout();
             this.flpRightCareer.SuspendLayout();
+            this.flpRightCreate.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblName
@@ -138,21 +138,6 @@ namespace Chummer.UI.Skills
             this.tlpMain.Size = new System.Drawing.Size(154, 24);
             this.tlpMain.TabIndex = 23;
             // 
-            // flpRightCreate
-            // 
-            this.flpRightCreate.AutoSize = true;
-            this.flpRightCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpRightCreate.Controls.Add(this.nudKarma);
-            this.flpRightCreate.Controls.Add(this.nudSkill);
-            this.flpRightCreate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpRightCreate.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpRightCreate.Location = new System.Drawing.Point(0, 0);
-            this.flpRightCreate.Margin = new System.Windows.Forms.Padding(0);
-            this.flpRightCreate.Name = "flpRightCreate";
-            this.flpRightCreate.Size = new System.Drawing.Size(82, 24);
-            this.flpRightCreate.TabIndex = 7;
-            this.flpRightCreate.WrapContents = false;
-            // 
             // pnlRight
             // 
             this.pnlRight.AutoSize = true;
@@ -180,13 +165,29 @@ namespace Chummer.UI.Skills
             this.flpRightCareer.TabIndex = 0;
             this.flpRightCareer.WrapContents = false;
             // 
+            // flpRightCreate
+            // 
+            this.flpRightCreate.AutoSize = true;
+            this.flpRightCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpRightCreate.Controls.Add(this.nudKarma);
+            this.flpRightCreate.Controls.Add(this.nudSkill);
+            this.flpRightCreate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpRightCreate.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpRightCreate.Location = new System.Drawing.Point(0, 0);
+            this.flpRightCreate.Margin = new System.Windows.Forms.Padding(0);
+            this.flpRightCreate.Name = "flpRightCreate";
+            this.flpRightCreate.Size = new System.Drawing.Size(82, 24);
+            this.flpRightCreate.TabIndex = 7;
+            this.flpRightCreate.WrapContents = false;
+            // 
             // SkillGroupControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(0);
             this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "SkillGroupControl";
@@ -197,12 +198,12 @@ namespace Chummer.UI.Skills
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flpRightCreate.ResumeLayout(false);
-            this.flpRightCreate.PerformLayout();
             this.pnlRight.ResumeLayout(false);
             this.pnlRight.PerformLayout();
             this.flpRightCareer.ResumeLayout(false);
             this.flpRightCareer.PerformLayout();
+            this.flpRightCreate.ResumeLayout(false);
+            this.flpRightCreate.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
