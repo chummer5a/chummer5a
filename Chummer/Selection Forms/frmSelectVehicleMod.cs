@@ -78,7 +78,7 @@ namespace Chummer
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
                 chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;

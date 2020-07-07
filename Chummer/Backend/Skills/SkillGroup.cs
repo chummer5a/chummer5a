@@ -145,7 +145,8 @@ namespace Chummer.Backend.Skills
                         _intCachedBaseUnbroken = 0;
                     else
                     {
-                        _intCachedBaseUnbroken = _objCharacter.BuildMethodHasSkillPoints && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups) &&
+                        _intCachedBaseUnbroken = _objCharacter.EffectiveBuildMethodHasSkillPoints
+                                                 && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups) &&
                             !SkillList.Any(x => x.BasePoints + x.FreeBase > 0) ? 1 : 0;
                     }
                 }
@@ -504,13 +505,19 @@ namespace Chummer.Backend.Skills
             _objCharacter = objCharacter;
             _strGroupName = strGroupName;
             if (_objCharacter != null)
-                _objCharacter.PropertyChanged += Character_PropertyChanged;
+            {
+                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
+            }
         }
 
         public void UnbindSkillGroup()
         {
             if (_objCharacter != null)
-                _objCharacter.PropertyChanged -= Character_PropertyChanged;
+            {
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
+            }
             foreach (Skill objSkill in _lstAffectedSkills)
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
@@ -663,11 +670,18 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.Karma))
                 OnPropertyChanged(nameof(CareerCanIncrease));
-            else if (e.PropertyName == nameof(Character.BuildMethodHasSkillPoints))
+            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+                OnPropertyChanged(nameof(BaseUnbroken));
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterOptions.StrictSkillGroupsInCreateMode)
+                || e.PropertyName == nameof(CharacterOptions.UsePointsOnBrokenGroups))
                 OnPropertyChanged(nameof(BaseUnbroken));
         }
 

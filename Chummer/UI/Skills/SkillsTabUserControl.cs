@@ -218,9 +218,9 @@ namespace Chummer.UI.Skills
 
             if (!_objCharacter.Created)
             {
-                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
-                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
-                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodHasSkillPoints));
+                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodHasSkillPoints));
+                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodHasSkillPoints));
 
                 lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));

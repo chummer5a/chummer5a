@@ -459,12 +459,11 @@ namespace Chummer
             // The Critter should use the same settings file as the character.
             using (Character objCharacter = new Character
             {
-                SettingsFile = _objSpirit.CharacterObject.SettingsFile,
+                CharacterOptionsKey = _objSpirit.CharacterObject.CharacterOptionsKey,
 
                 // Override the defaults for the setting.
                 IgnoreRules = true,
-                IsCritter = true,
-                BuildMethod = CharacterBuildMethod.Karma
+                IsCritter = true
             })
             {
                 if (!string.IsNullOrEmpty(txtCritterName.Text))

@@ -241,47 +241,57 @@ namespace Chummer
             this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
-            this.tlpHouseRules = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
+            this.flpHouseRules = new System.Windows.Forms.FlowLayoutPanel();
+            this.gpbHouseRulesQualities = new System.Windows.Forms.GroupBox();
+            this.tlpHouseRulesQualities = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkExceedNegativeQualities = new System.Windows.Forms.CheckBox();
-            this.chkExceedPositiveQualities = new System.Windows.Forms.CheckBox();
-            this.chkUnarmedSkillImprovements = new System.Windows.Forms.CheckBox();
             this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
+            this.chkExceedPositiveQualities = new System.Windows.Forms.CheckBox();
             this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
-            this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
-            this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
-            this.chkMysAdPp = new System.Windows.Forms.CheckBox();
-            this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
-            this.chkAlternateMetatypeAttributeKarma = new System.Windows.Forms.CheckBox();
-            this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
-            this.chkMoreLethalGameplay = new System.Windows.Forms.CheckBox();
-            this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
-            this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
-            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
-            this.chkAllowTechnomancerSchooling = new System.Windows.Forms.CheckBox();
-            this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
-            this.chkCompensateSkillGroupKarmaDifference = new System.Windows.Forms.CheckBox();
-            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
             this.chkExceedPositiveQualitiesCostDoubled = new System.Windows.Forms.CheckBox();
             this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
-            this.chkIgnoreComplexFormLimit = new System.Windows.Forms.CheckBox();
-            this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
-            this.chkIncreasedImprovedAbilityModifier = new System.Windows.Forms.CheckBox();
-            this.chkUnclampAttributeMinimum = new System.Windows.Forms.CheckBox();
+            this.gpbHouseRulesAttributes = new System.Windows.Forms.GroupBox();
+            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
+            this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
+            this.chkAlternateMetatypeAttributeKarma = new System.Windows.Forms.CheckBox();
             this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
-            this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
-            this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
             this.flpDroneArmorMultiplier = new System.Windows.Forms.FlowLayoutPanel();
             this.chkDroneArmorMultiplier = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.nudDroneArmorMultiplier = new System.Windows.Forms.NumericUpDown();
+            this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
+            this.gpbHouseRulesSkills = new System.Windows.Forms.GroupBox();
+            this.tlpHouseRulesSkills = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkCompensateSkillGroupKarmaDifference = new System.Windows.Forms.CheckBox();
+            this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
+            this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
+            this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
+            this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
+            this.bufferedTableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
+            this.chkMoreLethalGameplay = new System.Windows.Forms.CheckBox();
+            this.chkUnarmedSkillImprovements = new System.Windows.Forms.CheckBox();
+            this.gpbHouseRulesMagicResonance = new System.Windows.Forms.GroupBox();
+            this.tlpHouseRulesMagicResonance = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkMysAdPp = new System.Windows.Forms.CheckBox();
+            this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
+            this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
+            this.chkIncreasedImprovedAbilityModifier = new System.Windows.Forms.CheckBox();
+            this.chkIgnoreComplexFormLimit = new System.Windows.Forms.CheckBox();
+            this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
+            this.chkAllowTechnomancerSchooling = new System.Windows.Forms.CheckBox();
+            this.chkUnclampAttributeMinimum = new System.Windows.Forms.CheckBox();
+            this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
+            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
+            this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.cmdDelete = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -364,9 +374,19 @@ namespace Chummer
             this.tabCustomData.SuspendLayout();
             this.tlpOptionalRules.SuspendLayout();
             this.tabHouseRules.SuspendLayout();
-            this.tlpHouseRules.SuspendLayout();
+            this.flpHouseRules.SuspendLayout();
+            this.gpbHouseRulesQualities.SuspendLayout();
+            this.tlpHouseRulesQualities.SuspendLayout();
+            this.gpbHouseRulesAttributes.SuspendLayout();
+            this.bufferedTableLayoutPanel1.SuspendLayout();
             this.flpDroneArmorMultiplier.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
+            this.gpbHouseRulesSkills.SuspendLayout();
+            this.tlpHouseRulesSkills.SuspendLayout();
+            this.gpbHouseRulesCombat.SuspendLayout();
+            this.bufferedTableLayoutPanel2.SuspendLayout();
+            this.gpbHouseRulesMagicResonance.SuspendLayout();
+            this.tlpHouseRulesMagicResonance.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -500,10 +520,10 @@ namespace Chummer
             this.flpBasicOptions.AutoSize = true;
             this.flpBasicOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCreateSettings);
+            this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsPrinting);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsOfficialRules);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCyberlimbs);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsRounding);
-            this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsPrinting);
             this.flpBasicOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBasicOptions.Location = new System.Drawing.Point(301, 0);
             this.flpBasicOptions.Margin = new System.Windows.Forms.Padding(0);
@@ -1410,7 +1430,7 @@ namespace Chummer
             // 
             this.gpbBasicOptionsPrinting.AutoSize = true;
             this.gpbBasicOptionsPrinting.Controls.Add(this.tlpBasicOptionsPrinting);
-            this.gpbBasicOptionsPrinting.Location = new System.Drawing.Point(370, 520);
+            this.gpbBasicOptionsPrinting.Location = new System.Drawing.Point(503, 3);
             this.gpbBasicOptionsPrinting.Name = "gpbBasicOptionsPrinting";
             this.gpbBasicOptionsPrinting.Size = new System.Drawing.Size(241, 111);
             this.gpbBasicOptionsPrinting.TabIndex = 0;
@@ -3159,7 +3179,7 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
-            this.tabHouseRules.Controls.Add(this.tlpHouseRules);
+            this.tabHouseRules.Controls.Add(this.flpHouseRules);
             this.tabHouseRules.Location = new System.Drawing.Point(4, 22);
             this.tabHouseRules.Name = "tabHouseRules";
             this.tabHouseRules.Padding = new System.Windows.Forms.Padding(9);
@@ -3168,87 +3188,65 @@ namespace Chummer
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
             // 
-            // tlpHouseRules
+            // flpHouseRules
             // 
-            this.tlpHouseRules.AutoScroll = true;
-            this.tlpHouseRules.AutoSize = true;
-            this.tlpHouseRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpHouseRules.ColumnCount = 2;
-            this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpHouseRules.Controls.Add(this.chkIgnoreArt, 0, 0);
-            this.tlpHouseRules.Controls.Add(this.chkExceedNegativeQualities, 1, 6);
-            this.tlpHouseRules.Controls.Add(this.chkExceedPositiveQualities, 1, 4);
-            this.tlpHouseRules.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
-            this.tlpHouseRules.Controls.Add(this.chkDontDoubleQualityPurchases, 0, 3);
-            this.tlpHouseRules.Controls.Add(this.chkDontDoubleQualityRefunds, 0, 4);
-            this.tlpHouseRules.Controls.Add(this.chkAllowInitiation, 0, 7);
-            this.tlpHouseRules.Controls.Add(this.chkAllowCyberwareESSDiscounts, 0, 9);
-            this.tlpHouseRules.Controls.Add(this.chkMysAdPp, 0, 14);
-            this.tlpHouseRules.Controls.Add(this.chkESSLossReducesMaximumOnly, 0, 10);
-            this.tlpHouseRules.Controls.Add(this.chkAlternateMetatypeAttributeKarma, 0, 13);
-            this.tlpHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness, 0, 11);
-            this.tlpHouseRules.Controls.Add(this.chkMoreLethalGameplay, 1, 12);
-            this.tlpHouseRules.Controls.Add(this.chkExtendAnyDetectionSpell, 1, 11);
-            this.tlpHouseRules.Controls.Add(this.chkAllowSkillRegrouping, 1, 9);
-            this.tlpHouseRules.Controls.Add(this.chkNoArmorEncumbrance, 1, 10);
-            this.tlpHouseRules.Controls.Add(this.chkAllowTechnomancerSchooling, 0, 8);
-            this.tlpHouseRules.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 6);
-            this.tlpHouseRules.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 5);
-            this.tlpHouseRules.Controls.Add(this.chkMysAdeptSecondMAGAttribute, 0, 2);
-            this.tlpHouseRules.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled, 1, 5);
-            this.tlpHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit, 1, 7);
-            this.tlpHouseRules.Controls.Add(this.chkIgnoreComplexFormLimit, 1, 0);
-            this.tlpHouseRules.Controls.Add(this.chkSpecialKarmaCost, 1, 1);
-            this.tlpHouseRules.Controls.Add(this.chkIncreasedImprovedAbilityModifier, 1, 2);
-            this.tlpHouseRules.Controls.Add(this.chkUnclampAttributeMinimum, 1, 3);
-            this.tlpHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder, 1, 13);
-            this.tlpHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers, 1, 14);
-            this.tlpHouseRules.Controls.Add(this.chkFreeMartialArtSpecialization, 1, 8);
-            this.tlpHouseRules.Controls.Add(this.flpDroneArmorMultiplier, 0, 12);
-            this.tlpHouseRules.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tlpHouseRules.Location = new System.Drawing.Point(9, 9);
-            this.tlpHouseRules.Name = "tlpHouseRules";
-            this.tlpHouseRules.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.tlpHouseRules.RowCount = 15;
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.Size = new System.Drawing.Size(1214, 348);
-            this.tlpHouseRules.TabIndex = 39;
+            this.flpHouseRules.AutoScroll = true;
+            this.flpHouseRules.AutoSize = true;
+            this.flpHouseRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpHouseRules.Controls.Add(this.gpbHouseRulesQualities);
+            this.flpHouseRules.Controls.Add(this.gpbHouseRulesAttributes);
+            this.flpHouseRules.Controls.Add(this.gpbHouseRulesSkills);
+            this.flpHouseRules.Controls.Add(this.gpbHouseRulesCombat);
+            this.flpHouseRules.Controls.Add(this.gpbHouseRulesMagicResonance);
+            this.flpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpHouseRules.Location = new System.Drawing.Point(9, 9);
+            this.flpHouseRules.Margin = new System.Windows.Forms.Padding(0);
+            this.flpHouseRules.Name = "flpHouseRules";
+            this.flpHouseRules.Size = new System.Drawing.Size(1214, 584);
+            this.flpHouseRules.TabIndex = 40;
             // 
-            // chkIgnoreArt
+            // gpbHouseRulesQualities
             // 
-            this.chkIgnoreArt.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkIgnoreArt.AutoSize = true;
-            this.chkIgnoreArt.Location = new System.Drawing.Point(3, 3);
-            this.chkIgnoreArt.Name = "chkIgnoreArt";
-            this.chkIgnoreArt.Size = new System.Drawing.Size(235, 17);
-            this.chkIgnoreArt.TabIndex = 1;
-            this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
-            this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
-            this.chkIgnoreArt.UseVisualStyleBackColor = true;
+            this.gpbHouseRulesQualities.AutoSize = true;
+            this.gpbHouseRulesQualities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbHouseRulesQualities.Controls.Add(this.tlpHouseRulesQualities);
+            this.gpbHouseRulesQualities.Location = new System.Drawing.Point(3, 3);
+            this.gpbHouseRulesQualities.Name = "gpbHouseRulesQualities";
+            this.gpbHouseRulesQualities.Size = new System.Drawing.Size(535, 157);
+            this.gpbHouseRulesQualities.TabIndex = 1;
+            this.gpbHouseRulesQualities.TabStop = false;
+            this.gpbHouseRulesQualities.Text = "Qualities";
+            // 
+            // tlpHouseRulesQualities
+            // 
+            this.tlpHouseRulesQualities.AutoSize = true;
+            this.tlpHouseRulesQualities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesQualities.ColumnCount = 1;
+            this.tlpHouseRulesQualities.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedNegativeQualities, 0, 4);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkDontDoubleQualityPurchases, 0, 0);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedPositiveQualities, 0, 2);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkDontDoubleQualityRefunds, 0, 1);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled, 0, 3);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedNegativeQualitiesLimit, 0, 5);
+            this.tlpHouseRulesQualities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesQualities.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesQualities.Name = "tlpHouseRulesQualities";
+            this.tlpHouseRulesQualities.RowCount = 6;
+            this.tlpHouseRulesQualities.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesQualities.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesQualities.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesQualities.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesQualities.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesQualities.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesQualities.Size = new System.Drawing.Size(529, 138);
+            this.tlpHouseRulesQualities.TabIndex = 0;
             // 
             // chkExceedNegativeQualities
             // 
             this.chkExceedNegativeQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedNegativeQualities.AutoSize = true;
-            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(605, 141);
+            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(3, 95);
             this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
             this.chkExceedNegativeQualities.Size = new System.Drawing.Size(278, 17);
             this.chkExceedNegativeQualities.TabIndex = 17;
@@ -3256,35 +3254,11 @@ namespace Chummer
             this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
             this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
             // 
-            // chkExceedPositiveQualities
-            // 
-            this.chkExceedPositiveQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkExceedPositiveQualities.AutoSize = true;
-            this.chkExceedPositiveQualities.Location = new System.Drawing.Point(605, 95);
-            this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
-            this.chkExceedPositiveQualities.Size = new System.Drawing.Size(272, 17);
-            this.chkExceedPositiveQualities.TabIndex = 15;
-            this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
-            this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
-            this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
-            // 
-            // chkUnarmedSkillImprovements
-            // 
-            this.chkUnarmedSkillImprovements.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkUnarmedSkillImprovements.AutoSize = true;
-            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 26);
-            this.chkUnarmedSkillImprovements.Name = "chkUnarmedSkillImprovements";
-            this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(372, 17);
-            this.chkUnarmedSkillImprovements.TabIndex = 0;
-            this.chkUnarmedSkillImprovements.Tag = "Checkbox_Options_UnarmedSkillImprovements";
-            this.chkUnarmedSkillImprovements.Text = "Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses";
-            this.chkUnarmedSkillImprovements.UseVisualStyleBackColor = true;
-            // 
             // chkDontDoubleQualityPurchases
             // 
             this.chkDontDoubleQualityPurchases.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontDoubleQualityPurchases.AutoSize = true;
-            this.chkDontDoubleQualityPurchases.Location = new System.Drawing.Point(3, 72);
+            this.chkDontDoubleQualityPurchases.Location = new System.Drawing.Point(3, 3);
             this.chkDontDoubleQualityPurchases.Name = "chkDontDoubleQualityPurchases";
             this.chkDontDoubleQualityPurchases.Size = new System.Drawing.Size(352, 17);
             this.chkDontDoubleQualityPurchases.TabIndex = 5;
@@ -3292,11 +3266,23 @@ namespace Chummer
             this.chkDontDoubleQualityPurchases.Text = "Don\'t double the cost of purchasing Positive Qualities in Career Mode";
             this.chkDontDoubleQualityPurchases.UseVisualStyleBackColor = true;
             // 
+            // chkExceedPositiveQualities
+            // 
+            this.chkExceedPositiveQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkExceedPositiveQualities.AutoSize = true;
+            this.chkExceedPositiveQualities.Location = new System.Drawing.Point(3, 49);
+            this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
+            this.chkExceedPositiveQualities.Size = new System.Drawing.Size(272, 17);
+            this.chkExceedPositiveQualities.TabIndex = 15;
+            this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
+            this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
+            this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
+            // 
             // chkDontDoubleQualityRefunds
             // 
             this.chkDontDoubleQualityRefunds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontDoubleQualityRefunds.AutoSize = true;
-            this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(3, 95);
+            this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(3, 26);
             this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
             this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
             this.chkDontDoubleQualityRefunds.TabIndex = 21;
@@ -3304,182 +3290,12 @@ namespace Chummer
             this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
             this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
             // 
-            // chkAllowInitiation
-            // 
-            this.chkAllowInitiation.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAllowInitiation.AutoSize = true;
-            this.chkAllowInitiation.Location = new System.Drawing.Point(3, 164);
-            this.chkAllowInitiation.Name = "chkAllowInitiation";
-            this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
-            this.chkAllowInitiation.TabIndex = 7;
-            this.chkAllowInitiation.Tag = "Checkbox_Options_AllowInitiation";
-            this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
-            this.chkAllowInitiation.UseVisualStyleBackColor = true;
-            // 
-            // chkAllowCyberwareESSDiscounts
-            // 
-            this.chkAllowCyberwareESSDiscounts.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAllowCyberwareESSDiscounts.AutoSize = true;
-            this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(3, 210);
-            this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
-            this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
-            this.chkAllowCyberwareESSDiscounts.TabIndex = 19;
-            this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
-            this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
-            this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
-            // 
-            // chkMysAdPp
-            // 
-            this.chkMysAdPp.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkMysAdPp.AutoSize = true;
-            this.chkMysAdPp.Location = new System.Drawing.Point(3, 328);
-            this.chkMysAdPp.Name = "chkMysAdPp";
-            this.chkMysAdPp.Size = new System.Drawing.Size(280, 17);
-            this.chkMysAdPp.TabIndex = 29;
-            this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
-            this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
-            this.chkMysAdPp.UseVisualStyleBackColor = true;
-            // 
-            // chkESSLossReducesMaximumOnly
-            // 
-            this.chkESSLossReducesMaximumOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkESSLossReducesMaximumOnly.AutoSize = true;
-            this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(3, 233);
-            this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
-            this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
-            this.chkESSLossReducesMaximumOnly.TabIndex = 20;
-            this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
-            this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
-            this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
-            // 
-            // chkAlternateMetatypeAttributeKarma
-            // 
-            this.chkAlternateMetatypeAttributeKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAlternateMetatypeAttributeKarma.AutoSize = true;
-            this.chkAlternateMetatypeAttributeKarma.Location = new System.Drawing.Point(3, 305);
-            this.chkAlternateMetatypeAttributeKarma.Name = "chkAlternateMetatypeAttributeKarma";
-            this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(411, 17);
-            this.chkAlternateMetatypeAttributeKarma.TabIndex = 28;
-            this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
-            this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
-            this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
-            // 
-            // chkUseCalculatedPublicAwareness
-            // 
-            this.chkUseCalculatedPublicAwareness.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkUseCalculatedPublicAwareness.AutoSize = true;
-            this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(3, 256);
-            this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
-            this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
-            this.chkUseCalculatedPublicAwareness.TabIndex = 22;
-            this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
-            this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
-            this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
-            // 
-            // chkMoreLethalGameplay
-            // 
-            this.chkMoreLethalGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkMoreLethalGameplay.AutoSize = true;
-            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(605, 280);
-            this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
-            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(297, 17);
-            this.chkMoreLethalGameplay.TabIndex = 41;
-            this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
-            this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
-            this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
-            // 
-            // chkExtendAnyDetectionSpell
-            // 
-            this.chkExtendAnyDetectionSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkExtendAnyDetectionSpell.AutoSize = true;
-            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(605, 256);
-            this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
-            this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(332, 17);
-            this.chkExtendAnyDetectionSpell.TabIndex = 40;
-            this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
-            this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
-            this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
-            // 
-            // chkAllowSkillRegrouping
-            // 
-            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAllowSkillRegrouping.AutoSize = true;
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(605, 210);
-            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
-            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
-            this.chkAllowSkillRegrouping.TabIndex = 39;
-            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
-            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
-            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
-            // 
-            // chkNoArmorEncumbrance
-            // 
-            this.chkNoArmorEncumbrance.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkNoArmorEncumbrance.AutoSize = true;
-            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(605, 233);
-            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(139, 17);
-            this.chkNoArmorEncumbrance.TabIndex = 38;
-            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
-            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
-            // 
-            // chkAllowTechnomancerSchooling
-            // 
-            this.chkAllowTechnomancerSchooling.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAllowTechnomancerSchooling.AutoSize = true;
-            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 187);
-            this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
-            this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(273, 17);
-            this.chkAllowTechnomancerSchooling.TabIndex = 45;
-            this.chkAllowTechnomancerSchooling.Tag = "Checkbox_Options_AllowTechnomancerSchooling";
-            this.chkAllowTechnomancerSchooling.Text = "Technomancer: Allow \'Schooling\' Initiation discounts";
-            this.chkAllowTechnomancerSchooling.UseVisualStyleBackColor = true;
-            // 
-            // chkUsePointsOnBrokenGroups
-            // 
-            this.chkUsePointsOnBrokenGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkUsePointsOnBrokenGroups.AutoSize = true;
-            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 141);
-            this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
-            this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
-            this.chkUsePointsOnBrokenGroups.TabIndex = 49;
-            this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
-            this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
-            this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
-            // 
-            // chkCompensateSkillGroupKarmaDifference
-            // 
-            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
-            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 118);
-            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
-            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
-            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
-    "skill group";
-            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
-            // 
-            // chkMysAdeptSecondMAGAttribute
-            // 
-            this.chkMysAdeptSecondMAGAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
-            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 49);
-            this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
-            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
-            this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
-            this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
-            this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
-    "rules";
-            this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
-            // 
             // chkExceedPositiveQualitiesCostDoubled
             // 
             this.chkExceedPositiveQualitiesCostDoubled.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedPositiveQualitiesCostDoubled.AutoSize = true;
             this.chkExceedPositiveQualitiesCostDoubled.Enabled = false;
-            this.chkExceedPositiveQualitiesCostDoubled.Location = new System.Drawing.Point(625, 118);
+            this.chkExceedPositiveQualitiesCostDoubled.Location = new System.Drawing.Point(23, 72);
             this.chkExceedPositiveQualitiesCostDoubled.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkExceedPositiveQualitiesCostDoubled.Name = "chkExceedPositiveQualitiesCostDoubled";
             this.chkExceedPositiveQualitiesCostDoubled.Size = new System.Drawing.Size(367, 17);
@@ -3494,7 +3310,7 @@ namespace Chummer
             this.chkExceedNegativeQualitiesLimit.AutoSize = true;
             this.chkExceedNegativeQualitiesLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkExceedNegativeQualitiesLimit.Enabled = false;
-            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(625, 164);
+            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(23, 118);
             this.chkExceedNegativeQualitiesLimit.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
             this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(503, 17);
@@ -3505,89 +3321,90 @@ namespace Chummer
             this.chkExceedNegativeQualitiesLimit.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
             // 
-            // chkIgnoreComplexFormLimit
+            // gpbHouseRulesAttributes
             // 
-            this.chkIgnoreComplexFormLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkIgnoreComplexFormLimit.AutoSize = true;
-            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(605, 3);
-            this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(215, 17);
-            this.chkIgnoreComplexFormLimit.TabIndex = 43;
-            this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
-            this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
+            this.gpbHouseRulesAttributes.AutoSize = true;
+            this.gpbHouseRulesAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbHouseRulesAttributes.Controls.Add(this.bufferedTableLayoutPanel1);
+            this.gpbHouseRulesAttributes.Location = new System.Drawing.Point(544, 3);
+            this.gpbHouseRulesAttributes.Name = "gpbHouseRulesAttributes";
+            this.gpbHouseRulesAttributes.Size = new System.Drawing.Size(423, 160);
+            this.gpbHouseRulesAttributes.TabIndex = 3;
+            this.gpbHouseRulesAttributes.TabStop = false;
+            this.gpbHouseRulesAttributes.Text = "Attributes";
             // 
-            // chkSpecialKarmaCost
+            // bufferedTableLayoutPanel1
             // 
-            this.chkSpecialKarmaCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkSpecialKarmaCost.AutoSize = true;
-            this.chkSpecialKarmaCost.Location = new System.Drawing.Point(605, 26);
-            this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
-            this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
-            this.chkSpecialKarmaCost.TabIndex = 42;
-            this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCost";
-            this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
-            this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
+            this.bufferedTableLayoutPanel1.AutoSize = true;
+            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bufferedTableLayoutPanel1.ColumnCount = 1;
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkESSLossReducesMaximumOnly, 0, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkAllowCyberwareESSDiscounts, 0, 1);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkAlternateMetatypeAttributeKarma, 0, 3);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkReverseAttributePriorityOrder, 0, 2);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.flpDroneArmorMultiplier, 0, 5);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkUseCalculatedPublicAwareness, 0, 4);
+            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
+            this.bufferedTableLayoutPanel1.RowCount = 6;
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(417, 141);
+            this.bufferedTableLayoutPanel1.TabIndex = 0;
             // 
-            // chkIncreasedImprovedAbilityModifier
+            // chkESSLossReducesMaximumOnly
             // 
-            this.chkIncreasedImprovedAbilityModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkIncreasedImprovedAbilityModifier.AutoSize = true;
-            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(605, 49);
-            this.chkIncreasedImprovedAbilityModifier.Name = "chkIncreasedImprovedAbilityModifier";
-            this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(332, 17);
-            this.chkIncreasedImprovedAbilityModifier.TabIndex = 44;
-            this.chkIncreasedImprovedAbilityModifier.Tag = "Checkbox_Options_IncreasedImprovedAbilityModifier";
-            this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
-            this.chkIncreasedImprovedAbilityModifier.UseVisualStyleBackColor = true;
+            this.chkESSLossReducesMaximumOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkESSLossReducesMaximumOnly.AutoSize = true;
+            this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(3, 3);
+            this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
+            this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
+            this.chkESSLossReducesMaximumOnly.TabIndex = 20;
+            this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
+            this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
+            this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
             // 
-            // chkUnclampAttributeMinimum
+            // chkAllowCyberwareESSDiscounts
             // 
-            this.chkUnclampAttributeMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkUnclampAttributeMinimum.AutoSize = true;
-            this.chkUnclampAttributeMinimum.Location = new System.Drawing.Point(605, 72);
-            this.chkUnclampAttributeMinimum.Name = "chkUnclampAttributeMinimum";
-            this.chkUnclampAttributeMinimum.Size = new System.Drawing.Size(328, 17);
-            this.chkUnclampAttributeMinimum.TabIndex = 50;
-            this.chkUnclampAttributeMinimum.Tag = "Checkbox_Options_UnclampAttributeMinimum";
-            this.chkUnclampAttributeMinimum.Text = "Attribute values are allowed to go below 0 due to Essence Loss.";
-            this.chkUnclampAttributeMinimum.UseVisualStyleBackColor = true;
+            this.chkAllowCyberwareESSDiscounts.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowCyberwareESSDiscounts.AutoSize = true;
+            this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(3, 26);
+            this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
+            this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
+            this.chkAllowCyberwareESSDiscounts.TabIndex = 19;
+            this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
+            this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
+            this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
+            // 
+            // chkAlternateMetatypeAttributeKarma
+            // 
+            this.chkAlternateMetatypeAttributeKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAlternateMetatypeAttributeKarma.AutoSize = true;
+            this.chkAlternateMetatypeAttributeKarma.Location = new System.Drawing.Point(3, 72);
+            this.chkAlternateMetatypeAttributeKarma.Name = "chkAlternateMetatypeAttributeKarma";
+            this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(411, 17);
+            this.chkAlternateMetatypeAttributeKarma.TabIndex = 28;
+            this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
+            this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
+            this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
             // 
             // chkReverseAttributePriorityOrder
             // 
             this.chkReverseAttributePriorityOrder.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkReverseAttributePriorityOrder.AutoSize = true;
-            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(605, 305);
+            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(3, 49);
             this.chkReverseAttributePriorityOrder.Name = "chkReverseAttributePriorityOrder";
             this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(251, 17);
             this.chkReverseAttributePriorityOrder.TabIndex = 33;
             this.chkReverseAttributePriorityOrder.Tag = "Checkbox_Options_ReverseAttributePriorityOrder";
             this.chkReverseAttributePriorityOrder.Text = "Spend Karma on Attributes before Priority Points";
             this.chkReverseAttributePriorityOrder.UseVisualStyleBackColor = true;
-            // 
-            // chkPrioritySpellsAsAdeptPowers
-            // 
-            this.chkPrioritySpellsAsAdeptPowers.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
-            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(605, 328);
-            this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
-            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(325, 17);
-            this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
-            this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
-            this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending of free spells from Magic Priority as power points";
-            this.chkPrioritySpellsAsAdeptPowers.UseVisualStyleBackColor = true;
-            // 
-            // chkFreeMartialArtSpecialization
-            // 
-            this.chkFreeMartialArtSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkFreeMartialArtSpecialization.AutoSize = true;
-            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(605, 187);
-            this.chkFreeMartialArtSpecialization.Name = "chkFreeMartialArtSpecialization";
-            this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(281, 17);
-            this.chkFreeMartialArtSpecialization.TabIndex = 30;
-            this.chkFreeMartialArtSpecialization.Tag = "Checkbox_Option_FreeMartialArtSpecialization";
-            this.chkFreeMartialArtSpecialization.Text = "Allow Martial Arts to grant a free specialisation in a skill";
-            this.chkFreeMartialArtSpecialization.UseVisualStyleBackColor = true;
             // 
             // flpDroneArmorMultiplier
             // 
@@ -3596,11 +3413,10 @@ namespace Chummer
             this.flpDroneArmorMultiplier.Controls.Add(this.chkDroneArmorMultiplier);
             this.flpDroneArmorMultiplier.Controls.Add(this.label4);
             this.flpDroneArmorMultiplier.Controls.Add(this.nudDroneArmorMultiplier);
-            this.flpDroneArmorMultiplier.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpDroneArmorMultiplier.Location = new System.Drawing.Point(0, 276);
+            this.flpDroneArmorMultiplier.Location = new System.Drawing.Point(0, 115);
             this.flpDroneArmorMultiplier.Margin = new System.Windows.Forms.Padding(0);
             this.flpDroneArmorMultiplier.Name = "flpDroneArmorMultiplier";
-            this.flpDroneArmorMultiplier.Size = new System.Drawing.Size(602, 26);
+            this.flpDroneArmorMultiplier.Size = new System.Drawing.Size(317, 26);
             this.flpDroneArmorMultiplier.TabIndex = 52;
             // 
             // chkDroneArmorMultiplier
@@ -3652,6 +3468,347 @@ namespace Chummer
             0,
             0});
             // 
+            // chkUseCalculatedPublicAwareness
+            // 
+            this.chkUseCalculatedPublicAwareness.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUseCalculatedPublicAwareness.AutoSize = true;
+            this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(3, 95);
+            this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
+            this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
+            this.chkUseCalculatedPublicAwareness.TabIndex = 22;
+            this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
+            this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
+            this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
+            // 
+            // gpbHouseRulesSkills
+            // 
+            this.gpbHouseRulesSkills.AutoSize = true;
+            this.gpbHouseRulesSkills.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbHouseRulesSkills.Controls.Add(this.tlpHouseRulesSkills);
+            this.gpbHouseRulesSkills.Location = new System.Drawing.Point(3, 169);
+            this.gpbHouseRulesSkills.Name = "gpbHouseRulesSkills";
+            this.gpbHouseRulesSkills.Size = new System.Drawing.Size(452, 111);
+            this.gpbHouseRulesSkills.TabIndex = 2;
+            this.gpbHouseRulesSkills.TabStop = false;
+            this.gpbHouseRulesSkills.Text = "Skills";
+            // 
+            // tlpHouseRulesSkills
+            // 
+            this.tlpHouseRulesSkills.AutoSize = true;
+            this.tlpHouseRulesSkills.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesSkills.ColumnCount = 1;
+            this.tlpHouseRulesSkills.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpHouseRulesSkills.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 0);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkAllowSkillRegrouping, 0, 1);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkFreeMartialArtSpecialization, 0, 3);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 2);
+            this.tlpHouseRulesSkills.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesSkills.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesSkills.Name = "tlpHouseRulesSkills";
+            this.tlpHouseRulesSkills.RowCount = 4;
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.Size = new System.Drawing.Size(446, 92);
+            this.tlpHouseRulesSkills.TabIndex = 0;
+            // 
+            // chkCompensateSkillGroupKarmaDifference
+            // 
+            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 3);
+            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
+            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
+            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
+    "skill group";
+            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowSkillRegrouping
+            // 
+            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowSkillRegrouping.AutoSize = true;
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 26);
+            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
+            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
+            this.chkAllowSkillRegrouping.TabIndex = 39;
+            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
+            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
+            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
+            // 
+            // chkFreeMartialArtSpecialization
+            // 
+            this.chkFreeMartialArtSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkFreeMartialArtSpecialization.AutoSize = true;
+            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 72);
+            this.chkFreeMartialArtSpecialization.Name = "chkFreeMartialArtSpecialization";
+            this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(281, 17);
+            this.chkFreeMartialArtSpecialization.TabIndex = 30;
+            this.chkFreeMartialArtSpecialization.Tag = "Checkbox_Option_FreeMartialArtSpecialization";
+            this.chkFreeMartialArtSpecialization.Text = "Allow Martial Arts to grant a free specialisation in a skill";
+            this.chkFreeMartialArtSpecialization.UseVisualStyleBackColor = true;
+            // 
+            // chkUsePointsOnBrokenGroups
+            // 
+            this.chkUsePointsOnBrokenGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUsePointsOnBrokenGroups.AutoSize = true;
+            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 49);
+            this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
+            this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
+            this.chkUsePointsOnBrokenGroups.TabIndex = 49;
+            this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
+            this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
+            this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
+            // 
+            // gpbHouseRulesCombat
+            // 
+            this.gpbHouseRulesCombat.AutoSize = true;
+            this.gpbHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbHouseRulesCombat.Controls.Add(this.bufferedTableLayoutPanel2);
+            this.gpbHouseRulesCombat.Location = new System.Drawing.Point(461, 169);
+            this.gpbHouseRulesCombat.Name = "gpbHouseRulesCombat";
+            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 88);
+            this.gpbHouseRulesCombat.TabIndex = 4;
+            this.gpbHouseRulesCombat.TabStop = false;
+            this.gpbHouseRulesCombat.Text = "Combat";
+            // 
+            // bufferedTableLayoutPanel2
+            // 
+            this.bufferedTableLayoutPanel2.AutoSize = true;
+            this.bufferedTableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bufferedTableLayoutPanel2.ColumnCount = 1;
+            this.bufferedTableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel2.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
+            this.bufferedTableLayoutPanel2.Controls.Add(this.chkMoreLethalGameplay, 0, 2);
+            this.bufferedTableLayoutPanel2.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
+            this.bufferedTableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bufferedTableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+            this.bufferedTableLayoutPanel2.Name = "bufferedTableLayoutPanel2";
+            this.bufferedTableLayoutPanel2.RowCount = 3;
+            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel2.Size = new System.Drawing.Size(378, 69);
+            this.bufferedTableLayoutPanel2.TabIndex = 0;
+            // 
+            // chkNoArmorEncumbrance
+            // 
+            this.chkNoArmorEncumbrance.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkNoArmorEncumbrance.AutoSize = true;
+            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(3, 3);
+            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(139, 17);
+            this.chkNoArmorEncumbrance.TabIndex = 38;
+            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
+            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
+            // 
+            // chkMoreLethalGameplay
+            // 
+            this.chkMoreLethalGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkMoreLethalGameplay.AutoSize = true;
+            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(3, 49);
+            this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
+            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(297, 17);
+            this.chkMoreLethalGameplay.TabIndex = 41;
+            this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
+            this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
+            this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
+            // 
+            // chkUnarmedSkillImprovements
+            // 
+            this.chkUnarmedSkillImprovements.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUnarmedSkillImprovements.AutoSize = true;
+            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 26);
+            this.chkUnarmedSkillImprovements.Name = "chkUnarmedSkillImprovements";
+            this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(372, 17);
+            this.chkUnarmedSkillImprovements.TabIndex = 0;
+            this.chkUnarmedSkillImprovements.Tag = "Checkbox_Options_UnarmedSkillImprovements";
+            this.chkUnarmedSkillImprovements.Text = "Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses";
+            this.chkUnarmedSkillImprovements.UseVisualStyleBackColor = true;
+            // 
+            // gpbHouseRulesMagicResonance
+            // 
+            this.gpbHouseRulesMagicResonance.AutoSize = true;
+            this.gpbHouseRulesMagicResonance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbHouseRulesMagicResonance.Controls.Add(this.tlpHouseRulesMagicResonance);
+            this.gpbHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 286);
+            this.gpbHouseRulesMagicResonance.Name = "gpbHouseRulesMagicResonance";
+            this.gpbHouseRulesMagicResonance.Size = new System.Drawing.Size(440, 272);
+            this.gpbHouseRulesMagicResonance.TabIndex = 0;
+            this.gpbHouseRulesMagicResonance.TabStop = false;
+            this.gpbHouseRulesMagicResonance.Text = "Magic and Resonance";
+            // 
+            // tlpHouseRulesMagicResonance
+            // 
+            this.tlpHouseRulesMagicResonance.AutoSize = true;
+            this.tlpHouseRulesMagicResonance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesMagicResonance.ColumnCount = 1;
+            this.tlpHouseRulesMagicResonance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkMysAdPp, 0, 2);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkPrioritySpellsAsAdeptPowers, 0, 3);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkExtendAnyDetectionSpell, 0, 4);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkIncreasedImprovedAbilityModifier, 0, 5);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkIgnoreComplexFormLimit, 0, 10);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkSpecialKarmaCost, 0, 7);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkAllowTechnomancerSchooling, 0, 9);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkUnclampAttributeMinimum, 0, 6);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkAllowInitiation, 0, 8);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkMysAdeptSecondMAGAttribute, 0, 1);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkIgnoreArt, 0, 0);
+            this.tlpHouseRulesMagicResonance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesMagicResonance.Name = "tlpHouseRulesMagicResonance";
+            this.tlpHouseRulesMagicResonance.RowCount = 11;
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesMagicResonance.Size = new System.Drawing.Size(434, 253);
+            this.tlpHouseRulesMagicResonance.TabIndex = 0;
+            // 
+            // chkMysAdPp
+            // 
+            this.chkMysAdPp.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkMysAdPp.AutoSize = true;
+            this.chkMysAdPp.Location = new System.Drawing.Point(3, 49);
+            this.chkMysAdPp.Name = "chkMysAdPp";
+            this.chkMysAdPp.Size = new System.Drawing.Size(280, 17);
+            this.chkMysAdPp.TabIndex = 29;
+            this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
+            this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
+            this.chkMysAdPp.UseVisualStyleBackColor = true;
+            // 
+            // chkPrioritySpellsAsAdeptPowers
+            // 
+            this.chkPrioritySpellsAsAdeptPowers.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
+            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(3, 72);
+            this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
+            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(325, 17);
+            this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
+            this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
+            this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending of free spells from Magic Priority as power points";
+            this.chkPrioritySpellsAsAdeptPowers.UseVisualStyleBackColor = true;
+            // 
+            // chkExtendAnyDetectionSpell
+            // 
+            this.chkExtendAnyDetectionSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkExtendAnyDetectionSpell.AutoSize = true;
+            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(3, 95);
+            this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
+            this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(332, 17);
+            this.chkExtendAnyDetectionSpell.TabIndex = 40;
+            this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
+            this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
+            this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
+            // 
+            // chkIncreasedImprovedAbilityModifier
+            // 
+            this.chkIncreasedImprovedAbilityModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkIncreasedImprovedAbilityModifier.AutoSize = true;
+            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(3, 118);
+            this.chkIncreasedImprovedAbilityModifier.Name = "chkIncreasedImprovedAbilityModifier";
+            this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(332, 17);
+            this.chkIncreasedImprovedAbilityModifier.TabIndex = 44;
+            this.chkIncreasedImprovedAbilityModifier.Tag = "Checkbox_Options_IncreasedImprovedAbilityModifier";
+            this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
+            this.chkIncreasedImprovedAbilityModifier.UseVisualStyleBackColor = true;
+            // 
+            // chkIgnoreComplexFormLimit
+            // 
+            this.chkIgnoreComplexFormLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkIgnoreComplexFormLimit.AutoSize = true;
+            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(3, 233);
+            this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
+            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(215, 17);
+            this.chkIgnoreComplexFormLimit.TabIndex = 43;
+            this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
+            this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
+            this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
+            // 
+            // chkSpecialKarmaCost
+            // 
+            this.chkSpecialKarmaCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSpecialKarmaCost.AutoSize = true;
+            this.chkSpecialKarmaCost.Location = new System.Drawing.Point(3, 164);
+            this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
+            this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
+            this.chkSpecialKarmaCost.TabIndex = 42;
+            this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCost";
+            this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
+            this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowTechnomancerSchooling
+            // 
+            this.chkAllowTechnomancerSchooling.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowTechnomancerSchooling.AutoSize = true;
+            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 210);
+            this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
+            this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(273, 17);
+            this.chkAllowTechnomancerSchooling.TabIndex = 45;
+            this.chkAllowTechnomancerSchooling.Tag = "Checkbox_Options_AllowTechnomancerSchooling";
+            this.chkAllowTechnomancerSchooling.Text = "Technomancer: Allow \'Schooling\' Initiation discounts";
+            this.chkAllowTechnomancerSchooling.UseVisualStyleBackColor = true;
+            // 
+            // chkUnclampAttributeMinimum
+            // 
+            this.chkUnclampAttributeMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUnclampAttributeMinimum.AutoSize = true;
+            this.chkUnclampAttributeMinimum.Location = new System.Drawing.Point(3, 141);
+            this.chkUnclampAttributeMinimum.Name = "chkUnclampAttributeMinimum";
+            this.chkUnclampAttributeMinimum.Size = new System.Drawing.Size(328, 17);
+            this.chkUnclampAttributeMinimum.TabIndex = 50;
+            this.chkUnclampAttributeMinimum.Tag = "Checkbox_Options_UnclampAttributeMinimum";
+            this.chkUnclampAttributeMinimum.Text = "Attribute values are allowed to go below 0 due to Essence Loss.";
+            this.chkUnclampAttributeMinimum.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowInitiation
+            // 
+            this.chkAllowInitiation.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowInitiation.AutoSize = true;
+            this.chkAllowInitiation.Location = new System.Drawing.Point(3, 187);
+            this.chkAllowInitiation.Name = "chkAllowInitiation";
+            this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
+            this.chkAllowInitiation.TabIndex = 7;
+            this.chkAllowInitiation.Tag = "Checkbox_Options_AllowInitiation";
+            this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
+            this.chkAllowInitiation.UseVisualStyleBackColor = true;
+            // 
+            // chkMysAdeptSecondMAGAttribute
+            // 
+            this.chkMysAdeptSecondMAGAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
+            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 26);
+            this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
+            this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
+            this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
+    "rules";
+            this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
+            // 
+            // chkIgnoreArt
+            // 
+            this.chkIgnoreArt.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkIgnoreArt.AutoSize = true;
+            this.chkIgnoreArt.Location = new System.Drawing.Point(3, 3);
+            this.chkIgnoreArt.Name = "chkIgnoreArt";
+            this.chkIgnoreArt.Size = new System.Drawing.Size(235, 17);
+            this.chkIgnoreArt.TabIndex = 1;
+            this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
+            this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
+            this.chkIgnoreArt.UseVisualStyleBackColor = true;
+            // 
             // lblSettingName
             // 
             this.lblSettingName.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -3686,6 +3843,21 @@ namespace Chummer
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpButtons.Size = new System.Drawing.Size(495, 23);
             this.tlpButtons.TabIndex = 6;
+            // 
+            // cmdDelete
+            // 
+            this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDelete.Location = new System.Drawing.Point(102, 0);
+            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(93, 23);
+            this.cmdDelete.TabIndex = 9;
+            this.cmdDelete.Tag = "";
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdCancel
             // 
@@ -3747,21 +3919,6 @@ namespace Chummer
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
-            // 
-            // cmdDelete
-            // 
-            this.cmdDelete.AutoSize = true;
-            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDelete.Location = new System.Drawing.Point(102, 0);
-            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(93, 23);
-            this.cmdDelete.TabIndex = 9;
-            this.cmdDelete.Tag = "";
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // frmCharacterOptions
             // 
@@ -3885,11 +4042,31 @@ namespace Chummer
             this.tlpOptionalRules.PerformLayout();
             this.tabHouseRules.ResumeLayout(false);
             this.tabHouseRules.PerformLayout();
-            this.tlpHouseRules.ResumeLayout(false);
-            this.tlpHouseRules.PerformLayout();
+            this.flpHouseRules.ResumeLayout(false);
+            this.flpHouseRules.PerformLayout();
+            this.gpbHouseRulesQualities.ResumeLayout(false);
+            this.gpbHouseRulesQualities.PerformLayout();
+            this.tlpHouseRulesQualities.ResumeLayout(false);
+            this.tlpHouseRulesQualities.PerformLayout();
+            this.gpbHouseRulesAttributes.ResumeLayout(false);
+            this.gpbHouseRulesAttributes.PerformLayout();
+            this.bufferedTableLayoutPanel1.ResumeLayout(false);
+            this.bufferedTableLayoutPanel1.PerformLayout();
             this.flpDroneArmorMultiplier.ResumeLayout(false);
             this.flpDroneArmorMultiplier.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
+            this.gpbHouseRulesSkills.ResumeLayout(false);
+            this.gpbHouseRulesSkills.PerformLayout();
+            this.tlpHouseRulesSkills.ResumeLayout(false);
+            this.tlpHouseRulesSkills.PerformLayout();
+            this.gpbHouseRulesCombat.ResumeLayout(false);
+            this.gpbHouseRulesCombat.PerformLayout();
+            this.bufferedTableLayoutPanel2.ResumeLayout(false);
+            this.bufferedTableLayoutPanel2.PerformLayout();
+            this.gpbHouseRulesMagicResonance.ResumeLayout(false);
+            this.gpbHouseRulesMagicResonance.PerformLayout();
+            this.tlpHouseRulesMagicResonance.ResumeLayout(false);
+            this.tlpHouseRulesMagicResonance.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
@@ -4059,7 +4236,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
         private System.Windows.Forms.TreeView treCustomDataDirectories;
         private System.Windows.Forms.TabPage tabHouseRules;
-        private BufferedTableLayoutPanel tlpHouseRules;
         private System.Windows.Forms.CheckBox chkIgnoreArt;
         private System.Windows.Forms.CheckBox chkExceedNegativeQualitiesLimit;
         private System.Windows.Forms.CheckBox chkExceedNegativeQualities;
@@ -4152,5 +4328,16 @@ namespace Chummer
         private System.Windows.Forms.Label lblQualityKarmaLimit;
         private System.Windows.Forms.NumericUpDown nudQualityKarmaLimit;
         private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.FlowLayoutPanel flpHouseRules;
+        private System.Windows.Forms.GroupBox gpbHouseRulesQualities;
+        private BufferedTableLayoutPanel tlpHouseRulesQualities;
+        private System.Windows.Forms.GroupBox gpbHouseRulesAttributes;
+        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.GroupBox gpbHouseRulesSkills;
+        private BufferedTableLayoutPanel tlpHouseRulesSkills;
+        private System.Windows.Forms.GroupBox gpbHouseRulesCombat;
+        private BufferedTableLayoutPanel bufferedTableLayoutPanel2;
+        private System.Windows.Forms.GroupBox gpbHouseRulesMagicResonance;
+        private BufferedTableLayoutPanel tlpHouseRulesMagicResonance;
     }
 }

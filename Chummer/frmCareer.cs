@@ -71,6 +71,8 @@ namespace Chummer
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
 
+            CharacterObjectOptions.PropertyChanged += MakeDirtyWithCharacterUpdate;
+
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -1156,6 +1158,8 @@ namespace Chummer
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                 CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
 
+                CharacterObjectOptions.PropertyChanged -= MakeDirtyWithCharacterUpdate;
+
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
                 treGear.DragDrop -= treGear_DragDrop;
@@ -1251,7 +1255,6 @@ namespace Chummer
                     break;
                 case nameof(Character.NuyenBP):
                 case nameof(Character.MetatypeBP):
-                case nameof(Character.BuildKarma):
                 case nameof(Character.ContactPoints):
                 case nameof(Character.FreeSpells):
                 case nameof(Character.CFPLimit):
@@ -1833,6 +1836,22 @@ namespace Chummer
                 }
             }
         }
+
+        private void OnCharacterObjectOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            IsDirty = true;
+
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.BuildKarma):
+                    IsCharacterUpdateRequested = true;
+                    break;
+            }
+        }
+
         /*
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();

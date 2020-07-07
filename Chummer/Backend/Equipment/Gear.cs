@@ -2929,7 +2929,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAvailInt = objTotalAvail.Value;
                     //TODO: Make this dynamically update without having to validate the character.
-                    if (intAvailInt > CharacterObject.MaximumAvailability)
+                    if (intAvailInt > CharacterObject.Options.MaximumAvailability)
                     {
                         if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                         {

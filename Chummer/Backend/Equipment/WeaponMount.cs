@@ -901,7 +901,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAvailInt = objTotalAvail.Value;
                     //TODO: Make this dynamically update without having to validate the character.
-                    if (intAvailInt > _objCharacter.MaximumAvailability)
+                    if (intAvailInt > _objCharacter.Options.MaximumAvailability)
                     {
                         if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                         {
@@ -1393,7 +1393,7 @@ namespace Chummer.Backend.Equipment
             if (!objTotalAvail.AddToParent)
             {
                 int intAvailInt = objTotalAvail.Value;
-                if (intAvailInt > _objCharacter.MaximumAvailability)
+                if (intAvailInt > _objCharacter.Options.MaximumAvailability)
                 {
                     if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                     {

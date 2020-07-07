@@ -115,7 +115,7 @@ namespace Chummer.UI.Skills
                 btnAttribute.FlatAppearance.MouseOverBackColor = btnAttribute.BackColor;
 
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
-                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(Character.EffectiveBuildMethodHasSkillPoints));
                 nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
                 nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
                 nudKarma.DoOneWayDataBinding("Value", objSkill, nameof(Skill.Karma));
@@ -144,7 +144,7 @@ namespace Chummer.UI.Skills
                     cboSpec.EndUpdate();
                 }
 
-                chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(Character.EffectiveBuildMethodHasSkillPoints));
                 chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
                 chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
             }

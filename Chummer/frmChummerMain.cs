@@ -741,28 +741,17 @@ namespace Chummer
         private void mnuNewCritter_Click(object sender, EventArgs e)
         {
             Character objCharacter = new Character();
-            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
             Cursor objOldCursor = Cursor;
-            if(settingsFiles.Length > 1)
-            {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
-                {
-                    frmPickSetting.ShowDialog(this);
-                    Cursor = objOldCursor;
 
-                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
-                }
-            }
-            else
+            Cursor = Cursors.WaitCursor;
+            using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
             {
-                string strSettingsFile = settingsFiles[0];
-                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                frmPickSetting.ShowDialog(this);
+                Cursor = objOldCursor;
+
+                if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                    return;
             }
 
             Cursor = Cursors.WaitCursor;
@@ -771,7 +760,6 @@ namespace Chummer
             objCharacter.IgnoreRules = true;
             objCharacter.IsCritter = true;
             objCharacter.Created = true;
-            objCharacter.BuildMethod = CharacterBuildMethod.Karma;
 
             // Show the Metatype selection window.
             using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
@@ -1149,40 +1137,9 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
         {
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
             Cursor objOldCursor = Cursor;
-            if(!File.Exists(strFilePath))
-            {
-                if(MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    Cursor = Cursors.WaitCursor;
-                    using (frmOptions frmOptions = new frmOptions())
-                        frmOptions.ShowDialog();
-                    Cursor = objOldCursor;
-                }
-            }
             Cursor = Cursors.WaitCursor;
             Character objCharacter = new Character();
-            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
-
-            if(settingsFiles.Length > 1)
-            {
-                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
-                {
-                    frmPickSetting.ShowDialog(this);
-
-                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
-                }
-            }
-            else
-            {
-                string strSettingsFile = settingsFiles[0];
-                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-            }
 
             // Show the BP selection window.
             using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
@@ -1194,7 +1151,7 @@ namespace Chummer
                     return;
             }
 
-            if(objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+            if(objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Karma || objCharacter.EffectiveBuildMethod == CharacterBuildMethod.LifeModule)
             {
                 objOldCursor = Cursor;
                 Cursor = Cursors.WaitCursor;
@@ -1208,7 +1165,7 @@ namespace Chummer
                 }
             }
             // Show the Metatype selection window.
-            else if(objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            else if(objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority || objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 objOldCursor = Cursor;
                 Cursor = Cursors.WaitCursor;

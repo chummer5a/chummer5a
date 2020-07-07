@@ -82,6 +82,7 @@ namespace Chummer
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
+            CharacterObjectOptions.PropertyChanged += MakeDirtyWithCharacterUpdate;
 
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -185,9 +186,11 @@ namespace Chummer
                 {
                     SuspendLayout();
 
-                    if (!CharacterObject.IsCritter && CharacterObject.BuildMethod == CharacterBuildMethod.Karma && CharacterObject.BuildKarma == 0 ||
-                        CharacterObject.BuildMethod == CharacterBuildMethod.Priority &&
-                        CharacterObject.BuildKarma == 0)
+                    if (!CharacterObject.IsCritter
+                        && ((CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma
+                             || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority
+                             || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                            && CharacterObjectOptions.BuildKarma == 0))
                     {
                         _blnFreestyle = true;
                         tslKarmaRemaining.Visible = false;
@@ -197,33 +200,12 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_frm_create_BuildMethod", op_load_frm_create))
                     {
                         // Initialize elements if we're using Priority to build.
-                        if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority ||
-                            CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority ||
+                            CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                         {
-                            // Load the Priority information.
-                            if (string.IsNullOrEmpty(CharacterObject.GameplayOption))
-                            {
-                                CharacterObject.GameplayOption = GlobalOptions.DefaultGameplayOption;
-                            }
-
-                            XmlNode objXmlGameplayOption = CharacterObject.LoadData("gameplayoptions.xml")
-                                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
-                                                  CharacterObject.GameplayOption + "\"]");
-                            if (objXmlGameplayOption != null)
-                            {
-                                CharacterObject.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                                CharacterObject.MaxNuyen = Convert.ToInt32(objXmlGameplayOption["maxnuyen"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                                string strQualityLimit = objXmlGameplayOption["qualitylimit"]?.InnerText;
-                                CharacterObject.GameplayOptionQualityLimit =
-                                    !string.IsNullOrEmpty(strQualityLimit)
-                                        ? Convert.ToInt32(strQualityLimit, GlobalOptions.InvariantCultureInfo)
-                                        : CharacterObject.MaxKarma;
-                            }
-
                             mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
                             mnuSpecialChangeMetatype.Text = LanguageManager.GetString("Menu_SpecialChangePriorities");
                         }
-
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_databinding", op_load_frm_create))
@@ -231,7 +213,7 @@ namespace Chummer
                         lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplayTotalStartingNuyen));
                         lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayStolenNuyen));
-                        lblAttributesBase.Visible = CharacterObject.BuildMethodHasSkillPoints;
+                        lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodHasSkillPoints));
 
                         txtGroupName.DoDatabinding("Text", CharacterObject, nameof(Character.GroupName));
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
@@ -299,11 +281,10 @@ namespace Chummer
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
 
-                        if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
-                        {
-                            cmdLifeModule.Visible = true;
-                            btnCreateBackstory.Visible = CharacterObjectOptions.AutomaticBackstory;
-                        }
+                        cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject,
+                            nameof(Character.EffectiveBuildMethodIsLifeModule));
+                        btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject,
+                            nameof(Character.EnableAutomaticStoryButton));
 
                         if (!CharacterObjectOptions.BookEnabled("RF"))
                         {
@@ -967,6 +948,7 @@ namespace Chummer
                 CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
                 CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
+                CharacterObjectOptions.PropertyChanged -= MakeDirtyWithCharacterUpdate;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -1065,7 +1047,6 @@ namespace Chummer
                     break;
                 case nameof(Character.NuyenBP):
                 case nameof(Character.MetatypeBP):
-                case nameof(Character.BuildKarma):
                 case nameof(Character.ContactPoints):
                 case nameof(Character.FreeSpells):
                 case nameof(Character.CFPLimit):
@@ -1539,7 +1520,7 @@ namespace Chummer
         private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //HACK PERFORMANCE
-            //So, skills tell if anything maybe intresting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVYER FYCKING THING we do it only every 5 ms
+            //So, skills tell if anything maybe interesting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVYER FYCKING THING we do it only every 5 ms
             if (SkillPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
             SkillPropertyChanged_StopWatch.Restart();
 
@@ -1548,9 +1529,9 @@ namespace Chummer
             IsDirty = true;
         }
         */
-#endregion
+        #endregion
 
-#region Menu Events
+        #region Menu Events
         private void mnuFileSave_Click(object sender, EventArgs e)
         {
             SaveCharacter();
@@ -1607,40 +1588,11 @@ namespace Chummer
 
         private void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
-            if (!File.Exists(strFilePath))
-            {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    Cursor = Cursors.WaitCursor;
-                    using (frmCharacterOptions frmOptions = new frmCharacterOptions(CharacterObject.Options))
-                        frmOptions.ShowDialog();
-                    Cursor = Cursors.Default;
-                }
-            }
             Cursor = Cursors.WaitCursor;
-            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-            if (settingsFiles.Length > 1)
-            {
-                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
-                {
-                    frmPickSetting.ShowDialog(this);
+            using (frmCharacterOptions frmOptions = new frmCharacterOptions(CharacterObject.Options))
+                frmOptions.ShowDialog(this);
 
-                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    CharacterObject.SettingsFile = frmPickSetting.SettingsFile;
-                }
-            }
-            else
-            {
-                string strSettingsFile = settingsFiles[0];
-                CharacterObject.SettingsFile = Path.GetFileName(strSettingsFile);
-            }
-
-            IsCharacterUpdateRequested = true;
             Cursor = Cursors.Default;
         }
 
@@ -3426,9 +3378,9 @@ namespace Chummer
                         objQuality.BP = 0;
 
                     // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                    string strAmount = CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") +
+                    string strAmount = CharacterObjectOptions.QualityKarmaLimit.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") +
                                        LanguageManager.GetString("String_Karma");
-                    int intMaxQualityAmount = CharacterObject.GameplayOptionQualityLimit;
+                    int intMaxQualityAmount = CharacterObjectOptions.QualityKarmaLimit;
 
                     // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                     bool blnAddItem = true;
@@ -6347,8 +6299,8 @@ namespace Chummer
                     objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
 
                     // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                    string strAmount = CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
-                    int intMaxQualityAmount = CharacterObject.GameplayOptionQualityLimit;
+                    string strAmount = CharacterObjectOptions.QualityKarmaLimit.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
+                    int intMaxQualityAmount = CharacterObjectOptions.QualityKarmaLimit;
 
                     // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                     bool blnAddItem = true;
@@ -8479,8 +8431,8 @@ namespace Chummer
         private int CalculateAttributePriorityPoints(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
         {
             int intAtt = 0;
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority ||
-                CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority ||
+                CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Get the total of "free points" spent
                 foreach (CharacterAttrib att in attribs)
@@ -8505,8 +8457,8 @@ namespace Chummer
             string s = bp.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
             int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
             int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority ||
-                CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority ||
+                CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 if (bp > 0)
                 {
@@ -8526,7 +8478,7 @@ namespace Chummer
         /// </summary>
         private int CalculateBP(bool blnDoUIUpdate = true)
         {
-            int intKarmaPointsRemain = CharacterObject.BuildKarma;
+            int intKarmaPointsRemain = CharacterObjectOptions.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
             int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
@@ -8537,12 +8489,12 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
+            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.LifeModule)
             {
                 // Subtract the BP used for Metatype.
                 intKarmaPointsRemain -= CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier;
             }
-            else if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+            else if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 intKarmaPointsRemain -= CharacterObject.MetatypeBP;
             }
@@ -9121,7 +9073,7 @@ namespace Chummer
                 }
                 else
                 {
-                    tslKarma.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
+                    tslKarma.Text = CharacterObjectOptions.BuildKarma.ToString(GlobalOptions.CultureInfo);
                     tslKarma.ForeColor = SystemColors.ControlText;
                 }
             }
@@ -11943,7 +11895,7 @@ namespace Chummer
                 }
                 else if (objWareGrade.Burnout)
                     continue;
-                if (CharacterObject.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)) && !CharacterObject.IgnoreRules)
+                if (CharacterObjectOptions.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)) && !CharacterObject.IgnoreRules)
                     continue;
 
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
@@ -12003,20 +11955,20 @@ namespace Chummer
             }
 
             // if positive points > 25
-            if (CharacterObject.PositiveQualityKarma > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
+            if (CharacterObject.PositiveQualityKarma > CharacterObjectOptions.QualityKarmaLimit && !CharacterObjectOptions.ExceedPositiveQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit")
-                                  , CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo));
+                                  , CharacterObjectOptions.QualityKarmaLimit);
                 blnValid = false;
             }
 
             // if negative points > 25
-            if (CharacterObject.NegativeQualityLimitKarma > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedNegativeQualities)
+            if (CharacterObject.NegativeQualityLimitKarma > CharacterObjectOptions.QualityKarmaLimit && !CharacterObjectOptions.ExceedNegativeQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit")
-                                  , CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo));
+                                  , CharacterObjectOptions.QualityKarmaLimit);
                 blnValid = false;
             }
 
@@ -12231,7 +12183,7 @@ namespace Chummer
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidAvail")
                                   , (intRestrictedCount - intRestrictedAllowed).ToString(GlobalOptions.CultureInfo)
-                                  , CharacterObject.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
+                                  , CharacterObject.Options.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 strMessage += strAvailItems;
                 if (blnRestrictedGearUsed)
                 {
@@ -12491,7 +12443,7 @@ namespace Chummer
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > CharacterObjectOptions.KarmaCarryover)
                 {
-                    if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
+                    if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma)
                     {
                         if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
                                 LanguageManager.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -12559,7 +12511,7 @@ namespace Chummer
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > CharacterObjectOptions.KarmaCarryover)
                 {
-                    CharacterObject.Karma = CharacterObject.BuildMethod == CharacterBuildMethod.Karma ? 0 : CharacterObjectOptions.KarmaCarryover;
+                    CharacterObject.Karma = CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma ? 0 : CharacterObjectOptions.KarmaCarryover;
                 }
                 else
                 {
@@ -13483,7 +13435,7 @@ namespace Chummer
                 CharacterObject.Qualities.Remove(objQuality);
             }
 
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject))
                 {

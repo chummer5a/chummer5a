@@ -50,14 +50,6 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
-    public enum CharacterBuildMethod
-    {
-        Karma = 0,
-        Priority = 1,
-        SumtoTen = 2,
-        LifeModule = 3
-    }
-
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
@@ -69,8 +61,8 @@ namespace Chummer
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
         private string _strFileName = string.Empty;
+        private string _strCharacterOptionsKey = GlobalOptions.DefaultGameplayOption;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
-        private string _strSettingsFileName = "standard.xml";
         private bool _blnIgnoreRules;
         private int _intKarma;
         private int _intTotalKarma;
@@ -81,7 +73,6 @@ namespace Chummer
         private decimal _decNuyen;
         private decimal _decStolenNuyen;
         private decimal _decStartingNuyen;
-        private int _intMaxAvail = 12;
         private decimal _decEssenceAtSpecialStart = decimal.MinValue;
         private int _intSpecial;
         private int _intTotalSpecial;
@@ -126,12 +117,7 @@ namespace Chummer
         private bool _blnCreated;
 
         // Build Points
-        private int _intSumtoTen = 10;
-        private decimal _decNuyenMaximumBP = 50;
         private decimal _decNuyenBP;
-        private int _intBuildKarma = 800;
-        private int _intGameplayOptionQualityLimit = 25;
-        private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
         // Metatype Information.
         private string _strMetatype = "Human";
@@ -188,7 +174,6 @@ namespace Chummer
         private int _intBaseWildReputation;
 
         // Priority Selections.
-        private string _strGameplayOption = "Standard";
         private string _strPriorityMetatype = "A,4";
         private string _strPriorityAttributes = "B,3";
         private string _strPrioritySpecial = "C,2";
@@ -196,8 +181,6 @@ namespace Chummer
         private string _strPriorityResources = "E,0";
         private string _strPriorityTalent = string.Empty;
         private readonly List<string> _lstPrioritySkills = new List<string>();
-        private decimal _decMaxNuyen;
-        private int _intMaxKarma;
 
         // Lists.
         private readonly List<string> _lstSources = new List<string>();
@@ -277,7 +260,6 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            Options = new CharacterOptions();
             Options.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
             AttributeSection.Reset();
@@ -452,8 +434,13 @@ namespace Chummer
                         new DependencyGraphNode<string>(nameof(PhysicalCMThresholdOffset)),
                         new DependencyGraphNode<string>(nameof(StunCMThresholdOffset))
                     ),
-                    new DependencyGraphNode<string>(nameof(BuildMethodHasSkillPoints),
-                        new DependencyGraphNode<string>(nameof(BuildMethod))
+                    new DependencyGraphNode<string>(nameof(EffectiveBuildMethodHasSkillPoints),
+                        new DependencyGraphNode<string>(nameof(EffectiveBuildMethod))
+                    ),
+                    new DependencyGraphNode<string>(nameof(EnableAutomaticStoryButton),
+                        new DependencyGraphNode<string>(nameof(EffectiveBuildMethodIsLifeModule),
+                            new DependencyGraphNode<string>(nameof(EffectiveBuildMethod))
+                        )
                     ),
                     new DependencyGraphNode<string>(nameof(DamageResistancePoolToolTip),
                         new DependencyGraphNode<string>(nameof(DamageResistancePool),
@@ -723,7 +710,6 @@ namespace Chummer
                             new DependencyGraphNode<string>(nameof(NuyenBP),
                                 new DependencyGraphNode<string>(nameof(TotalNuyenMaximumBP),
                                     new DependencyGraphNode<string>(nameof(StolenNuyen)),
-                                    new DependencyGraphNode<string>(nameof(NuyenMaximumBP)),
                                     new DependencyGraphNode<string>(nameof(IgnoreRules))
                                 )
                             )
@@ -974,6 +960,15 @@ namespace Chummer
                     break;
                 case nameof(CharacterOptions.KarmaMysticAdeptPowerPoint):
                     OnPropertyChanged(nameof(CanAffordCareerPP));
+                    break;
+                case nameof(CharacterOptions.BuildMethod):
+                    OnPropertyChanged(nameof(EffectiveBuildMethod));
+                    break;
+                case nameof(CharacterOptions.AutomaticBackstory):
+                    OnPropertyChanged(nameof(EnableAutomaticStoryButton));
+                    break;
+                case nameof(CharacterOptions.NuyenMaximumBP):
+                    OnPropertyChanged(nameof(TotalNuyenMaximumBP));
                     break;
             }
         }
@@ -1776,7 +1771,7 @@ namespace Chummer
                     objWriter.WriteElementString("gameedition", "SR5");
 
                     // <settings />
-                    objWriter.WriteElementString("settings", _strSettingsFileName);
+                    objWriter.WriteElementString("settings", _strCharacterOptionsKey);
 
                     // <metatype />
                     objWriter.WriteElementString("metatype", _strMetatype);
@@ -1911,27 +1906,11 @@ namespace Chummer
                     objWriter.WriteElementString("basewildreputation", _intBaseWildReputation.ToString(GlobalOptions.InvariantCultureInfo));
                     // <created />
                     objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <maxavail />
-                    objWriter.WriteElementString("maxavail", _intMaxAvail.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nuyen />
                     objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nuyen />
                     objWriter.WriteElementString("startingnuyen",
                         _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <sumtoten />
-                    objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <buildkarma />
-                    objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <buildmethod />
-                    objWriter.WriteElementString("buildmethod", _objBuildMethod.ToString());
-                    // <gameplayoption />
-                    objWriter.WriteElementString("gameplayoption", _strGameplayOption);
-                    // <gameplayoptionqualitylimit />
-                    objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <maxnuyen />
-                    objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <maxkarma />
-                    objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <bannedwaregrades >
                     objWriter.WriteStartElement("bannedwaregrades");
@@ -1945,8 +1924,6 @@ namespace Chummer
 
                     // <nuyenbp />
                     objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <nuyenmaxbp />
-                    objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <adept />
                     objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2475,7 +2452,7 @@ namespace Chummer
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        [Annotations.NotNull]
+        [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public XmlDocument LoadData(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
@@ -2488,7 +2465,7 @@ namespace Chummer
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        [Annotations.NotNull]
+        [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
@@ -2645,14 +2622,16 @@ namespace Chummer
                         }
 #endif
                         // Get the name of the settings file in use if possible.
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strCharacterOptionsKey);
 
                         // Load the character's settings file.
-                        if (!Options.Load(_strSettingsFileName))
+                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
                         {
                             IsLoading = false;
                             return false;
                         }
+
+                        Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
 
                         // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
                         string strMissingBooks = string.Empty;
@@ -2696,7 +2675,7 @@ namespace Chummer
                         {
                             string strLoopString = xmlDirectoryName.Value;
                             if (strLoopString.Length > 0 &&
-                                !GlobalOptions.CustomDataDirectoryInfos.Any(path => path.Name == strLoopString))
+                                GlobalOptions.CustomDataDirectoryInfos.All(path => path.Name != strLoopString))
                             {
                                 strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
                             }
@@ -2803,43 +2782,17 @@ namespace Chummer
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                             _strPrimaryArm = "Right";
 
-                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
-                        {
-                            if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) &&
-                                _intBuildKarma == 35)
-                                _strGameplayOption = "Prime Runner";
-                            else
-                                _strGameplayOption = "Standard";
-                        }
-
-                        xmlCharacterNavigator.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-                        if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) ||
-                            _decMaxNuyen == 0)
-                            _decMaxNuyen = 25;
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
-                        if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) ||
-                            _intMaxKarma == 0)
-                            _intMaxKarma = _intBuildKarma;
-
-                        //Maximum number of Karma that can be spent/gained on Qualities.
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("gameplayoptionqualitylimit",
-                            ref _intGameplayOptionQualityLimit);
-
-                        xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
-
                         XmlDocument objXmlDocumentGameplayOptions = LoadData("gameplayoptions.xml");
                         XmlNode xmlGameplayOption =
                             objXmlDocumentGameplayOptions.SelectSingleNode(
-                                "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+                                "/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterOptionsKey + "\"]");
                         if (xmlGameplayOption == null && showWarnings)
                         {
                             if ( Program.MainForm.ShowMessageBox(
                                 string.Format(GlobalOptions.CultureInfo,
                                     LanguageManager.GetString("Message_MissingGameplayOption",
                                         GlobalOptions.Language),
-                                    GameplayOption),
+                                    CharacterOptionsKey),
                                 LanguageManager.GetString("Message_MissingGameplayOption_Title",
                                     GlobalOptions.Language),
                                 MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
@@ -4214,17 +4167,6 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_dwarffix");
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", loadActivity))
-                    {
-                        //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
-                        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
-                        {
-                            _intGameplayOptionQualityLimit = _intMaxKarma;
-                        }
-
-                        //Timekeeper.Finish("load_char_maxkarmafix");
-                    }
-
                     using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
                     {
                         Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
@@ -4396,11 +4338,7 @@ namespace Chummer
             objWriter.WriteElementString("movementfly", GetFly(objCulture, strLanguageToPrint));
 
             // <gameplayoption />
-            objWriter.WriteElementString("gameplayoption", GameplayOption);
-            // <maxkarma />
-            objWriter.WriteElementString("maxkarma", MaxKarma.ToString(objCulture));
-            // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", MaxNuyen.ToString(Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("gameplayoption", CharacterOptionsKey);
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", MetatypePriority);
             // <priorityattributes />
@@ -5219,10 +5157,6 @@ namespace Chummer
         /// </summary>
         public void ResetCharacter()
         {
-            _intBuildKarma = 800;
-            _intSumtoTen = 10;
-
-            _decNuyenMaximumBP = 50;
             _intFreeSpells = 0;
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
@@ -5243,7 +5177,6 @@ namespace Chummer
             _intTotalSpecial = 0;
             _intAttributes = 0;
             _intTotalAttributes = 0;
-            _intGameplayOptionQualityLimit = 25;
 
             // Reset Metatype Information.
             _strMetatype = string.Empty;
@@ -6081,8 +6014,8 @@ namespace Chummer
             string strMessage = LanguageManager.GetString("Message_KarmaValue", strLanguage) + Environment.NewLine;
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
-            intReturn = BuildKarma;
-            if(BuildMethod != CharacterBuildMethod.Karma)
+            intReturn = Options.BuildKarma;
+            if (EffectiveBuildMethod != CharacterBuildMethod.Karma)
             {
                 // Subtract extra karma cost of a metatype in priority
                 intReturn -= MetatypeBP;
@@ -6092,7 +6025,7 @@ namespace Chummer
                           strSpace + intReturn.ToString(GlobalOptions.CultureInfo) + strSpace +
                           strKarmaString;
 
-            if(BuildMethod != CharacterBuildMethod.Karma)
+            if (EffectiveBuildMethod != CharacterBuildMethod.Karma)
             {
                 // Zeroed to -10 because that's Human's value at default settings
                 int intMetatypeQualitiesValue = -2 * Options.KarmaAttribute;
@@ -6214,7 +6147,7 @@ namespace Chummer
                         {
                             intTemp += Options.KarmaNewActiveSkill;
                             intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Options.KarmaImproveActiveSkill;
-                            if(BuildMethod == CharacterBuildMethod.LifeModule)
+                            if (EffectiveBuildMethodIsLifeModule)
                                 intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) *
                                            Options.KarmaSpecialization;
                             else if(!objLoopActiveSkill.BuyWithKarma)
@@ -6283,7 +6216,7 @@ namespace Chummer
                     intKnowledgePointsValue += Options.KarmaNewKnowledgeSkill;
                     intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
                                                Options.KarmaImproveKnowledgeSkill;
-                    if(BuildMethod == CharacterBuildMethod.LifeModule)
+                    if(EffectiveBuildMethodIsLifeModule)
                         intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) *
                                                    Options.KarmaKnowledgeSpecialization;
                     else if(!objLoopKnowledgeSkill.BuyWithKarma)
@@ -7055,10 +6988,28 @@ namespace Chummer
 
         #region Basic Properties
 
+        private CharacterOptions _objOptions = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultGameplayOption];
+
         /// <summary>
         /// Character Options object.
         /// </summary>
-        public CharacterOptions Options { get; }
+        public CharacterOptions Options
+        {
+            get => _objOptions;
+            private set // Private to make sure this is always in sync with GameplayOption
+            {
+                if (_objOptions != value)
+                {
+                    if (_objOptions != null)
+                        _objOptions.PropertyChanged -= OptionsOnPropertyChanged;
+                    _objOptions = value;
+                    if (_objOptions != null)
+                        _objOptions.PropertyChanged -= OptionsOnPropertyChanged;
+                    if (!IsLoading)
+                        OnPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Name of the file the Character is saved to.
@@ -7080,23 +7031,6 @@ namespace Chummer
         /// Name of the file the Character is saved to.
         /// </summary>
         public DateTime FileLastWriteTime => _dateFileLastWriteTime;
-
-        /// <summary>
-        /// Name of the settings file the Character uses.
-        /// </summary>
-        public string SettingsFile
-        {
-            get => _strSettingsFileName;
-            set
-            {
-                if(_strSettingsFileName != value)
-                {
-                    _strSettingsFileName = value;
-                    Options.Load(_strSettingsFileName);
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         /// <summary>
         /// Whether or not the character has been saved as Created and can no longer be modified using the Build system.
@@ -7316,65 +7250,16 @@ namespace Chummer
         /// Character's Gameplay Option.
         /// </summary>
         [HubTag]
-        public string GameplayOption
+        public string CharacterOptionsKey
         {
-            get => _strGameplayOption;
+            get => _strCharacterOptionsKey;
             set
             {
-                if(_strGameplayOption != value)
+                if(_strCharacterOptionsKey != value)
                 {
-                    _strGameplayOption = value;
+                    _strCharacterOptionsKey = value;
                     OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Quality Limit conferred by the Character's Gameplay Option
-        /// </summary>
-        public int GameplayOptionQualityLimit
-        {
-            get => _intGameplayOptionQualityLimit;
-            set
-            {
-                if(_intGameplayOptionQualityLimit != value)
-                {
-                    _intGameplayOptionQualityLimit = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Character's maximum karma at character creation.
-        /// </summary>
-        [HubTag]
-        public int MaxKarma
-        {
-            get => _intMaxKarma;
-            set
-            {
-                if(_intMaxKarma != value)
-                {
-                    _intMaxKarma = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Character's maximum nuyen at character creation.
-        /// </summary>
-        [HubTag]
-        public decimal MaxNuyen
-        {
-            get => _decMaxNuyen;
-            set
-            {
-                if(_decMaxNuyen != value)
-                {
-                    _decMaxNuyen = value;
-                    OnPropertyChanged();
+                    Options = OptionsManager.LoadedCharacterOptions[value];
                 }
             }
         }
@@ -8064,7 +7949,7 @@ namespace Chummer
                         _intCachedContactPoints = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
                     }
                     else
-                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int _intCachedContactPoints);
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intCachedContactPoints);
                 }
 
                 return _intCachedContactPoints;
@@ -8333,22 +8218,6 @@ namespace Chummer
                 if(_blnPossessed != value)
                 {
                     _blnPossessed = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Maximum item Availability for new characters.
-        /// </summary>
-        public int MaximumAvailability
-        {
-            get => _intMaxAvail;
-            set
-            {
-                if(_intMaxAvail != value)
-                {
-                    _intMaxAvail = value;
                     OnPropertyChanged();
                 }
             }
@@ -12011,53 +11880,14 @@ namespace Chummer
         /// <summary>
         /// Method being used to build the character.
         /// </summary>
-        public CharacterBuildMethod BuildMethod
-        {
-            get => _objBuildMethod;
-            set
-            {
-                if(value != _objBuildMethod)
-                {
-                    _objBuildMethod = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public CharacterBuildMethod EffectiveBuildMethod => IsCritter ? CharacterBuildMethod.Karma : Options.BuildMethod;
 
-        public bool BuildMethodHasSkillPoints => BuildMethod == CharacterBuildMethod.Priority ||
-                                                 BuildMethod == CharacterBuildMethod.SumtoTen;
+        public bool EffectiveBuildMethodHasSkillPoints => EffectiveBuildMethod == CharacterBuildMethod.Priority
+                                                          || EffectiveBuildMethod == CharacterBuildMethod.SumtoTen;
 
-        /// <summary>
-        /// Number of Build Points that are used to create the character.
-        /// </summary>
-        public int SumtoTen
-        {
-            get => _intSumtoTen;
-            set
-            {
-                if(_intSumtoTen != value)
-                {
-                    _intSumtoTen = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public bool EffectiveBuildMethodIsLifeModule => EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
 
-        /// <summary>
-        /// Amount of Karma that is used to create the character.
-        /// </summary>
-        public int BuildKarma
-        {
-            get => _intBuildKarma;
-            set
-            {
-                if(_intBuildKarma != value)
-                {
-                    _intBuildKarma = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public bool EnableAutomaticStoryButton => EffectiveBuildMethodIsLifeModule && Options.AutomaticBackstory;
 
         /// <summary>
         /// Amount of Nuyen the character has.
@@ -12134,22 +11964,6 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Maximum number of Build Points that can be spent on Nuyen.
-        /// </summary>
-        public decimal NuyenMaximumBP
-        {
-            get => _decNuyenMaximumBP;
-            set
-            {
-                if(_decNuyenMaximumBP != value)
-                {
-                    _decNuyenMaximumBP = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public decimal TotalNuyenMaximumBP
         {
             get
@@ -12163,7 +11977,7 @@ namespace Chummer
                 }
 
                 return Math.Max(Math.Min(decMaxValue,
-                    NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP)), 0);
+                    Options.NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP)), 0);
             }
         }
 
@@ -13040,7 +12854,7 @@ namespace Chummer
             get
             {
                 string s = string.Empty;
-                switch (BuildMethod)
+                switch (EffectiveBuildMethod)
                 {
                     case CharacterBuildMethod.Karma:
                     case CharacterBuildMethod.LifeModule:
@@ -13472,25 +13286,6 @@ namespace Chummer
                             ? 1
                             : 0;
                 return _intCachedAllowSpriteFettering > 0;
-            }
-        }
-
-        /// <summary>
-        /// Convert a string to a CharacterBuildMethod.
-        /// </summary>
-        /// <param name="strValue">String value to convert.</param>
-        public static CharacterBuildMethod ConvertToCharacterBuildMethod(string strValue)
-        {
-            switch (strValue)
-            {
-                case "Karma":
-                    return CharacterBuildMethod.Karma;
-                case "SumtoTen":
-                    return CharacterBuildMethod.SumtoTen;
-                case "LifeModule":
-                    return CharacterBuildMethod.LifeModule;
-                default:
-                    return CharacterBuildMethod.Priority;
             }
         }
 
@@ -14466,7 +14261,7 @@ namespace Chummer
                 return;
             }
             XmlNode objXmlGameplayOption = LoadData("gameplayoptions.xml")
-                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterOptionsKey + "\"]");
 
             List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList() ?? new List<string>{string.Empty};
 
@@ -15664,6 +15459,10 @@ namespace Chummer
             if (lstNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                 RefreshAstralReputationImprovements();
 
+            if (lstNamesOfChangedProperties.Contains(nameof(Options)))
+                foreach (string strProperty in Options.GetType().GetProperties().Select(x => x.Name))
+                    OptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
@@ -15723,7 +15522,7 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName)
+        public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName = "")
         {
             if(!File.Exists(strPorFile))
                 return false;
@@ -15969,11 +15768,13 @@ namespace Chummer
                         ResetCharacter();
 
                         // Get the name of the settings file in use if possible.
-                        _strSettingsFileName = strSettingsName;
+                        if (!string.IsNullOrEmpty(strSettingsName))
+                        {
+                            if (!OptionsManager.LoadedCharacterOptions.ContainsKey(strSettingsName))
+                                return false;
 
-                        // Load the character's settings file.
-                        if (!Options.Load(_strSettingsFileName))
-                            return false;
+                            CharacterOptionsKey = strSettingsName;
+                        }
 
                         // Metatype information.
                         string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
@@ -16081,96 +15882,125 @@ namespace Chummer
                         if (_lstMugshots.Count > 0)
                             _intMainMugshotIndex = 0;
 
-                        string strSettingsSummary =
-                            xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
-                        if (!string.IsNullOrEmpty(strSettingsSummary))
+                        if (string.IsNullOrEmpty(strSettingsName))
                         {
-                            int intCharCreationSystemsIndex =
-                                strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
-                            int intSemicolonIndex = strSettingsSummary.IndexOf(';');
-                            if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
-                                intCharCreationSystemsIndex != -1)
+                            string strSettingsSummary =
+                                xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
+                            if (!string.IsNullOrEmpty(strSettingsSummary))
                             {
-                                _strGameplayOption = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
-                                    strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
-                                if (_strGameplayOption == "Established Runners")
-                                    _strGameplayOption = "Standard";
-                            }
-                        }
-
-                        _intBuildKarma =
-                            Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText, GlobalOptions.InvariantCultureInfo);
-
-                        if (_intBuildKarma >= 100)
-                        {
-                            _objBuildMethod = CharacterBuildMethod.Karma;
-                        }
-                        else
-                        {
-                            _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-
-                            string ConvertPriorityString(string strInput)
-                            {
-                                switch (strInput)
+                                int intCharCreationSystemsIndex =
+                                    strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
+                                int intSemicolonIndex = strSettingsSummary.IndexOf(';');
+                                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
+                                    intCharCreationSystemsIndex != -1)
                                 {
-                                    case "1.":
-                                        return "A,4";
-                                    case "2.":
-                                        return "B,3";
-                                    case "3.":
-                                        return "C,2";
-                                    case "4.":
-                                        return "D,1";
-                                    case "5.":
-                                        return "E,0";
-                                    default:
-                                        return string.Empty;
+                                    string strHeroLabSettingsName = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
+                                        strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
+                                    if (strHeroLabSettingsName == "Established Runners")
+                                        strHeroLabSettingsName = "Standard";
+                                    KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.Name == strHeroLabSettingsName);
+                                    if (kvpHeroLabSettings.Value != null)
+                                    {
+                                        CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                        strSettingsName = kvpHeroLabSettings.Key;
+                                    }
                                 }
                             }
-
-                            if (_strPriorityAttributes == _strPrioritySpecial ||
-                                _strPriorityAttributes == _strPriorityMetatype ||
-                                _strPriorityAttributes == _strPriorityResources ||
-                                _strPriorityAttributes == _strPrioritySkills ||
-                                _strPrioritySpecial == _strPrioritySkills ||
-                                _strPrioritySpecial == _strPriorityMetatype ||
-                                _strPrioritySpecial == _strPriorityResources ||
-                                _strPriorityMetatype == _strPriorityResources ||
-                                _strPriorityMetatype == _strPrioritySpecial ||
-                                _strPriorityResources == _strPrioritySkills)
-                                _objBuildMethod = CharacterBuildMethod.SumtoTen;
-                            else
-                                _objBuildMethod = CharacterBuildMethod.Priority;
                         }
 
-                        XmlDocument xmlDocumentGameplayOptions = LoadData("gameplayoptions.xml");
-                        XmlNode xmlGameplayOption =
-                            xmlDocumentGameplayOptions.SelectSingleNode(
-                                "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                        if (xmlGameplayOption == null)
+                        if (string.IsNullOrEmpty(strSettingsName))
+                        {
+                            int intKarma = Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText, GlobalOptions.InvariantCultureInfo);
+
+                            if (intKarma >= 100)
+                            {
+                                KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.BuiltInOption
+                                                                                                                                                      && x.Value.BuildMethod == CharacterBuildMethod.Karma);
+                                if (kvpHeroLabSettings.Value != null)
+                                {
+                                    CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                    strSettingsName = kvpHeroLabSettings.Key;
+                                }
+                            }
+                            else
+                            {
+                                _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.InnerText);
+                                _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.InnerText);
+                                _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.InnerText);
+                                _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.InnerText);
+                                _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.InnerText);
+
+                                string ConvertPriorityString(string strInput)
+                                {
+                                    switch (strInput)
+                                    {
+                                        case "1.":
+                                            return "A,4";
+                                        case "2.":
+                                            return "B,3";
+                                        case "3.":
+                                            return "C,2";
+                                        case "4.":
+                                            return "D,1";
+                                        case "5.":
+                                            return "E,0";
+                                        default:
+                                            return string.Empty;
+                                    }
+                                }
+
+                                if (_strPriorityAttributes == _strPrioritySpecial ||
+                                    _strPriorityAttributes == _strPriorityMetatype ||
+                                    _strPriorityAttributes == _strPriorityResources ||
+                                    _strPriorityAttributes == _strPrioritySkills ||
+                                    _strPrioritySpecial == _strPrioritySkills ||
+                                    _strPrioritySpecial == _strPriorityMetatype ||
+                                    _strPrioritySpecial == _strPriorityResources ||
+                                    _strPriorityMetatype == _strPriorityResources ||
+                                    _strPriorityMetatype == _strPrioritySpecial ||
+                                    _strPriorityResources == _strPrioritySkills)
+                                {
+                                    KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.BuiltInOption
+                                                                                                                                                          && x.Value.BuildMethod == CharacterBuildMethod.SumtoTen);
+                                    if (kvpHeroLabSettings.Value != null)
+                                    {
+                                        CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                        strSettingsName = kvpHeroLabSettings.Key;
+                                    }
+                                }
+                                else
+                                {
+                                    KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.BuiltInOption
+                                                                                                                                                          && x.Value.BuildMethod == CharacterBuildMethod.Priority);
+                                    if (kvpHeroLabSettings.Value != null)
+                                    {
+                                        CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                        strSettingsName = kvpHeroLabSettings.Key;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strSettingsName))
                         {
                             string strMessage = LanguageManager
                                 .GetString("Message_MissingGameplayOption")
-                                .Replace("{0}", GameplayOption);
+                                .Replace("{0}", CharacterOptionsKey);
                             if (MessageBox.Show(strMessage,
                                     LanguageManager.GetString("Message_MissingGameplayOption_Title",
                                         GlobalOptions.Language),
@@ -16183,23 +16013,10 @@ namespace Chummer
                                         return false;
                                 }
                             }
-                            else
-                            {
-                                BannedWareGrades.Clear();
-                                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                                    BannedWareGrades.Add(xmlNode.InnerText);
-
-                                _intGameplayOptionQualityLimit =
-                                    _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText, GlobalOptions.InvariantCultureInfo);
-                                _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(
-                                    xmlGameplayOption["maxnuyen"].InnerText,
-                                    GlobalOptions.InvariantCultureInfo);
-                                _intMaxAvail = Convert.ToInt32(xmlGameplayOption["maxavailability"].InnerText, GlobalOptions.InvariantCultureInfo);
-                            }
                         }
 
-                        if (_objBuildMethod == CharacterBuildMethod.Priority ||
-                            _objBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (EffectiveBuildMethod == CharacterBuildMethod.Priority ||
+                            EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                         {
                             if (strRaceString == "A.I.")
                                 _strPriorityTalent = "AI";
@@ -17688,17 +17505,6 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_unarmed");
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", op_load))
-                    {
-                        //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
-                        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
-                        {
-                            _intGameplayOptionQualityLimit = _intMaxKarma;
-                        }
-
-                        //Timekeeper.Finish("load_char_maxkarmafix");
-                    }
-
                     // Refresh certain improvements
                     using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                     {
@@ -17773,7 +17579,7 @@ namespace Chummer
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
                     {
-                        int intPositiveQualityExcess = _intCachedPositiveQualities - GameplayOptionQualityLimit;
+                        int intPositiveQualityExcess = _intCachedPositiveQualities - Options.QualityKarmaLimit;
                         if (intPositiveQualityExcess > 0)
                         {
                             _intCachedPositiveQualities += intPositiveQualityExcess;
@@ -17809,7 +17615,7 @@ namespace Chummer
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
                     {
-                        int intPositiveQualityExcess = _intCachedPositiveQualitiesTotal - GameplayOptionQualityLimit;
+                        int intPositiveQualityExcess = _intCachedPositiveQualitiesTotal - Options.QualityKarmaLimit;
                         if (intPositiveQualityExcess > 0)
                         {
                             _intCachedPositiveQualitiesTotal += intPositiveQualityExcess;
@@ -17832,14 +17638,14 @@ namespace Chummer
                 {
                     return string.Format(GlobalOptions.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
                         PositiveQualityKarma,
-                        GameplayOptionQualityLimit,
+                        Options.QualityKarmaLimit,
                         LanguageManager.GetString("String_Space"),
                         PositiveQualityKarmaTotal,
                         LanguageManager.GetString("String_Karma"));
                 }
                 return string.Format(GlobalOptions.CultureInfo, "{0}/{1}{2}{3}",
                     PositiveQualityKarma,
-                    GameplayOptionQualityLimit,
+                    Options.QualityKarmaLimit,
                     LanguageManager.GetString("String_Space"),
                     LanguageManager.GetString("String_Karma"));
             }
@@ -17865,7 +17671,7 @@ namespace Chummer
                     // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                     if (Options.ExceedNegativeQualitiesLimit)
                     {
-                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        int intNegativeQualityLimit = -Options.QualityKarmaLimit;
                         if (_intCachedNegativeQualities < intNegativeQualityLimit)
                         {
                             _intCachedNegativeQualities = intNegativeQualityLimit;
@@ -17903,7 +17709,7 @@ namespace Chummer
                     // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                     if (Options.ExceedNegativeQualitiesLimit)
                     {
-                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        int intNegativeQualityLimit = -Options.QualityKarmaLimit;
                         if (_intCachedNegativeQualityLimitKarma < intNegativeQualityLimit)
                         {
                             _intCachedNegativeQualityLimitKarma = intNegativeQualityLimit;
@@ -17924,14 +17730,14 @@ namespace Chummer
                 {
                     return string.Format(GlobalOptions.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
                         NegativeQualityLimitKarma,
-                        GameplayOptionQualityLimit,
+                        Options.QualityKarmaLimit,
                         LanguageManager.GetString("String_Space"),
                         NegativeQualityKarma,
                         LanguageManager.GetString("String_Karma"));
                 }
                 return string.Format(GlobalOptions.CultureInfo, "{0}/{1}{2}{3}",
                     NegativeQualityKarma,
-                    GameplayOptionQualityLimit,
+                    Options.QualityKarmaLimit,
                     LanguageManager.GetString("String_Space"),
                     LanguageManager.GetString("String_Karma"));
             }
@@ -18038,7 +17844,6 @@ namespace Chummer
             set => _strPage = value;
         }
 
-        public string PriorityArray { get; set; } = string.Empty;
         public bool AllowAdeptWayPowerDiscount
         {
             get

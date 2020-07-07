@@ -4367,14 +4367,14 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(ParentID))
             {
-                if (_objCharacter.BannedWareGrades.Any(s => Grade.Name.Contains(s)))
+                if (_objCharacter.Options.BannedWareGrades.Any(s => Grade.Name.Contains(s)))
                     strCyberwareGrade += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
 
                 AvailabilityValue objTotalAvail = TotalAvailTuple();
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
-                    if (intAvailInt > _objCharacter.MaximumAvailability)
+                    if (intAvailInt > _objCharacter.Options.MaximumAvailability)
                     {
                         if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                         {

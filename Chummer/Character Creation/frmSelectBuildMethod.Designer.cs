@@ -46,15 +46,15 @@ namespace Chummer
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.lblBuildMethodParamLabel = new System.Windows.Forms.Label();
             this.lblBuildMethodParam = new System.Windows.Forms.Label();
-            this.lblMaxAvail = new System.Windows.Forms.Label();
-            this.lblMaxNuyen = new System.Windows.Forms.Label();
-            this.lblKarma = new System.Windows.Forms.Label();
-            this.lblMaxDRLabel = new System.Windows.Forms.Label();
-            this.lblMaxDR = new System.Windows.Forms.Label();
+            this.lblQualityKarmaLabel = new System.Windows.Forms.Label();
+            this.lblQualityKarma = new System.Windows.Forms.Label();
             this.lblBooksLabel = new System.Windows.Forms.Label();
             this.lblCustomDataLabel = new System.Windows.Forms.Label();
             this.lblBooks = new System.Windows.Forms.Label();
             this.lblCustomData = new System.Windows.Forms.Label();
+            this.lblMaxAvail = new System.Windows.Forms.Label();
+            this.lblKarma = new System.Windows.Forms.Label();
+            this.lblMaxNuyen = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tlpSummary.SuspendLayout();
@@ -131,7 +131,7 @@ namespace Chummer
             // 
             this.lblMaxNuyenLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaxNuyenLabel.AutoSize = true;
-            this.lblMaxNuyenLabel.Location = new System.Drawing.Point(215, 31);
+            this.lblMaxNuyenLabel.Location = new System.Drawing.Point(215, 62);
             this.lblMaxNuyenLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxNuyenLabel.Name = "lblMaxNuyenLabel";
             this.lblMaxNuyenLabel.Size = new System.Drawing.Size(94, 13);
@@ -224,6 +224,7 @@ namespace Chummer
             this.cmdEditCharacterOption.Text = "Modify...";
             this.cmdEditCharacterOption.ToolTipText = "";
             this.cmdEditCharacterOption.UseVisualStyleBackColor = true;
+            this.cmdEditCharacterOption.Click += new System.EventHandler(this.cmdEditCharacterOption_Click);
             // 
             // lblCharacterOption
             // 
@@ -251,18 +252,18 @@ namespace Chummer
             this.tlpSummary.Controls.Add(this.lblBuildMethod, 1, 0);
             this.tlpSummary.Controls.Add(this.lblBuildMethodParamLabel, 2, 0);
             this.tlpSummary.Controls.Add(this.lblBuildMethodParam, 3, 0);
-            this.tlpSummary.Controls.Add(this.lblMaxDRLabel, 2, 2);
-            this.tlpSummary.Controls.Add(this.lblMaxDR, 3, 2);
             this.tlpSummary.Controls.Add(this.lblBooksLabel, 0, 3);
             this.tlpSummary.Controls.Add(this.lblCustomDataLabel, 2, 3);
             this.tlpSummary.Controls.Add(this.lblBooks, 0, 4);
             this.tlpSummary.Controls.Add(this.lblCustomData, 2, 4);
             this.tlpSummary.Controls.Add(this.lblKarmaLabel, 0, 1);
-            this.tlpSummary.Controls.Add(this.lblMaxNuyenLabel, 2, 1);
             this.tlpSummary.Controls.Add(this.lblMaxAvailLabel, 0, 2);
             this.tlpSummary.Controls.Add(this.lblMaxAvail, 1, 2);
             this.tlpSummary.Controls.Add(this.lblKarma, 1, 1);
-            this.tlpSummary.Controls.Add(this.lblMaxNuyen, 3, 1);
+            this.tlpSummary.Controls.Add(this.lblQualityKarmaLabel, 2, 1);
+            this.tlpSummary.Controls.Add(this.lblMaxNuyenLabel, 2, 2);
+            this.tlpSummary.Controls.Add(this.lblQualityKarma, 3, 1);
+            this.tlpSummary.Controls.Add(this.lblMaxNuyen, 3, 2);
             this.tlpSummary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpSummary.Location = new System.Drawing.Point(0, 54);
             this.tlpSummary.Margin = new System.Windows.Forms.Padding(0);
@@ -323,65 +324,29 @@ namespace Chummer
             this.lblBuildMethodParam.TabIndex = 18;
             this.lblBuildMethodParam.Text = "[Parameter]";
             // 
-            // lblMaxAvail
+            // lblQualityKarmaLabel
             // 
-            this.lblMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMaxAvail.AutoSize = true;
-            this.lblMaxAvail.Location = new System.Drawing.Point(107, 62);
-            this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxAvail.Name = "lblMaxAvail";
-            this.lblMaxAvail.Size = new System.Drawing.Size(36, 13);
-            this.lblMaxAvail.TabIndex = 19;
-            this.lblMaxAvail.Text = "[Avail]";
-            this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblQualityKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblQualityKarmaLabel.AutoSize = true;
+            this.lblQualityKarmaLabel.Location = new System.Drawing.Point(213, 31);
+            this.lblQualityKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualityKarmaLabel.Name = "lblQualityKarmaLabel";
+            this.lblQualityKarmaLabel.Size = new System.Drawing.Size(96, 13);
+            this.lblQualityKarmaLabel.TabIndex = 22;
+            this.lblQualityKarmaLabel.Tag = "Label_SelectBP_QualityKarmaLimit";
+            this.lblQualityKarmaLabel.Text = "Quality Karma Limit";
+            this.lblQualityKarmaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblMaxNuyen
+            // lblQualityKarma
             // 
-            this.lblMaxNuyen.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMaxNuyen.AutoSize = true;
-            this.lblMaxNuyen.Location = new System.Drawing.Point(315, 31);
-            this.lblMaxNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxNuyen.Name = "lblMaxNuyen";
-            this.lblMaxNuyen.Size = new System.Drawing.Size(43, 13);
-            this.lblMaxNuyen.TabIndex = 20;
-            this.lblMaxNuyen.Text = "[Karma]";
-            this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblKarma
-            // 
-            this.lblKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarma.AutoSize = true;
-            this.lblKarma.Location = new System.Drawing.Point(107, 31);
-            this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarma.Name = "lblKarma";
-            this.lblKarma.Size = new System.Drawing.Size(43, 13);
-            this.lblKarma.TabIndex = 21;
-            this.lblKarma.Text = "[Karma]";
-            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblMaxDRLabel
-            // 
-            this.lblMaxDRLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxDRLabel.AutoSize = true;
-            this.lblMaxDRLabel.Location = new System.Drawing.Point(221, 56);
-            this.lblMaxDRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxDRLabel.Name = "lblMaxDRLabel";
-            this.lblMaxDRLabel.Size = new System.Drawing.Size(88, 26);
-            this.lblMaxDRLabel.TabIndex = 22;
-            this.lblMaxDRLabel.Tag = "Label_SelectBP_MaxDR";
-            this.lblMaxDRLabel.Text = "Maximum Device Rating";
-            this.lblMaxDRLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblMaxDR
-            // 
-            this.lblMaxDR.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMaxDR.AutoSize = true;
-            this.lblMaxDR.Location = new System.Drawing.Point(315, 62);
-            this.lblMaxDR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxDR.Name = "lblMaxDR";
-            this.lblMaxDR.Size = new System.Drawing.Size(81, 13);
-            this.lblMaxDR.TabIndex = 23;
-            this.lblMaxDR.Text = "[Device Rating]";
+            this.lblQualityKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblQualityKarma.AutoSize = true;
+            this.lblQualityKarma.Location = new System.Drawing.Point(315, 31);
+            this.lblQualityKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualityKarma.Name = "lblQualityKarma";
+            this.lblQualityKarma.Size = new System.Drawing.Size(43, 13);
+            this.lblQualityKarma.TabIndex = 23;
+            this.lblQualityKarma.Text = "[Karma]";
             // 
             // lblBooksLabel
             // 
@@ -428,6 +393,42 @@ namespace Chummer
             this.lblCustomData.Size = new System.Drawing.Size(110, 13);
             this.lblCustomData.TabIndex = 27;
             this.lblCustomData.Text = "[Custom Data Names]";
+            // 
+            // lblMaxAvail
+            // 
+            this.lblMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaxAvail.AutoSize = true;
+            this.lblMaxAvail.Location = new System.Drawing.Point(107, 62);
+            this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxAvail.Name = "lblMaxAvail";
+            this.lblMaxAvail.Size = new System.Drawing.Size(36, 13);
+            this.lblMaxAvail.TabIndex = 19;
+            this.lblMaxAvail.Text = "[Avail]";
+            this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarma
+            // 
+            this.lblKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarma.AutoSize = true;
+            this.lblKarma.Location = new System.Drawing.Point(107, 31);
+            this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarma.Name = "lblKarma";
+            this.lblKarma.Size = new System.Drawing.Size(43, 13);
+            this.lblKarma.TabIndex = 21;
+            this.lblKarma.Text = "[Karma]";
+            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblMaxNuyen
+            // 
+            this.lblMaxNuyen.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaxNuyen.AutoSize = true;
+            this.lblMaxNuyen.Location = new System.Drawing.Point(315, 62);
+            this.lblMaxNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxNuyen.Name = "lblMaxNuyen";
+            this.lblMaxNuyen.Size = new System.Drawing.Size(43, 13);
+            this.lblMaxNuyen.TabIndex = 20;
+            this.lblMaxNuyen.Text = "[Karma]";
+            this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // frmSelectBuildMethod
             // 
@@ -482,8 +483,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblMaxAvail;
         private System.Windows.Forms.Label lblMaxNuyen;
         private System.Windows.Forms.Label lblKarma;
-        private System.Windows.Forms.Label lblMaxDRLabel;
-        private System.Windows.Forms.Label lblMaxDR;
+        private System.Windows.Forms.Label lblQualityKarmaLabel;
+        private System.Windows.Forms.Label lblQualityKarma;
         private System.Windows.Forms.Label lblBooksLabel;
         private System.Windows.Forms.Label lblCustomDataLabel;
         private System.Windows.Forms.Label lblBooks;

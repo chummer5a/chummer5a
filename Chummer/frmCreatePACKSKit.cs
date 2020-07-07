@@ -243,7 +243,7 @@ namespace Chummer
                     if (chkStartingNuyen.Checked)
                     {
                         decimal decNuyenBP = _objCharacter.NuyenBP;
-                        if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                        if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Karma)
                             decNuyenBP /= 2.0m;
                         objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
                     }

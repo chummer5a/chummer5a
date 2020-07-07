@@ -5753,8 +5753,8 @@ namespace Chummer
                 }
             }
 
-            int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
-            int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
+            int intEnemyMax = CharacterObjectOptions.QualityKarmaLimit;
+            int intQualityMax = CharacterObjectOptions.QualityKarmaLimit;
             string strSpace = LanguageManager.GetString("String_Space");
             string strEnemyPoints = intEnemyMax.ToString(GlobalOptions.CultureInfo) + strSpace + LanguageManager.GetString("String_Karma");
             string strQualityPoints = intQualityMax.ToString(GlobalOptions.CultureInfo) + strSpace + LanguageManager.GetString("String_Karma");

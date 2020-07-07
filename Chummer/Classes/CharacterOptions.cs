@@ -34,6 +34,14 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
+    public enum CharacterBuildMethod
+    {
+        Karma = 0,
+        Priority = 1,
+        SumtoTen = 2,
+        LifeModule = 3
+    }
+
     public class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
     {
         private Guid _guiSourceId = Guid.Empty;
@@ -177,9 +185,13 @@ namespace Chummer
         // Weapon
         private int _intKarmaWeaponFocus = 3;
 
-        // Default build settings.
-        private string _strBuildMethod = "Priority";
+        // Build settings.
+        private CharacterBuildMethod _eBuildMethod = CharacterBuildMethod.Priority;
         private int _intBuildPoints = 25;
+        private int _intQualityKarmaLimit = 25;
+        private string _strPriorityArray = "ABCDE";
+        private int _intSumtoTen = 10;
+        private decimal _decNuyenMaximumBP = 50;
         private int _intAvailability = 12;
 
         // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
@@ -239,6 +251,10 @@ namespace Chummer
                 new DependencyGraphNode<string>(nameof(EnabledCustomDataDirectoryInfos),
                     new DependencyGraphNode<string>(nameof(CustomDataDirectoryNames))
                 ),
+                new DependencyGraphNode<string>(nameof(MysAdeptSecondMAGAttributeEnabled),
+                    new DependencyGraphNode<string>(nameof(MysAdeptAllowPPCareer)),
+                    new DependencyGraphNode<string>(nameof(PrioritySpellsAsAdeptPowers))
+                ),
                 new DependencyGraphNode<string>(nameof(MaxNuyenDecimals),
                     new DependencyGraphNode<string>(nameof(NuyenFormat)),
                     new DependencyGraphNode<string>(nameof(MinNuyenDecimals))
@@ -251,6 +267,13 @@ namespace Chummer
                     new DependencyGraphNode<string>(nameof(EssenceFormat))
                 ),
                 new DependencyGraphNode<string>(nameof(BuiltInOption),
+                    new DependencyGraphNode<string>(nameof(SourceId))
+                ),
+                new DependencyGraphNode<string>(nameof(BuildMethod),
+                    new DependencyGraphNode<string>(nameof(BuildMethodHasSkillPoints))
+                ),
+                new DependencyGraphNode<string>(nameof(DisplayName),
+                    new DependencyGraphNode<string>(nameof(Name)),
                     new DependencyGraphNode<string>(nameof(SourceId))
                 )
             );
@@ -297,6 +320,12 @@ namespace Chummer
                 _lstBooks.Add(strBook);
             }
             RecalculateBookXPath();
+
+            BannedWareGrades.Clear();
+            foreach (string strGrade in objOther.BannedWareGrades)
+            {
+                BannedWareGrades.Add(strGrade);
+            }
         }
 
         public bool Equals(CharacterOptions objOther)
@@ -339,6 +368,10 @@ namespace Chummer
 
             if (_lstBooks.Union(objOther._lstBooks).Count() != _lstBooks.Count)
                 return false;
+
+            if (BannedWareGrades.Union(objOther.BannedWareGrades).Count() != BannedWareGrades.Count)
+                return false;
+
             return true;
         }
 
@@ -655,17 +688,29 @@ namespace Chummer
 		            }
 		            // </customdatadirectorynames>
 		            objWriter.WriteEndElement();
-		            // <hascustomdirectories>
 
-                    // <defaultbuild>
-                    objWriter.WriteStartElement("defaultbuild");
                     // <buildmethod />
-                    objWriter.WriteElementString("buildmethod", _strBuildMethod);
+                    objWriter.WriteElementString("buildmethod", _eBuildMethod.ToString());
                     // <buildpoints />
                     objWriter.WriteElementString("buildpoints", _intBuildPoints.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <qualitykarmalimit />
+                    objWriter.WriteElementString("qualitykarmalimit", _intQualityKarmaLimit.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <priorityarray />
+                    objWriter.WriteElementString("priorityarray", _strPriorityArray.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <sumtoten />
+                    objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalOptions.InvariantCultureInfo));
                     // <availability />
                     objWriter.WriteElementString("availability", _intAvailability.ToString(GlobalOptions.InvariantCultureInfo));
-                    // </defaultbuild>
+                    // <nuyenmaxbp />
+                    objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <bannedwaregrades>
+                    objWriter.WriteStartElement("bannedwaregrades");
+                    foreach (string strGrade in BannedWareGrades)
+                    {
+                        objWriter.WriteElementString("grade", strGrade);
+                    }
+                    // </bannedwaregrades>
                     objWriter.WriteEndElement();
 
                     // </settings>
@@ -734,6 +779,7 @@ namespace Chummer
         {
             if (objXmlNode == null)
                 return false;
+            string strTemp = string.Empty;
             // Setting id.
             string strId = string.Empty;
             if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
@@ -778,7 +824,7 @@ namespace Chummer
                 // Legacy shim
                 int intTemp = 3;
                 bool blnTemp = false;
-                string strTemp = "{CHAUnaug}";
+                strTemp = "{CHAUnaug}";
                 if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref blnTemp) && blnTemp)
                     strTemp = "{CHA}";
                 if (objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref blnTemp) && blnTemp)
@@ -791,7 +837,7 @@ namespace Chummer
                 // Legacy shim
                 int intTemp = 2;
                 bool blnTemp = false;
-                string strTemp = "({INTUnaug} + {LOGUnaug})";
+                strTemp = "({INTUnaug} + {LOGUnaug})";
                 if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref blnTemp) && blnTemp)
                     strTemp = "({INT} + {LOG})";
                 if (objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref blnTemp) && blnTemp)
@@ -1068,17 +1114,151 @@ namespace Chummer
                 ++intTopMostLoadOrder;
             }
 
-            // Load default build settings.
+            // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNode("defaultbuild");
-            if (xmlDefaultBuildNode != null)
-            {
-                xmlDefaultBuildNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
-                xmlDefaultBuildNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
-                xmlDefaultBuildNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
-            }
+
+            if (!objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp))
+                xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp);
+            if (Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod))
+                _eBuildMethod = eBuildMethod;
+            if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
+                xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+            if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit) && BuildMethod != CharacterBuildMethod.Karma && BuildMethod != CharacterBuildMethod.LifeModule)
+                _intQualityKarmaLimit = _intBuildPoints;
+            objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
+            objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
+            if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
+                xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+            objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+
+            BannedWareGrades.Clear();
+            foreach (XPathNavigator xmlGrade in objXmlNode.Select("bannedwaregrades/grade"))
+                BannedWareGrades.Add(xmlGrade.Value);
 
             return true;
         }
+        #endregion
+
+        #region Build Properties
+        /// <summary>
+        /// Method being used to build the character.
+        /// </summary>
+        public CharacterBuildMethod BuildMethod
+        {
+            get => _eBuildMethod;
+            set
+            {
+                if (value != _eBuildMethod)
+                {
+                    _eBuildMethod = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool BuildMethodHasSkillPoints => BuildMethod == CharacterBuildMethod.Priority ||
+                                                 BuildMethod == CharacterBuildMethod.SumtoTen;
+
+        /// <summary>
+        /// The priority configuration used in Priority mode.
+        /// </summary>
+        public string PriorityArray
+        {
+            get => _strPriorityArray;
+            set
+            {
+                if (_strPriorityArray != value)
+                {
+                    _strPriorityArray = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The total value of priorities used in Sum-to-Ten mode.
+        /// </summary>
+        public int SumtoTen
+        {
+            get => _intSumtoTen;
+            set
+            {
+                if (_intSumtoTen != value)
+                {
+                    _intSumtoTen = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Amount of Karma that is used to create the character.
+        /// </summary>
+        public int BuildKarma
+        {
+            get => _intBuildPoints;
+            set
+            {
+                if (_intBuildPoints != value)
+                {
+                    _intBuildPoints = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Limit on the amount of karma that can be spent at creation on qualities
+        /// </summary>
+        public int QualityKarmaLimit
+        {
+            get => _intQualityKarmaLimit;
+            set
+            {
+                if (_intQualityKarmaLimit != value)
+                {
+                    _intQualityKarmaLimit = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum item Availability for new characters.
+        /// </summary>
+        public int MaximumAvailability
+        {
+            get => _intAvailability;
+            set
+            {
+                if (_intAvailability != value)
+                {
+                    _intAvailability = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of Build Points that can be spent on Nuyen.
+        /// </summary>
+        public decimal NuyenMaximumBP
+        {
+            get => _decNuyenMaximumBP;
+            set
+            {
+                if (_decNuyenMaximumBP != value)
+                {
+                    _decNuyenMaximumBP = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Blocked grades of cyber/bioware in Create mode.
+        /// </summary>
+        public HashSet<string> BannedWareGrades { get; } = new HashSet<string> { "Betaware", "Deltaware", "Gammaware" };
         #endregion
 
         #region Properties and Methods
@@ -1534,6 +1714,8 @@ namespace Chummer
                 {
                     _blnMysAdeptAllowPPCareer = value;
                     OnPropertyChanged();
+                    if (value)
+                        MysAdeptSecondMAGAttribute = false;
                 }
             }
         }
@@ -1550,9 +1732,16 @@ namespace Chummer
                 {
                     _blnMysAdeptSecondMAGAttribute = value;
                     OnPropertyChanged();
+                    if (value)
+                    {
+                        PrioritySpellsAsAdeptPowers = false;
+                        MysAdeptAllowPPCareer = false;
+                    }
                 }
             }
         }
+
+        public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPPCareer;
 
         /// <summary>
         /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
@@ -1710,6 +1899,26 @@ namespace Chummer
                     _strName = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Setting name to display in the UI.
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                string strReturn = Name;
+                if (BuiltInOption)
+                {
+                    strReturn = XmlManager.Load("settings.xml").SelectSingleNode("/chummer/settings/setting[id = '" + SourceId + "']/translate")?.InnerText ?? strReturn;
+                }
+                else
+                {
+                    strReturn += LanguageManager.GetString("String_Space") + '[' + FileName + ']';
+                }
+                return strReturn;
             }
         }
 
@@ -2461,6 +2670,185 @@ namespace Chummer
                 }
             }
         }
+
+        /// <summary>
+        /// Whether Life Modules should automatically generate a character background.
+        /// </summary>
+        public bool AutomaticBackstory
+        {
+            get => _blnAutomaticBackstory;
+            set
+            {
+                if (_blnAutomaticBackstory != value)
+                {
+                    _blnAutomaticBackstory = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether to use the rules from SR4 to calculate Public Awareness.
+        /// </summary>
+        public bool UseCalculatedPublicAwareness
+        {
+            get => _blnUseCalculatedPublicAwareness;
+            set
+            {
+                if (_blnUseCalculatedPublicAwareness != value)
+                {
+                    _blnUseCalculatedPublicAwareness = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether Martial Arts grant a free specialization in a skill.
+        /// </summary>
+        public bool FreeMartialArtSpecialization
+        {
+            get => _blnFreeMartialArtSpecialization;
+            set
+            {
+                if (_blnFreeMartialArtSpecialization != value)
+                {
+                    _blnFreeMartialArtSpecialization = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether Spells from Magic Priority can also be spent on power points.
+        /// </summary>
+        public bool PrioritySpellsAsAdeptPowers
+        {
+            get => _blnPrioritySpellsAsAdeptPowers;
+            set
+            {
+                if (_blnPrioritySpellsAsAdeptPowers != value)
+                {
+                    _blnPrioritySpellsAsAdeptPowers = value;
+                    OnPropertyChanged();
+                    if (value)
+                        MysAdeptSecondMAGAttribute = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Last folder from which a mugshot was added
+        /// </summary>
+        public string RecentImageFolder
+        {
+            get => _strImageFolder;
+            set
+            {
+                if (_strImageFolder != value)
+                {
+                    _strImageFolder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Allows characters to spend their Karma before Priority Points.
+        /// </summary>
+        public bool ReverseAttributePriorityOrder
+        {
+            get => _blnReverseAttributePriorityOrder;
+            set
+            {
+                if (_blnReverseAttributePriorityOrder != value)
+                {
+                    _blnReverseAttributePriorityOrder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating.
+        /// </summary>
+        public bool IncreasedImprovedAbilityMultiplier
+        {
+            get => _blnIncreasedImprovedAbilityMultiplier;
+            set
+            {
+                if (_blnIncreasedImprovedAbilityMultiplier != value)
+                {
+                    _blnIncreasedImprovedAbilityMultiplier = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        /// <summary>
+        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
+        /// </summary>
+        public bool AllowFreeGrids
+        {
+            get => _blnAllowFreeGrids;
+            set
+            {
+                if (_blnAllowFreeGrids != value)
+                {
+                    _blnAllowFreeGrids = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened.
+        /// </summary>
+        public bool AllowTechnomancerSchooling
+        {
+            get => _blnAllowTechnomancerSchooling;
+            set
+            {
+                if (_blnAllowTechnomancerSchooling != value)
+                {
+                    _blnAllowTechnomancerSchooling = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Override the maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public bool CyberlimbAttributeBonusCapOverride
+        {
+            get => _blnCyberlimbAttributeBonusCapOverride;
+            set
+            {
+                if (_blnCyberlimbAttributeBonusCapOverride != value)
+                {
+                    _blnCyberlimbAttributeBonusCapOverride = value;
+                    OnPropertyChanged();
+                    if (!value)
+                        CyberlimbAttributeBonusCap = 4;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public int CyberlimbAttributeBonusCap
+        {
+            get => _intCyberlimbAttributeBonusCap;
+            set
+            {
+                if (_intCyberlimbAttributeBonusCap != value)
+                {
+                    _intCyberlimbAttributeBonusCap = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Karma
@@ -3203,183 +3591,6 @@ namespace Chummer
         #endregion
 
         #region Default Build
-        /// <summary>
-        /// Whether Life Modules should automatically generate a character background.
-        /// </summary>
-        public bool AutomaticBackstory
-        {
-            get => _blnAutomaticBackstory;
-            set
-            {
-                if (_blnAutomaticBackstory != value)
-                {
-                    _blnAutomaticBackstory = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether to use the rules from SR4 to calculate Public Awareness.
-        /// </summary>
-        public bool UseCalculatedPublicAwareness
-        {
-            get => _blnUseCalculatedPublicAwareness;
-            set
-            {
-                if (_blnUseCalculatedPublicAwareness != value)
-                {
-                    _blnUseCalculatedPublicAwareness = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether Martial Arts grant a free specialization in a skill.
-        /// </summary>
-        public bool FreeMartialArtSpecialization
-        {
-            get => _blnFreeMartialArtSpecialization;
-            set
-            {
-                if (_blnFreeMartialArtSpecialization != value)
-                {
-                    _blnFreeMartialArtSpecialization = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether Spells from Magic Priority can also be spent on power points.
-        /// </summary>
-        public bool PrioritySpellsAsAdeptPowers
-        {
-            get => _blnPrioritySpellsAsAdeptPowers;
-            set
-            {
-                if (_blnPrioritySpellsAsAdeptPowers != value)
-                {
-                    _blnPrioritySpellsAsAdeptPowers = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Last folder from which a mugshot was added
-        /// </summary>
-        public string RecentImageFolder
-        {
-            get => _strImageFolder;
-            set
-            {
-                if (_strImageFolder != value)
-                {
-                    _strImageFolder = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Allows characters to spend their Karma before Priority Points.
-        /// </summary>
-        public bool ReverseAttributePriorityOrder
-        {
-            get => _blnReverseAttributePriorityOrder;
-            set
-            {
-                if (_blnReverseAttributePriorityOrder != value)
-                {
-                    _blnReverseAttributePriorityOrder = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating.
-        /// </summary>
-        public bool IncreasedImprovedAbilityMultiplier
-        {
-            get => _blnIncreasedImprovedAbilityMultiplier;
-            set
-            {
-                if (_blnIncreasedImprovedAbilityMultiplier != value)
-                {
-                    _blnIncreasedImprovedAbilityMultiplier = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        /// <summary>
-        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
-        /// </summary>
-        public bool AllowFreeGrids
-        {
-            get => _blnAllowFreeGrids;
-            set
-            {
-                if (_blnAllowFreeGrids != value)
-                {
-                    _blnAllowFreeGrids = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened.
-        /// </summary>
-        public bool AllowTechnomancerSchooling
-        {
-            get => _blnAllowTechnomancerSchooling;
-            set
-            {
-                if (_blnAllowTechnomancerSchooling != value)
-                {
-                    _blnAllowTechnomancerSchooling = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Override the maximum value of bonuses that can affect cyberlimbs.
-        /// </summary>
-        public bool CyberlimbAttributeBonusCapOverride
-        {
-            get => _blnCyberlimbAttributeBonusCapOverride;
-            set
-            {
-                if (_blnCyberlimbAttributeBonusCapOverride != value)
-                {
-                    _blnCyberlimbAttributeBonusCapOverride = value;
-                    OnPropertyChanged();
-                    if (!value)
-                        CyberlimbAttributeBonusCap = 4;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Maximum value of bonuses that can affect cyberlimbs.
-        /// </summary>
-        public int CyberlimbAttributeBonusCap
-        {
-            get => _intCyberlimbAttributeBonusCap;
-            set
-            {
-                if (_intCyberlimbAttributeBonusCap != value)
-                {
-                    _intCyberlimbAttributeBonusCap = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
         /// </summary>

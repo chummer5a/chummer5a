@@ -41,7 +41,8 @@ namespace Chummer.Backend.Skills
             _objCharacter = character;
             if (_objCharacter != null)
             {
-                _objCharacter.Options.PropertyChanged += OptionsOnPropertyChanged;
+                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
                 _objCharacter.BOD.PropertyChanged += RefreshBODDependentProperties;
                 _objCharacter.AGI.PropertyChanged += RefreshAGIDependentProperties;
                 _objCharacter.REA.PropertyChanged += RefreshREADependentProperties;
@@ -63,7 +64,8 @@ namespace Chummer.Backend.Skills
         {
             if (_objCharacter != null)
             {
-                _objCharacter.Options.PropertyChanged -= OptionsOnPropertyChanged;
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
                 _objCharacter.BOD.PropertyChanged -= RefreshBODDependentProperties;
                 _objCharacter.AGI.PropertyChanged -= RefreshAGIDependentProperties;
                 _objCharacter.REA.PropertyChanged -= RefreshREADependentProperties;
@@ -82,7 +84,13 @@ namespace Chummer.Backend.Skills
             _dicSkillBackups.Clear();
         }
 
-        private void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+                OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e?.PropertyName == nameof(CharacterOptions.KnowledgePointsExpression))
                 OnPropertyChanged(nameof(KnowledgeSkillPoints));
@@ -581,7 +589,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_objCharacter.BuildMethodHasSkillPoints)
+                    if (_objCharacter.EffectiveBuildMethodHasSkillPoints)
                     {
                         // Allocate Skill Points
                         int intSkillPointCount = SkillPointsMaximum;
@@ -977,7 +985,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
-                if (!_objCharacter.BuildMethodHasSkillPoints)
+                if (!_objCharacter.EffectiveBuildMethodHasSkillPoints)
                 {
                     return 0;
                 }

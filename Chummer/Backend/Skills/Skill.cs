@@ -456,6 +456,7 @@ namespace Chummer.Backend.Skills
         {
             CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
             CharacterObject.PropertyChanged += OnCharacterChanged;
+            CharacterObject.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
             CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
             CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
             Specializations.ListChanged += SpecializationsOnListChanged;
@@ -688,6 +689,7 @@ namespace Chummer.Backend.Skills
         public void UnbindSkill()
         {
             CharacterObject.PropertyChanged -= OnCharacterChanged;
+            CharacterObject.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
             CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
             CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
 
@@ -1591,7 +1593,7 @@ namespace Chummer.Backend.Skills
         {
             if (e.PropertyName == nameof(Skills.SkillGroup.Base))
             {
-                if (CharacterObject.BuildMethodHasSkillPoints)
+                if (CharacterObject.EffectiveBuildMethodHasSkillPoints)
                     OnMultiplePropertyChanged(nameof(Base),
                                               nameof(BaseUnlocked),
                                               nameof(ForcedBuyWithKarma));
@@ -1629,6 +1631,12 @@ namespace Chummer.Backend.Skills
             {
                 OnPropertyChanged(nameof(PoolToolTip));
             }
+            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+            {
+                OnMultiplePropertyChanged(nameof(Base),
+                    nameof(BaseUnlocked),
+                    nameof(ForcedBuyWithKarma));
+            }
             else if (e.PropertyName == nameof(Character.Improvements))
             {
                 //TODO: Dear god outbound improvements please this is is minimal an impact we can have and it's going to be a nightmare.
@@ -1637,6 +1645,20 @@ namespace Chummer.Backend.Skills
                     _strDefaultAttribute != _objAttribute.Abbrev)
                     _blnCheckSwapSkillImprovements = true;
             }
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterOptions.StrictSkillGroupsInCreateMode))
+            {
+                if (!CharacterObject.Created)
+                {
+                    OnPropertyChanged(nameof(KarmaUnlocked));
+                }
+            }
+            else if (e.PropertyName == nameof(CharacterOptions.StrictSkillGroupsInCreateMode)
+                     || e.PropertyName == nameof(CharacterOptions.UsePointsOnBrokenGroups))
+                OnPropertyChanged(nameof(BaseUnlocked));
         }
 
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)

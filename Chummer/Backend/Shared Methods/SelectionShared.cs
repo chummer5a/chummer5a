@@ -132,7 +132,7 @@ namespace Chummer
                     }
                     return false;
                 }
-                if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                if (objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority || objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                 {
                     if (xmlNode.SelectSingleNode("onlyprioritygiven") != null)
                     {
@@ -670,7 +670,7 @@ namespace Chummer
                     // A particular gameplay option is required.
                     if (blnShowMessage)
                         strName = string.Format("{0}\t{2}{1}={1}{3}", Environment.NewLine, strSpace, LanguageManager.GetString("String_GameplayOption"), strNodeInnerText);
-                    return objCharacter.GameplayOption == strNodeInnerText;
+                    return objCharacter.CharacterOptionsKey == strNodeInnerText;
                 }
                 case "gear":
                     {
@@ -1323,7 +1323,7 @@ namespace Chummer
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             if (blnIsSuccess)
                 intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
-            return intAvail <= objCharacter.MaximumAvailability;
+            return intAvail <= objCharacter.Options.MaximumAvailability;
         }
         /// <summary>
         ///     Evaluates whether a given node can be purchased.

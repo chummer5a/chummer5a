@@ -74,7 +74,7 @@ namespace Chummer.UI.Attributes
                 if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
                     _objAttribute.Karma = _objAttribute.KarmaMaximum;
 
-                nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodHasSkillPoints));
                 nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
                 nudBase.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Base));
                 nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));

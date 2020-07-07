@@ -1214,7 +1214,7 @@ namespace Chummer.Backend.Equipment
             if (!objTotalAvail.AddToParent)
             {
                 int intAvailInt = objTotalAvail.Value;
-                if (intAvailInt > _objCharacter.MaximumAvailability && !_blnIncludedInArmor)
+                if (intAvailInt > _objCharacter.Options.MaximumAvailability && !_blnIncludedInArmor)
                 {
                     if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                     {

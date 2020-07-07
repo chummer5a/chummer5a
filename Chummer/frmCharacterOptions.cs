@@ -53,6 +53,22 @@ namespace Chummer
         {
             SetToolTips();
             PopulateSettingsList();
+
+            List<ListItem> lstBuildMethods = new List<ListItem>
+            {
+                new ListItem(CharacterBuildMethod.Priority, LanguageManager.GetString("String_Priority")),
+                new ListItem(CharacterBuildMethod.SumtoTen, LanguageManager.GetString("String_SumtoTen")),
+                new ListItem(CharacterBuildMethod.Karma, LanguageManager.GetString("String_Karma"))
+            };
+            if (GlobalOptions.LifeModuleEnabled)
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule, LanguageManager.GetString("String_LifeModule")));
+
+            cboBuildMethod.BeginUpdate();
+            cboBuildMethod.ValueMember = nameof(ListItem.Value);
+            cboBuildMethod.DisplayMember = nameof(ListItem.Name);
+            cboBuildMethod.DataSource = lstBuildMethods;
+            cboBuildMethod.EndUpdate();
+
             SetupDataBindings();
             PopulateOptions();
 
@@ -96,6 +112,10 @@ namespace Chummer
             }
 
             OptionsManager.LoadedCharacterOptions.Remove(_objReferenceCharacterOptions.FileName);
+            KeyValuePair<string, CharacterOptions> kvpReplacementOption = OptionsManager.LoadedCharacterOptions.First(x => x.Value.BuiltInOption
+                                                                                                                           && x.Value.BuildMethod == _objReferenceCharacterOptions.BuildMethod);
+            foreach (Character objCharacter in Program.MainForm.OpenCharacters.Where(x => x.CharacterOptionsKey == _objReferenceCharacterOptions.FileName))
+                objCharacter.CharacterOptionsKey = kvpReplacementOption.Key;
             _blnDirty = false;
             PopulateSettingsList();
         }
@@ -466,6 +486,10 @@ namespace Chummer
         {
             cmdDelete.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
 
+            cboBuildMethod.DoDatabinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.BuildMethod));
+            nudStartingKarma.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.BuildKarma));
+            nudSumToTen.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.SumtoTen));
+
             chkAllowCyberwareESSDiscounts.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowCyberwareESSDiscounts));
             chkAllowInitiation.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowInitiationInCreateMode));
             chkDontUseCyberlimbCalculation.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontUseCyberlimbCalculation));
@@ -518,15 +542,19 @@ namespace Chummer
             chkAllowPointBuySpecializationsOnKarmaSkills.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowPointBuySpecializationsOnKarmaSkills));
             chkAlternateMetatypeAttributeKarma.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AlternateMetatypeAttributeKarma));
             chkCompensateSkillGroupKarmaDifference.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CompensateSkillGroupKarmaDifference));
-            chkMysAdPp.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptAllowPPCareer));
-            chkMysAdeptSecondMAGAttribute.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
             chkFreeMartialArtSpecialization.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.FreeMartialArtSpecialization));
-            chkPrioritySpellsAsAdeptPowers.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.PrioritySpellsAsAdeptPowers));
             chkEnemyKarmaQualityLimit.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.EnemyKarmaQualityLimit));
             chkIncreasedImprovedAbilityModifier.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IncreasedImprovedAbilityMultiplier));
             chkAllowFreeGrids.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowFreeGrids));
             chkAllowTechnomancerSchooling.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowTechnomancerSchooling));
             chkUsePointsOnBrokenGroups.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UsePointsOnBrokenGroups));
+
+            chkMysAdPp.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptAllowPPCareer));
+            chkMysAdPp.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
+            chkPrioritySpellsAsAdeptPowers.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.PrioritySpellsAsAdeptPowers));
+            chkPrioritySpellsAsAdeptPowers.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
+            chkMysAdeptSecondMAGAttribute.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
+            chkMysAdeptSecondMAGAttribute.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttributeEnabled));
 
             chkCyberlimbAttributeBonusCap.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCapOverride));
             nudCyberlimbAttributeBonusCap.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCapOverride));
@@ -592,16 +620,16 @@ namespace Chummer
 
         private void PopulateSettingsList()
         {
+            string strOldSelected = string.Empty;
+            if (!_blnLoading)
+                strOldSelected = cboSetting.SelectedValue?.ToString();
             List<ListItem> lstSettings = new List<ListItem>();
-
             foreach (KeyValuePair<string, CharacterOptions> kvpCharacterOptionsEntry in OptionsManager.LoadedCharacterOptions)
             {
-                lstSettings.Add(new ListItem(kvpCharacterOptionsEntry.Key, kvpCharacterOptionsEntry.Value.BuiltInOption
-                    ? kvpCharacterOptionsEntry.Value.Name
-                    : kvpCharacterOptionsEntry.Value.Name + " [" + Path.GetFileName(kvpCharacterOptionsEntry.Key) + ']'));
+                lstSettings.Add(new ListItem(kvpCharacterOptionsEntry.Key, kvpCharacterOptionsEntry.Value.DisplayName));
+                if (_blnLoading && _objReferenceCharacterOptions == kvpCharacterOptionsEntry.Value)
+                    strOldSelected = kvpCharacterOptionsEntry.Key;
             }
-
-            string strOldSelected = cboSetting.SelectedValue?.ToString();
 
             cboSetting.BeginUpdate();
             cboSetting.DataSource = null;
@@ -626,9 +654,20 @@ namespace Chummer
                 cmdSave.Enabled = _blnDirty && !_objCharacterOptions.BuiltInOption;
                 if (e.PropertyName == nameof(CharacterOptions.EnabledCustomDataDirectoryPaths))
                     PopulateOptions();
+                if (cmdSave.Enabled)
+                {
+                    if (_objReferenceCharacterOptions.BuildMethod != _objCharacterOptions.BuildMethod
+                        && Program.MainForm.OpenCharacters.Any(x => !x.Created && x.Options == _objReferenceCharacterOptions))
+                        cmdSave.Enabled = false;
+                }
             }
             else if (e.PropertyName == nameof(CharacterOptions.BuiltInOption))
-                cmdSave.Enabled = _blnDirty && !_objCharacterOptions.BuiltInOption;
+            {
+                cmdSave.Enabled = _blnDirty
+                                  && !_objCharacterOptions.BuiltInOption
+                                  && (_objReferenceCharacterOptions.BuildMethod == _objCharacterOptions.BuildMethod
+                                      || Program.MainForm.OpenCharacters.All(x => x.Created || x.Options != _objReferenceCharacterOptions));
+            }
         }
         #endregion
     }

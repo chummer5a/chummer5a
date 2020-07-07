@@ -8294,8 +8294,8 @@
       <text>Nuyen Karma Max</text>
     </string>
     <string>
-      <key>Label_SelectBP_MaxDR</key>
-      <text>Maximum Device Rating</text>
+      <key>Label_SelectBP_QualityKarmaLimit</key>
+      <text>Quality Karma Limit</text>
     </string>
     <string>
       <key>Label_SelectBP_EnabledBooks</key>
