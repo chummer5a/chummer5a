@@ -23,530 +23,90 @@
     <!--Region Shadowrun Core Positive Qualities -->
 	<quality>
 	  <name>Double Jointed</name>
-	  <forbidden>
-        <oneof>
-          <quality>Double Jointed (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>c8ad716e-8e10-4da8-94bf-c0cbb6394963</id>
-      <name>Double Jointed (Metagenic)</name>
-      <karma>6</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <specificskill>
-          <name>Escape Artist</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-	  <forbidden>
-        <oneof>
-          <quality>Double Jointed</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>72</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>High Pain Tolerance</name>
-	  <includeinlimit>
-        <name>High Pain Tolerance (Metagenic)</name>
-      </includeinlimit>
-	</quality>
-	<quality>
-      <id>75abebbe-f946-4ce2-bc21-1ebc100fd582</id>
-      <name>High Pain Tolerance (Metagenic)</name>
-      <karma>7</karma>
-      <category>Positive</category>
-	  <includeinlimit>
-        <name>High Pain Tolerance</name>
-      </includeinlimit>
-      <limit>3</limit>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <conditionmonitor>
-          <thresholdoffset>1</thresholdoffset>
-        </conditionmonitor>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <bioware>Damage Compensators</bioware>
-          <bioware>Damage Compensators (2050)</bioware>
-          <power>Pain Resistance</power>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>74</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Magic Resistance</name>
-	  <includeinlimit>
-        <name>Magic Resistance (Metagenic)</name>
-      </includeinlimit>
-	</quality>
-	<quality>
-      <id>18765eaa-c7b5-41d2-859a-25b8ac81de4d</id>
-      <name>Magic Resistance (Metagenic)</name>
-      <karma>6</karma>
-      <category>Positive</category>
-	  <includeinlimit>
-        <name>Magic Resistance</name>
-      </includeinlimit>
-      <limit>4</limit>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <spellresistance>1</spellresistance>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <metatype>Naga</metatype>
-          <metatype>Pixie</metatype>
-          <metatype>Centaur</metatype>
-          <metatype>Sasquatch</metatype>
-          <metatypecategory>Shapeshifter</metatypecategory>
-          <quality>Adept</quality>
-          <quality>Aware</quality>
-          <quality>Magician</quality>
-          <quality>Mystic Adept</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Wendigo</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>76</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Natural Hardening</name>
-	  <forbidden>
-	    <oneof>
-		  <quality>Natural Hardening (Metagenic)</quality>
-		</oneof>
-	  </forbidden>
+	  <metagenic>True</metagenic>
 	</quality>
 	<quality>
-      <id>26472c18-e751-48b4-9067-0bc582ea0a3e</id>
-      <name>Natural Hardening (Metagenic)</name>
-      <karma>10</karma>
-      <category>Positive</category>
+	  <name>Natural Immunity (Natural)</name>
 	  <metagenic>True</metagenic>
-      <bonus />
-	  <forbidden>
-	    <oneof>
-		  <quality>Natural Hardening</quality>
-		</oneof>
-	  </forbidden>
-      <source>SR5</source>
-      <page>76</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>83a4032a-24ea-4afd-9b86-9df9eecc67b4</id>
-      <name>Natural Immunity (Natural) (Metagenic)</name>
-      <karma>4</karma>
-      <category>Positive</category>
-      <limit>False</limit>
+	  <name>Natural Immunity (Synthetic)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Weak Immune System</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>76</page>
-    </quality>
-	<quality>
-      <id>d4a8a79d-c0f5-4ff2-9192-e83c0f050a32</id>
-      <name>Natural Immunity (Synthetic) (Metagenic)</name>
-      <karma>10</karma>
-      <category>Positive</category>
-      <limit>False</limit>
-	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Weak Immune System</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>76</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Quick Healer</name>
-	  <forbidden>
-        <oneof>
-          <quality>Quick Healer (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>10c724c7-6e5b-4f05-88d1-c8851d99137a</id>
-      <name>Quick Healer (Metagenic)</name>
-      <karma>3</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <physicalcmrecovery>2</physicalcmrecovery>
-        <spelldicepool>
-          <name>Heal</name>
-          <val>2</val>
-        </spelldicepool>
-        <stuncmrecovery>2</stuncmrecovery>
-      </bonus>
-      <forbidden>
-        <oneof>
-		  <quality>Quick Healer</quality>
-          <quality>Uncanny Healer</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>77</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Resistance to Pathogens</name>
-	  <forbidden>
-        <oneof>
-		  <quality>Resistance to Pathogens (Metagenic)</quality>
-          <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>069cb5de-8e94-41e1-8965-17c5d3cb2897</id>
-      <name>Resistance to Pathogens (Metagenic)</name>
-      <karma>4</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <pathogencontactresist>1</pathogencontactresist>
-        <pathogeningestionresist>1</pathogeningestionresist>
-        <pathogeninhalationresist>1</pathogeninhalationresist>
-        <pathogeninjectionresist>1</pathogeninjectionresist>
-      </bonus>
-      <forbidden>
-        <oneof>
-		  <quality>Resistance to Pathogens</quality>
-          <quality>Resistance to Pathogens and Toxins</quality>
-		  <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-          <quality>Weak Immune System</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>77</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Resistance to Toxins</name>
-	  <forbidden>
-        <oneof>
-          <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-		  <quality>Resistance to Toxins (Metagenic)</quality>
-          <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>9c938c48-3e9d-4b7a-9cf6-ff8e37714312</id>
-      <name>Resistance to Toxins (Metagenic)</name>
-      <karma>4</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <toxincontactresist>1</toxincontactresist>
-        <toxiningestionresist>1</toxiningestionresist>
-        <toxininhalationresist>1</toxininhalationresist>
-        <toxininjectionresist>1</toxininjectionresist>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Resistance to Pathogens and Toxins</quality>
-		  <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-		  <quality>Resistance to Toxins</quality>
-          <quality>Weak Immune System</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>77</page>
-    </quality>
-	<quality>
-	  <name>Resistance to Pathogens and Toxins</name>
-	  <forbidden>
-        <oneof>
-          <quality>Resistance to Pathogens (Metagenic)</quality>
-		  <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-          <quality>Resistance to Toxins (Metagenic)</quality>
-          <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
 	</quality>
-	<quality>
-      <id>980cdd4a-eceb-43a0-8fba-dc129fd9cbdc</id>
-      <name>Resistance to Pathogens and Toxins (Metagenic)</name>
-      <karma>8</karma>
-      <category>Positive</category>
-	  <metagenic>True</metagenic>
-      <bonus>
-        <pathogencontactresist>1</pathogencontactresist>
-        <pathogeningestionresist>1</pathogeningestionresist>
-        <pathogeninhalationresist>1</pathogeninhalationresist>
-        <pathogeninjectionresist>1</pathogeninjectionresist>
-        <toxincontactresist>1</toxincontactresist>
-        <toxiningestionresist>1</toxiningestionresist>
-        <toxininhalationresist>1</toxininhalationresist>
-        <toxininjectionresist>1</toxininjectionresist>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Resistance to Pathogens</quality>
-		  <quality>Resistance to Pathogens (Metagenic)</quality>
-		  <quality>Resistance to Pathogens and Toxins</quality>
-          <quality>Resistance to Toxins</quality>
-		  <quality>Resistance to Toxins (Metagenic)</quality>
-          <quality>Weak Immune System</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>77</page>
-    </quality>
 	<quality>
 	  <name>Toughness</name>
-	  <forbidden>
-        <oneof>
-          <quality>Toughness (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>063bafc2-185c-4fd5-8b49-84be4180e571</id>
-      <name>Toughness (Metagenic)</name>
-      <karma>9</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <damageresistance>1</damageresistance>
-      </bonus>
-	  <forbidden>
-        <oneof>
-          <quality>Toughness</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>77</page>
-    </quality>
+	</quality>
 	<!-- End Region-->
 	<!--Region Shadowrun Core Negative Qualities -->
 	<quality>
-      <id>95a7d74c-d25a-4c8b-927c-5aab2429c6ce</id>
-      <name>Allergy (Uncommon, Mild) (Metagenic)</name>
-      <karma>-5</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Uncommon, Mild)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>7a385927-3b47-426b-b7d1-800a696ade69</id>
-      <name>Allergy (Uncommon, Moderate) (Metagenic)</name>
-      <karma>-10</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Uncommon, Moderate)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>c272c83b-38b8-4eb7-9a31-1cfed77562a2</id>
-      <name>Allergy (Uncommon, Severe) (Metagenic)</name>
-      <karma>-15</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Uncommon, Severe)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>1f9c7a67-a49e-47a9-8da5-5330eb0d8fbd</id>
-      <name>Allergy (Uncommon, Extreme) (Metagenic)</name>
-      <karma>-20</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Uncommon, Extreme)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>ebbbc85d-6137-4121-81b9-36e6d8129f86</id>
-      <name>Allergy (Common, Mild) (Metagenic)</name>
-      <karma>-10</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Common, Mild)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>ff89ac8b-bdd4-4175-9e3f-2967859db704</id>
-      <name>Allergy (Common, Moderate) (Metagenic)</name>
-      <karma>-15</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Common, Moderate)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>9e304e92-d3be-4be5-aca5-8fd62cf19b18</id>
-      <name>Allergy (Common, Severe) (Metagenic)</name>
-      <karma>-20</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Common, Severe)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
-      <id>fb4c66c2-332d-4654-b5c5-ca361ee2e879</id>
-      <name>Allergy (Common, Extreme) (Metagenic)</name>
-      <karma>-25</karma>
-      <category>Negative</category>
-      <limit>False</limit>
+	  <name>Allergy (Common, Extreme)</name>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <source>SR5</source>
-      <page>78</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Low Pain Tolerance</name>
-	  <forbidden>
-	    <oneof>
-		  <quality>Low Pain Tolerance (Metagenic)</quality>
-		</oneof>
-	  </forbidden>
-	</quality>
-	<quality>
-      <id>588439bf-4962-4f7b-b656-642b47315477</id>
-      <name>Low Pain Tolerance (Metagenic)</name>
-      <karma>-9</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <conditionmonitor>
-          <threshold>-1</threshold>
-        </conditionmonitor>
-      </bonus>
-	  <forbidden>
-	    <oneof>
-		  <quality>Low Pain Tolerance</quality>
-		</oneof>
-	  </forbidden>
-      <source>SR5</source>
-      <page>82</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Sensitive System</name>
-	  <forbidden>
-	    <oneof>
-		  <quality>Sensitive System (Metagenic)</quality>
-		</oneof>
-	  </forbidden>
-	</quality>
-	<quality>
-      <id>67196b38-9d53-4e5c-8829-2f619d054702</id>
-      <name>Sensitive System (Metagenic)</name>
-      <karma>-12</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <cyberwaretotalessmultiplier>200</cyberwaretotalessmultiplier>
-        <disablebioware />
-      </bonus>
-	  <forbidden>
-	    <oneof>
-		  <quality>Sensitive System</quality>
-		</oneof>
-	  </forbidden>
-      <source>SR5</source>
-      <page>83</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Weak Immune System</name>
-	  <forbidden>
-	    <oneof>
-		  <quality>Resistance to Pathogens (Metagenic)</quality>
-          <quality>Resistance to Toxins (Metagenic)</quality>
-          <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-          <quality>Natural Immunity (Natural) (Metagenic)</quality>
-		  <quality>Natural Immunity (Synthetic) (Metagenic)</quality>
-		  <quality>Weak Immune System (Metagenic)</quality>
-		</oneof>
-	  </forbidden>
-	</quality>
-	<quality>
-      <id>a1917c13-9686-46e1-8a3d-0756777d47d3</id>
-      <name>Weak Immune System (Metagenic)</name>
-      <karma>-10</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <notoriety>1</notoriety>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Resistance to Pathogens</quality>
-		  <quality>Resistance to Pathogens (Metagenic)</quality>
-          <quality>Resistance to Toxins</quality>
-          <quality>Resistance to Toxins (Metagenic)</quality>
-          <quality>Resistance to Pathogens and Toxins</quality>
-          <quality>Resistance to Pathogens and Toxins (Metagenic)</quality>
-          <quality>Natural Immunity (Natural)</quality>
-          <quality>Natural Immunity (Natural) (Metagenic)</quality>
-          <quality>Natural Immunity (Synthetic)</quality>
-		  <quality>Natural Immunity (Synthetic) (Metagenic)</quality>
-		  <quality>Weak Immune System</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>87</page>
-    </quality>
+	</quality>
 	<!-- End Region-->
     <!--Region Bullets and Bandages Negative Qualities -->
     <quality>
@@ -586,57 +146,12 @@
     </quality> -->
 	<quality>
 	  <name>Albinism I</name>
-	  <forbidden>
-        <oneof>
-		  <quality>Albinism I (Metagenic)</quality>
-		  <quality>Albinism II (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>ba897cf0-a200-4a26-b5bd-d4304f961c01</id>
-      <name>Albinism I (Metagenic)</name>
-      <karma>-4</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-      <forbidden>
-        <oneof>
-		  <quality>Albinism I</quality>
-          <quality>Albinism II</quality>
-		  <quality>Albinism II (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>151</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Albinism II</name>
-	  <forbidden>
-        <oneof>
-		  <quality>Albinism I (Metagenic)</quality>
-		  <quality>Albinism II (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>bada872c-d31c-4466-821b-a4bb23ce8735</id>
-      <name>Albinism II (Metagenic)</name>
-      <karma>-8</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-      <forbidden>
-        <oneof>
-          <cyberwarecontains>Cybereyes</cyberwarecontains>
-          <quality>Albinism I</quality>
-		  <quality>Albinism I (Metagenic)</quality>
-          <quality>Albinism II</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>151</page>
-    </quality>
+	</quality>
     <quality>
       <name>Amnesia (Neural Deletion)</name>
       <hide />
@@ -647,27 +162,8 @@
     </quality>
 	<quality>
 	  <name>Asthma</name>
-	  <forbidden>
-        <oneof>
-          <quality>Asthma (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>2b6da523-a268-4bac-b735-6d5005a786d6</id>
-      <name>Asthma (Metagenic)</name>
-      <karma>-8</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-	  <forbidden>
-        <oneof>
-          <quality>Asthma</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>152</page>
-    </quality>
+	</quality>
     <quality>
       <name>Carrier (HMHVV Strain II)</name>
       <hide />
@@ -698,158 +194,28 @@
     </quality>
 	<quality>
 	  <name>Reduced Sense (Smell)</name>
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Smell) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>12b4f9ed-46f2-406b-bfa4-6df885d63344</id>
-      <name>Reduced Sense (Smell) (Metagenic)</name>
-      <karma>-2</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Smell)</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>159</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Reduced Sense (Taste)</name>
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Taste) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>7d2ba37d-a8dc-4a9f-ad07-099ceeb2f489</id>
-      <name>Reduced Sense (Taste) (Metagenic)</name>
-      <karma>-2</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Taste)</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>159</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Reduced Sense (Touch)</name>
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Touch) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>66b438f5-4a43-4dae-964a-1db3c7044d47</id>
-      <name>Reduced Sense (Touch) (Metagenic)</name>
-      <karma>-10</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Touch)</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>159</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Reduced Sense (Hearing)</name>
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Hearing) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>5aca5cd9-5bb5-4317-a17e-02719565d5a9</id>
-      <name>Reduced Sense (Hearing) (Metagenic)</name>
-      <karma>-5</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-      <forbidden>
-        <oneof>
-          <quality>Deaf</quality>
-		  <quality>Reduced Sense (Hearing)</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>159</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Reduced Sense (Sight)</name>
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Sight) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>039329c2-0378-41a5-8730-0d1bcac33773</id>
-      <name>Reduced Sense (Sight) (Metagenic)</name>
-      <karma>-5</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-      <forbidden>
-        <oneof>
-          <quality>Blind</quality>
-		  <quality>Reduced Sense (Sight)</quality>
-        </oneof>
-      </forbidden>
-      <source>RF</source>
-      <page>159</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Reduced Sense (Astral Sight)</name>
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Astral Sight) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>fb0f2863-83b8-4401-b326-be1ddd8cc6c8</id>
-      <name>Reduced Sense (Astral Sight) (Metagenic)</name>
-      <karma>-5</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus />
-	  <forbidden>
-        <oneof>
-          <quality>Reduced Sense (Astral Sight)</quality>
-        </oneof>
-      </forbidden>
-      <required>
-        <oneof>
-          <quality>Magician</quality>
-          <quality>Aware</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Mystic Adept</quality>
-          <quality>Apprentice</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Wendigo</quality>
-        </oneof>
-      </required>
-      <source>RF</source>
-      <page>159</page>
-    </quality>
+	</quality>
     <!-- End Region -->
     <!-- Region Run Faster Infected Qualities -->
     <quality>
@@ -956,60 +322,12 @@
     </quality>
 	<quality>
 	  <name>Biocompatability (Cyberware)</name>
-	  <forbidden>
-        <oneof>
-		  <quality>Biocompatability (Cyberware) (Metagenic)</quality>
-		  <quality>Biocompatability (Bioware) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>818f64b7-7b6c-46f8-a357-51f0d0bcd7e4</id>
-      <name>Biocompatability (Cyberware) (Metagenic)</name>
-      <karma>5</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <cyberwareessmultiplier>90</cyberwareessmultiplier>
-      </bonus>
-      <forbidden>
-        <oneof>
-		  <quality>Biocompatability (Cyberware)</quality>
-          <quality>Biocompatability (Bioware)</quality>
-		  <quality>Biocompatability (Bioware) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-      <source>CF</source>
-      <page>54</page>
-    </quality>
+	</quality>
 	<quality>
 	  <name>Biocompatability (Bioware)</name>
-	  <forbidden>
-        <oneof>
-		  <quality>Biocompatability (Cyberware) (Metagenic)</quality>
-		  <quality>Biocompatability (Bioware) (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>ce78fdcb-df8d-4f5b-b430-2a129e8f082f</id>
-      <name>Biocompatability (Bioware) (Metagenic)</name>
-      <karma>5</karma>
-      <category>Positive</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <biowareessmultiplier>90</biowareessmultiplier>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Biocompatability (Cyberware)</quality>
-		  <quality>Biocompatability (Cyberware) (Metagenic)</quality>
-          <quality>Biocompatability (Bioware)</quality>
-        </oneof>
-      </forbidden>
-      <source>CF</source>
-      <page>54</page>
-    </quality>
+	</quality>
     <quality>
       <name>Revels in Murder</name>
       <hide />
@@ -1034,37 +352,8 @@
     </quality>
 	<quality>
 	  <name>Quasimodo</name>
-	  <forbidden>
-        <oneof>
-          <quality>Quasimodo (Metagenic)</quality>
-        </oneof>
-      </forbidden>
-	</quality>
-	<quality>
-      <id>3ab4b30d-2d06-4a54-b7bd-3b27c9159d30</id>
-      <name>Quasimodo (Metagenic)</name>
-      <karma>-5</karma>
-      <category>Negative</category>
 	  <metagenic>True</metagenic>
-      <bonus>
-        <skillcategory>
-          <name>Social Active</name>
-          <bonus>-3</bonus>
-          <exclude>Intimidation</exclude>
-        </skillcategory>
-        <specificskill>
-          <name>Intimidation</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-	  <forbidden>
-        <oneof>
-          <quality>Quasimodo</quality>
-        </oneof>
-      </forbidden>
-      <source>CF</source>
-      <page>59</page>
-    </quality>
+	</quality>
     <quality>
       <name>So Jacked Up</name>
       <hide />
