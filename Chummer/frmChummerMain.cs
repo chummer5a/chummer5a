@@ -1084,8 +1084,7 @@ namespace Chummer
         /// <returns></returns>
         public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            using (Form objForm = new Form {TopMost = true})
-                return ShowMessageBox(objForm, message, caption, buttons, icon);
+            return ShowMessageBox(this, message, caption, buttons, icon);
         }
 
         public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
@@ -1136,8 +1135,7 @@ namespace Chummer
                 }
             }
 
-            using (Form objForm = new Form {TopMost = true})
-                return MessageBox.Show(objForm, message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(this, message, caption, buttons, icon, defaultButton);
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(

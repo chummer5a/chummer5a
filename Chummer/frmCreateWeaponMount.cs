@@ -605,7 +605,7 @@ namespace Chummer
 
                         if (blnOverCapacity)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
                         }
                     }
@@ -623,7 +623,7 @@ namespace Chummer
 
                         if (decCost > _objCharacter.Nuyen)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
                                 LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;

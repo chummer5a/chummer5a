@@ -60,7 +60,7 @@ namespace Chummer
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {

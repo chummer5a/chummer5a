@@ -45,20 +45,20 @@ namespace Chummer
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(txtFileName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -67,7 +67,7 @@ namespace Chummer
             string strName = txtName.Text;
             if (XmlManager.Load("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -90,12 +90,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
                     return;
                 }
             }
@@ -746,7 +746,7 @@ namespace Chummer
             }
 
 
-            Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
+            Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
                 LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }

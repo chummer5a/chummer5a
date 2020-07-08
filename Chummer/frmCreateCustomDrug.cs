@@ -144,13 +144,13 @@ namespace Chummer
 		    // Make sure the suite and file name fields are populated.
 		    if (string.IsNullOrEmpty(txtDrugName.Text))
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
 
 		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
 

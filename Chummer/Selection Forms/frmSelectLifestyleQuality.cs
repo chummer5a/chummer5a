@@ -441,7 +441,7 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectQuality_QualityLimit"), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectQuality_QualityLimit"), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -537,7 +537,7 @@ namespace Chummer
                 if (blnRequirementForbidden)
                 {
                     if (blnShowMessage)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectQuality_QualityRestriction") + strForbidden, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRestriction"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectQuality_QualityRestriction") + strForbidden, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRestriction"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
             }
@@ -1083,7 +1083,7 @@ namespace Chummer
                     strMessage += strRequirement;
 
                     if (blnShowMessage)
-                        Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, strMessage, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
             }

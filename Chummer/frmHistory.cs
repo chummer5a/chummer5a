@@ -40,7 +40,7 @@ namespace Chummer
             }
             catch
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Close();
                 return;
             }

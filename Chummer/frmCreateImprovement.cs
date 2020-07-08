@@ -469,14 +469,14 @@ namespace Chummer
             // Make sure a value has been selected if necessary.
             if (txtTranslateSelection.Visible && string.IsNullOrEmpty(txtSelect.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectItem"), LanguageManager.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectItem"), LanguageManager.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_ImprovementName"), LanguageManager.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementName"), LanguageManager.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
                 return;
             }

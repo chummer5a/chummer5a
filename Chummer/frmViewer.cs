@@ -207,11 +207,11 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Save_Error_Warning"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Save_Error_Warning"));
             }
         }
 
@@ -386,7 +386,7 @@ namespace Chummer
             {
                 string strReturn = "File not found when attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
-                Program.MainForm.ShowMessageBox(strReturn);
+                Program.MainForm.ShowMessageBox(this, strReturn);
                 return;
             }
 #if DEBUG
@@ -404,7 +404,7 @@ namespace Chummer
                 Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
-                Program.MainForm.ShowMessageBox(strReturn);
+                Program.MainForm.ShowMessageBox(this, strReturn);
                 return;
             }
 
@@ -494,7 +494,7 @@ namespace Chummer
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                 return;
             }
             if (File.Exists(strSaveFile))
@@ -505,12 +505,12 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
             }
@@ -559,7 +559,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.MainForm.ShowMessageBox(this, ex.ToString());
             }
         }
 
