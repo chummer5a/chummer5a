@@ -799,9 +799,9 @@ namespace Chummer.Backend.Skills
             foreach (KnowledgeSkill objKnowledgeSkill in KnowledgeSkills)
                 objKnowledgeSkill.UnbindSkill();
             KnowledgeSkills.Clear();
-            foreach (SkillGroup objGroup in _lstSkillGroups)
+            foreach (SkillGroup objGroup in SkillGroups)
                 objGroup.UnbindSkillGroup();
-            _lstSkillGroups.Clear();
+            SkillGroups.Clear();
             SkillPointsMaximum = 0;
             SkillGroupPointsMaximum = 0;
             foreach (KnowledgeSkill objKnowledgeSkill in KnowsoftSkills)
@@ -877,33 +877,10 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
 
-        private bool _blnSkillGroupsIsLoading;
-        private readonly BindingList<SkillGroup> _lstSkillGroups = new BindingList<SkillGroup>();
-
         /// <summary>
         /// Skill Groups.
         /// </summary>
-        public BindingList<SkillGroup> SkillGroups
-        {
-            get
-            {
-                if (_lstSkillGroups.Count == 0 && !_blnSkillGroupsIsLoading)
-                {
-                    // Skill groups are loaded in with skills, so make sure to load them first
-                    if (_lstSkills.Count == 0)
-                    {
-                        _blnSkillGroupsIsLoading = true; // Needed to make sure _lstSkillGroups gets returned when a skill's loading function asks for it
-                        foreach (Skill objLoopSkill in GetSkillList(FilterOption.NonSpecial))
-                        {
-                            _lstSkills.Add(objLoopSkill);
-                            _dicSkills.Add(objLoopSkill.DictionaryKey, objLoopSkill);
-                        }
-                        _blnSkillGroupsIsLoading = false;
-                    }
-                }
-                return _lstSkillGroups;
-            }
-        }
+        public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 

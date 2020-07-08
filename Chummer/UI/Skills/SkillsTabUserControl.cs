@@ -111,31 +111,6 @@ namespace Chummer.UI.Skills
             SuspendLayout();
 
             Stopwatch swDisplays = Stopwatch.StartNew();
-            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
-            {
-                _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
-                    group => new SkillGroupControl(group))
-                {
-                    Dock = DockStyle.Fill
-                };
-                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
-                _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
-                RefreshSkillGroupLabels();
-
-                swDisplays.TaskEnd("_lstSkillGroups");
-
-                tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
-                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 2);
-
-                swDisplays.TaskEnd("_lstSkillGroups add");
-            }
-            else
-            {
-                tlpSkillGroups.Visible = false;
-                tlpActiveSkills.Margin = new Padding(0);
-                tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
-                tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
-            }
 
             _lstActiveSkills = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
             {
@@ -169,6 +144,32 @@ namespace Chummer.UI.Skills
             tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 3);
 
             swDisplays.TaskEnd("_lstKnowledgeSkills add");
+
+            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
+            {
+                _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
+                    group => new SkillGroupControl(group))
+                {
+                    Dock = DockStyle.Fill
+                };
+                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+                _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
+                RefreshSkillGroupLabels();
+
+                swDisplays.TaskEnd("_lstSkillGroups");
+
+                tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
+                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 2);
+
+                swDisplays.TaskEnd("_lstSkillGroups add");
+            }
+            else
+            {
+                tlpSkillGroups.Visible = false;
+                tlpActiveSkills.Margin = new Padding(0);
+                tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
+                tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
+            }
 
             parts.TaskEnd("MakeSkillDisplay()");
 
