@@ -5841,7 +5841,7 @@ namespace Chummer
             {
                 // Show the Dialog.
                 // If the user cancels out, return early.
-                if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.Cancel)
                     return;
 
                 try

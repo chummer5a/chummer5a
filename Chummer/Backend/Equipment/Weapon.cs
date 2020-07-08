@@ -328,7 +328,7 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog();
+                            frmPickNumber.ShowDialog(Program.MainForm);
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -5353,7 +5353,7 @@ namespace Chummer.Backend.Equipment
                 Count = lstCount
             })
             {
-                frmReloadWeapon.ShowDialog();
+                frmReloadWeapon.ShowDialog(Program.MainForm);
 
                 if (frmReloadWeapon.DialogResult == DialogResult.Cancel)
                     return;

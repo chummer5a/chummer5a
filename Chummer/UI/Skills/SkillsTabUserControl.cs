@@ -714,7 +714,7 @@ namespace Chummer.UI.Skills
                 {
                     form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills);
 
-                    if (form.ShowDialog() != DialogResult.OK)
+                    if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
                     {

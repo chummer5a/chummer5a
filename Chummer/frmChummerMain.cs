@@ -776,7 +776,7 @@ namespace Chummer
             // Show the Metatype selection window.
             using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
             {
-                frmSelectMetatype.ShowDialog();
+                frmSelectMetatype.ShowDialog(this);
                 Cursor = objOldCursor;
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -1153,11 +1153,11 @@ namespace Chummer
             Cursor objOldCursor = Cursor;
             if(!File.Exists(strFilePath))
             {
-                if(MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if(ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
                     using (frmOptions frmOptions = new frmOptions())
-                        frmOptions.ShowDialog();
+                        frmOptions.ShowDialog(this);
                     Cursor = objOldCursor;
                 }
             }
@@ -1187,7 +1187,7 @@ namespace Chummer
             // Show the BP selection window.
             using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
             {
-                frmBP.ShowDialog();
+                frmBP.ShowDialog(this);
                 Cursor = objOldCursor;
 
                 if (frmBP.DialogResult == DialogResult.Cancel)
@@ -1200,7 +1200,7 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
                 {
-                    frmSelectMetatype.ShowDialog();
+                    frmSelectMetatype.ShowDialog(this);
                     Cursor = objOldCursor;
 
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -1214,7 +1214,7 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
                 {
-                    frmSelectMetatype.ShowDialog();
+                    frmSelectMetatype.ShowDialog(this);
                     Cursor = objOldCursor;
 
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -1638,7 +1638,7 @@ namespace Chummer
 
         private void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning"),
+            if(ShowMessageBox(LanguageManager.GetString("Message_HeroLabImporterWarning"),
                     LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 

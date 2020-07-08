@@ -121,7 +121,7 @@ namespace Chummer
                 string text = LanguageManager.GetString("Message_Options_SaveForms", _strSelectedLanguage);
                 string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", _strSelectedLanguage);
 
-                if(MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if(Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
 
@@ -440,7 +440,7 @@ namespace Chummer
             string caption = LanguageManager.GetString("MessageTitle_Options_RestoreDefaults", _strSelectedLanguage);
 
             // Verify that the user wants to reset these values.
-            if(MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if(Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             RestoreDefaultKarmaValues();
@@ -1758,7 +1758,7 @@ namespace Chummer
         private void chkLifeModules_CheckedChanged(object sender, EventArgs e)
         {
             if (!chkLifeModule.Checked || _blnLoading) return;
-            if(MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
+            if(Program.MainForm.ShowMessageBox(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                 chkLifeModule.Checked = false;
             else
@@ -1770,7 +1770,7 @@ namespace Chummer
         private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (!chkOmaeEnabled.Checked || _blnLoading) return;
-            if(MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName,
+            if(Program.MainForm.ShowMessageBox(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                 chkOmaeEnabled.Checked = false;
             else

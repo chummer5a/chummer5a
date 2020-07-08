@@ -465,7 +465,7 @@ namespace Chummer
         private void cmdCleanReinstall_Click(object sender, EventArgs e)
         {
             Log.Info("cmdCleanReinstall_Click");
-            if (MessageBox.Show(LanguageManager.GetString("Message_Updater_CleanReinstallPrompt"),
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Updater_CleanReinstallPrompt"),
                 LanguageManager.GetString("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
@@ -742,7 +742,7 @@ namespace Chummer
                 string text = LanguageManager.GetString("Message_Update_CloseForms");
                 string caption = LanguageManager.GetString("Title_Update");
 
-                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     cmdRestart_Click(sender, e);
                 }

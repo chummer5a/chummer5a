@@ -254,7 +254,7 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog();
+                            frmPickNumber.ShowDialog(Program.MainForm);
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -299,7 +299,7 @@ namespace Chummer.Backend.Equipment
                             ExcludeGeneralCategory = true
                         })
                         {
-                            frmPickArmorMod.ShowDialog();
+                            frmPickArmorMod.ShowDialog(Program.MainForm);
 
                             if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
                                 return;

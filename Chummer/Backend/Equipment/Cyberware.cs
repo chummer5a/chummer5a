@@ -600,7 +600,7 @@ namespace Chummer.Backend.Equipment
                         AllowCancel = false
                     })
                     {
-                        frmPickNumber.ShowDialog();
+                        frmPickNumber.ShowDialog(Program.MainForm);
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
@@ -715,7 +715,7 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strForcedSide))
                             frmPickSide.ForceValue(strForcedSide);
                         else
-                            frmPickSide.ShowDialog();
+                            frmPickSide.ShowDialog(Program.MainForm);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickSide.DialogResult == DialogResult.Cancel)

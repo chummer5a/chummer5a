@@ -1511,7 +1511,7 @@ namespace Chummer
                             xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                     })
                     {
-                        frmPickText.ShowDialog();
+                        frmPickText.ShowDialog(Program.MainForm);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                             continue;
@@ -2479,7 +2479,7 @@ namespace Chummer
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),ex.Message),
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("MessageTitle_FailedLoad"),ex.Message),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                //MessageBox.Show(
+                                //Program.MainForm.ShowMessageBox(
                                 //    string.Format(
                                 //        LanguageManager.GetString("Message_FailedLoad"),
                                 //        ex.Message),
@@ -2523,7 +2523,7 @@ namespace Chummer
                                 LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Error);
-                            //MessageBox.Show(
+                            //Program.MainForm.ShowMessageBox(
                             //    LanguageManager.GetString("Message_IncorrectGameVersion_SR4"),
                             //    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
                             //    MessageBoxButtons.YesNo,
@@ -2603,7 +2603,7 @@ namespace Chummer
                                     LanguageManager.GetString("Message_MissingSourceBooks_Title",
                                         GlobalOptions.Language),
                                     MessageBoxButtons.YesNo)
-                                //MessageBox.Show(new Form {TopMost = true},
+                                //Program.MainForm.ShowMessageBox(new Form {TopMost = true},
                                 //        string.Format(
                                 //            LanguageManager.GetString("Message_MissingSourceBooks"),
                                 //            TranslatedBookList(strMissingBooks)),
@@ -2641,7 +2641,7 @@ namespace Chummer
                                          GlobalOptions.Language),
                                      MessageBoxButtons.YesNo)
 
-                                 //MessageBox.Show(
+                                 //Program.MainForm.ShowMessageBox(
                                  //        string.Format(
                                  //            LanguageManager.GetString("Message_MissingCustomDataDirectories",
                                  //                GlobalOptions.Language), strMissingSourceNames),
@@ -2786,7 +2786,7 @@ namespace Chummer
                                      MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
 
 
-                                 //MessageBox.Show(
+                                 //Program.MainForm.ShowMessageBox(
                                  //    string.Format(
                                  //        LanguageManager.GetString("Message_MissingGameplayOption",
                                  //            GlobalOptions.Language),
@@ -2799,7 +2799,7 @@ namespace Chummer
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
-                                    frmPickBP.ShowDialog();
+                                    frmPickBP.ShowDialog(Program.MainForm);
 
                                     if (frmPickBP.DialogResult != DialogResult.OK)
                                     {
@@ -2955,7 +2955,7 @@ namespace Chummer
                                     if (removeImprovements || showWarnings)
                                     {
                                         //Utils.BreakIfDebug();
-                                        if (removeImprovements || (MessageBox.Show(
+                                        if (removeImprovements || (Program.MainForm.ShowMessageBox(
                                                                        LanguageManager.GetString(
                                                                            "Message_OrphanedImprovements"),
                                                                        LanguageManager.GetString(
@@ -3130,7 +3130,7 @@ namespace Chummer
                                             using (frmSelectItem frmPickItem = new frmSelectItem())
                                             {
                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                frmPickItem.ShowDialog();
+                                                frmPickItem.ShowDialog(Program.MainForm);
 
                                                 // Make sure the dialogue window was not canceled.
                                                 if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -16008,14 +16008,14 @@ namespace Chummer
                             string strMessage = LanguageManager
                                 .GetString("Message_MissingGameplayOption")
                                 .Replace("{0}", GameplayOption);
-                            if (MessageBox.Show(strMessage,
+                            if (Program.MainForm.ShowMessageBox(strMessage,
                                     LanguageManager.GetString("Message_MissingGameplayOption_Title",
                                         GlobalOptions.Language),
                                     MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
-                                    frmPickBP.ShowDialog();
+                                    frmPickBP.ShowDialog(Program.MainForm);
                                     if (frmPickBP.DialogResult != DialogResult.OK)
                                         return false;
                                 }
@@ -16092,7 +16092,7 @@ namespace Chummer
 
                             using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
                             {
-                                frmSelectMetatype.ShowDialog();
+                                frmSelectMetatype.ShowDialog(Program.MainForm);
                                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                     return false;
                             }
@@ -16101,7 +16101,7 @@ namespace Chummer
                         {
                             using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
                             {
-                                frmSelectMetatype.ShowDialog();
+                                frmSelectMetatype.ShowDialog(Program.MainForm);
                                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                     return false;
                             }

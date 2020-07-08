@@ -3191,7 +3191,7 @@ namespace Chummer
                     else
                         frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
 
-                    frmPickSkill.ShowDialog();
+                    frmPickSkill.ShowDialog(Program.MainForm);
 
                     if (frmPickSkill.DialogResult == DialogResult.Cancel)
                     {
@@ -3249,7 +3249,7 @@ namespace Chummer
                         frmPickSkill.Opacity = 0;
                     }
 
-                    frmPickSkill.ShowDialog();
+                    frmPickSkill.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSkill.DialogResult == DialogResult.Cancel)
@@ -3343,7 +3343,7 @@ namespace Chummer
                                     strFriendlyName)
                         })
                         {
-                            frmPickText.ShowDialog();
+                            frmPickText.ShowDialog(Program.MainForm);
 
                             // Make sure the dialogue window was not canceled.
                             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -3416,7 +3416,7 @@ namespace Chummer
                                 frmSelect.SetGeneralItemsMode(lstItems);
                             }
 
-                            frmSelect.ShowDialog();
+                            frmSelect.ShowDialog(Program.MainForm);
 
                             if (frmSelect.DialogResult == DialogResult.Cancel)
                             {

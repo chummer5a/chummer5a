@@ -358,7 +358,7 @@ namespace ChummerHub.Client.UI
                 {
                     Invoke((Action)(() =>
                     {
-                        frmWebBrowser.ShowDialog();
+                        frmWebBrowser.ShowDialog(Program.MainForm);
                         _ = StartSTATask(
                         async () =>
                         {
@@ -370,7 +370,7 @@ namespace ChummerHub.Client.UI
                 }
                 else
                 {
-                    frmWebBrowser.ShowDialog();
+                    frmWebBrowser.ShowDialog(Program.MainForm);
                     _ = StartSTATask(
                            async () =>
                            {

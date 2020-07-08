@@ -470,11 +470,11 @@ namespace Chummer
                         Cursor objOldCursor = Cursor;
                         if (!File.Exists(strFilePath))
                         {
-                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 Cursor = Cursors.WaitCursor;
                                 using (frmOptions frmOptions = new frmOptions())
-                                    frmOptions.ShowDialog();
+                                    frmOptions.ShowDialog(this);
                                 Cursor = objOldCursor;
                             }
                         }

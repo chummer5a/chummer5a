@@ -87,11 +87,11 @@ namespace ChummerHub.Client.UI
             AcceptButton = bOk;
         }
 
-        public string ShowDialog(string text, string caption)
+        public string ShowDialog(IWin32Window owner, string text, string caption)
         {
             Text = caption;
             lPasswordText.Text = text;
-            return ShowDialog() == DialogResult.OK ? SINnerGroup.GetHashString(tbPassword.Text) : "";
+            return ShowDialog(owner) == DialogResult.OK ? SINnerGroup.GetHashString(tbPassword.Text) : "";
         }
 
         private void bOk_Click(object sender, EventArgs e)

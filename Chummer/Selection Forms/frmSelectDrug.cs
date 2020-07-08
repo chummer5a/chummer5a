@@ -775,7 +775,7 @@ namespace Chummer
                 return;
             if (cboGrade.Text.StartsWith('*'))
             {
-                MessageBox.Show(
+                Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_BannedGrade"),
                     LanguageManager.GetString("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);

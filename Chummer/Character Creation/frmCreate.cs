@@ -886,7 +886,7 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
                     {
-                        if (MessageBox.Show(
+                        if (Program.MainForm.ShowMessageBox(
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -1620,11 +1620,11 @@ namespace Chummer
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
             if (!File.Exists(strFilePath))
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
                     using (frmOptions frmOptions = new frmOptions())
-                        frmOptions.ShowDialog();
+                        frmOptions.ShowDialog(this);
                     Cursor = Cursors.Default;
                 }
             }
@@ -1687,7 +1687,7 @@ namespace Chummer
         {
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
-            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             DoReapplyImprovements();
@@ -4100,7 +4100,7 @@ namespace Chummer
                     ParentWeapon = objWeapon
                 })
                 {
-                    frmPickWeaponAccessory.ShowDialog();
+                    frmPickWeaponAccessory.ShowDialog(this);
 
                     if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                         break;
@@ -4144,7 +4144,7 @@ namespace Chummer
                                 AllowCancel = false
                             })
                             {
-                                frmPickNumber.ShowDialog();
+                                frmPickNumber.ShowDialog(this);
                                 objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                             }
                         }
@@ -4422,7 +4422,7 @@ namespace Chummer
                     LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
                 })
                 {
-                    frmPickWeapon.ShowDialog();
+                    frmPickWeapon.ShowDialog(this);
 
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                         return;
@@ -4503,7 +4503,7 @@ namespace Chummer
                     ParentWeapon = objWeapon
                 })
                 {
-                    frmPickWeaponAccessory.ShowDialog();
+                    frmPickWeaponAccessory.ShowDialog(this);
 
                     if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                         break;
@@ -9262,7 +9262,7 @@ namespace Chummer
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"),
+                if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_ImprovementLoadError"),
                     LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
@@ -12420,7 +12420,7 @@ namespace Chummer
             // Check if the character has gone over on Primary Attributes
             if (blnValid && i > 0)
             {
-                if (MessageBox.Show(
+                if (Program.MainForm.ShowMessageBox(
                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                         , i.ToString(GlobalOptions.CultureInfo)
                         , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
@@ -12503,13 +12503,13 @@ namespace Chummer
                 {
                     if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
                     {
-                        if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
+                        if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
                                 LanguageManager.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             return false;
                     }
                     else
                     {
-                        if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraKarma")
+                        if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraKarma")
                                 , intBuildPoints.ToString(GlobalOptions.CultureInfo)
                                 , CharacterObjectOptions.KarmaCarryover.ToString(GlobalOptions.CultureInfo)),
                                 LanguageManager.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -12518,7 +12518,7 @@ namespace Chummer
                 }
                 if (CharacterObject.Nuyen > 5000)
                 {
-                    if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraNuyen")
+                    if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraNuyen")
                             , CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)
                             , 5000.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)),
                             LanguageManager.GetString("MessageTitle_ExtraNuyen"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -12630,7 +12630,7 @@ namespace Chummer
         /// </summary>
         public override bool ConfirmSaveCreatedCharacter()
         {
-            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmCreate"), LanguageManager.GetString("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_ConfirmCreate"), LanguageManager.GetString("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return false;
 
             if (!ValidateCharacter())
@@ -14410,7 +14410,7 @@ namespace Chummer
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                frmPickMount.ShowDialog();
+                frmPickMount.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickMount.DialogResult == DialogResult.Cancel)
@@ -14502,7 +14502,7 @@ namespace Chummer
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                frmPickMount.ShowDialog();
+                frmPickMount.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickMount.DialogResult == DialogResult.Cancel)

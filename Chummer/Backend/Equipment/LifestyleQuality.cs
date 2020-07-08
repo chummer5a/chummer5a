@@ -359,7 +359,7 @@ namespace Chummer.Backend.Equipment
                 })
                 {
                     frmSelect.SetGeneralItemsMode(lstQualities);
-                    frmSelect.ShowDialog();
+                    frmSelect.ShowDialog(Program.MainForm);
                     if (frmSelect.DialogResult == DialogResult.Cancel)
                         return;
 

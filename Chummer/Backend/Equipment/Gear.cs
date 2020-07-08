@@ -230,7 +230,7 @@ namespace Chummer.Backend.Equipment
                         Description = LanguageManager.GetString("String_CustomItem_SelectText")
                     })
                     {
-                        frmPickText.ShowDialog();
+                        frmPickText.ShowDialog(Program.MainForm);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult != DialogResult.Cancel)
@@ -288,7 +288,7 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog();
+                            frmPickNumber.ShowDialog(Program.MainForm);
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -351,7 +351,7 @@ namespace Chummer.Backend.Equipment
                     frmPickWeaponCategory.WeaponType = "crossbow";
                 }
 
-                frmPickWeaponCategory.ShowDialog();
+                frmPickWeaponCategory.ShowDialog(Program.MainForm);
 
                 _strExtra = frmPickWeaponCategory.SelectedCategory;
             }
@@ -552,7 +552,7 @@ namespace Chummer.Backend.Equipment
                             })
                             {
                                 frmPickItem.SetGeneralItemsMode(lstGears);
-                                frmPickItem.ShowDialog();
+                                frmPickItem.ShowDialog(Program.MainForm);
 
                                 // Make sure the dialogue window was not canceled.
                                 if (frmPickItem.DialogResult == DialogResult.Cancel)

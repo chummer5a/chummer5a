@@ -266,7 +266,7 @@ namespace Chummer.UI.Skills
 
             using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
             {
-                selectForm.ShowDialog();
+                selectForm.ShowDialog(Program.MainForm);
 
                 if (selectForm.DialogResult != DialogResult.OK)
                     return;
