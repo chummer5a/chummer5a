@@ -2049,7 +2049,7 @@ namespace Chummer
             UseAILogging useAI = (UseAILogging) ((ListItem) cboUseLoggingApplicationInsights.SelectedItem).Value;
             if (useAI > UseAILogging.Info && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info)
             {
-                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this, 
+                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(256),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
@@ -2069,7 +2069,7 @@ namespace Chummer
                 return;
             if (chkUseLogging.Checked && !GlobalOptions.UseLogging)
             {
-                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this, 
+                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
                                             LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(256),
                                             LanguageManager.GetString("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
                                             MessageBoxButtons.YesNo))

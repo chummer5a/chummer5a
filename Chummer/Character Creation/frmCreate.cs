@@ -886,7 +886,7 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
                     {
-                        if (Program.MainForm.ShowMessageBox(this, 
+                        if (Program.MainForm.ShowMessageBox(this,
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -3476,7 +3476,7 @@ namespace Chummer
                             intBP += CharacterObject.PositiveQualityKarma;
                             if (intBP > intMaxQualityAmount)
                             {
-                                Program.MainForm.ShowMessageBox(this, 
+                                Program.MainForm.ShowMessageBox(this,
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"), strAmount),
                                     LanguageManager.GetString("MessageTitle_PositiveQualityLimit"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6396,7 +6396,7 @@ namespace Chummer
                             intBP += CharacterObject.PositiveQualityKarma;
                             if (intBP > intMaxQualityAmount)
                             {
-                                Program.MainForm.ShowMessageBox(this, 
+                                Program.MainForm.ShowMessageBox(this,
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"), strAmount),
                                     LanguageManager.GetString("MessageTitle_PositiveQualityLimit"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -10880,7 +10880,7 @@ namespace Chummer
                             objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
                             objVehicleGear.Children.SequenceEqual(objGear.Children))
                         {
-                            if (Program.MainForm.ShowMessageBox(this, 
+                            if (Program.MainForm.ShowMessageBox(this,
                                 LanguageManager.GetString("Message_MergeIdentical"),
                                 LanguageManager.GetString("MessageTitle_MergeIdentical"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -12420,7 +12420,7 @@ namespace Chummer
             // Check if the character has gone over on Primary Attributes
             if (blnValid && i > 0)
             {
-                if (Program.MainForm.ShowMessageBox(this, 
+                if (Program.MainForm.ShowMessageBox(this,
                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                         , i.ToString(GlobalOptions.CultureInfo)
                         , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
@@ -12436,7 +12436,7 @@ namespace Chummer
             if (blnValid && i > 0)
             {
                 if (
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                             , i.ToString(GlobalOptions.CultureInfo)
                             , LanguageManager.GetString("Label_SummarySpecialAttributes")),
@@ -12449,7 +12449,7 @@ namespace Chummer
             if (blnValid && CharacterObject.SkillsSection.SkillGroupPoints > 0)
             {
                 if (
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                             , CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalOptions.CultureInfo)
                             , LanguageManager.GetString("Label_SummarySkillGroups")),
@@ -12462,7 +12462,7 @@ namespace Chummer
             if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0)
             {
                 if (
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                             , CharacterObject.SkillsSection.SkillPoints.ToString(GlobalOptions.CultureInfo)
                             , LanguageManager.GetString("Label_SummaryActiveSkills")),
@@ -12475,7 +12475,7 @@ namespace Chummer
             if (blnValid && CharacterObject.SkillsSection.KnowledgeSkillPointsRemain > 0)
             {
                 if (
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                             , CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo)
                             , LanguageManager.GetString("Label_SummaryKnowledgeSkills")),
@@ -14404,7 +14404,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -14496,7 +14496,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
