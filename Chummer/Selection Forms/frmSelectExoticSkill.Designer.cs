@@ -66,8 +66,7 @@ namespace Chummer
             // 
             // cboCategory
             // 
-            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(3, 33);
@@ -93,8 +92,8 @@ namespace Chummer
             // 
             // cboSkillSpecialisations
             // 
-            this.cboSkillSpecialisations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSkillSpecialisations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSkillSpecialisations.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cboSkillSpecialisations.FormattingEnabled = true;
             this.cboSkillSpecialisations.Location = new System.Drawing.Point(3, 60);
             this.cboSkillSpecialisations.Name = "cboSkillSpecialisations";
