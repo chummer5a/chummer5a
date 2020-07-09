@@ -29,6 +29,7 @@ Application Fixes:
 - Redliner's bonus is now properly updated based on the character's current cyberlimb count instead of their cyberlimb count before the given Redliner bonus refresh.
 - Characters with missing or faulty source references to their metatype/metavariant now get the proper reference assigned upon their first load.
 - Boxes displaying short messages and/or prompts are now centered around where Chummer's active window is instead of in the middle of the screen.
+- Attempting to change a character's priorities no longer causes all metatype- and priority-given qualities and improvements to be removed and then re-added. Instead, metatype-given qualities and improvements are only removed and then re-added if the character's metatype and/or metavariant is changed, and priority-given qualities are only removed (and potentially re-added) if the character's special priority selections have changed to one that works off of a different quality.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
