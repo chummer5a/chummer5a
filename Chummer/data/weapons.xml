@@ -15028,9 +15028,9 @@
     <weapon>
       <id>3c2d7e43-5c50-4f4b-9989-0db0215b4d5d</id>
       <name>Krime Heater</name>
-      <category>Light Pistols</category>
+      <category>Heavy Pistols</category>
       <type>Ranged</type>
-      <conceal>-2</conceal>
+      <conceal>0</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
@@ -15050,6 +15050,8 @@
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
+		<mount>Stock</mount>
+        <mount>Side</mount>
       </accessorymounts>
       <spec>Semi-Automatics</spec>
     </weapon>
@@ -15098,7 +15100,7 @@
       <ap>-</ap>
       <mode>FA</mode>
       <rc>-</rc>
-      <ammo>20(c)</ammo>
+      <ammo>20(c) or 60(d)</ammo>
       <avail>9F</avail>
       <cost>180</cost>
       <source>KK</source>
@@ -15128,7 +15130,7 @@
       <ap>-</ap>
       <mode>SA/FA</mode>
       <rc>-3</rc>
-      <ammo>30(c)</ammo>
+      <ammo>30(c) or 75(d)</ammo>
       <avail>15F</avail>
       <cost>500</cost>
       <source>KK</source>
@@ -15157,14 +15159,14 @@
       <name>Krime Saint Nicholas</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>4</conceal>
+      <conceal>2</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
       <ap>-1</ap>
       <mode>SA</mode>
       <rc>-</rc>
-      <ammo>7(c)</ammo>
+      <ammo>7(c) or 21(c)</ammo>
       <avail>6F</avail>
       <cost>500</cost>
       <source>KK</source>
@@ -15283,7 +15285,7 @@
     <weapon>
       <id>7fffffff-bd92-4531-931d-69a43e0d262f</id>
       <name>Krime Ditch (Rifle)</name>
-      <category>Assault Rifles</category>
+      <category>Sporting Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -15313,6 +15315,7 @@
       <underbarrels>
         <underbarrel>Krime Ditch (Shotgun)</underbarrel>
       </underbarrels>
+	  <range>Assault Rifles</range>
       <useskill>Longarms</useskill>
     </weapon>
     <weapon>
@@ -15432,6 +15435,20 @@
         <accessory>
           <name>Metahuman Adaptation</name>
         </accessory>
+		<accessory>
+          <name>Weapon Commlink</name>
+		  <gears>
+            <usegear>
+              <name>Meta Link</name>
+              <category>Commlinks</category>
+            </usegear>
+			<usegear>
+              <name select="Longarms">Tutorsoft</name>
+              <category>Software</category>
+			  <rating>1</rating>
+            </usegear>
+          </gears>
+        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Stock</mount>
@@ -15475,6 +15492,9 @@
         <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
+	  <underbarrels>
+        <underbarrel>Krime Soldier GL</underbarrel>
+      </underbarrels>
       <ammocategory>Sniper Rifles</ammocategory>
       <useskill>Longarms</useskill>
     </weapon>
@@ -15486,7 +15506,7 @@
       <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage/>
+      <damage>Grenade</damage>
       <ap>-</ap>
       <mode>SS</mode>
       <rc>-</rc>
@@ -15515,7 +15535,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>38(c)</ammo>
+      <ammo>38(c) or 114(d)</ammo>
       <avail>10F</avail>
       <cost>3000</cost>
       <source>KK</source>
@@ -15541,9 +15561,9 @@
     <weapon>
       <id>7fffffff-d3dc-452b-ab09-7fffffffd3d3</id>
       <name>Krime Monster</name>
-      <category>Assault Cannons</category>
+      <category>Heavy Machine Guns</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>2</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
@@ -15574,7 +15594,7 @@
       <name>Krime Confederate</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>17P</damage>
