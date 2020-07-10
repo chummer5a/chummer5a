@@ -135,9 +135,9 @@ namespace Chummer
 
         // Metatype Information.
         private string _strMetatype = "Human";
-        private Guid   _guiMetatype;
+        private Guid   _guiMetatype = Guid.Empty;
         private string _strMetavariant = string.Empty;
-        private Guid   _guiMetavariant;
+        private Guid   _guiMetavariant = Guid.Empty;
         private string _strMetatypeCategory = "Metahuman";
         private string _strMovement = string.Empty;
         private string _strWalk = string.Empty;
@@ -1277,6 +1277,18 @@ namespace Chummer
         {
             if (objXmlMetatype == null)
                 throw new ArgumentNullException(nameof(objXmlMetatype));
+            // Remove any Improvements the character received from their Metatype.
+            ImprovementManager.RemoveImprovements(this,
+                Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                     || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant).ToList());
+
+            // Remove any Qualities the character received from their Metatype, then remove the Quality.
+            foreach (Quality objQuality in Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen).ToList())
+            {
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                Qualities.Remove(objQuality);
+            }
+
             // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
             if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
                 strMetavariantId = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? string.Empty;
@@ -6082,10 +6094,7 @@ namespace Chummer
                    x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
-                    if(xmlQualityNode?["onlyprioritygiven"] == null)
-                    {
-                        intMetatypeQualitiesValue += Convert.ToInt32(xmlQualityNode?["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                    }
+                    intMetatypeQualitiesValue += Convert.ToInt32(xmlQualityNode?["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
 
                 intReturn += intMetatypeQualitiesValue;
@@ -6146,14 +6155,10 @@ namespace Chummer
 
                 intTemp = 0;
                 // This is where "Talent" qualities like Adept and Technomancer get added in
-                foreach(Quality objQuality in Qualities.Where(x =>
-                   x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
+                foreach(Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
-                    if(xmlQualityNode?["onlyprioritygiven"] != null)
-                    {
-                        intTemp += Convert.ToInt32(xmlQualityNode["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                    }
+                    intTemp += Convert.ToInt32(xmlQualityNode["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
 
                 if(intTemp != 0)

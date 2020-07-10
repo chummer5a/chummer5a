@@ -277,6 +277,16 @@ namespace Chummer.Backend.Skills
                             }
                         }
 
+                        // Legacy sweep for native language skills
+                        if (_objCharacter.LastSavedVersion <= new Version(5, 212, 72) && _objCharacter.Created && !KnowledgeSkills.Any(x => x.IsNativeLanguage))
+                        {
+                            KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
+                            {
+                                WriteableName = "English",
+                                IsNativeLanguage = true
+                            };
+                            KnowledgeSkills.Add(objEnglishSkill);
+                        }
                         //Timekeeper.Finish("load_char_skills_kno");
                     }
 
@@ -883,6 +893,8 @@ namespace Chummer.Backend.Skills
         public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
+
+        public bool HasAvailableNativeLanguageSlots => KnowledgeSkills.Count(x => x.IsNativeLanguage) < 1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit);
 
         /// <summary>
         /// Number of free Knowledge Skill Points the character has.

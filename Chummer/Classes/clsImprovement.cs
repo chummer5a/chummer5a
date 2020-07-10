@@ -1565,6 +1565,8 @@ namespace Chummer
                     break;
                 }
                 case ImprovementType.NativeLanguageLimit:
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.SkillsSection,
+                        nameof(SkillsSection.HasAvailableNativeLanguageSlots));
                     break;
                 case ImprovementType.AdeptPowerFreePoints:
                 {

@@ -139,14 +139,23 @@ namespace Chummer
                 .Where(x => x.Name == strSelectedCategory).Select(x => ((ExoticSkill) x).Specific).ToList();
             lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
             lstSkillSpecializations.Sort(Comparer<ListItem>.Create((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal)));
+            string strOldText = cboSkillSpecialisations.Text;
+            string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
             cboSkillSpecialisations.BeginUpdate();
+            cboSkillSpecialisations.DataSource = null;
             cboSkillSpecialisations.ValueMember = nameof(ListItem.Value);
             cboSkillSpecialisations.DisplayMember = nameof(ListItem.Name);
             cboSkillSpecialisations.DataSource = lstSkillSpecializations;
-
-            // Select the first Skill in the list.
-            if (lstSkillSpecializations.Count > 0)
-                cboSkillSpecialisations.SelectedIndex = 0;
+            if (!string.IsNullOrEmpty(strOldSelectedValue))
+                cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
+            if (cboSkillSpecialisations.SelectedIndex == -1)
+            {
+                if (!string.IsNullOrEmpty(strOldText))
+                    cboSkillSpecialisations.Text = strOldText;
+                // Select the first Skill in the list.
+                else if (lstSkillSpecializations.Count > 0)
+                    cboSkillSpecialisations.SelectedIndex = 0;
+            }
             cboSkillSpecialisations.EndUpdate();
         }
     }

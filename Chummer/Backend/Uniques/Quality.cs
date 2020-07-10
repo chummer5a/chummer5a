@@ -57,6 +57,7 @@ namespace Chummer
         LifeModule = 4,
         Improvement = 5,
         MetatypeRemovedAtChargen = 6,
+        Heritage = 7,
     }
 
     /// <summary>
@@ -152,6 +153,8 @@ namespace Chummer
                     return QualitySource.Improvement;
                 case "MetatypeRemovedAtChargen":
                     return QualitySource.MetatypeRemovedAtChargen;
+                case "Heritage":
+                    return QualitySource.Heritage;
                 default:
                     return QualitySource.Selected;
             }
@@ -402,7 +405,8 @@ namespace Chummer
                 OriginSource != QualitySource.LifeModule &&
                 OriginSource != QualitySource.Metatype &&
                 OriginSource != QualitySource.MetatypeRemovable &&
-                OriginSource != QualitySource.MetatypeRemovedAtChargen)
+                OriginSource != QualitySource.MetatypeRemovedAtChargen &&
+                OriginSource != QualitySource.Heritage)
                 _objCharacter.SourceProcess(_strSource);
         }
 
@@ -467,6 +471,15 @@ namespace Chummer
                 GetNode() != null && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType)
             {
                 _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
+            }
+            // Legacy shim for priority-given qualities
+            else if (_eQualitySource == QualitySource.Metatype
+                     && _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
+                     && (_objCharacter.BuildMethod == CharacterBuildMethod.Priority
+                         || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                     && GetNode()?["onlyprioritygiven"] != null)
+            {
+                _eQualitySource = QualitySource.Heritage;
             }
         }
 
@@ -766,7 +779,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen || _eQualitySource == QualitySource.Heritage)
                     return false;
 
                 // Positive Metagenic Qualities are free if you're a Changeling.
@@ -793,7 +806,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen || _eQualitySource == QualitySource.Heritage)
                     return false;
 
                 return Metagenic && _objCharacter.MetagenicLimit > 0;
@@ -816,7 +829,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.Heritage)
                     return false;
 
                 // Positive Metagenic Qualities are free if you're a Changeling.
@@ -923,7 +936,8 @@ namespace Chummer
                  OriginSource == QualitySource.LifeModule ||
                  OriginSource == QualitySource.Metatype ||
                  OriginSource == QualitySource.MetatypeRemovable ||
-                 OriginSource == QualitySource.MetatypeRemovedAtChargen) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                 OriginSource == QualitySource.MetatypeRemovedAtChargen ||
+                 OriginSource == QualitySource.Heritage) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -958,7 +972,8 @@ namespace Chummer
                 if (OriginSource == QualitySource.BuiltIn ||
                     OriginSource == QualitySource.Improvement ||
                     OriginSource == QualitySource.LifeModule ||
-                    OriginSource == QualitySource.Metatype)
+                    OriginSource == QualitySource.Metatype ||
+                    OriginSource == QualitySource.Heritage)
                 {
                     return SystemColors.GrayText;
                 }

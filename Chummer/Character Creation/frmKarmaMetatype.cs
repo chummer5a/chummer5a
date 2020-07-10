@@ -203,8 +203,10 @@ namespace Chummer
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                     strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
-                _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
-                    intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
+                if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
+                    || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
+                    _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
+                        intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
 
                 DialogResult = DialogResult.OK;
                 Close();
