@@ -1616,6 +1616,100 @@
       <addweapon rating="{Rating}">Grenade: DumDum</addweapon>
     </gear>
     <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <gear>
+      <id>9d4cd46c-1fb9-4182-8a82-0479cf2adaae</id>
+      <name>Ammo: Krime Power Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>3R</avail>
+      <cost>75</cost>
+      <costfor>10</costfor>
+    </gear>
+    <gear>
+      <id>6ffa3fc7-e390-43b5-b27e-3d01baecec92</id>
+      <name>Ammo: Krime Penetrator Buckshot Shells</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>16F</avail>
+      <cost>250</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <ap>-2</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>959b02ff-b3b3-4027-8ada-799f31a7a323</id>
+      <name>Ammo: Krime Crackle Fin-Stabilized HEAT Slugs</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>20F</avail>
+      <cost>300</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>2</damage>
+        <ap>-3</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>97febd7d-6385-472e-87af-29313f9224ae</id>
+      <name>Ammo: Krime Laser Bullets</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>125</cost>
+      <costfor>10</costfor>
+    </gear>
+    <gear>
+      <id>c18eed96-2697-4b95-9be7-be9313504a2f</id>
+      <name>Ammo: Krime Punisher Assault Cannon Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>8F</avail>
+      <cost>200</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>-3</damage>
+        <ap>-3</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>17136c4b-af3b-44a4-b5cf-2eedf7e9d217</id>
+      <name>Ammo: Krime Splash Self-Defense Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>4R</avail>
+      <cost>100</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(S)</damagetype>
+        <ap>+1</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>f2300388-1d51-41bf-b333-fae00776a375</id>
+      <name>Grenade: Krime Cleaner</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>27</page>
+      <avail>10F</avail>
+      <cost>200</cost>
+      <addweapon>Grenade: Krime Cleaner</addweapon>
+    </gear>
+    <!-- End Region -->
     <!-- End Region -->
     <!-- Region Explosives -->
     <gear>
