@@ -12179,14 +12179,16 @@ namespace Chummer
             }
 
             // Check if the character has more than the permitted amount of native languages.
-            int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.SkillCategory == "Language" && objSkill.Rating == 0);
+            int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
             int intLanguageLimit = 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit);
 
-            if (intLanguages > intLanguageLimit)
+            if (intLanguages != intLanguageLimit)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverLanguageLimit"), intLanguages.ToString(GlobalOptions.CultureInfo), intLanguageLimit.ToString(GlobalOptions.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo,
+                    LanguageManager.GetString(intLanguages > intLanguageLimit ? "Message_OverLanguageLimit" : "Message_UnderLanguageLimit"),
+                    intLanguages.ToString(GlobalOptions.CultureInfo), intLanguageLimit.ToString(GlobalOptions.CultureInfo));
             }
 
 

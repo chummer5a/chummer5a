@@ -670,7 +670,7 @@
         <xsl:with-param name="length" select="40"/>
       </xsl:call-template>
       <xsl:choose>
-        <xsl:when test="islanguage = 'True' and rating = 0">
+        <xsl:when test="isnativelanguage = 'True'">
           <xsl:value-of select="$lang.Native"/>
         </xsl:when>
         <xsl:otherwise>

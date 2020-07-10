@@ -2681,6 +2681,10 @@
       <text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
     </string>
     <string>
+      <key>Message_UnderLanguageLimit</key>
+      <text>Too few Language Knowledge Skills listed as Native. Current: {0} Minimum: {1}</text>
+    </string>
+    <string>
       <key>Message_OverPositiveMetagenicQualities</key>
       <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>
@@ -4350,7 +4354,7 @@
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating. A Language with a Rating of 0 is considered to be your Native Language.</text>
+      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -4391,6 +4395,14 @@
     <string>
       <key>Skill_NativeLanguageShort</key>
       <text>N</text>
+    </string>
+    <string>
+      <key>Skill_NativeLanguageLong</key>
+      <text>Native</text>
+    </string>
+    <string>
+      <key>Message_NewNativeLanguageSkill</key>
+      <text>This character has room for {0} more Native Language skill(s). Do you wish to set the {1} skill as a Native Language skill?</text>
     </string>
     <!-- End Region -->
     <!-- Region  Martial Arts Tab -->

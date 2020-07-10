@@ -112,9 +112,16 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override bool AllowDelete => !ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0;
+        public override bool AllowDelete => (!ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0) && !IsNativeLanguage;
+
+        public override bool AllowNameChange => !ForcedName && (AllowUpgrade || IsNativeLanguage) && (!CharacterObject.Created || (Karma == 0 && Base == 0 && !IsNativeLanguage));
+
+        public override bool AllowTypeChange => (AllowNameChange || string.IsNullOrWhiteSpace(Type)) && !IsNativeLanguage;
 
         private string _strType = string.Empty;
+
+        private bool _blnIsNativeLanguage;
+
         public bool ForcedName { get; }
 
         public KnowledgeSkill(Character objCharacter) : base(objCharacter)
@@ -128,13 +135,24 @@ namespace Chummer.Backend.Skills
         {
             WriteableName = strForcedName;
             ForcedName = true;
-            AllowUpgrade = allowUpgrade;
+            _blnAllowUpgrade = allowUpgrade;
         }
+
+        private bool _blnAllowUpgrade = true;
 
         /// <summary>
         /// Is the skill allowed to be upgraded through karma or points?
         /// </summary>
-        public bool AllowUpgrade { get; set; } = true;
+        public bool AllowUpgrade
+        {
+            get
+            {
+                if (IsNativeLanguage)
+                    return false;
+                return _blnAllowUpgrade;
+            }
+            set => _blnAllowUpgrade = value;
+        }
 
         public string WriteableName
         {
@@ -210,14 +228,9 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (Rating == 0 && Type == "Language")
-                {
-                    return LanguageManager.GetString("Skill_NativeLanguageShort",GlobalOptions.Language);
-                }
-                else
-                {
-                    return base.DisplayPool;
-                }
+                if (IsNativeLanguage)
+                    return LanguageManager.GetString("Skill_NativeLanguageShort");
+                return base.DisplayPool;
             }
         }
 
@@ -281,6 +294,31 @@ namespace Chummer.Backend.Skills
                 }
 
                 OnPropertyChanged();
+                if (!IsLanguage)
+                    IsNativeLanguage = false;
+            }
+        }
+
+        public override bool IsLanguage => Type == "Language";
+
+        public override bool IsNativeLanguage
+        {
+            get => _blnIsNativeLanguage;
+            set
+            {
+                if (_blnIsNativeLanguage != value)
+                {
+                    _blnIsNativeLanguage = value;
+                    OnPropertyChanged();
+                    if (value)
+                    {
+                        Base = 0;
+                        Karma = 0;
+                        BuyWithKarma = false;
+                        Specializations.Clear();
+                    }
+                    CharacterObject?.SkillsSection?.OnPropertyChanged(nameof(SkillsSection.HasAvailableNativeLanguageSlots));
+                }
             }
         }
 
@@ -490,6 +528,7 @@ namespace Chummer.Backend.Skills
 
             objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("type", _strType);
+            objWriter.WriteElementString("isnativelanguage", _blnIsNativeLanguage.ToString(GlobalOptions.InvariantCultureInfo));
             if (ForcedName)
                 objWriter.WriteElementString("forced", null);
 
@@ -522,6 +561,17 @@ namespace Chummer.Backend.Skills
                 || (xmlNode.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))
             {
                 Type = strCategoryString;
+            }
+
+            // Legacy sweep for native language skills
+            if (!xmlNode.TryGetBoolFieldQuickly("isnativelanguage", ref _blnIsNativeLanguage) && IsLanguage && CharacterObject.LastSavedVersion <= new Version(5, 212, 72))
+            {
+                int intKarma = 0;
+                int intBase = 0;
+                xmlNode.TryGetInt32FieldQuickly("karma", ref intKarma);
+                xmlNode.TryGetInt32FieldQuickly("base", ref intBase);
+                if (intKarma == 0 && intBase == 0 && CharacterObject.SkillsSection.KnowledgeSkills.Count(x => x.IsNativeLanguage) < 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit))
+                    _blnIsNativeLanguage = true;
             }
         }
     }

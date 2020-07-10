@@ -722,6 +722,22 @@ namespace Chummer.UI.Skills
                         WriteableName = form.SelectedItem
                     };
 
+                    if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
+                    {
+                        DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NewNativeLanguageSkill"),
+                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WriteableName),
+                            LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
+                        if (eDialogResult == DialogResult.Cancel)
+                            return;
+                        if (eDialogResult == DialogResult.Yes)
+                        {
+                            if (!skill.IsLanguage)
+                                skill.Type = "Language";
+                            skill.IsNativeLanguage = true;
+                        }
+                    }
+
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
                 }
             }
