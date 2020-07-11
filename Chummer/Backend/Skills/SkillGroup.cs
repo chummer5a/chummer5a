@@ -145,7 +145,7 @@ namespace Chummer.Backend.Skills
                         _intCachedBaseUnbroken = 0;
                     else
                     {
-                        _intCachedBaseUnbroken = _objCharacter.EffectiveBuildMethodHasSkillPoints
+                        _intCachedBaseUnbroken = _objCharacter.EffectiveBuildMethodUsesPriorityTables
                                                  && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups) &&
                             !SkillList.Any(x => x.BasePoints + x.FreeBase > 0) ? 1 : 0;
                     }
@@ -674,7 +674,7 @@ namespace Chummer.Backend.Skills
         {
             if (e.PropertyName == nameof(Character.Karma))
                 OnPropertyChanged(nameof(CareerCanIncrease));
-            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
                 OnPropertyChanged(nameof(BaseUnbroken));
         }
 

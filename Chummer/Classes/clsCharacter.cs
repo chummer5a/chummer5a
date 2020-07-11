@@ -434,7 +434,7 @@ namespace Chummer
                         new DependencyGraphNode<string>(nameof(PhysicalCMThresholdOffset)),
                         new DependencyGraphNode<string>(nameof(StunCMThresholdOffset))
                     ),
-                    new DependencyGraphNode<string>(nameof(EffectiveBuildMethodHasSkillPoints),
+                    new DependencyGraphNode<string>(nameof(EffectiveBuildMethodUsesPriorityTables),
                         new DependencyGraphNode<string>(nameof(EffectiveBuildMethod))
                     ),
                     new DependencyGraphNode<string>(nameof(EnableAutomaticStoryButton),
@@ -6036,7 +6036,7 @@ namespace Chummer
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
             intReturn = Options.BuildKarma;
-            if (EffectiveBuildMethod != CharacterBuildMethod.Karma)
+            if (EffectiveBuildMethodUsesPriorityTables)
             {
                 // Subtract extra karma cost of a metatype in priority
                 intReturn -= MetatypeBP;
@@ -6046,7 +6046,7 @@ namespace Chummer
                           strSpace + intReturn.ToString(GlobalOptions.CultureInfo) + strSpace +
                           strKarmaString;
 
-            if (EffectiveBuildMethod != CharacterBuildMethod.Karma)
+            if (EffectiveBuildMethodUsesPriorityTables)
             {
                 // Zeroed to -10 because that's Human's value at default settings
                 int intMetatypeQualitiesValue = -2 * Options.KarmaAttribute;
@@ -11896,8 +11896,8 @@ namespace Chummer
         /// </summary>
         public CharacterBuildMethod EffectiveBuildMethod => IsCritter ? CharacterBuildMethod.Karma : Options.BuildMethod;
 
-        public bool EffectiveBuildMethodHasSkillPoints => EffectiveBuildMethod == CharacterBuildMethod.Priority
-                                                          || EffectiveBuildMethod == CharacterBuildMethod.SumtoTen;
+        public bool EffectiveBuildMethodUsesPriorityTables => EffectiveBuildMethod == CharacterBuildMethod.Priority
+                                                              || EffectiveBuildMethod == CharacterBuildMethod.SumtoTen;
 
         public bool EffectiveBuildMethodIsLifeModule => EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
 
@@ -16029,8 +16029,7 @@ namespace Chummer
                             }
                         }
 
-                        if (EffectiveBuildMethod == CharacterBuildMethod.Priority ||
-                            EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (EffectiveBuildMethodUsesPriorityTables)
                         {
                             if (strRaceString == "A.I.")
                                 _strPriorityTalent = "AI";

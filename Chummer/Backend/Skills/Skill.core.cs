@@ -65,7 +65,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked => CharacterObject.EffectiveBuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!CharacterObject.Options.StrictSkillGroupsInCreateMode && CharacterObject.Options.UsePointsOnBrokenGroups));
+        public bool BaseUnlocked => CharacterObject.EffectiveBuildMethodUsesPriorityTables && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!CharacterObject.Options.StrictSkillGroupsInCreateMode && CharacterObject.Options.UsePointsOnBrokenGroups));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
@@ -207,7 +207,7 @@ namespace Chummer.Backend.Skills
                 int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
                 return (CharacterObject.Created  || CharacterObject.IgnoreRules
                     ? 12
-                    : (IsKnowledgeSkill && CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + intOtherBonus;
+                    : (IsKnowledgeSkill && CharacterObject.EffectiveBuildMethodIsLifeModule ? 9 : 6)) + intOtherBonus;
             }
         }
 
@@ -403,9 +403,7 @@ namespace Chummer.Backend.Skills
                 int intSpecCount = 0;
                 foreach (SkillSpecialization objSpec in Specializations)
                 {
-                    if (!objSpec.Free && (BuyWithKarma
-                                          || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma
-                                          || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.LifeModule))
+                    if (!objSpec.Free && (BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables))
                         intSpecCount += 1;
                 }
                 int intSpecCost = intSpecCount * CharacterObject.Options.KarmaSpecialization;

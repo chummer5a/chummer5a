@@ -86,7 +86,7 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e?.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+            if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
                 OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
         }
 
@@ -599,7 +599,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_objCharacter.EffectiveBuildMethodHasSkillPoints)
+                    if (_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
                         // Allocate Skill Points
                         int intSkillPointCount = SkillPointsMaximum;
@@ -996,7 +996,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
-                if (!_objCharacter.EffectiveBuildMethodHasSkillPoints)
+                if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
                     return 0;
                 }

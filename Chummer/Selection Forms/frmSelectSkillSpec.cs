@@ -48,9 +48,7 @@ namespace Chummer
                 new ListItem("Custom", string.Empty)
             };
 
-            if (_objCharacter.Created
-                || _objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Karma
-                || _objCharacter.EffectiveBuildMethod == CharacterBuildMethod.LifeModule)
+            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
             {
                 chkKarma.Checked = true;
                 chkKarma.Visible = false;

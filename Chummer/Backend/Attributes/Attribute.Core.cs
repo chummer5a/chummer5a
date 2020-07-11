@@ -689,7 +689,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Is it possible to place points in Base or is it prevented by their build method?
         /// </summary>
-        public bool BaseUnlocked => _objCharacter.EffectiveBuildMethodHasSkillPoints;
+        public bool BaseUnlocked => _objCharacter.EffectiveBuildMethodUsesPriorityTables;
 
         /// <summary>
         /// CharacterAttribute Limits
@@ -1042,7 +1042,7 @@ namespace Chummer.Backend.Attributes
             {
                 OnPropertyChanged(nameof(CanUpgradeCareer));
             }
-            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
             {
                 OnPropertyChanged(nameof(BaseUnlocked));
             }

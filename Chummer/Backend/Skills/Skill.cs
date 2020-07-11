@@ -1632,7 +1632,7 @@ namespace Chummer.Backend.Skills
         {
             if (e.PropertyName == nameof(Skills.SkillGroup.Base))
             {
-                if (CharacterObject.EffectiveBuildMethodHasSkillPoints)
+                if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                     OnMultiplePropertyChanged(nameof(Base),
                                               nameof(BaseUnlocked),
                                               nameof(ForcedBuyWithKarma));
@@ -1670,7 +1670,7 @@ namespace Chummer.Backend.Skills
             {
                 OnPropertyChanged(nameof(PoolToolTip));
             }
-            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodHasSkillPoints))
+            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
             {
                 OnMultiplePropertyChanged(nameof(Base),
                     nameof(BaseUnlocked),

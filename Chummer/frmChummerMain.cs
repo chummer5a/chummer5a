@@ -1149,11 +1149,12 @@ namespace Chummer
                     return;
             }
 
-            if(objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Karma || objCharacter.EffectiveBuildMethod == CharacterBuildMethod.LifeModule)
+            objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
+            // Show the Metatype selection window.
+            if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
             {
-                objOldCursor = Cursor;
-                Cursor = Cursors.WaitCursor;
-                using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
+                using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
                 {
                     frmSelectMetatype.ShowDialog(this);
                     Cursor = objOldCursor;
@@ -1162,12 +1163,9 @@ namespace Chummer
                         return;
                 }
             }
-            // Show the Metatype selection window.
-            else if(objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority || objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            else
             {
-                objOldCursor = Cursor;
-                Cursor = Cursors.WaitCursor;
-                using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
+                using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
                 {
                     frmSelectMetatype.ShowDialog(this);
                     Cursor = objOldCursor;

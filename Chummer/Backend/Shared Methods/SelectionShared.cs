@@ -132,7 +132,7 @@ namespace Chummer
                     }
                     return false;
                 }
-                if (objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority || objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
                     if (xmlNode.SelectSingleNode("onlyprioritygiven") != null)
                     {

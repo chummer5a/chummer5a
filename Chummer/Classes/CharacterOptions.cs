@@ -269,8 +269,11 @@ namespace Chummer
                 new DependencyGraphNode<string>(nameof(BuiltInOption),
                     new DependencyGraphNode<string>(nameof(SourceId))
                 ),
-                new DependencyGraphNode<string>(nameof(BuildMethod),
-                    new DependencyGraphNode<string>(nameof(BuildMethodHasSkillPoints))
+                new DependencyGraphNode<string>(nameof(BuildMethodUsesPriorityTables),
+                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                ),
+                new DependencyGraphNode<string>(nameof(BuildMethodIsLifeModule),
+                    new DependencyGraphNode<string>(nameof(BuildMethod))
                 ),
                 new DependencyGraphNode<string>(nameof(DisplayName),
                     new DependencyGraphNode<string>(nameof(Name)),
@@ -1123,7 +1126,7 @@ namespace Chummer
                 _eBuildMethod = eBuildMethod;
             if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
                 xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
-            if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit) && BuildMethod != CharacterBuildMethod.Karma && BuildMethod != CharacterBuildMethod.LifeModule)
+            if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit) && BuildMethodUsesPriorityTables)
                 _intQualityKarmaLimit = _intBuildPoints;
             objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
             objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
@@ -1156,8 +1159,10 @@ namespace Chummer
             }
         }
 
-        public bool BuildMethodHasSkillPoints => BuildMethod == CharacterBuildMethod.Priority ||
-                                                 BuildMethod == CharacterBuildMethod.SumtoTen;
+        public bool BuildMethodUsesPriorityTables => BuildMethod == CharacterBuildMethod.Priority
+                                                     || BuildMethod == CharacterBuildMethod.SumtoTen;
+
+        public bool BuildMethodIsLifeModule => BuildMethod == CharacterBuildMethod.LifeModule;
 
         /// <summary>
         /// The priority configuration used in Priority mode.

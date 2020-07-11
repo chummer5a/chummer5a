@@ -187,10 +187,8 @@ namespace Chummer
                     SuspendLayout();
 
                     if (!CharacterObject.IsCritter
-                        && ((CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma
-                             || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority
-                             || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-                            && CharacterObjectOptions.BuildKarma == 0))
+                        && !CharacterObject.EffectiveBuildMethodIsLifeModule
+                        && CharacterObjectOptions.BuildKarma == 0)
                     {
                         _blnFreestyle = true;
                         tslKarmaRemaining.Visible = false;
@@ -200,8 +198,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_frm_create_BuildMethod", op_load_frm_create))
                     {
                         // Initialize elements if we're using Priority to build.
-                        if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority ||
-                            CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                         {
                             mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
                             mnuSpecialChangeMetatype.Text = LanguageManager.GetString("Menu_SpecialChangePriorities");
@@ -213,7 +210,7 @@ namespace Chummer
                         lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplayTotalStartingNuyen));
                         lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayStolenNuyen));
-                        lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodHasSkillPoints));
+                        lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
                         txtGroupName.DoDatabinding("Text", CharacterObject, nameof(Character.GroupName));
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
@@ -8433,8 +8430,7 @@ namespace Chummer
         private int CalculateAttributePriorityPoints(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
         {
             int intAtt = 0;
-            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority ||
-                CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 // Get the total of "free points" spent
                 foreach (CharacterAttrib att in attribs)
@@ -8459,8 +8455,7 @@ namespace Chummer
             string s = bp.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
             int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
             int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
-            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority ||
-                CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 if (bp > 0)
                 {
@@ -8491,12 +8486,12 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
-            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.LifeModule)
+            if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 // Subtract the BP used for Metatype.
                 intKarmaPointsRemain -= CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier;
             }
-            else if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            else
             {
                 intKarmaPointsRemain -= CharacterObject.MetatypeBP;
             }
@@ -12447,7 +12442,7 @@ namespace Chummer
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > CharacterObjectOptions.KarmaCarryover)
                 {
-                    if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma)
+                    if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                     {
                         if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
                                 LanguageManager.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -12515,7 +12510,7 @@ namespace Chummer
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > CharacterObjectOptions.KarmaCarryover)
                 {
-                    CharacterObject.Karma = CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Karma ? 0 : CharacterObjectOptions.KarmaCarryover;
+                    CharacterObject.Karma = CharacterObject.EffectiveBuildMethodUsesPriorityTables ? CharacterObjectOptions.KarmaCarryover : 0;
                 }
                 else
                 {
@@ -13360,7 +13355,7 @@ namespace Chummer
                 return;
             }
 
-            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject))
                 {

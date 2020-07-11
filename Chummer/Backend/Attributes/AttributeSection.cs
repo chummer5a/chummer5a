@@ -543,7 +543,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if (!_objCharacter.Created && _objCharacter.EffectiveBuildMethodHasSkillPoints)
+                if (!_objCharacter.Created && _objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
                     // Allocate Attribute Points
                     int intAttributePointCount = _objCharacter.TotalAttributes;
