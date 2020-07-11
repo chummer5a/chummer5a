@@ -1283,7 +1283,7 @@ namespace Chummer.Plugins
                                     {
                                         var pwdquestion = LanguageManager.GetString("String_SINners_EnterGroupPassword", true);
                                         var pwdcaption = LanguageManager.GetString("String_SINners_EnterGroupPasswordTitle", true);
-                                        passwd = getPWD.ShowDialog(pwdquestion, pwdcaption);
+                                        passwd = getPWD.ShowDialog(Program.MainForm, pwdquestion, pwdcaption);
                                     }
                                 }
 

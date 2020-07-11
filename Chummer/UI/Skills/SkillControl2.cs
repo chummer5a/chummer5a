@@ -114,11 +114,11 @@ namespace Chummer.UI.Skills
                 btnAttribute.FlatAppearance.MouseDownBackColor = btnAttribute.BackColor;
                 btnAttribute.FlatAppearance.MouseOverBackColor = btnAttribute.BackColor;
 
+                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
-                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(Character.EffectiveBuildMethodHasSkillPoints));
                 nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
-                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
-                nudKarma.DoOneWayDataBinding("Value", objSkill, nameof(Skill.Karma));
+                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.DoDatabinding("Value", objSkill, nameof(Skill.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
                 nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
@@ -266,7 +266,7 @@ namespace Chummer.UI.Skills
 
             using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
             {
-                selectForm.ShowDialog();
+                selectForm.ShowDialog(Program.MainForm);
 
                 if (selectForm.DialogResult != DialogResult.OK)
                     return;

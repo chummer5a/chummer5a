@@ -320,7 +320,7 @@ namespace ChummerHub.Client.UI
                         PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                     });
                 };
-                gs.ShowDialog();
+                gs.ShowDialog(Program.MainForm);
             }
         }
 

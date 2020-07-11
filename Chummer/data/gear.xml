@@ -931,8 +931,8 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
-      <page>28</page>
-      <avail>15</avail>
+      <page>27</page>
+      <avail>14R</avail>
       <cost>160</cost>
       <costfor>10</costfor>
       <weaponbonus>
@@ -1614,6 +1614,133 @@
       <avail>Rating*2R</avail>
       <cost>Rating*50</cost>
       <addweapon rating="{Rating}">Grenade: DumDum</addweapon>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <gear>
+      <id>9d4cd46c-1fb9-4182-8a82-0479cf2adaae</id>
+      <name>Ammo: Krime Power Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>3R</avail>
+      <cost>75</cost>
+      <costfor>10</costfor>
+    </gear>
+    <gear>
+      <id>6ffa3fc7-e390-43b5-b27e-3d01baecec92</id>
+      <name>Ammo: Krime Penetrator Buckshot Shells</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>16F</avail>
+      <cost>250</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <ap>-2</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>959b02ff-b3b3-4027-8ada-799f31a7a323</id>
+      <name>Ammo: Krime Crackle Fin-Stabilized HEAT Slugs</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>20F</avail>
+      <cost>300</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>2</damage>
+        <ap>-3</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>97febd7d-6385-472e-87af-29313f9224ae</id>
+      <name>Ammo: Krime Laser Bullets</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>125</cost>
+      <costfor>10</costfor>
+    </gear>
+    <gear>
+      <id>c18eed96-2697-4b95-9be7-be9313504a2f</id>
+      <name>Ammo: Krime Punisher Assault Cannon Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>8F</avail>
+      <cost>200</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>-3</damage>
+        <ap>-3</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>17136c4b-af3b-44a4-b5cf-2eedf7e9d217</id>
+      <name>Ammo: Krime Splash Self-Defense Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>4R</avail>
+      <cost>100</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(S)</damagetype>
+        <ap>+1</ap>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>f2300388-1d51-41bf-b333-fae00776a375</id>
+      <name>Grenade: Krime Cleaner</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>27</page>
+      <avail>10F</avail>
+      <cost>200</cost>
+      <addweapon>Grenade: Krime Cleaner</addweapon>
+    </gear>
+    <gear>
+      <id>16c588e4-9961-4ddd-b5f1-e95ed100159f</id>
+      <name>Grenade: Krime Party</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>27</page>
+      <avail>14F</avail>
+      <cost>190</cost>
+      <addweapon>Grenade: Krime Party</addweapon>
+    </gear>
+    <gear>
+      <id>b654b65a-b9e4-4be2-ac96-53044f5d9b40</id>
+      <name>Grenade: Krime Cocktail</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>28</page>
+      <avail>14F</avail>
+      <cost>100</cost>
+      <addweapon>Grenade: Krime Cocktail</addweapon>
+    </gear>
+    <gear>
+      <id>9964cf3d-c608-4ab5-ba8a-5ea7c96f29fb</id>
+      <name>Grenade: Krime Stinger</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>29</page>
+      <avail>8R</avail>
+      <cost>125</cost>
+      <addweapon>Grenade: Krime Stinger</addweapon>
     </gear>
     <!-- End Region -->
     <!-- End Region -->
@@ -7314,6 +7441,7 @@
         </geardetails>
       </required>
       <cost>0</cost>
+      <hide />
     </gear>
     <gear>
       <id>49bbc9d3-860d-47db-b4bc-8417f5b6ab65</id>
@@ -7674,6 +7802,27 @@
       <cost>0</cost>
     </gear>
     <gear>
+      <id>5f83726b-237c-4628-9a67-f80e91ca0181</id>
+      <name>Radar Scanner</name>
+      <category>Sensor Functions</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>20</page>
+      <avail>0</avail>
+      <armorcapacity>[1]</armorcapacity>
+      <capacity>[1]</capacity>
+      <required>
+        <geardetails>
+          <OR>
+            <category>Sensors</category>
+            <category>Custom</category>
+          </OR>
+        </geardetails>
+      </required>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
       <id>295350cc-692d-49d8-aa85-d61ff0badcfc</id>
       <name>Chem Detect Nail Polish</name>
       <category>Sensors</category>
@@ -7694,6 +7843,33 @@
       <avail>Rating * 3</avail>
       <capacity>0</capacity>
       <cost>Rating * 250</cost>
+    </gear>
+    <gear>
+      <id>ba8385ca-e355-4e96-a1f7-7398a360ca5c</id>
+      <name>Krime Ripper Sensor Array</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>20</page>
+      <avail>0</avail>
+      <hide />
+      <gears>
+        <usegear>
+          <name>Motion Sensor</name>
+          <category>Sensor Functions</category>
+          <rating>3</rating>
+        </usegear>
+        <usegear>
+          <name>Radar Scanner</name>
+          <category>Sensor Functions</category>
+          <rating>3</rating>
+        </usegear>
+        <usegear>
+          <name>Thermographic Vision</name>
+          <category>Vision Enhancements</category>
+        </usegear>
+      </gears>
+      <cost>0</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Tools of the Trade-->
@@ -13177,7 +13353,7 @@
         </geardetails>
       </required>
     </gear>
-	<gear>
+    <gear>
       <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
       <name>Personal Drone Rack</name>
       <category>Armor Enhancements</category>
@@ -13187,11 +13363,11 @@
       <cost>500</cost>
       <source>KC</source>
       <page>73</page>
-	  <required>
-		<parentdetails>
-		  <name>Micro-Hardpoint</name>
-		</parentdetails>
-	  </required>
+      <required>
+        <parentdetails>
+          <name>Micro-Hardpoint</name>
+        </parentdetails>
+      </required>
     </gear>
     <!-- End Region -->
     <!-- Region Commlink Accessories -->
@@ -19636,6 +19812,18 @@
       <cost>20</cost>
     </gear>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <gear>
+      <id>75551931-6886-49ac-8119-26dd2c584212</id>
+      <name>Krime Explosive Securing Tripod Replacement Pitons</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>23</page>
+      <avail>12R</avail>
+      <cost>300</cost>
+    </gear>
     <!-- End Region -->
   </gears>
 </chummer>

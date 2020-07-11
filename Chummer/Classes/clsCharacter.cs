@@ -121,9 +121,9 @@ namespace Chummer
 
         // Metatype Information.
         private string _strMetatype = "Human";
-        private Guid   _guiMetatype;
+        private Guid   _guiMetatype = Guid.Empty;
         private string _strMetavariant = string.Empty;
-        private Guid   _guiMetavariant;
+        private Guid   _guiMetavariant = Guid.Empty;
         private string _strMetatypeCategory = "Metahuman";
         private string _strMovement = string.Empty;
         private string _strWalk = string.Empty;
@@ -1305,6 +1305,18 @@ namespace Chummer
         {
             if (objXmlMetatype == null)
                 throw new ArgumentNullException(nameof(objXmlMetatype));
+            // Remove any Improvements the character received from their Metatype.
+            ImprovementManager.RemoveImprovements(this,
+                Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                     || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant).ToList());
+
+            // Remove any Qualities the character received from their Metatype, then remove the Quality.
+            foreach (Quality objQuality in Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen).ToList())
+            {
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                Qualities.Remove(objQuality);
+            }
+
             // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
             if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
                 strMetavariantId = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? string.Empty;
@@ -1539,7 +1551,7 @@ namespace Chummer
                             xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                     })
                     {
-                        frmPickText.ShowDialog();
+                        frmPickText.ShowDialog(Program.MainForm);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                             continue;
@@ -2527,7 +2539,7 @@ namespace Chummer
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),ex.Message),
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("MessageTitle_FailedLoad"),ex.Message),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                //MessageBox.Show(
+                                //Program.MainForm.ShowMessageBox(
                                 //    string.Format(
                                 //        LanguageManager.GetString("Message_FailedLoad"),
                                 //        ex.Message),
@@ -2566,12 +2578,12 @@ namespace Chummer
                             !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings &&
                             !Utils.IsUnitTest)
                         {
-                             Program.MainForm.ShowMessageBox(
+                            Program.MainForm.ShowMessageBox(
                                 LanguageManager.GetString("Message_IncorrectGameVersion_SR4"),
                                 LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Error);
-                            //MessageBox.Show(
+                            //Program.MainForm.ShowMessageBox(
                             //    LanguageManager.GetString("Message_IncorrectGameVersion_SR4"),
                             //    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
                             //    MessageBoxButtons.YesNo,
@@ -2653,13 +2665,13 @@ namespace Chummer
                                     LanguageManager.GetString("Message_MissingSourceBooks_Title",
                                         GlobalOptions.Language),
                                     MessageBoxButtons.YesNo)
-                            //MessageBox.Show(new Form {TopMost = true},
-                            //        string.Format(
-                            //            LanguageManager.GetString("Message_MissingSourceBooks"),
-                            //            TranslatedBookList(strMissingBooks)),
-                            //        LanguageManager.GetString("Message_MissingSourceBooks_Title",
-                            //            GlobalOptions.Language),
-                            //        MessageBoxButtons.YesNo)
+                                //Program.MainForm.ShowMessageBox(new Form {TopMost = true},
+                                //        string.Format(
+                                //            LanguageManager.GetString("Message_MissingSourceBooks"),
+                                //            TranslatedBookList(strMissingBooks)),
+                                //        LanguageManager.GetString("Message_MissingSourceBooks_Title",
+                                //            GlobalOptions.Language),
+                                //        MessageBoxButtons.YesNo)
                                 == DialogResult.No)
                             {
                                 IsLoading = false;
@@ -2684,22 +2696,22 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
                             if ( Program.MainForm.ShowMessageBox(
-                                string.Format(GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                        GlobalOptions.Language), strMissingSourceNames),
-                                LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                    GlobalOptions.Language),
-                                MessageBoxButtons.YesNo)
+                                     string.Format(GlobalOptions.CultureInfo,
+                                         LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                                             GlobalOptions.Language), strMissingSourceNames),
+                                     LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                                         GlobalOptions.Language),
+                                     MessageBoxButtons.YesNo)
 
-                            //MessageBox.Show(
-                            //        string.Format(
-                            //            LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                            //                GlobalOptions.Language), strMissingSourceNames),
-                            //        LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                            //            GlobalOptions.Language),
-                            //        MessageBoxButtons.YesNo)
+                                 //Program.MainForm.ShowMessageBox(
+                                 //        string.Format(
+                                 //            LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                                 //                GlobalOptions.Language), strMissingSourceNames),
+                                 //        LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                                 //            GlobalOptions.Language),
+                                 //        MessageBoxButtons.YesNo)
 
-                                == DialogResult.No)
+                                 == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2757,8 +2769,19 @@ namespace Chummer
                             _guiMetavariant = Guid.Parse(GetNode()?.SelectSingleNode("id")?.Value);
                         }
 
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("source", ref _strSource);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("page", ref _strPage);
+                        bool blnDoSourceFetch = !xmlCharacterNavigator.TryGetStringFieldQuickly("source", ref _strSource) || string.IsNullOrEmpty(_strSource);
+                        // ReSharper disable once ConvertIfToOrExpression
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("page", ref _strPage) || string.IsNullOrEmpty(_strPage) || _strPage == "0")
+                            blnDoSourceFetch = true;
+                        if (blnDoSourceFetch)
+                        {
+                            XPathNavigator xmlCharNode = GetNode();
+                            if (xmlCharNode != null)
+                            {
+                                _strSource = xmlCharNode.SelectSingleNode("source")?.Value ?? _strSource;
+                                _strPage = xmlCharNode.SelectSingleNode("page")?.Value ?? _strPage;
+                            }
+                        }
 
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
 
@@ -2789,29 +2812,29 @@ namespace Chummer
                         if (xmlGameplayOption == null && showWarnings)
                         {
                             if ( Program.MainForm.ShowMessageBox(
-                                string.Format(GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("Message_MissingGameplayOption",
-                                        GlobalOptions.Language),
-                                    CharacterOptionsKey),
-                                LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                    GlobalOptions.Language),
-                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+                                     string.Format(GlobalOptions.CultureInfo,
+                                         LanguageManager.GetString("Message_MissingGameplayOption",
+                                             GlobalOptions.Language),
+                                         GameplayOption),
+                                     LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                         GlobalOptions.Language),
+                                     MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
 
 
-                                //MessageBox.Show(
-                                //    string.Format(
-                                //        LanguageManager.GetString("Message_MissingGameplayOption",
-                                //            GlobalOptions.Language),
-                                //        GameplayOption),
-                                //    LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                //        GlobalOptions.Language),
-                                //    MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+                                 //Program.MainForm.ShowMessageBox(
+                                 //    string.Format(
+                                 //        LanguageManager.GetString("Message_MissingGameplayOption",
+                                 //            GlobalOptions.Language),
+                                 //        GameplayOption),
+                                 //    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                 //        GlobalOptions.Language),
+                                 //    MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
 
-                                    == DialogResult.OK)
+                                 == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
-                                    frmPickBP.ShowDialog();
+                                    frmPickBP.ShowDialog(Program.MainForm);
 
                                     if (frmPickBP.DialogResult != DialogResult.OK)
                                     {
@@ -2967,7 +2990,7 @@ namespace Chummer
                                     if (removeImprovements || showWarnings)
                                     {
                                         //Utils.BreakIfDebug();
-                                        if (removeImprovements || (MessageBox.Show(
+                                        if (removeImprovements || (Program.MainForm.ShowMessageBox(
                                                                        LanguageManager.GetString(
                                                                            "Message_OrphanedImprovements"),
                                                                        LanguageManager.GetString(
@@ -3142,7 +3165,7 @@ namespace Chummer
                                             using (frmSelectItem frmPickItem = new frmSelectItem())
                                             {
                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                frmPickItem.ShowDialog();
+                                                frmPickItem.ShowDialog(Program.MainForm);
 
                                                 // Make sure the dialogue window was not canceled.
                                                 if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6034,10 +6057,7 @@ namespace Chummer
                    x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
-                    if(xmlQualityNode?["onlyprioritygiven"] == null)
-                    {
-                        intMetatypeQualitiesValue += Convert.ToInt32(xmlQualityNode?["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                    }
+                    intMetatypeQualitiesValue += Convert.ToInt32(xmlQualityNode?["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
 
                 intReturn += intMetatypeQualitiesValue;
@@ -6098,14 +6118,10 @@ namespace Chummer
 
                 intTemp = 0;
                 // This is where "Talent" qualities like Adept and Technomancer get added in
-                foreach(Quality objQuality in Qualities.Where(x =>
-                   x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
+                foreach(Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
-                    if(xmlQualityNode?["onlyprioritygiven"] != null)
-                    {
-                        intTemp += Convert.ToInt32(xmlQualityNode["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                    }
+                    intTemp += Convert.ToInt32(xmlQualityNode["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
 
                 if(intTemp != 0)
@@ -14263,13 +14279,13 @@ namespace Chummer
             XmlNode objXmlGameplayOption = LoadData("gameplayoptions.xml")
                 .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterOptionsKey + "\"]");
 
-            List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList() ?? new List<string>{string.Empty};
+            List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList();
 
             //Calculate bonus from cyberlimbs
             int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
 
             intCount = Math.Min(intCount / 2, 2);
-            _intCachedRedlinerBonus = lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI")
+            _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
                 ? intCount
                 : 0;
 
@@ -16001,14 +16017,14 @@ namespace Chummer
                             string strMessage = LanguageManager
                                 .GetString("Message_MissingGameplayOption")
                                 .Replace("{0}", CharacterOptionsKey);
-                            if (MessageBox.Show(strMessage,
+                            if (Program.MainForm.ShowMessageBox(strMessage,
                                     LanguageManager.GetString("Message_MissingGameplayOption_Title",
                                         GlobalOptions.Language),
                                     MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
-                                    frmPickBP.ShowDialog();
+                                    frmPickBP.ShowDialog(Program.MainForm);
                                     if (frmPickBP.DialogResult != DialogResult.OK)
                                         return false;
                                 }
@@ -16069,7 +16085,7 @@ namespace Chummer
 
                             using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
                             {
-                                frmSelectMetatype.ShowDialog();
+                                frmSelectMetatype.ShowDialog(Program.MainForm);
                                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                     return false;
                             }
@@ -16078,7 +16094,7 @@ namespace Chummer
                         {
                             using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
                             {
-                                frmSelectMetatype.ShowDialog();
+                                frmSelectMetatype.ShowDialog(Program.MainForm);
                                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                     return false;
                             }

@@ -36,8 +36,8 @@ namespace Chummer.UI.Attributes
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.flpButtonsCareer = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdBurnEdge = new Chummer.ButtonWithToolTip();
             this.cmdImproveATT = new Chummer.ButtonWithToolTip();
+            this.cmdBurnEdge = new Chummer.ButtonWithToolTip();
             this.flpButtonsCreate = new System.Windows.Forms.FlowLayoutPanel();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudBase = new Chummer.NumericUpDownEx();
@@ -138,23 +138,6 @@ namespace Chummer.UI.Attributes
             this.flpButtonsCareer.TabIndex = 79;
             this.flpButtonsCareer.WrapContents = false;
             // 
-            // cmdBurnEdge
-            // 
-            this.cmdBurnEdge.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.cmdBurnEdge.AutoSize = true;
-            this.cmdBurnEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdBurnEdge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdBurnEdge.Location = new System.Drawing.Point(3, 0);
-            this.cmdBurnEdge.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.cmdBurnEdge.MinimumSize = new System.Drawing.Size(24, 24);
-            this.cmdBurnEdge.Name = "cmdBurnEdge";
-            this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
-            this.cmdBurnEdge.TabIndex = 78;
-            this.cmdBurnEdge.ToolTipText = "";
-            this.cmdBurnEdge.UseVisualStyleBackColor = true;
-            this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
-            // 
             // cmdImproveATT
             // 
             this.cmdImproveATT.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -172,6 +155,23 @@ namespace Chummer.UI.Attributes
             this.cmdImproveATT.ToolTipText = "";
             this.cmdImproveATT.UseVisualStyleBackColor = true;
             this.cmdImproveATT.Click += new System.EventHandler(this.cmdImproveATT_Click);
+            // 
+            // cmdBurnEdge
+            // 
+            this.cmdBurnEdge.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdBurnEdge.AutoSize = true;
+            this.cmdBurnEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdBurnEdge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdBurnEdge.Location = new System.Drawing.Point(3, 0);
+            this.cmdBurnEdge.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdBurnEdge.MinimumSize = new System.Drawing.Size(24, 24);
+            this.cmdBurnEdge.Name = "cmdBurnEdge";
+            this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
+            this.cmdBurnEdge.TabIndex = 78;
+            this.cmdBurnEdge.ToolTipText = "";
+            this.cmdBurnEdge.UseVisualStyleBackColor = true;
+            this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
             // 
             // flpButtonsCreate
             // 
@@ -228,11 +228,12 @@ namespace Chummer.UI.Attributes
             // 
             // AttributeControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "AttributeControl";

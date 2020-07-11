@@ -210,7 +210,7 @@ namespace ChummerHub.Client.UI
                         button.Click += (sender, e) =>
                         {
                             var frmPickSpell = new frmSelectSpell(MySearchCharacter.MyCharacter);
-                            frmPickSpell.ShowDialog();
+                            frmPickSpell.ShowDialog(Program.MainForm);
                             // Open the Spells XML file and locate the selected piece.
                             XmlDocument objXmlDocument = MySearchCharacter.MyCharacter.LoadData("spells.xml");
                             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
@@ -241,7 +241,7 @@ namespace ChummerHub.Client.UI
                         button.Click += ((sender, e) =>
                         {
                             var frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
-                            frmPick.ShowDialog();
+                            frmPick.ShowDialog(Program.MainForm);
                             // Open the Spells XML file and locate the selected piece.
                             XmlDocument objXmlDocument = MySearchCharacter.MyCharacter.LoadData("qualities.xml");
                             XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPick.SelectedQuality + "\"]");

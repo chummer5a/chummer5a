@@ -86,6 +86,7 @@ namespace Chummer
             // 
             // cmdSelectFile
             // 
+            this.cmdSelectFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdSelectFile.AutoSize = true;
             this.cmdSelectFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectFile.Location = new System.Drawing.Point(3, 3);
@@ -99,6 +100,7 @@ namespace Chummer
             // 
             // cmdImport
             // 
+            this.cmdImport.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdImport.AutoSize = true;
             this.cmdImport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImport.Enabled = false;
@@ -132,21 +134,24 @@ namespace Chummer
             this.lblEssenceLabel.TabIndex = 50;
             this.lblEssenceLabel.Tag = "Label_Essence";
             this.lblEssenceLabel.Text = "Essence:";
+            this.lblEssenceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblEssenceLabel.Visible = false;
             // 
             // lblCharacterAlias
             // 
+            this.lblCharacterAlias.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCharacterAlias.AutoSize = true;
-            this.lblCharacterAlias.Location = new System.Drawing.Point(397, 31);
             this.lblCharacterAlias.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCharacterAlias.Location = new System.Drawing.Point(397, 29);
             this.lblCharacterAlias.Name = "lblCharacterAlias";
             this.lblCharacterAlias.Size = new System.Drawing.Size(39, 13);
             this.lblCharacterAlias.TabIndex = 49;
             this.lblCharacterAlias.Text = "[None]";
+            this.lblCharacterAlias.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblCharacterAliasLabel
             // 
-            this.lblCharacterAliasLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterAliasLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCharacterAliasLabel.AutoSize = true;
             this.lblCharacterAliasLabel.Location = new System.Drawing.Point(359, 31);
             this.lblCharacterAliasLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -155,21 +160,24 @@ namespace Chummer
             this.lblCharacterAliasLabel.TabIndex = 48;
             this.lblCharacterAliasLabel.Tag = "Label_Alias";
             this.lblCharacterAliasLabel.Text = "Alias:";
+            this.lblCharacterAliasLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblCharacterAliasLabel.Visible = false;
             // 
             // lblPlayerName
             // 
+            this.lblPlayerName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPlayerName.AutoSize = true;
-            this.lblPlayerName.Location = new System.Drawing.Point(397, 56);
             this.lblPlayerName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPlayerName.Location = new System.Drawing.Point(397, 53);
             this.lblPlayerName.Name = "lblPlayerName";
             this.lblPlayerName.Size = new System.Drawing.Size(39, 13);
             this.lblPlayerName.TabIndex = 47;
             this.lblPlayerName.Text = "[None]";
+            this.lblPlayerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblPlayerNameLabel
             // 
-            this.lblPlayerNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPlayerNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPlayerNameLabel.AutoSize = true;
             this.lblPlayerNameLabel.Location = new System.Drawing.Point(352, 56);
             this.lblPlayerNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -178,10 +186,12 @@ namespace Chummer
             this.lblPlayerNameLabel.TabIndex = 46;
             this.lblPlayerNameLabel.Tag = "Label_Player";
             this.lblPlayerNameLabel.Text = "Player:";
+            this.lblPlayerNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblPlayerNameLabel.Visible = false;
             // 
             // lblCareerKarma
             // 
+            this.lblCareerKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCareerKarma.AutoSize = true;
             this.lblCareerKarma.Location = new System.Drawing.Point(397, 106);
             this.lblCareerKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -189,10 +199,11 @@ namespace Chummer
             this.lblCareerKarma.Size = new System.Drawing.Size(39, 13);
             this.lblCareerKarma.TabIndex = 45;
             this.lblCareerKarma.Text = "[None]";
+            this.lblCareerKarma.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblCareerKarmaLabel
             // 
-            this.lblCareerKarmaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCareerKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCareerKarmaLabel.AutoSize = true;
             this.lblCareerKarmaLabel.Location = new System.Drawing.Point(317, 106);
             this.lblCareerKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -201,10 +212,12 @@ namespace Chummer
             this.lblCareerKarmaLabel.TabIndex = 44;
             this.lblCareerKarmaLabel.Tag = "String_CareerKarma";
             this.lblCareerKarmaLabel.Text = "Career Karma:";
+            this.lblCareerKarmaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblCareerKarmaLabel.Visible = false;
             // 
             // lblMetatype
             // 
+            this.lblMetatype.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMetatype.AutoSize = true;
             this.lblMetatype.Location = new System.Drawing.Point(397, 81);
             this.lblMetatype.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -212,10 +225,11 @@ namespace Chummer
             this.lblMetatype.Size = new System.Drawing.Size(39, 13);
             this.lblMetatype.TabIndex = 43;
             this.lblMetatype.Text = "[None]";
+            this.lblMetatype.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblMetatypeLabel
             // 
-            this.lblMetatypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMetatypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetatypeLabel.AutoSize = true;
             this.lblMetatypeLabel.Location = new System.Drawing.Point(337, 81);
             this.lblMetatypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -224,10 +238,12 @@ namespace Chummer
             this.lblMetatypeLabel.TabIndex = 42;
             this.lblMetatypeLabel.Tag = "Label_Metatype";
             this.lblMetatypeLabel.Text = "Metatype:";
+            this.lblMetatypeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblMetatypeLabel.Visible = false;
             // 
             // lblCharacterName
             // 
+            this.lblCharacterName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCharacterName.AutoSize = true;
             this.lblCharacterName.Location = new System.Drawing.Point(397, 6);
             this.lblCharacterName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -235,10 +251,11 @@ namespace Chummer
             this.lblCharacterName.Size = new System.Drawing.Size(39, 13);
             this.lblCharacterName.TabIndex = 41;
             this.lblCharacterName.Text = "[None]";
+            this.lblCharacterName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblCharacterNameLabel
             // 
-            this.lblCharacterNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCharacterNameLabel.AutoSize = true;
             this.lblCharacterNameLabel.Location = new System.Drawing.Point(304, 6);
             this.lblCharacterNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -247,6 +264,7 @@ namespace Chummer
             this.lblCharacterNameLabel.TabIndex = 40;
             this.lblCharacterNameLabel.Tag = "Label_CharacterName";
             this.lblCharacterNameLabel.Text = "Character Name:";
+            this.lblCharacterNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblCharacterNameLabel.Visible = false;
             // 
             // picMugshot
@@ -264,11 +282,11 @@ namespace Chummer
             // 
             // lblHeroLabTrademark
             // 
-            this.lblHeroLabTrademark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblHeroLabTrademark.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblHeroLabTrademark.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblHeroLabTrademark, 3);
-            this.lblHeroLabTrademark.Location = new System.Drawing.Point(349, 524);
             this.lblHeroLabTrademark.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblHeroLabTrademark.Location = new System.Drawing.Point(349, 522);
             this.lblHeroLabTrademark.Name = "lblHeroLabTrademark";
             this.lblHeroLabTrademark.Size = new System.Drawing.Size(414, 13);
             this.lblHeroLabTrademark.TabIndex = 52;
@@ -421,9 +439,6 @@ namespace Chummer
             // 
             // tlpMain
             // 
-            this.tlpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.AutoSize = true;
             this.tlpMain.ColumnCount = 4;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
@@ -447,6 +462,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblMetatypeLabel, 1, 3);
             this.tlpMain.Controls.Add(this.lblPlayerName, 2, 2);
             this.tlpMain.Controls.Add(this.flpButtons, 0, 7);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 8;
@@ -479,6 +495,8 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmHeroLabImporter";
             this.Padding = new System.Windows.Forms.Padding(9);

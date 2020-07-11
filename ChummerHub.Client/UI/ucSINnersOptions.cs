@@ -83,7 +83,7 @@ namespace ChummerHub.Client.UI
         public ucSINnersOptions()
         {
             InitializeComponent();
-            InitializeMe().RunSynchronously();
+            InitializeMe();
         }
 
         public static bool UploadOnSave
@@ -117,7 +117,7 @@ namespace ChummerHub.Client.UI
 
         private bool IsLoading;
 
-        private async Task InitializeMe()
+        private void InitializeMe()
         {
             if (IsLoading)
                 return;
@@ -220,7 +220,7 @@ namespace ChummerHub.Client.UI
             bLogin.Text = "Logout";
             //this.cbRoles.DataSource = null;
             LoginStatus = false;
-            await InitializeMe().ConfigureAwait(true);
+            InitializeMe();
         }
 
         public async void UpdateDisplay()
@@ -358,7 +358,7 @@ namespace ChummerHub.Client.UI
                 {
                     Invoke((Action)(() =>
                     {
-                        frmWebBrowser.ShowDialog();
+                        frmWebBrowser.ShowDialog(Program.MainForm);
                         _ = StartSTATask(
                         async () =>
                         {
@@ -370,7 +370,7 @@ namespace ChummerHub.Client.UI
                 }
                 else
                 {
-                    frmWebBrowser.ShowDialog();
+                    frmWebBrowser.ShowDialog(Program.MainForm);
                     _ = StartSTATask(
                            async () =>
                            {

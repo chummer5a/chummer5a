@@ -600,7 +600,7 @@ namespace Chummer.Backend.Equipment
                         AllowCancel = false
                     })
                     {
-                        frmPickNumber.ShowDialog();
+                        frmPickNumber.ShowDialog(Program.MainForm);
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
@@ -715,7 +715,7 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strForcedSide))
                             frmPickSide.ForceValue(strForcedSide);
                         else
-                            frmPickSide.ShowDialog();
+                            frmPickSide.ShowDialog(Program.MainForm);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickSide.DialogResult == DialogResult.Cancel)
@@ -1866,10 +1866,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How many limbs does this cyberware have?
         /// </summary>
-        public int GetCyberlimbCount(IReadOnlyCollection<string> lstExcludeLimbs)
+        public int GetCyberlimbCount(IReadOnlyCollection<string> lstExcludeLimbs = null)
         {
             int intCount = 0;
-            if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs.All(l => l != LimbSlot))
+            if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)
             {
                 intCount += LimbSlotCount;
             }
@@ -2787,10 +2787,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (_blnPrototypeTranshuman != value)
                 {
+                    string strOldEssencePropertyName = EssencePropertyName;
                     _blnPrototypeTranshuman = value;
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
                         ParentVehicle == null)
-                        _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        _objCharacter.OnMultiplePropertyChanged(strOldEssencePropertyName, EssencePropertyName);
                 }
 
                 foreach (Cyberware objCyberware in Children)
@@ -3138,20 +3139,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal CalculatedESSPrototypeInvariant
+        /// <summary>
+        /// Calculated Essence cost of the Cyberware.
+        /// </summary>
+        public decimal CalculatedESS
         {
             get
             {
                 if (PrototypeTranshuman)
                     return 0;
-                return CalculatedESS;
+                return CalculatedESSPrototypeInvariant;
             }
         }
 
         /// <summary>
-        /// Calculated Essence cost of the Cyberware.
+        /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
         /// </summary>
-        public decimal CalculatedESS
+        public decimal CalculatedESSPrototypeInvariant
         {
             get
             {

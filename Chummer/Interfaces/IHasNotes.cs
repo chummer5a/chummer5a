@@ -42,7 +42,7 @@ namespace Chummer
             string strOldValue = objNotes.Notes;
             using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
             {
-                frmItemNotes.ShowDialog();
+                frmItemNotes.ShowDialog(Program.MainForm);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return false;
 

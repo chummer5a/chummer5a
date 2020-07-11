@@ -510,6 +510,18 @@ namespace Chummer
                             strName = Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma"), strNodeInnerText);
                         return objCharacter.CareerKarma >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
+                case "chargenonly":
+                    {
+                        if (blnShowMessage)
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction");
+                        return !objCharacter.Created;
+                    }
+                case "careeronly":
+                    {
+                        if (blnShowMessage)
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction");
+                        return objCharacter.Created;
+                    }
                 case "critterpower":
                     {
                         // Run through all of the Powers the character has and see if the current required item exists.
@@ -947,6 +959,12 @@ namespace Chummer
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_Nuyen") + strSpace + '≥' + strSpace + strNodeInnerText;
                         return objCharacter.Nuyen >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                    }
+                case "onlyprioritygiven":
+                    {
+                        if (blnShowMessage)
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction");
+                        return objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen;
                     }
                 case "power":
                     {

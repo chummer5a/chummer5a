@@ -148,7 +148,8 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
             objWriter.WriteElementString("ratingmod", (intRatingModifiers + intDicePoolModifiers).ToString(objCulture));
             objWriter.WriteElementString("poolmod", intDicePoolModifiers.ToString(objCulture));
-            objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("islanguage", IsLanguage.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("bp", CurrentKarmaCost.ToString(objCulture));
             objWriter.WriteStartElement("skillspecializations");
             foreach (SkillSpecialization objSpec in Specializations)
@@ -235,19 +236,22 @@ namespace Chummer.Backend.Skills
             if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 objLoadingSkill.Id = guiTemp;
 
-            xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
-            xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
-            xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
             if (!xmlSkillNode.TryGetStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
-            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
+            if (!objLoadingSkill.IsNativeLanguage)
             {
-                if (xmlSpecList == null)
-                    return objLoadingSkill;
-                foreach (XmlNode xmlSpec in xmlSpecList)
+                xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
+                xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
+                xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
+                using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
                 {
-                    objLoadingSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpec));
+                    if (xmlSpecList == null)
+                        return objLoadingSkill;
+                    foreach (XmlNode xmlSpec in xmlSpecList)
+                    {
+                        objLoadingSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpec));
+                    }
                 }
             }
 
@@ -464,11 +468,12 @@ namespace Chummer.Backend.Skills
 
             _skillDependencyGraph = new DependencyGraph<string>(
                 new DependencyGraphNode<string>(nameof(PoolToolTip),
+                    new DependencyGraphNode<string>(nameof(IsNativeLanguage)),
                     new DependencyGraphNode<string>(nameof(AttributeModifiers),
                         new DependencyGraphNode<string>(nameof(AttributeObject),
                             new DependencyGraphNode<string>(nameof(RelevantImprovements)))),
                     new DependencyGraphNode<string>(nameof(DisplayPool),
-                        new DependencyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill),
+                        new DependencyGraphNode<string>(nameof(IsNativeLanguage)),
                         new DependencyGraphNode<string>(nameof(DisplayOtherAttribute),
                             new DependencyGraphNode<string>(nameof(PoolOtherAttribute),
                                 new DependencyGraphNode<string>(nameof(Enabled)),
@@ -497,12 +502,15 @@ namespace Chummer.Backend.Skills
                                 new DependencyGraphNode<string>(nameof(AttributeObject))
                             ),
                             new DependencyGraphNode<string>(nameof(PoolOtherAttribute)),
-                            new DependencyGraphNode<string>(nameof(Attribute))
+                            new DependencyGraphNode<string>(nameof(Attribute)),
+                            new DependencyGraphNode<string>(nameof(IsNativeLanguage))
                         )
                     )
                 ),
                 new DependencyGraphNode<string>(nameof(CanHaveSpecs),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill,
+                        new DependencyGraphNode<string>(nameof(IsNativeLanguage))
+                    ),
                     new DependencyGraphNode<string>(nameof(Enabled)),
                     new DependencyGraphNode<string>(nameof(IsExoticSkill)),
                     new DependencyGraphNode<string>(nameof(KarmaUnlocked)),
@@ -619,14 +627,31 @@ namespace Chummer.Backend.Skills
                     )
                 ),
                 new DependencyGraphNode<string>(nameof(AllowDelete), () => IsKnowledgeSkill,
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.ForcedName)),
                     new DependencyGraphNode<string>(nameof(FreeBase)),
                     new DependencyGraphNode<string>(nameof(FreeKarma)),
-                    new DependencyGraphNode<string>(nameof(RatingModifiers))
+                    new DependencyGraphNode<string>(nameof(RatingModifiers)),
+                    new DependencyGraphNode<string>(nameof(IsNativeLanguage))
                 ),
                 new DependencyGraphNode<string>(nameof(DictionaryKey),
                     new DependencyGraphNode<string>(nameof(Name)),
                     new DependencyGraphNode<string>(nameof(IsExoticSkill)),
                     new DependencyGraphNode<string>(nameof(DisplaySpecialization), () => IsExoticSkill)
+                ),
+                new DependencyGraphNode<string>(nameof(IsLanguage), () => IsKnowledgeSkill,
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.Type))
+                ),
+                new DependencyGraphNode<string>(nameof(AllowNameChange), () => IsKnowledgeSkill,
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.ForcedName)),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade)),
+                    new DependencyGraphNode<string>(nameof(Karma)),
+                    new DependencyGraphNode<string>(nameof(Base)),
+                    new DependencyGraphNode<string>(nameof(IsNativeLanguage))
+                ),
+                new DependencyGraphNode<string>(nameof(AllowTypeChange), () => IsKnowledgeSkill,
+                    new DependencyGraphNode<string>(nameof(AllowNameChange)),
+                    new DependencyGraphNode<string>(nameof(KnowledgeSkill.Type)),
+                    new DependencyGraphNode<string>(nameof(IsNativeLanguage))
                 )
             );
         }
@@ -767,9 +792,9 @@ namespace Chummer.Backend.Skills
         #endregion
 
         /// <summary>
-        /// The total, general pourpose dice pool for this skill
+        /// The total, general purpose dice pool for this skill
         /// </summary>
-        public int Pool => PoolOtherAttribute(AttributeModifiers, Attribute);
+        public int Pool => IsNativeLanguage ? int.MaxValue : PoolOtherAttribute(AttributeModifiers, Attribute);
 
         public bool Leveled => Rating > 0;
 
@@ -935,6 +960,20 @@ namespace Chummer.Backend.Skills
         public bool IsExoticSkill => this is ExoticSkill;
 
         public bool IsKnowledgeSkill => this is KnowledgeSkill;
+
+        public virtual bool AllowNameChange => false;
+
+        public virtual bool AllowTypeChange => false;
+
+        public virtual bool IsLanguage => false;
+
+        public virtual bool IsNativeLanguage
+        {
+            get => false;
+            set
+            {
+            }
+        }
 
         private string _strDictionaryKey;
         public string DictionaryKey => _strDictionaryKey
@@ -1103,7 +1142,7 @@ namespace Chummer.Backend.Skills
                 : null;
         }
 
-        public string PoolToolTip => CompileDicepoolTooltip(Attribute);
+        public string PoolToolTip => IsNativeLanguage ? LanguageManager.GetString("Tip_Skill_NativeLanguage") : CompileDicepoolTooltip(Attribute);
 
         public string CompileDicepoolTooltip(string abbrev = "")
         {

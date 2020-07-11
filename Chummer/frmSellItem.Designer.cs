@@ -45,7 +45,7 @@ namespace Chummer
             // 
             // lblSellForLabel
             // 
-            this.lblSellForLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSellForLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSellForLabel.AutoSize = true;
             this.lblSellForLabel.Location = new System.Drawing.Point(3, 6);
             this.lblSellForLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -54,6 +54,7 @@ namespace Chummer
             this.lblSellForLabel.TabIndex = 0;
             this.lblSellForLabel.Tag = "Label_SellItem_SellItemFor";
             this.lblSellForLabel.Text = "Sell Item for";
+            this.lblSellForLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // nudPercent
             // 
@@ -111,6 +112,7 @@ namespace Chummer
             // 
             // lblPercentLabel
             // 
+            this.lblPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPercentLabel.AutoSize = true;
             this.lblPercentLabel.Location = new System.Drawing.Point(134, 6);
             this.lblPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -118,6 +120,7 @@ namespace Chummer
             this.lblPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblPercentLabel.TabIndex = 2;
             this.lblPercentLabel.Text = "%";
+            this.lblPercentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel1
             // 
@@ -149,11 +152,14 @@ namespace Chummer
             // 
             // flowLayoutPanel2
             // 
+            this.flowLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel2.Controls.Add(this.lblSellForLabel);
             this.flowLayoutPanel2.Controls.Add(this.nudPercent);
             this.flowLayoutPanel2.Controls.Add(this.lblPercentLabel);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 4);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(152, 26);
             this.flowLayoutPanel2.TabIndex = 4;

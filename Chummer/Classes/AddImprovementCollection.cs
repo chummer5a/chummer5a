@@ -450,7 +450,7 @@ namespace Chummer.Classes
                         frmPickItem.ForceItem(ForcedValue);
 
                     frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -510,7 +510,7 @@ namespace Chummer.Classes
                 })
                 {
                     frmPickItem.SetDropdownItemsMode(lstTraditions);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -575,7 +575,7 @@ namespace Chummer.Classes
                 if (!string.IsNullOrEmpty(strExclude))
                     frmPickSkillGroup.ExcludeCategory = strExclude;
 
-                frmPickSkillGroup.ShowDialog();
+                frmPickSkillGroup.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
@@ -814,7 +814,7 @@ namespace Chummer.Classes
             if (!string.IsNullOrEmpty(strExclude))
                 frmPickSkillGroup.ExcludeCategory = strExclude;
 
-            frmPickSkillGroup.ShowDialog();
+            frmPickSkillGroup.ShowDialog(Program.MainForm);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
@@ -913,7 +913,7 @@ namespace Chummer.Classes
                                 : LanguageManager.GetString("String_Improvement_SelectAttribute")
                         })
                         {
-                            frmPickAttribute.ShowDialog();
+                            frmPickAttribute.ShowDialog(Program.MainForm);
 
                             // Make sure the dialogue window was not canceled.
                             if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1039,7 +1039,7 @@ namespace Chummer.Classes
             {
                 Log.Info("selectattribute = " + bonusNode.OuterXml);
 
-                frmPickAttribute.ShowDialog();
+                frmPickAttribute.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1136,7 +1136,7 @@ namespace Chummer.Classes
                     : LanguageManager.GetString("String_Improvement_SelectLimit")
             })
             {
-                frmPickLimit.ShowDialog();
+                frmPickLimit.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickLimit.DialogResult == DialogResult.Cancel)
@@ -1271,7 +1271,7 @@ namespace Chummer.Classes
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 })
                 {
-                    frmPickAttribute.ShowDialog();
+                    frmPickAttribute.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1325,7 +1325,7 @@ namespace Chummer.Classes
                         }
                     }
 
-                    frmPickSkill.ShowDialog();
+                    frmPickSkill.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSkill.DialogResult == DialogResult.Cancel)
@@ -1410,7 +1410,7 @@ namespace Chummer.Classes
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 })
                 {
-                    frmPickAttribute.ShowDialog();
+                    frmPickAttribute.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1464,7 +1464,7 @@ namespace Chummer.Classes
                         }
                     }
 
-                    frmPickSkill.ShowDialog();
+                    frmPickSkill.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSkill.DialogResult == DialogResult.Cancel)
@@ -1513,7 +1513,7 @@ namespace Chummer.Classes
 
                 frmPickSpell.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
 
-                frmPickSpell.ShowDialog();
+                frmPickSpell.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSpell.DialogResult == DialogResult.Cancel)
@@ -1544,7 +1544,7 @@ namespace Chummer.Classes
                     Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
                 {
-                    frmPickText.ShowDialog();
+                    frmPickText.ShowDialog(Program.MainForm);
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
                     {
@@ -1597,7 +1597,7 @@ namespace Chummer.Classes
                     Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
                 {
-                    frmPickText.ShowDialog();
+                    frmPickText.ShowDialog(Program.MainForm);
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
                     {
@@ -1639,7 +1639,7 @@ namespace Chummer.Classes
                 // Display the Select ComplexForm window.
                 using (frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(_objCharacter))
                 {
-                    frmPickComplexForm.ShowDialog();
+                    frmPickComplexForm.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
@@ -1911,7 +1911,7 @@ namespace Chummer.Classes
                 // Display the Select Program window.
                 using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter))
                 {
-                    frmPickProgram.ShowDialog();
+                    frmPickProgram.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -1935,7 +1935,7 @@ namespace Chummer.Classes
                         Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
                     {
-                        frmPickText.ShowDialog();
+                        frmPickText.ShowDialog(Program.MainForm);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
@@ -1989,7 +1989,7 @@ namespace Chummer.Classes
                 // Display the Select Spell window.
                 using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, false, true))
                 {
-                    frmPickProgram.ShowDialog();
+                    frmPickProgram.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -2013,7 +2013,7 @@ namespace Chummer.Classes
                         Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
                     {
-                        frmPickText.ShowDialog();
+                        frmPickText.ShowDialog(Program.MainForm);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
@@ -2088,7 +2088,7 @@ namespace Chummer.Classes
                 List<ListItem> contacts = new List<ListItem>(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalOptions.InvariantCultureInfo), x.Name)));
 
                 frmSelect.SetGeneralItemsMode(contacts);
-                frmSelect.ShowDialog();
+                frmSelect.ShowDialog(Program.MainForm);
 
                 if (frmSelect.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
@@ -2268,7 +2268,7 @@ namespace Chummer.Classes
 
                 Log.Info("attributelevel = " + bonusNode.OuterXml);
 
-                frmPickAttribute.ShowDialog();
+                frmPickAttribute.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -3720,7 +3720,7 @@ namespace Chummer.Classes
                                 frmPickCategory.ForceItem(ForcedValue);
                             }
 
-                            frmPickCategory.ShowDialog();
+                            frmPickCategory.ShowDialog(Program.MainForm);
 
                             // Make sure the dialogue window was not canceled.
                             if (frmPickCategory.DialogResult == DialogResult.Cancel)
@@ -3801,7 +3801,7 @@ namespace Chummer.Classes
                 }
 
                 frmPickWeapon.ForceItem(ForcedValue);
-                frmPickWeapon.ShowDialog();
+                frmPickWeapon.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -3835,7 +3835,7 @@ namespace Chummer.Classes
                 ForcedMentor = ForcedValue
             })
             {
-                frmPickMentorSpirit.ShowDialog();
+                frmPickMentorSpirit.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
@@ -3876,7 +3876,7 @@ namespace Chummer.Classes
                 ForcedMentor = ForcedValue
             })
             {
-                frmPickMentorSpirit.ShowDialog();
+                frmPickMentorSpirit.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
@@ -4095,7 +4095,7 @@ namespace Chummer.Classes
                 if (!string.IsNullOrEmpty(ForcedValue))
                     frmPickSide.ForceValue(ForcedValue);
                 else
-                    frmPickSide.ShowDialog();
+                    frmPickSide.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSide.DialogResult == DialogResult.Cancel)
@@ -4229,7 +4229,7 @@ namespace Chummer.Classes
                                 string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
                                     frmPickPower.LimitToPowers = strLimitToPowers;
-                                frmPickPower.ShowDialog();
+                                frmPickPower.ShowDialog(Program.MainForm);
 
                                 // Make sure the dialogue window was not canceled.
                                 if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -4366,7 +4366,7 @@ namespace Chummer.Classes
                     }
 
                     frmPickItem.SetGeneralItemsMode(lstArts);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -4382,7 +4382,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art))
                 {
-                    frmPickArt.ShowDialog();
+                    frmPickArt.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
                     if (frmPickArt.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -4460,7 +4460,7 @@ namespace Chummer.Classes
                     }
 
                     frmPickItem.SetGeneralItemsMode(lstMetamagics);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -4484,7 +4484,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic))
                 {
-                    frmPickMetamagic.ShowDialog();
+                    frmPickMetamagic.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
                     if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -4563,7 +4563,7 @@ namespace Chummer.Classes
                     }
 
                     frmPickItem.SetGeneralItemsMode(lstEchoes);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -4586,7 +4586,7 @@ namespace Chummer.Classes
             {
                 using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo))
                 {
-                    frmPickMetamagic.ShowDialog();
+                    frmPickMetamagic.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
                     if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -5474,7 +5474,7 @@ namespace Chummer.Classes
             using (frmSelectItem frmPickItem = new frmSelectItem())
             {
                 frmPickItem.SetGeneralItemsMode(lstCritters);
-                frmPickItem.ShowDialog();
+                frmPickItem.ShowDialog(Program.MainForm);
 
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                 {
@@ -5521,7 +5521,7 @@ namespace Chummer.Classes
                         frmPickItem.Opacity = 0;
                     }
 
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5596,7 +5596,7 @@ namespace Chummer.Classes
                         frmPickItem.Opacity = 0;
                     }
 
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5656,7 +5656,7 @@ namespace Chummer.Classes
                     frmPickItem.Opacity = 0;
                 }
 
-                frmPickItem.ShowDialog();
+                frmPickItem.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5700,7 +5700,7 @@ namespace Chummer.Classes
                         frmPickText.Opacity = 0;
                     }
 
-                    frmPickText.ShowDialog();
+                    frmPickText.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -5745,7 +5745,7 @@ namespace Chummer.Classes
                             frmPickItem.Opacity = 0;
                         }
 
-                        frmPickItem.ShowDialog();
+                        frmPickItem.ShowDialog(Program.MainForm);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5824,7 +5824,7 @@ namespace Chummer.Classes
                         GlobalOptions.Language)
                 })
                 {
-                    frmPickPower.ShowDialog();
+                    frmPickPower.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -5937,7 +5937,7 @@ namespace Chummer.Classes
             })
             {
                 frmPickItem.SetGeneralItemsMode(lstItems);
-                frmPickItem.ShowDialog();
+                frmPickItem.ShowDialog(Program.MainForm);
                 // Make sure the dialogue window was not canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                 {
@@ -5985,7 +5985,7 @@ namespace Chummer.Classes
                         frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
                     }
 
-                    if (frmSelect.ShowDialog() == DialogResult.Cancel)
+                    if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
@@ -6097,7 +6097,7 @@ namespace Chummer.Classes
             using (frmSelectItem frmPickItem = new frmSelectItem())
             {
                 frmPickItem.SetGeneralItemsMode(lstQualities);
-                frmPickItem.ShowDialog();
+                frmPickItem.ShowDialog(Program.MainForm);
 
                 // Don't do anything else if the form was canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6150,7 +6150,7 @@ namespace Chummer.Classes
                 using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
                     frmPickItem.SetGeneralItemsMode(lstQualities);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Don't do anything else if the form was canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6265,7 +6265,7 @@ namespace Chummer.Classes
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
-                    frmPickSpellCategory.ShowDialog();
+                    frmPickSpellCategory.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
@@ -6303,7 +6303,7 @@ namespace Chummer.Classes
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
-                    frmPickSpellCategory.ShowDialog();
+                    frmPickSpellCategory.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
@@ -6334,7 +6334,7 @@ namespace Chummer.Classes
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
                 {
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6366,7 +6366,7 @@ namespace Chummer.Classes
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
                 {
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6482,7 +6482,7 @@ namespace Chummer.Classes
             {
                 frmSelect.SetGeneralItemsMode(lstSpirits);
                 frmSelect.ForceItem(ForcedValue);
-                frmSelect.ShowDialog();
+                frmSelect.ShowDialog(Program.MainForm);
                 if (frmSelect.DialogResult == DialogResult.Cancel)
                 {
                     throw new AbortedException();
@@ -6682,7 +6682,7 @@ namespace Chummer.Classes
                 })
                 {
                     frmPickItem.SetGeneralItemsMode(lstSkills);
-                    frmPickItem.ShowDialog();
+                    frmPickItem.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -7430,7 +7430,7 @@ namespace Chummer.Classes
                     frmPickItem.ForceItem(ForcedValue);
 
                 frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                frmPickItem.ShowDialog();
+                frmPickItem.ShowDialog(Program.MainForm);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.SelectedName))

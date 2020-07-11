@@ -355,7 +355,7 @@ namespace Chummer.Backend.Equipment
                     })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
-                        frmSelect.ShowDialog();
+                        frmSelect.ShowDialog(Program.MainForm);
                         if (frmSelect.DialogResult == DialogResult.Cancel)
                             return;
                         _strBaseLifestyle = frmSelect.SelectedItem;
@@ -364,6 +364,19 @@ namespace Chummer.Backend.Equipment
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";
+            // Legacy sweep for issues with Advanced Lifestyle selector not properly resetting values upon changes to the Base Lifestyle
+            if (_objCharacter.LastSavedVersion <= new Version(5, 212, 73)
+                && _strBaseLifestyle != "Street"
+                && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
+            {
+                XmlNode xmlDataNode = GetNode();
+                if (xmlDataNode != null)
+                {
+                    xmlDataNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
+                    xmlDataNode.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
+                    xmlDataNode.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
+                }
+            }
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
                 GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
@@ -770,6 +783,24 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + value + "\"]");
                 if (xmlLifestyle != null)
                 {
+                    _strBaseLifestyle = string.Empty;
+                    _decCost = 0;
+                    _intDice = 0;
+                    _decMultiplier = 0;
+                    _strSource = string.Empty;
+                    _strPage = string.Empty;
+                    _intLP = 0;
+                    _decCostForArea = 0;
+                    _decCostForComforts = 0;
+                    _decCostForSecurity = 0;
+                    _blnAllowBonusLP = false;
+                    _eIncrement = LifestyleIncrement.Month;
+                    _intBaseComforts = 0;
+                    _intComfortsMaximum = 0;
+                    _intBaseArea = 0;
+                    _intAreaMaximum = 0;
+                    _intBaseSecurity = 0;
+                    _intSecurityMaximum = 0;
                     Create(xmlLifestyle);
                 }
             }

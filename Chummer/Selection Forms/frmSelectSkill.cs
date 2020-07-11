@@ -201,7 +201,7 @@ namespace Chummer
 
             if (lstSkills.Count <= 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), _strSourceName));
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }

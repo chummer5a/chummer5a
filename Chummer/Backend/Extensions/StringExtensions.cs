@@ -920,10 +920,13 @@ namespace Chummer
                 return string.Empty;
             if (strInput.IsRtf())
                 return strInput;
-            if (!rtbRtfManipulator.IsHandleCreated)
-                rtbRtfManipulator.CreateControl();
-            rtbRtfManipulator.Text = strInput;
-            return rtbRtfManipulator.Rtf;
+            lock (rtbRtfManipulatorLock)
+            {
+                if (!rtbRtfManipulator.IsHandleCreated)
+                    rtbRtfManipulator.CreateControl();
+                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput);
+                return rtbRtfManipulator.Rtf;
+            }
         }
 
         /// <summary>
@@ -939,18 +942,21 @@ namespace Chummer
             if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                if (!rtbRtfManipulator.IsHandleCreated)
-                    rtbRtfManipulator.CreateControl();
-                try
+                lock (rtbRtfManipulatorLock)
                 {
-                    rtbRtfManipulator.Rtf = strInput;
-                }
-                catch (ArgumentException)
-                {
-                    return strInput;
-                }
+                    if (!rtbRtfManipulator.IsHandleCreated)
+                        rtbRtfManipulator.CreateControl();
+                    try
+                    {
+                        rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Rtf = strInput);
+                    }
+                    catch (ArgumentException)
+                    {
+                        return strInput;
+                    }
 
-                return rtbRtfManipulator.Text;
+                    return rtbRtfManipulator.Text;
+                }
             }
             return strInput;
         }
@@ -975,15 +981,18 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    if (!rtbRtfManipulator.IsHandleCreated)
-                        rtbRtfManipulator.CreateControl();
-                    try
+                    lock (rtbRtfManipulatorLock)
                     {
-                        rtbRtfManipulator.Rtf = strInput;
-                    }
-                    catch (ArgumentException)
-                    {
-                        return false;
+                        if (!rtbRtfManipulator.IsHandleCreated)
+                            rtbRtfManipulator.CreateControl();
+                        try
+                        {
+                            rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Rtf = strInput);
+                        }
+                        catch (ArgumentException)
+                        {
+                            return false;
+                        }
                     }
 
                     return true;
@@ -1007,6 +1016,7 @@ namespace Chummer
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+        private static readonly object rtbRtfManipulatorLock = new object();
         private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
     }
 }

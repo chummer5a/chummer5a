@@ -26,6 +26,14 @@ Application Fixes:
 - Negative qualities that do not give Karma but still contribute to the negative quality karma limit at character creation are now properly taken into account when new negative qualities are attempted to be added or an existing negative quality is attempted to have its level increased.
 - Added a new bonus node called "selectexpertise". It lets the user select a specialization to add to their character with a +3 bonus instead of a +2. The syntax for this node is similar to that of "selectskill", but there is also the possibility for a "limittospecialization" attribute that limits the selection of specializations that can be chosen.
 - Added support for Astral Reputation (from Street Grimoire) and Wild Reputation (from Forbidden Arcana). They currently still need to be adjusted manually, especially because Spirit Index is information that players are not expected to accurately have, but dicepools are adjusted accordingly, and Chain Breaker's effects are appropraitely disabled for characters who have an Astral Reputation of 3 or greater.
+- Redliner's bonus is now properly updated based on the character's current cyberlimb count instead of their cyberlimb count before the given Redliner bonus refresh.
+- Characters with missing or faulty source references to their metatype/metavariant now get the proper reference assigned upon their first load.
+- Boxes displaying short messages and/or prompts are now centered around where Chummer's active window is instead of in the middle of the screen.
+- Attempting to change a character's priorities no longer causes all metatype- and priority-given qualities and improvements to be removed and then re-added. Instead, metatype-given qualities and improvements are only removed and then re-added if the character's metatype and/or metavariant is changed, and priority-given qualities are only removed (and potentially re-added) if the character's special priority selections have changed to one that works off of a different quality.
+- Native languages are now tracked separately instead of Language skills with a rating of zero being treated as Native languages.
+- Advanced lifestyles no longer add an extra 50 nuyen flat monthly cost for increasing C&N, Security, and/or Neighborhood ratings.
+- Chummer no longer crashes when attempting to delete the quality representing that a metatype-given quality was removed at character creation.
+- The metatype selection form for Karma-based character generation options now properly remembers the character's current metatype and metavariant settings.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -41,6 +49,9 @@ Data Changes:
 - Optical imaging scopes have been moved to a custom ruleset to abide by RAW. Optical binoculars are explicitly mentioned by RAW, but not optical imaging scopes.
 - Fixed liminal centaur rear legs not being able to take digigrade leg modification. Implemented existing behaviour as a customdata entry.
 - Chain Breaker now properly lets a character choose two additional spirit types that they can summon and now properly removes access to the Binding skill.
+- Added content from Krime Katalog.
+- All Assault Cannons now properly have a Concealability modifier of similarly-sized heavy weapons. Some of them previously had Concealability modifiers equal to Assault Rifles.
+- The Telestrian Shamus' X-Ray Sensor Function can no longer be purchased separately. A custom ruleset has been added that restores the old behavior of the X-Ray Sensor Function, letting it be purchased as a regular sensor function.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
@@ -65,6 +76,10 @@ Changed/New Strings:
 - String_WildReputation
 - Label_AstralReputation
 - Label_WildReputation
+- Message_UnderLanguageLimit
+- Tip_SkillsKnowledgeSkills
+- Skill_NativeLanguageLong
+- Message_NewNativeLanguageSkill
 
 Build 212
 Application Changes:
