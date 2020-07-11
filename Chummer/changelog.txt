@@ -31,6 +31,7 @@ Application Fixes:
 - Boxes displaying short messages and/or prompts are now centered around where Chummer's active window is instead of in the middle of the screen.
 - Attempting to change a character's priorities no longer causes all metatype- and priority-given qualities and improvements to be removed and then re-added. Instead, metatype-given qualities and improvements are only removed and then re-added if the character's metatype and/or metavariant is changed, and priority-given qualities are only removed (and potentially re-added) if the character's special priority selections have changed to one that works off of a different quality.
 - Native languages are now tracked separately instead of Language skills with a rating of zero being treated as Native languages.
+- Advanced lifestyles no longer add an extra 50 nuyen flat monthly cost for increasing C&N, Security, and/or Neighborhood ratings.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
