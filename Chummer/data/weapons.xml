@@ -15050,7 +15050,7 @@
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
-		<mount>Stock</mount>
+        <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
       <spec>Semi-Automatics</spec>
@@ -15315,7 +15315,7 @@
       <underbarrels>
         <underbarrel>Krime Ditch (Shotgun)</underbarrel>
       </underbarrels>
-	  <range>Assault Rifles</range>
+      <range>Assault Rifles</range>
       <useskill>Longarms</useskill>
     </weapon>
     <weapon>
@@ -15435,17 +15435,17 @@
         <accessory>
           <name>Metahuman Adaptation</name>
         </accessory>
-		<accessory>
+        <accessory>
           <name>Weapon Commlink</name>
-		  <gears>
+          <gears>
             <usegear>
               <name>Meta Link</name>
               <category>Commlinks</category>
             </usegear>
-			<usegear>
+            <usegear>
               <name select="Longarms">Tutorsoft</name>
               <category>Software</category>
-			  <rating>1</rating>
+              <rating>1</rating>
             </usegear>
           </gears>
         </accessory>
@@ -15492,7 +15492,7 @@
         <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
-	  <underbarrels>
+      <underbarrels>
         <underbarrel>Krime Soldier GL</underbarrel>
       </underbarrels>
       <ammocategory>Sniper Rifles</ammocategory>
@@ -15625,7 +15625,7 @@
       <name>Krime T-Shirt Cannon</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>0S</damage>
@@ -15672,6 +15672,12 @@
         <accessory>
           <name>Metahuman Adaptation</name>
         </accessory>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
+        <accessory>
+          <name>Matrix Signal Scanner</name>
+        </accessory>
       </accessories>
     </weapon>
     <weapon>
@@ -15695,9 +15701,6 @@
         <accessory>
           <name>Metahuman Adaptation</name>
         </accessory>
-        <accessory>
-          <name>Imaging Scope</name>
-        </accessory>
       </accessories>
       <useskill>Gunnery</useskill>
     </weapon>
@@ -15720,7 +15723,24 @@
       <page>25</page>
       <accessories>
         <accessory>
-          <name>Metahuman Adaptation</name>
+          <name>Smart Firing Platform</name>
+          <gears>
+            <usegear>
+              <name>Clearsight Autosoft</name>
+              <category>Autosofts</category>
+              <rating>1</rating>
+            </usegear>
+            <usegear>
+              <name select="Krime Ripper">[Weapon] Targeting Autosoft</name>
+              <category>Autosofts</category>
+              <rating>2</rating>
+            </usegear>
+            <usegear>
+              <name>Krime Ripper Sensor Array</name>
+              <category>Sensors</category>
+              <rating>3</rating>
+            </usegear>
+          </gears>
         </accessory>
       </accessories>
       <accessorymounts>
@@ -15751,11 +15771,6 @@
       <cost>2000</cost>
       <source>KK</source>
       <page>26</page>
-      <accessories>
-        <accessory>
-          <name>Metahuman Adaptation</name>
-        </accessory>
-      </accessories>
       <useskill>Gunnery</useskill>
     </weapon>
     <weapon>
@@ -15787,8 +15802,8 @@
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
-      <damage>Special</damage>
-      <ap>Special</ap>
+      <damage>19P(f) (-1/m)</damage>
+      <ap>+5</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -15801,9 +15816,34 @@
           <name>Metahuman Adaptation</name>
         </accessory>
       </accessories>
+      <underbarrels>
+        <underbarrel>Grenade: Krime Party (Flash-Bang)</underbarrel>
+      </underbarrels>
       <range>Standard Grenade</range>
       <spec>Non-Aerodynamic</spec>
       <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>b2e8caa8-6d64-4b25-8ef2-cfb7de6a7cd6</id>
+      <name>Grenade: Krime Party (Flash-Bang)</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>12S (12m Radius)</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>KK</source>
+      <page>27</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+      <hide />
     </weapon>
     <weapon>
       <id>c4573b7a-90cf-48c8-bb56-fdd97b46a224</id>
@@ -16388,6 +16428,7 @@
         <oneof>
           <accessory>Smartgun System, External</accessory>
           <accessory>Smartgun System, Internal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </required>
     </accessory>
@@ -16473,6 +16514,7 @@
         <oneof>
           <accessory>Smartgun System, External</accessory>
           <accessory>Smartgun System, Internal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </required>
     </accessory>
@@ -16497,6 +16539,7 @@
         <oneof>
           <accessory>Smartgun System, External</accessory>
           <accessory>Smartgun System, Internal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </required>
     </accessory>
@@ -16521,6 +16564,7 @@
         <oneof>
           <accessory>Smartgun System, External</accessory>
           <accessory>Smartgun System, Internal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </required>
     </accessory>
@@ -16545,6 +16589,7 @@
         <oneof>
           <accessory>Smartgun System, External</accessory>
           <accessory>Smartgun System, Internal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </required>
     </accessory>
@@ -16751,6 +16796,7 @@
         <oneof>
           <accessory>Smartgun System, External</accessory>
           <accessory>Smartgun System, Internal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </required>
     </accessory>
@@ -17058,6 +17104,7 @@
           <accessory>Easy Breakdown (Powered)</accessory>
           <accessory>Electronic Firing</accessory>
           <accessory>Trigger Removal</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </forbidden>
       <rating>0</rating>
@@ -17184,6 +17231,7 @@
         <oneof>
           <accessory>Smartgun System, Internal</accessory>
           <accessory>Smartgun System, External</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
           <accessory>Chameleon Coating (Pistol)</accessory>
           <accessory>Chameleon Coating (Rifle)</accessory>
         </oneof>
@@ -17568,6 +17616,7 @@
         <oneof>
           <accessory>Smartgun System, Internal</accessory>
           <accessory>Smartgun System, External</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
       </forbidden>
       <rating>10</rating>
@@ -18283,7 +18332,25 @@
       <cost>0</cost>
       <source>KK</source>
       <page>0</page>
+      <rating>0</rating>
       <hide />
+    </accessory>
+    <accessory>
+      <id>1c70c3bf-9a59-45d9-bb3e-4569a2a624d6</id>
+      <name>Matrix Signal Scanner</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>KK</source>
+      <page>18</page>
+      <hide />
+      <gears>
+        <usegear>
+          <name>Radio Signal Scanner</name>
+          <category>Sensor Functions</category>
+        </usegear>
+      </gears>
+      <rating>0</rating>
     </accessory>
     <!--TODO: Mode selection-->
     <accessory>
@@ -18294,7 +18361,7 @@
       <cost>500</cost>
       <source>KK</source>
       <page>22</page>
-      <accuracy>1</accuracy>
+      <accuracy>2</accuracy>
       <forbidden>
         <oneof>
           <accessory>Ceramic/Plasteel Components</accessory>
@@ -18305,10 +18372,21 @@
           <type>Melee</type>
         </weapondetails>
       </forbidden>
+      <gears>
+        <usegear>
+          <name>Laser Range Finder</name>
+          <category>Sensor Functions</category>
+        </usegear>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
+      </gears>
+      <rating>0</rating>
     </accessory>
     <accessory>
       <id>502c319a-68a9-4e89-8521-e4e535738890</id>
-      <name>Krime Exploding Securing Tripod</name>
+      <name>Krime Explosive Securing Tripod</name>
       <mount>Under</mount>
       <avail>12</avail>
       <cost>1000</cost>
@@ -18318,6 +18396,7 @@
       <rc>6</rc>
       <rcdeployable>True</rcdeployable>
       <rcgroup>1</rcgroup>
+      <rating>0</rating>
     </accessory>
     <accessory>
       <id>9b09fc1e-cb5b-473f-83a5-6f23a7524012</id>
@@ -18327,6 +18406,18 @@
       <cost>25</cost>
       <source>KK</source>
       <page>23</page>
+      <rating>0</rating>
+    </accessory>
+    <accessory>
+      <id>3e048d18-3011-4e43-a557-0696c4c09042</id>
+      <name>Krime Loudener</name>
+      <mount>Barrel</mount>
+      <avail>0</avail>
+      <cost>250</cost>
+      <source>KK</source>
+      <page>23</page>
+      <rating>0</rating>
+      <rc>2</rc>
     </accessory>
     <accessory>
       <id>a869d692-db53-4b31-847a-5216d9e48c0e</id>
@@ -18336,6 +18427,7 @@
       <cost>50</cost>
       <source>KK</source>
       <page>23</page>
+      <rating>0</rating>
     </accessory>
     <!-- End Region -->
   </accessories>

@@ -8421,7 +8421,7 @@
       <modslots>0</modslots>
       <seats>0</seats>
     </vehicle>
-	<vehicle>
+    <vehicle>
       <id>cd05b23c-f14d-4d76-8037-ec5d99c90cb0</id>
       <name>Jena Robotnik Araneus</name>
       <page>59</page>
@@ -8446,7 +8446,7 @@
       <mods>
         <name>Gecko Grips (Drone)</name>
         <name rating="1">Realistic Features</name>
-		<name select="Engineering laser">Special Equipment</name>
+        <name select="Engineering laser">Special Equipment</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
@@ -9634,7 +9634,7 @@
     <!-- Missing: EMC Kommodore (Would require adjustments in code,
          since it uses building block where each part receives part of the slots) -->
     <!-- End Region -->
-	<!-- Region Hamburg -->
+    <!-- Region Hamburg -->
     <vehicle>
       <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
       <name>MK R/Evolution</name>
@@ -10142,8 +10142,8 @@
       <seats>2</seats>
     </vehicle>
     <!-- End Region -->
-    <!-- Region SOTA 2080 -->	
-	<vehicle>
+    <!-- Region SOTA 2080 -->
+    <vehicle>
       <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
       <name>BMW GGX Sandleopard</name>
       <page>15</page>
@@ -10297,6 +10297,7 @@
         <name>Amenities (Street)</name>
         <name>Metahuman Adjustment</name>
       </mods>
+      <seats>1</seats>
     </vehicle>
     <vehicle>
       <id>c80237db-ed5c-4c10-8c39-44ab8e64905e</id>
@@ -10311,7 +10312,7 @@
       <cost>22000</cost>
       <handling>2/1</handling>
       <pilot>1</pilot>
-	  <seats>4</seats>
+      <seats>4</seats>
       <sensor>1</sensor>
       <speed>3</speed>
       <gears>
@@ -10323,7 +10324,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>		
+        <name>Metahuman Adjustment</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10339,7 +10340,7 @@
       <cost>25000</cost>
       <handling>2/1</handling>
       <pilot>1</pilot>
-	  <seats>4</seats>
+      <seats>4</seats>
       <sensor>1</sensor>
       <speed>5</speed>
       <gears>
@@ -10351,7 +10352,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>		
+        <name>Metahuman Adjustment</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10367,7 +10368,7 @@
       <cost>40000</cost>
       <handling>2/1</handling>
       <pilot>1</pilot>
-	  <seats>4</seats>
+      <seats>4</seats>
       <sensor>1</sensor>
       <speed>5</speed>
       <gears>
@@ -10380,7 +10381,7 @@
       <mods>
         <name>Amenities (Street)</name>
         <name>Metahuman Adjustment</name>
-        <name rating="2" select="Chrome">Yerzed Out</name>		
+        <name rating="2" select="Chrome">Yerzed Out</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10396,7 +10397,7 @@
       <cost>23000</cost>
       <handling>1/3</handling>
       <pilot>1</pilot>
-	  <seats>4</seats>
+      <seats>4</seats>
       <sensor>1</sensor>
       <speed>3</speed>
       <gears>
@@ -10409,7 +10410,7 @@
       <mods>
         <name>Amenities (Street)</name>
         <name>Metahuman Adjustment</name>
-        <name>Off-Road Suspension</name>			
+        <name>Off-Road Suspension</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10425,7 +10426,7 @@
       <cost>22000</cost>
       <handling>1/3</handling>
       <pilot>1</pilot>
-	  <seats>4</seats>
+      <seats>4</seats>
       <sensor>1</sensor>
       <speed>3</speed>
       <gears>
@@ -10438,7 +10439,7 @@
       <mods>
         <name>Amenities (Street)</name>
         <name>Metahuman Adjustment</name>
-        <name>Off-Road Suspension</name>					
+        <name>Off-Road Suspension</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10454,7 +10455,7 @@
       <cost>22000</cost>
       <handling>1/3</handling>
       <pilot>1</pilot>
-	  <seats>4</seats>
+      <seats>4</seats>
       <sensor>1</sensor>
       <speed>3</speed>
       <gears>
@@ -10467,7 +10468,7 @@
       <mods>
         <name>Amenities (Street)</name>
         <name>Metahuman Adjustment</name>
-        <name rating="2" select="Chrome">Yerzed Out</name>					
+        <name rating="2" select="Chrome">Yerzed Out</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10494,10 +10495,10 @@
         </gear>
       </gears>
       <mods>
-        <name>Amenities (Street)</name>
         <name rating="1">Life Support</name>
         <name>Metahuman Adjustment</name>
-        <name rating="2" select="Chrome">Yerzed Out</name>					
+        <name rating="3">Passenger Protection System</name>
+        <name rating="4">Personal Armor</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10516,6 +10517,8 @@
       <seats>4</seats>
       <sensor>3</sensor>
       <speed>6</speed>
+      <powertrainmodslots>-14</powertrainmodslots>
+      <protectionmodslots>-14</protectionmodslots>
       <gears>
         <gear>
           <name>Sensor Array</name>
@@ -10524,10 +10527,11 @@
         </gear>
       </gears>
       <mods>
-        <name>Amenities (Street)</name>
         <name select="Driver">Gun Port</name>
         <name select="Passenger">Gun Port</name>
-        <name rating="1">Life Support</name>
+        <name rating="3">Passenger Protection System</name>
+        <name rating="6">Personal Armor</name>
+        <name>GridLink</name>
         <name>Metahuman Adjustment</name>
         <name>Multifuel Engine</name>
         <name>Ram Plate</name>
@@ -10535,7 +10539,7 @@
         <name>Road Strip Ejector</name>
         <name select="Driver">Searchlight</name>
         <name select="Passenger">Searchlight</name>
-        <name>Winch</name>
+        <name>Winch (Enhanced)</name>
         <name rating="1">Yerzed Out</name>
       </mods>
     </vehicle>
@@ -10548,7 +10552,7 @@
       <armor>7</armor>
       <avail>21R</avail>
       <body>16</body>
-      <category>Cars</category>
+      <category>Trucks</category> <!-- Catalog picture does NOT look like a truck, but w/e -->
       <cost>100000</cost>
       <handling>4/4</handling>
       <pilot>3</pilot>
@@ -10572,7 +10576,7 @@
     <vehicle>
       <id>9f19cbf7-bd50-49a0-8a94-af64a65feb2e</id>
       <name>Krime Dix Prime Mover</name>
-      <page>35</page>
+      <page>37</page>
       <source>KK</source>
       <accel>1</accel>
       <armor>15</armor>
@@ -10582,7 +10586,7 @@
       <cost>200000</cost>
       <handling>2/3</handling>
       <pilot>4</pilot>
-      <seats>2(30)</seats>
+      <seats>2</seats>
       <sensor>4</sensor>
       <speed>4</speed>
       <gears>
@@ -10609,11 +10613,11 @@
       <body>18</body>
       <category>Boats</category>
       <cost>50000</cost>
-      <handling>4</handling>
+      <handling>2/4</handling>
       <pilot>1</pilot>
       <seats>6</seats>
       <sensor>1</sensor>
-      <speed>7</speed>
+      <speed>1/7</speed>
       <gears>
         <gear>
           <name>Sensor Array</name>
@@ -10626,7 +10630,6 @@
         <name>Metahuman Adjustment</name>
         <name>Multifuel Engine</name>
         <name>Satellite Link</name>
-        <name>Secondary Propulsion</name>
         <name select="Fishing nets and lines">Special Equipment</name>
         <name select="Oversized fish freezer">Special Equipment</name>
       </mods>
@@ -10647,6 +10650,12 @@
       <seats>1</seats>
       <sensor>4</sensor>
       <speed>4</speed>
+      <powertrainmodslots>-7</powertrainmodslots>
+      <protectionmodslots>-7</protectionmodslots>
+      <weaponmodslots>-7</weaponmodslots>
+      <bodymodslots>-7</bodymodslots>
+      <electromagneticmodslots>-7</electromagneticmodslots>
+      <cosmeticmodslots>-3</cosmeticmodslots>
       <gears>
         <gear>
           <name>Sensor Array</name>
@@ -10665,7 +10674,7 @@
         <weaponmount>
           <control>Remote</control>
           <flexibility>Turret</flexibility>
-          <size>Standard [SR5]</size>
+          <size>Heavy [SR5]</size>
           <visibility>External</visibility>
         </weaponmount>
         <weaponmount>
@@ -11133,18 +11142,6 @@
       <cost>Body * 2000</cost>
       <rating>0</rating>
       <slots>8</slots>
-    </mod>
-    <mod>
-      <id>e1b0429c-39ba-4256-832f-260b30211496</id>
-      <name>Secondary Propulsion (Sail)</name>
-      <page>38</page>
-      <source>KK</source>
-      <avail>-</avail>
-      <category>Powertrain</category>
-      <cost>-</cost>
-      <rating>0</rating>
-      <slots>4</slots>
-      <hide />
     </mod>
     <mod>
       <id>ecc73836-9110-4f5f-9464-cb6ae6e954d2</id>
@@ -13294,7 +13291,7 @@
       </required>
     </mod>
     <!-- End Region -->
-	<!-- Region Rigger 5.0 German -->
+    <!-- Region Rigger 5.0 German -->
     <mod>
       <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
       <name>Ejection seat</name>

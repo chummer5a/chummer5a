@@ -46,6 +46,7 @@ Data Changes:
 - Optical imaging scopes have been moved to a custom ruleset to abide by RAW. Optical binoculars are explicitly mentioned by RAW, but not optical imaging scopes.
 - Fixed liminal centaur rear legs not being able to take digigrade leg modification. Implemented existing behaviour as a customdata entry.
 - Chain Breaker now properly lets a character choose two additional spirit types that they can summon and now properly removes access to the Binding skill.
+- Added content from Krime Katalog.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
