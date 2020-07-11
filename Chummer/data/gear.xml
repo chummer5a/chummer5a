@@ -7441,6 +7441,7 @@
         </geardetails>
       </required>
       <cost>0</cost>
+      <hide />
     </gear>
     <gear>
       <id>49bbc9d3-860d-47db-b4bc-8417f5b6ab65</id>
