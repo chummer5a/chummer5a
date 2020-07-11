@@ -3623,15 +3623,17 @@ namespace Chummer
                     XPathNavigator xmlCharacterNode = CharacterObject.GetNode();
                     if (xmlCharacterNode != null)
                     {
+                        XmlDocument xmlQualitiesDoc = XmlManager.Load("qualities.xml");
                         // Create the Qualities that come with the Metatype.
-                        foreach (XmlNode objXmlQualityItem in xmlCharacterNode.Select("qualities/*/quality[text() = \"" + objSelectedQuality.Name + "\"]"))
+                        foreach (XPathNavigator objXmlQualityItem in xmlCharacterNode.Select("qualities/*/quality[text() = \"" + objSelectedQuality.Name + "\"]"))
                         {
-                            XmlNode objXmlQuality = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                            XmlNode objXmlQuality = xmlQualitiesDoc.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.Value + "\"]");
                             Quality objQuality = new Quality(CharacterObject);
-                            string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
-                            QualitySource objSource = objXmlQualityItem.Attributes?["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
+                            string strForceValue = objXmlQualityItem.GetAttribute("select", string.Empty);
+                            QualitySource objSource = objXmlQualityItem.GetAttribute("removable", string.Empty) == bool.TrueString
+                                ? QualitySource.MetatypeRemovable
+                                : QualitySource.Metatype;
                             objQuality.Create(objXmlQuality, objSource, CharacterObject.Weapons, strForceValue);
-                            objQuality.ContributeToLimit = false;
                             CharacterObject.Qualities.Add(objQuality);
                         }
                     }
