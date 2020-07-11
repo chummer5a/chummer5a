@@ -25,7 +25,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using iText.Kernel.Pdf;
 using Microsoft.Win32;
@@ -903,9 +902,6 @@ namespace Chummer
             RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
             if(objCustomDataDirectoryKey != null)
             {
-                List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int>>(objCustomDataDirectoryKey.SubKeyCount);
-                int intMinLoadOrderValue = int.MaxValue;
-                int intMaxLoadOrderValue = int.MinValue;
                 foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
                 {
                     using (RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(strDirectoryName))
@@ -919,30 +915,9 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                         {
                             CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
-                            objRegistryResult = objLoopKey.GetValue("LoadOrder");
-                            if (objRegistryResult != null && int.TryParse(objRegistryResult.ToString(), out int intLoadOrder))
-                            {
-                                // First load the infos alongside their load orders into a list whose order we don't care about
-                                intMaxLoadOrderValue = Math.Max(intMaxLoadOrderValue, intLoadOrder);
-                                intMinLoadOrderValue = Math.Min(intMinLoadOrderValue, intLoadOrder);
-                                lstUnorderedCustomDataDirectories.Add(new KeyValuePair<CustomDataDirectoryInfo, int>(objCustomDataDirectory, intLoadOrder));
-                            }
-                            else
-                                lstUnorderedCustomDataDirectories.Add(new KeyValuePair<CustomDataDirectoryInfo, int>(objCustomDataDirectory, int.MinValue));
+                            _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
                         }
                     }
-                }
-
-                // Now translate the list of infos whose order we don't care about into the list where we do care about the order of infos
-                for(int i = intMinLoadOrderValue; i <= intMaxLoadOrderValue; ++i)
-                {
-                    KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair = lstUnorderedCustomDataDirectories.FirstOrDefault(x => x.Value == i);
-                    if(!objLoopPair.Equals(default(KeyValuePair<CustomDataDirectoryInfo, int>)))
-                        _setCustomDataDirectoryInfo.Add(objLoopPair.Key);
-                }
-                foreach(KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair in lstUnorderedCustomDataDirectories.Where(x => x.Value == int.MinValue))
-                {
-                    _setCustomDataDirectoryInfo.Add(objLoopPair.Key);
                 }
 
                 objCustomDataDirectoryKey.Close();
