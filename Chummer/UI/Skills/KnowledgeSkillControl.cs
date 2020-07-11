@@ -60,7 +60,7 @@ namespace Chummer.UI.Skills
             cboName.DataSource = null;
             cboName.DisplayMember = nameof(ListItem.Name);
             cboName.ValueMember = nameof(ListItem.Value);
-            cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills;
+            cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills(_skill.CharacterObject);
             cboName.SelectedIndex = -1;
             cboName.DoDatabinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
             cboName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
@@ -96,7 +96,7 @@ namespace Chummer.UI.Skills
                 nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 nudSkill.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
                 nudSkill.DoDatabinding("Value", _skill, nameof(Skill.Base));
-                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", _skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
                 nudKarma.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
                 nudKarma.DoDatabinding("Value", _skill, nameof(Skill.Karma));
                 nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;

@@ -50,8 +50,6 @@ namespace Chummer.UI.Skills
 
             this.TranslateWinForm();
 
-            _lstDropDownActiveSkills = GenerateDropdownFilter();
-            _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter();
             _sortList = GenerateSortList();
             _lstSortKnowledgeList = GenerateKnowledgeSortList();
         }
@@ -70,11 +68,11 @@ namespace Chummer.UI.Skills
         }
 
         private Character _objCharacter;
-        private readonly IList<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
+        private IList<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
         private readonly IList<Tuple<string, IComparer<Skill>>>  _sortList;
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
-        private readonly IList<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
+        private IList<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
         private readonly IList<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
 
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
@@ -98,6 +96,9 @@ namespace Chummer.UI.Skills
                 _objCharacter = new Character();
                 Utils.BreakIfDebug();
             }
+
+            _lstDropDownActiveSkills = GenerateDropdownFilter(_objCharacter);
+            _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
@@ -426,7 +427,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static IList<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
+        private static IList<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter(Character objCharacter)
         {
             List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
             {
@@ -450,7 +451,8 @@ namespace Chummer.UI.Skills
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
 
-            using (XmlNodeList xmlSkillCategoryList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectNodes("/chummer/categories/category[@type = \"active\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
@@ -475,7 +477,8 @@ namespace Chummer.UI.Skills
                         skill => skill.Attribute == strAttribute));
             }
 
-            using (XmlNodeList xmlSkillGroupList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectNodes("/chummer/skillgroups/name"))
             {
                 if (xmlSkillGroupList != null)
                 {
@@ -557,7 +560,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static IList<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
+        private static IList<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter(Character objCharacter)
         {
             List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>
             {
@@ -578,7 +581,8 @@ namespace Chummer.UI.Skills
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
 
-            using (XmlNodeList xmlSkillCategoryList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {

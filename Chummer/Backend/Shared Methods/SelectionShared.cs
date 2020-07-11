@@ -964,7 +964,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction");
-                        return objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen;
+                        return objCharacter.EffectiveBuildMethodUsesPriorityTables;
                     }
                 case "power":
                     {

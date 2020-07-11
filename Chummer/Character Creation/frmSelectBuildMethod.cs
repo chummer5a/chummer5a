@@ -66,8 +66,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            CharacterOptions objSelectedGameplayOption = cboCharacterOption.SelectedValue as CharacterOptions;
-            if (objSelectedGameplayOption == null)
+            if (!(cboCharacterOption.SelectedValue is CharacterOptions objSelectedGameplayOption))
                 return;
 
             _objCharacter.CharacterOptionsKey = OptionsManager.LoadedCharacterOptions.First(x => x.Value == objSelectedGameplayOption).Key;
