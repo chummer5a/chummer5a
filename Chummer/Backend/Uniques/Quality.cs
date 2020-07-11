@@ -476,8 +476,8 @@ namespace Chummer
             // Legacy shim for priority-given qualities
             else if (_eQualitySource == QualitySource.Metatype
                      && _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
-                     && (_objCharacter.BuildMethod == CharacterBuildMethod.Priority
-                         || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                     && (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority
+                         || _objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                      && GetNode()?["onlyprioritygiven"] != null)
             {
                 _eQualitySource = QualitySource.Heritage;

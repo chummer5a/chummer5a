@@ -16434,12 +16434,12 @@ namespace Chummer
                 Improvement.ImprovementSource objSource;
                 if (CharacterObject.RESEnabled)
                 {
-                    objXmlMetamagic = _objCharacter.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objXmlMetamagic = CharacterObject.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
                     objSource = Improvement.ImprovementSource.Echo;
                 }
                 else
                 {
-                    objXmlMetamagic = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objXmlMetamagic = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
                     objSource = Improvement.ImprovementSource.Metamagic;
                 }
 

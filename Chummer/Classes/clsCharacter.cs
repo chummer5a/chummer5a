@@ -2813,11 +2813,9 @@ namespace Chummer
                         {
                             if ( Program.MainForm.ShowMessageBox(
                                      string.Format(GlobalOptions.CultureInfo,
-                                         LanguageManager.GetString("Message_MissingGameplayOption",
-                                             GlobalOptions.Language),
-                                         GameplayOption),
-                                     LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                         GlobalOptions.Language),
+                                         LanguageManager.GetString("Message_MissingGameplayOption"),
+                                         CharacterOptionsKey),
+                                     LanguageManager.GetString("Message_MissingGameplayOption_Title"),
                                      MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
 
 

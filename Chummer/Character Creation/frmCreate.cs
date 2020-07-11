@@ -13360,7 +13360,7 @@ namespace Chummer
                 return;
             }
 
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+            if (CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.Priority || CharacterObject.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject))
                 {
@@ -13798,12 +13798,12 @@ namespace Chummer
                 Improvement.ImprovementSource objSource;
                 if (CharacterObject.RESEnabled)
                 {
-                    objXmlMetamagic = _objCharacter.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objXmlMetamagic = CharacterObject.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
                     objSource = Improvement.ImprovementSource.Echo;
                 }
                 else
                 {
-                    objXmlMetamagic = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                    objXmlMetamagic = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
                     objSource = Improvement.ImprovementSource.Metamagic;
                 }
 
