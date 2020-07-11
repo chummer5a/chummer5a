@@ -899,7 +899,7 @@ namespace Chummer
                         }
 
                         if (!blnShowMessage) return false;
-                        string strTranslate = XmlManager.Load("metamagic.xml")
+                        string strTranslate = objCharacter.LoadData("metamagic.xml")
                             .SelectSingleNode("/chummer/arts/art[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.InnerText;
                         strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
                             Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Art"));

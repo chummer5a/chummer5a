@@ -38,7 +38,7 @@ namespace Chummer
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("skills.xml");
+            _objXmlDocument = _objCharacter?.LoadData("skills.xml") ?? XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)

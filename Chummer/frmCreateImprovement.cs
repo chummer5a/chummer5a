@@ -42,7 +42,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strCustomGroup = strCustomGroup;
-            _objDocument = XmlManager.Load("improvements.xml");
+            _objDocument = objCharacter.LoadData("improvements.xml");
         }
 
         private void frmCreateImprovement_Load(object sender, EventArgs e)
@@ -174,7 +174,7 @@ namespace Chummer
             {
                 case "SelectActionDicePool":
                     List<ListItem> lstActions = new List<ListItem>();
-                    using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
+                    using (XmlNodeList xmlActionList = _objCharacter.LoadData("actions.xml").SelectNodes("/chummer/actions/action"))
                     {
                         if (xmlActionList != null)
                         {
@@ -330,7 +330,7 @@ namespace Chummer
                         }
 
                         string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
-                        using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
+                        using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
                         {
                             if (xmlSkillList?.Count > 0)
                             {
@@ -389,7 +389,7 @@ namespace Chummer
                     break;
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
-                    using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
+                    using (XmlNodeList xmlSpellList = _objCharacter.LoadData("spells.xml").SelectNodes("/chummer/spells/spell"))
                     {
                         if (xmlSpellList != null)
                         {
@@ -451,7 +451,7 @@ namespace Chummer
 
                         if (frmPickPower.DialogResult == DialogResult.OK)
                         {
-                            txtSelect.Text = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
+                            txtSelect.Text = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickPower.SelectedPower);
                         }
                     }

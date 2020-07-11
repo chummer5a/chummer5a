@@ -241,7 +241,7 @@ namespace Chummer.UI.Skills
                 lblKnowledgeSkillPointsTitle.Visible = false;
             }
 
-            btnExotic.Visible = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
+            btnExotic.Visible = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
 
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
@@ -450,7 +450,7 @@ namespace Chummer.UI.Skills
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
 
-            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            using (XmlNodeList xmlSkillCategoryList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
@@ -475,7 +475,7 @@ namespace Chummer.UI.Skills
                         skill => skill.Attribute == strAttribute));
             }
 
-            using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            using (XmlNodeList xmlSkillGroupList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/skillgroups/name"))
             {
                 if (xmlSkillGroupList != null)
                 {
@@ -578,7 +578,7 @@ namespace Chummer.UI.Skills
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
 
-            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            using (XmlNodeList xmlSkillCategoryList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
@@ -675,7 +675,7 @@ namespace Chummer.UI.Skills
         private void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
+            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
             {
                 frmPickExoticSkill.ShowDialog(this);
