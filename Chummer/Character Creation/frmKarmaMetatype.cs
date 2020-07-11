@@ -433,7 +433,7 @@ namespace Chummer
                 // Retrieve the list of Metavariants for the selected Metatype.
 
                 bool blnOldLoading = _blnLoading;
-                string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.Metavariant;
+                string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo);
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
                 cboMetavariant.ValueMember = nameof(ListItem.Value);
@@ -536,7 +536,9 @@ namespace Chummer
                 lstMetatypeItems.Sort(CompareListItems.CompareNames);
 
                 bool blnOldLoading = _blnLoading;
-                string strOldSelected = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter?.Metatype;
+                string strOldSelected = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter?.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo);
+                if (strOldSelected == Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo))
+                    strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNode("id")?.Value ?? string.Empty;
                 _blnLoading = true;
                 lstMetatypes.BeginUpdate();
                 lstMetatypes.ValueMember = nameof(ListItem.Value);

@@ -33,6 +33,7 @@ Application Fixes:
 - Native languages are now tracked separately instead of Language skills with a rating of zero being treated as Native languages.
 - Advanced lifestyles no longer add an extra 50 nuyen flat monthly cost for increasing C&N, Security, and/or Neighborhood ratings.
 - Chummer no longer crashes when attempting to delete the quality representing that a metatype-given quality was removed at character creation.
+- The metatype selection form for Karma-based character generation options now properly remembers the character's current metatype and metavariant settings.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
