@@ -61,7 +61,7 @@
       <name>Ares Thunderstruck Gauss Rifle</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>15P</damage>
@@ -95,7 +95,7 @@
       <name>Ares Vigorous Assault Cannon</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>16P</damage>
@@ -121,7 +121,7 @@
       <name>Krime Bomb</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>16P</damage>
@@ -155,7 +155,7 @@
       <name>Krime Cannon</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>16P</damage>
@@ -181,7 +181,7 @@
       <name>Ogre Hammer SWS Assault Cannon</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>16P</damage>
@@ -239,7 +239,7 @@
       <name>Panther XXL</name>
       <category>Assault Cannons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>10</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>17P</damage>

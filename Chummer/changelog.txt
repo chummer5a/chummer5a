@@ -47,6 +47,7 @@ Data Changes:
 - Fixed liminal centaur rear legs not being able to take digigrade leg modification. Implemented existing behaviour as a customdata entry.
 - Chain Breaker now properly lets a character choose two additional spirit types that they can summon and now properly removes access to the Binding skill.
 - Added content from Krime Katalog.
+- All Assault Cannons now properly have a Concealability modifier of similarly-sized heavy weapons. Some of them previously had Concealability modifiers equal to Assault Rifles.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
