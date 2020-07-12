@@ -1014,6 +1014,14 @@
       <name>Revels in Murder</name>
       <hide />
     </quality>
+	<quality>
+	  <name>Uncanny Healer</name>
+	  <forbidden>
+        <oneof>
+          <quality>Quick Healer (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</quality>
     <!-- End Region -->
     <!--Region Chrome Flesh Negative Qualities -->
     <quality>
