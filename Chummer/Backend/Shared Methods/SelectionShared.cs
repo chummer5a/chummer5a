@@ -376,7 +376,8 @@ namespace Chummer
                         if (xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                         {
                             blnOneOfMet = true;
-                            break;
+                            if (!blnShowMessage)
+                                break;
                         }
                         if (blnShowMessage)
                             objThisRequirement.Append(strName);
@@ -384,10 +385,12 @@ namespace Chummer
 
                     // Update the flag for requirements met.
                     if (!blnOneOfMet)
+                    {
                         blnRequirementMet = false;
-                    if (blnShowMessage && !blnOneOfMet)
-                        objRequirement.Append(objThisRequirement);
-                    else if (!blnRequirementMet)
+                        if (blnShowMessage)
+                            objRequirement.Append(objThisRequirement);
+                    }
+                    if (!blnRequirementMet && !blnShowMessage)
                         break;
                 }
 
@@ -413,10 +416,12 @@ namespace Chummer
 
                         // Update the flag for requirements met.
                         if (!blnAllOfMet)
+                        {
                             blnRequirementMet = false;
-                        if (blnShowMessage)
-                            objRequirement.Append(objThisRequirement);
-                        else if (!blnRequirementMet)
+                            if (blnShowMessage)
+                                objRequirement.Append(objThisRequirement);
+                        }
+                        if (!blnRequirementMet && !blnShowMessage)
                             break;
                     }
                 }
@@ -536,7 +541,7 @@ namespace Chummer
                             if (critterPower != null)
                             {
                                 if (blnShowMessage)
-                                    strName = critterPower.DisplayNameShort(GlobalOptions.Language);
+                                    strName = critterPower.CurrentDisplayName;
                                 return true;
                             }
                         }
@@ -671,7 +676,7 @@ namespace Chummer
                         if (objMetamagic != null)
                         {
                             if (blnShowMessage)
-                                strName = objMetamagic.DisplayNameShort(GlobalOptions.Language);
+                                strName = objMetamagic.CurrentDisplayName;
                             return true;
                         }
                         if (blnShowMessage)
@@ -712,7 +717,7 @@ namespace Chummer
                         if (objGear != null)
                         {
                             if (blnShowMessage)
-                                strName = objGear.DisplayNameShort(GlobalOptions.Language);
+                                strName = objGear.CurrentDisplayNameShort;
                             return true;
                         }
                         if (blnShowMessage)
@@ -728,43 +733,41 @@ namespace Chummer
                     {
                         // Check that clustered options are present (Magical Tradition + Skill 6, for example)
                         bool blnResult = true;
-                        string strResultName = string.Empty;
+                        StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_AllOf"));
                         foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                         {
-                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out strResultName, strIgnoreQuality, blnShowMessage);
-                            if (!blnResult)
-                            {
+                            bool blnLoopResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                            blnResult = blnResult && blnLoopResult;
+                            if (!blnResult && !blnShowMessage)
                                 break;
-                            }
+                            if (!blnLoopResult)
+                                sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
                         }
                         if (blnShowMessage)
-                            strName = strResultName;
+                            strName = sbdResultName.ToString();
                         return blnResult;
                     }
                 case "grouponeof":
                 {
                     // Check that one of the clustered options are present
                     bool blnResult = false;
-                    string strResultName = LanguageManager.GetString("Message_SelectQuality_OneOf");
+                    StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_OneOf"));
                     foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                     {
-                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
-                        if (blnResult)
-                        {
+                        bool blnLoopResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                        if (blnResult && !blnShowMessage)
                             break;
-                        }
-
-                        strResultName += strLoopResult;
+                        sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
                     }
                     if (blnShowMessage)
-                        strName = strResultName;
+                        strName = sbdResultName.ToString();
                     return blnResult;
                 }
                 case "initiategrade":
                     {
                         // Character's initiate grade must be higher than or equal to the required value.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_InitiateGrade") + " ≥ " + strNodeInnerText;
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_InitiateGrade") + strSpace + '≥' + strSpace + strNodeInnerText;
                         return objCharacter.InitiateGrade >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "martialart":
@@ -773,7 +776,7 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             if (blnShowMessage)
-                                strName = objMartialArt.DisplayNameShort(GlobalOptions.Language);
+                                strName = objMartialArt.CurrentDisplayName;
                             return true;
                         }
                         if (blnShowMessage)
@@ -812,7 +815,7 @@ namespace Chummer
                         if (objMetamagic != null)
                         {
                             if (blnShowMessage)
-                                strName = objMetamagic.DisplayNameShort(GlobalOptions.Language);
+                                strName = objMetamagic.CurrentDisplayName;
                             return true;
                         }
                         if (blnShowMessage)
@@ -886,7 +889,7 @@ namespace Chummer
                         if (objArt != null)
                         {
                             if (blnShowMessage)
-                                strName = objArt.DisplayNameShort(GlobalOptions.Language);
+                                strName = objArt.CurrentDisplayName;
                             return true;
                         }
 
@@ -898,7 +901,7 @@ namespace Chummer
                             if (objMetamagic != null)
                             {
                                 if (blnShowMessage)
-                                    strName = objMetamagic.DisplayNameShort(GlobalOptions.Language);
+                                    strName = objMetamagic.CurrentDisplayName;
                                 return true;
                             }
                         }
@@ -978,7 +981,7 @@ namespace Chummer
                         if (power != null)
                         {
                             if (blnShowMessage)
-                                strName = power.DisplayNameShort(GlobalOptions.Language);
+                                strName = power.CurrentDisplayName;
                             return true;
                         }
                         if (blnShowMessage)
@@ -1007,7 +1010,7 @@ namespace Chummer
                         if (quality != null)
                         {
                             if (blnShowMessage)
-                                strName = quality.DisplayNameShort(GlobalOptions.Language);
+                                strName = quality.CurrentDisplayName;
                             return true;
                         }
                         if (!blnShowMessage) return false;
@@ -1166,7 +1169,7 @@ namespace Chummer
                         if (objSpell != null)
                         {
                             if (blnShowMessage)
-                                strName = objSpell.DisplayNameShort(GlobalOptions.Language);
+                                strName = objSpell.CurrentDisplayName;
                             return true;
                         }
                         if (blnShowMessage)
