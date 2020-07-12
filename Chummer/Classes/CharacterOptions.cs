@@ -150,7 +150,6 @@ namespace Chummer
         private int _intKarmaNewComplexForm = 4;
         private int _intKarmaNewKnowledgeSkill = 1;
         private int _intKarmaNewSkillGroup = 5;
-        private int _intKarmaNuyenPer = 2000;
         private int _intKarmaQuality = 1;
         private int _intKarmaSpecialization = 7;
         private int _intKarmaKnoSpecialization = 7;
@@ -190,6 +189,7 @@ namespace Chummer
         private int _intBuildPoints = 25;
         private int _intQualityKarmaLimit = 25;
         private string _strPriorityArray = "ABCDE";
+        private string _strPriorityTable = "Standard";
         private int _intSumtoTen = 10;
         private decimal _decNuyenMaximumBP = 50;
         private int _intAvailability = 12;
@@ -272,12 +272,30 @@ namespace Chummer
                 new DependencyGraphNode<string>(nameof(BuildMethodUsesPriorityTables),
                     new DependencyGraphNode<string>(nameof(BuildMethod))
                 ),
+                new DependencyGraphNode<string>(nameof(BuildMethodIsPriority),
+                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                ),
+                new DependencyGraphNode<string>(nameof(BuildMethodIsSumtoTen),
+                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                ),
                 new DependencyGraphNode<string>(nameof(BuildMethodIsLifeModule),
                     new DependencyGraphNode<string>(nameof(BuildMethod))
                 ),
                 new DependencyGraphNode<string>(nameof(DisplayName),
                     new DependencyGraphNode<string>(nameof(Name)),
                     new DependencyGraphNode<string>(nameof(SourceId))
+                ),
+                new DependencyGraphNode<string>(nameof(RedlinerExcludesSkull),
+                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                ),
+                new DependencyGraphNode<string>(nameof(RedlinerExcludesTorso),
+                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                ),
+                new DependencyGraphNode<string>(nameof(RedlinerExcludesArms),
+                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                ),
+                new DependencyGraphNode<string>(nameof(RedlinerExcludesLegs),
+                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
                 )
             );
 
@@ -329,6 +347,8 @@ namespace Chummer
             {
                 BannedWareGrades.Add(strGrade);
             }
+
+            // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
         }
 
         public bool Equals(CharacterOptions objOther)
@@ -374,6 +394,8 @@ namespace Chummer
 
             if (BannedWareGrades.Union(objOther.BannedWareGrades).Count() != BannedWareGrades.Count)
                 return false;
+
+            // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
             return true;
         }
@@ -609,8 +631,6 @@ namespace Chummer
                     objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmanewaiadvancedprogram />
                     objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <karmanuyenper />
-                    objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmacontact />
                     objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmaenemy />
@@ -700,6 +720,8 @@ namespace Chummer
                     objWriter.WriteElementString("qualitykarmalimit", _intQualityKarmaLimit.ToString(GlobalOptions.InvariantCultureInfo));
                     // <priorityarray />
                     objWriter.WriteElementString("priorityarray", _strPriorityArray.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <prioritytable />
+                    objWriter.WriteElementString("prioritytable", _strPriorityTable.ToString(GlobalOptions.InvariantCultureInfo));
                     // <sumtoten />
                     objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalOptions.InvariantCultureInfo));
                     // <availability />
@@ -714,6 +736,15 @@ namespace Chummer
                         objWriter.WriteElementString("grade", strGrade);
                     }
                     // </bannedwaregrades>
+                    objWriter.WriteEndElement();
+
+                    // <redlinerexclusion>
+                    objWriter.WriteStartElement("redlinerexclusion");
+                    foreach (string strLimb in RedlinerExcludes)
+                    {
+                        objWriter.WriteElementString("limb", strLimb);
+                    }
+                    // </redlinerexclusion>
                     objWriter.WriteEndElement();
 
                     // </settings>
@@ -1008,7 +1039,6 @@ namespace Chummer
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
@@ -1129,6 +1159,7 @@ namespace Chummer
             if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit) && BuildMethodUsesPriorityTables)
                 _intQualityKarmaLimit = _intBuildPoints;
             objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
+            objXmlNode.TryGetStringFieldQuickly("prioritytable", ref _strPriorityTable);
             objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
             if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                 xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
@@ -1137,6 +1168,10 @@ namespace Chummer
             BannedWareGrades.Clear();
             foreach (XPathNavigator xmlGrade in objXmlNode.Select("bannedwaregrades/grade"))
                 BannedWareGrades.Add(xmlGrade.Value);
+
+            RedlinerExcludes.Clear();
+            foreach (XPathNavigator xmlLimb in objXmlNode.Select("redlinerexclusion/limb"))
+                RedlinerExcludes.Add(xmlLimb.Value);
 
             return true;
         }
@@ -1162,6 +1197,10 @@ namespace Chummer
         public bool BuildMethodUsesPriorityTables => BuildMethod == CharacterBuildMethod.Priority
                                                      || BuildMethod == CharacterBuildMethod.SumtoTen;
 
+        public bool BuildMethodIsPriority => BuildMethod == CharacterBuildMethod.Priority;
+
+        public bool BuildMethodIsSumtoTen => BuildMethod == CharacterBuildMethod.SumtoTen;
+
         public bool BuildMethodIsLifeModule => BuildMethod == CharacterBuildMethod.LifeModule;
 
         /// <summary>
@@ -1175,6 +1214,22 @@ namespace Chummer
                 if (_strPriorityArray != value)
                 {
                     _strPriorityArray = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The priority table used in Priority or Sum-to-Ten mode.
+        /// </summary>
+        public string PriorityTable
+        {
+            get => _strPriorityTable;
+            set
+            {
+                if (_strPriorityTable != value)
+                {
+                    _strPriorityTable = value;
                     OnPropertyChanged();
                 }
             }
@@ -1264,6 +1319,107 @@ namespace Chummer
         /// Blocked grades of cyber/bioware in Create mode.
         /// </summary>
         public HashSet<string> BannedWareGrades { get; } = new HashSet<string> { "Betaware", "Deltaware", "Gammaware" };
+
+        /// <summary>
+        /// Limb types excluded by redliner.
+        /// </summary>
+        public HashSet<string> RedlinerExcludes { get; } = new HashSet<string> { "skull", "torso" };
+
+        public bool RedlinerExcludesSkull
+        {
+            get => RedlinerExcludes.Contains("skull");
+            set
+            {
+                if (value)
+                {
+                    if (!RedlinerExcludes.Contains("skull"))
+                    {
+                        RedlinerExcludes.Add("skull");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+                else
+                {
+                    if (RedlinerExcludes.Contains("skull"))
+                    {
+                        RedlinerExcludes.Remove("skull");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+            }
+        }
+
+        public bool RedlinerExcludesTorso
+        {
+            get => RedlinerExcludes.Contains("torso");
+            set
+            {
+                if (value)
+                {
+                    if (!RedlinerExcludes.Contains("torso"))
+                    {
+                        RedlinerExcludes.Add("torso");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+                else
+                {
+                    if (RedlinerExcludes.Contains("torso"))
+                    {
+                        RedlinerExcludes.Remove("torso");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+            }
+        }
+
+        public bool RedlinerExcludesArms
+        {
+            get => RedlinerExcludes.Contains("arm");
+            set
+            {
+                if (value)
+                {
+                    if (!RedlinerExcludes.Contains("arm"))
+                    {
+                        RedlinerExcludes.Add("arm");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+                else
+                {
+                    if (RedlinerExcludes.Contains("arm"))
+                    {
+                        RedlinerExcludes.Remove("arm");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+            }
+        }
+
+        public bool RedlinerExcludesLegs
+        {
+            get => RedlinerExcludes.Contains("leg");
+            set
+            {
+                if (value)
+                {
+                    if (!RedlinerExcludes.Contains("leg"))
+                    {
+                        RedlinerExcludes.Add("leg");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+                else
+                {
+                    if (RedlinerExcludes.Contains("leg"))
+                    {
+                        RedlinerExcludes.Remove("leg");
+                        OnPropertyChanged(nameof(RedlinerExcludes));
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Properties and Methods
@@ -1322,7 +1478,6 @@ namespace Chummer
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram", string.Empty, true);
-            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover", string.Empty, true);
@@ -3140,22 +3295,6 @@ namespace Chummer
                 if (_intKarmaNewAIAdvancedProgram != value)
                 {
                     _intKarmaNewAIAdvancedProgram = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Amount of Nuyen obtained per Karma point.
-        /// </summary>
-        public int KarmaNuyenPer
-        {
-            get => _intKarmaNuyenPer;
-            set
-            {
-                if (_intKarmaNuyenPer != value)
-                {
-                    _intKarmaNuyenPer = value;
                     OnPropertyChanged();
                 }
             }

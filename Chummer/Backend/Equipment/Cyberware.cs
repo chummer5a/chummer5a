@@ -1866,7 +1866,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How many limbs does this cyberware have?
         /// </summary>
-        public int GetCyberlimbCount(IReadOnlyCollection<string> lstExcludeLimbs = null)
+        public int GetCyberlimbCount(ICollection<string> lstExcludeLimbs = null)
         {
             int intCount = 0;
             if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)

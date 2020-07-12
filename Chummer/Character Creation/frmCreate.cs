@@ -13420,7 +13420,8 @@ namespace Chummer
             lblAttributesBase.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesBase"));
             lblAttributesAug.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesAug"));
             lblAttributesMetatype.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesMetatypeLimits"));
-            lblNuyen.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_CommonNuyen"), CharacterObjectOptions.KarmaNuyenPer));
+            lblNuyen.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_CommonNuyen"),
+                CharacterObjectOptions.NuyenPerBP.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)));
             // Armor Tab.
             chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped"));
             // Weapon Tab.

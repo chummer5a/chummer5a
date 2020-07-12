@@ -195,7 +195,6 @@ namespace Chummer
                                 () => XmlManager.Load("cyberware.xml"),
                                 () => XmlManager.Load("drugcomponents.xml"),
                                 () => XmlManager.Load("echoes.xml"),
-                                () => XmlManager.Load("gameplayoptions.xml"),
                                 () => XmlManager.Load("gear.xml"),
                                 () => XmlManager.Load("improvements.xml"),
                                 () => XmlManager.Load("licenses.xml"),

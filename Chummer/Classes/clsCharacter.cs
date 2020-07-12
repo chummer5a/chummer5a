@@ -1924,16 +1924,6 @@ namespace Chummer
                     objWriter.WriteElementString("startingnuyen",
                         _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
 
-                    // <bannedwaregrades >
-                    objWriter.WriteStartElement("bannedwaregrades");
-                    foreach (string g in BannedWareGrades)
-                    {
-                        objWriter.WriteElementString("grade", g);
-                    }
-
-                    // </bannedwaregrades>
-                    objWriter.WriteEndElement();
-
                     // <nuyenbp />
                     objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
 
@@ -2805,11 +2795,7 @@ namespace Chummer
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                             _strPrimaryArm = "Right";
 
-                        XmlDocument objXmlDocumentGameplayOptions = LoadData("gameplayoptions.xml");
-                        XmlNode xmlGameplayOption =
-                            objXmlDocumentGameplayOptions.SelectSingleNode(
-                                "/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterOptionsKey + "\"]");
-                        if (xmlGameplayOption == null && showWarnings)
+                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(CharacterOptionsKey) && showWarnings)
                         {
                             if ( Program.MainForm.ShowMessageBox(
                                      string.Format(GlobalOptions.CultureInfo,
@@ -2861,21 +2847,6 @@ namespace Chummer
                         )
                         {
                             _lstPrioritySkills.Add(xmlSkillName.Value);
-                        }
-
-                        BannedWareGrades.Clear();
-                        XPathNavigator xmlTempNode = xmlCharacterNavigator.SelectSingleNode("bannedwaregrades");
-                        if (xmlTempNode != null)
-                        {
-                            foreach (XPathNavigator xmlNode in xmlTempNode.Select("grade"))
-                                BannedWareGrades.Add(xmlNode.Value);
-                        }
-                        else
-                        {
-                            XmlNodeList xmlBannedGradesList = xmlGameplayOption?.SelectNodes("bannedwaregrades/grade");
-                            if (xmlBannedGradesList?.Count > 0)
-                                foreach (XmlNode xmlNode in xmlBannedGradesList)
-                                    BannedWareGrades.Add(xmlNode.InnerText);
                         }
 
                         string strSkill1 = string.Empty;
@@ -4329,6 +4300,8 @@ namespace Chummer
             // <character>
             objWriter.WriteStartElement("character");
 
+            // <settings />
+            objWriter.WriteElementString("settings", CharacterOptionsKey);
             // <imageformat />
             objWriter.WriteElementString("imageformat", GlobalOptions.SavedImageQuality == int.MaxValue ? "png" : "jpeg");
             // <metatype />
@@ -4358,8 +4331,6 @@ namespace Chummer
             // <movementfly />
             objWriter.WriteElementString("movementfly", GetFly(objCulture, strLanguageToPrint));
 
-            // <gameplayoption />
-            objWriter.WriteElementString("gameplayoption", CharacterOptionsKey);
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", MetatypePriority);
             // <priorityattributes />
@@ -5811,7 +5782,7 @@ namespace Chummer
 
             if(!IgnoreRules && !Created && !blnIgnoreBannedGrades)
             {
-                foreach(string strBannedGrade in BannedWareGrades)
+                foreach(string strBannedGrade in Options.BannedWareGrades)
                 {
                     strFilter.Append("not(contains(name, \"" + strBannedGrade + "\")) and ");
                 }
@@ -14274,13 +14245,9 @@ namespace Chummer
                 _intCachedRedlinerBonus = 0;
                 return;
             }
-            XmlNode objXmlGameplayOption = LoadData("gameplayoptions.xml")
-                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterOptionsKey + "\"]");
-
-            List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList();
 
             //Calculate bonus from cyberlimbs
-            int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
+            int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(Options.RedlinerExcludes));
 
             intCount = Math.Min(intCount / 2, 2);
             _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
@@ -15286,11 +15253,6 @@ namespace Chummer
                     Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
             }
         }
-
-        /// <summary>
-        /// Blocked grades of cyber/bioware in Create mode.
-        /// </summary>
-        public HashSet<string> BannedWareGrades { get; } = new HashSet<string> { "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -28,6 +28,11 @@
     <category>Skills</category>
     <category>Resources</category>
   </categories>
+  <prioritytables>
+    <prioritytable>Standard</prioritytable>
+    <prioritytable>Prime Runner</prioritytable>
+    <prioritytable>Street Level</prioritytable>
+  </prioritytables>
   <priorities>
     <!-- Region Metatypes-->
     <priority>
@@ -5002,6 +5007,7 @@
       <id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
       <name>A - 450,000¥</name>
       <value>A,4</value>
+      <prioritytable>Standard</prioritytable>
       <category>Resources</category>
       <resources>450000</resources>
     </priority>
@@ -5009,6 +5015,7 @@
       <id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
       <name>B - 275,000¥</name>
       <value>B,3</value>
+      <prioritytable>Standard</prioritytable>
       <category>Resources</category>
       <resources>275000</resources>
     </priority>
@@ -5016,6 +5023,7 @@
       <id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
       <name>C - 140,000¥</name>
       <value>C,2</value>
+      <prioritytable>Standard</prioritytable>
       <category>Resources</category>
       <resources>140000</resources>
     </priority>
@@ -5023,6 +5031,7 @@
       <id>b977475b-9728-45a0-9873-a77bb036fb99</id>
       <name>D - 50,000¥</name>
       <value>D,1</value>
+      <prioritytable>Standard</prioritytable>
       <category>Resources</category>
       <resources>50000</resources>
     </priority>
@@ -5030,6 +5039,7 @@
       <id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
       <name>E - 6,000¥</name>
       <value>E,0</value>
+      <prioritytable>Standard</prioritytable>
       <category>Resources</category>
       <resources>6000</resources>
     </priority>
@@ -5039,7 +5049,7 @@
       <id>7e4c5695-52c8-4b16-b233-058af14a41d1</id>
       <name>A - 500,000¥</name>
       <value>A,4</value>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <category>Resources</category>
       <resources>500000</resources>
     </priority>
@@ -5047,7 +5057,7 @@
       <id>1da0e4d3-e75b-40ab-b366-e1eba499e8ca</id>
       <name>B - 325,000¥</name>
       <value>B,3</value>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <category>Resources</category>
       <resources>325000</resources>
     </priority>
@@ -5055,7 +5065,7 @@
       <id>0fdfe7f7-119d-4971-a629-4a4dea938c6c</id>
       <name>C - 210,000¥</name>
       <value>C,2</value>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <category>Resources</category>
       <resources>210000</resources>
     </priority>
@@ -5063,7 +5073,7 @@
       <id>2cbe209a-ae97-4985-b42f-4839613dfb28</id>
       <name>D - 150,000¥</name>
       <value>D,1</value>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <category>Resources</category>
       <resources>150000</resources>
     </priority>
@@ -5071,7 +5081,7 @@
       <id>860a9601-e06f-424f-8f40-bee843a6b5dc</id>
       <name>E - 100,000¥</name>
       <value>E,0</value>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <category>Resources</category>
       <resources>100000</resources>
     </priority>
@@ -5081,7 +5091,7 @@
       <id>dc72a445-a956-4ea5-b383-0f775c638f05</id>
       <name>A - 75,000¥</name>
       <value>A,4</value>
-      <gameplayoption>Street Level</gameplayoption>
+      <prioritytable>Street Level</prioritytable>
       <category>Resources</category>
       <resources>75000</resources>
     </priority>
@@ -5089,7 +5099,7 @@
       <id>edc5db00-8d4c-4510-85d2-8d82d6c66ed6</id>
       <name>B - 50,000¥</name>
       <value>B,3</value>
-      <gameplayoption>Street Level</gameplayoption>
+      <prioritytable>Street Level</prioritytable>
       <category>Resources</category>
       <resources>50000</resources>
     </priority>
@@ -5097,7 +5107,7 @@
       <id>9aecfa32-4d5c-4ba9-a88e-9a04f83e516b</id>
       <name>C - 25,000¥</name>
       <value>C,2</value>
-      <gameplayoption>Street Level</gameplayoption>
+      <prioritytable>Street Level</prioritytable>
       <category>Resources</category>
       <resources>25000</resources>
     </priority>
@@ -5105,7 +5115,7 @@
       <id>c5b45f74-3396-45c7-afa9-b69c0c8db6ee</id>
       <name>D - 15,000¥</name>
       <value>D,1</value>
-      <gameplayoption>Street Level</gameplayoption>
+      <prioritytable>Street Level</prioritytable>
       <category>Resources</category>
       <resources>15000</resources>
     </priority>
@@ -5113,7 +5123,7 @@
       <id>cb4060e7-61b9-40d7-b97f-9ab9129bfc26</id>
       <name>E - 6,000¥</name>
       <value>E,0</value>
-      <gameplayoption>Street Level</gameplayoption>
+      <prioritytable>Street Level</prioritytable>
       <category>Resources</category>
       <resources>6000</resources>
     </priority>

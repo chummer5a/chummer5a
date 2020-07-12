@@ -1314,9 +1314,9 @@ namespace Chummer
                     }
                     else if (objWareGrade.Burnout)
                         continue;
-                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
-                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
                         lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + objWareGrade.CurrentDisplayName));
                     }

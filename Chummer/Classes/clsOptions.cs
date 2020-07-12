@@ -1162,9 +1162,25 @@ namespace Chummer
         public static ObservableCollection<string> FavoritedCharacters => _lstFavoritedCharacters;
 
         public static ObservableCollection<string> MostRecentlyUsedCharacters => _lstMostRecentlyUsedCharacters;
-        public static bool CustomDateTimeFormats => _blnCustomDateTimeFormats;
-        public static string CustomDateFormat => _strCustomDateFormat;
-        public static string CustomTimeFormat => _strCustomTimeFormat;
+
+        public static bool CustomDateTimeFormats
+        {
+            get => _blnCustomDateTimeFormats;
+            set => _blnCustomDateTimeFormats = value;
+        }
+
+        public static string CustomDateFormat
+        {
+            get => _strCustomDateFormat;
+            set => _strCustomDateFormat = value;
+        }
+
+        public static string CustomTimeFormat
+        {
+            get => _strCustomTimeFormat;
+            set => _strCustomTimeFormat = value;
+        }
+
         /// <summary>
         /// Should the application assume that the Black Market Pipeline discount should automatically be used if the character has an appropriate contact?
         /// </summary>
