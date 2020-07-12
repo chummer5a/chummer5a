@@ -655,7 +655,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", new List<Tuple<XmlNode, string>>()) || blnReturn;
+                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer") || blnReturn;
                         }
                     }
                 }
@@ -673,7 +673,7 @@ namespace Chummer
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
         /// <param name="lstExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
-        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound)
+        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound = null)
         {
             bool blnReturn = false;
             string strFilter = string.Empty;
@@ -848,7 +848,7 @@ namespace Chummer
                 {
                     if (lstElementChildren?.Count > 0)
                     {
-                        if (objNodesToEdit?.Count > 0)
+                        if (!(lstExtraNodesToAddIfNotFound?.Count > 0) && objNodesToEdit?.Count > 0)
                         {
                             foreach (XmlNode objChild in lstElementChildren)
                             {
@@ -857,6 +857,8 @@ namespace Chummer
                         }
                         else
                         {
+                            if (lstExtraNodesToAddIfNotFound == null)
+                                lstExtraNodesToAddIfNotFound = new List<Tuple<XmlNode, string>>();
                             Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
                             lstExtraNodesToAddIfNotFound.Add(objMyData);
                             foreach (XmlNode objChild in lstElementChildren)
@@ -1020,7 +1022,7 @@ namespace Chummer
             else if (strOperation == "append" || blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace"))
             {
                 // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
-                if (lstExtraNodesToAddIfNotFound.Count > 0)
+                if (lstExtraNodesToAddIfNotFound?.Count > 0)
                 {
                     // Because this is a list, foreach will move from oldest element to newest
                     // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
