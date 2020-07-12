@@ -668,6 +668,22 @@
       <source>RF</source>
       <page>152</page>
     </quality>
+	<quality>
+	  <name>Blind</name>
+	  <forbidden>
+        <oneof>
+          <quality>Reduced Sense (Sight) (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</quality>
+	<quality>
+	  <name>Deaf</name>
+	  <forbidden>
+        <oneof>
+          <quality>Reduced Sense (Hearing) (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</quality>
     <quality>
       <name>Carrier (HMHVV Strain II)</name>
       <hide />
