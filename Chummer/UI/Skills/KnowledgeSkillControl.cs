@@ -195,18 +195,6 @@ namespace Chummer.UI.Skills
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            SuspendLayout();
-            if (cboName.Visible || !lblName.Visible)
-            {
-                lblName.Visible = true;
-                cboName.Visible = false;
-                cboName.DataBindings.Clear();
-                lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
-                lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
-            }
-            cboType.Enabled = false;
-            ResumeLayout();
-
             _skill.Upgrade();
         }
 
