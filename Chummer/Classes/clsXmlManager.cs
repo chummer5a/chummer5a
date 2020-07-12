@@ -848,15 +848,25 @@ namespace Chummer
                 {
                     if (lstElementChildren?.Count > 0)
                     {
-                        Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
-                        lstExtraNodesToAddIfNotFound.Add(objMyData);
-                        foreach (XmlNode objChild in lstElementChildren)
+                        if (objNodesToEdit?.Count > 0)
                         {
-                            blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
+                            foreach (XmlNode objChild in lstElementChildren)
+                            {
+                                blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, new List<Tuple<XmlNode, string>>());
+                            }
                         }
-                        // Remove our info in case we weren't added.
-                        // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
-                        lstExtraNodesToAddIfNotFound.Remove(objMyData);
+                        else
+                        {
+                            Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
+                            lstExtraNodesToAddIfNotFound.Add(objMyData);
+                            foreach (XmlNode objChild in lstElementChildren)
+                            {
+                                blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
+                            }
+                            // Remove our info in case we weren't added.
+                            // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
+                            lstExtraNodesToAddIfNotFound.Remove(objMyData);
+                        }
                     }
                 }
                 // ... otherwise loop through any nodes that satisfy the XPath filter.
