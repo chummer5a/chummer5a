@@ -194,7 +194,7 @@ namespace ChummerHub
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
                 {
-                    options.AllowAreas = true;
+                    //options.AllowAreas = true;
                     //options.Conventions.AuthorizePage("/Home/Contact");
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
@@ -284,12 +284,15 @@ namespace ChummerHub
                 //};
             });
 
-            services.AddMvc(options => { }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc(options =>
+            {
+                options.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(x =>
                 {
-                    x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    x.SerializerSettings.PreserveReferencesHandling =
-                        PreserveReferencesHandling.Objects;
+                    //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    //x.SerializerSettings.PreserveReferencesHandling =
+                    //    PreserveReferencesHandling.Objects;
                 });
 
 
