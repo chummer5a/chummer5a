@@ -960,22 +960,30 @@ namespace Chummer.Classes
                 }
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder sBld = new StringBuilder();
-            foreach (string s in AttributeSection.AttributeStrings)
+            if (selectedValues.All(x => selectedValues.All(y => x == y)))
             {
-                int i = selectedValues.Count(c => c == s);
-                if (i > 0)
-                {
-                    if (sBld.Length > 0)
-                    {
-                        sBld.Append(',' + strSpace);
-                    }
-                    sBld.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})", s, strSpace, i);
-                }
+                SelectedValue = selectedValues.FirstOrDefault();
             }
+            else
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                StringBuilder sBld = new StringBuilder();
+                foreach (string s in AttributeSection.AttributeStrings)
+                {
+                    int i = selectedValues.Count(c => c == s);
+                    if (i > 0)
+                    {
+                        if (sBld.Length > 0)
+                        {
+                            sBld.Append(',' + strSpace);
+                        }
 
-            SelectedValue = sBld.ToString();
+                        sBld.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})", s, strSpace, i);
+                    }
+                }
+
+                SelectedValue = sBld.ToString();
+            }
         }
 
         // Select an CharacterAttribute.

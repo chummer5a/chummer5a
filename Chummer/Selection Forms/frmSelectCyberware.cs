@@ -193,8 +193,9 @@ namespace Chummer
                 _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value, GlobalOptions.InvariantCultureInfo);
 
                 PopulateCategories();
-                _blnLoading = false;
                 RefreshList(_strSelectedCategory);
+                _blnLoading = false;
+                lstCyberware_SelectedIndexChanged(sender, EventArgs.Empty);
             }
             else
             {
@@ -202,6 +203,7 @@ namespace Chummer
                 UpdateCyberwareInfo();
             }
         }
+
         private void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
@@ -1156,6 +1158,7 @@ namespace Chummer
                 string strOldSelected = lstCyberware.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstCyberware.BeginUpdate();
+                lstCyberware.DataSource = null;
                 lstCyberware.ValueMember = nameof(ListItem.Value);
                 lstCyberware.DisplayMember = nameof(ListItem.Name);
                 lstCyberware.DataSource = lstCyberwares;

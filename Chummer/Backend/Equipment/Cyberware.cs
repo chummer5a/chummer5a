@@ -5121,12 +5121,12 @@ namespace Chummer.Backend.Equipment
                             GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
                         XmlNode objXmlNameNode =
                             GlobalOptions.Clipboard.SelectSingleNode("/character/gear/name");
-                        if (AllowGear.ChildNodes.Cast<XmlNode>().Any(objAllowed => (objAllowed.Name == "gearcategory" &&
+                        if (AllowGear?.ChildNodes.Cast<XmlNode>().Any(objAllowed => (objAllowed.Name == "gearcategory" &&
                                                                                     objAllowed.InnerText ==
                                                                                     objXmlCategoryNode?.InnerText) ||
                                                                                    objAllowed.Name == "gearname" &&
                                                                                    objAllowed.InnerText ==
-                                                                                   objXmlNameNode?.InnerText))
+                                                                                   objXmlNameNode?.InnerText) == true)
                         {
                             return true;
                         }
