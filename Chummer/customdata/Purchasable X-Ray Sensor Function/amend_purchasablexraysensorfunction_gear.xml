@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,15 +17,12 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
+
+<!-- This XML file makes the X-Ray Sensor found in the Telestrian Shamus purchasable on its own. -->
 <chummer>
-  <cyberwares>
-    <cyberware>
-      <id>87475df7-b371-4a89-8623-2582137b5906</id>
-      <forbidden>
-        <parentdetails>
-          <name>Centaur Rear Leg</name>
-        </parentdetails>
-      </forbidden>
-    </cyberware>
-  </cyberwares>
+  <gears>
+    <gear xpathfilter="name = 'X-Ray' and category = 'Sensor Functions'">
+      <hide amendoperation="remove" />
+    </gear>
+  </gears>
 </chummer>

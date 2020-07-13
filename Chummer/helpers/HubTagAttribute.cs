@@ -47,9 +47,9 @@ namespace Chummer
                 ListExtraProperties = new List<string>(extraProperties.Split(';'));
         }
 
-        public List<string> ListCommentProperties { get; } = new List<string>();
+        public List<string> ListCommentProperties { get; } = new List<string>(1);
 
-        public List<string> ListExtraProperties { get; } = new List<string>();
+        public List<string> ListExtraProperties { get; } = new List<string>(1);
 
         public string ListInstanceNameFromProperty { get; }
 

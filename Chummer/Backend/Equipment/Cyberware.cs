@@ -361,7 +361,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
             {
-                List<string> lstPropertiesToChange = new List<string>();
+                List<string> lstPropertiesToChange = new List<string>(3);
                 if (blnDoRedlinerRefresh)
                     lstPropertiesToChange.Add(nameof(Character.RedlinerBonus));
                 if (blnDoEssenceImprovementsRefresh)
@@ -600,7 +600,7 @@ namespace Chummer.Backend.Equipment
                         AllowCancel = false
                     })
                     {
-                        frmPickNumber.ShowDialog();
+                        frmPickNumber.ShowDialog(Program.MainForm);
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
@@ -715,7 +715,7 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strForcedSide))
                             frmPickSide.ForceValue(strForcedSide);
                         else
-                            frmPickSide.ShowDialog();
+                            frmPickSide.ShowDialog(Program.MainForm);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickSide.DialogResult == DialogResult.Cancel)
@@ -935,7 +935,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
                 if (objXmlGearList?.Count > 0)
                 {
-                    IList<Weapon> lstChildWeapons = new List<Weapon>();
+                    IList<Weapon> lstChildWeapons = new List<Weapon>(1);
                     foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
@@ -1871,10 +1871,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How many limbs does this cyberware have?
         /// </summary>
-        public int GetCyberlimbCount(IReadOnlyCollection<string> lstExcludeLimbs)
+        public int GetCyberlimbCount(IReadOnlyCollection<string> lstExcludeLimbs = null)
         {
             int intCount = 0;
-            if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs.All(l => l != LimbSlot))
+            if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs?.All(l => l != LimbSlot) != false)
             {
                 intCount += LimbSlotCount;
             }
@@ -2058,7 +2058,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
                     }
                 }
 
@@ -2136,13 +2136,13 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
                     }
                 }
 
                 ImprovementManager.DisableImprovements(_objCharacter,
                     _objCharacter.Improvements
-                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless").ToList());
+                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless").ToArray());
 
                 if (WirelessPairBonus == null) return;
 
@@ -2175,7 +2175,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
                     }
                 }
 
@@ -2216,7 +2216,7 @@ namespace Chummer.Backend.Equipment
             {
                 ImprovementManager.EnableImprovements(_objCharacter,
                     _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                        .ToList());
+                        .ToArray());
 
                 /*
                 // If the piece grants a bonus, pass the information to the Improvement Manager.
@@ -2273,7 +2273,7 @@ namespace Chummer.Backend.Equipment
             {
                 ImprovementManager.DisableImprovements(_objCharacter,
                     _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                        .ToList());
+                        .ToArray());
 
                 if (PairBonus != null)
                 {
@@ -2792,10 +2792,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (_blnPrototypeTranshuman != value)
                 {
+                    string strOldEssencePropertyName = EssencePropertyName;
                     _blnPrototypeTranshuman = value;
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
                         ParentVehicle == null)
-                        _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        _objCharacter.OnMultiplePropertyChanged(strOldEssencePropertyName, EssencePropertyName);
                 }
 
                 foreach (Cyberware objCyberware in Children)
@@ -3145,20 +3146,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal CalculatedESSPrototypeInvariant
+        /// <summary>
+        /// Calculated Essence cost of the Cyberware.
+        /// </summary>
+        public decimal CalculatedESS
         {
             get
             {
                 if (PrototypeTranshuman)
                     return 0;
-                return CalculatedESS;
+                return CalculatedESSPrototypeInvariant;
             }
         }
 
         /// <summary>
-        /// Calculated Essence cost of the Cyberware.
+        /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
         /// </summary>
-        public decimal CalculatedESS
+        public decimal CalculatedESSPrototypeInvariant
         {
             get
             {
@@ -4100,7 +4104,7 @@ namespace Chummer.Backend.Equipment
             if (!WeaponID.IsEmptyGuid())
             {
                 List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete =
-                    new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+                    new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
                 foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children,
                     x => x.ParentID == InternalId))
                 {
@@ -4161,7 +4165,7 @@ namespace Chummer.Backend.Equipment
             // Remove any Vehicle that the Cyberware created.
             if (!VehicleID.IsEmptyGuid())
             {
-                List<Vehicle> lstVehiclesToRemove = new List<Vehicle>();
+                List<Vehicle> lstVehiclesToRemove = new List<Vehicle>(1);
                 foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles)
                 {
                     if (objLoopVehicle.ParentID == InternalId)
@@ -4932,8 +4936,8 @@ namespace Chummer.Backend.Equipment
             string strExpenseString = "String_ExpensePurchaseCyberware")
         {
             // Create the Cyberware object.
-            List<Weapon> lstWeapons = new List<Weapon>();
-            List<Vehicle> lstVehicles = new List<Vehicle>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
+            List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Create(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true,
                 string.Empty, null, objVehicle);
             if (InternalId.IsEmptyGuid())

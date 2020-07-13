@@ -174,7 +174,7 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
@@ -209,7 +209,7 @@ namespace Chummer
         #region Methods
         private void LoadContactList()
         {
-            List<ListItem> lstMetatypes = new List<ListItem>
+            List<ListItem> lstMetatypes = new List<ListItem> (30)
             {
                 ListItem.Blank
             };

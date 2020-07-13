@@ -63,7 +63,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.MainForm.ShowMessageBox(e.ToString());
+                Program.MainForm.ShowMessageBox(objControl, e.ToString());
 #endif
             }
         }

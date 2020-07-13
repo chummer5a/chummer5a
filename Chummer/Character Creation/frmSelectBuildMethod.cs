@@ -46,7 +46,7 @@ namespace Chummer
             _xmlGameplayOptionsDataGameplayOptionsNode = XmlManager.Load("gameplayoptions.xml").GetFastNavigator().SelectSingleNode("/chummer/gameplayoptions");
 
             // Populate the Build Method list.
-            List<ListItem> lstBuildMethod = new List<ListItem>
+            List<ListItem> lstBuildMethod = new List<ListItem>(4)
             {
                 new ListItem("Karma", LanguageManager.GetString("String_Karma")),
                 new ListItem("Priority", LanguageManager.GetString("String_Priority")),
@@ -67,7 +67,7 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             // Populate the Gameplay Options list.
-            List<ListItem> lstGameplayOptions = new List<ListItem>();
+            List<ListItem> lstGameplayOptions = new List<ListItem>(10);
             if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
                 foreach (XPathNavigator objXmlGameplayOption in _xmlGameplayOptionsDataGameplayOptionsNode.Select("gameplayoption"))

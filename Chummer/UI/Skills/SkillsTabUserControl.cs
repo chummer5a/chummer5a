@@ -111,31 +111,6 @@ namespace Chummer.UI.Skills
             SuspendLayout();
 
             Stopwatch swDisplays = Stopwatch.StartNew();
-            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
-            {
-                _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
-                    group => new SkillGroupControl(group))
-                {
-                    Dock = DockStyle.Fill
-                };
-                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
-                _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
-                RefreshSkillGroupLabels();
-
-                swDisplays.TaskEnd("_lstSkillGroups");
-
-                tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
-                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 2);
-
-                swDisplays.TaskEnd("_lstSkillGroups add");
-            }
-            else
-            {
-                tlpSkillGroups.Visible = false;
-                tlpActiveSkills.Margin = new Padding(0);
-                tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
-                tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
-            }
 
             _lstActiveSkills = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
             {
@@ -169,6 +144,32 @@ namespace Chummer.UI.Skills
             tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 3);
 
             swDisplays.TaskEnd("_lstKnowledgeSkills add");
+
+            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
+            {
+                _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
+                    group => new SkillGroupControl(group))
+                {
+                    Dock = DockStyle.Fill
+                };
+                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+                _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
+                RefreshSkillGroupLabels();
+
+                swDisplays.TaskEnd("_lstSkillGroups");
+
+                tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
+                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 2);
+
+                swDisplays.TaskEnd("_lstSkillGroups add");
+            }
+            else
+            {
+                tlpSkillGroups.Visible = false;
+                tlpActiveSkills.Margin = new Padding(0);
+                tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
+                tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
+            }
 
             parts.TaskEnd("MakeSkillDisplay()");
 
@@ -280,7 +281,7 @@ namespace Chummer.UI.Skills
                 }
                 lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
                 lblActiveKarma.Margin = new Padding(
-                    lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width,
+                    Math.Max(0, lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width),
                     lblActiveKarma.Margin.Top,
                     lblActiveKarma.Margin.Right,
                     lblActiveKarma.Margin.Bottom);
@@ -295,7 +296,7 @@ namespace Chummer.UI.Skills
         {
             if (_lstKnowledgeSkills != null)
             {
-                int intNameLabelWidth = lblKnowledgeSkills.PreferredWidth;
+                int intNameLabelWidth = 0;
                 int intRatingLabelWidth = lblKnoSp.PreferredWidth;
                 int intRightButtonsWidth = 0;
                 foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
@@ -306,19 +307,15 @@ namespace Chummer.UI.Skills
                 }
                 lblKnowledgeSkills.MinimumSize = new Size(intNameLabelWidth, lblKnowledgeSkills.MinimumSize.Height);
                 lblKnoKarma.Margin = new Padding(
-                    lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width,
+                    Math.Max(0, lblKnoSp.Margin.Left + intRatingLabelWidth - lblKnoSp.Width),
                     lblKnoKarma.Margin.Top,
                     lblKnoKarma.Margin.Right,
                     lblKnoKarma.Margin.Bottom);
                 lblKnoBwk.Margin = new Padding(
                     lblKnoBwk.Margin.Left,
                     lblKnoBwk.Margin.Top,
-                    Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + lblKnoBwk.Width / 2),
+                    Math.Max(0, lblKnoBwk.Margin.Left + intRightButtonsWidth + SystemInformation.VerticalScrollBarWidth - lblKnoBwk.PreferredWidth / 2),
                     lblKnoBwk.Margin.Bottom);
-                foreach (KnowledgeSkillControl objKnowledgeSkillControl in _lstKnowledgeSkills.DisplayPanel.Controls)
-                {
-                    objKnowledgeSkillControl.MoveControls(intNameLabelWidth);
-                }
             }
         }
 
@@ -358,7 +355,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, IComparer<Skill>>> GenerateSortList()
         {
-            List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
+            List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>(9)
             {
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new SkillSorter(SkillsSection.CompareSkills)),
@@ -431,7 +428,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
         {
-            List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
+            List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>(7)
             {
                 new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_Search"),
                     null),
@@ -499,7 +496,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, IComparer<KnowledgeSkill>>> GenerateKnowledgeSortList()
         {
-            List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>()
+            List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>(7)
             {
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new KnowledgeSkillSorter(SkillsSection.CompareSkills)),
@@ -562,7 +559,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
         {
-            List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>
+            List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>(5)
             {
                 //TODO: Search doesn't play nice with writable name
                 new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_Search"),
@@ -718,12 +715,28 @@ namespace Chummer.UI.Skills
                 {
                     form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills);
 
-                    if (form.ShowDialog() != DialogResult.OK)
+                    if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
                     {
                         WriteableName = form.SelectedItem
                     };
+
+                    if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
+                    {
+                        DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NewNativeLanguageSkill"),
+                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WriteableName),
+                            LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
+                        if (eDialogResult == DialogResult.Cancel)
+                            return;
+                        if (eDialogResult == DialogResult.Yes)
+                        {
+                            if (!skill.IsLanguage)
+                                skill.Type = "Language";
+                            skill.IsNativeLanguage = true;
+                        }
+                    }
 
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
                 }

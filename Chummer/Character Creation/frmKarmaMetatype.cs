@@ -60,7 +60,7 @@ namespace Chummer
         private void frmMetatype_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
-            List<ListItem> lstCategories = new List<ListItem>();
+            List<ListItem> lstCategories = new List<ListItem>(3);
 
             // Create a list of Categories.
             XPathNavigator xmlMetatypesNode = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes");
@@ -98,7 +98,7 @@ namespace Chummer
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
             chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit"));
 
-            List<ListItem> lstMethods = new List<ListItem>
+            List<ListItem> lstMethods = new List<ListItem>(2)
             {
                 new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
                 new ListItem("Inhabitation", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
@@ -192,7 +192,7 @@ namespace Chummer
                 XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
                 if (objXmlMetatype == null)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Cursor = Cursors.Default;
                     return;
                 }
@@ -203,15 +203,17 @@ namespace Chummer
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                     strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
-                _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
-                    intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
+                if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
+                    || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
+                    _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
+                        intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
 
                 DialogResult = DialogResult.OK;
                 Close();
             }
             else
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             Cursor = Cursors.Default;
         }
@@ -417,7 +419,7 @@ namespace Chummer
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {
-                List<ListItem> lstMetavariants = new List<ListItem>
+                List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
                     new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
                 };
@@ -431,7 +433,7 @@ namespace Chummer
                 // Retrieve the list of Metavariants for the selected Metatype.
 
                 bool blnOldLoading = _blnLoading;
-                string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.Metavariant;
+                string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo);
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
                 cboMetavariant.ValueMember = nameof(ListItem.Value);
@@ -496,7 +498,7 @@ namespace Chummer
                 lblMetavariantLabel.Visible = false;
                 cboMetavariant.Visible = false;
                 // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>
+                List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
                     new ListItem("None", LanguageManager.GetString("String_None"))
                 };
@@ -534,7 +536,9 @@ namespace Chummer
                 lstMetatypeItems.Sort(CompareListItems.CompareNames);
 
                 bool blnOldLoading = _blnLoading;
-                string strOldSelected = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter?.Metatype;
+                string strOldSelected = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter?.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo);
+                if (strOldSelected == Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo))
+                    strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNode("id")?.Value ?? string.Empty;
                 _blnLoading = true;
                 lstMetatypes.BeginUpdate();
                 lstMetatypes.ValueMember = nameof(ListItem.Value);

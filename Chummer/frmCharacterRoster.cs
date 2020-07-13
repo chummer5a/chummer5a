@@ -514,6 +514,8 @@ namespace Chummer
         /// <param name="objCache"></param>
         public void UpdateCharacter(CharacterCache objCache)
         {
+            if (IsDisposed) // Safety check for external calls
+                return;
             if(objCache != null)
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");

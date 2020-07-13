@@ -141,7 +141,7 @@ namespace Chummer
                 XmlResolver = null
             };
             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                     objXmlDocument.Load(objXmlReader);
             return objXmlDocument;
         }

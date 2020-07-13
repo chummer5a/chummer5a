@@ -171,24 +171,21 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    using (Form objForm = new Form {TopMost = true})
-                        MessageBox.Show(objForm, LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    using (Form objForm = new Form { TopMost = true })
-                        MessageBox.Show(objForm, GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(strPostErrorMessage))
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    using (Form objForm = new Form { TopMost = true })
-                        MessageBox.Show(objForm, strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -325,7 +322,7 @@ namespace Chummer
                                     string msg =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(msg);
-                                    MessageBox.Show(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    Program.MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -345,7 +342,7 @@ namespace Chummer
                                             string msg = "Plugin " + whatplugin + " is not enabled in the options!"
                                                          + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(msg);
-                                            MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            Program.MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else

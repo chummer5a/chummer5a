@@ -44,7 +44,7 @@ namespace Chummer
             XmlDocument xdoc = XmlManager.Load("lifemodules.xml", strLanguage);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
-            List<XmlNode> modules = new List<XmlNode>();
+            List<XmlNode> modules = new List<XmlNode>(10);
 
             foreach (Quality quality in _objCharacter.Qualities)
             {

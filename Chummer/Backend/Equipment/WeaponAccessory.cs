@@ -169,7 +169,7 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog();
+                            frmPickNumber.ShowDialog(Program.MainForm);
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -271,7 +271,7 @@ namespace Chummer.Backend.Equipment
                                                                                      objXmlAccessoryGear["category"]?.InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
 
@@ -1299,7 +1299,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToList());
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToArray());
                     }
                 }
                 if (WirelessBonus?.InnerText != null)
@@ -1317,10 +1317,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToList());
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToArray());
                     }
                 }
-                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId + "Wireless").ToList());
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId + "Wireless").ToArray());
             }
         }
 

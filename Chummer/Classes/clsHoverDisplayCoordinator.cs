@@ -51,6 +51,14 @@ namespace Chummer
         /// <summary>
         /// Create a new HoverDisplayCordinator
         /// </summary>
+        public HoverDisplayCoordinator(int intCapacity)
+        {
+            _controls = new List<Control>(intCapacity);
+        }
+
+        /// <summary>
+        /// Create a new HoverDisplayCordinator
+        /// </summary>
         /// <param name="collection">A collection of controls to include</param>
         public HoverDisplayCoordinator(IEnumerable<Control> collection)
         {

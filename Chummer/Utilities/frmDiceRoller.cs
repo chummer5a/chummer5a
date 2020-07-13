@@ -42,7 +42,7 @@ namespace Chummer
                     nudGremlins.Value = intGremlinsRating;
             }
 
-            List<ListItem> lstMethod = new List<ListItem>
+            List<ListItem> lstMethod = new List<ListItem>(3)
             {
                 new ListItem("Standard", LanguageManager.GetString("String_DiceRoller_Standard")),
                 new ListItem("Large", LanguageManager.GetString("String_DiceRoller_Large")),
@@ -62,7 +62,7 @@ namespace Chummer
 
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
-            List<int> lstRandom = new List<int>();
+            List<int> lstRandom = new List<int>(decimal.ToInt32(nudDice.Value));
             int intHitCount = 0;
             int intGlitchCount = 0;
             int intGlitchMin = 1;
@@ -218,11 +218,11 @@ namespace Chummer
                     intKeepSum += intResult;
             }
 
-            List<int> lstRandom = new List<int>();
             int intHitCount = _lstResults.Count;
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
             int intGlitchCount = 0;
+            List<int> lstRandom = new List<int>(decimal.ToInt32(nudDice.Value) - intHitCount);
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;

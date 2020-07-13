@@ -25,8 +25,8 @@ namespace Chummer
 {
     public partial class frmReload : Form
     {
-        private readonly List<Gear> _lstAmmo = new List<Gear>();
-        private readonly List<string> _lstCount = new List<string>();
+        private readonly List<Gear> _lstAmmo = new List<Gear>(5);
+        private readonly List<string> _lstCount = new List<string>(30);
 
         #region Control Events
         public frmReload()
@@ -37,7 +37,7 @@ namespace Chummer
 
         private void frmReload_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstAmmo = new List<ListItem>();
+            List<ListItem> lstAmmo = new List<ListItem>(_lstAmmo.Count);
             string strSpace = LanguageManager.GetString("String_Space");
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)

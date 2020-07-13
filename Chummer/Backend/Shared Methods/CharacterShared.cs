@@ -169,7 +169,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Cursor = objOldCursor;
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     AutosaveStopWatch.Restart();
                     return;
                 }
@@ -207,7 +207,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Warning_NoLimitFound"));
                     return;
                 }
                 using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
@@ -507,7 +507,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treSpells.FindNodeByTag(objSpell);
@@ -750,7 +750,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
@@ -873,7 +873,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
@@ -1654,7 +1654,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
@@ -1818,7 +1818,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objQuality.Levels > 0)
@@ -2099,7 +2099,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
+                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                         foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objLocation = treImprovements.FindNode(strLocation, false);
@@ -2242,7 +2242,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                 {
-                    List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                    List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                     foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                     {
                         TreeNode objNode = treSelected.FindNodeByTag(objLocation, false);
@@ -3025,7 +3025,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>();
+                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
 
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
@@ -3852,7 +3852,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -4019,7 +4019,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -4147,7 +4147,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
@@ -4426,7 +4426,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
@@ -5334,7 +5334,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5401,7 +5401,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5496,7 +5496,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5761,7 +5761,7 @@ namespace Chummer
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules && CharacterObjectOptions.EnemyKarmaQualityLimit)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit"), strEnemyPoints),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit"), strEnemyPoints),
                     LanguageManager.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
@@ -5785,7 +5785,7 @@ namespace Chummer
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strQualityPoints),
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strQualityPoints),
                         LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
@@ -5841,7 +5841,7 @@ namespace Chummer
             {
                 // Show the Dialog.
                 // If the user cancels out, return early.
-                if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.Cancel)
                     return;
 
                 try
@@ -5852,12 +5852,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
                     return;
                 }
             }
@@ -6113,7 +6113,7 @@ namespace Chummer
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BoundSpiritLimit"), LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_BoundSpiritLimit"), LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6134,7 +6134,7 @@ namespace Chummer
             if (CharacterObject.Created && CharacterObject.Spirits.Any(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered))
             {
                 // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_UnregisteredSpriteLimit"),
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_UnregisteredSpriteLimit"),
                     LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6146,7 +6146,7 @@ namespace Chummer
                     CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
                     CharacterObject.LOG.TotalValue)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_RegisteredSpriteLimit"),
                         LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -6544,7 +6544,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -6578,7 +6578,7 @@ namespace Chummer
                         {
                             if (decCost > CharacterObject.Nuyen)
                             {
-                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
                                     LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
                                 continue;

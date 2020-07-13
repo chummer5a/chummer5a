@@ -346,6 +346,7 @@
     <Compile Include="helpers\BufferedTableLayoutPanel.Designer.cs">
       <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\CenterableMessageBox.cs" />
     <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
@@ -614,6 +615,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\custom_orktusk_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Purchasable X-Ray Sensor Function\amend_purchasablexraysensorfunction_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
@@ -3915,6 +3919,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.Nothing2Show.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.PreserveHtml.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.PreserveLineBreaks.xslt">

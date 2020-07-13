@@ -108,7 +108,7 @@ namespace Chummer
                 string text = LanguageManager.GetString(strText, strLanguage);
                 string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", strLanguage);
 
-                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
             // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)

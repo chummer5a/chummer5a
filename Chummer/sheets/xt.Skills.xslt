@@ -37,7 +37,7 @@
         </xsl:if>
       </td>
       <xsl:choose>
-        <xsl:when test="islanguage = 'True' and rating = 0">
+        <xsl:when test="isnativelanguage = 'True'">
           <td colspan="2" style="valign: top; text-align: center;">
             <xsl:value-of select="$lang.Native"/>
           </td>

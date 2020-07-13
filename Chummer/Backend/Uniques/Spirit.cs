@@ -62,7 +62,7 @@ namespace Chummer
         private string _strNotes = string.Empty;
         private Character _objLinkedCharacter;
 
-        private readonly List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>(1);
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods

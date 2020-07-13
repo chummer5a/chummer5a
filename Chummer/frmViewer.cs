@@ -36,7 +36,7 @@ namespace Chummer
     public partial class frmViewer : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private List<Character> _lstCharacters = new List<Character>();
+        private List<Character> _lstCharacters = new List<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument {XmlResolver = null};
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading;
@@ -207,11 +207,11 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Save_Error_Warning"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Save_Error_Warning"));
             }
         }
 
@@ -386,7 +386,7 @@ namespace Chummer
             {
                 string strReturn = "File not found when attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
-                Program.MainForm.ShowMessageBox(strReturn);
+                Program.MainForm.ShowMessageBox(this, strReturn);
                 return;
             }
 #if DEBUG
@@ -404,7 +404,7 @@ namespace Chummer
                 Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
-                Program.MainForm.ShowMessageBox(strReturn);
+                Program.MainForm.ShowMessageBox(this, strReturn);
                 return;
             }
 
@@ -494,7 +494,7 @@ namespace Chummer
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                 return;
             }
             if (File.Exists(strSaveFile))
@@ -505,12 +505,12 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
             }
@@ -559,18 +559,19 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.MainForm.ShowMessageBox(this, ex.ToString());
             }
         }
 
         private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            List<ListItem> lstSheets = new List<ListItem>();
+            List<ListItem> lstSheets;
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
             using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
-                if (lstSheetNodes != null)
+                lstSheets = new List<ListItem>(lstSheetNodes?.Count ?? 0);
+                if (lstSheetNodes?.Count > 0)
                 {
                     foreach (XmlNode xmlSheet in lstSheetNodes)
                     {
@@ -585,7 +586,7 @@ namespace Chummer
 
         private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>(5);
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
@@ -658,10 +659,9 @@ namespace Chummer
             {
                 if (_lstLanguages == null)
                 {
-                    _lstLanguages = new List<ListItem>();
                     string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
                     string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
+                    _lstLanguages = new List<ListItem>(languageFilePaths.Length);
                     foreach (string filePath in languageFilePaths)
                     {
                         XmlDocument xmlDocument = new XmlDocument
@@ -672,7 +672,7 @@ namespace Chummer
                         try
                         {
                             using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                     xmlDocument.Load(objXmlReader);
                         }
                         catch (IOException)
@@ -715,7 +715,7 @@ namespace Chummer
         /// </summary>
         public void SetCharacters(params Character[] lstCharacters)
         {
-            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>();
+            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>(1);
         }
         #endregion
 

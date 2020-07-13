@@ -3,6 +3,7 @@
 <!-- Created by AngelForest -->
 <!-- Prototype by Adam Schmidt -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
@@ -2137,7 +2138,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Description"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="description" />
           </xsl:call-template>
         </td></tr>
@@ -2148,7 +2149,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Background"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="background" />
           </xsl:call-template>
         </td></tr>
@@ -2159,7 +2160,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Concept"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="concept" />
           </xsl:call-template>
         </td></tr>
@@ -2225,7 +2226,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Notes"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="notes" />
           </xsl:call-template>
         </td></tr>
@@ -2233,7 +2234,7 @@
           <tr><td><hr /></td></tr>
         </xsl:if>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="gamenotes" />
           </xsl:call-template>
         </td></tr>

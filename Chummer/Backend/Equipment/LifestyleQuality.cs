@@ -55,7 +55,7 @@ namespace Chummer.Backend.Equipment
         private int _intSecurityMaximum;
         private int _intComfortMaximum;
         private int _intComfort;
-        private List<string> _lstAllowedFreeLifestyles = new List<string>();
+        private List<string> _lstAllowedFreeLifestyles = new List<string>(1);
         private readonly Character _objCharacter;
         private bool _blnFree;
 
@@ -344,7 +344,7 @@ namespace Chummer.Backend.Equipment
                                               "/chummer/qualities/quality[name = \"" + _strName + "\"]");
             if (objLifestyleQualityNode == null)
             {
-                var lstQualities = new List<ListItem>();
+                List<ListItem> lstQualities = new List<ListItem>(1);
                 using (var xmlQualityList = objXmlDocument.SelectNodes("/chummer/qualities/quality"))
                 {
                     if (xmlQualityList != null)
@@ -359,7 +359,7 @@ namespace Chummer.Backend.Equipment
                 })
                 {
                     frmSelect.SetGeneralItemsMode(lstQualities);
-                    frmSelect.ShowDialog();
+                    frmSelect.ShowDialog(Program.MainForm);
                     if (frmSelect.DialogResult == DialogResult.Cancel)
                         return;
 

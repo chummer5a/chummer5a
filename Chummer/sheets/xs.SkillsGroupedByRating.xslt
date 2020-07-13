@@ -84,12 +84,12 @@
 
   <xsl:template name="skills3">
     <xsl:variable name="sortedlanguageskills">
-      <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and rating = 0]">
+      <xsl:for-each select="skills/skill[knowledge = 'True' and isnativelanguage = 'True']">
         <xsl:sort select="name"/>
         <xsl:copy-of select="current()"/>
       </xsl:for-each>
       <xsl:if test="$PrintSkillCategoryNames">
-        <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and rating != 0]">
+        <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and isnativelanguage != 'True']">
           <xsl:sort select="skillcategory"/>
           <xsl:sort select="rating" order="descending" />
           <xsl:sort select="name"/>
@@ -101,7 +101,7 @@
     <xsl:variable name="sortedknowledgeskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
-          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True' and isnativelanguage != 'True' and rating &gt;= $MinimumRating]">
             <xsl:sort select="skillcategory"/>
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
@@ -109,7 +109,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:for-each select="skills/skill[knowledge = 'True' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and isnativelanguage != 'True' and rating &gt;= $MinimumRating]">
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
             <xsl:copy-of select="current()"/>

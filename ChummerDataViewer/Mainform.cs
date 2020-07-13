@@ -42,7 +42,7 @@ namespace ChummerDataViewer
 			if (!PersistentState.Setup)
 			{
 				SetupForm setupForm = new SetupForm();
-				DialogResult result = setupForm.ShowDialog();
+				DialogResult result = setupForm.ShowDialog(this);
 
 				if (result != DialogResult.OK)
 				{

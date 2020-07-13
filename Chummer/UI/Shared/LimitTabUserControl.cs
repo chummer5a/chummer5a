@@ -311,7 +311,7 @@ namespace Chummer.UI.Shared
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>();
+                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);

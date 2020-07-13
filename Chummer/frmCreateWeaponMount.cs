@@ -27,7 +27,7 @@ namespace Chummer
 {
 	public partial class frmCreateWeaponMount : Form
 	{
-        private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
+        private readonly List<VehicleMod> _lstMods = new List<VehicleMod>(1);
 		private bool _blnLoading = true;
 	    private readonly Vehicle _objVehicle;
 	    private readonly Character _objCharacter;
@@ -48,13 +48,16 @@ namespace Chummer
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
         {
             XmlNode xmlVehicleNode = _objVehicle.GetNode();
-            List<ListItem> lstSize = new List<ListItem>();
+            List<ListItem> lstSize;
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
             if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
                 strSizeFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlSizeNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
+            {
+                lstSize = new List<ListItem>(xmlSizeNodeList?.Count ?? 0);
                 if (xmlSizeNodeList?.Count > 0)
+                {
                     foreach (XmlNode xmlSizeNode in xmlSizeNodeList)
                     {
                         string strId = xmlSizeNode["id"]?.InnerText;
@@ -70,6 +73,7 @@ namespace Chummer
                                 continue;
                             }
                         }
+
                         xmlTestNode = xmlSizeNode.SelectSingleNode("required/vehicledetails");
                         if (xmlTestNode != null)
                         {
@@ -82,6 +86,8 @@ namespace Chummer
 
                         lstSize.Add(new ListItem(strId, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown")));
                     }
+                }
+            }
 
             cboSize.BeginUpdate();
             cboSize.ValueMember = nameof(ListItem.Value);
@@ -605,7 +611,7 @@ namespace Chummer
 
                         if (blnOverCapacity)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
                         }
                     }
@@ -623,7 +629,7 @@ namespace Chummer
 
                         if (decCost > _objCharacter.Nuyen)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
                                 LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
@@ -715,15 +721,20 @@ namespace Chummer
             }
 
             XmlNode xmlVehicleNode = _objVehicle.GetNode();
-            List<ListItem> lstVisibility = new List<ListItem>();
-            List<ListItem> lstFlexibility = new List<ListItem>();
-            List<ListItem> lstControl = new List<ListItem>();
+            List<ListItem> lstVisibility;
+            List<ListItem> lstFlexibility;
+            List<ListItem> lstControl;
             // Populate the Weapon Mount Category list.
             string strFilter = "category != \"Size\" and not(hide)";
             if (!_objVehicle.IsDrone || !GlobalOptions.Dronemods)
                 strFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlWeaponMountOptionNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
+            {
+                lstVisibility = new List<ListItem>(xmlWeaponMountOptionNodeList?.Count ?? 0);
+                lstFlexibility = new List<ListItem>(xmlWeaponMountOptionNodeList?.Count ?? 0);
+                lstControl = new List<ListItem>(xmlWeaponMountOptionNodeList?.Count ?? 0);
                 if (xmlWeaponMountOptionNodeList?.Count > 0)
+                {
                     foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)
                     {
                         string strId = xmlWeaponMountOptionNode["id"]?.InnerText;
@@ -739,6 +750,7 @@ namespace Chummer
                                 continue;
                             }
                         }
+
                         xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("required/vehicledetails");
                         if (xmlTestNode != null)
                         {
@@ -860,6 +872,8 @@ namespace Chummer
                                 break;
                         }
                     }
+                }
+            }
 
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;

@@ -30,7 +30,7 @@ namespace Chummer
 {
     public partial class frmHeroLabImporter : Form
     {
-        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>();
+        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>(1);
         private readonly object _lstCharacterCacheLock = new object();
         private readonly Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
 
@@ -73,11 +73,11 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
 
-            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>();
+            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>(3);
             try
             {
                 using (ZipArchive zipArchive = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
@@ -95,7 +95,7 @@ namespace Chummer
                             try
                             {
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                    using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings {XmlResolver = null}))
+                                    using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
                                         xmlSourceDoc.Load(objXmlReader);
                                 lstCharacterXmlStatblocks.Add(xmlSourceDoc);
                             }
@@ -147,17 +147,17 @@ namespace Chummer
             }
             catch (IOException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
             catch (NotSupportedException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                 return null;
             }
 
@@ -470,11 +470,11 @@ namespace Chummer
                         Cursor objOldCursor = Cursor;
                         if (!File.Exists(strFilePath))
                         {
-                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 Cursor = Cursors.WaitCursor;
                                 using (frmOptions frmOptions = new frmOptions())
-                                    frmOptions.ShowDialog();
+                                    frmOptions.ShowDialog(this);
                                 Cursor = objOldCursor;
                             }
                         }

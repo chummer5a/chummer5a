@@ -125,7 +125,7 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog();
+                            frmPickNumber.ShowDialog(Program.MainForm);
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -615,7 +615,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// 
         /// </summary>
-        public IList<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>();
+        public IList<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>(3);
 
         /// <summary>
         /// Is the object stolen via the Stolen Gear quality?
@@ -1145,7 +1145,7 @@ namespace Chummer.Backend.Equipment
                         AllowCancel = false
                     })
                     {
-                        frmPickNumber.ShowDialog();
+                        frmPickNumber.ShowDialog(Program.MainForm);
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }

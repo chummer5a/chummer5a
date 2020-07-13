@@ -140,7 +140,7 @@ namespace Chummer
 
         public void GeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
-            List<string> lstPersistentKeysToRemove = new List<string>();
+            List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
             {
                 if (objPersistentModule.Value.IsRandomlyGenerated)

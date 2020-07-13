@@ -198,7 +198,7 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
@@ -329,7 +329,7 @@ namespace Chummer
                 lstLimitCategories.Add(improvement.ImprovedName);
             }
 
-            List<ListItem> lstCritters = new List<ListItem>();
+            List<ListItem> lstCritters = new List<ListItem>(30);
             if (objTradition.IsCustomTradition)
             {
                 string strSpiritCombat = objTradition.SpiritCombat;
@@ -581,7 +581,7 @@ namespace Chummer
                 foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
                 {
                     XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     Quality objQuality = new Quality(objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
@@ -647,7 +647,7 @@ namespace Chummer
                     string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
                     XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                     Gear objGear = new Gear(objCharacter);
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
                     objGear.Cost = "0";
                     objCharacter.Gear.Add(objGear);
@@ -658,7 +658,7 @@ namespace Chummer
                 XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                 if (objXmlWeapon != null)
                 {
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     Weapon objWeapon = new Weapon(objCharacter);
                     objWeapon.Create(objXmlWeapon, lstWeapons);
                     objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
