@@ -1625,6 +1625,9 @@ namespace ChummerHub.Controllers.V1
                     var members = await ssg.GetGroupMembers(_context, addTags);
                     foreach (var member in members)
                     {
+                        if (member == null)
+                            continue;
+                            
                         if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
                         {
                             if (member.SINnerMetaData?.Visibility.UserRights.Any(a => string.IsNullOrEmpty(a.EMail)) == false)
