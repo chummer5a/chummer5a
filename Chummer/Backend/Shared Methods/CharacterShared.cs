@@ -507,7 +507,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treSpells.FindNodeByTag(objSpell);
@@ -750,7 +750,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
@@ -873,7 +873,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
@@ -1654,7 +1654,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
@@ -1818,7 +1818,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objQuality.Levels > 0)
@@ -2099,7 +2099,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
+                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                         foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objLocation = treImprovements.FindNode(strLocation, false);
@@ -2242,7 +2242,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                 {
-                    List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                    List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                     foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                     {
                         TreeNode objNode = treSelected.FindNodeByTag(objLocation, false);
@@ -3025,7 +3025,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>();
+                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
 
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
@@ -4147,7 +4147,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
@@ -4426,7 +4426,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
@@ -5334,7 +5334,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5401,7 +5401,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5496,7 +5496,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -6544,7 +6544,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);

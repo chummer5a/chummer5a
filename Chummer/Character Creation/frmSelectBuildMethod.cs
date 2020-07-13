@@ -37,7 +37,7 @@ namespace Chummer
             this.TranslateWinForm();
 
             // Populate the Gameplay Options list.
-            List<ListItem> lstGameplayOptions = new List<ListItem>();
+            List<ListItem> lstGameplayOptions = new List<ListItem>(OptionsManager.LoadedCharacterOptions.Count);
             foreach (KeyValuePair<string, CharacterOptions> objLoopOptions in OptionsManager.LoadedCharacterOptions)
             {
                 lstGameplayOptions.Add(new ListItem(objLoopOptions, objLoopOptions.Value.DisplayName));

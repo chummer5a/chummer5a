@@ -132,7 +132,7 @@ namespace Chummer.UI.Powers
 
         private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
-            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
+            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>(4)
             {
                 new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"),
                     null),

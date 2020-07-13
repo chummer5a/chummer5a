@@ -781,6 +781,8 @@ namespace Chummer
 
         private static XmlDocument _xmlClipboard = new XmlDocument {XmlResolver = null};
 
+        public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings {XmlResolver = null};
+
         /// <summary>
         /// Clipboard.
         /// </summary>

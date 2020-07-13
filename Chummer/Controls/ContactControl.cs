@@ -367,31 +367,31 @@ namespace Chummer
             }
 
             // Read the list of Categories from the XML file.
-            List<ListItem> lstMetatypes = new List<ListItem>
+            List<ListItem> lstMetatypes = new List<ListItem> (10)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstSexes = new List<ListItem>
+            List<ListItem> lstSexes = new List<ListItem> (5)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstAges = new List<ListItem>
+            List<ListItem> lstAges = new List<ListItem> (5)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstPersonalLives = new List<ListItem>
+            List<ListItem> lstPersonalLives = new List<ListItem> (10)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstTypes = new List<ListItem>
+            List<ListItem> lstTypes = new List<ListItem> (10)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstPreferredPayments = new List<ListItem>
+            List<ListItem> lstPreferredPayments = new List<ListItem> (20)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstHobbiesVices = new List<ListItem>
+            List<ListItem> lstHobbiesVices = new List<ListItem> (20)
             {
                 ListItem.Blank
             };

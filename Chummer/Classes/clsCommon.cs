@@ -1034,7 +1034,7 @@ namespace Chummer
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
             PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
-            List<string> lstStringFromPDF = new List<string>();
+            List<string> lstStringFromPDF = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;

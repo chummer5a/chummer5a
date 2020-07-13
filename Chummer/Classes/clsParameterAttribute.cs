@@ -74,7 +74,7 @@ namespace Chummer
                 //double junk; //Not used, tryparse needs out
 
                 //LINQ magic to cast matchcollection to the double[]
-                List<double> lstValues = new List<double>();
+                List<double> lstValues = new List<double>(m2.Count);
                 foreach (Match objMatch in m2)
                 {
                     if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out double dblValue))

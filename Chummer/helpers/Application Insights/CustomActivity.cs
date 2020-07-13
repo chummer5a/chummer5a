@@ -74,11 +74,6 @@ namespace Chummer
             }
         }
 
-        ~CustomActivity()
-        {
-            Dispose(false);
-        }
-
         private void SetParent(string operationName, CustomActivity parentActivity)
         {
             if (parentActivity != null)
@@ -125,40 +120,33 @@ namespace Chummer
         }
 
         private bool _blnDisposed;
-        protected virtual void Dispose(bool blnIsDisposing)
-        {
-            if (_blnDisposed) return;
-
-            if (blnIsDisposing)
-            {
-                Timekeeper.Finish(OperationName);
-                Stop();
-                switch (MyOperationType)
-                {
-                    case OperationType.DependencyOperation:
-                        MyDependencyTelemetry.Duration = DateTimeOffset.UtcNow - MyDependencyTelemetry.Timestamp;
-                        if (MyDependencyTelemetry.ResultCode == "not disposed")
-                            MyDependencyTelemetry.ResultCode = "OK";
-                        tc.TrackDependency(MyDependencyTelemetry);
-                        break;
-                    case OperationType.RequestOperation:
-                        MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
-                        if (MyRequestTelemetry.ResponseCode == "not disposed")
-                            MyRequestTelemetry.ResponseCode = "OK";
-                        tc.TrackRequest(MyRequestTelemetry);
-                        break;
-                    default:
-                        throw new NotImplementedException("Implement OperationType " + OperationName);
-                }
-            }
-
-            _blnDisposed = true;
-        }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (_blnDisposed)
+                return;
+
+            Timekeeper.Finish(OperationName);
+            Stop();
+            switch (MyOperationType)
+            {
+                case OperationType.DependencyOperation:
+                    MyDependencyTelemetry.Duration = DateTimeOffset.UtcNow - MyDependencyTelemetry.Timestamp;
+                    if (MyDependencyTelemetry.ResultCode == "not disposed")
+                        MyDependencyTelemetry.ResultCode = "OK";
+                    tc.TrackDependency(MyDependencyTelemetry);
+                    break;
+                case OperationType.RequestOperation:
+                    MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
+                    if (MyRequestTelemetry.ResponseCode == "not disposed")
+                        MyRequestTelemetry.ResponseCode = "OK";
+                    tc.TrackRequest(MyRequestTelemetry);
+                    break;
+                default:
+                    throw new NotImplementedException("Implement OperationType " + OperationName);
+            }
+
+            _blnDisposed = true;
         }
     }
 }

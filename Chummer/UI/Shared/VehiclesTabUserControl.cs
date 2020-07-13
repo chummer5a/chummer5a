@@ -1034,7 +1034,7 @@ namespace Chummer.UI.Shared
                             .GetString("String_SuppressiveFire")
                             .Replace("{0}", objWeapon.Suppressive.ToString());
 
-                    List<ListItem> lstAmmo = new List<ListItem>();
+                    List<ListItem> lstAmmo = new List<ListItem>(objWeapon.AmmoSlots);
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;
 
                     for (int i = 1; i <= objWeapon.AmmoSlots; i++)
@@ -1761,7 +1761,7 @@ namespace Chummer.UI.Shared
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(_objCharacter);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -2039,7 +2039,7 @@ namespace Chummer.UI.Shared
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(_objCharacter);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -2181,7 +2181,7 @@ namespace Chummer.UI.Shared
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(_objCharacter);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -2284,7 +2284,7 @@ namespace Chummer.UI.Shared
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(_objCharacter);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -2381,7 +2381,7 @@ namespace Chummer.UI.Shared
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(_objCharacter);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -2519,7 +2519,7 @@ namespace Chummer.UI.Shared
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(_objCharacter);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -2811,7 +2811,7 @@ namespace Chummer.UI.Shared
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             Weapon objWeapon = new Weapon(_objCharacter)
             {
                 ParentVehicle = objVehicle,
@@ -3039,7 +3039,7 @@ namespace Chummer.UI.Shared
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             Weapon objWeapon = new Weapon(_objCharacter)
             {
                 ParentVehicle = objSelectedWeapon.ParentVehicle
@@ -3225,7 +3225,7 @@ namespace Chummer.UI.Shared
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                        List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
@@ -3350,7 +3350,7 @@ namespace Chummer.UI.Shared
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                        List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);

@@ -55,7 +55,7 @@ namespace Chummer.Backend.Uniques
         private string _strSpiritHealth = string.Empty;
         private string _strSpiritIllusion = string.Empty;
         private string _strSpiritManipulation = string.Empty;
-        private readonly List<string> _lstAvailableSpirits = new List<string>();
+        private readonly List<string> _lstAvailableSpirits = new List<string>(5);
         private XmlNode _nodBonus;
         private TraditionType _eTraditionType = TraditionType.None;
 
@@ -993,17 +993,21 @@ namespace Chummer.Backend.Uniques
 
         public static List<Tradition> GetTraditions(Character character)
         {
-            List<Tradition> result = new List<Tradition>();
-            XmlNodeList xmlTraditions = character.LoadData("traditions.xml").SelectNodes("/chummer/traditions/tradition");
-            if (xmlTraditions != null)
+            List<Tradition> result;
+            using (XmlNodeList xmlTraditions = character.LoadData("traditions.xml").SelectNodes("/chummer/traditions/tradition[" + character.Options.BookXPath() + ']'))
             {
-                foreach (XmlNode node in xmlTraditions)
+                result = new List<Tradition>(xmlTraditions?.Count ?? 0);
+                if (xmlTraditions?.Count > 0)
                 {
-                    Tradition tradition = new Tradition(character);
-                    tradition.Create(node);
-                    result.Add(tradition);
+                    foreach (XmlNode node in xmlTraditions)
+                    {
+                        Tradition tradition = new Tradition(character);
+                        tradition.Create(node);
+                        result.Add(tradition);
+                    }
                 }
             }
+
             return result;
         }
 

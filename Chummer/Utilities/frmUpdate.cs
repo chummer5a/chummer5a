@@ -603,7 +603,7 @@ namespace Chummer
             }
             if (blnDoRestart)
             {
-                List<string> lstBlocked = new List<string>();
+                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
                 foreach (var strFileToDelete in lstFilesToDelete)
                 {
                     //TODO: This will quite likely leave some wreckage behind. Introduce a sleep and scream after x seconds.

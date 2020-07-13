@@ -269,7 +269,8 @@ namespace Chummer
                                                 strArgs.Aggregate((j, k) => j + " " + k));
                                         }
 
-                                        if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
+                                        if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i]))
+                                            return;
                                         Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
                                         lstCharactersToLoad.Add(objLoopCharacter);
                                     }
@@ -469,16 +470,17 @@ namespace Chummer
 
         public frmCharacterRoster CharacterRoster { get; }
 
+        private Uri UpdateLocation { get; } = new Uri(GlobalOptions.PreferNightlyBuilds
+            ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
+            : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
+
         private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
-            Uri uriUpdateLocation = new Uri(GlobalOptions.PreferNightlyBuilds
-                ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
-                : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request;
             try
             {
-                WebRequest objTemp = WebRequest.Create(uriUpdateLocation);
+                WebRequest objTemp = WebRequest.Create(UpdateLocation);
                 request = objTemp as HttpWebRequest;
             }
             catch(System.Security.SecurityException ex)
@@ -777,7 +779,7 @@ namespace Chummer
             XmlNode objXmlWeapon = objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if(objXmlWeapon != null)
             {
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
                 objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
@@ -1180,7 +1182,7 @@ namespace Chummer
             XmlNode objXmlWeapon = objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if(objXmlWeapon != null)
             {
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
                 objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
@@ -1252,7 +1254,7 @@ namespace Chummer
         /// </summary>
         public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
         {
-            OpenCharacterList(new List<Character> { objCharacter }, blnIncludeInMRU);
+            OpenCharacterList(new Character[] { objCharacter }, blnIncludeInMRU);
         }
 
         /// <summary>
@@ -1366,11 +1368,9 @@ namespace Chummer
         /// </summary>
         public void PopulateMRUToolstripMenu(object sender, TextEventArgs e)
         {
-            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
-            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.MostRecentlyUsedCharacters);
-
             SuspendLayout();
-            mnuFileMRUSeparator.Visible = strStickyMRUList.Count > 0 || strMRUList.Count > 0;
+            mnuFileMRUSeparator.Visible = GlobalOptions.FavoritedCharacters.Count > 0
+                                          || GlobalOptions.MostRecentlyUsedCharacters.Count > 0;
 
             if(e?.Text != "mru")
             {
@@ -1413,10 +1413,10 @@ namespace Chummer
                             continue;
                     }
 
-                    if(i < strStickyMRUList.Count)
+                    if(i < GlobalOptions.FavoritedCharacters.Count)
                     {
                         objItem.Visible = true;
-                        objItem.Text = strStickyMRUList[i];
+                        objItem.Text = GlobalOptions.FavoritedCharacters[i];
                     }
                     else
                     {
@@ -1439,10 +1439,10 @@ namespace Chummer
             int i2 = 0;
             for(int i = 0; i < GlobalOptions.MaxMruSize; ++i)
             {
-                if(i2 < strMRUList.Count && i < strMRUList.Count)
+                if(i2 < GlobalOptions.MostRecentlyUsedCharacters.Count && i < GlobalOptions.MostRecentlyUsedCharacters.Count)
                 {
-                    string strFile = strMRUList[i];
-                    if(!strStickyMRUList.Contains(strFile))
+                    string strFile = GlobalOptions.MostRecentlyUsedCharacters[i];
+                    if(!GlobalOptions.FavoritedCharacters.Contains(strFile))
                     {
                         ToolStripMenuItem objItem;
                         switch(i2)

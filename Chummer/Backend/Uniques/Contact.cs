@@ -79,7 +79,7 @@ namespace Chummer
         private bool _blnGroupEnabled = true;
         private bool _blnReadOnly;
         private bool _blnFree;
-        private readonly List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>(1);
         private int _intMainMugshotIndex = -1;
         private int _intKarmaMinimum = 2;
 

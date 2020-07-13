@@ -36,7 +36,7 @@ namespace Chummer
     public partial class frmViewer : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private List<Character> _lstCharacters = new List<Character>();
+        private List<Character> _lstCharacters = new List<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument {XmlResolver = null};
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading;
@@ -565,7 +565,7 @@ namespace Chummer
 
         private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>(5);
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
@@ -620,7 +620,7 @@ namespace Chummer
         /// </summary>
         public void SetCharacters(params Character[] lstCharacters)
         {
-            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>();
+            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>(1);
         }
         #endregion
 

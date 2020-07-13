@@ -496,7 +496,7 @@ namespace Chummer.Backend.Skills
                                           nameof(UpgradeKarmaCost));
         }
 
-        private readonly List<Skill> _lstAffectedSkills = new List<Skill>();
+        private readonly List<Skill> _lstAffectedSkills = new List<Skill>(4);
         private string _strGroupName;
         private readonly Character _objCharacter;
 

@@ -36,7 +36,7 @@ namespace Chummer
         }
         #endregion
 
-        private List<Character> characters = new List<Character>();
+        private List<Character> characters = new List<Character>(5);
         private int _intIndex;
         private int _intRound;
         private bool _blnFinishedCombatTurn;

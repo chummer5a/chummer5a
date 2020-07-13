@@ -120,7 +120,7 @@ namespace Chummer
 
                     if (objItems.Count > 0)
                     {
-                        List<ListItem> lstItems = new List<ListItem>();
+                        List<ListItem> lstItems = new List<ListItem>(objItems.Count);
 
                         foreach (string s in objPriorities)
                         {
@@ -341,7 +341,7 @@ namespace Chummer
 
                         if (intSkillCount > 0)
                         {
-                            List<ListItem> lstSkills = new List<ListItem>();
+                            List<ListItem> lstSkills = new List<ListItem>(intSkillCount);
                             if (objNodeList.Count > 0)
                             {
                                 foreach (XPathNavigator objXmlSkill in xmlSkillsList)
@@ -702,7 +702,7 @@ namespace Chummer
                 if (strOldSpecialPriority != _objCharacter.SpecialPriority || strOldTalentPriority != _objCharacter.SpecialPriority)
                 {
                     List<Quality> lstOldPriorityQualities = _objCharacter.Qualities.Where(x=> x.OriginSource == QualitySource.Heritage).ToList();
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     int intMaxModifier = 0;
                     bool blnRemoveFreeSkills = true;
                     XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + _objCharacter.SpecialPriority +
@@ -1260,7 +1260,7 @@ namespace Chummer
         void PopulateTalents()
         {
             // Load the Priority information.
-            List<ListItem> lstTalent = new List<ListItem>();
+            List<ListItem> lstTalent = new List<ListItem>(5);
 
             // Populate the Priority Category list.
             XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + (cboTalent.SelectedValue?.ToString() ?? string.Empty) + "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
@@ -1428,7 +1428,7 @@ namespace Chummer
                     }
                 }
 
-                List<ListItem> lstMetavariants = new List<ListItem>
+                List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
                     new ListItem("None", LanguageManager.GetString("String_None"))
                 };
@@ -1507,7 +1507,7 @@ namespace Chummer
             else
             {
                 // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>
+                List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
                     new ListItem("None", LanguageManager.GetString("String_None"))
                 };
@@ -1532,7 +1532,7 @@ namespace Chummer
             string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatypeCategory))
             {
-                List<ListItem> lstMetatype = new List<ListItem>();
+                List<ListItem> lstMetatype = new List<ListItem>(10);
 
                 XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = \"" + (cboHeritage.SelectedValue?.ToString() ?? string.Empty) + "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
                 foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
@@ -1570,7 +1570,7 @@ namespace Chummer
 
         private void LoadMetatypes()
         {
-            List<ListItem> lstCategory = new List<ListItem>();
+            List<ListItem> lstCategory = new List<ListItem>(3);
 
             // Populate the Metatype Category list.
             // Create a list of any Categories that should not be in the list.

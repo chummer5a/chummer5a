@@ -399,7 +399,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
 
                 XmlNodeList objXmlGearList = objXmlArmorNode["gears"].SelectNodes("usegear");
-                IList<Weapon> lstChildWeapons = new List<Weapon>();
+                IList<Weapon> lstChildWeapons = new List<Weapon>(1);
                 foreach (XmlNode objXmlArmorGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
@@ -1047,13 +1047,13 @@ namespace Chummer.Backend.Equipment
                     if (value)
                     {
                         // Add the Armor's Improvements to the character.
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToArray());
                         // Add the Improvements from any Armor Mods in the Armor.
                         foreach (ArmorMod objMod in ArmorMods)
                         {
                             if (objMod.Equipped)
                             {
-                                ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                                ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                                 // Add the Improvements from any Gear in the Armor.
                                 foreach (Gear objGear in objMod.Gear)
                                 {
@@ -1076,11 +1076,11 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         // Add the Armor's Improvements to the character.
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToArray());
                         // Add the Improvements from any Armor Mods in the Armor.
                         foreach (ArmorMod objMod in ArmorMods)
                         {
-                            ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                            ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                             // Add the Improvements from any Gear in the Armor.
                             foreach (Gear objGear in objMod.Gear)
                             {
@@ -1595,7 +1595,7 @@ namespace Chummer.Backend.Equipment
             // Remove the Cyberweapon created by the Mod if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
                 foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                 {
                     lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
@@ -1656,7 +1656,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToArray());
                     }
                 }
                 if (WirelessBonus?.InnerText != null)
@@ -1674,10 +1674,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToArray());
                     }
                 }
-                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId + "Wireless").ToList());
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId + "Wireless").ToArray());
             }
         }
 

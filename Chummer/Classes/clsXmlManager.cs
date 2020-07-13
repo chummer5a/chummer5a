@@ -430,50 +430,48 @@ namespace Chummer
             {
                 xmlDoc.Save(memStream);
                 memStream.Position = 0;
-                using (XmlReader objXmlReader = XmlReader.Create(memStream, new XmlReaderSettings {XmlResolver = null}))
+                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.SafeXmlReaderSettings))
                     return new XPathDocument(objXmlReader).CreateNavigator();
             }
         }
 
         private static void CheckIdNodes(XmlNode xmlParentNode, string strFileName)
         {
-            HashSet<string> setDuplicateIDs = new HashSet<string>();
-            List<string> lstItemsWithMalformedIDs = new List<string>();
+            if (Utils.IsUnitTest)
+                return;
+            ICollection<string> setDuplicateIDs = new HashSet<string>();
+            ICollection<string> lstItemsWithMalformedIDs = new List<string>(1);
             // Key is ID, Value is a list of the names of all items with that ID.
-            Dictionary<string, List<string>> dicItemsWithIDs = new Dictionary<string, List<string>>();
+            Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>();
             CheckIdNode(xmlParentNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
 
             if (setDuplicateIDs.Count > 0)
             {
-                string strDuplicatesNames = string.Empty;
+                StringBuilder sbdDuplicatesNames = new StringBuilder();
                 foreach (IEnumerable<string> lstDuplicateNames in dicItemsWithIDs.Where(x => setDuplicateIDs.Contains(x.Key)).Select(x => x.Value))
                 {
-                    if (!string.IsNullOrEmpty(strDuplicatesNames))
-                        strDuplicatesNames += Environment.NewLine;
-                    strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
+                    if (sbdDuplicatesNames.Length != 0)
+                        sbdDuplicatesNames.AppendLine();
+                    sbdDuplicatesNames.Append(string.Join(Environment.NewLine, lstDuplicateNames));
                 }
-                if (!Utils.IsUnitTest)
-                {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
-                        , LanguageManager.GetString("Message_DuplicateGuidWarning")
-                        , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
-                        , strFileName
-                        , strDuplicatesNames));
-                }
+                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
+                    , LanguageManager.GetString("Message_DuplicateGuidWarning")
+                    , setDuplicateIDs.Count
+                    , strFileName
+                    , sbdDuplicatesNames.ToString()));
             }
 
-            if (lstItemsWithMalformedIDs.Count > 0 && !Utils.IsUnitTest)
+            if (lstItemsWithMalformedIDs.Count > 0)
             {
-                string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
                 Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
                     , LanguageManager.GetString("Message_NonGuidIdWarning")
-                    , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
+                    , lstItemsWithMalformedIDs.Count
                     , strFileName
-                    , strMalformedIdNames));
+                    , string.Join(Environment.NewLine, lstItemsWithMalformedIDs)));
             }
         }
 
-        private static void CheckIdNode(XmlNode xmlParentNode, ref HashSet<string> setDuplicateIDs, ref List<string> lstItemsWithMalformedIDs, ref Dictionary<string, List<string>> dicItemsWithIDs)
+        private static void CheckIdNode(XmlNode xmlParentNode, ref ICollection<string> setDuplicateIDs, ref ICollection<string> lstItemsWithMalformedIDs, ref Dictionary<string, IList<string>> dicItemsWithIDs)
         {
             using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
             {
@@ -490,7 +488,7 @@ namespace Chummer
                         string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
                         if (!strId.IsGuid())
                             lstItemsWithMalformedIDs.Add(strItemName);
-                        else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
+                        else if (dicItemsWithIDs.TryGetValue(strId, out IList<string> lstNamesList))
                         {
                             if (!setDuplicateIDs.Contains(strId))
                             {
@@ -502,7 +500,7 @@ namespace Chummer
                             lstNamesList.Add(strItemName);
                         }
                         else
-                            dicItemsWithIDs.Add(strId, new List<string> { strItemName });
+                            dicItemsWithIDs.Add(strId, new List<string>(2) { strItemName });
                     }
 
                     // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
@@ -622,7 +620,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlFile.Load(objXmlReader);
                 }
                 catch (IOException)
@@ -687,7 +685,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlFile.Load(objXmlReader);
                 }
                 catch (IOException)
@@ -708,7 +706,7 @@ namespace Chummer
                             if (strFileName != "sheets.xml")
                             {
                                 // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                                List<XmlNode> lstDelete = new List<XmlNode>();
+                                List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
                                 foreach (XmlNode objChild in objNode.ChildNodes)
                                 {
                                     XmlNode objParentNode = objChild.ParentNode;
@@ -781,7 +779,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlFile.Load(objXmlReader);
                 }
                 catch (IOException)
@@ -799,7 +797,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", new List<Tuple<XmlNode, string>>()) || blnReturn;
+                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer") || blnReturn;
                         }
                     }
                 }
@@ -817,7 +815,7 @@ namespace Chummer
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
         /// <param name="lstExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
-        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound)
+        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound = null)
         {
             bool blnReturn = false;
             string strFilter = string.Empty;
@@ -920,9 +918,9 @@ namespace Chummer
 
             List<XmlNode> lstElementChildren = null;
             // Pre-cache list of elements if we don't have an operation specified or have recurse specified
-            if ((string.IsNullOrEmpty(strOperation) || strOperation == "recurse"))
+            if (string.IsNullOrEmpty(strOperation) || strOperation == "recurse")
             {
-                lstElementChildren = new List<XmlNode>();
+                lstElementChildren = new List<XmlNode>(xmlAmendingNode.ChildNodes.Count);
                 if (xmlAmendingNode.HasChildNodes)
                 {
                     foreach (XmlNode objChild in xmlAmendingNode.ChildNodes)
@@ -992,15 +990,27 @@ namespace Chummer
                 {
                     if (lstElementChildren?.Count > 0)
                     {
-                        Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
-                        lstExtraNodesToAddIfNotFound.Add(objMyData);
-                        foreach (XmlNode objChild in lstElementChildren)
+                        if (!(lstExtraNodesToAddIfNotFound?.Count > 0) && objNodesToEdit?.Count > 0)
                         {
-                            blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
+                            foreach (XmlNode objChild in lstElementChildren)
+                            {
+                                blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath);
+                            }
                         }
-                        // Remove our info in case we weren't added.
-                        // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
-                        lstExtraNodesToAddIfNotFound.Remove(objMyData);
+                        else
+                        {
+                            if (lstExtraNodesToAddIfNotFound == null)
+                                lstExtraNodesToAddIfNotFound = new List<Tuple<XmlNode, string>>(1);
+                            Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
+                            lstExtraNodesToAddIfNotFound.Add(objMyData);
+                            foreach (XmlNode objChild in lstElementChildren)
+                            {
+                                blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
+                            }
+                            // Remove our info in case we weren't added.
+                            // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
+                            lstExtraNodesToAddIfNotFound.Remove(objMyData);
+                        }
                     }
                 }
                 // ... otherwise loop through any nodes that satisfy the XPath filter.
@@ -1154,7 +1164,7 @@ namespace Chummer
             else if (strOperation == "append" || blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace"))
             {
                 // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
-                if (lstExtraNodesToAddIfNotFound.Count > 0)
+                if (lstExtraNodesToAddIfNotFound?.Count > 0)
                 {
                     // Because this is a list, foreach will move from oldest element to newest
                     // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
@@ -1289,7 +1299,7 @@ namespace Chummer
             try
             {
                 using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                         objLanguageDoc.Load(objXmlReader);
             }
             catch (IOException ex)

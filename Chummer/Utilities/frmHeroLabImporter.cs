@@ -30,7 +30,7 @@ namespace Chummer
 {
     public partial class frmHeroLabImporter : Form
     {
-        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>();
+        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>(1);
         private readonly object _lstCharacterCacheLock = new object();
         private readonly Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
 
@@ -77,7 +77,7 @@ namespace Chummer
                 return null;
             }
 
-            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>();
+            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>(3);
             try
             {
                 using (ZipArchive zipArchive = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
@@ -95,7 +95,7 @@ namespace Chummer
                             try
                             {
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                    using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings {XmlResolver = null}))
+                                    using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
                                         xmlSourceDoc.Load(objXmlReader);
                                 lstCharacterXmlStatblocks.Add(xmlSourceDoc);
                             }

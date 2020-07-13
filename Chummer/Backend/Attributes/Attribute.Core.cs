@@ -740,11 +740,12 @@ namespace Chummer.Backend.Attributes
                 StringBuilder strModifier = new StringBuilder();
 
                 HashSet<string> lstUniqueName = new HashSet<string>();
-                List<Tuple<string, int, string>> lstUniquePair = new List<Tuple<string, int, string>>();
-                int intBaseValue = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements
+                Improvement[] lstImprovements = _objCharacter.Improvements
                     .Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                                             objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
+                                             objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)).ToArray();
+                List<Tuple<string, int, string>> lstUniquePair = new List<Tuple<string, int, string>>(lstImprovements.Length);
+                int intBaseValue = 0;
+                foreach (Improvement objImprovement in lstImprovements)
                 {
                     string strUniqueName = objImprovement.UniqueName;
                     if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev)

@@ -91,7 +91,7 @@ namespace Chummer.UI.Skills
                 btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
                 btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
-                List<ListItem> lstAttributeItems = new List<ListItem>();
+                List<ListItem> lstAttributeItems = new List<ListItem>(AttributeSection.AttributeStrings.Count);
                 foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
                 {
                     string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);

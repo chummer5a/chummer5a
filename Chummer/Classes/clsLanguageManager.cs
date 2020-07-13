@@ -51,7 +51,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 objEnglishDocument.Load(objXmlReader);
                     }
                     catch (IOException ex)
@@ -378,7 +378,7 @@ namespace Chummer
             // strInput will get split up based on curly brackets and put into this list as a string-bool Tuple.
             // String value in Tuple will be a section of strInput either enclosed in curly brackets or between sets of enclosed curly brackets
             // Bool value in Tuple is a flag for whether the item was enclosed in curly brackets (True) or between sets of enclosed curly brackets (False)
-            List<Tuple<string, bool>> lstStringWithCompoundsSplit = new List<Tuple<string, bool>>
+            List<Tuple<string, bool>> lstStringWithCompoundsSplit = new List<Tuple<string, bool>>(5)
             {
                 // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
                 new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
@@ -493,7 +493,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 objEnglishDocument.Load(objXmlReader);
                     }
                     catch (IOException)
@@ -530,7 +530,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 objLanguageDocument.Load(objXmlReader);
                     }
                     catch (IOException)
@@ -1019,7 +1019,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 objLanguageDocument.Load(objXmlReader);
                     }
                     catch (IOException ex)
@@ -1085,7 +1085,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 DataDocument.Load(objXmlReader);
                     }
                     catch (IOException ex)

@@ -74,7 +74,7 @@ namespace Chummer.Backend.Skills
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
-        public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(); //List of suggested specializations for this skill
+        public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 
         public virtual void WriteTo(XmlTextWriter objWriter)
@@ -384,9 +384,12 @@ namespace Chummer.Backend.Skills
 
             objSkill.SkillId = suid;
 
-            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            List<SkillSpecialization> lstSpecializations;
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specialization"))
+            {
+                lstSpecializations = new List<SkillSpecialization>(xmlSpecList?.Count ?? 0);
                 if (xmlSpecList?.Count > 0)
+                {
                     foreach (XmlNode xmlSpecializationNode in xmlSpecList)
                     {
                         string strSpecializationName = xmlSpecializationNode.Attributes?["bonustext"]?.InnerText;
@@ -396,7 +399,9 @@ namespace Chummer.Backend.Skills
                             strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
                         lstSpecializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
                     }
-            if (lstSpecializations.Count != 0)
+                }
+            }
+            if (lstSpecializations.Count > 0)
             {
                 objSkill.Specializations.AddRange(lstSpecializations);
             }
@@ -1029,20 +1034,26 @@ namespace Chummer.Backend.Skills
 
         public virtual string SkillCategory { get; } = string.Empty;
 
+        private List<ListItem> _lstCachedSuggestedSpecializations = null;
+
         // ReSharper disable once InconsistentNaming
         public IReadOnlyList<ListItem> CGLSpecializations
         {
             get
             {
-                List<ListItem> lstSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
-                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x =>
-                    x.ImprovedName == Name && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption &&
-                    lstSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
+                if (_lstCachedSuggestedSpecializations == null)
                 {
-                    string strSpecializationName = objImprovement.UniqueName;
-                    lstSuggestedSpecializations.Add(new ListItem(strSpecializationName, CharacterObject.TranslateExtra(strSpecializationName)));
+                    _lstCachedSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
+                    foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x =>
+                        x.ImprovedName == Name && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption &&
+                        _lstCachedSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
+                    {
+                        string strSpecializationName = objImprovement.UniqueName;
+                        _lstCachedSuggestedSpecializations.Add(new ListItem(strSpecializationName, CharacterObject.TranslateExtra(strSpecializationName)));
+                    }
                 }
-                return lstSuggestedSpecializations;
+
+                return _lstCachedSuggestedSpecializations;
             }
         }
 
@@ -1622,6 +1633,8 @@ namespace Chummer.Backend.Skills
                 _intCachedForcedNotBuyWithKarma = -1;
             if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                 _intCachedCyberwareRating = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
+                _lstCachedSuggestedSpecializations = null;
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));

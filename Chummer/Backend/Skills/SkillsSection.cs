@@ -241,15 +241,20 @@ namespace Chummer.Backend.Skills
                 {
                     using (_ = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
                     {
-                        List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
+                        List<SkillGroup> lstLoadingSkillGroups;
                         using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
-                            if (xmlGroupsList != null)
+                        {
+                            lstLoadingSkillGroups = new List<SkillGroup>(xmlGroupsList?.Count ?? 0);
+                            if (xmlGroupsList?.Count > 0)
+                            {
                                 foreach (XmlNode xmlNode in xmlGroupsList)
                                 {
                                     SkillGroup objGroup = new SkillGroup(_objCharacter);
                                     objGroup.Load(xmlNode);
                                     lstLoadingSkillGroups.Add(objGroup);
                                 }
+                            }
+                        }
 
                         lstLoadingSkillGroups.Sort((i1, i2) =>
                             string.Compare(i2.CurrentDisplayName, i1.CurrentDisplayName, false, GlobalOptions.CultureInfo));
@@ -264,15 +269,20 @@ namespace Chummer.Backend.Skills
                     using (_ = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
                     {
                         //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
-                        List<Skill> lstLoadingSkills = new List<Skill>();
+                        List<Skill> lstLoadingSkills;
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
-                            if (xmlSkillsList != null)
+                        {
+                            lstLoadingSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
+                            if (xmlSkillsList?.Count > 0)
+                            {
                                 foreach (XmlNode xmlNode in xmlSkillsList)
                                 {
                                     Skill objSkill = Skill.Load(_objCharacter, xmlNode);
                                     if (objSkill != null)
                                         lstLoadingSkills.Add(objSkill);
                                 }
+                            }
+                        }
 
                         lstLoadingSkills.Sort(CompareSkills);
 
@@ -354,10 +364,11 @@ namespace Chummer.Backend.Skills
                 }
                 else
                 {
-                    List<Skill> lstTempSkillList = new List<Skill>();
+                    List<Skill> lstTempSkillList;
                     using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
                     {
-                        if (xmlSkillsList != null)
+                        lstTempSkillList = new List<Skill>(xmlSkillsList?.Count ?? 0);
+                        if (xmlSkillsList?.Count > 0)
                         {
                             foreach (XmlNode xmlNode in xmlSkillsList)
                             {
@@ -370,7 +381,7 @@ namespace Chummer.Backend.Skills
 
                     if (lstTempSkillList.Count > 0)
                     {
-                        List<Skill> lstUnsortedSkills = new List<Skill>();
+                        List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
 
                         //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
                         bool OldSkillFilter(Skill skill)
@@ -476,15 +487,20 @@ namespace Chummer.Backend.Skills
         {
             using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
-                List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
+                List<SkillGroup> lstLoadingSkillGroups;
                 using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
-                    if (xmlGroupsList != null)
+                {
+                    lstLoadingSkillGroups = new List<SkillGroup>(xmlGroupsList?.Count ?? 0);
+                    if (xmlGroupsList?.Count > 0)
+                    {
                         foreach (XmlNode xmlNode in xmlGroupsList)
                         {
                             SkillGroup objGroup = new SkillGroup(_objCharacter);
                             objGroup.LoadFromHeroLab(xmlNode);
                             lstLoadingSkillGroups.Add(objGroup);
                         }
+                    }
+                }
 
                 lstLoadingSkillGroups.Sort((i1, i2) =>
                     string.Compare(i2.CurrentDisplayName, i1.CurrentDisplayName, false, GlobalOptions.CultureInfo));
@@ -498,15 +514,20 @@ namespace Chummer.Backend.Skills
 
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-                List<Skill> lstTempSkillList = new List<Skill>();
+                List<Skill> lstTempSkillList;
                 using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
+                {
+                    lstTempSkillList = new List<Skill>(2 * xmlSkillsList?.Count ?? 0);
                     if (xmlSkillsList?.Count > 0)
+                    {
                         foreach (XmlNode xmlNode in xmlSkillsList)
                         {
                             Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
                             if (objSkill != null)
                                 lstTempSkillList.Add(objSkill);
                         }
+                    }
+                }
 
                 using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knowledge/skill"))
                     if (xmlSkillsList?.Count > 0)
@@ -526,7 +547,7 @@ namespace Chummer.Backend.Skills
                                 lstTempSkillList.Add(objSkill);
                         }
 
-                List<Skill> lstUnsortedSkills = new List<Skill>();
+                List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
 
                 //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
                 bool OldSkillFilter(Skill skill)
@@ -909,11 +930,11 @@ namespace Chummer.Backend.Skills
         /// This is only used for reflection, so that all zero ratings skills are not uploaded
         /// </summary>
         [HubTag]
-        public List<Skill> NotZeroRatingSkills
+        public IList<Skill> NotZeroRatingSkills
         {
             get
             {
-                List<Skill> resultList = new List<Skill>();
+                List<Skill> resultList = new List<Skill>(_lstSkills.Count);
                 foreach (Skill objLoopSkill in _lstSkills)
                 {
                     if (objLoopSkill.Rating > 0)
@@ -928,7 +949,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
+        public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>(1);
 
         /// <summary>
         /// Skill Groups.
@@ -1075,31 +1096,32 @@ namespace Chummer.Backend.Skills
             using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter, strName) + "]"))
             {
                 // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
-                Dictionary<string, Skill> dicSkills = new Dictionary<string, Skill>(xmlSkillList?.Count ?? 0);
-                List<ListItem> lstSkillOrder = new List<ListItem>();
-                if (xmlSkillList != null)
+                List<ListItem> lstSkillOrder = new List<ListItem>(xmlSkillList?.Count ?? 0);
+                Dictionary<ListItem, Skill> dicSkills = new Dictionary<ListItem, Skill>(lstSkillOrder.Capacity);
+                if (xmlSkillList?.Count > 0)
                 {
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
                         string strSkillName = xmlSkill["name"]?.InnerText ?? string.Empty;
-                        lstSkillOrder.Add(new ListItem(strSkillName, xmlSkill["translate"]?.InnerText ?? strSkillName));
+                        ListItem objSkillItem = new ListItem(strSkillName, xmlSkill["translate"]?.InnerText ?? strSkillName);
+                        lstSkillOrder.Add(objSkillItem);
                         //TODO: read from backup
                         if (blnFetchFromBackup && _dicSkillBackups.Count > 0 && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
                         {
                             if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
                             {
-                                dicSkills.Add(objSkill.Name, objSkill);
+                                dicSkills.Add(objSkillItem, objSkill);
                                 _dicSkillBackups.Remove(guiSkillId);
                             }
                             else
                             {
-                                dicSkills.Add(strSkillName, Skill.FromData(xmlSkill, _objCharacter));
+                                dicSkills.Add(objSkillItem, Skill.FromData(xmlSkill, _objCharacter));
                             }
                         }
                         else
                         {
                             Skill objSkill = Skill.FromData(xmlSkill, _objCharacter);
-                            dicSkills.Add(strSkillName, objSkill);
+                            dicSkills.Add(objSkillItem, objSkill);
                         }
                     }
                 }
@@ -1109,7 +1131,7 @@ namespace Chummer.Backend.Skills
                 // Second pass, retrieve the Skills in the order they're presented in the list.
                 foreach (ListItem objItem in lstSkillOrder)
                 {
-                    yield return dicSkills[objItem.Value.ToString()];
+                    yield return dicSkills[objItem];
                 }
             }
         }

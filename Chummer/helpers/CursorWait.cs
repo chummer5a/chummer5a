@@ -31,7 +31,7 @@ namespace Chummer
             // Wait
             _control = control;
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            Program.MainForm.DoThreadSafe(() =>
+            Program.MainForm?.DoThreadSafe(() =>
             {
                 if (_control == null)
                     Application.UseWaitCursor = true;
@@ -43,7 +43,7 @@ namespace Chummer
         public CursorWait(bool appStarting = false)
         {
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            Program.MainForm.DoThreadSafe(() =>
+            Program.MainForm?.DoThreadSafe(() =>
             {
                 Application.UseWaitCursor = true;
             });
@@ -54,7 +54,7 @@ namespace Chummer
             // Wait
             _form = form;
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            Program.MainForm.DoThreadSafe(() =>
+            Program.MainForm?.DoThreadSafe(() =>
             {
                 if (_form == null)
                     Application.UseWaitCursor = true;
@@ -63,37 +63,25 @@ namespace Chummer
             });
         }
 
-        ~CursorWait()
-        {
-            Dispose(false);
-        }
-
         private bool _blnDisposed;
-        protected virtual void Dispose(bool blnDisposing)
-        {
-            if (_blnDisposed) return;
-
-            if (blnDisposing)
-            {
-                Program.MainForm.DoThreadSafe(() =>
-                {
-                    // Reset
-                    Cursor.Current = Cursors.Default;
-                    Application.UseWaitCursor = false;
-                    if (_control != null)
-                        _control.Cursor = Cursors.Default;
-                    if (_form != null)
-                        _form.Cursor = Cursors.Default;
-                });
-            }
-
-            _blnDisposed = true;
-        }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (_blnDisposed)
+                return;
+
+            Program.MainForm?.DoThreadSafe(() =>
+            {
+                // Reset
+                Cursor.Current = Cursors.Default;
+                Application.UseWaitCursor = false;
+                if (_control != null)
+                    _control.Cursor = Cursors.Default;
+                if (_form != null)
+                    _form.Cursor = Cursors.Default;
+            });
+
+            _blnDisposed = true;
         }
     }
 }

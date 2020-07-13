@@ -36,8 +36,8 @@ namespace Chummer.UI.Shared
         private bool _blnIsTopmostSuspendLayout;
         private readonly Func<TType, Control> _funcCreateControl;  //Function to create a control out of a item
         private readonly bool _blnLoadVisibleOnly;
-        private readonly List<ControlWithMetaData> _lstContentList = new List<ControlWithMetaData>();
-        private readonly List<int> _lstDisplayIndex = new List<int>();
+        private readonly List<ControlWithMetaData> _lstContentList = new List<ControlWithMetaData>(10);
+        private readonly List<int> _lstDisplayIndex = new List<int>(10);
         private readonly IndexComparer _indexComparer;
         private BitArray _ablnRendered;
         private int _intOffScreenChunkSize = 1;
@@ -144,7 +144,7 @@ namespace Chummer.UI.Shared
 
         private void ComptuteDisplayIndex()
         {
-            List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>();
+            List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>(_lstContentList.Count);
             for (int i = 0; i < _lstContentList.Count; ++i)
             {
                 ControlWithMetaData objLoopControl = _lstContentList[i];
