@@ -12776,43 +12776,50 @@ namespace Chummer
         private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
-            CheckBox currentBox = null;
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
                 List<CheckBox> lstCheckBoxes = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().ToList();
                 if (lstCheckBoxes.Count < intConditionMax + intOverflow)
                 {
-                    int max = 0;
-                    if (lstCheckBoxes.Count <= 0)
+                    int intMax = 0;
+                    CheckBox objMaxCheckBox = null;
+                    foreach (CheckBox objLoopCheckBox in lstCheckBoxes)
                     {
-                        max = lstCheckBoxes.Max(x => Convert.ToInt32(x.Tag, GlobalOptions.InvariantCultureInfo));
+                        int intLoop = Convert.ToInt32(objLoopCheckBox.Tag);
+                        if (objMaxCheckBox == null || intMax < intLoop)
+                        {
+                            intMax = intLoop;
+                            objMaxCheckBox = objLoopCheckBox;
+                        }
                     }
 
-                    if (max < intConditionMax + intOverflow)
+                    for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                     {
-                        for (int i = max + 1; i <= intConditionMax + intOverflow; i++)
+                        CheckBox cb = new CheckBox
                         {
-                            CheckBox cb = new CheckBox
-                            {
-                                Tag = i,
-                                Appearance = Appearance.Button,
-                                Size = new Size(24, 24),
-                                Margin = new Padding(1, 1, 1, 1),
-                                TextAlign = ContentAlignment.MiddleRight,
-                                UseVisualStyleBackColor = true
-                            };
-                            cb.Click += button_Click;
-                            pnlConditionMonitorPanel.Controls.Add(cb);
-                        }
+                            Tag = i,
+                            Appearance = objMaxCheckBox.Appearance,
+                            Size = objMaxCheckBox.Size,
+                            Padding = objMaxCheckBox.Padding,
+                            Margin = objMaxCheckBox.Margin,
+                            TextAlign = objMaxCheckBox.TextAlign,
+                            Font = objMaxCheckBox.Font,
+                            UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
+                        };
+                        cb.Click += button_Click;
+                        pnlConditionMonitorPanel.Controls.Add(cb);
+                        lstCheckBoxes.Add(cb);
                     }
                 }
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
                     chkCmBox.BackColor = SystemColors.Control;
-                    if (intCurrentBoxTag == value)
-                        currentBox = chkCmBox;
+                    if (check && intCurrentBoxTag <= value)
+                    {
+                        chkCmBox.Checked = true;
+                    }
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
@@ -12835,10 +12842,6 @@ namespace Chummer
                         chkCmBox.Visible = false;
                         chkCmBox.Text = string.Empty;
                     }
-                }
-                if (currentBox != null && check)
-                {
-                    currentBox.Checked = true;
                 }
             }
             else

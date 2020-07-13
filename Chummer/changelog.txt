@@ -35,6 +35,7 @@ Application Fixes:
 - Chummer no longer crashes when attempting to delete the quality representing that a metatype-given quality was removed at character creation.
 - The metatype selection form for Karma-based character generation options now properly remembers the character's current metatype and metavariant settings.
 - The message displaying conditions that a character has not met for something that they have picked out can now properly handle condition groups.
+- Condition Monitor boxes now load properly if the character being loaded has any of their boxes filled and/or have more than 24 Physical and/or Stun Condition Monitor boxes.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
