@@ -118,7 +118,9 @@ namespace ChummerHub.Models.V1
                                                       //.Include(a => a.MyExtendedAttributes)
                                                       .Include(a => a.SINnerMetaData.Visibility)
                                                       .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                                  where a.MyGroup.Id == Id
+                                                  where
+
+                                                      a.MyGroup.Id == Id
                                                   && Id != null
                                                   select a).ToListAsync();
                         }

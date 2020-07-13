@@ -890,8 +890,12 @@ namespace Chummer
             if (e.Node.Tag != null)
             {
                 string strTag = e.Node.Tag.ToString();
-                e.Node.ContextMenuStrip = CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                                                 && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                if (!String.IsNullOrEmpty(strTag))
+                    e.Node.ContextMenuStrip = CreateContextMenuStrip(
+                        strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                else
+                    e.Node.ContextMenuStrip = CreateContextMenuStrip(false);
             }
             foreach (var plugin in Program.PluginLoader.MyActivePlugins)
             {
