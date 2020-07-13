@@ -850,6 +850,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            bool blnSingleSelected = true;
             List<string> selectedValues = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlSelectAttributeList = bonusNode.SelectNodes("selectattribute"))
             {
@@ -921,6 +922,8 @@ namespace Chummer.Classes
                                 throw new AbortedException();
                             }
 
+                            if (blnSingleSelected && selectedValues.Count > 0 && !selectedValues.Contains(frmPickAttribute.SelectedAttribute))
+                                blnSingleSelected = false;
                             selectedValues.Add(frmPickAttribute.SelectedAttribute);
 
                             Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
@@ -960,7 +963,7 @@ namespace Chummer.Classes
                 }
             }
 
-            if (selectedValues.All(x => selectedValues.All(y => x == y)))
+            if (blnSingleSelected)
             {
                 SelectedValue = selectedValues.FirstOrDefault();
             }
