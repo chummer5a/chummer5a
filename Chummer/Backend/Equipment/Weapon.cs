@@ -57,7 +57,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoCategory = string.Empty;
         private string _strAmmoName = string.Empty;
         private int _intConceal;
-        private List<Clip> _lstAmmo = new List<Clip>();
+        private List<Clip> _lstAmmo = new List<Clip>(1);
         //private int _intAmmoRemaining = 0;
         //private int _intAmmoRemaining2 = 0;
         //private int _intAmmoRemaining3 = 0;
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
         /// <param name="intRating">Rating of the weapon</param>
-        public void Create(XmlNode objXmlWeapon, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0)
+        public void Create(XmlNode objXmlWeapon, ICollection<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0)
         {
             if (!objXmlWeapon.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -683,7 +683,7 @@ namespace Chummer.Backend.Equipment
 
             if (blnCopy)
             {
-                _lstAmmo = new List<Clip>();
+                _lstAmmo = new List<Clip>(1);
                 _intActiveAmmoSlot = 1;
             }
             else
@@ -5136,7 +5136,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                     }
                 }
                 if (WirelessBonus?.InnerText != null)
@@ -5151,10 +5151,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                     }
                 }
-                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId + "Wireless").ToList());
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId + "Wireless").ToArray());
             }
         }
 
@@ -5171,7 +5171,7 @@ namespace Chummer.Backend.Equipment
             foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
                 decReturn += objLoopAccessory.DeleteWeaponAccessory();
 
-            List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+            List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
             foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
             {
                 lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, null, null, null));
@@ -5276,7 +5276,7 @@ namespace Chummer.Backend.Equipment
 
         public void Reload(ICollection<Gear> lstGears, TreeView treGearView)
         {
-            List<Gear> lstAmmo = new List<Gear>();
+            List<Gear> lstAmmo = new List<Gear>(1);
             List<string> lstCount = new List<string>();
             bool blnExternalSource = false;
             Gear objExternalSource = new Gear(_objCharacter)

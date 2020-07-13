@@ -60,7 +60,7 @@ namespace Chummer
         private void frmMetatype_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
-            List<ListItem> lstCategories = new List<ListItem>();
+            List<ListItem> lstCategories = new List<ListItem>(3);
 
             // Create a list of Categories.
             XPathNavigator xmlMetatypesNode = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes");
@@ -98,7 +98,7 @@ namespace Chummer
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
             chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit"));
 
-            List<ListItem> lstMethods = new List<ListItem>
+            List<ListItem> lstMethods = new List<ListItem>(2)
             {
                 new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
                 new ListItem("Inhabitation", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
@@ -419,7 +419,7 @@ namespace Chummer
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {
-                List<ListItem> lstMetavariants = new List<ListItem>
+                List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
                     new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
                 };
@@ -498,7 +498,7 @@ namespace Chummer
                 lblMetavariantLabel.Visible = false;
                 cboMetavariant.Visible = false;
                 // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>
+                List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
                     new ListItem("None", LanguageManager.GetString("String_None"))
                 };

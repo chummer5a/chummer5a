@@ -33,7 +33,7 @@ namespace Chummer
                 return;
             if (lstCollection.Count < index + count)
                 count = lstCollection.Count - index;
-            List<T> lstSorted = new List<T>();
+            List<T> lstSorted = new List<T>(lstCollection.Count);
             for (int i = index; i < count; ++i)
             {
                 lstSorted.Add(lstCollection[i]);

@@ -401,7 +401,7 @@ namespace Chummer
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
                             XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
-                        List<ListItem> lstTraditions = new List<ListItem>();
+                        List<ListItem> lstTraditions = new List<ListItem>(20);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
                             foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
@@ -433,7 +433,7 @@ namespace Chummer
                         }
 
                         // Populate the Magician Custom Drain Options list.
-                        List<ListItem> lstDrainAttributes = new List<ListItem>
+                        List<ListItem> lstDrainAttributes = new List<ListItem>(4)
                         {
                             ListItem.Blank
                         };
@@ -487,7 +487,7 @@ namespace Chummer
                         */
 
                         // Populate the Magician Custom Spirits lists - Combat.
-                        List<ListItem> lstSpirit = new List<ListItem>
+                        List<ListItem> lstSpirit = new List<ListItem>(10)
                         {
                             ListItem.Blank
                         };
@@ -572,7 +572,7 @@ namespace Chummer
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
                             XmlManager.Load("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
-                        List<ListItem> lstStreams = new List<ListItem>();
+                        List<ListItem> lstStreams = new List<ListItem>(3);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
                             foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
@@ -844,7 +844,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
                     {
                         // Populate vehicle weapon fire mode list.
-                        List<ListItem> lstFireModes = new List<ListItem>();
+                        List<ListItem> lstFireModes = new List<ListItem>(5);
                         foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes) continue;
@@ -1247,7 +1247,7 @@ namespace Chummer
                         List<ListItem> lstPrimaryArm;
                         if (CharacterObject.Ambidextrous)
                         {
-                            lstPrimaryArm = new List<ListItem>
+                            lstPrimaryArm = new List<ListItem>(1)
                             {
                                 new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous"))
                             };
@@ -1256,7 +1256,7 @@ namespace Chummer
                         else
                         {
                             //Create the dropdown for the character's primary arm.
-                            lstPrimaryArm = new List<ListItem>
+                            lstPrimaryArm = new List<ListItem>(2)
                             {
                                 new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
                                 new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
@@ -2858,7 +2858,7 @@ namespace Chummer
                 if (objXmlWeapon == null)
                     return frmPickWeapon.AddAgain;
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
@@ -3375,7 +3375,7 @@ namespace Chummer
                     objXmlLifeModule = frmSelectLifeModule.SelectedNode;
                 }
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Quality objLifeModule = new Quality(CharacterObject);
 
                 objLifeModule.Create(objXmlLifeModule, QualitySource.LifeModule, lstWeapons);
@@ -3421,7 +3421,7 @@ namespace Chummer
                     blnAddAgain = frmPickQuality.AddAgain;
 
                     XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPickQuality.SelectedQuality + "\"]");
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     Quality objQuality = new Quality(CharacterObject);
 
                     objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
@@ -3529,7 +3529,7 @@ namespace Chummer
 
             if (blnAddQuality)
             {
-                List<Weapon> objAddWeapons = new List<Weapon>();
+                List<Weapon> objAddWeapons = new List<Weapon>(1);
                 Quality objAddQuality = new Quality(_objCharacter);
                 objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, lstWeapons, strForceValue);
 
@@ -3587,7 +3587,7 @@ namespace Chummer
                 if (xmlDeleteQualityNoBonus["firstlevelbonus"] != null)
                     xmlDeleteQualityNoBonus["firstlevelbonus"].InnerText = string.Empty;
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Quality objReplaceQuality = new Quality(CharacterObject);
 
                 objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.MetatypeRemovedAtChargen, lstWeapons);
@@ -3785,8 +3785,8 @@ namespace Chummer
         private void cmdCreateStackedFocus_Click(object sender, EventArgs e)
         {
             int intFree = 0;
-            List<Gear> lstGear = new List<Gear>();
-            List<Gear> lstStack = new List<Gear>();
+            List<Gear> lstGear = new List<Gear>(2);
+            List<Gear> lstStack = new List<Gear>(2);
 
             // Run through all of the Foci the character has and count the un-Bonded ones.
             foreach (Gear objGear in CharacterObject.Gear)
@@ -3917,7 +3917,7 @@ namespace Chummer
                 // Open the Armor XML file and locate the selected piece.
                 XmlNode objXmlArmor = XmlManager.Load("armor.xml").SelectSingleNode("/chummer/armors/armor[id = \"" + frmPickArmor.SelectedArmor + "\"]");
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Armor objArmor = new Armor(CharacterObject);
 
                 objArmor.Create(objXmlArmor, frmPickArmor.Rating, lstWeapons);
@@ -4211,7 +4211,7 @@ namespace Chummer
                     objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
 
                     ArmorMod objMod = new ArmorMod(CharacterObject);
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     int intRating = Convert.ToInt32(objXmlArmor?["maxrating"]?.InnerText, GlobalOptions.InvariantCultureInfo) > 1 ? frmPickArmorMod.SelectedRating : 0;
 
                     objMod.Create(objXmlArmor, intRating, lstWeapons);
@@ -4434,7 +4434,7 @@ namespace Chummer
 
                     XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     Weapon objWeapon = new Weapon(CharacterObject)
                     {
                         ParentVehicle = objVehicle,
@@ -4558,7 +4558,7 @@ namespace Chummer
                 // Open the Weapons XML file and locate the selected piece.
                 XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject)
                 {
                     ParentVehicle = objSelectedWeapon.ParentVehicle
@@ -4697,11 +4697,11 @@ namespace Chummer
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
             }
             bool blnAddAgain;
-
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             do
             {
                 Gear objGear;
-                List<Weapon> lstWeapons = new List<Weapon>();
+                lstWeapons.Clear();
                 using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                 {
                     if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
@@ -4923,7 +4923,7 @@ namespace Chummer
                 // Open the Weapons XML file and locate the selected piece.
                 XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
@@ -5653,7 +5653,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objNewGear = new Gear(CharacterObject);
                     objNewGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -5815,7 +5815,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -5899,7 +5899,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -5970,7 +5970,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -6047,7 +6047,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -6163,7 +6163,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -6239,7 +6239,7 @@ namespace Chummer
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objNewGear = new Gear(CharacterObject);
                     objNewGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -6343,7 +6343,7 @@ namespace Chummer
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
-                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
                     Quality objQuality = new Quality(CharacterObject);
 
                     objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
@@ -10481,7 +10481,7 @@ namespace Chummer
             }
             if (CharacterObject.MetatypeCategory == "Shapeshifter")
             {
-                List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
+                List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
                 XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
                 string strMetavariantXPath = "/chummer/metatypes/metatype[id = \""
                                              + CharacterObject.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
@@ -10737,8 +10737,8 @@ namespace Chummer
                 // Create the Cyberware object.
                 Cyberware objCyberware = new Cyberware(CharacterObject);
 
-                List<Weapon> lstWeapons = new List<Weapon>();
-                List<Vehicle> lstVehicles = new List<Vehicle>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                List<Vehicle> lstVehicles = new List<Vehicle>(1);
                 objCyberware.Create(objXmlCyberware, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
                 if (objCyberware.InternalId.IsEmptyGuid())
                     return false;
@@ -10839,7 +10839,7 @@ namespace Chummer
                 objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -10972,7 +10972,7 @@ namespace Chummer
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
@@ -11926,7 +11926,7 @@ namespace Chummer
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
             IList<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
-            List<ListItem> lstCyberwareGrades = new List<ListItem>();
+            List<ListItem> lstCyberwareGrades = new List<ListItem>(objGradeList.Count);
 
             foreach (Grade objWareGrade in objGradeList)
             {
@@ -12270,7 +12270,7 @@ namespace Chummer
             }
 
             // Check item Capacities if the option is enabled.
-            List<string> lstOverCapacity = new List<string>();
+            List<string> lstOverCapacity = new List<string>(1);
 
             if (CharacterObjectOptions.EnforceCapacity)
             {
@@ -12383,7 +12383,7 @@ namespace Chummer
             //Check Drone mods for illegalities
             if (CharacterObjectOptions.BookEnabled("R5"))
             {
-                List<string> lstDronesIllegalDowngrades = new List<string>();
+                List<string> lstDronesIllegalDowngrades = new List<string>(1);
                 bool blnIllegalDowngrades = false;
                 int intIllegalDowngrades = 0;
                 foreach (Vehicle objVehicle in CharacterObject.Vehicles)
@@ -12657,8 +12657,8 @@ namespace Chummer
         private Cyberware CreateSuiteCyberware(XmlNode xmlSuiteNode, XmlNode xmlCyberwareNode, Grade objGrade, int intRating, Improvement.ImprovementSource eSource)
         {
             // Create the Cyberware object.
-            List<Weapon> lstWeapons = new List<Weapon>();
-            List<Vehicle> lstVehicles = new List<Vehicle>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
+            List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
             string strForced = xmlSuiteNode.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
@@ -12735,7 +12735,7 @@ namespace Chummer
 
                             if (objXmlQualityNode == null)
                                 continue;
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objQuality = new Quality(CharacterObject);
                             string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
@@ -12969,7 +12969,7 @@ namespace Chummer
                     if (objXmlArmorNode != null)
                     {
                         Armor objArmor = new Armor(CharacterObject);
-                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         objArmor.Create(objXmlArmorNode, Convert.ToInt32(objXmlArmor["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo), lstWeapons, false, blnCreateChildren);
                         CharacterObject.Armor.Add(objArmor);
@@ -13025,7 +13025,7 @@ namespace Chummer
                     if (objXmlWeaponNode != null)
                     {
                         Weapon objWeapon = new Weapon(CharacterObject);
-                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
                         objWeapon.Create(objXmlWeaponNode, lstWeapons, blnCreateChildren);
                         CharacterObject.Weapons.Add(objWeapon);
 
@@ -13055,7 +13055,7 @@ namespace Chummer
                             XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
                             if (objXmlUnderbarrelNode == null)
                             {
-                                List<Weapon> lstLoopWeapons = new List<Weapon>();
+                                List<Weapon> lstLoopWeapons = new List<Weapon>(1);
                                 Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
                                 objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
                                 objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
@@ -13244,7 +13244,7 @@ namespace Chummer
                             {
                                 Weapon objWeapon = new Weapon(CharacterObject);
 
-                                List<Weapon> lstSubWeapons = new List<Weapon>();
+                                List<Weapon> lstSubWeapons = new List<Weapon>(1);
                                 XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
                                 if (objXmlWeaponNode == null)
                                     continue;
@@ -13288,7 +13288,7 @@ namespace Chummer
                                         objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
                                     if (objXmlUnderbarrelNode != null)
                                     {
-                                        List<Weapon> lstLoopWeapons = new List<Weapon>();
+                                        List<Weapon> lstLoopWeapons = new List<Weapon>(1);
                                         Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
                                         objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
                                         objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
@@ -13724,7 +13724,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strQty))
                 decQty = Convert.ToDecimal(strQty, GlobalOptions.InvariantCultureInfo);
 
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             string strForceValue = objXmlGear.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
             Gear objNewGear = new Gear(CharacterObject);
@@ -13794,8 +13794,8 @@ namespace Chummer
                     return;
                 }
             }
-            List<Weapon> lstWeapons = new List<Weapon>();
-            List<Vehicle> lstVehicles = new List<Vehicle>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
+            List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
             objCyberware.Create(objXmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, blnCreateChildren);
 

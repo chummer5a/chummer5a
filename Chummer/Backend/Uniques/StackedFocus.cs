@@ -37,7 +37,7 @@ namespace Chummer
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private readonly List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Gear> _lstGear = new List<Gear>(2);
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods

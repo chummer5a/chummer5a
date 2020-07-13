@@ -47,7 +47,7 @@ namespace Chummer
 
         private void frmCreateImprovement_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstTypes = new List<ListItem>();
+            List<ListItem> lstTypes = new List<ListItem>((int)Improvement.ImprovementType.NumImprovementTypes);
 
             // Populate the Improvement Type list.
             XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
@@ -173,10 +173,11 @@ namespace Chummer
             switch (_strSelect)
             {
                 case "SelectActionDicePool":
-                    List<ListItem> lstActions = new List<ListItem>();
+                    List<ListItem> lstActions;
                     using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
                     {
-                        if (xmlActionList != null)
+                        lstActions = new List<ListItem>(xmlActionList?.Count ?? 0);
+                        if (xmlActionList?.Count > 0)
                         {
                             foreach (XmlNode xmlAction in xmlActionList)
                             {
@@ -309,7 +310,7 @@ namespace Chummer
                     break;
                 case "SelectKnowSkill":
                     {
-                        List<ListItem> lstDropdownItems = new List<ListItem>();
+                        List<ListItem> lstDropdownItems = new List<ListItem>(_objCharacter.SkillsSection.KnowledgeSkills.Count);
                         HashSet<string> setProcessedSkillNames = new HashSet<string>();
                         foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
@@ -388,10 +389,11 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpell":
-                    List<ListItem> lstSpells = new List<ListItem>();
+                    List<ListItem> lstSpells;
                     using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
                     {
-                        if (xmlSpellList != null)
+                        lstSpells = new List<ListItem>(xmlSpellList?.Count ?? 0);
+                        if (xmlSpellList?.Count > 0)
                         {
                             foreach (XmlNode xmlSpell in xmlSpellList)
                             {
@@ -530,7 +532,7 @@ namespace Chummer
                         objStream.Position = 0;
 
                         // Read it back in as an XmlDocument.
-                        using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                             objBonusXml.Load(objXmlReader);
                     }
                 }

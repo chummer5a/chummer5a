@@ -361,7 +361,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
             {
-                List<string> lstPropertiesToChange = new List<string>();
+                List<string> lstPropertiesToChange = new List<string>(3);
                 if (blnDoRedlinerRefresh)
                     lstPropertiesToChange.Add(nameof(Character.RedlinerBonus));
                 if (blnDoEssenceImprovementsRefresh)
@@ -935,7 +935,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
                 if (objXmlGearList?.Count > 0)
                 {
-                    IList<Weapon> lstChildWeapons = new List<Weapon>();
+                    IList<Weapon> lstChildWeapons = new List<Weapon>(1);
                     foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
@@ -2058,7 +2058,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
                     }
                 }
 
@@ -2136,13 +2136,13 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
                     }
                 }
 
                 ImprovementManager.DisableImprovements(_objCharacter,
                     _objCharacter.Improvements
-                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless").ToList());
+                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless").ToArray());
 
                 if (WirelessPairBonus == null) return;
 
@@ -2175,7 +2175,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
                     }
                 }
 
@@ -2216,7 +2216,7 @@ namespace Chummer.Backend.Equipment
             {
                 ImprovementManager.EnableImprovements(_objCharacter,
                     _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                        .ToList());
+                        .ToArray());
 
                 /*
                 // If the piece grants a bonus, pass the information to the Improvement Manager.
@@ -2273,7 +2273,7 @@ namespace Chummer.Backend.Equipment
             {
                 ImprovementManager.DisableImprovements(_objCharacter,
                     _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                        .ToList());
+                        .ToArray());
 
                 if (PairBonus != null)
                 {
@@ -4104,7 +4104,7 @@ namespace Chummer.Backend.Equipment
             if (!WeaponID.IsEmptyGuid())
             {
                 List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete =
-                    new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+                    new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
                 foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children,
                     x => x.ParentID == InternalId))
                 {
@@ -4165,7 +4165,7 @@ namespace Chummer.Backend.Equipment
             // Remove any Vehicle that the Cyberware created.
             if (!VehicleID.IsEmptyGuid())
             {
-                List<Vehicle> lstVehiclesToRemove = new List<Vehicle>();
+                List<Vehicle> lstVehiclesToRemove = new List<Vehicle>(1);
                 foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles)
                 {
                     if (objLoopVehicle.ParentID == InternalId)
@@ -4936,8 +4936,8 @@ namespace Chummer.Backend.Equipment
             string strExpenseString = "String_ExpensePurchaseCyberware")
         {
             // Create the Cyberware object.
-            List<Weapon> lstWeapons = new List<Weapon>();
-            List<Vehicle> lstVehicles = new List<Vehicle>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
+            List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Create(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true,
                 string.Empty, null, objVehicle);
             if (InternalId.IsEmptyGuid())

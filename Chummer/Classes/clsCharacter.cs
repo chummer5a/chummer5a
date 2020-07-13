@@ -98,7 +98,7 @@ namespace Chummer
 
         // General character info.
         private string _strName = string.Empty;
-        private readonly List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>(1);
         private int _intMainMugshotIndex = -1;
         private string _strSex = string.Empty;
         private string _strAge = string.Empty;
@@ -195,13 +195,13 @@ namespace Chummer
         private string _strPrioritySkills = "D,1";
         private string _strPriorityResources = "E,0";
         private string _strPriorityTalent = string.Empty;
-        private readonly List<string> _lstPrioritySkills = new List<string>();
+        private readonly List<string> _lstPrioritySkills = new List<string>(3);
         private decimal _decMaxNuyen;
         private int _intMaxKarma;
         private int _intContactMultiplier;
 
         // Lists.
-        private readonly List<string> _lstSources = new List<string>();
+        private readonly List<string> _lstSources = new List<string>(30);
         private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
 
         private readonly ObservableCollection<MentorSpirit>
@@ -210,14 +210,14 @@ namespace Chummer
         private readonly ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
         private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
         private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
-        private readonly List<Focus> _lstFoci = new List<Focus>();
-        private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
+        private readonly List<Focus> _lstFoci = new List<Focus>(5);
+        private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>(5);
         private readonly CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
         private readonly ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private readonly ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private readonly ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
 #if LEGACY
-        private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
+        private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>(10);
 #endif
         private readonly ObservableCollection<LimitModifier> _lstLimitModifiers =
             new ObservableCollection<LimitModifier>();
@@ -254,8 +254,8 @@ namespace Chummer
 
         private readonly TaggedObservableCollection<Drug> _lstDrugs = new TaggedObservableCollection<Drug>();
 
-        //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
-        private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
+        //private List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
+        private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>(1);
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
@@ -1323,7 +1323,7 @@ namespace Chummer
             if (xmlBonusNode != null)
                 ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, xmlBonusNode, 1, strMetatypeId);
 
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             // Create the Qualities that come with the Metatype.
             if (xmlQualityDocumentQualitiesNode != null)
             {
@@ -2402,7 +2402,7 @@ namespace Chummer
                         {
                             XmlResolver = null
                         };
-                        using (XmlReader objXmlReader = XmlReader.Create(objStream, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalOptions.SafeXmlReaderSettings))
                             objDoc.Load(objXmlReader);
                         objDoc.Save(strFileName);
                     }
@@ -3128,7 +3128,7 @@ namespace Chummer
                                         if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
                                         {
                                             // Populate the Magician Traditions list.
-                                            List<ListItem> lstContacts = new List<ListItem>();
+                                            List<ListItem> lstContacts = new List<ListItem>(Contacts.Count);
                                             foreach (Contact objContact in Contacts.Where(contact => contact.IsGroup))
                                             {
                                                 lstContacts.Add(new ListItem(objContact.Name, objContact.UniqueId));
@@ -3712,8 +3712,8 @@ namespace Chummer
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
                         // Powers.
                         bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
-                        List<ListItem> lstPowerOrder = new List<ListItem>();
                         objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
+                        List<ListItem> lstPowerOrder = new List<ListItem>(objXmlNodeList?.Count ?? 0);
                         // Sort the Powers in alphabetical order.
                         foreach (XmlNode xmlPower in objXmlNodeList)
                         {
@@ -4153,7 +4153,7 @@ namespace Chummer
                                             "quality[name = \"Resistance to Pathogens/Toxins\"]") ??
                                         xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
 
-                                    List<Weapon> lstWeapons = new List<Weapon>();
+                                    List<Weapon> lstWeapons = new List<Weapon>(1);
                                     Quality objQuality = new Quality(this);
 
                                     objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
@@ -5843,7 +5843,6 @@ namespace Chummer
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
-            List<Grade> lstGrades = new List<Grade>();
             StringBuilder strFilter = new StringBuilder();
             if(Options != null)
             {
@@ -5867,16 +5866,22 @@ namespace Chummer
             else
                 strXPath = "/chummer/grades/grade";
 
-            using(XmlNodeList xmlGradeList = XmlManager
+            List<Grade> lstGrades;
+            using (XmlNodeList xmlGradeList = XmlManager
                 .Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : objSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml")
                 .SelectNodes(strXPath))
-                if(xmlGradeList != null)
-                    foreach(XmlNode objNode in xmlGradeList)
+            {
+                lstGrades = new List<Grade>(xmlGradeList?.Count ?? 0);
+                if (xmlGradeList?.Count > 0)
+                {
+                    foreach (XmlNode objNode in xmlGradeList)
                     {
                         Grade objGrade = new Grade(objSource);
                         objGrade.Load(objNode);
                         lstGrades.Add(objGrade);
                     }
+                }
+            }
 
             return lstGrades;
         }
@@ -5981,7 +5986,7 @@ namespace Chummer
             //Mounted cyberware should always be allowed to be dismounted.
             //Unmounted cyberware requires that a valid mount be present.
             blnMountChangeAllowed = objModularCyberware.IsModularCurrentlyEquipped;
-            List<ListItem> lstReturn = new List<ListItem>
+            List<ListItem> lstReturn = new List<ListItem>(Cyberware.Count + Vehicles.Count)
             {
                 new ListItem("None", LanguageManager.GetString("String_None"))
             };
@@ -9194,8 +9199,8 @@ namespace Chummer
                 {
                     XmlNode xmlEssHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + Backend.Equipment.Cyberware.EssenceHoleGUID + "\"]");
                     objHole = new Cyberware(this);
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<Vehicle> lstVehicles = new List<Vehicle>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    List<Vehicle> lstVehicles = new List<Vehicle>(1);
                     objHole.Create(xmlEssHole, GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons,
                         lstVehicles);
 
@@ -9252,8 +9257,8 @@ namespace Chummer
                 {
                     XmlNode xmlEssAntiHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + Backend.Equipment.Cyberware.EssenceAntiHoleGUID + "\"]");
                     objAntiHole = new Cyberware(this);
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<Vehicle> lstVehicles = new List<Vehicle>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    List<Vehicle> lstVehicles = new List<Vehicle>(1);
                     objAntiHole.Create(xmlEssAntiHole, GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
 
                     Cyberware.Add(objAntiHole);
@@ -15639,7 +15644,7 @@ namespace Chummer
                                     }
                                     else if (strEntryFullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) && !strKey.Contains('.'))
                                     {
-                                        lstTextStatBlockLines = new List<string>();
+                                        lstTextStatBlockLines = new List<string>(30);
 
                                         using (StreamReader objReader = File.OpenText(strEntryFullName))
                                         {
@@ -16151,8 +16156,8 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_misc");
                     }
 
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<Vehicle> lstVehicles = new List<Vehicle>();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
                     using (_ = Timekeeper.StartSyncron("load_char_quality", op_load))
                     {
@@ -18207,7 +18212,7 @@ namespace Chummer
                         XmlResolver = null
                     };
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDoc.Load(objXmlReader);
                     xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
                 }

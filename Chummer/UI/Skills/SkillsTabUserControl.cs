@@ -355,7 +355,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, IComparer<Skill>>> GenerateSortList()
         {
-            List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
+            List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>(9)
             {
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new SkillSorter(SkillsSection.CompareSkills)),
@@ -428,7 +428,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
         {
-            List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
+            List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>(7)
             {
                 new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_Search"),
                     null),
@@ -496,7 +496,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, IComparer<KnowledgeSkill>>> GenerateKnowledgeSortList()
         {
-            List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>()
+            List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>(7)
             {
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new KnowledgeSkillSorter(SkillsSection.CompareSkills)),
@@ -559,7 +559,7 @@ namespace Chummer.UI.Skills
 
         private static IList<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
         {
-            List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>
+            List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>(5)
             {
                 //TODO: Search doesn't play nice with writable name
                 new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_Search"),

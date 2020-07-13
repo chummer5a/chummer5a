@@ -335,7 +335,7 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
-                    List<ListItem> lstQualities = new List<ListItem>();
+                    List<ListItem> lstQualities = new List<ListItem>(1);
                     using (XmlNodeList xmlLifestyleList = xmlLifestyles.SelectNodes("/chummer/lifestyles/lifestyle"))
                     {
                         if (xmlLifestyleList != null)

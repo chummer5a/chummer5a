@@ -142,7 +142,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strForceValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
-        public void Create(XmlNode objXmlGear, int intRating, IList<Weapon> lstWeapons, string strForceValue = "",
+        public void Create(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
             bool blnAddImprovements = true, bool blnCreateChildren = true)
         {
             if (objXmlGear == null)
@@ -490,14 +490,14 @@ namespace Chummer.Backend.Equipment
                     {
                         XmlDocument xmlDocument = xmlParentGearNode.OwnerDocument ?? XmlManager.Load("gear.xml");
                         bool blnCancelledDialog = false;
-                        List<XmlNode> lstChildrenToCreate = new List<XmlNode>();
+                        List<XmlNode> lstChildrenToCreate = new List<XmlNode>(xmlChooseGearList.Count);
                         foreach (XmlNode objXmlChooseGearNode in xmlChooseGearList)
                         {
                             // Each list is processed on its own and has usegear members
                             XmlNodeList objXmlNodeList = objXmlChooseGearNode.SelectNodes("usegear");
                             if (objXmlNodeList == null)
                                 continue;
-                            List<ListItem> lstGears = new List<ListItem>();
+                            List<ListItem> lstGears = new List<ListItem>(objXmlNodeList.Count);
                             foreach (XmlNode objChoiceNode in objXmlNodeList)
                             {
                                 XmlNode objXmlLoopGear =
@@ -615,7 +615,7 @@ namespace Chummer.Backend.Equipment
                 decChildQty = Convert.ToDecimal(xmlChildNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
             Gear objChild = new Gear(_objCharacter);
-            List<Weapon> lstChildWeapons = new List<Weapon>();
+            List<Weapon> lstChildWeapons = new List<Weapon>(1);
             objChild.Create(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
             objChild.Quantity = decChildQty;
             objChild.Cost = "0";
@@ -642,14 +642,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
         /// <returns></returns>
-        public bool CreateFromNode(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, IList<Weapon> lstWeapons, bool blnAddImprovements = true)
+        public bool CreateFromNode(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, ICollection<Weapon> lstWeapons, bool blnAddImprovements = true)
         {
             if (xmlGearsDocument == null)
                 throw new ArgumentNullException(nameof(xmlGearsDocument));
             if (xmlGearNode == null)
                 throw new ArgumentNullException(nameof(xmlGearNode));
             XmlNode xmlGearDataNode;
-            List<Gear> lstChildGears = new List<Gear>();
+            List<Gear> lstChildGears = new List<Gear>(1);
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
             int intRating = Convert.ToInt32(lstGearAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
@@ -971,7 +971,7 @@ namespace Chummer.Backend.Equipment
                     if (Rating > 0)
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
-                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>());
+                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(1));
                         objNuyenGear.Quantity = Rating;
                         _lstChildren.Add(objNuyenGear);
                     }
@@ -2719,7 +2719,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!Category.EndsWith("Foci", StringComparison.Ordinal) || Bonded)
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId).ToList());
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId).ToArray());
                     }
                 }
                 else
@@ -2729,7 +2729,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objStack.GearId == InternalId && objStack.Bonded)
                         {
-                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.StackedFocus && x.SourceName == objStack.InternalId).ToList());
+                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.StackedFocus && x.SourceName == objStack.InternalId).ToArray());
                         }
                     }
                 }
@@ -2738,7 +2738,7 @@ namespace Chummer.Backend.Equipment
             {
                 // Remove any Improvements from the Gear.
                 if (Category != "Stacked Focus")
-                    ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId).ToList());
+                    ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId).ToArray());
                 else
                 {
                     // Stacked Foci need to be handled a little differently.
@@ -2746,7 +2746,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objStack.GearId == InternalId)
                         {
-                            ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.StackedFocus && x.SourceName == objStack.InternalId).ToList());
+                            ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.StackedFocus && x.SourceName == objStack.InternalId).ToArray());
                         }
                     }
                 }
@@ -2770,7 +2770,7 @@ namespace Chummer.Backend.Equipment
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
                 foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                 {
                     lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));

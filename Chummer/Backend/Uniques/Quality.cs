@@ -893,12 +893,12 @@ namespace Chummer
                 if (_intCachedSuppressed > 0)
                 {
                     ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
-                        imp.SourceName == SourceIDString).ToList());
+                        imp.SourceName == SourceIDString).ToArray());
                 }
                 else
                 {
                     ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
-                        imp.SourceName == SourceIDString).ToList());
+                        imp.SourceName == SourceIDString).ToArray());
                 }
 
                 return _intCachedSuppressed == 1;
@@ -1011,7 +1011,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            conflictingQualities = new List<Quality>();
+            conflictingQualities = new List<Quality>(objCharacter.Qualities.Count);
             reason = QualityFailureReasons.Allowed;
             //If limit are not present or no, check if same quality exists
             string strTemp = string.Empty;
@@ -1181,7 +1181,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objOldQuality));
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             Create(objXmlQuality, source, lstWeapons);
 
             bool blnAddItem = true;

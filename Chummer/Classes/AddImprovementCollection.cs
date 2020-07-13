@@ -485,7 +485,7 @@ namespace Chummer.Classes
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
                     XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
-                List<ListItem> lstTraditions = new List<ListItem>();
+                List<ListItem> lstTraditions = new List<ListItem>(30);
                 if (xmlTraditionsBaseChummerNode != null)
                 {
                     foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
@@ -850,7 +850,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            List<string> selectedValues = new List<string>();
+            List<string> selectedValues = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlSelectAttributeList = bonusNode.SelectNodes("selectattribute"))
             {
                 if (xmlSelectAttributeList != null)
@@ -861,7 +861,7 @@ namespace Chummer.Classes
 
                         Log.Info("selectattribute = " + objXmlAttribute.OuterXml);
 
-                        List<string> lstAbbrevs = new List<string>();
+                        List<string> lstAbbrevs = new List<string>(xmlSelectAttributeList.Count);
                         XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
                         if (xmlAttributeList?.Count > 0)
                         {
@@ -985,7 +985,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectattribute");
 
-            List<string> lstAbbrevs = new List<string>();
+            List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
             if (xmlAttributeList?.Count > 0)
             {
@@ -1093,7 +1093,7 @@ namespace Chummer.Classes
 
             Log.Info("selectlimit = " + bonusNode.OuterXml);
 
-            List<string> strLimits = new List<string>();
+            List<string> strLimits = new List<string>(4);
             XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit");
             if (xmlDefinedLimits != null && xmlDefinedLimits.Count > 0)
             {
@@ -1213,7 +1213,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("swapskillattribute");
 
-            List<string> lstAbbrevs = new List<string>();
+            List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
             if (xmlAttributeList?.Count > 0)
             {
@@ -1352,7 +1352,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("swapskillspecattribute");
 
-            List<string> lstAbbrevs = new List<string>();
+            List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
             if (xmlAttributeList?.Count > 0)
             {
@@ -1753,7 +1753,7 @@ namespace Chummer.Classes
                     decQty = Convert.ToDecimal(xmlGearNode["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
 
                 // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objNewGearToCreate = new Gear(_objCharacter);
                 objNewGearToCreate.Create(xmlGearDataNode, intRating, lstWeapons, ForcedValue);
@@ -1813,7 +1813,7 @@ namespace Chummer.Classes
             XmlNode node = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]") ?? throw new AbortedException();
 
             // Create the new piece of Gear.
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
 
             Weapon objNewWeapon = new Weapon(_objCharacter);
             objNewWeapon.Create(node, lstWeapons);
@@ -2229,7 +2229,7 @@ namespace Chummer.Classes
             }
             else if (bonusNode["options"] != null)
             {
-                List<string> lstAbbrevs = new List<string>();
+                List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
                 foreach (XmlNode objSubNode in bonusNode["options"])
                     lstAbbrevs.Add(objSubNode.InnerText);
 
@@ -3688,9 +3688,8 @@ namespace Chummer.Classes
                     foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
                     {
                         // Display the Select Category window and record which Category was selected.
-                        List<ListItem> lstGeneralItems = new List<ListItem>();
-
                         XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category");
+                        List<ListItem> lstGeneralItems = new List<ListItem>(xmlCategoryList?.Count ?? 0);
                         if (xmlCategoryList?.Count > 0)
                         {
                             foreach (XmlNode objXmlCategory in xmlCategoryList)
@@ -3768,7 +3767,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("weaponspecificdice");
             Log.Info("weaponspecificdice = " + bonusNode.OuterXml);
-            List<ListItem> lstGeneralItems = new List<ListItem>();
+            List<ListItem> lstGeneralItems = new List<ListItem>(_objCharacter.Weapons.Count);
             if (bonusNode.Attributes?["type"] != null)
             {
                 foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
@@ -4345,7 +4344,7 @@ namespace Chummer.Classes
             XmlNodeList xmlArtList = bonusNode.SelectNodes("art");
             if (xmlArtList?.Count > 0)
             {
-                List<ListItem> lstArts = new List<ListItem>();
+                List<ListItem> lstArts = new List<ListItem>(xmlArtList.Count);
                 using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
                     foreach (XmlNode objXmlAddArt in xmlArtList)
@@ -4439,7 +4438,7 @@ namespace Chummer.Classes
             XmlNodeList xmlMetamagicList = bonusNode.SelectNodes("metamagic");
             if (xmlMetamagicList?.Count > 0)
             {
-                List<ListItem> lstMetamagics = new List<ListItem>();
+                List<ListItem> lstMetamagics = new List<ListItem>(xmlMetamagicList.Count);
                 using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
                     foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
@@ -4542,7 +4541,7 @@ namespace Chummer.Classes
             XmlNodeList xmlEchoList = bonusNode.SelectNodes("echo");
             if (xmlEchoList?.Count > 0)
             {
-                List<ListItem> lstEchoes = new List<ListItem>();
+                List<ListItem> lstEchoes = new List<ListItem>(xmlEchoList.Count);
                 using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
                     foreach (XmlNode objXmlAddEcho in xmlEchoList)
@@ -5462,7 +5461,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectsprite");
             Log.Info("selectsprite = " + bonusNode.OuterXml);
-            List<ListItem> lstCritters = new List<ListItem>();
+            List<ListItem> lstCritters = new List<ListItem>(10);
             using (XmlNodeList objXmlNodeList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype[contains(category, \"Sprites\")]"))
                 if (objXmlNodeList != null)
                     foreach (XmlNode objXmlNode in objXmlNodeList)
@@ -5568,8 +5567,8 @@ namespace Chummer.Classes
 
             //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter) + "]");
 
-            List<ListItem> lstArmors = new List<ListItem>();
-            if (objXmlNodeList != null)
+            List<ListItem> lstArmors = new List<ListItem>(objXmlNodeList?.Count ?? 0);
+            if (objXmlNodeList?.Count > 0)
             {
                 foreach (XmlNode objNode in objXmlNodeList)
                 {
@@ -5628,8 +5627,8 @@ namespace Chummer.Classes
                 ? "/chummer/cyberwares/cyberware[(category = '" + strCategory + "') and (" + _objCharacter.Options.BookXPath() + ")]"
                 : "/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ")]");
 
-            List<ListItem> list = new List<ListItem>();
-            if (objXmlNodeList != null)
+            List<ListItem> list = new List<ListItem>(objXmlNodeList?.Count ?? 0);
+            if (objXmlNodeList?.Count > 0)
             {
                 foreach (XmlNode objNode in objXmlNodeList)
                 {
@@ -5716,7 +5715,7 @@ namespace Chummer.Classes
             }
             else
             {
-                List <ListItem> lstWeapons = new List<ListItem>();
+                List <ListItem> lstWeapons = new List<ListItem>(_objCharacter.Weapons.Count);
                 bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
                 foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
@@ -5807,9 +5806,10 @@ namespace Chummer.Classes
 
             for (int i = 0; i < powerCount; i++)
             {
-                List<Tuple<string, string>> lstPowerExtraPairs = new List<Tuple<string, string>>();
+                List<Tuple<string, string>> lstPowerExtraPairs;
                 using (XmlNodeList xmlOptionalPowerList = bonusNode.SelectNodes("optionalpower"))
                 {
+                    lstPowerExtraPairs = new List<Tuple<string, string>>(xmlOptionalPowerList?.Count ?? 0);
                     if (xmlOptionalPowerList?.Count > 0)
                     {
                         foreach (XmlNode objXmlOptionalPower in xmlOptionalPowerList)
@@ -5922,9 +5922,12 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("dealerconnection");
-            List<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems;
             using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
+            {
+                lstItems = new List<ListItem>(objXmlList?.Count ?? 0);
                 if (objXmlList?.Count > 0)
+                {
                     foreach (XmlNode objNode in objXmlList)
                     {
                         if (!_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection && objImprovement.UniqueName == objNode.InnerText))
@@ -5932,6 +5935,9 @@ namespace Chummer.Classes
                             lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText)));
                         }
                     }
+                }
+            }
+
             if (lstItems.Count == 0)
             {
                 Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo ,LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
@@ -6042,7 +6048,7 @@ namespace Chummer.Classes
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
                                 objXmlSelectedQuality.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName))
                             {
-                                List<Weapon> lstWeapons = new List<Weapon>();
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objAddQuality = new Quality(_objCharacter);
                                 objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
 
@@ -6072,9 +6078,10 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
-            List<ListItem> lstQualities = new List<ListItem>();
+            List<ListItem> lstQualities;
             using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
             {
+                lstQualities = new List<ListItem>(xmlQualityList?.Count ?? 0);
                 if (xmlQualityList?.Count > 0)
                 {
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
@@ -6114,7 +6121,7 @@ namespace Chummer.Classes
             }
 
             Quality objAddQuality = new Quality(_objCharacter);
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
 
             string strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
             objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
@@ -6207,8 +6214,8 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            List<Skill> lstSkills = new List<Skill>();
             XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills/skill");
+            List<Skill> lstSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
             if (xmlSkillsList?.Count > 0)
             {
                 foreach (XmlNode objNode in xmlSkillsList)
@@ -6451,9 +6458,10 @@ namespace Chummer.Classes
                 setAllowed.Add(n.InnerText);
             }
 
-            List<ListItem> lstSpirits = new List<ListItem>();
+            List<ListItem> lstSpirits;
             using (XmlNodeList xmlSpirits = XmlManager.Load(xmlDoc).SelectNodes("/chummer/spirits/spirit"))
             {
+                lstSpirits = new List<ListItem>(xmlSpirits?.Count ?? 0);
                 if (xmlSpirits?.Count > 0)
                 {
                     foreach (XmlNode xmlSpirit in xmlSpirits)
@@ -6663,10 +6671,11 @@ namespace Chummer.Classes
             }
             else
             {
-                List<ListItem> lstSkills = new List<ListItem>();
+                List<ListItem> lstSkills;
                 using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
                 {
-                    if (objXmlGroups != null)
+                    lstSkills = new List<ListItem>(objXmlGroups?.Count ?? 0);
+                    if (objXmlGroups?.Count > 0)
                     {
                         foreach (XmlNode objXmlGroup in objXmlGroups)
                         {
@@ -7191,8 +7200,8 @@ namespace Chummer.Classes
 
             // Create the new piece of ware.
             Cyberware objCyberware = new Cyberware(_objCharacter);
-            List<Weapon> lstWeapons = new List<Weapon>();
-            List<Vehicle> lstVehicles = new List<Vehicle>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
+            List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
             Grade objGrade = Grade.ConvertToCyberwareGrade(bonusNode["grade"]?.InnerText, _objImprovementSource, _objCharacter);
             objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, ForcedValue);

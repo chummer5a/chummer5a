@@ -32,7 +32,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
-		private readonly List<ListItem> _lstGrade = new List<ListItem>();
+		private readonly List<ListItem> _lstGrade = new List<ListItem>(10);
 		private readonly Character _objCharacter;
 	    private Drug _objDrug;
 	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
@@ -50,7 +50,7 @@ namespace Chummer
             this.TranslateWinForm();
             LoadData();
 
-            _lstSelectedDrugComponents = new List<clsNodeData>();
+            _lstSelectedDrugComponents = new List<clsNodeData>(5);
 
             string strLevelString = LanguageManager.GetString("String_Level");
             string strSpaceString = LanguageManager.GetString("String_Space");

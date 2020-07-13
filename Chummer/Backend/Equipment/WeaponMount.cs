@@ -615,7 +615,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// 
         /// </summary>
-        public IList<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>();
+        public IList<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>(3);
 
         /// <summary>
         /// Is the object stolen via the Stolen Gear quality?

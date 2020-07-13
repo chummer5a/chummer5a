@@ -70,11 +70,6 @@ namespace Chummer.Plugins
         private static DirectoryCatalog myDirectoryCatalog;
         private static FileSystemWatcher watcher;
 
-        ~PluginControl()
-        {
-            Dispose(false);
-        }
-
         //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
         public static bool RegisterChummerProtocol()
         {
@@ -484,25 +479,16 @@ namespace Chummer.Plugins
         }
 
         private bool _blnDisposed;
-        // The bulk of the clean-up code is implemented in Dispose(bool)
-        protected virtual void Dispose(bool blnDisposing)
+
+        public void Dispose()
         {
             if (_blnDisposed)
                 return;
 
-            if (blnDisposing)
-            {
-                foreach (IPlugin plugin in MyActivePlugins)
-                    plugin.Dispose();
-            }
+            foreach (IPlugin plugin in MyActivePlugins)
+                plugin.Dispose();
 
             _blnDisposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

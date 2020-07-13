@@ -571,7 +571,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
@@ -599,7 +599,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 objXmlDocument.Load(objXmlReader);
                     }
                     catch (IOException)

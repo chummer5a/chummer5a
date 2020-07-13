@@ -237,8 +237,7 @@ namespace Chummer
                                 List<MartialArtTechnique> objTempList;
                                 if (objParent is MartialArt objArt)
                                 {
-                                    objTempList = new List<MartialArtTechnique>(objArt.Techniques.Count);
-                                    objTempList.AddRange(objArt.Techniques);
+                                    objTempList = new List<MartialArtTechnique>(objArt.Techniques);
                                 }
                                 else
                                 {
@@ -275,7 +274,7 @@ namespace Chummer
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        var lstToCheck = objListToCheck?.ToList() ?? new List<IHasName>();
+                        var lstToCheck = objListToCheck?.ToList() ?? new List<IHasName>(1);
                         string strNameNode = xmlNode.SelectSingleNode("name")?.Value;
                         if (blnCheckCyberwareChildren)
                         {
@@ -290,7 +289,7 @@ namespace Chummer
                         XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNode("includeinlimit");
                         if (xmlIncludeInLimit != null)
                         {
-                            List<string> lstNamesIncludedInLimit = new List<string>();
+                            List<string> lstNamesIncludedInLimit = new List<string>(1);
                             if (!string.IsNullOrEmpty(strNameNode))
                             {
                                 lstNamesIncludedInLimit.Add(strNameNode);

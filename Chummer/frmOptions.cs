@@ -1091,7 +1091,7 @@ namespace Chummer
         private void PopulateBuildMethodList()
         {
             // Populate the Build Method list.
-            List<ListItem> lstBuildMethod = new List<ListItem>
+            List<ListItem> lstBuildMethod = new List<ListItem>(4)
             {
                 new ListItem("Karma", LanguageManager.GetString("String_Karma", _strSelectedLanguage)),
                 new ListItem("Priority", LanguageManager.GetString("String_Priority", _strSelectedLanguage)),
@@ -1125,13 +1125,14 @@ namespace Chummer
 
         private void PopulateDefaultGameplayOptionList()
         {
-            List<ListItem> lstGameplayOptions = new List<ListItem>();
+            List<ListItem> lstGameplayOptions;
 
             int intIndex = 0;
 
             using (XmlNodeList objXmlNodeList = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectNodes("/chummer/gameplayoptions/gameplayoption"))
             {
-                if (objXmlNodeList != null)
+                lstGameplayOptions = new List<ListItem>(objXmlNodeList?.Count ?? 0);
+                if (objXmlNodeList?.Count > 0)
                 {
                     foreach (XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -1171,11 +1172,12 @@ namespace Chummer
 
         private void PopulateLimbCountList()
         {
-            List<ListItem> lstLimbCount = new List<ListItem>();
+            List<ListItem> lstLimbCount;
 
             using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/limbcounts/limb"))
             {
-                if (objXmlNodeList != null)
+                lstLimbCount = new List<ListItem>(objXmlNodeList?.Count ?? 0);
+                if (objXmlNodeList?.Count > 0)
                 {
                     foreach (XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -1206,7 +1208,7 @@ namespace Chummer
 
         private void PopulateMugshotCompressionOptions()
         {
-            List<ListItem> lstMugshotCompressionOptions = new List<ListItem>
+            List<ListItem> lstMugshotCompressionOptions = new List<ListItem>(2)
             {
                 new ListItem(ImageFormat.Png.ToString(), LanguageManager.GetString("String_Lossless_Compression_Option")),
                 new ListItem(ImageFormat.Jpeg.ToString(), LanguageManager.GetString("String_Lossy_Compression_Option"))
@@ -1231,13 +1233,14 @@ namespace Chummer
 
         private void PopulatePDFParameters()
         {
-            List<ListItem> lstPdfParameters = new List<ListItem>();
+            List<ListItem> lstPdfParameters;
 
             int intIndex = 0;
 
             using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/pdfarguments/pdfargument"))
             {
-                if (objXmlNodeList != null)
+                lstPdfParameters = new List<ListItem>(objXmlNodeList?.Count ?? 0);
+                if (objXmlNodeList?.Count > 0)
                 {
                     foreach (XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -1273,7 +1276,7 @@ namespace Chummer
         {
             string strOldSelected = cboUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalOptions.UseLoggingApplicationInsights.ToString();
 
-            List<ListItem> lstUseAIOptions = new List<ListItem>();
+            List<ListItem> lstUseAIOptions = new List<ListItem>(6);
             foreach (var myoption in Enum.GetValues(typeof(UseAILogging)))
             {
                 lstUseAIOptions.Add(new ListItem(myoption, LanguageManager.GetString("String_ApplicationInsights_" + myoption, _strSelectedLanguage)));
@@ -1309,11 +1312,10 @@ namespace Chummer
 
         private void PopulateSettingsList()
         {
-            List<ListItem> lstSettings = new List<ListItem>();
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             string[] settingsFilePaths = Directory.GetFiles(settingsDirectoryPath, "*.xml");
-
-            foreach(string filePath in settingsFilePaths)
+            List<ListItem> lstSettings = new List<ListItem>(settingsFilePaths.Length);
+            foreach (string filePath in settingsFilePaths)
             {
                 XmlDocument xmlDocument = new XmlDocument
                 {
@@ -1323,7 +1325,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDocument.Load(objXmlReader);
                 }
                 catch(IOException)
@@ -1355,7 +1357,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 xmlDocument.Load(objXmlReader);
                     }
                     catch(IOException)
@@ -1387,11 +1389,10 @@ namespace Chummer
 
         private void PopulateLanguageList()
         {
-            List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
-            foreach(string filePath in languageFilePaths)
+            List<ListItem> lstLanguages = new List<ListItem>(languageFilePaths.Length);
+            foreach (string filePath in languageFilePaths)
             {
                 XmlDocument xmlDocument = new XmlDocument
                 {
@@ -1401,7 +1402,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDocument.Load(objXmlReader);
                 }
                 catch(IOException)
@@ -1454,12 +1455,10 @@ namespace Chummer
                 }
             }
 
-            List<ListItem> lstSheetLanguages = new List<ListItem>();
-
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
-            foreach(string filePath in languageFilePaths)
+            List<ListItem> lstSheetLanguages = new List<ListItem>(languageFilePaths.Length);
+            foreach (string filePath in languageFilePaths)
             {
                 string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
                 if(!setLanguagesWithSheets.Contains(strLanguageName))
@@ -1473,7 +1472,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDocument.Load(objXmlReader);
                 }
                 catch(IOException)
@@ -1538,7 +1537,7 @@ namespace Chummer
 
         private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
-            List<string> names = new List<string>();
+            List<string> names = new List<string>(10);
 
             if (Directory.Exists(path))
             {
@@ -1553,12 +1552,13 @@ namespace Chummer
 
         private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            List<ListItem> lstSheets = new List<ListItem>();
+            List<ListItem> lstSheets;
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
             using (XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", strLanguage).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
-                if (xmlSheetList != null)
+                lstSheets = new List<ListItem>(xmlSheetList?.Count ?? 0);
+                if (xmlSheetList?.Count > 0)
                 {
                     foreach (XmlNode xmlSheet in xmlSheetList)
                     {
@@ -1573,7 +1573,7 @@ namespace Chummer
 
         private static IList<ListItem> GetXslFilesFromOmaeDirectory(string strLanguage)
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>(5);
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");

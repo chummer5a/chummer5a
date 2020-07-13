@@ -411,7 +411,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 // If there is any Gear that comes with the Vehicle, add them.
                 XmlNode xmlGears = objXmlVehicle["gears"];
@@ -453,7 +453,7 @@ namespace Chummer.Backend.Equipment
                         bool blnAttached = false;
                         Weapon objWeapon = new Weapon(_objCharacter);
 
-                        List<Weapon> objSubWeapons = new List<Weapon>();
+                        List<Weapon> objSubWeapons = new List<Weapon>(1);
                         XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
                         objWeapon.ParentVehicle = this;
                         objWeapon.Create(objXmlWeaponNode, objSubWeapons);
@@ -3213,7 +3213,7 @@ namespace Chummer.Backend.Equipment
             Gear objCurrentSensor = null;
             Gear objNewSensor = new Gear(_objCharacter);
 
-            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>(1);
             foreach (Gear objCurrentGear in Gear)
             {
                 if (objCurrentGear.Name == "Microdrone Sensor")

@@ -166,7 +166,7 @@ namespace Chummer
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
-            List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>();
+            List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>(1);
             while (!string.IsNullOrEmpty(strReturn))
             {
                 int intOpeningBracketIndex = strReturn.IndexOf('{');

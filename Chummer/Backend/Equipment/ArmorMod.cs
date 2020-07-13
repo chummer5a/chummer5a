@@ -710,7 +710,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (Parent?.Equipped == true)
                         {
-                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                             // Add the Improvements from any Gear in the Armor.
                             foreach (Gear objGear in Gear)
                             {
@@ -723,7 +723,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                         // Add the Improvements from any Gear in the Armor.
                         foreach (Gear objGear in Gear)
                         {
@@ -1106,7 +1106,7 @@ namespace Chummer.Backend.Equipment
             // Remove the Cyberweapon created by the Mod if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
                 foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
                 {
                     lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
@@ -1171,7 +1171,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                     }
                 }
                 if (WirelessBonus?.InnerText != null)
@@ -1189,10 +1189,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToList());
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                     }
                 }
-                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId + "Wireless").ToList());
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId + "Wireless").ToArray());
             }
         }
 

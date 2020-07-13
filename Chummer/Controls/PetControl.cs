@@ -209,7 +209,7 @@ namespace Chummer
         #region Methods
         private void LoadContactList()
         {
-            List<ListItem> lstMetatypes = new List<ListItem>
+            List<ListItem> lstMetatypes = new List<ListItem> (30)
             {
                 ListItem.Blank
             };

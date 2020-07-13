@@ -852,12 +852,12 @@ namespace Chummer.Backend.Attributes
         /// Character's Attributes.
         /// </summary>
         [HubTag(true)]
-        public List<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>();
+        public IList<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>(8);
 
         /// <summary>
         /// Character's Attributes.
         /// </summary>
-        public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
+        public IList<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>(4);
 
         public CharacterAttrib.AttributeCategory AttributeCategory
         {
