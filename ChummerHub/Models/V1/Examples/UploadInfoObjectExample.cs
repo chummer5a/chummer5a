@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace ChummerHub.Models.V1.Examples
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample'
-    public class UploadInfoObjectExample : IExamplesProvider
+    public class UploadInfoObjectExample : IExamplesProvider<object>
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.UploadInfoObjectExample()'
