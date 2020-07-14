@@ -668,6 +668,22 @@
       <source>RF</source>
       <page>152</page>
     </quality>
+	<quality>
+	  <name>Blind</name>
+	  <forbidden>
+        <oneof>
+          <quality>Reduced Sense (Sight) (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</quality>
+	<quality>
+	  <name>Deaf</name>
+	  <forbidden>
+        <oneof>
+          <quality>Reduced Sense (Hearing) (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</quality>
     <quality>
       <name>Carrier (HMHVV Strain II)</name>
       <hide />
@@ -1014,6 +1030,14 @@
       <name>Revels in Murder</name>
       <hide />
     </quality>
+	<quality>
+	  <name>Uncanny Healer</name>
+	  <forbidden>
+        <oneof>
+          <quality>Quick Healer (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</quality>
     <!-- End Region -->
     <!--Region Chrome Flesh Negative Qualities -->
     <quality>
