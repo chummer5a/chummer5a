@@ -12800,6 +12800,8 @@ namespace Chummer
                         {
                             Tag = i,
                             Appearance = objMaxCheckBox.Appearance,
+                            AutoSize = objMaxCheckBox.AutoSize,
+                            MinimumSize = objMaxCheckBox.MinimumSize,
                             Size = objMaxCheckBox.Size,
                             Padding = objMaxCheckBox.Padding,
                             Margin = objMaxCheckBox.Margin,

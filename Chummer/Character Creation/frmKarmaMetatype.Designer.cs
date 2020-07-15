@@ -41,7 +41,7 @@ namespace Chummer
             this.lblSTRLabel = new System.Windows.Forms.Label();
             this.nudForce = new System.Windows.Forms.NumericUpDown();
             this.lblSTR = new System.Windows.Forms.Label();
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBottom = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
             this.chkPossessionBased = new System.Windows.Forms.CheckBox();
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
@@ -64,15 +64,15 @@ namespace Chummer
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblQualitiesLabel = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblKarma = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
             this.tlpMetatypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tlpBottom.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMetatypes
@@ -92,7 +92,7 @@ namespace Chummer
             this.tlpMetatypes.Controls.Add(this.lblSTRLabel, 5, 0);
             this.tlpMetatypes.Controls.Add(this.nudForce, 6, 3);
             this.tlpMetatypes.Controls.Add(this.lblSTR, 5, 1);
-            this.tlpMetatypes.Controls.Add(this.tableLayoutPanel2, 1, 7);
+            this.tlpMetatypes.Controls.Add(this.tlpBottom, 1, 7);
             this.tlpMetatypes.Controls.Add(this.lblForceLabel, 6, 2);
             this.tlpMetatypes.Controls.Add(this.lblINI, 5, 3);
             this.tlpMetatypes.Controls.Add(this.lblINILabel, 5, 2);
@@ -112,7 +112,7 @@ namespace Chummer
             this.tlpMetatypes.Controls.Add(this.lblMetavariantLabel, 1, 4);
             this.tlpMetatypes.Controls.Add(this.lblKarmaLabel, 1, 5);
             this.tlpMetatypes.Controls.Add(this.lblQualitiesLabel, 1, 6);
-            this.tlpMetatypes.Controls.Add(this.flowLayoutPanel1, 1, 8);
+            this.tlpMetatypes.Controls.Add(this.flpButtons, 1, 8);
             this.tlpMetatypes.Controls.Add(this.lblKarma, 3, 5);
             this.tlpMetatypes.Controls.Add(this.cboMetavariant, 3, 4);
             this.tlpMetatypes.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -133,14 +133,12 @@ namespace Chummer
             // 
             // lstMetatypes
             // 
-            this.lstMetatypes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstMetatypes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstMetatypes.FormattingEnabled = true;
             this.lstMetatypes.Location = new System.Drawing.Point(3, 30);
             this.lstMetatypes.Name = "lstMetatypes";
             this.tlpMetatypes.SetRowSpan(this.lstMetatypes, 8);
-            this.lstMetatypes.Size = new System.Drawing.Size(295, 485);
+            this.lstMetatypes.Size = new System.Drawing.Size(295, 486);
             this.lstMetatypes.Sorted = true;
             this.lstMetatypes.TabIndex = 35;
             this.lstMetatypes.SelectedIndexChanged += new System.EventHandler(this.lstMetatypes_SelectedIndexChanged);
@@ -229,37 +227,35 @@ namespace Chummer
             this.lblSTR.TabIndex = 45;
             this.lblSTR.Text = "2/12 (18)";
             // 
-            // tableLayoutPanel2
+            // tlpBottom
             // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tlpMetatypes.SetColumnSpan(this.tableLayoutPanel2, 6);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.chkBloodSpirit, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.chkPossessionBased, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cboPossessionMethod, 2, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(301, 463);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(433, 27);
-            this.tableLayoutPanel2.TabIndex = 70;
+            this.tlpBottom.AutoSize = true;
+            this.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBottom.ColumnCount = 3;
+            this.tlpMetatypes.SetColumnSpan(this.tlpBottom, 6);
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottom.Controls.Add(this.chkBloodSpirit, 0, 0);
+            this.tlpBottom.Controls.Add(this.chkPossessionBased, 1, 0);
+            this.tlpBottom.Controls.Add(this.cboPossessionMethod, 2, 0);
+            this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpBottom.Location = new System.Drawing.Point(301, 463);
+            this.tlpBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpBottom.Name = "tlpBottom";
+            this.tlpBottom.RowCount = 1;
+            this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottom.Size = new System.Drawing.Size(433, 27);
+            this.tlpBottom.TabIndex = 70;
             // 
             // chkBloodSpirit
             // 
-            this.chkBloodSpirit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkBloodSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBloodSpirit.AutoSize = true;
             this.chkBloodSpirit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkBloodSpirit.Location = new System.Drawing.Point(3, 4);
-            this.chkBloodSpirit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkBloodSpirit.Location = new System.Drawing.Point(3, 5);
             this.chkBloodSpirit.Name = "chkBloodSpirit";
-            this.chkBloodSpirit.Size = new System.Drawing.Size(79, 19);
+            this.chkBloodSpirit.Size = new System.Drawing.Size(79, 17);
             this.chkBloodSpirit.TabIndex = 69;
             this.chkBloodSpirit.Tag = "Checkbox_Metatype_BloodSpirit";
             this.chkBloodSpirit.Text = "Blood Spirit";
@@ -269,15 +265,12 @@ namespace Chummer
             // 
             // chkPossessionBased
             // 
-            this.chkPossessionBased.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkPossessionBased.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPossessionBased.AutoSize = true;
             this.chkPossessionBased.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkPossessionBased.Location = new System.Drawing.Point(88, 4);
-            this.chkPossessionBased.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkPossessionBased.Location = new System.Drawing.Point(88, 5);
             this.chkPossessionBased.Name = "chkPossessionBased";
-            this.chkPossessionBased.Size = new System.Drawing.Size(211, 19);
+            this.chkPossessionBased.Size = new System.Drawing.Size(211, 17);
             this.chkPossessionBased.TabIndex = 64;
             this.chkPossessionBased.Tag = "Checkbox_Metatype_PossessionTradition";
             this.chkPossessionBased.Text = "Summoned by Possess-based Tradition";
@@ -529,18 +522,19 @@ namespace Chummer
             this.lblQualitiesLabel.Tag = "String_Qualities";
             this.lblQualitiesLabel.Text = "Qualities:";
             // 
-            // flowLayoutPanel1
+            // flpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.tlpMetatypes.SetColumnSpan(this.flowLayoutPanel1, 6);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(575, 493);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 71;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMetatypes.SetColumnSpan(this.flpButtons, 6);
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(575, 493);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(156, 23);
+            this.flpButtons.TabIndex = 71;
             // 
             // cmdOK
             // 
@@ -618,10 +612,10 @@ namespace Chummer
             this.tlpMetatypes.ResumeLayout(false);
             this.tlpMetatypes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tlpBottom.ResumeLayout(false);
+            this.tlpBottom.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -660,8 +654,8 @@ namespace Chummer
         internal System.Windows.Forms.Label lblBOD;
         internal System.Windows.Forms.Label lblBODLabel;
         internal System.Windows.Forms.ListBox lstMetatypes;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel flpButtons;
         private BufferedTableLayoutPanel tlpMetatypes;
-        private BufferedTableLayoutPanel tableLayoutPanel2;
+        private BufferedTableLayoutPanel tlpBottom;
     }
 }

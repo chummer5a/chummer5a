@@ -48,12 +48,12 @@
             this.lblFileNameLabel = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpMain.SuspendLayout();
+            this.tlpTop.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkAttributes
@@ -296,78 +296,80 @@
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkAttributes, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkVehicles, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.chkComplexForms, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkSpells, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.chkGear, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.chkQualities, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkWeapons, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.chkMartialArts, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.chkCyberware, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkArmor, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.chkStartingNuyen, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkKnowledgeSkills, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.chkLifestyle, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkActiveSkills, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 8);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 9;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 263);
-            this.tableLayoutPanel1.TabIndex = 20;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.tlpTop, 0, 0);
+            this.tlpMain.Controls.Add(this.chkAttributes, 0, 1);
+            this.tlpMain.Controls.Add(this.chkVehicles, 1, 7);
+            this.tlpMain.Controls.Add(this.chkComplexForms, 1, 1);
+            this.tlpMain.Controls.Add(this.chkSpells, 0, 7);
+            this.tlpMain.Controls.Add(this.chkGear, 1, 6);
+            this.tlpMain.Controls.Add(this.chkQualities, 0, 2);
+            this.tlpMain.Controls.Add(this.chkWeapons, 1, 5);
+            this.tlpMain.Controls.Add(this.chkMartialArts, 0, 6);
+            this.tlpMain.Controls.Add(this.chkCyberware, 1, 2);
+            this.tlpMain.Controls.Add(this.chkArmor, 1, 4);
+            this.tlpMain.Controls.Add(this.chkStartingNuyen, 0, 3);
+            this.tlpMain.Controls.Add(this.chkKnowledgeSkills, 0, 5);
+            this.tlpMain.Controls.Add(this.chkLifestyle, 1, 3);
+            this.tlpMain.Controls.Add(this.chkActiveSkills, 0, 4);
+            this.tlpMain.Controls.Add(this.flpButtons, 0, 8);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 9;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(326, 263);
+            this.tlpMain.TabIndex = 20;
             // 
-            // tableLayoutPanel2
+            // tlpTop
             // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.lblNameLabel, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.lblFileNameLabel, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.txtFileName, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.txtName, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(326, 52);
-            this.tableLayoutPanel2.TabIndex = 0;
+            this.tlpTop.AutoSize = true;
+            this.tlpTop.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTop.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.tlpTop, 2);
+            this.tlpTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTop.Controls.Add(this.lblNameLabel, 0, 0);
+            this.tlpTop.Controls.Add(this.lblFileNameLabel, 0, 1);
+            this.tlpTop.Controls.Add(this.txtFileName, 1, 1);
+            this.tlpTop.Controls.Add(this.txtName, 1, 0);
+            this.tlpTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTop.Location = new System.Drawing.Point(0, 0);
+            this.tlpTop.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTop.Name = "tlpTop";
+            this.tlpTop.RowCount = 2;
+            this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTop.Size = new System.Drawing.Size(326, 52);
+            this.tlpTop.TabIndex = 0;
             // 
-            // flowLayoutPanel1
+            // flpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 237);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 18;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.SetColumnSpan(this.flpButtons, 2);
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(167, 237);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(156, 23);
+            this.flpButtons.TabIndex = 18;
             // 
             // frmCreatePACKSKit
             // 
@@ -377,7 +379,7 @@
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(344, 281);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -390,12 +392,12 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreatePACKSKit";
             this.Text = "Create PACKS Kit";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.tlpTop.ResumeLayout(false);
+            this.tlpTop.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -423,8 +425,8 @@
         private System.Windows.Forms.Label lblFileNameLabel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpTop;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
     }
 }
