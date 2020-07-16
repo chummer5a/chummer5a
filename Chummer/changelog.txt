@@ -36,6 +36,7 @@ Application Fixes:
 - The metatype selection form for Karma-based character generation options now properly remembers the character's current metatype and metavariant settings.
 - The message displaying conditions that a character has not met for something that they have picked out can now properly handle condition groups.
 - Condition Monitor boxes now load properly if the character being loaded has any of their boxes filled and/or have more than 24 Physical and/or Stun Condition Monitor boxes.
+- Adepts with an adept power that they both have free levels/ranks in and have put PP into manually now get those PPs automatically removed from said power should the adept stop being an adept.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

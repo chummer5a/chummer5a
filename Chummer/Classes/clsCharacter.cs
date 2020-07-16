@@ -6884,13 +6884,15 @@ namespace Chummer
                 if(i < Powers.Count)
                 {
                     Power objToRemove = Powers[i];
-                    if(objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                    if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
                     {
                         // Remove the Improvements created by the Power.
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power,
                             objToRemove.InternalId);
                         Powers.RemoveAt(i);
                     }
+                    else
+                        objToRemove.Rating = 0;
                 }
             }
         }
