@@ -426,6 +426,11 @@ namespace Chummer
         public bool ShowArmorCapacityOnly { get; set; }
 
         /// <summary>
+        /// Only items that are marked as being flechette ammo should be shown.
+        /// </summary>
+        public bool ShowFlechetteAmmoOnly { get; set; }
+
+        /// <summary>
         /// Guid of Gear that was selected in the dialogue.
         /// </summary>
         public string SelectedGear
@@ -983,6 +988,8 @@ namespace Chummer
                 strFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
             else if (ShowNegativeCapacityOnly)
                 strFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
+            if (ShowFlechetteAmmoOnly)
+                strFilter.Append(" and isflechetteammo = 'True'");
             if (_objGearParent == null)
                 strFilter.Append(" and not(requireparent)");
             foreach (string strPrefix in ForceItemPrefixStrings)

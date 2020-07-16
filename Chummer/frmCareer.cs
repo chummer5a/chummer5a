@@ -10787,11 +10787,11 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            List<string> lstAmmoPrefixStrings = new List<string>(objWeapon.AmmoPrefixStrings);
+            HashSet<string> setAmmoPrefixStrings = new HashSet<string>(objWeapon.AmmoPrefixStrings);
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, lstAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, setAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }
@@ -14511,7 +14511,7 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null, bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14544,7 +14544,10 @@ namespace Chummer
                 }
             }
 
-            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories))
+            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
+            {
+                ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
+            })
             {
                 if (!blnNullParent)
                 {

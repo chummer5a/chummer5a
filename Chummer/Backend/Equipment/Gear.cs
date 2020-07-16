@@ -68,6 +68,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
+        private XmlNode _nodFlechetteWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
@@ -97,6 +98,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnCanSwapAttributes;
         private int _intSortOrder;
         private bool _blnStolen;
+        private bool _blnIsFlechetteAmmo;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -218,6 +220,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
             objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            objXmlGear.TryGetBoolFieldQuickly("isflechetteammo", ref _blnIsFlechetteAmmo);
 
             // Check for a Custom name
             if (_strName == "Custom Item")
@@ -434,6 +437,7 @@ namespace Chummer.Backend.Equipment
 
             // If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
             _nodWeaponBonus = objXmlGear["weaponbonus"];
+            _nodFlechetteWeaponBonus = objXmlGear["flechetteweaponbonus"];
 
             if (!objXmlGear.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
             {
@@ -748,6 +752,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objGear.Bonus;
             _nodWirelessBonus = objGear.WirelessBonus;
             _nodWeaponBonus = objGear.WeaponBonus;
+            _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus;
             if (!Guid.TryParse(objGear.WeaponID, out _guiWeaponID))
                 _guiWeaponID = Guid.Empty;
             _strNotes = objGear.Notes;
@@ -756,6 +761,7 @@ namespace Chummer.Backend.Equipment
             _intChildCostMultiplier = objGear.ChildCostMultiplier;
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
+            _blnIsFlechetteAmmo = objGear._blnIsFlechetteAmmo;
 
             foreach (Gear objGearChild in objGear.Children)
             {
@@ -820,8 +826,13 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
             else
                 objWriter.WriteElementString("weaponbonus", string.Empty);
+            if (!string.IsNullOrEmpty(_nodFlechetteWeaponBonus?.InnerXml))
+                objWriter.WriteRaw("<flechetteweaponbonus>" + _nodFlechetteWeaponBonus.InnerXml + "</flechetteweaponbonus>");
+            else
+                objWriter.WriteElementString("flechetteweaponbonus", string.Empty);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("isflechetteammo", _blnIsFlechetteAmmo.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("canformpersona", _strCanFormPersona);
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
@@ -922,9 +933,17 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
             _nodWeaponBonus = objNode["weaponbonus"];
-            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            _nodFlechetteWeaponBonus = objNode["flechetteweaponbonus"];
+            if (_objCharacter.LastSavedVersion <= new Version(5, 212, 78))
+                objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            if (!objNode.TryGetBoolFieldQuickly("isflechetteammmo", ref _blnIsFlechetteAmmo))
+            {
+                GetNode()?.TryGetBoolFieldQuickly("isflechetteammmo", ref _blnIsFlechetteAmmo);
+                if (_nodFlechetteWeaponBonus == null && _blnIsFlechetteAmmo)
+                    _nodFlechetteWeaponBonus = GetNode()?["flechetteweaponbonus"];
+            }
             bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -1278,6 +1297,12 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponbonusdamage_english", WeaponBonusDamage(GlobalOptions.DefaultLanguage));
                 objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
             }
+            if (_nodFlechetteWeaponBonus != null)
+            {
+                objWriter.WriteElementString("flechetteweaponbonusdamage", FlechetteWeaponBonusDamage(strLanguageToPrint));
+                objWriter.WriteElementString("flechetteweaponbonusdamage_english", FlechetteWeaponBonusDamage(GlobalOptions.DefaultLanguage));
+                objWriter.WriteElementString("flechetteweaponbonusap", FlechetteWeaponBonusAP);
+            }
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
@@ -1352,6 +1377,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _nodWeaponBonus;
             set => _nodWeaponBonus = value;
+        }
+
+        /// <summary>
+        /// WeaponBonus node from the XML file that is used only by weapons that have flechette codes built in.
+        /// </summary>
+        public XmlNode FlechetteWeaponBonus
+        {
+            get => _nodFlechetteWeaponBonus;
+            set => _nodFlechetteWeaponBonus = value;
         }
 
         /// <summary>
@@ -1681,6 +1715,12 @@ namespace Chummer.Backend.Equipment
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        public bool IsFlechetteAmmo
+        {
+            get => _blnIsFlechetteAmmo;
+            set => _blnIsFlechetteAmmo = value;
         }
 
         /// <summary>
@@ -2636,6 +2676,70 @@ namespace Chummer.Backend.Equipment
         /// Weapon Bonus Range.
         /// </summary>
         public int WeaponBonusRange => Convert.ToInt32(_nodWeaponBonus?["rangebonus"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+
+        /// <summary>
+        /// Weapon Bonus Damage.
+        /// </summary>
+        public string FlechetteWeaponBonusDamage(string strLanguage)
+        {
+            if (_nodFlechetteWeaponBonus == null)
+                return string.Empty;
+            else
+            {
+                string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+                // Use the damagereplace value if applicable.
+                if (strReturn == "0")
+                {
+                    // Use the damage bonus if available, otherwise use 0.
+                    strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+
+                    // Attach the type if applicable.
+                    strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+
+                    // If this does not start with "-", add a "+" to the string.
+                    if (!strReturn.StartsWith('-'))
+                        strReturn = '+' + strReturn;
+                }
+
+                // Translate the Avail string.
+                if (strLanguage != GlobalOptions.DefaultLanguage)
+                {
+                    strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                        .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+                }
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus AP.
+        /// </summary>
+        public string FlechetteWeaponBonusAP
+        {
+            get
+            {
+                if (_nodFlechetteWeaponBonus == null)
+                    return string.Empty;
+                else
+                {
+                    // Use the apreplace value if applicable.
+                    // Use the ap bonus if available, otherwise use 0.
+                    string strReturn = _nodFlechetteWeaponBonus["apreplace"]?.InnerText ?? _nodFlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+
+                    // If this does not start with "-", add a "+" to the string.
+                    if (!strReturn.StartsWith('-'))
+                        strReturn = '+' + strReturn;
+
+                    return strReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus Range.
+        /// </summary>
+        public int FlechetteWeaponBonusRange => Convert.ToInt32(_nodFlechetteWeaponBonus?["rangebonus"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 
 
         /// <summary>

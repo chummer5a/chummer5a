@@ -4244,6 +4244,40 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_mentorspiritfix");
                     }
 
+                    using (_ = Timekeeper.StartSyncron("load_char_flechettefix", loadActivity))
+                    {
+                        //Fixes an issue where existing weapons could have been loaded with non-flechette ammunition
+                        if (LastSavedVersion <= new Version(5, 212, 78))
+                        {
+                            foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
+                                objWeapon.DoFlechetteFix();
+                            foreach (Vehicle objVehicle in Vehicles)
+                            {
+                                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                                    objWeapon.DoFlechetteFix();
+                                foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                                {
+                                    foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(x => x.Children))
+                                        objWeapon.DoFlechetteFix();
+
+                                    foreach (VehicleMod objMod in objWeaponMount.Mods)
+                                    {
+                                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                            objWeapon.DoFlechetteFix();
+                                    }
+                                }
+
+                                foreach (VehicleMod objMod in objVehicle.Mods)
+                                {
+                                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                        objWeapon.DoFlechetteFix();
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_flechettefix");
+                    }
+
                     //Plugins
                     using (_ = Timekeeper.StartSyncron("load_plugins", loadActivity))
                     {
