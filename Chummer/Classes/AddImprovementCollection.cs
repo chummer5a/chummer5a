@@ -7300,13 +7300,10 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //TODO: I'm not happy with this.
-            //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
-            //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance and cut the submersion grade in half.
-            //Whichever value is lower becomes the value of the improvement.
             Log.Info("cyberadeptdaemon");
-            int final = (int) Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), Math.Ceiling(_objCharacter.CyberwareEssence));
-            CreateImprovement("RESBase", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, final, 1, 0, 0, final);
+            Log.Info("cyberadeptdaemon = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberadeptDaemon, _strUnique);
         }
 
         /// <summary>

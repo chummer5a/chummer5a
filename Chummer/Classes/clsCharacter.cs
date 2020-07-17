@@ -2935,6 +2935,7 @@ namespace Chummer
                         //using finish("load_char_mentorspirit");
                     }
 
+                    List<Improvement> lstCyberadeptSweepGrades = new List<Improvement>();
                     _lstInternalIdsNeedingReapplyImprovements.Clear();
                     using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
                     {
@@ -2994,6 +2995,20 @@ namespace Chummer
                                     objImprovement.Value == 0)
                                 {
                                     _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement.SourceName);
+                                }
+                                // Cyberadept fix
+                                else if (LastSavedVersion <= new Version(5, 212, 78)
+                                         && objImprovement.ImproveSource == Improvement.ImprovementSource.Echo
+                                         && objImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                                         && objImprovement.ImprovedName == "RESBase"
+                                         && objImprovement.Value > 0
+                                         && objImprovement.Value == objImprovement.Augmented)
+                                {
+                                    // Cyberadept in these versions was an echo. It is no longer an echo, and so needs a more complicated reapplication
+                                    if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                                        _lstImprovements.Remove(objImprovement);
+                                    else
+                                        lstCyberadeptSweepGrades.Add(objImprovement);
                                 }
                             }
                             catch (ArgumentException)
@@ -3199,6 +3214,21 @@ namespace Chummer
                                     {
                                         // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
                                         _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                                    }
+
+                                    if (LastSavedVersion <= new Version(5, 212, 78)
+                                        && objQuality.Name == "Resonant Stream: Cyberadept"
+                                        && objQuality.Bonus == null)
+                                    {
+                                        objQuality.Bonus =
+                                            xmlRootQualitiesNode.SelectSingleNode("quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
+                                        ImprovementManager.RemoveImprovements(this,
+                                            Improvement.ImprovementSource.Quality,
+                                            objQuality.InternalId);
+                                        ImprovementManager.CreateImprovement(this, string.Empty,
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            Improvement.ImprovementType.CyberadeptDaemon,
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
                                     }
                                 }
                             }
@@ -4204,6 +4234,37 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_maxkarmafix");
                     }
 
+                    using (_ = Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity))
+                    {
+                        //Sweep through grades if we have any cyberadept improvements that need reassignment
+                        if (lstCyberadeptSweepGrades.Count > 0)
+                        {
+                            foreach (Improvement objCyberadeptImprovement in lstCyberadeptSweepGrades)
+                            {
+                                InitiationGrade objBestGradeMatch = null;
+                                foreach (InitiationGrade objInitiationGrade in InitiationGrades.Where(x => x.Technomancer
+                                                                                                           && Math.Ceiling(x.Grade * 0.5m) <= objCyberadeptImprovement.Value
+                                                                                                           && Metamagics.All(y => x.Grade != y.Grade)
+                                                                                                           && lstCyberadeptSweepGrades.All(y => y.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon
+                                                                                                                                                || y.SourceName != x.InternalId)))
+                                {
+                                    if (objBestGradeMatch == null || objBestGradeMatch.Grade > objInitiationGrade.Grade)
+                                        objBestGradeMatch = objInitiationGrade;
+                                }
+
+                                if (objBestGradeMatch != null)
+                                {
+                                    objCyberadeptImprovement.ImproveSource = Improvement.ImprovementSource.CyberadeptDaemon;
+                                    objCyberadeptImprovement.SourceName = objBestGradeMatch.InternalId;
+                                }
+                                else
+                                    _lstImprovements.Remove(objCyberadeptImprovement);
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_cyberadeptfix");
+                    }
+
                     using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
                     {
                         Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
@@ -4291,8 +4352,6 @@ namespace Chummer
 
                         //Timekeeper.Finish("load_plugins");
                     }
-
-
 
                     // Refresh certain improvements
                     using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
@@ -5824,6 +5883,11 @@ namespace Chummer
                     return LanguageManager.GetString("String_Tradition", strLanguage);
                 case Improvement.ImprovementSource.AstralReputation:
                     return LanguageManager.GetString("String_AstralReputation", strLanguage);
+                case Improvement.ImprovementSource.CyberadeptDaemon:
+                    return XmlManager.Load("qualities.xml", strLanguage)
+                        .SelectSingleNode(
+                            "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
+                        ?.InnerText ?? "Resonant Stream: Cyberadept";
                 default:
                     if(objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
@@ -14559,10 +14623,15 @@ namespace Chummer
                         : Improvement.ImprovementSource.EssenceLossChargen;
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
-                    if(intMaxReduction != 0)
+                    // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon);
+                    if (intMaxReduction != 0)
                     {
+                        int intCyberadeptDaemonBonus = 0;
+                        if (TechnomancerEnabled && SubmersionGrade > 0 && Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
+                            intCyberadeptDaemonBonus = (int)Math.Min(Math.Ceiling(0.5m * SubmersionGrade), Math.Ceiling(CyberwareEssence));
                         ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
-                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
+                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, Math.Min(0, intCyberadeptDaemonBonus - intMaxReduction));
                         ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
                             Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
                     }

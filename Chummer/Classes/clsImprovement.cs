@@ -354,6 +354,7 @@ namespace Chummer
             FreeQuality,
             AstralReputation,
             AstralReputationWild,
+            CyberadeptDaemon,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
@@ -398,8 +399,8 @@ namespace Chummer
             Weapon,
             WeaponAccessory,
             AstralReputation,
+            CyberadeptDaemon,
             NumImprovementSources // 🡐 This one should always be the last defined enum
-            ,
         }
 
         private readonly Character _objCharacter;
@@ -534,7 +535,7 @@ namespace Chummer
                 _strCondition = _strExclude;
                 _strExclude = string.Empty;
             }
-            if (_objImprovementType == ImprovementType.RestrictedGear && _intVal == 0)
+            else if (_objImprovementType == ImprovementType.RestrictedGear && _intVal == 0)
             {
                 _intVal = 24;
             }
@@ -2186,6 +2187,13 @@ namespace Chummer
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
                         nameof(Character.WildReputation));
                         break;
+                }
+                case ImprovementType.CyberadeptDaemon:
+                {
+                    if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                            nameof(Character.CyberwareEssence));
+                    break;
                 }
             }
         }
