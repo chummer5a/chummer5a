@@ -555,50 +555,56 @@ namespace Chummer
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                 {
-                    if (xmlNodeList?.Count > 0)
+                    if (xmlNodeList?.Count > 0 && objDocElement != null)
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            if (strFileName != "sheets.xml")
+                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
+                            List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
+                            foreach (XmlNode objChild in objNode.ChildNodes)
                             {
-                                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                                List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
-                                foreach (XmlNode objChild in objNode.ChildNodes)
+                                XmlNode objParentNode = objChild.ParentNode;
+                                if (objParentNode == null)
+                                    continue;
+                                string strFilter = string.Empty;
+                                XmlNode xmlIdNode = objChild["id"];
+                                if (xmlIdNode != null)
+                                    strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                XmlNode xmlNameNode = objChild["name"];
+                                if (xmlNameNode != null)
                                 {
-                                    XmlNode objParentNode = objChild.ParentNode;
-                                    if (objParentNode == null)
-                                        continue;
-                                    string strFilter = string.Empty;
-                                    XmlNode xmlIdNode = objChild["id"];
-                                    if (xmlIdNode != null)
-                                        strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                    XmlNode xmlNameNode = objChild["name"];
-                                    if (xmlNameNode != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(strFilter))
-                                            strFilter += " and ";
-                                        strFilter += "name = " + xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                    }
-
-                                    // Only do this if the child has the name or id field since this is what we must match on.
                                     if (!string.IsNullOrEmpty(strFilter))
-                                    {
-                                        XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                            "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' +
-                                            strFilter + ']');
-                                        if (objItem != null)
-                                            lstDelete.Add(objChild);
-                                    }
+                                        strFilter += " and ";
+                                    strFilter += "name = " + xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 }
 
-                                // Remove the offending items from the node we're about to merge in.
-                                foreach (XmlNode objRemoveNode in lstDelete)
+                                // Only do this if the child has the name or id field since this is what we must match on.
+                                if (!string.IsNullOrEmpty(strFilter))
                                 {
-                                    objNode.RemoveChild(objRemoveNode);
+                                    string strParentNodeFilter = objParentNode.Attributes?.Count > 0
+                                        ? string.Join(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
+                                            "@" + x.Name + " = " + x.Value.Replace("&amp;", "&").CleanXPath()))
+                                        : string.Empty;
+                                    if (!string.IsNullOrEmpty(strParentNodeFilter))
+                                        strParentNodeFilter = '[' + strParentNodeFilter + ']';
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(
+                                        "/chummer/" + objParentNode.Name + strParentNodeFilter + '/' + objChild.Name + '[' +
+                                        strFilter + ']');
+                                    if (objItem != null)
+                                        lstDelete.Add(objChild);
                                 }
                             }
 
-                            if (objDocElement?[objNode.Name] != null && strFileName != "sheets.xml")
+                            // Remove the offending items from the node we're about to merge in.
+                            foreach (XmlNode objRemoveNode in lstDelete)
+                            {
+                                objNode.RemoveChild(objRemoveNode);
+                            }
+
+                            XmlNode xmlExistingNode = objDocElement[objNode.Name];
+                            if (xmlExistingNode != null
+                                && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count
+                                && xmlExistingNode.Attributes?.Cast<XmlAttribute>().All(x => objNode.Attributes?.Cast<XmlAttribute>().Any(y => x.Name == y.Name && x.Value == y.Value) == true) != false)
                             {
                                 /* We need to do this to avoid creating multiple copies of the root node, ie
                                         <chummer>
@@ -613,13 +619,13 @@ namespace Chummer
                                     */
                                 foreach (XmlNode childNode in objNode.ChildNodes)
                                 {
-                                    objDocElement?[objNode.Name].AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                    xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
                                 }
                             }
                             else
                             {
                                 // Append the entire child node to the new document.
-                                objDocElement?.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                                objDocElement.AppendChild(xmlDataDoc.ImportNode(objNode, true));
                             }
 
                             blnReturn = true;
