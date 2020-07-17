@@ -3005,7 +3005,7 @@ namespace Chummer
                                          && objImprovement.Value == objImprovement.Augmented)
                                 {
                                     // Cyberadept in these versions was an echo. It is no longer an echo, and so needs a more complicated reapplication
-                                    if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                                    if (Options.SpecialKarmaCostBasedOnShownValue)
                                         _lstImprovements.Remove(objImprovement);
                                     else
                                         lstCyberadeptSweepGrades.Add(objImprovement);
