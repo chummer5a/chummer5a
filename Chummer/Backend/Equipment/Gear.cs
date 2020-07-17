@@ -934,8 +934,7 @@ namespace Chummer.Backend.Equipment
                 _blnWirelessOn = false;
             _nodWeaponBonus = objNode["weaponbonus"];
             _nodFlechetteWeaponBonus = objNode["flechetteweaponbonus"];
-            if (_objCharacter.LastSavedVersion <= new Version(5, 212, 78))
-                objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             if (!objNode.TryGetBoolFieldQuickly("isflechetteammmo", ref _blnIsFlechetteAmmo))
