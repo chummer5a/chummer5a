@@ -34,7 +34,6 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;

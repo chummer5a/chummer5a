@@ -970,6 +970,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    if (objXmlSelectedQuality == null)
+                        continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
                     string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 

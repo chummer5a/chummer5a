@@ -1033,7 +1033,7 @@ namespace Chummer.Backend.Skills
 
         public virtual string SkillCategory { get; } = string.Empty;
 
-        private List<ListItem> _lstCachedSuggestedSpecializations = null;
+        private List<ListItem> _lstCachedSuggestedSpecializations;
 
         // ReSharper disable once InconsistentNaming
         public IReadOnlyList<ListItem> CGLSpecializations

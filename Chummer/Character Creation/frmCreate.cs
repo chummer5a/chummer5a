@@ -8454,17 +8454,6 @@ namespace Chummer
         }
 #endregion
 
-#region Sourcebook Label Events
-        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                e.SuppressKeyPress = true;
-                ((TextBox) sender)?.SelectAll();
-            }
-        }
-#endregion
-
 #region Custom Methods
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
