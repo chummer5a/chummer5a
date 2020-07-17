@@ -89,6 +89,7 @@ Changed/New Strings:
 - Tip_SkillsKnowledgeSkills
 - Skill_NativeLanguageLong
 - Message_NewNativeLanguageSkill
+- Label_CMRecovery
 
 Build 212
 Application Changes:

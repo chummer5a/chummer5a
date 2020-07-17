@@ -3098,6 +3098,7 @@ namespace Chummer
             this.lblStunRecoveryText.Name = "lblStunRecoveryText";
             this.lblStunRecoveryText.Size = new System.Drawing.Size(56, 13);
             this.lblStunRecoveryText.TabIndex = 2;
+            this.lblStunRecoveryText.Tag = "Label_CMRecovery";
             this.lblStunRecoveryText.Text = "Recovery:";
             // 
             // panStunCM
@@ -4016,6 +4017,7 @@ namespace Chummer
             this.lblPhysicalRecoveryText.Name = "lblPhysicalRecoveryText";
             this.lblPhysicalRecoveryText.Size = new System.Drawing.Size(56, 13);
             this.lblPhysicalRecoveryText.TabIndex = 1;
+            this.lblPhysicalRecoveryText.Tag = "Label_CMRecovery";
             this.lblPhysicalRecoveryText.Text = "Recovery:";
             // 
             // lblCMPhysicalRecoveryPool

@@ -5935,6 +5935,10 @@
       <text>Stun</text>
     </string>
     <string>
+      <key>Label_CMRecovery</key>
+      <text>Recovery:</text>
+    </string>
+    <string>
       <key>Label_CMEdge</key>
       <text>Regain/Spend Edge</text>
     </string>
