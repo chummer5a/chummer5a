@@ -15887,10 +15887,23 @@ namespace Chummer
                     }
                 }
             }
-            while (chtKarma.ExpenseValues.Count < 2)
-                chtKarma.ExpenseValues.Add(new DateTimePoint(NuyenLast != DateTime.MinValue ? NuyenLast : DateTime.Now, decimal.ToDouble(decKarmaValue)));
-            while (chtNuyen.ExpenseValues.Count < 2)
-                chtNuyen.ExpenseValues.Add(new DateTimePoint(KarmaLast != DateTime.MinValue ? KarmaLast : DateTime.Now, decimal.ToDouble(decNuyenValue)));
+
+            if (KarmaLast == DateTime.MinValue)
+                KarmaLast = File.Exists(CharacterObject.FileName) ? File.GetCreationTime(CharacterObject.FileName) : new DateTime(DateTime.Now.Ticks - 1000);
+            if (chtKarma.ExpenseValues.Count < 2)
+            {
+                if (chtKarma.ExpenseValues.Count < 1)
+                    chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
+                chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
+            }
+            if (NuyenLast == DateTime.MinValue)
+                NuyenLast = File.Exists(CharacterObject.FileName) ? File.GetCreationTime(CharacterObject.FileName) : new DateTime(DateTime.Now.Ticks - 1000);
+            if (chtNuyen.ExpenseValues.Count < 2)
+            {
+                if (chtNuyen.ExpenseValues.Count < 1)
+                    chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
+                chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
+            }
             chtKarma.NormalizeYAxis();
             chtNuyen.NormalizeYAxis();
             chtKarma.ResumeLayout();
