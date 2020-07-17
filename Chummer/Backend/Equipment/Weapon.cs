@@ -1168,7 +1168,7 @@ namespace Chummer.Backend.Equipment
                     Gear objAmmo = ParentVehicle != null
                         ? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid)
                         : _objCharacter.Gear.DeepFindById(strAmmoGuid);
-                    if (objAmmo?.IsFlechetteAmmo != true)
+                    if (objAmmo?.IsFlechetteAmmo == false)
                     {
                         // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
                         if (objAmmo.Parent is Gear parent &&
