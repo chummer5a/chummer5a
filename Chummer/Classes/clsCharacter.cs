@@ -2488,15 +2488,11 @@ namespace Chummer
                             if (showWarnings)
                             {
                                  Program.MainForm.ShowMessageBox(
-                                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),ex.Message),
-                                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("MessageTitle_FailedLoad"),ex.Message),
+                                    string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_FailedLoad"), ex.Message),
+                                    string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("MessageTitle_FailedLoad"), ex.Message),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                //Program.MainForm.ShowMessageBox(
-                                //    string.Format(
-                                //        LanguageManager.GetString("Message_FailedLoad"),
-                                //        ex.Message),
-                                //    LanguageManager.GetString("MessageTitle_FailedLoad"),
-                                //    MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
 
                             return false;
@@ -2535,11 +2531,6 @@ namespace Chummer
                                 LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Error);
-                            //Program.MainForm.ShowMessageBox(
-                            //    LanguageManager.GetString("Message_IncorrectGameVersion_SR4"),
-                            //    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
-                            //    MessageBoxButtons.YesNo,
-                            //    MessageBoxIcon.Error);
                             IsLoading = false;
                             return false;
                         }
@@ -2612,17 +2603,8 @@ namespace Chummer
                             if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
                                         LanguageManager.GetString("Message_MissingSourceBooks"),
                                         TranslatedBookList(strMissingBooks)),
-                                    LanguageManager.GetString("Message_MissingSourceBooks_Title",
-                                        GlobalOptions.Language),
-                                    MessageBoxButtons.YesNo)
-                                //Program.MainForm.ShowMessageBox(new Form {TopMost = true},
-                                //        string.Format(
-                                //            LanguageManager.GetString("Message_MissingSourceBooks"),
-                                //            TranslatedBookList(strMissingBooks)),
-                                //        LanguageManager.GetString("Message_MissingSourceBooks_Title",
-                                //            GlobalOptions.Language),
-                                //        MessageBoxButtons.YesNo)
-                                == DialogResult.No)
+                                    LanguageManager.GetString("Message_MissingSourceBooks_Title"),
+                                    MessageBoxButtons.YesNo) == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2645,23 +2627,11 @@ namespace Chummer
 
                         if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
-                            if ( Program.MainForm.ShowMessageBox(
-                                     string.Format(GlobalOptions.CultureInfo,
-                                         LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                             GlobalOptions.Language), strMissingSourceNames),
-                                     LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                         GlobalOptions.Language),
-                                     MessageBoxButtons.YesNo)
-
-                                 //Program.MainForm.ShowMessageBox(
-                                 //        string.Format(
-                                 //            LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                 //                GlobalOptions.Language), strMissingSourceNames),
-                                 //        LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                 //            GlobalOptions.Language),
-                                 //        MessageBoxButtons.YesNo)
-
-                                 == DialogResult.No)
+                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                    LanguageManager.GetString("Message_MissingCustomDataDirectories"),
+                                    strMissingSourceNames),
+                                LanguageManager.GetString("Message_MissingCustomDataDirectories_Title"),
+                                MessageBoxButtons.YesNo) == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2788,26 +2758,10 @@ namespace Chummer
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
                         if (xmlGameplayOption == null && showWarnings)
                         {
-                            if ( Program.MainForm.ShowMessageBox(
-                                     string.Format(GlobalOptions.CultureInfo,
-                                         LanguageManager.GetString("Message_MissingGameplayOption",
-                                             GlobalOptions.Language),
-                                         GameplayOption),
-                                     LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                         GlobalOptions.Language),
-                                     MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
-
-
-                                 //Program.MainForm.ShowMessageBox(
-                                 //    string.Format(
-                                 //        LanguageManager.GetString("Message_MissingGameplayOption",
-                                 //            GlobalOptions.Language),
-                                 //        GameplayOption),
-                                 //    LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                 //        GlobalOptions.Language),
-                                 //    MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
-
-                                 == DialogResult.OK)
+                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_MissingGameplayOption"), GameplayOption),
+                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
+                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
