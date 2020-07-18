@@ -89,7 +89,7 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms.
         /// </summary>
-        protected struct TransportWrapper : IEquatable<TransportWrapper>
+        protected readonly struct TransportWrapper : IEquatable<TransportWrapper>
         {
             public Control Control { get; }
 

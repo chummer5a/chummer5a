@@ -1873,11 +1873,7 @@ namespace Chummer
                         try
                         {
                             using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings
-                                {
-                                    XmlResolver = null,
-                                    Async = true
-                                }))
+                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
                                     objXmlDocument.Load(objXmlReader);
                         }
                         catch (XmlException ex)

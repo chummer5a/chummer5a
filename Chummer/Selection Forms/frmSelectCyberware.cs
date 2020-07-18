@@ -997,154 +997,170 @@ namespace Chummer
             if (objXmlCyberwareList == null && !blnDoUIUpdate)
                 return lstCyberwares;
             int intOverLimit = 0;
-            foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
+            if (objXmlCyberwareList?.Count > 0)
             {
-                bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") != null;
-                if (objCurrentGrade != null && blnIsForceGrade)
+                foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
                 {
-                    if (_objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                        continue;
-                }
-                if (blnCyberwareDisabled && xmlCyberware.SelectSingleNode("subsystems/cyberware") != null)
-                {
-                    continue;
-                }
-                if (blnBiowareDisabled && xmlCyberware.SelectSingleNode("subsystems/bioware") != null)
-                {
-                    continue;
-                }
-                XPathNavigator xmlTestNode = xmlCyberware.SelectSingleNode("forbidden/parentdetails");
-                if (xmlTestNode != null)
-                {
-                    // Assumes topmost parent is an AND node
-                    if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") != null;
+                    if (objCurrentGrade != null && blnIsForceGrade)
+                    {
+                        if (_objCharacter.Improvements.Any(x =>
+                            ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
+                            objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                            continue;
+                    }
+
+                    if (blnCyberwareDisabled && xmlCyberware.SelectSingleNode("subsystems/cyberware") != null)
                     {
                         continue;
                     }
-                }
-                xmlTestNode = xmlCyberware.SelectSingleNode("required/parentdetails");
-                if (xmlTestNode != null)
-                {
-                    // Assumes topmost parent is an AND node
-                    if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+
+                    if (blnBiowareDisabled && xmlCyberware.SelectSingleNode("subsystems/bioware") != null)
                     {
                         continue;
                     }
-                }
-                // TODO: Fix if someone has an amount of limbs different from the default amount
-                if (!string.IsNullOrEmpty(_strHasModularMounts))
-                {
-                    string strBlocksMounts = xmlCyberware.SelectSingleNode("blocksmounts")?.Value;
-                    if (!string.IsNullOrEmpty(strBlocksMounts))
+
+                    XPathNavigator xmlTestNode = xmlCyberware.SelectSingleNode("forbidden/parentdetails");
+                    if (xmlTestNode != null)
                     {
-                        IList<Cyberware> lstWareListToCheck = CyberwareParent == null ? (ParentVehicle == null ? _objCharacter.Cyberware : null) : CyberwareParent.Children;
-                        if (xmlCyberware.SelectSingleNode("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
-                            (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
+                        // Assumes topmost parent is an AND node
+                        if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
-                            string[] astrBlockedMounts = strBlocksMounts.Split(',');
+                            continue;
+                        }
+                    }
+
+                    xmlTestNode = xmlCyberware.SelectSingleNode("required/parentdetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
+
+                    // TODO: Fix if someone has an amount of limbs different from the default amount
+                    if (!string.IsNullOrEmpty(_strHasModularMounts))
+                    {
+                        string strBlocksMounts = xmlCyberware.SelectSingleNode("blocksmounts")?.Value;
+                        if (!string.IsNullOrEmpty(strBlocksMounts))
+                        {
+                            IList<Cyberware> lstWareListToCheck = CyberwareParent == null ? (ParentVehicle == null ? _objCharacter.Cyberware : null) : CyberwareParent.Children;
+                            if (xmlCyberware.SelectSingleNode("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
+                                (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
+                            {
+                                string[] astrBlockedMounts = strBlocksMounts.Split(',');
+                                foreach (string strLoop in _strHasModularMounts.Split(','))
+                                {
+                                    if (astrBlockedMounts.Contains(strLoop))
+                                    {
+                                        goto NextCyberware;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // TODO: Fix if someone has an amount of limbs different from the default amount
+                    if (!string.IsNullOrEmpty(_strDisallowedMounts))
+                    {
+                        string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
+                        if (!string.IsNullOrEmpty(strLoopMount))
+                        {
                             foreach (string strLoop in _strHasModularMounts.Split(','))
                             {
-                                if (astrBlockedMounts.Contains(strLoop))
+                                if (strLoopMount == strLoop)
                                 {
                                     goto NextCyberware;
                                 }
                             }
                         }
                     }
-                }
-                // TODO: Fix if someone has an amount of limbs different from the default amount
-                if (!string.IsNullOrEmpty(_strDisallowedMounts))
-                {
-                    string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
-                    if (!string.IsNullOrEmpty(strLoopMount))
+
+                    string strMaxRating = xmlCyberware.SelectSingleNode("rating")?.Value;
+                    string strMinRating = xmlCyberware.SelectSingleNode("minrating")?.Value;
+                    int intMinRating = 1;
+                    // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
+                    if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)) || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
                     {
-                        foreach (string strLoop in _strHasModularMounts.Split(','))
+                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
+
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
+                        intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+
+                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
+
+                        objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
+                        intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                        if (intMaxRating < intMinRating)
+                            continue;
+                    }
+
+                    // Ex-Cons cannot have forbidden or restricted 'ware
+                    if (_objCharacter.ExCon && ParentVehicle == null && xmlCyberware.SelectSingleNode("mountsto") == null)
+                    {
+                        Cyberware objParent = CyberwareParent;
+                        bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
+                        while (objParent != null && !blnAnyParentIsModular)
                         {
-                            if (strLoopMount == strLoop)
+                            objParent = objParent.Parent;
+                            blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
+                        }
+
+                        if (!blnAnyParentIsModular)
+                        {
+                            string strAvailExpr = xmlCyberware.SelectSingleNode("avail")?.Value ?? string.Empty;
+                            if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
-                                goto NextCyberware;
+                                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                                strAvailExpr = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
+                            }
+
+                            if (strAvailExpr.EndsWith('F', 'R'))
+                            {
+                                continue;
                             }
                         }
                     }
-                }
-                string strMaxRating = xmlCyberware.SelectSingleNode("rating")?.Value;
-                string strMinRating = xmlCyberware.SelectSingleNode("minrating")?.Value;
-                int intMinRating = 1;
-                // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
-                if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)) || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
-                {
-                    strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                    intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
-
-                    strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
-
-                    objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
-                    intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
-                    if (intMaxRating < intMinRating)
-                        continue;
-                }
-                // Ex-Cons cannot have forbidden or restricted 'ware
-                if (_objCharacter.ExCon && ParentVehicle == null && xmlCyberware.SelectSingleNode("mountsto") == null)
-                {
-                    Cyberware objParent = CyberwareParent;
-                    bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
-                    while (objParent != null && !blnAnyParentIsModular)
+                    if (blnDoUIUpdate)
                     {
-                        objParent = objParent.Parent;
-                        blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
-                    }
-
-                    if (!blnAnyParentIsModular)
-                    {
-                        string strAvailExpr = xmlCyberware.SelectSingleNode("avail")?.Value ?? string.Empty;
-                        if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                        {
-                            string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                            strAvailExpr = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
-                        }
-                        if (strAvailExpr.EndsWith('F', 'R'))
-                        {
-                            continue;
-                        }
-                    }
-                }
-
-                if (blnDoUIUpdate)
-                {
-                    if (chkHideOverAvailLimit.Checked && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
-                    {
-                        ++intOverLimit;
-                        continue;
-                    }
-                    if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
-                    {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                        if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
-                            decCostMultiplier *= 0.9m;
-                        if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                        if (chkHideOverAvailLimit.Checked && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
                         {
                             ++intOverLimit;
                             continue;
                         }
+
+                        if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+                        {
+                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                            if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
+                                decCostMultiplier *= 0.9m;
+                            if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                            {
+                                ++intOverLimit;
+                                continue;
+                            }
+                        }
                     }
+
+                    if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
+                        continue;
+
+                    lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
+                    if (blnTerminateAfterFirst)
+                        break;
+                    NextCyberware: ;
                 }
-
-                if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
-                    continue;
-
-                lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
-                if (blnTerminateAfterFirst)
-                    break;
-                NextCyberware:;
             }
+
             if (blnDoUIUpdate)
             {
                 lstCyberwares.Sort(CompareListItems.CompareNames);
@@ -1197,7 +1213,7 @@ namespace Chummer
                 return;
             if (cboGrade.Text.StartsWith('*'))
             {
-                Program.MainForm.ShowMessageBox(this, 
+                Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_BannedGrade"),
                     LanguageManager.GetString("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);

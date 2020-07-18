@@ -345,11 +345,6 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void cboSpec_Paint(object sender, PaintEventArgs e)
-        {
-            cboSpec.SelectionLength = 0;
-        }
-
         private void lblName_Click(object sender, EventArgs e)
         {
             CommonFunctions.OpenPDF(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalOptions.Language));

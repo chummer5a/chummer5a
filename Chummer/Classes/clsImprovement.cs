@@ -2233,7 +2233,7 @@ namespace Chummer
         public string InternalId => SourceName;
     }
 
-    public struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>, IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
+    public readonly struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>, IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
     {
         private readonly Tuple<Character, Improvement.ImprovementType, string> _objTupleKey;
 

@@ -907,7 +907,7 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
                     {
-                        if (Program.MainForm.ShowMessageBox(this, 
+                        if (Program.MainForm.ShowMessageBox(this,
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -12794,24 +12794,27 @@ namespace Chummer
                         }
                     }
 
-                    for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
+                    if (objMaxCheckBox != null)
                     {
-                        CheckBox cb = new CheckBox
+                        for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                         {
-                            Tag = i,
-                            Appearance = objMaxCheckBox.Appearance,
-                            AutoSize = objMaxCheckBox.AutoSize,
-                            MinimumSize = objMaxCheckBox.MinimumSize,
-                            Size = objMaxCheckBox.Size,
-                            Padding = objMaxCheckBox.Padding,
-                            Margin = objMaxCheckBox.Margin,
-                            TextAlign = objMaxCheckBox.TextAlign,
-                            Font = objMaxCheckBox.Font,
-                            UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
-                        };
-                        cb.Click += button_Click;
-                        pnlConditionMonitorPanel.Controls.Add(cb);
-                        lstCheckBoxes.Add(cb);
+                            CheckBox cb = new CheckBox
+                            {
+                                Tag = i,
+                                Appearance = objMaxCheckBox.Appearance,
+                                AutoSize = objMaxCheckBox.AutoSize,
+                                MinimumSize = objMaxCheckBox.MinimumSize,
+                                Size = objMaxCheckBox.Size,
+                                Padding = objMaxCheckBox.Padding,
+                                Margin = objMaxCheckBox.Margin,
+                                TextAlign = objMaxCheckBox.TextAlign,
+                                Font = objMaxCheckBox.Font,
+                                UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
+                            };
+                            cb.Click += button_Click;
+                            pnlConditionMonitorPanel.Controls.Add(cb);
+                            lstCheckBoxes.Add(cb);
+                        }
                     }
                 }
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
@@ -14511,6 +14514,7 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
+        /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
         private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null, bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
@@ -16994,7 +16998,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -17085,7 +17089,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
