@@ -97,10 +97,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -127,65 +127,65 @@ namespace Chummer
             }
         }
 
-        private static readonly DependencyGraph<string> ContactDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(NoLinkedCharacter),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
+        private static readonly DependencyGraph<string, Contact> ContactDependencyGraph =
+            new DependencyGraph<string, Contact>(
+                new DependencyGraphNode<string, Contact>(nameof(NoLinkedCharacter),
+                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string>(nameof(Name),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Contact>(nameof(Name),
+                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySex),
-                    new DependencyGraphNode<string>(nameof(Sex),
-                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Contact>(nameof(DisplaySex),
+                    new DependencyGraphNode<string, Contact>(nameof(Sex),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(DisplayMetatype),
-                    new DependencyGraphNode<string>(nameof(Metatype),
-                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Contact>(nameof(DisplayMetatype),
+                    new DependencyGraphNode<string, Contact>(nameof(Metatype),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(DisplayAge),
-                    new DependencyGraphNode<string>(nameof(Age),
-                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Contact>(nameof(DisplayAge),
+                    new DependencyGraphNode<string, Contact>(nameof(Age),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(MainMugshot),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter)),
-                    new DependencyGraphNode<string>(nameof(Mugshots),
-                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Contact>(nameof(MainMugshot),
+                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter)),
+                    new DependencyGraphNode<string, Contact>(nameof(Mugshots),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     ),
-                    new DependencyGraphNode<string>(nameof(MainMugshotIndex))
+                    new DependencyGraphNode<string, Contact>(nameof(MainMugshotIndex))
                 ),
-                new DependencyGraphNode<string>(nameof(IsNotEnemy),
-                    new DependencyGraphNode<string>(nameof(EntityType))
+                new DependencyGraphNode<string, Contact>(nameof(IsNotEnemy),
+                    new DependencyGraphNode<string, Contact>(nameof(EntityType))
                 ),
-                new DependencyGraphNode<string>(nameof(NotReadOnly),
-                    new DependencyGraphNode<string>(nameof(ReadOnly))
+                new DependencyGraphNode<string, Contact>(nameof(NotReadOnly),
+                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
-                new DependencyGraphNode<string>(nameof(GroupEnabled),
-                    new DependencyGraphNode<string>(nameof(ReadOnly))
+                new DependencyGraphNode<string, Contact>(nameof(GroupEnabled),
+                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
-                new DependencyGraphNode<string>(nameof(LoyaltyEnabled),
-                    new DependencyGraphNode<string>(nameof(IsGroup)),
-                    new DependencyGraphNode<string>(nameof(ForcedLoyalty)),
-                    new DependencyGraphNode<string>(nameof(ReadOnly))
+                new DependencyGraphNode<string, Contact>(nameof(LoyaltyEnabled),
+                    new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                    new DependencyGraphNode<string, Contact>(nameof(ForcedLoyalty)),
+                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
-                new DependencyGraphNode<string>(nameof(ContactPoints),
-                    new DependencyGraphNode<string>(nameof(Free)),
-                    new DependencyGraphNode<string>(nameof(Connection),
-                        new DependencyGraphNode<string>(nameof(ConnectionMaximum))
+                new DependencyGraphNode<string, Contact>(nameof(ContactPoints),
+                    new DependencyGraphNode<string, Contact>(nameof(Free)),
+                    new DependencyGraphNode<string, Contact>(nameof(Connection),
+                        new DependencyGraphNode<string, Contact>(nameof(ConnectionMaximum))
                     ),
-                    new DependencyGraphNode<string>(nameof(Loyalty)),
-                    new DependencyGraphNode<string>(nameof(Family)),
-                    new DependencyGraphNode<string>(nameof(Blackmail))
+                    new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
+                    new DependencyGraphNode<string, Contact>(nameof(Family)),
+                    new DependencyGraphNode<string, Contact>(nameof(Blackmail))
                 ),
-                new DependencyGraphNode<string>(nameof(QuickText),
-                    new DependencyGraphNode<string>(nameof(Connection)),
-                    new DependencyGraphNode<string>(nameof(IsGroup)),
-                    new DependencyGraphNode<string>(nameof(Loyalty),
-                        new DependencyGraphNode<string>(nameof(IsGroup)),
-                        new DependencyGraphNode<string>(nameof(ForcedLoyalty))
+                new DependencyGraphNode<string, Contact>(nameof(QuickText),
+                    new DependencyGraphNode<string, Contact>(nameof(Connection)),
+                    new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                    new DependencyGraphNode<string, Contact>(nameof(Loyalty),
+                        new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                        new DependencyGraphNode<string, Contact>(nameof(ForcedLoyalty))
                     )
                 )
             );

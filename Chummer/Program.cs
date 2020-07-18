@@ -322,7 +322,7 @@ namespace Chummer
                                     string msg =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(msg);
-                                    Program.MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -342,7 +342,7 @@ namespace Chummer
                                             string msg = "Plugin " + whatplugin + " is not enabled in the options!"
                                                          + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(msg);
-                                            Program.MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else

@@ -67,10 +67,10 @@ namespace Chummer.Backend.Skills
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -1118,18 +1118,18 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static readonly DependencyGraph<string> s_SkillSectionDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(HasKnowledgePoints),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints))
+        private static readonly DependencyGraph<string, SkillsSection> s_SkillSectionDependencyGraph =
+            new DependencyGraph<string, SkillsSection>(
+                new DependencyGraphNode<string, SkillsSection>(nameof(HasKnowledgePoints),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints))
                 ),
-                new DependencyGraphNode<string>(nameof(KnowledgeSkillPointsRemain),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints)),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPointsUsed),
-                        new DependencyGraphNode<string>(nameof(KnowledgeSkillRanksSum)),
-                        new DependencyGraphNode<string>(nameof(SkillPointsSpentOnKnoskills),
-                            new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints)),
-                            new DependencyGraphNode<string>(nameof(KnowledgeSkillRanksSum))
+                new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPointsRemain),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints)),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPointsUsed),
+                        new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillRanksSum)),
+                        new DependencyGraphNode<string, SkillsSection>(nameof(SkillPointsSpentOnKnoskills),
+                            new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints)),
+                            new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillRanksSum))
                         )
                     )
                 )

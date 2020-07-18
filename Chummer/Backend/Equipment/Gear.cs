@@ -3491,25 +3491,25 @@ namespace Chummer.Backend.Equipment
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string> GearDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
-                            new DependencyGraphNode<string>(nameof(Name))
+        private static readonly DependencyGraph<string, Gear> GearDependencyGraph =
+            new DependencyGraph<string, Gear>(
+                new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Gear>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Gear>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, Gear>(nameof(Name))
                         ),
-                        new DependencyGraphNode<string>(nameof(Quantity)),
-                        new DependencyGraphNode<string>(nameof(Rating)),
-                        new DependencyGraphNode<string>(nameof(Extra)),
-                        new DependencyGraphNode<string>(nameof(GearName))
+                        new DependencyGraphNode<string, Gear>(nameof(Quantity)),
+                        new DependencyGraphNode<string, Gear>(nameof(Rating)),
+                        new DependencyGraphNode<string, Gear>(nameof(Extra)),
+                        new DependencyGraphNode<string, Gear>(nameof(GearName))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(CurrentDisplayNameShort),
-                    new DependencyGraphNode<string>(nameof(DisplayNameShort))
+                new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayNameShort),
+                    new DependencyGraphNode<string, Gear>(nameof(DisplayNameShort))
                 ),
-                new DependencyGraphNode<string>(nameof(PreferredColor),
-                    new DependencyGraphNode<string>(nameof(Notes)),
-                    new DependencyGraphNode<string>(nameof(ParentID))
+                new DependencyGraphNode<string, Gear>(nameof(PreferredColor),
+                    new DependencyGraphNode<string, Gear>(nameof(Notes)),
+                    new DependencyGraphNode<string, Gear>(nameof(ParentID))
                 )
             );
 
@@ -3609,10 +3609,10 @@ namespace Chummer.Backend.Equipment
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = GearDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = GearDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in GearDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in GearDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

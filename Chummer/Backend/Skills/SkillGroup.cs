@@ -403,72 +403,72 @@ namespace Chummer.Backend.Skills
                 _intSkillFromKarma = intTemp;
         }
 
-        private static readonly DependencyGraph<string> SkillGroupDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(DisplayRating),
-                    new DependencyGraphNode<string>(nameof(SkillList)),
-                    new DependencyGraphNode<string>(nameof(CareerIncrease),
-                        new DependencyGraphNode<string>(nameof(SkillList)),
-                        new DependencyGraphNode<string>(nameof(RatingMaximum)),
-                        new DependencyGraphNode<string>(nameof(IsDisabled),
-                            new DependencyGraphNode<string>(nameof(Name))
+        private static readonly DependencyGraph<string, SkillGroup> SkillGroupDependencyGraph =
+            new DependencyGraph<string, SkillGroup>(
+                new DependencyGraphNode<string, SkillGroup>(nameof(DisplayRating),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(CareerIncrease),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(RatingMaximum)),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                         )
                     ),
-                    new DependencyGraphNode<string>(nameof(Rating),
-                        new DependencyGraphNode<string>(nameof(Karma),
-                            new DependencyGraphNode<string>(nameof(IsDisabled)),
-                            new DependencyGraphNode<string>(nameof(RatingMaximum)),
-                            new DependencyGraphNode<string>(nameof(FreeLevels),
-                                new DependencyGraphNode<string>(nameof(Name))
+                    new DependencyGraphNode<string, SkillGroup>(nameof(Rating),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(Karma),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(RatingMaximum)),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(FreeLevels),
+                                new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                             ),
-                            new DependencyGraphNode<string>(nameof(KarmaPoints)),
-                            new DependencyGraphNode<string>(nameof(KarmaUnbroken),
-                                new DependencyGraphNode<string>(nameof(IsDisabled)),
-                                new DependencyGraphNode<string>(nameof(SkillList))
+                            new DependencyGraphNode<string, SkillGroup>(nameof(KarmaPoints)),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken),
+                                new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
+                                new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
                             )
                         ),
-                        new DependencyGraphNode<string>(nameof(Base),
-                            new DependencyGraphNode<string>(nameof(IsDisabled)),
-                            new DependencyGraphNode<string>(nameof(RatingMaximum)),
-                            new DependencyGraphNode<string>(nameof(FreeBase),
-                                new DependencyGraphNode<string>(nameof(Name))
+                        new DependencyGraphNode<string, SkillGroup>(nameof(Base),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(RatingMaximum)),
+                            new DependencyGraphNode<string, SkillGroup>(nameof(FreeBase),
+                                new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                             ),
-                            new DependencyGraphNode<string>(nameof(BasePoints))
+                            new DependencyGraphNode<string, SkillGroup>(nameof(BasePoints))
                         )
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(UpgradeToolTip),
-                    new DependencyGraphNode<string>(nameof(SkillList)),
-                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost),
-                        new DependencyGraphNode<string>(nameof(SkillList)),
-                        new DependencyGraphNode<string>(nameof(IsDisabled)),
-                        new DependencyGraphNode<string>(nameof(Rating)),
-                        new DependencyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string, SkillGroup>(nameof(UpgradeToolTip),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(UpgradeKarmaCost),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(Rating)),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(CareerCanIncrease),
-                    new DependencyGraphNode<string>(nameof(UpgradeKarmaCost)),
-                    new DependencyGraphNode<string>(nameof(CareerIncrease))
+                new DependencyGraphNode<string, SkillGroup>(nameof(CareerCanIncrease),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(UpgradeKarmaCost)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(CareerIncrease))
                 ),
-                new DependencyGraphNode<string>(nameof(BaseUnbroken),
-                    new DependencyGraphNode<string>(nameof(IsDisabled)),
-                    new DependencyGraphNode<string>(nameof(SkillList))
+                new DependencyGraphNode<string, SkillGroup>(nameof(BaseUnbroken),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
                 ),
-                new DependencyGraphNode<string>(nameof(ToolTip),
-                    new DependencyGraphNode<string>(nameof(SkillList))
+                new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
                 ),
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string, SkillGroup>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(DisplayName),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(CurrentSpCost),
-                    new DependencyGraphNode<string>(nameof(BasePoints)),
-                    new DependencyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string, SkillGroup>(nameof(CurrentSpCost),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(BasePoints)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                 ),
-                new DependencyGraphNode<string>(nameof(CurrentKarmaCost),
-                    new DependencyGraphNode<string>(nameof(KarmaPoints)),
-                    new DependencyGraphNode<string>(nameof(SkillList))
+                new DependencyGraphNode<string, SkillGroup>(nameof(CurrentKarmaCost),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaPoints)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
                 )
             );
 
@@ -631,10 +631,10 @@ namespace Chummer.Backend.Skills
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SkillGroupDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
