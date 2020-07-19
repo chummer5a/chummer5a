@@ -270,6 +270,8 @@ namespace Chummer
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
 
+        public const int MaxStackLimit = 1024;
+
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
         // Omae Information.

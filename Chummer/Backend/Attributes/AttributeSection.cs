@@ -110,13 +110,13 @@ namespace Chummer.Backend.Attributes
         }
 
         private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
-        public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
+        public static ReadOnlyCollection<string> AttributeStrings { get; } = Array.AsReadOnly(s_LstAttributeStrings);
 
         private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
-        public static ReadOnlyCollection<string> PhysicalAttributes => Array.AsReadOnly(s_LstPhysicalAttributes);
+        public static ReadOnlyCollection<string> PhysicalAttributes { get; } = Array.AsReadOnly(s_LstPhysicalAttributes);
 
         private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
-        public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
+        public static ReadOnlyCollection<string> MentalAttributes { get; } = Array.AsReadOnly(s_LstMentalAttributes);
 
         public static string GetAttributeEnglishName(string strAbbrev)
         {

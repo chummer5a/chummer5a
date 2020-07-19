@@ -156,7 +156,12 @@ namespace Chummer.UI.Shared
 
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
-            int[] lstOldDisplayIndex = _lstDisplayIndex.ToArray();
+            // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
+            Span<int> aintOldDisplayIndex = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit
+                ? new int[_lstDisplayIndex.Count]
+                : stackalloc int[_lstDisplayIndex.Count];
+            for (int i = 0; i < aintOldDisplayIndex.Length; ++i)
+                aintOldDisplayIndex[i] = _lstDisplayIndex[i];
             _lstDisplayIndex.Clear();
             _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
 
@@ -166,7 +171,7 @@ namespace Chummer.UI.Shared
             {
                 for (int i = 0; i < _ablnRendered.Count; ++i)
                 {
-                    _ablnRendered[i] = _ablnRendered[i] && _lstDisplayIndex[i] == lstOldDisplayIndex[i];
+                    _ablnRendered[i] = _ablnRendered[i] && _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                 }
             }
         }

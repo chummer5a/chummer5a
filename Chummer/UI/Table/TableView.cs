@@ -41,7 +41,9 @@ namespace Chummer.UI.Table
             public override bool Layout(object objContainer, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
-                int[] widths = new int[_table._columns.Count];
+                Span<int> widths = _table._columns.Count > GlobalOptions.MaxStackLimit
+                    ? new int[_table._columns.Count]
+                    : stackalloc int[_table._columns.Count];
 
                 int y = 0;
 
