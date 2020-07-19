@@ -1750,7 +1750,7 @@ namespace Chummer
 
 
                     //Plugins
-                    if (Program.PluginLoader?.MyActivePlugins?.Any() == true)
+                    if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
                     {
                         // <plugins>
                         objWriter.WriteStartElement("plugins");

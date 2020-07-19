@@ -247,11 +247,15 @@ namespace Chummer
             if (objParentList == null)
                 return default;
             T objReturn = objParentList.LastOrDefault();
-            if (funcGetChildrenMethod != null && funcGetChildrenMethod(objReturn).Any())
+            if (funcGetChildrenMethod != null)
             {
-                T objTemp = funcGetChildrenMethod(objReturn).DeepLastOrDefault(funcGetChildrenMethod);
-                if (objTemp?.Equals(default(T)) == false)
-                    return objTemp;
+                List<T> lstChildren = funcGetChildrenMethod(objReturn).ToList();
+                if (lstChildren.Count > 0)
+                {
+                    T objTemp = lstChildren.DeepLastOrDefault(funcGetChildrenMethod);
+                    if (objTemp?.Equals(default(T)) == false)
+                        return objTemp;
+                }
             }
             return objReturn;
         }

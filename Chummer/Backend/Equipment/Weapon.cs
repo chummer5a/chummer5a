@@ -6280,16 +6280,16 @@ namespace Chummer.Backend.Equipment
         public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
         {
             if (objXmlAccessory == null) return false;
-            List<string> lstMounts = AccessoryMounts.Split('/').ToList();
+            string[] lstMounts = AccessoryMounts.Split('/');
             XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
-            if (lstMounts.Count == 0 || xmlMountNode != null && xmlMountNode.Value.Split('/').All(strItem =>
+            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.Split('/').All(strItem =>
                 !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
                     strAllowedMount != strItem)))
             {
                 return false;
             }
             xmlMountNode = objXmlAccessory.SelectSingleNode("extramount");
-            if (lstMounts.Count == 0 || xmlMountNode != null && xmlMountNode.Value.Split('/').All(strItem =>
+            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.Split('/').All(strItem =>
                 !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
                     strAllowedMount != strItem)))
             {

@@ -678,7 +678,7 @@ namespace Chummer.Backend.Skills
                 int intReturn = BasePoints;
                 int intValue = intReturn;
 
-                List<string> lstRelevantCategories = GetRelevantSkillCategories.ToList();
+                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
@@ -728,7 +728,7 @@ namespace Chummer.Backend.Skills
                 else
                     intCost *= _objCharacter.Options.KarmaImproveSkillGroup;
 
-                List<string> lstRelevantCategories = GetRelevantSkillCategories.ToList();
+                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
@@ -784,7 +784,7 @@ namespace Chummer.Backend.Skills
                     return -1;
                 }
 
-                List<string> lstRelevantCategories = GetRelevantSkillCategories.ToList();
+                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)

@@ -2648,12 +2648,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// List of names to include in pair bonus
         /// </summary>
-        public ICollection<string> IncludePair => _lstIncludeInPairBonus;
+        public HashSet<string> IncludePair => _lstIncludeInPairBonus;
 
         /// <summary>
         /// List of names to include in pair bonus
         /// </summary>
-        public ICollection<string> IncludeWirelessPair => _lstIncludeInWirelessPairBonus;
+        public HashSet<string> IncludeWirelessPair => _lstIncludeInWirelessPairBonus;
 
         /// <summary>
         /// Notes.
