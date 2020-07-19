@@ -3332,29 +3332,32 @@ namespace Chummer.Backend.Equipment
             {
                 Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded) ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
 
-                // Change the Weapon's Damage Type.
-                if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                if (objGear != null)
                 {
-                    string strRCBonus = objGear.FlechetteWeaponBonus["rc"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                    // Change the Weapon's Damage Type.
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                     {
-                        intRCBase += intLoopRCBonus;
-                        intRCFull += intLoopRCBonus;
+                        string strRCBonus = objGear.FlechetteWeaponBonus["rc"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                        {
+                            intRCBase += intLoopRCBonus;
+                            intRCFull += intLoopRCBonus;
 
-                        if (blnRefreshRCToolTip)
-                            strRCTip += strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')';
+                            if (blnRefreshRCToolTip)
+                                strRCTip += strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')';
+                        }
                     }
-                }
-                else if (objGear?.WeaponBonus != null)
-                {
-                    string strRCBonus = objGear.WeaponBonus["rc"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                    else if (objGear.WeaponBonus != null)
                     {
-                        intRCBase += intLoopRCBonus;
-                        intRCFull += intLoopRCBonus;
+                        string strRCBonus = objGear.WeaponBonus["rc"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                        {
+                            intRCBase += intLoopRCBonus;
+                            intRCFull += intLoopRCBonus;
 
-                        if (blnRefreshRCToolTip)
-                            strRCTip += strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')';
+                            if (blnRefreshRCToolTip)
+                                strRCTip += strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')';
+                        }
                     }
                 }
             }
@@ -4065,10 +4068,13 @@ namespace Chummer.Backend.Equipment
                 {
                     Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded) ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
 
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
-                        intRangeBonus += objGear.FlechetteWeaponBonusRange;
-                    else if (objGear?.WeaponBonus != null)
-                        intRangeBonus += objGear.WeaponBonusRange;
+                    if (objGear != null)
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                            intRangeBonus += objGear.FlechetteWeaponBonusRange;
+                        else if (objGear.WeaponBonus != null)
+                            intRangeBonus += objGear.WeaponBonusRange;
+                    }
                 }
 
                 return intRangeBonus;
@@ -4364,17 +4370,20 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                Gear objAmmo = (ParentVehicle != null ? ParentVehicle.Gear : _objCharacter.Gear).DeepFindById(AmmoLoaded);
-                if (objAmmo != null)
+                if (!string.IsNullOrEmpty(AmmoLoaded))
                 {
-                    string strWeaponBonusPool = string.Empty;
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objAmmo.FlechetteWeaponBonus != null)
-                        strWeaponBonusPool = objAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
-                    else if (objAmmo.WeaponBonus != null)
-                        strWeaponBonusPool = objAmmo.WeaponBonus?["pool"]?.InnerText;
+                    Gear objAmmo = _objCharacter.Gear.DeepFindById(AmmoLoaded) ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
+                    if (objAmmo != null)
+                    {
+                        string strWeaponBonusPool = string.Empty;
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objAmmo.FlechetteWeaponBonus != null)
+                            strWeaponBonusPool = objAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
+                        else if (objAmmo.WeaponBonus != null)
+                            strWeaponBonusPool = objAmmo.WeaponBonus?["pool"]?.InnerText;
 
-                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                        intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool, GlobalOptions.InvariantCultureInfo);
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool, GlobalOptions.InvariantCultureInfo);
+                    }
                 }
 
                 return intDicePool + intDicePoolModifier;
@@ -4625,20 +4634,25 @@ namespace Chummer.Backend.Equipment
                         strSpace, wa.CurrentDisplayName, wa.DicePool);
                 }
 
-                Gear objLoadedAmmo = ParentVehicle != null
-                    ? ParentVehicle.Gear.DeepFindById(AmmoLoaded)
-                    : _objCharacter.Gear.DeepFindById(AmmoLoaded);
-                string strWeaponBonusPool = string.Empty;
-                if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objLoadedAmmo.FlechetteWeaponBonus != null)
-                    strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
-                else if (objLoadedAmmo?.WeaponBonus != null)
-                    strWeaponBonusPool = objLoadedAmmo.WeaponBonus?["pool"]?.InnerText;
-
-                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                if (!string.IsNullOrEmpty(AmmoLoaded))
                 {
-                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, objLoadedAmmo.CurrentDisplayNameShort, strWeaponBonusPool);
+                    Gear objLoadedAmmo = _objCharacter.Gear.DeepFindById(AmmoLoaded) ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
+                    if (objLoadedAmmo != null)
+                    {
+                        string strWeaponBonusPool = string.Empty;
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objLoadedAmmo.FlechetteWeaponBonus != null)
+                            strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
+                        else if (objLoadedAmmo.WeaponBonus != null)
+                            strWeaponBonusPool = objLoadedAmmo.WeaponBonus?["pool"]?.InnerText;
+
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        {
+                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                strSpace, objLoadedAmmo.CurrentDisplayNameShort, strWeaponBonusPool);
+                        }
+                    }
                 }
+
                 if (ParentVehicle == null)
                 {
                     if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
