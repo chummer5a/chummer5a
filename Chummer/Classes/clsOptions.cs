@@ -1018,7 +1018,7 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
+        public static List<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
 
         public static bool OmaeEnabled
         {

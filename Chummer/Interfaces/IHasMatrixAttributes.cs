@@ -54,7 +54,7 @@ namespace Chummer
         string AttributeArray { get; set; }
         string ModAttributeArray { get; set; }
 
-        IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
+        List<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
     }
 
     public static class MatrixAttributes

@@ -5196,7 +5196,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
+        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes
         {
             get
             {

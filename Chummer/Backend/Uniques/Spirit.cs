@@ -836,7 +836,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public IList<Image> Mugshots
+        public List<Image> Mugshots
         {
             get
             {

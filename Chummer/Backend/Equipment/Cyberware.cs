@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -117,7 +118,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
-        private static readonly char[] s_MathOperators = new char[] {'"', '*', '/', '+', '-'};
+        private static readonly char[] s_MathOperators = {'"', '*', '/', '+', '-'};
 
         // I don't like this, but it's easier than making it a specific property of the cyberware.
         private static readonly HashSet<string> s_AgilityCustomizationStrings = new HashSet<string>
@@ -4083,7 +4084,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
+        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
             Gear.Concat(Children.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion
@@ -5020,7 +5021,7 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter.Created && objVehicle == null && _objParent == null)
                 {
                     _objCharacter.DecreaseEssenceHole((int) (CalculatedESS * 100),
-                        SourceID == Cyberware.EssenceAntiHoleGUID);
+                        SourceID == EssenceAntiHoleGUID);
                 }
 
                 lstCyberwareCollection?.Add(this);
@@ -5156,10 +5157,8 @@ namespace Chummer.Backend.Equipment
                     {
                         return false;
                     }
-                    else
-                    {
-                        objCyberware.Location = Location;
-                    }
+
+                    objCyberware.Location = Location;
                 }
 
                 if (objCyberware.SourceType != SourceType) return true;

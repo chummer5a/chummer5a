@@ -757,15 +757,14 @@ namespace Chummer.Backend.Attributes
         public CharacterAttrib GetAttributeByName(string abbrev)
         {
             bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
-            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute) ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
+            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute)
+                                        ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
             return objReturn;
         }
 
         public BindingSource GetAttributeBindingByName(string abbrev)
         {
-            if (_dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding))
-                return objAttributeBinding;
-            return null;
+            return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
         internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
@@ -797,9 +796,12 @@ namespace Chummer.Backend.Attributes
 
         internal void Reset()
         {
-            foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+            // Keeping enumerations separate reduces heap allocations
+            foreach (CharacterAttrib objAttribute in AttributeList)
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
+            foreach (CharacterAttrib objAttribute in SpecialAttributeList)
+                objAttribute.UnbindAttribute();
             SpecialAttributeList.Clear();
             foreach (string strAttribute in AttributeStrings)
             {
@@ -852,12 +854,12 @@ namespace Chummer.Backend.Attributes
         /// Character's Attributes.
         /// </summary>
         [HubTag(true)]
-        public IList<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>(8);
+        public List<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>(8);
 
         /// <summary>
         /// Character's Attributes.
         /// </summary>
-        public IList<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>(4);
+        public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>(4);
 
         public CharacterAttrib.AttributeCategory AttributeCategory
         {

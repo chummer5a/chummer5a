@@ -1008,9 +1008,7 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            if (string.IsNullOrEmpty(strInput))
-                return false;
-            return rgxHtmlTagExpression.IsMatch(strInput);
+            return !string.IsNullOrEmpty(strInput) && rgxHtmlTagExpression.IsMatch(strInput);
         }
 
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",

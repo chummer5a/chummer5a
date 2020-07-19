@@ -46,7 +46,6 @@ using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
 using Formatting = System.Xml.Formatting;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -6548,7 +6547,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public IList<Image> Mugshots => _lstMugshots;
+        public List<Image> Mugshots => _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -9875,12 +9874,12 @@ namespace Chummer
         /// <summary>
         /// Foci.
         /// </summary>
-        public IList<Focus> Foci => _lstFoci;
+        public List<Focus> Foci => _lstFoci;
 
         /// <summary>
         /// Stacked Foci.
         /// </summary>
-        public IList<StackedFocus> StackedFoci => _lstStackedFoci;
+        public List<StackedFocus> StackedFoci => _lstStackedFoci;
 
         /// <summary>
         /// Adept Powers.

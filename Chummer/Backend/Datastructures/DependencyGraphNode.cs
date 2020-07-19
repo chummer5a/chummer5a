@@ -95,19 +95,21 @@ namespace Chummer
         /// <summary>
         /// Collection of all items that depend on the object tied to this node.
         /// </summary>
-        public ICollection<DependencyGraphNodeWithCondition<T, T2>> UpStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T, T2>>();
+        public HashSet<DependencyGraphNodeWithCondition<T, T2>> UpStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T, T2>>();
 
         /// <summary>
         /// Collection of all items on which the object tied to this node depends.
         /// </summary>
-        public ICollection<DependencyGraphNodeWithCondition<T, T2>> DownStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T, T2>>();
+        public HashSet<DependencyGraphNodeWithCondition<T, T2>> DownStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T, T2>>();
 
         public override bool Equals(object obj)
         {
             if (obj is DependencyGraphNode<T, T2> objOtherNode)
             {
                 if (Root != null)
-                    return Root == objOtherNode.Root && (MyObject == null && objOtherNode.MyObject == null || MyObject?.Equals(objOtherNode.MyObject) == true);
+                    return Root == objOtherNode.Root
+                           && (MyObject.Equals(default(T)) && objOtherNode.MyObject.Equals(default(T))
+                               || MyObject?.Equals(objOtherNode.MyObject) == true);
                 if (objOtherNode.Root != null)
                     return false;
             }
