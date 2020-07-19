@@ -4631,7 +4631,7 @@ namespace Chummer.Backend.Equipment
                 string strWeaponBonusPool = string.Empty;
                 if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objLoadedAmmo.FlechetteWeaponBonus != null)
                     strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
-                else if (objLoadedAmmo.WeaponBonus != null)
+                else if (objLoadedAmmo?.WeaponBonus != null)
                     strWeaponBonusPool = objLoadedAmmo.WeaponBonus?["pool"]?.InnerText;
 
                 if (!string.IsNullOrEmpty(strWeaponBonusPool))
